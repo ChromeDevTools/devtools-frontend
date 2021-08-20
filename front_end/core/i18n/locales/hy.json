@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Անհայտ սխալ"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} օր"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ժամ"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} րոպե"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} մկվ"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} մվ"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} վ"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Պատուհան"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Արագ 3G ցանց"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Նախնական գործընթացի հարցման համար բովանդակություն չկա"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Հասանելի բովանդակություն չկա, քանի որ հարցումը վերաուղղորդվել է"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets-ի համար բովանդակությունն այս պահին չի աջակցվում"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Սահմանափակում չկա"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1}-ի բեռնումն ավարտվեց՝ {PH2} «{PH3}»։"
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie գլխագիրն անտեսվել է պատասխանում URL-ից՝ {PH1}։ Քուքիի երկարությունը պետք է ավելի քիչ կամ հավասար լինի 4096 նիշի։"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Դանդաղ 3G ցանց"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Այս Secure ֆայլն արգելափակվել է, քանի որ ուներ Secure հատկանիշը, և կապը հուսալի չէր։"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie գլխագիրն անտեսվել է պատասխանում URL-ից՝ {PH1}։ Քուքիի երկարությունը պետք է ավելի քիչ կամ հավասար լինի 4096 նիշի։"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Այս միացման սխեման թույլ չի տալիս քուքիներ պահել։"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Անջատել AVIF ձևաչափը"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Անջատել քեշը (երբ մշակողի գործիքները միացված են)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Անջատել JavaScript-ը"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Հիմնական"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Բացել Node.js-ի համար նախատեսված մշակողի գործիքները"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Հիմնական ինտերնետ ցուցանիշները"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit-ը ձախողվեց՝ {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Սարքի բարձրության և լայնության պիքսելների հարաբերակցությունը պետք է թիվ լինի, կամ դաշտը թողեք դատարկ"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Սարքի պիքսելների հարաբերակցությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Սարքի պիքսելների հարաբերակցությունը պետք է լինի փոքր կամ հավասար {PH1}-ի։"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Բարձրությունը պետք է թիվ լինի։"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Բարձրությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Բարձրությունը պետք է փոքր կամ հավասար լինի {PH1}-ի։"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Լայնությունը պետք է թիվ լինի։"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Լայնությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Լայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ի"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI էկրանով նոթբուք"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI էկրանով նոթբուք"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Հպէկրանով նոթբուք"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Բովանդակությունը հավաքվում է…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ինչպես գործ ունենալ ծանր գովազդների միջամտությունների հետ"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Վտանգավոր փոփոխության խնդիր՝ էջը կարող է դադարել աշխատել Chrome-ի հաջորդ տարբերակում"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Բարելավման խնդիր՝ էջը կարելի է բարելավել"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Էջի խնդիր՝ էջը ճիշտ չի աշխատում"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Գույների և կոնտրաստի հատուկ գործառույթներ"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "վտանգավոր"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets-ի խնդիրների մասին"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Ինչպես է աշխատում կայքերի վերաորոշման գործառույթը"
   },
@@ -1284,7 +1350,7 @@
     "message": "Որակի չափորոշիչների փոփոխություններ PWA-ների համար, որոնք օգտագործում են անվտանգ գործողություններ համացանցում"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm բազմաղբյուր մոդուլով կիսվելու նկարագրություն"
+    "message": "Wasm մոդուլի համատեղ օգտագործում միայն մեկ աղբյուրի կողմից"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<անանուն>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1}-ը սպասում է ակտիվացման"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Տեսնել բոլոր գրանցումները"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Նմանակել պահոցի հատուկ տարածքը"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Հիշողությունը սահմանափակված է ինկոգնիտո ռեժիմում"
@@ -2949,7 +3021,7 @@
     "message": "Երրորդ կողմ"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Համապատասխանեցնել ենթատիրույթները"
+    "message": "Ենթատիրույթների համադրում"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Աղբյուրը"
@@ -2964,7 +3036,7 @@
     "message": "Թոքեն"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "թոքեններ"
+    "message": "{PH1} թոքեն"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Օգտագործման սահմանափակում"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Զգուշացում, կրկնվել է # անգամ}one{Զգուշացում, կրկնվել է # անգամ}other{Զգուշացում, կրկնվել է # անգամ}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Այս կողագոտին կհեռացվի Chrome-ի հետագա տարբերակից։ Ցանկության դեպքում կարող եք հայտնել մեզ ձեր կարծիքը"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "սխալների հետագծման համակարգի միջոցով"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Ինքնալրացում պատմությունից"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# բայթ, {percentage}}one{# բայթ, {percentage}}other{# բայթ, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} բայթ ({PH2}%) պատկանում է JavaScript-ի բլոկներին, որոնք (դեռ) չեն գործարկվել։"
+    "message": "{PH1} բայթ ({PH2}) պատկանում է JavaScript-ի բլոկներին, որոնք (դեռ) չեն գործարկվել։"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} բայթ ({PH2} %) պատկանում է JavaScript-ի բլոկներին, որոնք առնվազն մեկ անգամ գործարկվել են։"
+    "message": "{PH1} բայթ ({PH2}) պատկանում է JavaScript-ի բլոկներին, որոնք առնվազն մեկ անգամ գործարկվել են։"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} բայթ ({PH2}%) պարունակում են ֆունկցիաները, որոնք (դեռ) չեն գործարկվել։"
+    "message": "{PH1} բայթ ({PH2}) պատկանում է ֆունկցիաներին, որոնք (դեռ) չեն գործարկվել։"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} բայթ ({PH2}%), որոնք վերաբերում են առնվազն մեկ անգամ կատարված գործառույթներին։"
+    "message": "{PH1} բայթ ({PH2}) պատկանում է ֆունկցիաներին, որոնք առնվազն մեկ անգամ գործարկվել են։"
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Ֆայլերի {PH1}%-ն օգտագործված է, {PH2}%-ը՝ չօգտագործված"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Բայթերի ընդհանուր ծավալը"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Պատճենել XPath-ը"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Կտրել տարրը"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Կտրել"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Ջնջել տարրը"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Թաքցնել տարրը"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Տեղադրել տարրը"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Տեղադրել"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Ոլորել դեպի տեսանելի դաշտ"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Ցուցադրել սթեքի ժամանակագրությունը"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Ցույց տալ գործակալ ծրագրի Shadow DOM-ը"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Սթեքի ժամանակագրություն"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Տողադարձ"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Սարքի բարձրության և լայնության պիքսելների հարաբերակցությունը պետք է թիվ լինի, կամ դաշտը թողեք դատարկ"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Սարքի պիքսելների հարաբերակցությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Սարքի պիքսելների հարաբերակցությունը պետք է լինի փոքր կամ հավասար {PH1}-ի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Բարձրությունը պետք է թիվ լինի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Բարձրությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Բարձրությունը պետք է փոքր կամ հավասար լինի {PH1}-ի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Լայնությունը պետք է թիվ լինի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Լայնությունը պետք է լինի մեծ կամ հավասար {PH1}-ի։"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Լայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ի"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Ավելացնել սարքի բարձրության և լայնության պիքսելների հարաբերակցությունը"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Սարքի տեսակը"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Չափերը"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Փոփոխել…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Պլանշետ"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Ավելացնել հատուկ սարք…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Սարք"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Սարքի անվանումը"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Սարքի անվանման դաշտը չի կարող դատարկ լինել։"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Սարքի անվանումը չպետք է գերազանցի {PH1} նիշը։"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Սարքի բարձրության և լայնության պիքսելների հարաբերակցությունը"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Էմուլացված սարքեր"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Բարձրություն"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Գործակալ ծրագրի տող"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Գործակալ ծրագրի տեսակը"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Լայնություն"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI էկրանով նոթբուք"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI էկրանով նոթբուք"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Հպէկրանով նոթբուք"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Ավելացնել տեղադրություն…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Հատուկ տեղադրություններ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Լայնություն"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Լայնություն"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Լայնությունը պետք թիվ լինի"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Լայնությունը պետք է լինի մեծ կամ հավասար {PH1}-ի"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Լայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ին"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Տեղույթ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Տիրույթը պետք է պարունակի այբբենական նիշեր"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Տեղադրության անվանումը"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Տեղադրության անվանման դաշտը չի կարող դատարկ լինել"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Տեղադրության անվանումը չպետք է գերազանցի {PH1} նիշը"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Երկայնություն"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Երկայնություն"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Երկայնությունը պետք է թիվ լինի"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Արժեքը պետք է լինի մեծ կամ հավասար {PH1}-ի"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Երկայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ի"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Ժամային գոտու ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Ժամային գոտու ID-ն պետք է պարունակի այբբենական նշաններ"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Ցույց տալ սկզբնական կոդում"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Փոխեք արժեքը մկնիկի անիվի կամ «վերև»/«ներքև» ստեղների միջոցով։ {PH1}՝ ±10, Shift՝ ±1, Alt՝ ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ալֆա)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (բետա)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Հատուկ դիրք"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Սարքի դիրքը. ալֆա՝ {PH1}, բետա՝ {PH2}, գամմա՝ {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Էկրանն ուղղված դեպի ներքև"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Էկրանն ուղղված դեպի վերև"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Միացնել դիրքի համար պտույտները"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Սխալ"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Գործարկում է ընտրված ոչ ակտիվ էմուլյացիան"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Սեղմման փոխարեն գործարկում է հպումը"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (գամմա)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Հորիզոնական դեպի ձախ պտույտով"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Հորիզոնական դեպի աջ պտույտով"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Լայնություն"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Տեղույթ"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Տեղադրություն"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Տեղադրությունն անհասանելի է"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Երկայնություն"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Կառավարել"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Կառավարել տեղադրությունների ցանկը"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Չվերասահմանել"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Անջատել"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Դիրք"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Այլ…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Վերասահմանումներ"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Ուղղաձիգ դիրք"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Ուղղաձիգ դիրքի շրջում 180 աստիճանով"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Կարգավորումների հավաքածու"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Վերակայել"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Զրոյացնել սարքի դիրքը"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Y առանցքի շուրջ պտտելու համար սեղմեք Shift և քաշեք մոդելը հորիզոնական հարթության վրա"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Ժամային գոտու ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Ավելացնել ապրանքանիշ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Ճարտարապետություն"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Համակառույց (օր.՝ x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Ջնջել {PH1}-ը"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Ապրանքանիշ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Ապրանքանիշ {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Ապրանքանիշի հատկություններ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Տարբերակ {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Ապրանքանիշներ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Ջնջել"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Սարքի մոդելը"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Սարքի հատկություններ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Դիտարկիչի լրիվ տարբերակը"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Դիտարկիչի լրիվ տարբերակը (օր.՝ 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Բջջային"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Չի կարող ներկայացվել գլխագրերի կառուցվածքավորված տողի տեսքով։"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Հարթակ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Հարթակ (օր.՝ Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Հարթակի հատկություններ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Հարթակի տարբերակը"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Գործակալ ծրագրի սպասառուի հուշումներ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Թարմացնել"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Գործակալ ծրագրի սպասառուի հուշումներ օգտագործվում են գործակալ ծրագրի տողի փոխարեն, որը որոշում է դիտարկիչը և սարքն ավելի ստրուկտուրավորված եղանակով՝ ավելի լավ ապահովելով գաղտնիությունը։ Ավելին իմանալու համար սեղմեք կոճակը։"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Տարբերակ"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "արագացման չափիչ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Լիաէկրան սքրինշոթ անել"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "սարք"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "սարքի դիրքը"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Կախված է սարքից"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Սարքեր"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Էմուլացնել Idle Detector վիճակը"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Հարկադրաբար միացված է"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "աշխարհագրական դիրք"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Թաքցնել սարքի շրջանակը"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Թաքցնել քանոնները"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "տեղույթ"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "տեղույթներ"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Տեղադրություններ"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Ոչ ակտիվ էմուլյացիա չկա"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Սենսորներ"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Ցույց տալ սարքի շրջանակը"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Ցույց տալ սարքերը"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Ցույց տալ տեղադրությունները"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Ցույց տալ մեդիա հարցումները"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Ցույց տալ քանոնները"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Ցույց տալ տվիչները"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "ժամային գոտիներ"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Միացնել/անջատել սարքի գործիքագոտին"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Հպում"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Օգտատերն ակտիվ է, էկրանը կողպված է"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Օգտատերն ակտիվ է, էկրանը ապակողպված է"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Օգտատերն ակտիվ չէ, էկրանը կողպված է"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Օգտատերն ակտիվ չէ, էկրանն ապակողպված է"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Ջնջել իրադարձության ունկդրին"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Տիրույթ"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Ցույց տալ ցանցի հարցումները, որոնք պարունակում են այս Set-Cookie վերնագիրը «Ցանց» վահանակում"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# խախտում}one{# խախտում}other{# խախտում}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 չմշակված Set-Cookie վերնագիր}one{# չմշակված Set-Cookie վերնագիր}other{# չմշակված Set-Cookie վերնագիր}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Անվանում"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "նախազգուշացում"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Թաքցված խնդիրներ"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Փոփոխված ռեսուրսներ"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Անվտանգ գործողություններ համացանցում"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Ցուցադրել բոլոր թաքցված խնդիրները"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "արգելափակված է"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm մոդուլի URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Ցուցադրել նման խնդիրները"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Թաքցնել նման խնդիրները"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Թաքցնել խնդիրների ընտրացանկը"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP խախտումներ"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range գլխագրի աջակցում"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Արտապատկերման միջոցի անվանումը"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Լուծաչափ"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Թաքցնում է data: և blob: URL-ները"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Շրջել"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Շրջում է որոնման զտիչը"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Իմանալ ավելին"
   },
@@ -6564,7 +6315,7 @@
     "message": "Անջատել քեշը"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Անջատել քեշը (երբ DevTools-ը միացված է)"
+    "message": "Անջատել քեշը (երբ մշակողի գործիքները միացված են)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Չմաքրել մատյանը՝ էջը բեռնելիս և նավարկելիս"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Հարցման տողի պարամետրեր"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Հատկանիշ, որը գրանցվել է trigger-data տարրի միջոցով՝ {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Հղորդի կանոններ"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Ցուցադրել անվտանգության վահանակը"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Ավելացնել տեղադրություն…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Հատուկ տեղադրություններ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Լայնություն"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Լայնություն"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Լայնությունը պետք թիվ լինի"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Լայնությունը պետք է լինի մեծ կամ հավասար {PH1}-ի"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Լայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ին"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Տեղույթ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Տիրույթը պետք է պարունակի այբբենական նիշեր"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Տեղադրության անվանումը"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Տեղադրության անվանման դաշտը չի կարող դատարկ լինել"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Տեղադրության անվանումը չպետք է գերազանցի {PH1} նիշը"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Երկայնություն"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Երկայնություն"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Երկայնությունը պետք է թիվ լինի"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Արժեքը պետք է լինի մեծ կամ հավասար {PH1}-ի"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Երկայնությունը պետք է փոքր կամ հավասար լինի {PH1}-ի"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Ժամային գոտու ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Ժամային գոտու ID-ն պետք է պարունակի այբբենական նշաններ"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Փոխեք արժեքը մկնիկի անիվի կամ «վերև»/«ներքև» ստեղների միջոցով։ {PH1}՝ ±10, Shift՝ ±1, Alt՝ ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ալֆա)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (բետա)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Հատուկ դիրք"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Սարքի դիրքը. ալֆա՝ {PH1}, բետա՝ {PH2}, գամմա՝ {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Էկրանն ուղղված դեպի ներքև"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Էկրանն ուղղված դեպի վերև"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Միացնել դիրքի համար պտույտները"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Սխալ"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Գործարկում է ընտրված ոչ ակտիվ էմուլյացիան"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Սեղմման փոխարեն գործարկում է հպումը"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (գամմա)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Հորիզոնական դեպի ձախ պտույտով"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Հորիզոնական դեպի աջ պտույտով"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Լայնություն"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Տեղույթ"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Տեղադրություն"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Տեղադրությունն անհասանելի է"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Երկայնություն"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Կառավարել"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Կառավարել տեղադրությունների ցանկը"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Չվերասահմանել"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Անջատել"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Դիրք"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Այլ…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Վերասահմանումներ"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Ուղղաձիգ դիրք"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Ուղղաձիգ դիրքի շրջում 180 աստիճանով"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Կարգավորումների հավաքածու"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Վերակայել"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Զրոյացնել սարքի դիրքը"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Y առանցքի շուրջ պտտելու համար սեղմեք Shift և քաշեք մոդելը հորիզոնական հարթության վրա"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Ժամային գոտու ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "արագացման չափիչ"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "սարքի դիրքը"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Կախված է սարքից"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Էմուլացնել Idle Detector վիճակը"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Հարկադրաբար միացված է"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "աշխարհագրական դիրք"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "տեղույթ"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "տեղույթներ"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Տեղադրություններ"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Ոչ ակտիվ էմուլյացիա չկա"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Սենսորներ"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Ցույց տալ տեղադրությունները"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Ցույց տալ տվիչները"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "ժամային գոտիներ"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Հպում"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Օգտատերն ակտիվ է, էկրանը կողպված է"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Օգտատերն ակտիվ է, էկրանը ապակողպված է"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Օգտատերն ակտիվ չէ, էկրանը կողպված է"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Օգտատերն ակտիվ չէ, էկրանն ապակողպված է"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Ավելացնել ֆայլի անվան ձևանմուշ"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ԶԳՈՒՇԱՑՈՒՄ․"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Ավելացնել հատուկ սարք…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Սարք"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Սարքի անվանումը"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Սարքի անվանման դաշտը չի կարող դատարկ լինել։"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Սարքի անվանումը չպետք է գերազանցի {PH1} նիշը։"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Սարքի բարձրության և լայնության պիքսելների հարաբերակցությունը"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Էմուլացված սարքեր"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Բարձրություն"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Գործակալ ծրագրի տող"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Գործակալ ծրագրի տեսակը"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Լայնություն"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Ավելացնել ապրանքանիշ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Ճարտարապետություն"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Համակառույց (օր.՝ x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Ջնջել {PH1}-ը"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Ապրանքանիշ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Ապրանքանիշ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Ապրանքանիշի հատկություններ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Տարբերակ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Ապրանքանիշներ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Ջնջել"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Սարքի մոդելը"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Սարքի հատկություններ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Դիտարկիչի լրիվ տարբերակը"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Դիտարկիչի լրիվ տարբերակը (օր.՝ 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Բջջային"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Չի կարող ներկայացվել գլխագրերի կառուցվածքավորված տողի տեսքով։"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Հարթակ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Հարթակ (օր.՝ Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Հարթակի հատկություններ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Հարթակի տարբերակը"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Գործակալ ծրագրի սպասառուի հուշումներ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Թարմացնել"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Գործակալ ծրագրի սպասառուի հուշումներ օգտագործվում են գործակալ ծրագրի տողի փոխարեն, որը որոշում է դիտարկիչը և սարքն ավելի ստրուկտուրավորված եղանակով՝ ավելի լավ ապահովելով գաղտնիությունը։ Ավելին իմանալու համար սեղմեք կոճակը։"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Տարբերակ"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Սարքեր"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Ցույց տալ սարքերը"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Փաստաթղթեր"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Ապակտիվացնել կանգի կետերը"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS-ի չափման միավորի փոքրացում 10-ով"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS-ի չափման միավորի փոքրացում {PH1}-ով"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Որոշել նահանջը"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Անցնել նշանին"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS-ի չափման միավորի մեծացում 10-ով"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS-ի չափման միավորի մեծացում {PH1}-ով"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Անցնել խմբավորման հաջորդ տեղը"
@@ -9846,7 +9924,7 @@
     "message": "Կրճատ պատասխան"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Չափեր"
+    "message": "Չափերը"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Տեսակավորել ըստ"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Վտանգավոր փոփոխության խնդիր՝ էջը կարող է դադարել աշխատել Chrome-ի հաջորդ տարբերակում"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# վտանգավոր փոփոխություն}one{# վտանգավոր փոփոխություն}other{# վտանգավոր փոփոխություն}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Բարելավման խնդիր՝ էջը կարելի է բարելավել"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Էջի խնդիր՝ էջը ճիշտ չի աշխատում"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{էջի # սխալ}one{էջի # սխալ}other{էջի # սխալ}}"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Բոլորը"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Մաքրել"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "օր․՝ /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Ցույց է տալիս աղբյուրի սխեման (Secure, NonSecure) որտեղ տեղադրվել է քուքին։ Եթե սխեման անհայտ է, կցուցադրվի Unset թիվը։"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}-ից հետո"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Գործողության ժամկետի ավարտի ժամադրոշմը ({seconds}) համապատասխանում է {date}-ից հետո ամսաթվին"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Արժեքը"

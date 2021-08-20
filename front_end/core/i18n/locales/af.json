@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Onbekende fout"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} dae"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} uur"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Venster"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Werker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Vinnige 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Geen inhoud beskikbaar vir kontroleringversoek nie"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Geen inhoud beskikbaar nie omdat hierdie versoek herlei is"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Inhoud vir WebSockets word nie tans gesteun nie"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Geen regulering nie"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} het klaar gelaai: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie-opskrif word geïgnoreer in reaksie deur URL: {PH1}. Webkoekielengte moet kleiner as of gelyk wees aan 4 096 karakters."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Stadige 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Hierdie webkoekie is geblokkeer omdat dit die \"Secure\"-kenmerk het en die verbinding nie veilig was nie."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie-opskrif word geïgnoreer in reaksie deur URL: {PH1}. Webkoekielengte moet kleiner as of gelyk wees aan 4 096 karakters."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Hierdie verbinding se skema word nie toegelaat om webkoekies te berg nie."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Deaktiveer AVIF-formaat"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Deaktiveer kasgeheue (terwyl ontwikkelaarnutsgoed oop is)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiveer JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Hoof"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Maak toegewese ontwikkelaarnutsgoed oop vir Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Kernwebgebruikdata"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit het misluk: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Toestelpiekselverhouding moet 'n getal of leeg wees."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Toestelpiekselverhouding moet groter of gelyk wees aan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Toestelpiekselverhouding moet kleiner of gelyk wees aan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Hoogte moet 'n getal wees."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Hoogte moet groter as of gelyk wees aan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Hoogte moet kleiner as of gelyk wees aan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Breedte moet 'n getal wees."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Wydte moet groter as of gelyk wees aan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Wydte moet kleiner as of gelyk wees aan {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Skootrekenaar met HiDPI-skerm"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Skootrekenaar met MDPI-skerm"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Skootrekenaar met raakinvoer"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Samel tans inhoud in …"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Hanteer swaaradvertensie-ingrypings"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "'n Breekveranderingkwessie: Die bladsy sal dalk in 'n komende weergawe van Chrome nie meer werk nie"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "'n Verbeteringkwessie: Daar is 'n geleentheid om die bladsy te verbeter"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "'n Bladsyfoutkwessie: Die bladsy werk nie reg nie"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Kleur- en kontraktoeganklikheid"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "'n onveilige"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets verduidelik"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Hoe Schemeful Same-Site werk"
   },
@@ -1284,7 +1350,7 @@
     "message": "Veranderinge aan gehaltekriteria vir PWA's met Vertroude Webaktiwiteit"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Opskorting van Wasm se kruisoorsprongmoduledeling"
+    "message": "Beperk tans Wasm-moduledeling tot dieselfde oorsprong"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anoniem>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} wag tans om te aktiveer"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Sien alle registrasies"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker vir {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Dienswerkers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simuleer gepasmaakte bergingkwota"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Bergingkwota is beperk in Incognitomodus"
@@ -2949,7 +3021,7 @@
     "message": "Derde party"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Pas subdomeine"
+    "message": "Subdomeinpassing"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Oorsprong"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tokens"
+    "message": "{PH1} tokens"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Gebruikbeperking"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Waarskuwing, # keer herhaal}other{Waarskuwing, # keer herhaal}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Hierdie kantbalk sal in 'n toekomstige weergawe van Chrome verwyder word. As jy terugvoer het, laat weet ons asseblief via die"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "Kwessienaspoorder"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Voltooi outomaties uit geskiedenis"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# greep, {percentage}}other{# grepe, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} grepe ({PH2}%) behoort aan blokke JavaScript wat (nog) nie uitgevoer is nie."
+    "message": "{PH1} grepe ({PH2}) behoort aan blokke JavaScript wat (nog) nie uitgevoer is nie."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} grepe ({PH2}%) behoort aan blokke JavaScript wat minstens een keer uitgevoer is."
+    "message": "{PH1} grepe ({PH2}) behoort aan blokke JavaScript wat minstens een keer uitgevoer is."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} grepe ({PH2}%) behoort aan funksies wat (nog) nie uitgevoer is nie."
+    "message": "{PH1} grepe ({PH2}) behoort aan funksies wat (nog) nie uitgevoer is nie."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} grepe ({PH2}%) behoort aan funksies wat minstens een keer uitgevoer is."
+    "message": "{PH1} grepe ({PH2}) behoort aan funksies wat minstens een keer uitgevoer is."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1}% van lêer is ongebruik; {PH2}% van lêer is gebruik"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Totale grepe"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopieer XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Sny element"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Knip"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Vee element uit"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Versteek element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Plak element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Plak"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Rollees totdat jy kan sien"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Wys stapelspoor"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Wys gebruikeragentskaduwee DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stapelspoor"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Woordomvouing"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Toestelpiekselverhouding moet 'n getal of leeg wees."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Toestelpiekselverhouding moet groter of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Toestelpiekselverhouding moet kleiner of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Hoogte moet 'n getal wees."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Hoogte moet groter as of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Hoogte moet kleiner as of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Breedte moet 'n getal wees."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Wydte moet groter as of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Wydte moet kleiner as of gelyk wees aan {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Voeg toestelpiekselverhouding by"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Toesteltipe"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Afmetings"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Wysig …"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Voeg gepasmaakte toestel by …"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Toestel"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Toestelnaam"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Toestelnaam kan nie leeg wees nie."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Toestelnaam moet minder as {PH1} karakters wees."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Toestelpiekselverhouding"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Geëmuleerde toestelle"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Hoogte"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Gebruikeragentstring"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Gebruikeragenttipe"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Breedte"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Skootrekenaar met HiDPI-skerm"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Skootrekenaar met MDPI-skerm"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Skootrekenaar met raakinvoer"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Voeg ligging by …"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Gepasmaakte liggings"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Breedte"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Breedteligging"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Breedteligging moet 'n getal wees"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Breedteligging moet groter as of gelyk wees aan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Breedteligging moet kleiner as of gelyk wees aan {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Locale moet alfabetiese karakters bevat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Liggingnaam"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Liggingnaam kan nie leeg wees nie"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Liggingnaam moet minder as {PH1} karakters wees"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Lengte"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Lengtegraad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Lengteligging moet 'n getal wees"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Lengteligging moet groter as of gelyk wees aan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Lengteligging moet kleiner as of gelyk wees aan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Tydsone-ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Tydsone-ID moet alfabetiese karakters bevat"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Wys in bronkode"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Verstel met muiswiel of op- of afsleutel. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Gepasmakte oriëntasie"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Toesteloriëntasie is gestel op alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Skerm af"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Skerm op"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Aktiveer oriëntasie om te draai"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Fout"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Verplig geselekteerde onaktiefstaatemulering"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Verplig raak pleks van klik"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Landskap links"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Landskap regs"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Breedteligging"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Ligging"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Ligging is nie beskikbaar nie"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Lengtegraad"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Bestuur"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Bestuur die lys liggings"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Geen ignorering nie"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Af"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Oriëntasie"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Ander …"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Ignorerings"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Portret"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Portret onderstebo"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Voorafstellings"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Stel terug"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Stel toesteloriëntasie terug"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift+sleep horisontaal om rondom die y-as te draai"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Tydsone-ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Voeg handelsmerk by"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Argitektuur"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Argitektuur (byvoorbeeld x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Vee {PH1} uit"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Handelsmerk"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Handelsmerk {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Handelsmerkeienskappe"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Weergawe {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Handelsmerke"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Vee uit"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Toestelmodel"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Toesteleiendomme"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Weergawe van volledige blaaier"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Volledige blaaierweergawe (byvoorbeeld 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Selfoon"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Kan nie as gestruktureerde opskriftestring weergegee word nie."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platform (byvoorbeeld Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Platformeiendomme"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Platformweergawe"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Gebruikeragentkliëntwenke"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Dateer op"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Gebruikeragentkliëntwenke is 'n alternatief vir die gebruikeragentstring wat die blaaier en die toestel op 'n meer gestruktureerde manier met beter privaatheidtoerekening identifiseer. Klik die knoppie om meer te wete te kom."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Weergawe"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "versnellingsmeter"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Vang volgrootte-skermkiekie vas"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "toestel"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "toesteloriëntasie"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Toestelgegrond"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Toestelle"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emuleer staat van Onaktiefbespeurder"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Verplig geaktiveer"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geoligging"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Versteek toestelraam"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Versteek liniale"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "locale"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "locales"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Liggings"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Geen onaktiewe emulering nie"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensors"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Wys toestelraam"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Wys toestelle"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Wys liggings"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Wys medianavrae"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Wys liniale"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Wys sensors"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "tydsones"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Wissel toestelnutsbalk"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Raak"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Gebruiker aktief, skerm gesluit"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Gebruiker aktief, skerm ontsluit"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Gebruiker onaktief, skerm gesluit"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Gebruiker onaktief, skerm ontsluit"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Vee gevalluisteraar uit"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domein"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Wys netwerkversoeke wat hierdie Set-Cookie-opskrif in die netwerkpaneel insluit"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# webkoekie}other{# webkoekies}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Rou Set-Cookie-opskrif}other{# Rou Set-Cookie-opskrifte}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Naam"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "waarskuwing"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Versteekte kwessies"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Geraakte hulpbronne"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Vertroude webaktiwiteit"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Wys alle versteekte kwessies"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "geblokkeer"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm-module se URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Wys sulke kwessies"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Versteek sulke kwessies"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Versteek kwessieskieslys"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-oortredings"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Steun vir Range-opskrif"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Leweraar se naam"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Resolusie"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Versteek data:- en blob:-URL'e"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Keer om"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Keer die soekfilter om"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Kom meer te wete"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Navraagstringparameters"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Het toeskrywing aangeteken met trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Verwyserbeleid"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Wys sekuriteit"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Voeg ligging by …"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Gepasmaakte liggings"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Breedte"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Breedteligging"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Breedteligging moet 'n getal wees"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Breedteligging moet groter as of gelyk wees aan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Breedteligging moet kleiner as of gelyk wees aan {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Locale moet alfabetiese karakters bevat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Liggingnaam"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Liggingnaam kan nie leeg wees nie"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Liggingnaam moet minder as {PH1} karakters wees"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Lengte"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Lengtegraad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Lengteligging moet 'n getal wees"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Lengteligging moet groter as of gelyk wees aan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Lengteligging moet kleiner as of gelyk wees aan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Tydsone-ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Tydsone-ID moet alfabetiese karakters bevat"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Verstel met muiswiel of op- of afsleutel. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Gepasmakte oriëntasie"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Toesteloriëntasie is gestel op alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Skerm af"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Skerm op"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Aktiveer oriëntasie om te draai"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Fout"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Verplig geselekteerde onaktiefstaatemulering"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Verplig raak pleks van klik"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Landskap links"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Landskap regs"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Breedteligging"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Ligging"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Ligging is nie beskikbaar nie"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Lengtegraad"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Bestuur"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Bestuur die lys liggings"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Geen ignorering nie"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Af"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Oriëntasie"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Ander …"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Ignorerings"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Portret"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Portret onderstebo"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Voorafstellings"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Stel terug"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Stel toesteloriëntasie terug"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift+sleep horisontaal om rondom die y-as te draai"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Tydsone-ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "versnellingsmeter"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "toesteloriëntasie"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Toestelgegrond"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emuleer staat van Onaktiefbespeurder"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Verplig geaktiveer"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geoligging"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "locale"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "locales"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Liggings"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Geen onaktiewe emulering nie"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensors"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Wys liggings"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Wys sensors"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "tydsones"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Raak"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Gebruiker aktief, skerm gesluit"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Gebruiker aktief, skerm ontsluit"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Gebruiker onaktief, skerm gesluit"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Gebruiker onaktief, skerm ontsluit"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Voeg lêernaampatroon by"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "WAARSKUWING:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Voeg gepasmaakte toestel by …"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Toestel"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Toestelnaam"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Toestelnaam kan nie leeg wees nie."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Toestelnaam moet minder as {PH1} karakters wees."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Toestelpiekselverhouding"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Geëmuleerde toestelle"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Hoogte"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Gebruikeragentstring"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Gebruikeragenttipe"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Breedte"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Voeg handelsmerk by"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Argitektuur"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Argitektuur (byvoorbeeld x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Vee {PH1} uit"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Handelsmerk"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Handelsmerk {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Handelsmerkeienskappe"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Weergawe {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Handelsmerke"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Vee uit"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Toestelmodel"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Toesteleiendomme"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Weergawe van volledige blaaier"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Volledige blaaierweergawe (byvoorbeeld 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Selfoon"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Kan nie as gestruktureerde opskriftestring weergegee word nie."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platform (byvoorbeeld Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Platformeiendomme"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Platformweergawe"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Gebruikeragentkliëntwenke"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Dateer op"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Gebruikeragentkliëntwenke is 'n alternatief vir die gebruikeragentstring wat die blaaier en die toestel op 'n meer gestruktureerde manier met beter privaatheidtoerekening identifiseer. Klik die knoppie om meer te wete te kom."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Weergawe"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Toestelle"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Wys toestelle"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentasie"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktiveer breekpunte"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Verminder CSS-eenheid met 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Verminder CSS-eenheid met {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Bespeur inkeping"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Gaan na simbool"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Vermeerder CSS-eenheid met 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Vermeerder CSS-eenheid met {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Spring na volgende redigeringligging"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rangskik volgens"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "'n Breekveranderingkwessie: Die bladsy sal dalk in 'n komende weergawe van Chrome nie meer werk nie"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# breekverandering}other{# breekveranderinge}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "'n Verbeteringkwessie: Daar is 'n geleentheid om die bladsy te verbeter"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "'n Bladsyfoutkwessie: Die bladsy werk nie reg nie"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# bladfout}other{# bladfoute}}"
@@ -10758,7 +10827,7 @@
     "message": "Klik om kwessie in die kwessiesoortjie te wys"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Klik om die kwessie-oortjie oop te maak en die kwessie \"{title}\" te wys."
+    "message": "Klik om die kwessie-oortjie oop te maak en die kwessie {title} te wys."
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Kwessie is nie op hierdie tydstip beskikbaar nie"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Alles"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Vee invoer uit"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "byvoorbeeld /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Wys die bronskema (Secure, NonSecure) waarop die webkoekie gestel is. As die skema onbekend is, wys dit Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "ná {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Die vervaltydstempel is {seconds}, wat ooreenstem met 'n datum ná {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Waarde"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Tundmatu viga"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} päeva"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} h"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Aken"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Töötaja"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Kiire 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Esituseelse taotluse kohta pole sisu saadaval"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Sisu pole saadaval, kuna see taotlus suunati ümber"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSocketsi sisu praegu ei toetata"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Piiranguta"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} lõpetas laadimise: {PH2} „{PH3}“."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Üksuse Set-Cookie päist eiratakse vastuses URL-ilt {PH1}. Küpsisefaili pikkus peab olema kuni 4096 tähemärki."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Aeglane 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "See küpsisefail blokeeriti, kuna sellel oli atribuut „Secure“, ent ühendus ei olnud turvaline."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Üksuse Set-Cookie päist eiratakse vastuses URL-ilt {PH1}. Küpsisefaili pikkus peab olema kuni 4096 tähemärki."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Selle ühenduse skeemil ei ole lubatud küpsisefaile talletada."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Keela vorming AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Keela vahemälu (kui DevTools on avatud)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Keela JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Peamine"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Ava spetsiaalne DevTools üksuse Node.js jaoks"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Veebi põhimõõdikud"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit ebaõnnestus: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Seadme pikslite suhe peab olema arvväärtus või tühi."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Seadme pikslite suhe peab olema suurem kui {PH1} või sellega võrdne."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Seadme pikslite suhe peab olema väiksem kui {PH1} või sellega võrdne."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Kõrgus peab olema numbriline."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Kõrgus peab olema suurem kui {PH1} või sellega võrdne."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Kõrgus peab olema väiksem või võrdne {PH1}-ga."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Laius peab olema numbriline."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Laius peab olema suurem kui {PH1} või sellega võrdne."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Laius peab olema väiksem kui {PH1} või sellega võrdne."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI-ekraaniga sülearvuti"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI-ekraaniga sülearvuti"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Puutetundlik sülearvuti"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Sisu kogumine …"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Raskete reklaamide sekkumiste töötlemine"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Probleeme põhjustav muudatus: leht võib Chrome'i tulevases versioonis töötamast lakata"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Täiustamisega seotud probleem: saadaval on lehe täiustamise võimalus"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Lehe veaga seotud probleem: leht ei tööta õigesti"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Värvi ja kontrastsuse juurdepääsetavus"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "ebaturvaline"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Üksuse First-Party Sets selgitus"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Kuidas skeemipõhine Same-Site töötab?"
   },
@@ -1284,7 +1350,7 @@
     "message": "Usaldusväärseid veebitegevusi kasutavate PWA-de kvaliteedikriteeriumite muudatused"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "WASM-i mitme lähtekohaga mooduli jagamise toe katkestamine"
+    "message": "Wasm-moodulit saab jagada vaid sama lähtekohaga"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonüümne>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Nr {PH1} on aktiveerimise ootel"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Kuva kõik registreerimised"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker – {PH1}"
   },
@@ -2661,7 +2730,7 @@
     "message": "Teenuse töötleja registreerimise tühistamine"
   },
   "panels/application/ServiceWorkersView.ts | update": {
-    "message": "Värskendamine"
+    "message": "Värskenda"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
     "message": "Värskendustsükkel"
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Teenuse töötajad"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simuleeri kohandatud salvestusruumi kvooti"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Salvestusruum on inkognito režiimis piiratud"
@@ -2949,7 +3021,7 @@
     "message": "Kolmas osapool"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Alamdomeenide vastendamine"
+    "message": "Alamdomeeni vastendamine"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Lähtekoht"
@@ -2964,7 +3036,7 @@
     "message": "Luba"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "load"
+    "message": "{PH1} tunnust"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Kasutuspiirang"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Hoiatus, kordub # kord}other{Hoiatus, kordub # korda}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "See küljeriba eemaldatakse Chrome'i tulevases versioonis. Kui soovite anda tagasisidet, tehke seda"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "probleemide jälgija kaudu"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Automaatne täitmine ajaloost"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bait, {percentage}}other{# baiti, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} baiti ({PH2} %) kuuluvad JavaScripti plokkidele, mis ei ole (veel) käivitatud."
+    "message": "{PH1} baiti ({PH2}) kuuluvad JavaScripti plokkidele, mis ei ole (veel) käivitatud."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} baiti ({PH2} %) kuuluvad JavaScripti plokkidele, mis on vähemalt korra käivitatud."
+    "message": "{PH1} baiti ({PH2}) kuuluvad JavaScripti plokkidele, mis on vähemalt korra käivitatud."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} baiti ({PH2} %) kuulub funktsioonidele, mis ei ole (veel) käivitatud."
+    "message": "{PH1} baiti ({PH2}) kuulub funktsioonidele, mis ei ole (veel) käivitatud."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} baiti ({PH2}%) kuuluvad funktsioonidele, mis on vähemalt korra käivitatud."
+    "message": "{PH1} baiti ({PH2}) kuuluvad funktsioonidele, mis on vähemalt korra käivitatud."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1}% failist on kasutamata, {PH2}% failist on kasutatud"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Baite kokku"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopeeri XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Lõika element"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Lõika"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Kustuta element"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Peida element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Kleebi element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Kleebi"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Keri vaatesse"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Kuva virna jälg"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Kuva kasutaja-agendi vari DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Virna jälg"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Sõna murdmine"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Seadme pikslite suhe peab olema arvväärtus või tühi."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Seadme pikslite suhe peab olema suurem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Seadme pikslite suhe peab olema väiksem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Kõrgus peab olema numbriline."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Kõrgus peab olema suurem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Kõrgus peab olema väiksem või võrdne {PH1}-ga."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Laius peab olema numbriline."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Laius peab olema suurem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Laius peab olema väiksem kui {PH1} või sellega võrdne."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Lisa seadme pikslite suhe"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Seadme tüüp"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Mõõtmed"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Muuda …"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tahvelarvuti"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Lisa kohandatud seade …"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Seade"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Seadme nimi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Seadme nimi ei tohi olla tühi."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Seadme nimi peab koosnema vähem kui {PH1} tähemärgist"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Seadme pikslite suhe"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emuleeritud seadmed"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Kõrgus"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Kasutaja-agendi string"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Kasutaja-agendi tüüp"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Laius"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI-ekraaniga sülearvuti"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI-ekraaniga sülearvuti"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Puutetundlik sülearvuti"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Lisa asukoht …"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Kohandatud asukohad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Laiuskraad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Laiuskraad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Laiuskraad peab olema number"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Laiuskraad peab olema suurem kui {PH1} või sellega võrdne"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Laiuskraad peab olema väiksem kui {PH1} või sellega võrdne"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Lokaat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Lokaat peab sisaldama tähemärke"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Asukoha nimi"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Asukoha nimi ei saa olla tühi"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Asukoha nimi peab koosnema vähem kui {PH1} tähemärgist"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Pikkuskr."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Pikkuskraad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Pikkuskraad peab olema number"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Pikkuskraad peab olema suurem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "PIkkuskraad peab olema väiksem kui {PH1} või sellega võrdne."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Ajavööndi ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Ajavööndi ID peab sisaldama tähemärke"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Näita lähtekoodis"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Reguleerige hiireratta või üles-/allanooleklahviga. {PH1}: ±10, tõstuklahv: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beeta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Kohandatud suund"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Seadme suunaks on määratud alfa: {PH1}, beeta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Ekraan all"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Ekraan ülal"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Pööramiseks lubage suuna alistamine"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Viga"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Jõustab valitud tegevusetu oleku emulatsiooni"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Jõustab klõpsamise asemel puutesisendi"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Horisontaalpaigutus vasakul"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Horisontaalpaigutus paremal"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Laiuskraad"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Lokaat"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Asukoht"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Asukoht pole saadaval"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Pikkuskraad"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Halda"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Halda asukohtade loendit"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Alistamised puuduvad"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Väljas"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Suund"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Muu …"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Alistamised"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Vertikaalpaigutus"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Tagurpidi vertikaalpaigutus"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Eelseaded"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Lähtesta"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Lähtesta seadme suund"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Hoidke all tõstuklahvi ja lohistage horisontaalselt, et pöörata ümber Y-telje"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Ajavööndi ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Lisa bränd"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arhitektuur"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arhitektuur (nt x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Kustuta {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Bränd"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Bränd {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Brändi atribuudid"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Versioon {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brändid"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Kustuta"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Seadme mudel"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Seadme atribuudid"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Brauseri täisversioon"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Brauseri täielik versioon (nt 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobiil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Ei ole struktureeritud päiste stringina esitatav."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platvorm"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platvorm (nt Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Platvormi atribuudid"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Platvormi versioon"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Kasutaja-agendi kliendi vihjed"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Värskenda"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Kasutaja-agendi kliendi vihjed on alternatiiv kasutaja-agendi stringidele, mis tuvastavad brauseri ja seadme struktureeritumal moel ning paremate privaatsusfunktsioonidega. Lisateabe saamiseks klõpsake nupul."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versioon"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "kiirendusmõõtur"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Jäädvusta täissuuruses ekraanipilt"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "seade"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "seadme suund"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Seadmepõhine"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Seadmed"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emuleeri tegevusetuse tuvastaja olekut"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Sundlubatud"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geograafiline asukoht"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Peida seadme raam"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Peida joonlauad"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "lokaat"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "lokaadid"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Asukohad"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Tegevusetuse emuleerimine on väljas"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Andurid"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Kuva seadme raam"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Kuva seadmed"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Kuva asukohad"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Kuva meediapäringud"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Kuva joonlauad"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Kuva andurid"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "ajavööndid"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Lülita seadme tööriistariba sisse/välja"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Puudutus"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Kasutaja on aktiivne, ekraan on lukustatud"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Kasutaja on aktiivne, ekraan on lukustamata"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Kasutaja on tegevusetu, ekraan on lukustatud"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Kasutaja on tegevusetu, ekraan on lukustamata"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Kustuta sündmusekuulaja"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domeen"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Kuva võrgutaotlused, mis hõlmavad võrgupaneelil päist Set-Cookie"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# küpsisefail}other{# küpsisefaili}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 RAW-vormingus päis Set-Cookie}other{# RAW-vormingus päist Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nimi"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "hoiatus"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Peidetud probleemid"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Mõjutatud ressursid"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Usaldusväärne veebitegevus"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Tühista kõigi peidetud probleemide peitmine"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokeeritud"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "WASM-i mooduli URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Tühista sarnaste probleemide peitmine"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Peida sarnased probleemid"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Probleemide peitmise menüü"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP rikkumised"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Päise Range tugi"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Renderdaja nimi"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Eraldusvõime"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Peidab andmete ja suurte kahendobjektide URL-id"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Pööra ümber"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Pöörab otsingufiltri ümber"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Lisateave"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Päringustringi parameetrid"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Salvestatud omistamine üksusega trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Suunaja eeskirjad"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Kuva turvalisus"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Lisa asukoht …"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Kohandatud asukohad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Laiuskraad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Laiuskraad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Laiuskraad peab olema number"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Laiuskraad peab olema suurem kui {PH1} või sellega võrdne"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Laiuskraad peab olema väiksem kui {PH1} või sellega võrdne"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Lokaat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Lokaat peab sisaldama tähemärke"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Asukoha nimi"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Asukoha nimi ei saa olla tühi"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Asukoha nimi peab koosnema vähem kui {PH1} tähemärgist"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Pikkuskr."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Pikkuskraad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Pikkuskraad peab olema number"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Pikkuskraad peab olema suurem kui {PH1} või sellega võrdne."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "PIkkuskraad peab olema väiksem kui {PH1} või sellega võrdne."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Ajavööndi ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Ajavööndi ID peab sisaldama tähemärke"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Reguleerige hiireratta või üles-/allanooleklahviga. {PH1}: ±10, tõstuklahv: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beeta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Kohandatud suund"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Seadme suunaks on määratud alfa: {PH1}, beeta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Ekraan all"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Ekraan ülal"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Pööramiseks lubage suuna alistamine"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Viga"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Jõustab valitud tegevusetu oleku emulatsiooni"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Jõustab klõpsamise asemel puutesisendi"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Horisontaalpaigutus vasakul"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Horisontaalpaigutus paremal"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Laiuskraad"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Lokaat"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Asukoht"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Asukoht pole saadaval"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Pikkuskraad"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Halda"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Halda asukohtade loendit"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Alistamised puuduvad"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Väljas"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Suund"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Muu …"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Alistamised"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Vertikaalpaigutus"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Tagurpidi vertikaalpaigutus"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Eelseaded"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Lähtesta"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Lähtesta seadme suund"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Hoidke all tõstuklahvi ja lohistage horisontaalselt, et pöörata ümber Y-telje"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Ajavööndi ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "kiirendusmõõtur"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "seadme suund"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Seadmepõhine"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emuleeri tegevusetuse tuvastaja olekut"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Sundlubatud"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geograafiline asukoht"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "lokaat"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "lokaadid"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Asukohad"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Tegevusetuse emuleerimine on väljas"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Andurid"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Kuva asukohad"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Kuva andurid"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "ajavööndid"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Puudutus"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Kasutaja on aktiivne, ekraan on lukustatud"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Kasutaja on aktiivne, ekraan on lukustamata"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Kasutaja on tegevusetu, ekraan on lukustatud"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Kasutaja on tegevusetu, ekraan on lukustamata"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Lisa failinime muster"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "HOIATUS!"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Lisa kohandatud seade …"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Seade"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Seadme nimi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Seadme nimi ei tohi olla tühi."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Seadme nimi peab koosnema vähem kui {PH1} tähemärgist"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Seadme pikslite suhe"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emuleeritud seadmed"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Kõrgus"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Kasutaja-agendi string"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Kasutaja-agendi tüüp"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Laius"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Lisa bränd"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arhitektuur"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arhitektuur (nt x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Kustuta {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Bränd"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Bränd {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Brändi atribuudid"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Versioon {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Brändid"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Kustuta"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Seadme mudel"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Seadme atribuudid"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Brauseri täisversioon"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Brauseri täielik versioon (nt 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobiil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Ei ole struktureeritud päiste stringina esitatav."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platvorm"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platvorm (nt Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Platvormi atribuudid"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Platvormi versioon"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Kasutaja-agendi kliendi vihjed"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Värskenda"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Kasutaja-agendi kliendi vihjed on alternatiiv kasutaja-agendi stringidele, mis tuvastavad brauseri ja seadme struktureeritumal moel ning paremate privaatsusfunktsioonidega. Lisateabe saamiseks klõpsake nupul."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versioon"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Seadmed"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Kuva seadmed"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentatsioon"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Inaktiveeri katkestuspunktid"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS-i ühiku vähendamine 10 võrra"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS-i ühiku vähendamine {PH1} võrra"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Tuvasta taane"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Mine sümboli juurde"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS-i ühiku suurendamine 10 võrra"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS-i ühiku suurendamine {PH1} võrra"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Liigu järgmise muutmise asukoha juurde"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortimisalus:"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Probleeme põhjustav muudatus: leht võib Chrome'i tulevases versioonis töötamast lakata"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# probleeme põhjustav muudatus}other{# probleeme põhjustavat muudatust}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Täiustamisega seotud probleem: saadaval on lehe täiustamise võimalus"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Lehe veaga seotud probleem: leht ei tööta õigesti"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# lehe viga}other{# lehe viga}}"
@@ -10758,7 +10827,7 @@
     "message": "Klõpsake, et kuvada probleem probleemide vahelehel"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Klõpsake, et avada probleemide vahekaart ja kuvada probleem „{title}”"
+    "message": "Klõpsake, et avada probleemide vahekaart ja kuvada probleem: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Probleem pole praegu saadaval"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Kõik"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Kustuta sisestus"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "nt /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Kuvab allika skeemi (Secure, NonSecure), kuhu küpsisefail talletati. Kui skeem on teadmata, kuvatakse Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "pärast {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Aegumise ajatempel on {seconds}, mis vastab kuupäevale pärast {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Väärtus"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Непозната грешка"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} дена"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ч."
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} мин."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} с."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Прозорец"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Работник"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Брза 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Нема достапни содржини за предбарање"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Нема достапни содржини бидејќи барањево беше пренасочено"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Содржините за WebSockets тековно не се поддржани"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Без регулирање"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} се вчита: {PH2} „{PH3}“."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Заглавието на двонасочното колаче се игнорира како одговор на URL-адресата: {PH1}. Колачето треба да содржи 4.096 знаци или помалку."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Бавна 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Колачево е блокирано бидејќи има атрибут „Secure“, а врската не е безбедна."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Заглавието на двонасочното колаче се игнорира како одговор на URL-адресата: {PH1}. Колачето треба да содржи 4.096 знаци или помалку."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Шемата на врскава не смее да складира колачиња."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Оневозможи го форматот AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Оневозможете го кешот (додека се отворени DevTools)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Оневозможи JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Главна"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Отворете назначени DevTools за Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit не успеа: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Соодносот на пиксели на уредот мора да биде број или празен."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Соодносот на пиксели на уредот мора да биде поголем од или еднаков на {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Соодносот на пиксели на уредот мора да биде помал или еднаков на {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Висината мора да биде број."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Висината мора да биде поголема или еднаква на {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Висината мора да биде помала или еднаква на {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Ширината мора да биде број."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Ширината мора да биде поголема или еднаква на {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Ширината мора да биде помала или еднаква на {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Лаптоп со HiDPI-екран"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Лаптоп со MDPI-екран"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Лаптоп со допир"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Се собираат содржини…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Интервенции при справувањето со тешки реклами"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Проблем со нарушувачка промена: страницата може да престане да работи во некоја од претстојните верзии на Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Проблем со подобрувањето: постои можност да се подобри страницата"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Проблем со грешка на страницата: страницата не работи како што треба"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Пристапност на боите и контрастот"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "небезбеден"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets објаснето"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Како функционираат плановите за исти локации"
   },
@@ -1284,7 +1350,7 @@
     "message": "Промени на критериумите за квалитет за PWA со доверливи активности на интернет"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Не поддржува споделување со вкрстено потекло за модул на Wasm"
+    "message": "Ограничување на споделувањето Wasm модул на исто потекло"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимно>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Бр. {PH1} чека активирање"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Видете ги сите регистрации"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker за {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Услужни работници"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Симулирајте приспособена квота за складирање"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Квотата на капацитетот е ограничена во режимот „Инкогнито“"
@@ -2949,7 +3021,7 @@
     "message": "Трето лице"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Усогласување поддомени"
+    "message": "Совпаѓање поддомен"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Потекло"
@@ -2964,7 +3036,7 @@
     "message": "Токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "токени"
+    "message": "{PH1} токени"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ограничување на користењето"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Опомена, повторено еднаш}one{Опомена, повторено # пат}other{Опомена, повторено # пати}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Страничната лента ќе се отстрани во некоја идна верзија на Chrome. Ако имате повратни информации, кажете ни преку"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "следач на проблеми"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Автоматско довршување од историјата"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# бајт, {percentage}}one{# бајт, {percentage}}other{# бајти, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} бајти ({PH2} %) припаѓаат на блокови на JavaScript што (сѐ уште) не се извршени."
+    "message": "{PH1} бајти ({PH2}) припаѓаат на блокови на JavaScript што (сѐ уште) не се извршени."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} бајти ({PH2} %) припаѓаат на блокови на JavaScript што се извршени барем еднаш."
+    "message": "{PH1} бајти ({PH2}) припаѓаат на блокови на JavaScript што се извршени барем еднаш."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} бајти ({PH2} %) припаѓаат на функции што (сѐ уште) не се извршени."
+    "message": "{PH1} бајти ({PH2}) припаѓаат на функции што (сѐ уште) не се извршени."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} бајти ({PH2} %) припаѓаат на функции што се извршиле барем еднаш."
+    "message": "{PH1} бајти ({PH2}) припаѓаат на функции што се извршиле барем еднаш."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % од датотеката се неискористени, {PH2} % од датотеката се искористени"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Вкупно бајти"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Копирај XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Отсечи го елементот"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Исечи"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Избриши го елементот"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Сокриј го елементот"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Залепи елемент"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Залепи"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Лизгај во приказот"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Прикажи stack trace"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Прикажете ја сенката на корисник-агент DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Прелом на зборови"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Соодносот на пиксели на уредот мора да биде број или празен."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Соодносот на пиксели на уредот мора да биде поголем од или еднаков на {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Соодносот на пиксели на уредот мора да биде помал или еднаков на {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Висината мора да биде број."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Висината мора да биде поголема или еднаква на {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Висината мора да биде помала или еднаква на {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Ширината мора да биде број."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Ширината мора да биде поголема или еднаква на {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Ширината мора да биде помала или еднаква на {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Додај сооднос на пиксели на уредот"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Тип уред"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Димензии"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Измени…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Таблет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Додај приспособен уред…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Уред"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Име на уредот"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Името на уредот не смее да биде празно."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Името на уредот мора да има помалку од {PH1} знаци."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Сооднос на пиксели на уредот"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Емулирани уреди"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Висина"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Низа за корисник-агент"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Тип корисник-агент"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Ширина"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Лаптоп со HiDPI-екран"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Лаптоп со MDPI-екран"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Лаптоп со допир"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Додај локација…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Приспособени локации"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Гео. шир."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Географска ширина"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Географската ширина мора да биде број"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Географската должина мора да биде поголема или еднаква на {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Географската ширина мора да биде помала или еднаква на {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Локален стандард"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Локалниот стандард мора да содржи азбучни знаци"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Име на локацијата"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Името на локацијата не смее да биде празно"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Името на локацијата мора да има помалку од {PH1} знаци"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Гео. долж."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Географска должина"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Географската должина мора да биде број"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Географската должина мора да биде поголема или еднаква на {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Географската должина мора да биде помала од или еднаква на {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "ID на временската зона"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "ID на временската зона мора да содржи азбучни знаци"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Прикажи во изворниот код"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Приспособете со тркалото на глувчето или копчињата за нагоре/надолу. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (алфа)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (бета)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Приспособена ориентација"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Ориентацијата на уредот е поставена како алфа: {PH1}, бета: {PH2}, гама: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Екран надолу"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Екран нагоре"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Овозможете ориентација за ротирање"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Грешка"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Врши присилна емулација на избраната состојба на неактивност"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Присилен допир наместо кликнување"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (гама)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Пејзаж налево"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Пејзаж надесно"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Географска ширина"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Локален стандард"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Локација"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Локацијата е недостапна"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Географска должина"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Управувај"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Управувај со списокот со локации"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Нема отфрлање"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Исклучи"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Ориентација"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Друга…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Отфрлања"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Портрет"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Портрет наопаку"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Зададени вредности"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Ресетирај"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Ресетирај ја ориентацијата на уредот"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift+влечете хоризонтално за да ротирате околу y-оската"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "ID на временската зона"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Додајте бренд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архитектура"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Архитектура (на пр. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Избриши {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Бренд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Бренд: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Детали за брендот"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Верзија {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брендови"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Избриши"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Модел на уредот"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Детали за уредот"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Целосна верзија на прелистувачот"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Целосна верзија на прелистувачот (на пр., 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Мобилен"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Не може да се претстави како низа со структурирани заглавија."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Платформа (на пр. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Детали за платформата"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Верзија на платформата"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Совети за клиент на корисник-агент"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Ажурирај"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Советите за клиент на корисник-агент се алтернатива на низата за корисник-агент за идентификување на прелистувачот и уредот на поструктуриран начин со подобра приватност. Кликнете на копчето за да дознаете повеќе."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Верзија"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "акцелерометар"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Сними слика од екранот со целосна големина"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "уред"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "ориентација на уредот"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Според уредот"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Уреди"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Емулирај состојба на неактивен детектор"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Присилното внесување со допир е овозможено"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "геолокација"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Сокриј ја рамката на уредот"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Сокриј ги линијарите"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "локален стандард"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "локални стандарди"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Локации"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Нема неактивна емулација"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Сензори"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Прикажи рамка на уредот"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Покажи ги уредите"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Прикажи ги локациите"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Прикажувај барања за типови елементи"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Прикажи ги линијарите"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Прикажи ги сензорите"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "временски зони"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Вклучување/исклучување на алатникот на уредот"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Допир"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Корисникот е активен, екранот е заклучен"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Корисникот е активен, екранот е отклучен"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Корисникот е неактивен, екранот е заклучен"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Корисникот е неактивен, екранот е отклучен"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Избриши го слушателот на настанот"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Домен"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Прикажете ги барањата за мрежа што го вклучуваат заглавиево Set-Cookie во „Мрежната табла“"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# колаче}one{# колаче}other{# колачиња}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 необработенo заглавие Set-Cookie}one{# необработено заглавие Set-Cookie}other{# необработени заглавија Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Име"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "опомена"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Сокриени проблеми"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Засегнати ресурси"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Доверлива веб-активност"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Прикажете ги сите сокриени проблеми"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блокиран"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL за модулот Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Прикажете ги проблемите како овој"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Сокријте ги проблемите како овој"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Мени за сокривање проблеми"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-прекршувања"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Поддршка за заглавија Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Име на обработувач"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Резолуција"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Ги сокрива URL-адресите на data: и blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Инверзија"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Врши инверзија на филтерот за пребарување"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Дознајте повеќе"
   },
@@ -6564,7 +6315,7 @@
     "message": "Оневозможи го кешот"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Оневозможи го кешот (додека се отворени DevTools)"
+    "message": "Оневозможете го кешот (додека се отворени DevTools)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Не бриши ја евиденцијата при повторно вчитување/навигација на страницата"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Параметри на низата на барањето"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Снимен настан со trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Правила на упатувачот"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Прикажи безбедност"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Додај локација…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Приспособени локации"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Гео. шир."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Географска ширина"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Географската ширина мора да биде број"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Географската должина мора да биде поголема или еднаква на {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Географската ширина мора да биде помала или еднаква на {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Локален стандард"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Локалниот стандард мора да содржи азбучни знаци"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Име на локацијата"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Името на локацијата не смее да биде празно"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Името на локацијата мора да има помалку од {PH1} знаци"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Гео. долж."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Географска должина"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Географската должина мора да биде број"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Географската должина мора да биде поголема или еднаква на {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Географската должина мора да биде помала од или еднаква на {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "ID на временската зона"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "ID на временската зона мора да содржи азбучни знаци"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Приспособете со тркалото на глувчето или копчињата за нагоре/надолу. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (алфа)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (бета)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Приспособена ориентација"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Ориентацијата на уредот е поставена како алфа: {PH1}, бета: {PH2}, гама: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Екран надолу"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Екран нагоре"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Овозможете ориентација за ротирање"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Грешка"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Врши присилна емулација на избраната состојба на неактивност"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Присилен допир наместо кликнување"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (гама)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Пејзаж налево"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Пејзаж надесно"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Географска ширина"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Локален стандард"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Локација"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Локацијата е недостапна"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Географска должина"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Управувај"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Управувај со списокот со локации"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Нема отфрлање"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Исклучи"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Ориентација"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Друга…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Отфрлања"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Портрет"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Портрет наопаку"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Зададени вредности"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Ресетирај"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Ресетирај ја ориентацијата на уредот"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift+влечете хоризонтално за да ротирате околу y-оската"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "ID на временската зона"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "акцелерометар"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "ориентација на уредот"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Според уредот"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Емулирај состојба на неактивен детектор"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Присилното внесување со допир е овозможено"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "геолокација"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "локален стандард"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "локални стандарди"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Локации"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Нема неактивна емулација"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Сензори"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Прикажи ги локациите"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Прикажи ги сензорите"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "временски зони"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Допир"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Корисникот е активен, екранот е заклучен"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Корисникот е активен, екранот е отклучен"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Корисникот е неактивен, екранот е заклучен"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Корисникот е неактивен, екранот е отклучен"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Додајте шема за име на датотека"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ОПОМЕНА:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Додај приспособен уред…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Уред"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Име на уредот"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Името на уредот не смее да биде празно."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Името на уредот мора да има помалку од {PH1} знаци."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Сооднос на пиксели на уредот"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Емулирани уреди"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Висина"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Низа за корисник-агент"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Тип корисник-агент"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Ширина"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Додајте бренд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Архитектура"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Архитектура (на пр. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Избриши {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Бренд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Бренд: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Детали за брендот"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Верзија {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Брендови"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Избриши"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Модел на уредот"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Детали за уредот"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Целосна верзија на прелистувачот"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Целосна верзија на прелистувачот (на пр., 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобилен"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Не може да се претстави како низа со структурирани заглавија."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформа"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформа (на пр. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Детали за платформата"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Верзија на платформата"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Совети за клиент на корисник-агент"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Ажурирај"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Советите за клиент на корисник-агент се алтернатива на низата за корисник-агент за идентификување на прелистувачот и уредот на поструктуриран начин со подобра приватност. Кликнете на копчето за да дознаете повеќе."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Верзија"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Уреди"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Покажи ги уредите"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Документација"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Деактивирај ги точките на прекин"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Намали ја CSS-единицата за 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Намалете ја CSS-единицата за {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Откриј вовлекување"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Оди на симболот"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Зголеми ја CSS-единицата за 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Зголемете ја CSS-единицата за {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Скокни на следната локација за менување"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Подреди според"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Проблем со нарушувачка промена: страницата може да престане да работи во некоја од претстојните верзии на Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# нарушувачка промена}one{# нарушувачка промена}other{# нарушувачки промени}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Проблем со подобрувањето: постои можност да се подобри страницата"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Проблем со грешка на страницата: страницата не работи како што треба"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# грешка на страницата}one{# грешка на страницата}other{# грешки на страницата}}"
@@ -10758,7 +10827,7 @@
     "message": "Кликнете за да се пријаже проблемот во картичката со проблеми"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Кликнете за да ја отворите картичката на проблемот и да се прикаже проблемот „{title}“"
+    "message": "Кликнете за да ја отворите картичката на проблемот и да се прикаже проблемот: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Проблемот не е достапен во моментов"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Сите"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Избришете го записот"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "на пр., /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Ја прикажува изворната шема (Secure, NonSecure) на којашто е поставено колачето. Ако шемата е непозната, се прикажува Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "по {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Временскиот печат за истекување е {seconds}, што соодветствува на датум по {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Вредност"

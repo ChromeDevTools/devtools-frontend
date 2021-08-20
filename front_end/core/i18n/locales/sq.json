@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Gabim i panjohur"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ditë"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} orë"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} milisek."
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Dritare"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Punonjës"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G e shpejtë"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Nuk ka përmbajtje për kërkesën e kontrollit përfundimtar"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nuk ka përmbajtje pasi kjo kërkesë është ridrejtuar"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Përmbajtja për WebSockets nuk mbështetet për momentin"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Nuk ka përshpejtim"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} përfundoi së ngarkuari: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Titulli i Set-Cookie shpërfillet në përgjigjen nga URL-ja: {PH1}. Gjatësia e kukit duhet të jetë më e vogël ose e barabartë me 4096 karaktere."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G e ngadaltë"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Kjo kuki u bllokua sepse kishte atributin \"Secure\" dhe lidhja nuk ishte e sigurt."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Titulli i Set-Cookie shpërfillet në përgjigjen nga URL-ja: {PH1}. Gjatësia e kukit duhet të jetë më e vogël ose e barabartë me 4096 karaktere."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Skema e kësaj lidhjeje nuk lejohet të ruajë kuki."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Çaktivizo formatin AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Çaktivizo memorien specifike (kur është hapur DevTools)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Çaktivizo JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Kryesore"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Hap DevTools të dedikuar për Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit nuk u krye: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Raporti i pikselëve të pajisjes duhet të jetë një numër ose bosh."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Raporti i pikselëve të pajisjes duhet të jetë më i madh ose i barabartë me {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Raporti i pikselëve të pajisjes duhet të jetë më pak ose i barabartë me {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Lartësia duhet të jetë një numër."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Lartësia duhet të jetë më e madhe ose e barabartë me {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Lartësia duhet të jetë më e vogël ose e barabartë me {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Gjerësia duhet të jetë numër."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Gjerësia duhet të jetë më e madhe ose e barabartë me {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Gjerësia duhet të jetë më e vogël ose e barabartë me {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Laptop me ekran HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Laptop me ekran MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Laptop me prekje"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Po mbledh përmbajtjet…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Trajtimi i ndërhyrjeve të reklamave të rënda"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Rast ndryshimi problematik: faqja mund të mos punojë në një version të ardhshëm të Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Çështje përmirësimi: ka një mundësi për ta përmirësuar faqen"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Një rast gabimi në faqe: faqja nuk po funksionon si duhet"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Qasshmëria e ngjyrave dhe e kontrastit"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Shpjegimi i First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Si funksionin Schemeful Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Ndryshimet në kriteret e cilësisë për PWA që përdorin aktivitetin e besuar të uebit"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Nxjerrja nga përdorimi e modulit të origjinës së ndërthurur të Wasm"
+    "message": "Po kufizohet ndarja nga moduli Wasm drejt së njëjtës origjinë"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} në pritje të aktivizimit"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Shiko të gjitha regjistrimet"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker për {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Punëtorët e shërbimit"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulo kuotën e hapësirës së personalizuar ruajtëse"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Kuota e magazinimit është e kufizuar në modalitetin \"I fshehtë\""
@@ -2949,7 +3021,7 @@
     "message": "Palë e tretë"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Përputh nëndoemenet"
+    "message": "Përputhja e nëndomeneve"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Origjina"
@@ -2964,7 +3036,7 @@
     "message": "Tokeni"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tokenë"
+    "message": "{PH1} tokenë"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Kufizimi i përdorimit"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Paralajmërim, përsëritur # herë}other{Paralajmërim, përsëritur # herë}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Ky shirit anësor do të hiqet në një version të ardhshëm të Chrome. Nëse ke komente, na i thuaj nëpërmjet"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "gjurmuesi i problemeve"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Plotëso automatikisht nga historiku"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bajt, {percentage}}other{# bajte, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bajte ({PH2}%) u përkasin blloqeve të JavaScript që nuk janë ekzekutuar (ende)."
+    "message": "{PH1} bajte ({PH2}) u përkasin blloqeve të JavaScript që nuk janë ekzekutuar (ende)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bajte ({PH2} %) u përkasin blloqeve të JavaScript që janë ekzekutuar të paktën një herë."
+    "message": "{PH1} bajte ({PH2}) u përkasin blloqeve të JavaScript që janë ekzekutuar të paktën një herë."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bajte ({PH2} %) u përkasin funksioneve që nuk janë ekzekutuar (ende)."
+    "message": "{PH1} bajte ({PH2}) u përkasin funksioneve që nuk janë ekzekutuar (ende)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bajte ({PH2}%) u përkasin funksioneve që janë ekzekutuar të paktën një herë."
+    "message": "{PH1} bajte ({PH2}) u përkasin funksioneve që janë ekzekutuar të paktën një herë."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % e skedarit e papërdorur, {PH2} % e skedarit e përdorur"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Bajte në total"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopjo XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Prit elementin"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Pri"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Fshi elementin"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Fshih elementin"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Ngjit elementin"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Ngjit"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Lëviz në pamje"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Shfaq gjurmimin e stivës"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Shfaq hijen e agjentit të përdoruesit DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Gjurmimi i stivës"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Faqos fjalët"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Raporti i pikselëve të pajisjes duhet të jetë një numër ose bosh."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Raporti i pikselëve të pajisjes duhet të jetë më i madh ose i barabartë me {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Raporti i pikselëve të pajisjes duhet të jetë më pak ose i barabartë me {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Lartësia duhet të jetë një numër."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Lartësia duhet të jetë më e madhe ose e barabartë me {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Lartësia duhet të jetë më e vogël ose e barabartë me {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Gjerësia duhet të jetë numër."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Gjerësia duhet të jetë më e madhe ose e barabartë me {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Gjerësia duhet të jetë më e vogël ose e barabartë me {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Shto raportin e pikselëve të pajisjes"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Lloji i pajisjes"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Përmasat"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Modifiko…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tabletë"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Shto pajisje të personalizuar..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Pajisja"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Emri i pajisjes"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Emri i pajisjes nuk mund të jetë bosh."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Emri i pajisjes duhet të jetë nën {PH1} karaktere."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Raporti i pikselëve të pajisjes"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Pajisjet e imituara"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Lartësia"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Vargu i agjentit të përdoruesit"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Lloji i agjentit të përdoruesit"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Gjerësia"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop me ekran HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop me ekran MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop me prekje"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Shto një vendndodhje..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Vendndodhje të personalizuara"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Gjerësia gjeografike"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Gjerësia duhet të jetë një numër"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Gjerësia duhet të jetë më e madhe ose e barabartë me {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Gjerësia duhet të jetë më e vogël ose e barabartë me {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Gjuha"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Gjuha duhet të përmbajë karaktere alfabetike"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Emri i vendndodhjes"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Emri i vendndodhjes nuk mund të jetë bosh"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Emri i vendndodhjes duhet të jetë më pak se {PH1} karaktere"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "E gjatë"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Gjatësia gjeografike"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Gjatësia duhet të jetë numër"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Gjatësia duhet të jetë më e madhe ose e barabartë me {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Gjatësia duhet të jetë më e vogël ose e barabartë me {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "ID-ja e brezit orar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "ID-ja e brezit orar duhet të përmbajë karaktere alfabetike"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Shfaq në kod burimor"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Rregulloje me rrotë miu ose me tastet për lart/poshtë. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Orientim i personalizuar"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Orientimi i pajisjes i caktuar në alfa: {PH1}, beta: {PH2}, gama: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Shfaqe poshtë"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Ekrani lart"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Aktivizo orientimin për ta rrotulluar"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Gabim"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Detyron imitimin e gjendjes së zgjedhur pezull"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Detyron prekje në vend të klikimit"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Horizontal majtas"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Horizontal djathtas"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Gjerësia gjeografike"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Gjuha"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Vendndodhja"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Vendndodhja nuk ofrohet"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Gjatësia gjeografike"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Menaxho"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Menaxho listën e vendndodhjeve"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Pa anulim"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Joaktiv"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientimi"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Tjetër…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Anulon"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Vertikal"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Vertikalisht përmbys"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Të paracaktuarat"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Rivendos"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Rivendos orientimin e pajisjes"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift+zvarrit horizontalisht për ta rrotulluar rreth boshtit y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "ID-ja e brezit orar"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Shto markë"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitekturë"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arkitektura (p.sh. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Fshi {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Marka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Marka {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Karakteristikat e markës"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Versioni {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Markat"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Fshi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Modeli i pajisjes"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Karakteristikat e pajisjes"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Versioni për shfletues të plotë"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Versioni i plotë i shfletuesit (p.sh. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Celular"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Nuk përfaqësohet si varg titujsh të strukturuar."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platforma (p.sh. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Karakteristikat e platformës"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Versioni i platformës"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Sugjerime të klientit të agjentit të përdoruesit"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Përditëso"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Sugjerimet e klientit të agjentit të përdoruesit janë një alternativë ndaj vargut të agjentit të përdoruesit që identifikon shfletuesin dhe pajisjen në një mënyrë më të strukturuar me llogaritje më të mirë të privatësisë. Kliko butonin për të mësuar më shumë."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versioni"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "përshpejtuesi"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Regjistro pamje ekrani me madhësi të plotë"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "pajisja"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "orientimi i pajisjes"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Sipas pajisjes"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Pajisjet"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Imito gjendjen e \"Detektorit pezull\""
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Detyrimi aktiv"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "vendndodhja gjeografike"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Fshihe kornizën e pajisjes"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Fshih vizoret"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "gjuha"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "gjuhët"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Vendndodhjet"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Nuk ka imitim pezull"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensorët"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Shfaq kornizën e pajisjes"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Shfaq pajisjet"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Shfaq vendndodhjet"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Shfaq kërkesat e mediave"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Shfaq vizoret"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Shfaq sensorët"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "brezat orarë"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Aktivizo/çaktivizo shiritin e veglave të pajisjes"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Prek"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Përdoruesi aktiv, ekrani i kyçur"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Përdoruesi aktiv, ekrani i shkyçur"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Përdoruesi pezull, ekrani i kyçur"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Përdoruesi pezull, ekrani i shkyçur"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Fshi dëgjuesin e ngjarjeve"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domeni"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Shfaq kërkesat e rrjetit që e përfshijnë këtë kokë Set-Cookie në panelin e rrjetit"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# kuki}other{# kuki}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 kokë Raw Set-Cookie}other{# koka Raw Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Emri"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "paralajmërim"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Probleme të fshehura"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Burimet e prekura"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Aktiviteti i besuar i uebit"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Hap të gjitha problemet e fshehura"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bllokuar"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL-ja e modulit Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Hap problemet si ky"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Fshih problemet si ky"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Menyja \"Fshih problemet\""
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Shkeljet e CSP-së"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Mbështetja e titullit Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Emri i paraqitësit"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Rezolucioni"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Fsheh URL-të e të dhënave: dhe blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Shkëmbe"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Shkëmben filtrin e kërkimit"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Mëso më shumë"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Parametrat e vargut të pyetjes"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Atribuimi i regjistruar me trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Politika e referimit"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Shfaq sigurinë"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Shto një vendndodhje..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Vendndodhje të personalizuara"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Gjerësia gjeografike"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Gjerësia duhet të jetë një numër"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Gjerësia duhet të jetë më e madhe ose e barabartë me {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Gjerësia duhet të jetë më e vogël ose e barabartë me {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Gjuha"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Gjuha duhet të përmbajë karaktere alfabetike"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Emri i vendndodhjes"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Emri i vendndodhjes nuk mund të jetë bosh"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Emri i vendndodhjes duhet të jetë më pak se {PH1} karaktere"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "E gjatë"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Gjatësia gjeografike"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Gjatësia duhet të jetë numër"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Gjatësia duhet të jetë më e madhe ose e barabartë me {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Gjatësia duhet të jetë më e vogël ose e barabartë me {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "ID-ja e brezit orar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "ID-ja e brezit orar duhet të përmbajë karaktere alfabetike"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Rregulloje me rrotë miu ose me tastet për lart/poshtë. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Orientim i personalizuar"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Orientimi i pajisjes i caktuar në alfa: {PH1}, beta: {PH2}, gama: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Shfaqe poshtë"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Ekrani lart"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Aktivizo orientimin për ta rrotulluar"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Gabim"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Detyron imitimin e gjendjes së zgjedhur pezull"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Detyron prekje në vend të klikimit"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Horizontal majtas"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Horizontal djathtas"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Gjerësia gjeografike"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Gjuha"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Vendndodhja"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Vendndodhja nuk ofrohet"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Gjatësia gjeografike"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Menaxho"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Menaxho listën e vendndodhjeve"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Pa anulim"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Joaktiv"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientimi"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Tjetër…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Anulon"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Vertikal"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Vertikalisht përmbys"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Të paracaktuarat"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Rivendos"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Rivendos orientimin e pajisjes"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift+zvarrit horizontalisht për ta rrotulluar rreth boshtit y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "ID-ja e brezit orar"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "përshpejtuesi"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "orientimi i pajisjes"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Sipas pajisjes"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Imito gjendjen e \"Detektorit pezull\""
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Detyrimi aktiv"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "vendndodhja gjeografike"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "gjuha"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "gjuhët"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Vendndodhjet"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Nuk ka imitim pezull"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensorët"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Shfaq vendndodhjet"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Shfaq sensorët"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "brezat orarë"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Prek"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Përdoruesi aktiv, ekrani i kyçur"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Përdoruesi aktiv, ekrani i shkyçur"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Përdoruesi pezull, ekrani i kyçur"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Përdoruesi pezull, ekrani i shkyçur"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Shto motiv të emrit të skedarit"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "PARALAJMËRIM:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Shto pajisje të personalizuar..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Pajisja"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Emri i pajisjes"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Emri i pajisjes nuk mund të jetë bosh."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Emri i pajisjes duhet të jetë nën {PH1} karaktere."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Raporti i pikselëve të pajisjes"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Pajisjet e imituara"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Lartësia"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Vargu i agjentit të përdoruesit"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Lloji i agjentit të përdoruesit"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Gjerësia"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Shto markë"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arkitekturë"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arkitektura (p.sh. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Fshi {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Marka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Marka {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Karakteristikat e markës"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Versioni {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Markat"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Fshi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Modeli i pajisjes"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Karakteristikat e pajisjes"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Versioni për shfletues të plotë"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Versioni i plotë i shfletuesit (p.sh. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Celular"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Nuk përfaqësohet si varg titujsh të strukturuar."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platforma (p.sh. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Karakteristikat e platformës"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Versioni i platformës"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Sugjerime të klientit të agjentit të përdoruesit"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Përditëso"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Sugjerimet e klientit të agjentit të përdoruesit janë një alternativë ndaj vargut të agjentit të përdoruesit që identifikon shfletuesin dhe pajisjen në një mënyrë më të strukturuar me llogaritje më të mirë të privatësisë. Kliko butonin për të mësuar më shumë."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versioni"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Pajisjet"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Shfaq pajisjet"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentacioni"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Çaktivizo pikat e ndërprerjes"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Ul njësinë CSS me 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Ul njësinë CSS me {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Zbulo dhëmbëzimin"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Shko te simboli"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Rrit njësinë e CSS me 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Rrit njësinë e CSS me {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Kalo në vendndodhjen tjetër të redaktimit"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rendit sipas"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Rast ndryshimi problematik: faqja mund të mos punojë në një version të ardhshëm të Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ndryshim problematik}other{# ndryshime problematike}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Çështje përmirësimi: ka një mundësi për ta përmirësuar faqen"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Një rast gabimi në faqe: faqja nuk po funksionon si duhet"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# gabim faqeje}other{# gabime faqeje}}"
@@ -10758,7 +10827,7 @@
     "message": "Kliko për ta shfaqur problemin në skedën e problemeve"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Kliko për të hapur skedën e problemeve dhe për të shfaqur problemin \"{title}\""
+    "message": "Kliko për të hapur skedën e problemeve dhe për të shfaqur problemin: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemi nuk ofrohet për momentin"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Të gjitha"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Pastro hyrjen"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "p.sh. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Shfaq skemën burim (Secure, NonSecure) ku u caktua kuki. Nëse skema nuk njihet, kjo shfaq Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "pas {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Vula kohore e skadimit është {seconds}, që përkon me një datë pas {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Vlera"

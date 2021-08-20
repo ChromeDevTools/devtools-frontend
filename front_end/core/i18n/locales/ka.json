@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "უცნობი შეცდომა"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} დღე"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} სთ"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} წთ"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μწმ"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} მწმ"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} წმ"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "ფანჯარა"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "დამმუშავებელი"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "სწრაფი 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "წინასწარი გაშვების მოთხოვნებისთვის კონტენტი მიუწვდომელია"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "კონტენტი მიუწვდომელია, რადგან ეს მოთხოვნა გადამისამართდა"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets კონტენტი ამჟამად მხარდაუჭერელია"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "რეგულირების გარეშე"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} ბოლომდე ჩაიტვირთა: {PH2} „{PH3}“."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie ჰედერი იგნორირებულია პასუხში URL-დან: {PH1}. ქუქი-ჩანაწერის სიგრძე უნდა იყოს 4096 სიმბოლოზე ნაკლები ან მისი ტოლი."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "ნელი 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "ეს ქუქი-ჩანაწერი დაიბლოკა, რადგან ჰქონდა „Secure“ ატრიბუტი, კავშირი კი დაუცველი იყო."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie ჰედერი იგნორირებულია პასუხში URL-დან: {PH1}. ქუქი-ჩანაწერის სიგრძე უნდა იყოს 4096 სიმბოლოზე ნაკლები ან მისი ტოლი."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "ქუქი-ჩანაწერების შენახვა დაუშვებელია ამ კავშირის სქემის მიხედვით."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF ფორმატის გათიშვა"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "ქეშის გათიშვა (სანამ DevTools გახსნილია)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript-ის გათიშვა"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "მთავარი"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "სპეციალური DevTools-ის გახსნა Node.js-ისთვის"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit ვერ შესრულდა: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს რიცხვი ან ცარიელი."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "სიმაღლე უნდა იყოს რიცხვი."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "სიმაღლე უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "სიმაღლე უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "სიგანე უნდა იყოს რიცხვი."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "სიგანე უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "სიგანე უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "ლეპტოპი HiDPI ეკრანით"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "ლეპტოპი MDPI ეკრანით"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "ლეპტოპი სენსორული მოწყობილობით"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "მიმდინარეობს კონტენტის შეგროვება…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "რეკლამის ჩარევის მძიმე შემთხვევებთან გამკლავება"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "კრიტიკული ცვლილების შეცდომა: შესაძლოა, გვერდმა არ იმუშაოს Chrome-ის მომდევნო ვერსიაში"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "გაუმჯობესების პრობლემა: არსებობს გვერდის გაუმჯობესების შესაძლებლობა"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "შეცდომა გვერდზე: გვერდი არ მუშაობს გამართულად"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ფერისა და კონტრასტის მისაწვდომობა"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "დაუცველი"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets — ახსნა"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site-ის მუშაობის შესახებ"
   },
@@ -1284,7 +1350,7 @@
     "message": "ხარისხის კრიტერიუმების ცვლილებები PWA-ებისთვის, რომლებიც სანდო ვებ-აქტივობას იყენებს"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "ჯვარედინი წარმოშობის Wasm-მოდულების გაზიარების შეწყვეტა"
+    "message": "იმავე წყაროსთვის Wasm მოდულის გაზიარების შეზღუდვა"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ანონიმური>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "№{PH1} გააქტიურების მოლოდინშია"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "ყველა რეგისტრაციის ნახვა"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1}-ის Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "სერვისების დამმუშავებლები"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "მეხსიერების მორგებული კვოტის სიმულაცია"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "მეხსიერების კვოტა შეზღუდულია ინკოგნიტო რეჟიმში"
@@ -2949,7 +3021,7 @@
     "message": "მესამე მხარე"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "ქვედომენების დამთხვევა"
+    "message": "ქვედომენების შესატყვისება"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "წყარო"
@@ -2964,7 +3036,7 @@
     "message": "ჟეტონი"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ჟეტონი"
+    "message": "{PH1} ჟეტონი"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "გამოყენების შეზღუდვა"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{გაფრთხილება, მეორდება #-ხელ}other{გაფრთხილება, მეორდება #-ჯერ}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "ეს გვერდითი ზოლი ამოიშლება Chrome-ის მომავალ ვერსიაში. თუ გამოხმაურება გსურთ, გამოიყენეთ"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "პრობლემების აღმრიცხველი"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ავტომატური დასრულება ისტორიიდან"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# ბაიტი, {percentage}}other{# ბაიტი, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} ბაიტი ({PH2}%) ეკუთვნის JavaScript-ის ბლოკებს, რომლებიც (ჯერ) არ შესრულებულა."
+    "message": "{PH1} ბაიტი ({PH2}) ეკუთვნის JavaScript-ის ბლოკებს, რომლებიც (ჯერ) არ შესრულებულა."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} ბაიტი ({PH2}%) ეკუთვნის JavaScript-ის ბლოკებს, რომლებიც მინიმუმ ერთხელ შესრულდა."
+    "message": "{PH1} ბაიტი ({PH2}) ეკუთვნის JavaScript-ის ბლოკებს, რომლებიც მინიმუმ ერთხელ შესრულდა."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} ბაიტი ({PH2}%) ეკუთვნის ფუნქციებს, რომლებიც (ჯერ) არ შესრულებულა."
+    "message": "{PH1} ბაიტი ({PH2}) ეკუთვნის ფუნქციებს, რომლებიც (ჯერ) არ შესრულებულა."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} ბაიტი ({PH2}%) ეკუთვნის ფუნქციებს, რომლებიც მინიმუმ ერთხელ შესრულდა."
+    "message": "{PH1} ბაიტი ({PH2}) ეკუთვნის ფუნქციებს, რომლებიც მინიმუმ ერთხელ შესრულდა."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "ფაილის {PH1}% გამოუყენებელია, ფაილის {PH2}% გამოყენებულია"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "ბაიტების საერთო რაოდენობა"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath-ის კოპირება"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "ელემენტის ამოჭრა"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "ამოჭრა"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "ელემენტის წაშლა"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "ელემენტის დამალვა"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "ელემენტის ჩასმა"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "ჩასმა"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "გადაადგილება ხედში"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "სტეკის ტრასირების ჩვენება"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "User Agent ჩრდილის DOM ჩვენება"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "სტეკის ტრასირება"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "სიტყვების გადატანა"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს რიცხვი ან ცარიელი."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "მოწყობილობის პიქსელური თანაფარდობა უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "სიმაღლე უნდა იყოს რიცხვი."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "სიმაღლე უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "სიმაღლე უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "სიგანე უნდა იყოს რიცხვი."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "სიგანე უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "სიგანე უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "მოწყობილობის პიქსელური თანაფარდობის დამატება"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "მოწყობილობის ტიპი"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "ზომები"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "რედაქტირება…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ტაბლეტი"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "მორგებული მოწყობილობის დამატება…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "მოწყობილობა"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "მოწყობილობის სახელი"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "მოწყობილობის სახელი არ უნდა იყოს ცარიელი."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "მოწყობილობის სახელი უნდა იყოს {PH1} სიმბოლოზე ნაკლები ან მისი ტოლი."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "მოწყობილობის პიქსელური თანაფარდობა"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "ემულირებული მოწყობილობები"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "სიმაღლე"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "User agent ფრაზა"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "User agent-ის ტიპი"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "სიგანე"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "ლეპტოპი HiDPI ეკრანით"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "ლეპტოპი MDPI ეკრანით"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "ლეპტოპი სენსორული მოწყობილობით"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "მდებარეობის დამატება…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "მორგებული მდებარეობები"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "განედი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "განედი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "განედი უნდა იყოს რიცხვი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "განედი უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "განედი უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "ლოკალი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "ლოკალი უნდა შეიცავდეს ანბანურ სიმბოლოებს"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "მდებარეობის სახელი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "მდებარეობის სახელი არ უნდა იყოს ცარიელი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "მდებარეობის სახელი უნდა იყოს {PH1} სიმბოლოზე ნაკლები ან მისი ტოლი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "გრძელი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "გრძედი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "გრძედი უნდა იყოს რიცხვი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "გრძედი უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "გრძედი უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "სასაათო სარტყლის ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "სასაათო სარტყლის ID უნდა შეიცავდეს ანბანურ სიმბოლოებს"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "საწყის კოდში გამოჩენა"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "დარეგულირება მაუსის ბორბლის ან კლავიშების ზემოთ/ქვემოთ მეშვეობით. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ალფა)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (ბეტა)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "მორგებული ორიენტაცია"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "მოწყობილობის ორიენტაციად დაყენებულია ალფა: {PH1}, ბეტა: {PH2}, გამა: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "ჩვენება ქვემოთ"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ჩვენება ზემოთ"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "შეტრიალებისთვის საჭიროა ორიენტაციის ჩართვა"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "შეცდომა"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "იძულებით გაააქტიურებს არჩეული უმოქმედო მდგომარეობის ემულაციას"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "იძულებით გააქტიურებს შეხებას დაწკაპუნების ნაცვლად"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (გამა)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "ლანდშაფტი — მარცხნივ"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "ლანდშაფტი — მარჯვენა"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "განედი"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "ლოკალი"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "მდებარეობა"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "მდებარეობა მიუწვდომელია"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "გრძედი"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "მართვა"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "მდებარეობათა სიის მართვა"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "უგულებელყოფის გარეშე"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "გამორთვა"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "ორიენტაცია"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "სხვა…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "უგულებელყოფები"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "პორტრეტი"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "პორტრეტი ზემოდან ქვემოთ"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "წინასწარ დაყენებულები"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "გადაყენება"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "მოწყობილობის ორიენტაციის გადაყენება"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y-ღერძის გარშემო შეტრიალებისთვის გამოიყენეთ Shift+ჩავლებით გადატანა ჰორიზონტალურად"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "სასაათო სარტყლის ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "ბრენდის დამატება"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "არქიტექტურა"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "არქიტექტურა (მაგ. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1}-ის წაშლა"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "ბრენდი"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "ბრენდი {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ბრენდის მახასიათებლები"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "ვერსია {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ბრენდები"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "წაშლა"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "მოწყობილობის მოდელი"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "მოწყობილობის მახასიათებლები"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ბრაუზერის სრული ვერსია"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "ბრაუზერის სრული ვერსია (მაგ. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "მობილური"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "სტრუქტურირებული ჰედერების ფრაზის სახით წარმოდგენა ვერ მოხერხდება."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "პლატფორმა"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "პლატფორმა (მაგ. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "პლატფორმის მახასიათებლები"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "პლატფორმის ვერსია"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "User agent კლიენტის მინიშნებები"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "განახლება"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "User agent კლიენტის მინიშნებები არის user agent ფრაზის ალტერნატივა, რომელიც უფრო სტრუქტურირებული გზით ასრულებს ბრაუზერისა თუ მოწყობილობის იდენტიფიცირებას და უკეთ ითვალისწინებს კონფიდენციალურობას. დამატებითი ინფორმაციისთვის დააწკაპუნეთ ღილაკზე."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ვერსია"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "აქსელერომეტრი"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "სრულეკრანიანი ანაბეჭდის აღბეჭდვა"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "მოწყობილობა"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "მოწყობილობის ორიენტაცია"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "მოწყობილობაზე დაფუძნებული"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "მოწყობილობები"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "უმოქმედო დეტექტორის მდგომარეობის ემულაცია"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "იძულებით გააქტიურება ჩართულია"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "გეოლოკაცია"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "მოწყობილობის ფრეიმის დამალვა"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "სახაზავების დამალვა"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "ლოკალი"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "ლოკალები"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "მდებარეობები"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "უმოქმედო ემულაცია არ არის"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "სენსორები"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "მოწყობილობის ფრეიმის ჩვენება"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "მოწყობილობების ჩვენება"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "მდებარეობების ჩვენება"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "მედიამოთხოვნების ჩვენება"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "სახაზავების ჩვენება"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "სენსორების ჩვენება"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "სასაათო სარტყლები"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "მოწყობილობის ხელსაწყოთა ზოლის გადართვა"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "შეხება"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "მომხმარებელი აქტიურია, ეკრანი ჩაკეტილია"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "მომხმარებელი აქტიურია, ეკრანი განბლოკილია"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "მომხმარებელი უმოქმედოა, ეკრანი ჩაკეტილია"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "მომხმარებელი უმოქმედოა, ეკრანი განბლოკილია"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "მოვლენათა მსმენელის წაშლა"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "დომენი"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "ქსელის პანელში ქსელის იმ მოთხოვნების ჩვენება, რომლებიც შეიცავს ამ Set-Cookie ჰედერს"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# ქუქი-ჩანაწერი}other{# ქუქი-ჩანაწერი}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 ნედლი Set-Cookie ჰედერი}other{# ნედლი Set-Cookie ჰედერი}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "სახელი"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "გაფრთხილება"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "დამალული პრობლემები"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "რესურსები, რომლებსაც შეეხო"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "სანდო ვებ-აქტივობა"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "ყველა პრობლემის დამალვის გაუქმება"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "დაბლოკილი"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm-მოდულის URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "მსგავსი პრობლემების გამოჩენა"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "მსგავსი პრობლემების დამალვა"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "პრობლემების მენიუს დამალვა"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP დარღვევები"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range ჰედერის მხარდაჭერა"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "რენდერერის სახელი"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "გარჩევადობა"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "დამალავს data: და blob: URL-ებს"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "ინვერსია"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "შეასრულებს ძიების ფილტრის ინვერსიას"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "შეიტყვეთ მეტი"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "მოთხოვნის ფრაზის პარამეტრები"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "ჩაწერილი ატრიბუცია trigger-data-ით: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "რეკომენდატორთა წესები"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "უსაფრთხოების ჩვენება"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "მდებარეობის დამატება…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "მორგებული მდებარეობები"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "განედი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "განედი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "განედი უნდა იყოს რიცხვი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "განედი უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "განედი უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "ლოკალი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "ლოკალი უნდა შეიცავდეს ანბანურ სიმბოლოებს"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "მდებარეობის სახელი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "მდებარეობის სახელი არ უნდა იყოს ცარიელი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "მდებარეობის სახელი უნდა იყოს {PH1} სიმბოლოზე ნაკლები ან მისი ტოლი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "გრძელი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "გრძედი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "გრძედი უნდა იყოს რიცხვი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "გრძედი უნდა იყოს {PH1}-ზე მეტი ან მისი ტოლი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "გრძედი უნდა იყოს {PH1}-ზე ნაკლები ან მისი ტოლი"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "სასაათო სარტყლის ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "სასაათო სარტყლის ID უნდა შეიცავდეს ანბანურ სიმბოლოებს"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "დარეგულირება მაუსის ბორბლის ან კლავიშების ზემოთ/ქვემოთ მეშვეობით. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ალფა)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (ბეტა)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "მორგებული ორიენტაცია"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "მოწყობილობის ორიენტაციად დაყენებულია ალფა: {PH1}, ბეტა: {PH2}, გამა: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "ჩვენება ქვემოთ"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ჩვენება ზემოთ"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "შეტრიალებისთვის საჭიროა ორიენტაციის ჩართვა"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "შეცდომა"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "იძულებით გაააქტიურებს არჩეული უმოქმედო მდგომარეობის ემულაციას"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "იძულებით გააქტიურებს შეხებას დაწკაპუნების ნაცვლად"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (გამა)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "ლანდშაფტი — მარცხნივ"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "ლანდშაფტი — მარჯვენა"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "განედი"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "ლოკალი"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "მდებარეობა"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "მდებარეობა მიუწვდომელია"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "გრძედი"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "მართვა"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "მდებარეობათა სიის მართვა"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "უგულებელყოფის გარეშე"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "გამორთვა"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "ორიენტაცია"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "სხვა…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "უგულებელყოფები"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "პორტრეტი"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "პორტრეტი ზემოდან ქვემოთ"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "წინასწარ დაყენებულები"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "გადაყენება"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "მოწყობილობის ორიენტაციის გადაყენება"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y-ღერძის გარშემო შეტრიალებისთვის გამოიყენეთ Shift+ჩავლებით გადატანა ჰორიზონტალურად"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "სასაათო სარტყლის ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "აქსელერომეტრი"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "მოწყობილობის ორიენტაცია"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "მოწყობილობაზე დაფუძნებული"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "უმოქმედო დეტექტორის მდგომარეობის ემულაცია"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "იძულებით გააქტიურება ჩართულია"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "გეოლოკაცია"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "ლოკალი"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "ლოკალები"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "მდებარეობები"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "უმოქმედო ემულაცია არ არის"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "სენსორები"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "მდებარეობების ჩვენება"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "სენსორების ჩვენება"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "სასაათო სარტყლები"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "შეხება"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "მომხმარებელი აქტიურია, ეკრანი ჩაკეტილია"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "მომხმარებელი აქტიურია, ეკრანი განბლოკილია"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "მომხმარებელი უმოქმედოა, ეკრანი ჩაკეტილია"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "მომხმარებელი უმოქმედოა, ეკრანი განბლოკილია"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "filename-ნიმუშის დამატება"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "გაფრთხილება:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "მორგებული მოწყობილობის დამატება…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "მოწყობილობა"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "მოწყობილობის სახელი"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "მოწყობილობის სახელი არ უნდა იყოს ცარიელი."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "მოწყობილობის სახელი უნდა იყოს {PH1} სიმბოლოზე ნაკლები ან მისი ტოლი."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "მოწყობილობის პიქსელური თანაფარდობა"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "ემულირებული მოწყობილობები"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "სიმაღლე"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "User agent ფრაზა"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "User agent-ის ტიპი"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "სიგანე"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ბრენდის დამატება"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "არქიტექტურა"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "არქიტექტურა (მაგ. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1}-ის წაშლა"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ბრენდი"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "ბრენდი {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "ბრენდის მახასიათებლები"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "ვერსია {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ბრენდები"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "წაშლა"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "მოწყობილობის მოდელი"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "მოწყობილობის მახასიათებლები"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "ბრაუზერის სრული ვერსია"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "ბრაუზერის სრული ვერსია (მაგ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "მობილური"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "სტრუქტურირებული ჰედერების ფრაზის სახით წარმოდგენა ვერ მოხერხდება."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "პლატფორმა"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "პლატფორმა (მაგ. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "პლატფორმის მახასიათებლები"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "პლატფორმის ვერსია"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "User agent კლიენტის მინიშნებები"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "განახლება"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "User agent კლიენტის მინიშნებები არის user agent ფრაზის ალტერნატივა, რომელიც უფრო სტრუქტურირებული გზით ასრულებს ბრაუზერისა თუ მოწყობილობის იდენტიფიცირებას და უკეთ ითვალისწინებს კონფიდენციალურობას. დამატებითი ინფორმაციისთვის დააწკაპუნეთ ღილაკზე."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "ვერსია"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "მოწყობილობები"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "მოწყობილობების ჩვენება"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "დოკუმენტაცია"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "წყვეტის წერტილების დეაქტივაცია"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS ერთეულის კლება 10-ით"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS ერთეულის კლება {PH1}-ით"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "შეწევის ამოცნობა"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "სიმბოლოზე გადასვლა"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS ერთეულის ზრდა 10-ით"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS ერთეულის ზრდა {PH1}-ით"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "რედაქტირების შემდეგ მდებარეობაზე გადასვლა"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "დალაგება კრიტერიუმით:"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "კრიტიკული ცვლილების შეცდომა: შესაძლოა, გვერდმა არ იმუშაოს Chrome-ის მომდევნო ვერსიაში"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# კრიტიკული ცვლილება}other{# კრიტიკული ცვლილება}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "გაუმჯობესების პრობლემა: არსებობს გვერდის გაუმჯობესების შესაძლებლობა"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "შეცდომა გვერდზე: გვერდი არ მუშაობს გამართულად"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{გვერდის # შეცდომა}other{გვერდის # შეცდომა}}"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "ყველა"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "შენატანის გასუფთავება"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "მაგ. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "აჩვენებს იმ წყაროს სქემას (Secure, NonSecure), რომელზეც დაყენებული იყო ქუქი-ჩანაწერი. თუ სქემა უცნობია, ნაჩვენები იქნება Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}-ის შემდეგ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "ვადის გასვლის დროის ანაბეჭდია {seconds}, რაც შეესაბამება {date}-ის შემდგომ თარიღს"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "მნიშვნელობა"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Gwall anhysbys"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} o ddiwrnodau"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} awr"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} mun"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} me"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} e"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Ffenestr"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Gweithiwr"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G Cyflym"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Nid oes cynnwys ar gael ar gyfer ceisiadau lansio ymlaen llaw"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nid oes cynnwys ar gael oherwydd cafodd y cais ei ailgyfeirio"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Ni chefnogir cynnwys ar gyfer WebSockets ar hyn o bryd"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Dim throtlo"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Mae {PH1} wedi gorffen llwytho: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Mae pennyn y Set-Cookie wedi'i anwybyddu yn yr ymateb gan yr URL: {PH1}. Rhaid i hyd y cwci fod yn llai na neu'n hafal i 4096 o nodau."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G Araf"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Cafodd y cwci hwn ei rwystro oherwydd roedd ganddo'r briodwedd \"Secure\" ac nid oedd y cysylltiad yn ddiogel."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Mae pennyn y Set-Cookie wedi'i anwybyddu yn yr ymateb gan yr URL: {PH1}. Rhaid i hyd y cwci fod yn llai na neu'n hafal i 4096 o nodau."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Nid yw cynllun y cysylltiad hwn yn caniatáu storio cwcis."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Analluogi'r fformat AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Analluogi storfa (tra bod DevTools ar agor)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Diffodd JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Prif"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Agor DevTools un pwrpas ar gyfer Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Hanfodion Gwe Craidd"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Mae LiveEdit wedi methu: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Rhaid i'r gymhareb picseli fod yn rhif neu'n wag."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Rhaid i gymhareb picseli'r ddyfais fod yn fwy neu'n hafal i {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Rhaid i gymhareb picseli'r ddyfais fod yn llai na neu'n hafal i {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Rhaid i'r uchder fod yn rhif."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Rhaid i'r uchder fod yn fwy na neu'n hafal i {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Rhaid i'r uchder fod yn llai neu'n hafal i {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Rhaid i'r lled fod yn rhif."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Rhaid i'r lled fod yn fwy na neu'n hafal i {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Rhaid i'r lled fod yn llai na neu'n hafal i {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Gliniadur â sgrîn HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Gliniadur â sgrin MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Gliniadur â dyfais gyffwrdd"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Wrthi'n casglu cynnwys…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Trin Ymyriadau Hysbysebion Trwm"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Problem gyda newid sy'n achosi i gydrannau eraill fethu: mae'n bosib y bydd y dudalen yn stopio gweithio mewn fersiwn o Chrome yn y dyfodol agos"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Gwelliant: mae cyfle i wella'r dudalen"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Gwall tudalen: nid yw'r dudalen yn gweithio'n iawn"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Hygyrchedd lliwiau a chyferbynnedd"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "anniogel"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Esbonio First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Sut mae Schemeful Same-Site yn gweithio"
   },
@@ -1284,7 +1350,7 @@
     "message": "Newidiadau yn y meini prawf ansawdd ar gyfer apiau gwe blaengar gan ddefnyddio Gweithgarwch Gwe Dibynadwy"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Anghymeradwyaeth rhannu modiwlau traws-darddiad Wasm"
+    "message": "Yn cyfyngu ar rannu modiwlau i'r un tarddiad"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<dienw>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Mae #{PH1} wrthi'n aros i weithredu"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Gweld yr holl gofrestriadau"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker ar gyfer {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Gweithwyr Gwasanaeth"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Efelychu cwota storfa personol"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Mae cwota'r storfa yn gyfyngedig yn y modd Anhysbys"
@@ -2949,7 +3021,7 @@
     "message": "Trydydd Parti"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Cyfateb Is-Barthau"
+    "message": "Cyfateb Is-barthau"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Tarddiad"
@@ -2964,7 +3036,7 @@
     "message": "Tocyn"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tocynnau"
+    "message": "{PH1} o docynnau"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Cyfyngiad Defnydd"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Rhybudd, Wedi digwydd # waith}zero{Rhybudd, Wedi digwydd # gwaith}two{Rhybudd, Wedi digwydd # waith}few{Rhybudd, Wedi digwydd # gwaith}many{Rhybudd, Wedi digwydd # gwaith}other{Rhybudd, Wedi digwydd # gwaith}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Bydd y bar ochr yn cael ei dynnu mewn fersiwn o Chrome yn y dyfodol. Os oes gennych adborth, rhowch wybod i ni drwy'r"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "olrheiniwr problemau"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Awtogwblhau o'r hanes"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# beit, {percentage}}zero{# beit, {percentage}}two{# feit, {percentage}}few{# beit, {percentage}}many{# beit, {percentage}}other{# beit, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "Mae {PH1} beit ({PH2} %) yn perthyn i flociau JavaScript nad ydynt wedi'u gweithredu (eto)."
+    "message": "Mae {PH1} beit ({PH2}) yn perthyn i flociau JavaScript nad ydynt wedi'u gweithredu (eto)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "Mae {PH1} beit ({PH2} %) yn perthyn i flociau JavaScript sydd wedi gweithredu o leiaf unwaith."
+    "message": "Mae {PH1} beit ({PH2}) yn perthyn i flociau JavaScript sydd wedi gweithredu o leiaf unwaith."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "Mae {PH1} beit ({PH2} %) yn perthyn i swyddogaethau sydd heb eu cyflawni (eto)."
+    "message": "Mae {PH1} beit ({PH2}) yn perthyn i swyddogaethau sydd heb eu gweithredu (eto)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "Mae {PH1} beit ({PH2} %) yn perthyn i swyddogaethau sydd wedi cyflawni o leiaf unwaith."
+    "message": "Mae {PH1} beit ({PH2}) yn perthyn i swyddogaethau sydd wedi gweithredu o leiaf unwaith."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Mae {PH1} % o'r ffeil heb ei ddefnyddio, mae {PH2} % o'r ffeil wedi'i ddefnyddio"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Cyfanswm Beitiau"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copïo llwybr XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Torri'r elfen"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Torri"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Elfen dyddiad"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Cuddio'r elfen"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Gludo'r elfen"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Gludo"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Sgrolio i'r golwg"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Dangos Olion Pentwr"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Dangos cysgod asiant defnyddiwr DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Ôl Pentwr"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Amlapio testun"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Rhaid i'r gymhareb picseli fod yn rhif neu'n wag."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Rhaid i gymhareb picseli'r ddyfais fod yn fwy neu'n hafal i {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Rhaid i gymhareb picseli'r ddyfais fod yn llai na neu'n hafal i {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Rhaid i'r uchder fod yn rhif."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Rhaid i'r uchder fod yn fwy na neu'n hafal i {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Rhaid i'r uchder fod yn llai neu'n hafal i {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Rhaid i'r lled fod yn rhif."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Rhaid i'r lled fod yn fwy na neu'n hafal i {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Rhaid i'r lled fod yn llai na neu'n hafal i {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Ychwanegu cymhareb picseli'r ddyfais"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Math o ddyfais"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimensiynau"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Golygu…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Llechen"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Ychwanegu dyfais bersonol…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Dyfais"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Enw'r Ddyfais"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Ni all enw'r ddyfais fod yn wag."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Rhaid i enw'r ddyfais fod yn llai na {PH1} nod."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Cymhareb picseli'r ddyfais"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Dyfeisiau sydd wedi'u Hefelychu:"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Uchder"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Llinyn yr asiant defnyddiwr"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Math o asiant defnyddiwr"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Lled"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Gliniadur â sgrîn HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Gliniadur â sgrin MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Gliniadur â dyfais gyffwrdd"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Ychwanegu lleoliad…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Lleoliadau personol"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lledred"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Lledred"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Rhaid i'r lledred fod yn rhif"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Rhaid i'r lledred fod yn fwy neu'n hafal i {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Rhaid i'r lledred fod yn llai neu'n hafal i {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Rhaid i'r lleoliad gynnwys llythrennau'r wyddor"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Enw'r lleoliad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Ni all enw'r lleoliad fod yn wag"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Rhaid i enw'r lleoliad fod yn llai na {PH1} nod"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Hir"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Hydred"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Rhaid i'r hydred fod yn rhif"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Rhaid i'r hydred fod yn fwy neu'n hafal i {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Rhaid i'r hydred fod yn llai neu'n hafal i {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Cyfeirnod parth amser"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Rhaid i gyfeirnod y parth amser gynnwys nodau'r wyddor"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Datgelu yn y cod ffynhonnell"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Addaswch gan ddefnyddio olwyn y llygoden neu'r bysellau i fyny/lawr. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alffa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Cyfeiriadedd personol"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Mae cyfeiriadedd y ddyfais wedi'i osod i alffa: {PH1}, beta: {PH2}, gama: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Dangosydd i lawr"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Sgrîn i fyny."
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Galluogi'r cyfeiriadedd i gylchdroi"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Gwall"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Yn gorfodi'r efelychiad cyflwr segur"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Yn gorfodi cyffwrdd yn hytrach na chlicio"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Ar draws - chwith"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Dde llorweddol"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Lledred"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Locale"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Lleoliad"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Lleoliad ddim ar gael"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Hydred"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Rheoli"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Rheoli'r rhestr o leoliadau"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Dim diystyriad"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Diffodd"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Cyfeiriadedd"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Arall…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Diystyriadau"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Fertigol"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Fertigol wyneb i waered"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Rhagosodiadau"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Ailosod"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Ailosod cyfeiriadedd y ddyfais"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift + llusgo'n llorweddol i gylchdroi'r echel y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Cyfeirnod parth amser"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Ychwanegu Brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Saernïaeth"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Saernïaeth (e.e. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Dileu {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Brand {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Priodweddau brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Fersiwn {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brandiau"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Dileu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model y ddyfais"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Priodweddau dyfais"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Fersiwn porwr llawn"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Fersiwn lawn y porwr (e.e. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Symudol"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Ddim yn gynrychioladwy fel llinyn penawdau strwythuredig."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platfform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platfform (e.e. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Priodweddau platfform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Fersiwn y platfform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Awgrymiadau cleientiaid asiant defnyddiwr"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Diweddaru"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Mae awgrymiadau cleient asiant defnyddiwr yn ddewis amgen i'r llinyn asiant defnyddiwr sy'n nodi'r porwr a'r ddyfais mewn ffordd fwy strwythuredig gyda chyfrifon preifatrwydd gwell. Cliciwch y botwm i ddysgu rhagor."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Fersiwn"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "mesurydd cyflymu"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Tynnu sgrinlun maint llawn"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "dyfais"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "cyfeiriadedd y ddyfais"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Ar ddyfais"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Dyfeisiau"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Efelychu Cyflwr Canfodydd Segur"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Gorfodi wedi'i alluogi"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geoleoliad"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Cuddio ffrâm y ddyfais"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Cuddio'r ffyn mesur"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "locale"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "locale"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Lleoliadau"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Dim efelychu cyflwr segur"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Synwyryddion"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Dangos ffrâm y ddyfais"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Dangos Dyfeisiau"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Dangos Lleoliadau"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Dangos ymholiadau cyfryngau"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Dangos ffyn mesur"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Dangos Synwyryddion"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "cylchfaoedd amser"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Toglo bar offer y ddyfais"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Cyffwrdd"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Defnyddiwr yn weithredol, sgrîn wedi'i chloi"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Defnyddiwr yn weithredol, sgrîn wedi'i datgloi"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Defnyddiwr yn segur, sgrîn wedi'i chloi"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Defnyddiwr yn segur, sgrîn wedi'i datgloi"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Dileu gwrandäwr y digwyddiad"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Parth"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Dangos ceisiadau rhwydwaith sy'n cynnwys y pennyn Set-Cookie hwn yn y panel rhwydwaith"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cwci}zero{# cwci}two{# gwci}few{# chwci}many{# chwci}other{# cwci}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Pennyn Set-Cookie crai}zero{# Pennyn Set-Cookie crai}two{# Bennyn Set-Cookie crai}few{# Phennyn Set-Cookie crai}many{# Phennyn Set-Cookie crai}other{# Pennyn Set-Cookie crai}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Enw"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "rhybudd"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Problemau cudd"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Adnoddau yr effeithir arnynt"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Gweithgarwch Gwe Dibynadwy"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Datguddio problemau cudd"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "rhwystrwyd"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL Modiwl Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Datguddio problemau fel hyn"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Cuddio problemau fel hyn"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Cuddio'r ddewislen problemau"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Tor-rheolau CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Cefnogaeth pennyn Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Enw'r rendrwr"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Cydraniad"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Yn cuddio data: a blob: URL"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Gwrthdroi"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Yn gwrthdroi'r hidlydd chwilio"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Dysgu rhagor"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Paramedrau Llinyn Ymholiad"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Wedi recordio priodwedd gyda trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Polisi Cyfeiriwr"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Dangos Diogelwch"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Ychwanegu lleoliad…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Lleoliadau personol"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lledred"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Lledred"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Rhaid i'r lledred fod yn rhif"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Rhaid i'r lledred fod yn fwy neu'n hafal i {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Rhaid i'r lledred fod yn llai neu'n hafal i {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Rhaid i'r lleoliad gynnwys llythrennau'r wyddor"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Enw'r lleoliad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Ni all enw'r lleoliad fod yn wag"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Rhaid i enw'r lleoliad fod yn llai na {PH1} nod"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Hir"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Hydred"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Rhaid i'r hydred fod yn rhif"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Rhaid i'r hydred fod yn fwy neu'n hafal i {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Rhaid i'r hydred fod yn llai neu'n hafal i {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Cyfeirnod parth amser"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Rhaid i gyfeirnod y parth amser gynnwys nodau'r wyddor"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Addaswch gan ddefnyddio olwyn y llygoden neu'r bysellau i fyny/lawr. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alffa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Cyfeiriadedd personol"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Mae cyfeiriadedd y ddyfais wedi'i osod i alffa: {PH1}, beta: {PH2}, gama: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Dangosydd i lawr"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Sgrîn i fyny."
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Galluogi'r cyfeiriadedd i gylchdroi"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Gwall"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Yn gorfodi'r efelychiad cyflwr segur"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Yn gorfodi cyffwrdd yn hytrach na chlicio"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Ar draws - chwith"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Dde llorweddol"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Lledred"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Locale"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Lleoliad"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Lleoliad ddim ar gael"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Hydred"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Rheoli"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Rheoli'r rhestr o leoliadau"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Dim diystyriad"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Diffodd"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Cyfeiriadedd"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Arall…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Diystyriadau"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Fertigol"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Fertigol wyneb i waered"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Rhagosodiadau"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Ailosod"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Ailosod cyfeiriadedd y ddyfais"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift + llusgo'n llorweddol i gylchdroi'r echel y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Cyfeirnod parth amser"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "mesurydd cyflymu"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "cyfeiriadedd y ddyfais"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Ar ddyfais"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Efelychu Cyflwr Canfodydd Segur"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Gorfodi wedi'i alluogi"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geoleoliad"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "locale"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "locale"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Lleoliadau"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Dim efelychu cyflwr segur"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Synwyryddion"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Dangos Lleoliadau"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Dangos Synwyryddion"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "cylchfaoedd amser"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Cyffwrdd"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Defnyddiwr yn weithredol, sgrîn wedi'i chloi"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Defnyddiwr yn weithredol, sgrîn wedi'i datgloi"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Defnyddiwr yn segur, sgrîn wedi'i chloi"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Defnyddiwr yn segur, sgrîn wedi'i datgloi"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Ychwanegu patrwm enw ffeil"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "RHYBUDD:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Ychwanegu dyfais bersonol…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Dyfais"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Enw'r Ddyfais"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Ni all enw'r ddyfais fod yn wag."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Rhaid i enw'r ddyfais fod yn llai na {PH1} nod."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Cymhareb picseli'r ddyfais"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Dyfeisiau sydd wedi'u Hefelychu:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Uchder"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Llinyn yr asiant defnyddiwr"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Math o asiant defnyddiwr"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Lled"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Ychwanegu Brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Saernïaeth"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Saernïaeth (e.e. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Dileu {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Brand {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Priodweddau brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Fersiwn {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Brandiau"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Dileu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Model y ddyfais"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Priodweddau dyfais"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Fersiwn porwr llawn"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Fersiwn lawn y porwr (e.e. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Symudol"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Ddim yn gynrychioladwy fel llinyn penawdau strwythuredig."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platfform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platfform (e.e. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Priodweddau platfform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Fersiwn y platfform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Awgrymiadau cleientiaid asiant defnyddiwr"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Diweddaru"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Mae awgrymiadau cleient asiant defnyddiwr yn ddewis amgen i'r llinyn asiant defnyddiwr sy'n nodi'r porwr a'r ddyfais mewn ffordd fwy strwythuredig gyda chyfrifon preifatrwydd gwell. Cliciwch y botwm i ddysgu rhagor."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Fersiwn"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Dyfeisiau"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Dangos Dyfeisiau"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dogfennaeth"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Dadweithredu torbwyntiau"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Lleihau uned CSS gan 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Lleihau uned CSS gan {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Canfod mewnoliad"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Mynd i'r symbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Cynyddu uned CSS gan 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Cynyddu uned CSS gan {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Neidio i'r lleoliad golygu nesaf"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Trefnu yn ôl"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Problem gyda newid sy'n achosi i gydrannau eraill fethu: mae'n bosib y bydd y dudalen yn stopio gweithio mewn fersiwn o Chrome yn y dyfodol agos"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# newid sy'n achosi i gydrannau eraill fethu}zero{# newid sy'n achosi i gydrannau eraill fethu}two{# newid sy'n achosi i gydrannau eraill fethu}few{# newid sy'n achosi i gydrannau eraill fethu}many{# newid sy'n achosi i gydrannau eraill fethu}other{# newid sy'n achosi i gydrannau eraill fethu}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Gwelliant: mae cyfle i wella'r dudalen"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Gwall tudalen: nid yw'r dudalen yn gweithio'n iawn"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# gwall tudalen}zero{# gwall tudalen}two{# wall tudalen}few{# gwall tudalen}many{# gwall tudalen}other{# gwall tudalen}}"
@@ -10758,7 +10827,7 @@
     "message": "Cliciwch i ddangos y broblem yn y tab problemau"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Cliciwch i agor y tab problemau a dangos y broblem '{title}'"
+    "message": "Cliciwch i agor y tab problemau a dangos y broblem: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Nid yw'r broblem ar gael ar hyn o bryd"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Pob un"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Clirio mewnbwn"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "e.e. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Mae'n dangos y cynllun ffynhonnell (Secure, NonSecure) yr oedd y cwci wedi'i osod arno. Os yw'r cynllun yn anhysbys, bydd hwn yn dangos Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "ar ôl {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Stamp amser y dyddiad darfod yw {seconds}, sy'n cyfateb i ddyddiad ar ôl {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Gwerth"

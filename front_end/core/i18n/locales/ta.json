@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "அறியப்படாத பிழை"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} நாட்கள்"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} மணிநேரம்"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} நிமி"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} மிவி"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} வி"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "சாளரம்"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "வேகமான 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "ப்ரீஃப்ளைட் கோரிக்கைக்கான உள்ளடக்கம் எதுவுமில்லை"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "இந்தக் கோரிக்கை திசைதிருப்பப்பட்டதால் எந்த உள்ளடக்கமும் காட்டப்படவில்லை"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSocketsஸிற்கான உள்ளடக்கம் தற்போது ஆதரிக்கப்படவில்லை"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "த்ராட்லிங் இல்லை"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} ஏற்றப்பட்டது: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie தலைப்பானது urlலில் இருந்து பெறப்பட்ட பதிலில் புறக்கணிக்கப்பட்டது: {PH1}. குக்கீயின் நீளம் 4096 எழுத்துகளுக்கும் குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "வேகம் குறைவான 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "\"Secure\" பண்புக்கூறைக் கொண்டிருந்தாலும் இணைப்பு பாதுகாப்பானதாக இல்லாததால் இந்தக் குக்கீ தடுக்கப்பட்டது."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie தலைப்பானது urlலில் இருந்து பெறப்பட்ட பதிலில் புறக்கணிக்கப்பட்டது: {PH1}. குக்கீயின் நீளம் 4096 எழுத்துகளுக்கும் குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "குக்கீகளைச் சேமிக்க இந்த இணைப்பின் திட்டத்திற்கு அனுமதியில்லை."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF வடிவமைப்பை முடக்கு"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "தற்காலிகச் சேமிப்பை முடக்கு (டெவெலப்பர் கருவிகள் திறந்திருக்கும்போது)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptடை முடக்கு"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "முதன்மை"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.jsக்கான அணுகலைப் பெற, பிரத்தியேக டெவெலப்பர் கருவிகளைத் திறக்கவும்"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "வலைதளத்தின் முக்கியமான அடிப்படை விவரங்கள்"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit செய்ய முடியவில்லை: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "சாதனத்தின் பிக்சல் விகித மதிப்பு எண்ணாகவோ காலியாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "சாதனத்தின் பிக்சல் விகிதம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "சாதனத்தின் பிக்சல் விகிதம் {PH1} ஐ விடக் குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "உயரம் எண்ணாக இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "உயரம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "உயரம் {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "அகலம் எண்ணாக இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "அகலம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "அகலம் {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI திரையுடன் கூடிய லேப்டாப்"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI திரையுடன் கூடிய லேப்டாப்"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "தொடுதிரையுடன் கூடிய லேப்டாப்"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "உள்ளடக்கத்தைச் சேகரிக்கிறது…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "அதிக விளம்பரத் தலையீடுகளைக் கையாளுதல்"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "பாதிக்கும் மாற்றம் குறித்த சிக்கல்: இனிவரும் Chrome பதிப்புகளில் பக்கம் செயல்படாமல் போகக்கூடும்"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "மேம்பாட்டுப் பிழை: பக்கத்தை மேம்படுத்தலாம்"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "பக்கப் பிழைச் சிக்கல்: பக்கம் சரியாகச் செயல்படவில்லை"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "வண்ணம் & ஒளி மாறுபாட்டிற்கான அணுகல்தன்மை"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "பாதுகாப்பற்ற"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets சரிசெய்யப்பட்டன"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site செயல்படும் விதம்"
   },
@@ -1284,7 +1350,7 @@
     "message": "நம்பகமான இணையச் செயல்பாட்டைப் பயன்படுத்தி PWAக்களுக்கான தர நிபந்தனைகளில் செய்யப்பட்ட மாற்றங்கள்"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm கிராஸ் ஆரிஜின் மாடியூல் பகிர்வு வசதி நிறுத்தம்"
+    "message": "ஒரே ஆரிஜினுடன் Wasm மாடியூலைப் பகிர்வது கட்டுப்படுத்தப்பட்டுள்ளது"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<அறியப்படாதது>"
@@ -1341,7 +1407,7 @@
     "message": "இந்த ஃபைலைப் படிக்க முடியவில்லை: {PH1}: {PH2}"
   },
   "models/persistence/IsolatedFileSystem.ts | fileSystemErrorS": {
-    "message": "கோப்பு அமைப்புப் பிழை: {PH1}"
+    "message": "ஃபைல் அமைப்புப் பிழை: {PH1}"
   },
   "models/persistence/IsolatedFileSystem.ts | linkedToS": {
     "message": "{PH1} உடன் இணைக்கப்பட்டது"
@@ -1443,7 +1509,7 @@
     "message": "(பொருளடக்கம்)"
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "இந்தக் கோப்பு வெளியில் இருந்து மாற்றப்பட்டது. ரெஃப்ரெஷ் செய்ய விரும்புகிறீர்களா?"
+    "message": "இந்த ஃபைல் வெளியில் இருந்து மாற்றப்பட்டது. ரெஃப்ரெஷ் செய்ய விரும்புகிறீர்களா?"
   },
   "panels/accessibility/ARIAAttributesView.ts | ariaAttributes": {
     "message": "ARIA பண்புக்கூறுகள்"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "செயல்படுத்த #{PH1} காத்திருக்கிறது"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "பதிவுசெய்யப்பட்ட அனைத்தையும் காட்டு"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} Service worker"
   },
@@ -2661,7 +2730,7 @@
     "message": "service workerரைப் பதிவு நீக்கு"
   },
   "panels/application/ServiceWorkersView.ts | update": {
-    "message": "ரெஃப்ரெஷ்"
+    "message": "ரெஃப்ரெஷ் செய்"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
     "message": "சுழற்சியைப் புதுப்பி"
@@ -2709,7 +2778,7 @@
     "message": "குக்கீகள்"
   },
   "panels/application/StorageView.ts | fileSystem": {
-    "message": "கோப்பு அமைப்பு"
+    "message": "ஃபைல் அமைப்பு"
   },
   "panels/application/StorageView.ts | includingThirdPartyCookies": {
     "message": "மூன்றாம் தரப்புக் குக்கீகள் அடங்கும்"
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workerகள்"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "பிரத்தியேகச் சேமிப்பக வரம்பை உருவாக்கு"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "மறைநிலைப் பயன்முறையில் சேமிப்பக ஒதுக்கீடு குறைவாகவே கிடைக்கும்"
@@ -2838,7 +2910,7 @@
     "message": "ஆதாரங்கள் பேனலைக் காட்ட கிளிக் செய்க"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "இந்த ஃப்ரேம் உருவாக்கப்பட்டபோது ஸ்டாக்கில் (ஒத்திசையாதது) விளம்பர ஸ்கிரிப்ட் இருந்தது. இந்த ஃப்ரேமின் உருவாக்க ஸ்டாக் டிரேஸை ஆய்வுசெய்தால் கூடுதல் புள்ளிவிவரம் கிடைக்கக்கூடும்."
+    "message": "இந்த ஃப்ரேம் உருவாக்கப்பட்டபோது ஸ்டேக்கில் (ஒத்திசையாதது) விளம்பர ஸ்கிரிப்ட் இருந்தது. இந்த ஃப்ரேமின் உருவாக்க ஸ்டேக் டிரேஸை ஆய்வுசெய்தால் கூடுதல் புள்ளிவிவரம் கிடைக்கக்கூடும்."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
     "message": "ஃபிரேம் கிரியேஷன் ஸ்டாக் டிரேஸ்"
@@ -2949,7 +3021,7 @@
     "message": "மூன்றாம் தரப்பு"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "துணை டொமைன்களைப் பொருத்து"
+    "message": "துணை டொமைன் பொருத்தம்"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ஆரிஜின்"
@@ -2964,7 +3036,7 @@
     "message": "டோக்கன்"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "டோக்கன்கள்"
+    "message": "{PH1} டோக்கன்கள்"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "பயன்பாட்டுக் கட்டுப்பாடுகள்"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{எச்சரிக்கை # முறை காட்டப்பட்டது}other{எச்சரிக்கை # முறை காட்டப்பட்டது}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "இனி வரும் Chrome பதிப்புகளில் இந்தப் பக்கப்பட்டி இருக்காது. இதுகுறித்து கருத்து வழங்க விரும்பினால் இதன் மூலம் வழங்கவும்"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "சிக்கல் குறித்து கருத்து வழங்குமிடம்"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "இதுவரையான கன்சோல் தகவலிலிருந்து தானாக நிரப்பு"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# பைட், {percentage}}other{# பைட்டுகள், {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} பைட்டுகள் ({PH2} %) இன்னமும் செயல்படுத்தப்படாத JavaScript தொகுதிகளைச் சேர்ந்தது."
+    "message": "{PH1} பைட்டுகள் ({PH2}) இன்னமும் செயல்படுத்தப்படாத JavaScript தொகுதிகளைச் சேர்ந்தது."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} பைட்டுகள் ({PH2} %) ஒருமுறையாவது செயல்படுத்தப்பட்ட செயல்பாடுகளைச் சேர்ந்தது."
+    "message": "{PH1} பைட்டுகள் ({PH2}) ஒருமுறையாவது செயல்படுத்தப்பட்ட JavaScript தொகுதிகளைச் சேர்ந்தது."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} பைட்டுகள் ({PH2} %) இன்னமும் செயல்படுத்தப்படாத JavaScript செயல்பாடுகளைச் சேர்ந்தது."
+    "message": "{PH1} பைட்டுகள் ({PH2}) இன்னமும் செயல்படுத்தப்படாத செயல்பாடுகளைச் சேர்ந்தது."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} பைட்டுகள் ({PH2} %) ஒருமுறையாவது செயல்படுத்தப்பட்ட செயல்பாடுகளைச் சேர்ந்தது."
+    "message": "{PH1} பைட்டுகள் ({PH2}) ஒருமுறையாவது செயல்படுத்தப்பட்ட செயல்பாடுகளைச் சேர்ந்தது."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
-    "message": "{PH1} % கோப்பு பயன்படுத்தப்படவில்லை, {PH2} % கோப்பு பயன்படுத்தப்பட்டுள்ளது"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
+    "message": "{PH1} % ஃபைல் பயன்படுத்தப்படவில்லை, {PH2} % ஃபைல் பயன்படுத்தப்பட்டுள்ளது"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "மொத்த பைட்டுகள்"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPathதை நகலெடு"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "உறுப்பைச் சுருக்கு"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "வெட்டு"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "உறுப்பை நீக்கு"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "உறுப்பை மறை"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "உறுப்பை ஒட்டு"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "ஒட்டு"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "காட்டப்படும் வரை நகர்த்துக"
@@ -4077,7 +4152,7 @@
     "message": "{n,plural, =1{(# கிளிஃப்)}other{(# கிளிஃப்கள்)}}"
   },
   "panels/elements/PlatformFontsWidget.ts | localFile": {
-    "message": "சாதனத்தில் உள்ள கோப்பு"
+    "message": "சாதனத்தில் உள்ள ஃபைல்"
   },
   "panels/elements/PlatformFontsWidget.ts | networkResource": {
     "message": "நெட்வொர்க் ஆதாரம்"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "ஸ்டாக் டிரேஸைக் காட்டு"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "பயனர் ஏஜெண்ட் ஷேடோ DOM ஐக் காட்டு"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "ஸ்டாக் டிரேஸ்"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "வார்த்தையை மடி"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "சாதனத்தின் பிக்சல் விகித மதிப்பு எண்ணாகவோ காலியாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "சாதனத்தின் பிக்சல் விகிதம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "சாதனத்தின் பிக்சல் விகிதம் {PH1} ஐ விடக் குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "உயரம் எண்ணாக இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "உயரம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "உயரம் {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "அகலம் எண்ணாக இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "அகலம் {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "அகலம் {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "சாதனத்தின் பிக்சல் விகிதத்தைச் சேர்"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "சாதன வகை"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "பரிமாணங்கள்"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "திருத்துக…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "டேப்லெட்"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "பிரத்தியேகச் சாதனத்தைச் சேர்..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "சாதனம்"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "சாதனத்தின் பெயர்"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "சாதனத்தின் பெயர் காலியாக இருக்கக்கூடாது."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "சாதனத்தின் பெயர் {PH1} எழுத்துகளுக்கும் குறைவாக இருக்க வேண்டும்."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "சாதனத்தின் பிக்சல் விகிதம்"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "இயக்கக்கூடிய சாதனங்கள்"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "உயரம்"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "பயனர் ஏஜெண்ட்டின் உள்ளீடு"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "பயனர் ஏஜெண்ட் வகை"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "அகலம்"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI திரையுடன் கூடிய லேப்டாப்"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI திரையுடன் கூடிய லேப்டாப்"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "தொடுதிரையுடன் கூடிய லேப்டாப்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "இருப்பிடத்தைச் சேர்..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "பிரத்தியேக இருப்பிடங்கள்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "அ. ரேகை"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "அட்சரேகை"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "அட்சரேகையின் மதிப்பு எண்ணாக இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "அட்சரேகையின் மதிப்பு {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "அட்சரேகையின் மதிப்பு {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "மொழி"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "மொழியில் அகர வரிசை எழுத்துகள் இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "இருப்பிடத்தின் பெயர்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "இருப்பிடத்தின் பெயர் காலியாக இருக்கக்கூடாது"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "இருப்பிடத்தின் பெயர் {PH1} எழுத்துகளுக்கும் குறைவாக இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "தீ. ரேகை"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "தீர்க்கரேகை"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "தீர்க்கரேகையின் மதிப்பு எண்ணாக இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "தீர்க்கரேகையின் மதிப்பு {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "தீர்க்கரேகையின் மதிப்பு {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "நேரமண்டல ஐடி"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "நேரமண்டல ஐடி, அகவரிசை எழுத்துகளைக் கொண்டிருக்க வேண்டும்"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "மூலக் குறியீட்டில் காட்டு"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "மவுஸ் வீல், மேல்நோக்கிய/கீழ்நோக்கிய விசைகள் போன்றவற்றைச் சரிசெய்யலாம். {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ஆல்ஃபா)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (பீட்டா)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "பிரத்தியேகத் திசையமைப்பு"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "ஆல்ஃபா: {PH1}, பீட்டா: {PH2}, காமா: {PH3} என சாதனத்தின் திசையமைப்பு அமைக்கப்பட்டது"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "கீழ்நோக்கிக் காட்டுதல்"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "திரையின் மேல் புறம்"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "சுழற்ற, திசையமைப்பை இயக்கவும்"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "பிழை"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "தேர்ந்தெடுத்த செயலற்ற நிலையின் மாதிரி இயக்கத்தைச் செயல்படுத்தும்"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "கிளிக் செய்வதற்குப் பதிலாக டச் செய்வதை மட்டுமே அனுமதிக்கும்"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (காமா)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "இடதுபுற லேண்ட்ஸ்கேப்"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "வலதுபுற லேண்ட்ஸ்கேப்"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "அட்சரேகை"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "மொழி"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "இருப்பிடம்"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "இருப்பிடம் தெரியவில்லை"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "தீர்க்கரேகை"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "நிர்வகியுங்கள்"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "இருப்பிடங்களின் பட்டியலை நிர்வகியுங்கள்"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "மீறிச் செயல்படுதல் இல்லை"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "ஆஃப்"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "திசையமைப்பு"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "பிற…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "மீறிச் செயல்படுபவை"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "போர்ட்ரெய்ட்"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "போர்ட்ரெய்ட் (தலைகீழ்)"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "முன்னமைவுகள்"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "மீட்டமை"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "சாதனத்தின் திசையமைப்பை மீட்டமைக்கும்"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y அச்சில் சுழற்ற, Shift விசையை அழுத்திக்கொண்டு கிடைமட்டமாக இழுக்கவும்"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "நேரமண்டல ஐடி"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "பிராண்டைச் சேர்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "கட்டமைப்பு"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "கட்டமைப்பு (எ.கா. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ஐ நீக்கும்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "பிராண்டு"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "{PH1} பிராண்டு"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "பிராண்டின் பண்புகள்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "பதிப்பு {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "பிராண்டுகள்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "நீக்கும்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "சாதன மாடல்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "சாதனத்தின் பண்புகள்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "உலாவியின் முழுப் பதிப்பு"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "உலாவியின் முழுப் பதிப்பு (எ.கா. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "மொபைல்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "கட்டமைக்கப்பட்ட தலைப்பு வார்த்தைகளாகக் குறிப்பிட முடியாது."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "பிளாட்ஃபார்ம்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "பிளாட்ஃபார்ம் (எ.கா. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "பிளாட்ஃபார்ம் பண்புகள்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "பிளாட்ஃபார்ம் பதிப்பு"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள்"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "சமர்ப்பி"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள், பயனர் ஏஜெண்ட் உள்ளீட்டிற்கான ஒரு மாற்று முறையாகும். இது தனியுரிமைக்கு அதிக முக்கியத்துவம் அளிப்பதால் உலாவியையும் சாதனத்தையும் சரியான முறையில் அடையாளம் காண்கிறது. மேலும் அறிய, பட்டனைக் கிளிக் செய்யவும்."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "பதிப்பு"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "ஆக்சலரோமீட்டர்"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "முழுத்திரையையும் ஸ்கிரீன்ஷாட் எடு"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "சாதனம்"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "சாதனத் திசையமைப்பு"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "சாதனத்தைப் பொறுத்தது"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "சாதனங்கள்"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "ஐடில் டிடெக்டர் நிலையை இயக்கு"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "இயக்கப்பட்டது"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "புவி இருப்பிடம்"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "சாதன ஃபிரேமை மறை"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "ரூலர்களை மறை"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "மொழி"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "மொழிகள்"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "இருப்பிடங்கள்"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "ஐடில் மாதிரி இயக்கம் எதுவுமில்லை"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "சென்சார்கள்"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "சாதன ஃபிரேமைக் காட்டு"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "சாதனங்களைக் காட்டு"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "இருப்பிடங்களைக் காட்டு"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "மீடியா வினவல்களைக் காட்டு"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "ரூலர்களைக் காட்டு"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "சென்சார்களைக் காட்டு"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "நேர மண்டலங்கள்"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "சாதனத்தின் கருவிப்பட்டிக்கு மாறு"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "தொடுதல்"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "பயனர் செயலில் இருந்தால் திரையை லாக் செய்"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "பயனர் செயலில் இருந்தால் திரையை அன்லாக் செய்"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "பயனர் செயலில் இல்லை எனில் திரையை லாக் செய்"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "பயனர் செயலில் இல்லை எனில் திரையை அன்லாக் செய்"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "ஈவன்ட் லிசனரை நீக்கு"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "டொமைன்"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "நெட்வொர்க் பேனலில் இந்த Set-Cookie தலைப்புடன் கூடிய நெட்வொர்க் கோரிக்கைகளைக் காட்டு"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# குக்கீ}other{# குக்கீகள்}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 இயல்பான Set-Cookie தலைப்பு}other{# இயல்பான Set-Cookie தலைப்புகள்}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "பெயர்"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "எச்சரிக்கை"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "மறைக்கப்பட்ட சிக்கல்கள்"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "பாதிக்கப்பட்ட மூலங்கள்"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "நம்பகமான இணையச் செயல்பாடு"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "மறைக்கப்பட்ட சிக்கல்கள் அனைத்தையும் காட்டும்"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "தடுக்கப்பட்டுள்ளது"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm மாடியூல் URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "இதுபோன்ற சிக்கல்களைக் காட்டு"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "இதுபோன்ற சிக்கல்களை மறை"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "சிக்கல்களை மறைப்பதற்கான மெனு"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP மீறல்கள்"
@@ -5787,7 +5529,7 @@
     "message": "என்கோடர் பெயர்"
   },
   "panels/media/PlayerPropertiesView.ts | fileSize": {
-    "message": "கோப்பு அளவு"
+    "message": "ஃபைல் அளவு"
   },
   "panels/media/PlayerPropertiesView.ts | frameRate": {
     "message": "ஃப்ரேம் வீதம்"
@@ -5818,6 +5560,9 @@
   },
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range தலைப்பு ஆதரவு"
+  },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "ரென்டரர் பெயர்"
   },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "தெளிவுத்திறன்"
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "data: மற்றும் blobஐ மறைக்கிறது: URLகள்"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "நேரெதிராக மாற்று"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "தேடல் வடிப்பானை நேரெதிராக அமைக்கும்"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "மேலும் அறிக"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "வினவல் வார்த்தையின் அளவுருக்கள்"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data உடன் ரெக்கார்டு செய்யப்பட்ட நிகழ்வு: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "ரெஃபரர் பாலிசி"
@@ -7764,13 +7518,13 @@
     "message": "தேர்ந்தெடுக்கப்பட்ட செயல்பாட்டினைத் தவிர்க்கும்"
   },
   "panels/profiler/ProfileView.ts | failedToReadFile": {
-    "message": "கோப்பைப் படிக்க முடியவில்லை"
+    "message": "ஃபைலைப் படிக்க முடியவில்லை"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' கோப்பைப் படிப்பதில் பிழை: {PH2}"
+    "message": "'{PH1}' ஃபைலைப் படிப்பதில் பிழை: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
-    "message": "விலை (>50ms), பெயர், கோப்பு ஆகியவற்றின்படி கண்டறி"
+    "message": "விலை (>50ms), பெயர், ஃபைல் ஆகியவற்றின்படி கண்டறி"
   },
   "panels/profiler/ProfileView.ts | focusSelectedFunction": {
     "message": "தேர்ந்தெடுத்த செயல்பாட்டை மையப்படுத்தும்"
@@ -7812,7 +7566,7 @@
     "message": "வரிசை (மேல் கீழ்)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ஃபைலை ஏற்ற முடியவில்லை. ஆதரிக்கப்படும் கோப்பு நீட்டிப்புகள்: '{PH1}.'"
+    "message": "ஃபைலை ஏற்ற முடியவில்லை. ஆதரிக்கப்படும் ஃபைல் நீட்டிப்புகள்: '{PH1}.'"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "வேறொரு ப்ரொஃபைல் ரெக்கார்டு செய்யப்படும்போது இந்த ப்ரொஃபைலை ஏற்ற முடியாது."
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "பாதுகாப்பைக் காட்டு"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "இருப்பிடத்தைச் சேர்..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "பிரத்தியேக இருப்பிடங்கள்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "அ. ரேகை"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "அட்சரேகை"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "அட்சரேகையின் மதிப்பு எண்ணாக இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "அட்சரேகையின் மதிப்பு {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "அட்சரேகையின் மதிப்பு {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "மொழி"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "மொழியில் அகர வரிசை எழுத்துகள் இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "இருப்பிடத்தின் பெயர்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "இருப்பிடத்தின் பெயர் காலியாக இருக்கக்கூடாது"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "இருப்பிடத்தின் பெயர் {PH1} எழுத்துகளுக்கும் குறைவாக இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "தீ. ரேகை"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "தீர்க்கரேகை"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "தீர்க்கரேகையின் மதிப்பு எண்ணாக இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "தீர்க்கரேகையின் மதிப்பு {PH1} ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "தீர்க்கரேகையின் மதிப்பு {PH1} ஐ விடக்குறைவாகவோ சமமாகவோ இருக்க வேண்டும்"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "நேரமண்டல ஐடி"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "நேரமண்டல ஐடி, அகவரிசை எழுத்துகளைக் கொண்டிருக்க வேண்டும்"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "மவுஸ் வீல், மேல்நோக்கிய/கீழ்நோக்கிய விசைகள் போன்றவற்றைச் சரிசெய்யலாம். {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ஆல்ஃபா)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (பீட்டா)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "பிரத்தியேகத் திசையமைப்பு"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "ஆல்ஃபா: {PH1}, பீட்டா: {PH2}, காமா: {PH3} என சாதனத்தின் திசையமைப்பு அமைக்கப்பட்டது"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "கீழ்நோக்கிக் காட்டுதல்"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "திரையின் மேல் புறம்"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "சுழற்ற, திசையமைப்பை இயக்கவும்"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "பிழை"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "தேர்ந்தெடுத்த செயலற்ற நிலையின் மாதிரி இயக்கத்தைச் செயல்படுத்தும்"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "கிளிக் செய்வதற்குப் பதிலாக டச் செய்வதை மட்டுமே அனுமதிக்கும்"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (காமா)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "இடதுபுற லேண்ட்ஸ்கேப்"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "வலதுபுற லேண்ட்ஸ்கேப்"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "அட்சரேகை"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "மொழி"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "இருப்பிடம்"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "இருப்பிடம் தெரியவில்லை"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "தீர்க்கரேகை"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "நிர்வகியுங்கள்"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "இருப்பிடங்களின் பட்டியலை நிர்வகியுங்கள்"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "மீறிச் செயல்படுதல் இல்லை"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "ஆஃப்"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "திசையமைப்பு"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "பிற…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "மீறிச் செயல்படுபவை"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "போர்ட்ரெய்ட்"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "போர்ட்ரெய்ட் (தலைகீழ்)"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "முன்னமைவுகள்"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "மீட்டமை"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "சாதனத்தின் திசையமைப்பை மீட்டமைக்கும்"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y அச்சில் சுழற்ற, Shift விசையை அழுத்திக்கொண்டு கிடைமட்டமாக இழுக்கவும்"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "நேரமண்டல ஐடி"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "ஆக்சலரோமீட்டர்"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "சாதனத் திசையமைப்பு"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "சாதனத்தைப் பொறுத்தது"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "ஐடில் டிடெக்டர் நிலையை இயக்கு"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "இயக்கப்பட்டது"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "புவி இருப்பிடம்"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "மொழி"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "மொழிகள்"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "இருப்பிடங்கள்"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "ஐடில் மாதிரி இயக்கம் எதுவுமில்லை"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "சென்சார்கள்"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "இருப்பிடங்களைக் காட்டு"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "சென்சார்களைக் காட்டு"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "நேர மண்டலங்கள்"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "தொடுதல்"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "பயனர் செயலில் இருந்தால் திரையை லாக் செய்"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "பயனர் செயலில் இருந்தால் திரையை அன்லாக் செய்"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "பயனர் செயலில் இல்லை எனில் திரையை லாக் செய்"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "பயனர் செயலில் இல்லை எனில் திரையை அன்லாக் செய்"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "கோப்புப் பெயர் பேட்டர்னைச் சேர்க்கும்"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "எச்சரிக்கை:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "பிரத்தியேகச் சாதனத்தைச் சேர்..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "சாதனம்"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "சாதனத்தின் பெயர்"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "சாதனத்தின் பெயர் காலியாக இருக்கக்கூடாது."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "சாதனத்தின் பெயர் {PH1} எழுத்துகளுக்கும் குறைவாக இருக்க வேண்டும்."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "சாதனத்தின் பிக்சல் விகிதம்"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "இயக்கக்கூடிய சாதனங்கள்"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "உயரம்"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "பயனர் ஏஜெண்ட்டின் உள்ளீடு"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "பயனர் ஏஜெண்ட் வகை"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "அகலம்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "பிராண்டைச் சேர்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "கட்டமைப்பு"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "கட்டமைப்பு (எ.கா. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} ஐ நீக்கும்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "பிராண்டு"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} பிராண்டு"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "பிராண்டின் பண்புகள்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "பதிப்பு {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "பிராண்டுகள்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "நீக்கும்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "சாதன மாடல்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "சாதனத்தின் பண்புகள்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "உலாவியின் முழுப் பதிப்பு"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "உலாவியின் முழுப் பதிப்பு (எ.கா. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "மொபைல்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "கட்டமைக்கப்பட்ட தலைப்பு வார்த்தைகளாகக் குறிப்பிட முடியாது."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "பிளாட்ஃபார்ம்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "பிளாட்ஃபார்ம் (எ.கா. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "பிளாட்ஃபார்ம் பண்புகள்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "பிளாட்ஃபார்ம் பதிப்பு"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "சமர்ப்பி"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள், பயனர் ஏஜெண்ட் உள்ளீட்டிற்கான ஒரு மாற்று முறையாகும். இது தனியுரிமைக்கு அதிக முக்கியத்துவம் அளிப்பதால் உலாவியையும் சாதனத்தையும் சரியான முறையில் அடையாளம் காண்கிறது. மேலும் அறிய, பட்டனைக் கிளிக் செய்யவும்."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "பதிப்பு"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "சாதனங்கள்"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "சாதனங்களைக் காட்டு"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ஆவணமாக்கல்"
@@ -8637,10 +8715,10 @@
     "message": "சோர்ஸ் மேப்பைச் சேர்…"
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
-    "message": "கோப்பு வரிசை/{PH1} மூலம் தொடர்புடைய கோப்புகள் கிடைக்கும்."
+    "message": "ஃபைல் வரிசை/{PH1} மூலம் தொடர்புடைய ஃபைல்கள்  கிடைக்கும்."
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
-    "message": "தொடர்புடைய கோப்புகள் கோப்பு வரிசையில் சேர்க்கப்பட வேண்டும். இந்தச் சரிசெய்யப்பட்ட ஆதாரக் கோப்புகளை வழக்கமான JavaScript கோப்புகளாகப் பிழைதிருத்தலாம்."
+    "message": "தொடர்புடைய ஃபைல்கள் ஃபைல் வரிசையில் சேர்க்கப்பட வேண்டும். இந்தச் சரிசெய்யப்பட்ட ஆதார ஃபைல்களை வழக்கமான JavaScript ஃபைல்களாகப் பிழைதிருத்தலாம்."
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "உள்ளமை"
@@ -8685,7 +8763,7 @@
     "message": "இந்த ஸ்கிரிப்ட் பிழைதிருத்தியின் புறக்கணிப்புப் பட்டியலில் உள்ளது"
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
-    "message": "கோப்புகள் எதுவும் இல்லை"
+    "message": "ஃபைல்கள்  எதுவும் இல்லை"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "தற்போதைய வரி: {PH1}. விரும்பும் வரிக்குச் செல்ல 1, {PH2} ஆகியவற்றுக்கு இடையிலான வரி எண்ணை உள்ளிடவும்."
@@ -8703,7 +8781,7 @@
     "message": "0x{PH1} ஆஃப்செட்டுக்குச் செல்."
   },
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
-    "message": "கோப்பு எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
+    "message": "ஃபைல் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
   },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "குறிப்பிட்ட வரிக்குச் செல்ல அதன் எண்ணை உள்ளிடவும்."
@@ -8790,7 +8868,7 @@
     "message": "நகலெடு…"
   },
   "panels/sources/NavigatorView.ts | newFile": {
-    "message": "புதிய கோப்பு"
+    "message": "புதிய ஃபைல்"
   },
   "panels/sources/NavigatorView.ts | noDomain": {
     "message": "(டொமைன் எதுவுமில்லை)"
@@ -8814,7 +8892,7 @@
     "message": "கோப்புறையில் தேடு"
   },
   "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
-    "message": "கோப்பு எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
+    "message": "ஃபைல் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
   },
   "panels/sources/OutlineQuickOpen.ts | noResultsFound": {
     "message": "முடிவுகள் எதுவுமில்லை"
@@ -8889,7 +8967,7 @@
     "message": "புதிய துணுக்கு"
   },
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "சாதனத்தின் கோப்புறையில் உள்ள கோப்புகள் மூலம் பக்க அசெட்டுகளை மீறிச் செயல்படுத்து"
+    "message": "சாதனத்தின் கோப்புறையில் உள்ள ஃபைல்கள்  மூலம் பக்க அசெட்டுகளை மீறிச் செயல்படுத்து"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "அகற்று"
@@ -8928,7 +9006,7 @@
     "message": "எக்ஸெப்ஷன்களில் இடைநிறுத்தாதே"
   },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
-    "message": "பணியிடக் ஃபைலை இங்கே இழுத்து விடவும்"
+    "message": "பணியிட ஃபைலை இங்கே இழுத்து விடவும்"
   },
   "panels/sources/SourcesPanel.ts | groupByFolder": {
     "message": "கோப்புறையின்படி குழுவாக்கு"
@@ -8985,10 +9063,10 @@
     "message": "ஆதாரத்தைக் காட்டுவதற்கான செயல்கள்"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
-    "message": "சேமிக்காத கோப்பை ({PH1}) நிச்சயமாக மூட விரும்புகிறீர்களா?"
+    "message": "சேமிக்காத ஃபைலை ({PH1}) நிச்சயமாக மூட விரும்புகிறீர்களா?"
   },
   "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "இந்த ஃபைலில் செய்யப்பட்ட மாற்றங்கள் கோப்பு அமைப்பில் சேமிக்கப்படவில்லை."
+    "message": "இந்த ஃபைலில் செய்யப்பட்ட மாற்றங்கள் ஃபைல் அமைப்பில் சேமிக்கப்படவில்லை."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "இந்த உள்ளடக்கத்தை ஏற்ற முடியவில்லை."
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "பிரேக்பாயிண்ட்டுகளை முடக்கு"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS யூனிட்டை 10 ஆகக் குறைக்கும்"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS யூனிட்டை {PH1} ஆகக் குறைக்கும்"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ஓர இடத்தைக் கண்டறி"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "குறியீடுக்குச் செல்"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS யூனிட்டை 10 ஆக அதிகரிக்கும்"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS யூனிட்டை {PH1} ஆக அதிகரிக்கும்"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "அடுத்த திருத்தத்திற்குச் செல்"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "இதன்படி வரிசைப்படுத்து"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "பாதிக்கும் மாற்றம் குறித்த சிக்கல்: இனிவரும் Chrome பதிப்புகளில் பக்கம் செயல்படாமல் போகக்கூடும்"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# பாதிக்கும் மாற்றம்}other{# பாதிக்கும் மாற்றங்கள்}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "மேம்பாட்டுப் பிழை: பக்கத்தை மேம்படுத்தலாம்"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "பக்கப் பிழைச் சிக்கல்: பக்கம் சரியாகச் செயல்படவில்லை"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# பக்கப் பிழை}other{# பக்கப் பிழைகள்}}"
@@ -10758,7 +10827,7 @@
     "message": "‘சிக்கல்கள்’ பிரிவில் சிக்கலைப் பார்க்க கிளிக் செய்க"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "'சிக்கல்கள்' பிரிவைத் திறந்து '{title}' சிக்கலைப் பார்க்க கிளிக் செய்க"
+    "message": "'சிக்கல்கள்' பிரிவைத் திறந்து சிக்கலைப் பார்க்க கிளிக் செய்க: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "சிக்கலைத் தற்போது கண்டறிய முடியவில்லை"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "எல்லாம்"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "வடிப்பானை அகற்றும்"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "எ.கா. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "குக்கீ அமைக்கப்பட்டுள்ள ஆதாரத் திட்டத்தை (Secure, NonSecure) காட்டும். திட்டம் அறியப்படவில்லை எனில் Unset என இது காட்டும்."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "இதற்குப் பிறகு: {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "முடிவடைவதற்கான நேரமுத்திரை: {seconds}, இது {date}க்குப் பிறகு வரும் தேதியில் உள்ளது."
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "மதிப்பு"
@@ -11517,7 +11595,7 @@
     "message": "பதிவிறக்குகிறது"
   },
   "ui/legacy/components/source_frame/ImageView.ts | dropImageFileHere": {
-    "message": "படக் கோப்பை இங்கே இழுத்துவிடவும்"
+    "message": "பட ஃபைலை இங்கே இழுத்துவிடவும்"
   },
   "ui/legacy/components/source_frame/ImageView.ts | image": {
     "message": "படம்"
@@ -11601,7 +11679,7 @@
     "message": "தற்போதைய ஆதாரம்:"
   },
   "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
-    "message": "கோப்பு அளவு:"
+    "message": "ஃபைல் அளவு:"
   },
   "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
     "message": "{PH1} தளத்தில் உள்ள படம்"

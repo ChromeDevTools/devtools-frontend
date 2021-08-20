@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "خطأ غير معروف"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} يوم"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ساعة"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} دقيقة"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ملي ثانية"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} ثانية"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "نافذة"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "عامل"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "شبكة الجيل الثالث سريعة"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "لا يتوفّر أي محتوى للطلب المبدئي."
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "لا يتوفّر أي محتوى لأنّ هذا الطلب تمت إعادة توجيهه."
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "محتوى WebSockets غير متاح حاليًا."
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "بدون تقييد"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "أكمل {PH1} التحميل: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "تم تجاهل عنوان ملف تعريف الارتباط Set-Cookie في الاستجابة من عنوان URL: {PH1}. يجب أن يكون عدد أحرف ملف تعريف الارتباط أقل من أو يساوي 4096 حرفًا."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "شبكة الجيل الثالث بطيئة"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "تم حظر ملف تعريف الارتباط هذا لأنّه تضمَّن السمة \"Secure\" ولم يكن الاتصال آمنًا."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "تم تجاهل عنوان ملف تعريف الارتباط Set-Cookie في الاستجابة من عنوان URL: {PH1}. يجب أن يكون عدد أحرف ملف تعريف الارتباط أقل من أو يساوي 4096 حرفًا."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "لا يُسمح لمخطّط هذا الاتصال بتخزين ملفات تعريف الارتباط."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "إيقاف التنسيق AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "إيقاف ذاكرة التخزين المؤقت (عندما تكون أدوات مطوري البرامج مفتوحة)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "إيقاف JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "الهدف الرئيسي"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "فتح \"أدوات مطوري البرامج\" المخصّصة من أجل Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "مؤشرات أداء الويب الأساسية"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "تعذّر تعديل LiveEdit: {PH1}."
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "نسبة وحدات البكسل على الجهاز يجب أن تكون رقمًا أو يُترك حقلها فارغًا."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "نسبة وحدات البكسل على الجهاز يجب أن تكون أكبر من أو تساوي {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "يجب أن تكون نسبة وحدات البكسل على الجهاز أقل من أو تساوي {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "يجب أن تكون قيمة الارتفاع رقمًا."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "يجب أن تكون قيمة ارتفاع الجهاز أكبر من أو تساوي {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "يجب أن تكون قيمة الارتفاع أقل من أو تساوي {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "يجب أن تكون قيمة العرض رقمًا."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "يجب أن تكون قيمة عرض الجهاز أكبر من أو تساوي {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "يجب أن يكون العرض أقل من أو يساوي {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "كمبيوتر محمول بشاشة HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "كمبيوتر محمول بشاشة MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "كمبيوتر محمول يعمل باللمس"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "جارٍ جمع المحتوى…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "التعامل مع مشاكل تداخل الإعلانات التي تستهلك موارد الشبكة"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "مشكلة بسبب تغيير قد يؤدي إلى عطل: قد تتوقّف الصفحة عن العمل في أي إصدار قادم من متصفِّح Chrome."
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "مشكلة متعلقة بالتحسين: يمكن تحسين تحميل الصفحة."
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "المشكلة التي أدت إلى حدوث خطأ في الصفحة: الصفحة لا تعمل بشكل صحيح."
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "تمكين الوصول إلى اللون والتباين"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "سياق غير آمن"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "معلومات عن First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "طريقة عمل ميزة Same-Site المتعددة المخطّطات"
   },
@@ -1284,7 +1350,7 @@
     "message": "التغيّرات في معايير الجودة لتطبيقات PWA باستخدام نشاط موثوق به على الويب"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "توقُّف مشاركة وحدة Wasm التابعة لمصدر خارجي"
+    "message": "حصر مشاركة وحدة Wasm على المصدر نفسه"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<مجهول المصدر>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} في انتظار التفعيل"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "الاطّلاع على جميع عمليات التسجيل"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker لمدة {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "مشغِّلو الخدمات"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "محاكاة مساحة التخزين المخصّصة والمتوفرة"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "حصة التخزين محدودة في وضع التصفُّح المتخفي"
@@ -2964,7 +3036,7 @@
     "message": "الرمز المميز"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "رموز مميزة"
+    "message": "عدد الرموز المميزة: {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "قيود الاستخدام"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{رسالة تحذير، تكررت مرة واحدة.}zero{رسالة تحذير، تكررت # مرة.}two{رسالة تحذير، تكررت مرتين.}few{رسالة تحذير، تكررت # مرات.}many{رسالة تحذير، تكررت # مرة.}other{رسالة تحذير، تكررت # مرة.}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "ستتم إزالة هذا الشريط الجانبي في إصدار مستقبلي من متصفِّح Chrome. في حال كان لديك أي ملاحظات أو آراء، يُرجى إطلاعنا عليها من خلال"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "أداة تتبّع المشاكل"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "الإكمال التلقائي من السجلّ"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{وحدة بايت واحدة، {percentage}}zero{# وحدة بايت، {percentage}}two{وحدتا بايت، {percentage}}few{# وحدات بايت، {percentage}}many{# وحدة بايت، {percentage}}other{# وحدة بايت، {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} بايت ({PH2}%) خاصة بكُتل JavaScript التي لم يتم تنفيذها (بعد)."
+    "message": "هناك {PH1} بايت ({PH2}) تخص كتل JavaScript التي لم يتم تنفيذها (بعد)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "هناك {PH1} بايت ({PH2} %) تخص كتل أوامر JavaScript التي تم تنفيذها مرة واحدة على الأقل."
+    "message": "هناك {PH1} بايت ({PH2}) تخص كتل JavaScript التي تم تنفيذها مرة واحدة على الأقل."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "هناك {PH1} بايت ({PH2} %) تخص الوظائف التي لم يتم تنفيذها بعد."
+    "message": "هناك {PH1} بايت ({PH2}) تخصّ الوظائف التي لم يتم تنفيذها (بعد)."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} بايت ({PH2} %) خاصة بوظائف تم تنفيذها مرة واحدة على الأقل."
+    "message": "هناك {PH1} بايت ({PH2}) تخصّ الوظائف التي تم تنفيذها مرة واحدة على الأقل."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % من حجم الملف غير مستخدم، وتم استخدام {PH2} % منه."
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}‏%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "إجمالي وحدات البايت"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "نسخ XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "قص العنصر"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "قص"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "حذف العنصر"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "إخفاء العنصر"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "لصق العنصر"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "لصق"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "التمرير للوصول إلى طريقة العرض"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "عرض تتبُّع تسلسل استدعاء الدوال البرمجية"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "عرض ظل وكيل المستخدم DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "تتبُّع تسلسل استدعاء الدوال البرمجية"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "التفاف الكلمات"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "نسبة وحدات البكسل على الجهاز يجب أن تكون رقمًا أو يُترك حقلها فارغًا."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "نسبة وحدات البكسل على الجهاز يجب أن تكون أكبر من أو تساوي {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "يجب أن تكون نسبة وحدات البكسل على الجهاز أقل من أو تساوي {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "يجب أن تكون قيمة الارتفاع رقمًا."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "يجب أن تكون قيمة ارتفاع الجهاز أكبر من أو تساوي {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "يجب أن تكون قيمة الارتفاع أقل من أو تساوي {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "يجب أن تكون قيمة العرض رقمًا."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "يجب أن تكون قيمة عرض الجهاز أكبر من أو تساوي {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "يجب أن يكون العرض أقل من أو يساوي {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "إضافة نسبة وحدات البكسل على الجهاز"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "نوع الجهاز"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "الأبعاد"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "تعديل…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "جهاز لوحي"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "إضافة جهاز مخصّص..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "جهاز"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "اسم الجهاز"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "لا يمكن ترك حقل اسم الجهاز فارغًا."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "يجب أن يكون عدد أحرف اسم الجهاز أقل من {PH1} حرف."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "نسبة وحدات البكسل على الجهاز"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "الأجهزة التي يمكن محاكاتها"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "الارتفاع"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "سلسلة وكيل المستخدم"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "نوع وكيل المستخدم"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "العرض"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "كمبيوتر محمول بشاشة HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "كمبيوتر محمول بشاشة MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "كمبيوتر محمول يعمل باللمس"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "إضافة موقع جغرافي..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "المواقع الجغرافية المخصَّصة"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "خط العرض"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "خط العرض"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "يجب أن يكون خط العرض رقمًا."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "يجب أن تكون قيمة خط العرض أكبر من أو تساوي {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "يجب أن تكون قيمة خط العرض أقل من أو تساوي {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "اللغة"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "يجب أن تحتوي اللغة على أحرف أبجدية."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "اسم الموقع الجغرافي"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "يجب ألّا يُترك حقل اسم الموقع الجغرافي فارغًا."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "يجب أن يكون عدد أحرف اسم الموقع الجغرافي أقل من {PH1} حرف."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "خط الطول"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "خط الطول"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "يجب أن يكون خط الطول رقمًا."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "يجب أن تكون قيمة خط الطول أكبر من أو تساوي {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "يجب أن تكون قيمة خط الطول أقل من أو تساوي {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "رقم تعريف المنطقة الزمنية"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "يجب أن يتضمن رقم تعريف المنطقة الزمنية أحرفًا أبجدية."
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "العرض في رمز المصدر"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "يمكنك تعديل القيمة باستخدام عجلة التمرير في الماوس أو مفتاحَي السهم المتّجه للأعلى أو السهم المتّجه للأسفل. {PH1}: ±10،‏ Shift: ±1،‏ Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ألفا)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (بيتا)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "الاتجاه المخصّص"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "تم ضبط اتجاه الجهاز على القيم alpha: {PH1} وbeta: {PH2} وgamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "شاشة الجهاز متّجهة إلى الأسفل"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "شاشة الجهاز متجهة إلى الأعلى"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "يجب تفعيل ميزة \"اتجاه الجهاز\" لتدويره."
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "خطأ"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "يتيح هذا الخيار فرض محاكاة حالة \"عدم الاستخدام من قِبل أي برنامج حاليًا\" المحدّدة."
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "فرض استخدام اللمس بدلاً من النقر"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (غاما)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "يسار الشاشة الأفقية"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "يسار الشاشة الأفقية"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "خط العرض"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "اللغة"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "الموقع الجغرافي"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "الموقع الجغرافي غير مُتاح."
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "خط الطول"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "إدارة"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "إدارة قائمة المواقع الجغرافية"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "عدم إلغاء الموقع الجغرافي وفقًا لنظام تحديد المواقع العالمي (GPS)"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "إيقاف"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "الاتجاه"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "أخرى…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "تجاوُز"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "عمودي"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "شاشة الجهاز عمودية مقلوبة"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "الإعدادات المسبقة"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "إعادة الضبط"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "إعادة ضبط اتجاه الجهاز"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "اضغط على مفتاح Shift مع السحب أفقيًا للتدوير حول المحور الصادي."
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "رقم تعريف المنطقة الزمنية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "إضافة علامة تجارية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "البنية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "بنية وحدة المعالجة المركزية (مثل x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "حذف {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "العلامة التجارية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "العلامة التجارية {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "خصائص العلامة التجارية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "الإصدار {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "العلامات التجارية"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "حذف"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "طراز الجهاز"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "خصائص الجهاز"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "إصدار المتصفّح الكامل"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "إصدار المتصفّح الكامل (الإصدار 87.0.4280.88 مثلاً)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "جهاز جوّال"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "لا يمكن تمثيل أحرف القيمة كسلسلة نصية من العناوين المنظّمة."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "النظام الأساسي"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "النظام الأساسي (على سبيل المثال، Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "خصائص النظام الأساسي"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "إصدار النظام الأساسي"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "تعديلات برنامج وكيل المستخدم"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "تحديث"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "تعديلات برنامج وكيل المستخدم هي بديل لسلسلة وكيل المستخدم التي توفِّر معلومات منظّمَة بشكل أكبر عن المتصفِّح والجهاز مع مراعاة الخصوصية بطريقة أفضل. انقر على الزر لمزيد من المعلومات."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "الإصدار"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "مقياس التسارع"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "التقاط لقطة شاشة بحجم كامل"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "جهاز"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "اتجاه الجهاز"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "إدخال لمس مستند إلى الجهاز"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "الأجهزة"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "محاكاة حالة أداة Idle Detector"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "فرض الإدخال باللمس مفعَّل"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "رصد الموقع الجغرافي"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "إخفاء إطار شاشة الجهاز"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "إخفاء أدوات القياس"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "اللغة"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "اللغات"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "المواقع الجغرافية"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "ما مِن محاكاة غير مستخدَمة حاليًا"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "أجهزة الاستشعار"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "عرض إطار شاشة الجهاز"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "عرض الأجهزة"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "إظهار المواقع الجغرافية"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "عرض الاستعلامات عن الوسائط"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "عرض أدوات القياس"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "إظهار أجهزة الاستشعار"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "مناطق زمنية"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "تبديل شريط أدوات الجهاز"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "اللمس"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "محاكاة مستخدم نشِط، مع قفل الشاشة"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "محاكاة مستخدم نشِط، مع فتح قفل الشاشة"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "محاكاة مستخدم غير نشِط لفترة قصيرة، مع قفل الشاشة"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "محاكاة مستخدم غير نشِط لفترة قصيرة، مع فتح قفل الشاشة"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "حذف أداة معالجة الحدث"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "النطاق"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "عرض طلبات الشبكة التي تتضمن العنوان Set-Cookie هذا في لوحة الشبكة"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{ملف تعريف ارتباط واحد}zero{# ملف تعريف ارتباط}two{ملفا تعريف ارتباط}few{# ملفات تعريف ارتباط}many{# ملف تعريف ارتباط}other{# ملف تعريف ارتباط}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{عنوان Set-Cookie واحد لم تتم معالجته}zero{# عنوان Set-Cookie لم تتم معالجته}two{عنوانا Set-Cookie لم تتم معالجتهما}few{# عناوين Set-Cookie لم تتم معالجتها}many{# عنوان Set-Cookie لم تتم معالجته}other{# عنوان Set-Cookie لم تتم معالجته}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "الاسم"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "تحذير"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "المشاكل المخفيّة"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "الموارد المتأثرة"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "نشاط موثوق به على الويب"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "إظهار جميع المشاكل المخفية"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "محظور"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "عنوان URL لوحدة Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "إظهار المشاكل المشابهة"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "إخفاء المشاكل المشابهة"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "إخفاء قائمة المشاكل"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "انتهاكات سياسة أمان المحتوى (CSP)"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "التوافق مع عناوين Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "اسم العارض"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "درجة الدقة"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "يخفي عناوين URL للبيانات: والكائنات الثنائية الكبيرة (blob):"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "عكس"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "يعمل هذا الإجراء على عكس فلتر البحث."
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "مَعلَمات سلسلة الطلب"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "الإحالة المسجّلة من خلال trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "سياسة المُحيل"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "عرض لوحة الأمان"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "إضافة موقع جغرافي..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "المواقع الجغرافية المخصَّصة"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "خط العرض"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "خط العرض"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "يجب أن يكون خط العرض رقمًا."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "يجب أن تكون قيمة خط العرض أكبر من أو تساوي {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "يجب أن تكون قيمة خط العرض أقل من أو تساوي {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "اللغة"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "يجب أن تحتوي اللغة على أحرف أبجدية."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "اسم الموقع الجغرافي"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "يجب ألّا يُترك حقل اسم الموقع الجغرافي فارغًا."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "يجب أن يكون عدد أحرف اسم الموقع الجغرافي أقل من {PH1} حرف."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "خط الطول"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "خط الطول"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "يجب أن يكون خط الطول رقمًا."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "يجب أن تكون قيمة خط الطول أكبر من أو تساوي {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "يجب أن تكون قيمة خط الطول أقل من أو تساوي {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "رقم تعريف المنطقة الزمنية"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "يجب أن يتضمن رقم تعريف المنطقة الزمنية أحرفًا أبجدية."
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "يمكنك تعديل القيمة باستخدام عجلة التمرير في الماوس أو مفتاحَي السهم المتّجه للأعلى أو السهم المتّجه للأسفل. {PH1}: ±10،‏ Shift: ±1،‏ Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ألفا)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (بيتا)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "الاتجاه المخصّص"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "تم ضبط اتجاه الجهاز على القيم alpha: {PH1} وbeta: {PH2} وgamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "شاشة الجهاز متّجهة إلى الأسفل"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "شاشة الجهاز متجهة إلى الأعلى"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "يجب تفعيل ميزة \"اتجاه الجهاز\" لتدويره."
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "خطأ"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "يتيح هذا الخيار فرض محاكاة حالة \"عدم الاستخدام من قِبل أي برنامج حاليًا\" المحدّدة."
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "فرض استخدام اللمس بدلاً من النقر"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (غاما)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "يسار الشاشة الأفقية"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "يسار الشاشة الأفقية"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "خط العرض"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "اللغة"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "الموقع الجغرافي"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "الموقع الجغرافي غير مُتاح."
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "خط الطول"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "إدارة"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "إدارة قائمة المواقع الجغرافية"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "عدم إلغاء الموقع الجغرافي وفقًا لنظام تحديد المواقع العالمي (GPS)"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "إيقاف"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "الاتجاه"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "أخرى…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "تجاوُز"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "عمودي"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "شاشة الجهاز عمودية مقلوبة"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "الإعدادات المسبقة"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "إعادة الضبط"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "إعادة ضبط اتجاه الجهاز"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "اضغط على مفتاح Shift مع السحب أفقيًا للتدوير حول المحور الصادي."
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "رقم تعريف المنطقة الزمنية"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "مقياس التسارع"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "اتجاه الجهاز"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "إدخال لمس مستند إلى الجهاز"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "محاكاة حالة أداة Idle Detector"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "فرض الإدخال باللمس مفعَّل"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "رصد الموقع الجغرافي"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "اللغة"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "اللغات"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "المواقع الجغرافية"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "ما مِن محاكاة غير مستخدَمة حاليًا"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "أجهزة الاستشعار"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "إظهار المواقع الجغرافية"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "إظهار أجهزة الاستشعار"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "مناطق زمنية"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "اللمس"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "محاكاة مستخدم نشِط، مع قفل الشاشة"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "محاكاة مستخدم نشِط، مع فتح قفل الشاشة"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "محاكاة مستخدم غير نشِط لفترة قصيرة، مع قفل الشاشة"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "محاكاة مستخدم غير نشِط لفترة قصيرة، مع فتح قفل الشاشة"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "إضافة نمط اسم ملف"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "تحذير:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "إضافة جهاز مخصّص..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "جهاز"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "اسم الجهاز"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "لا يمكن ترك حقل اسم الجهاز فارغًا."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "يجب أن يكون عدد أحرف اسم الجهاز أقل من {PH1} حرف."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "نسبة وحدات البكسل على الجهاز"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "الأجهزة التي يمكن محاكاتها"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "الارتفاع"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "سلسلة وكيل المستخدم"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "نوع وكيل المستخدم"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "العرض"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "إضافة علامة تجارية"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "البنية"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "بنية وحدة المعالجة المركزية (مثل x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "حذف {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "العلامة التجارية"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "العلامة التجارية {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "خصائص العلامة التجارية"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "الإصدار {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "العلامات التجارية"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "حذف"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "طراز الجهاز"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "خصائص الجهاز"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "إصدار المتصفّح الكامل"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "إصدار المتصفّح الكامل (الإصدار 87.0.4280.88 مثلاً)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "جهاز جوّال"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "لا يمكن تمثيل أحرف القيمة كسلسلة نصية من العناوين المنظّمة."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "النظام الأساسي"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "النظام الأساسي (على سبيل المثال، Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "خصائص النظام الأساسي"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "إصدار النظام الأساسي"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "تعديلات برنامج وكيل المستخدم"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "تحديث"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "تعديلات برنامج وكيل المستخدم هي بديل لسلسلة وكيل المستخدم التي توفِّر معلومات منظّمَة بشكل أكبر عن المتصفِّح والجهاز مع مراعاة الخصوصية بطريقة أفضل. انقر على الزر لمزيد من المعلومات."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "الإصدار"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "الأجهزة"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "عرض الأجهزة"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "الوثائق"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "إيقاف نقاط الإيقاف"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "تقليل وحدة CSS بقيمة 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "تقليل وحدة CSS بقيمة {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "رصد المسافة البادئة"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "الانتقال إلى الرمز"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "زيادة وحدة CSS بقيمة 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "زيادة وحدة CSS بقيمة {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "الانتقال إلى موضع التعديل التالي"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "الترتيب حسب"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "مشكلة بسبب تغيير قد يؤدي إلى عطل: قد تتوقّف الصفحة عن العمل في أي إصدار قادم من متصفِّح Chrome."
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{تغيير قد يؤدي إلى عطل واحد}zero{تغيير قد يؤدي إلى # عطل}two{تغيير قد يؤدي إلى عطلَين}few{تغيير قد يؤدي إلى # أعطال}many{تغيير قد يؤدي إلى # عطلاً}other{تغيير قد يؤدي إلى # عطل}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "مشكلة متعلقة بالتحسين: يمكن تحسين تحميل الصفحة."
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "المشكلة التي أدت إلى حدوث خطأ في الصفحة: الصفحة لا تعمل بشكل صحيح."
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{خطأ واحد في الصفحة}zero{عدد الأخطاء في الصفحة: #}two{عدد الأخطاء في الصفحة: #}few{عدد الأخطاء في الصفحة: #}many{عدد الأخطاء في الصفحة: #}other{عدد الأخطاء في الصفحة: #}}"
@@ -10758,7 +10827,7 @@
     "message": "انقر لعرض المشاكل في علامة تبويب \"المشاكل\""
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "انقر لفتح علامة تبويب \"المشاكل\" والاطّلاع على المشكلة \"{title}\""
+    "message": "انقر لفتح علامة تبويب \"المشاكل\" والاطّلاع على المشكلة: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "المشكلة غير متاحة في الوقت الحالي"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "الكل"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "محو الإدخال"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "مثال: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "تُظهر هذه الخلية المخطَّط المصدر (Secure، NonSecure)، الذي تم ضبط ملف تعريف الارتباط عليه. إذا كان المخطَّط غير معروف، ستظهر Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "بعد {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "الطابع الزمني لتاريخ الانتهاء هو {seconds}، والذي يتوافق مع تاريخ بعد {date}."
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "القيمة"

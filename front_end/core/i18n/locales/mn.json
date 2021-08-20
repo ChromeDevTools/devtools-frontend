@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Үл мэдэгдэх алдаа"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} өдөр"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} цаг"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} мин"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} мс"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} сек"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Цонх"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Ажилтан"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Хурдан 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Урьдчилсан хүсэлтэд боломжтой ямар ч контент байхгүй"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Энэ хүсэлтийг дахин чиглүүлсэн тул ямар ч контент боломжгүй"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets-н контентыг одоогоор дэмждэггүй"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Удаашруулаагүй"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1}-г ачаалж дууссан: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Тохируулах-Күүкиний толгой хэсгийг url-н хариунд үл хэрэгссэн: {PH1}. Күүкиний урт нь 4096 тэмдэгтээс бага эсвэл түүнтэй тэнцүү байх ёстой."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Удаан 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Энэ күүки \"Secure\" атрибуттай байсан бөгөөд холболт аюултай байсан тул үүнийг блоклосон."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Тохируулах-Күүкиний толгой хэсгийг url-н хариунд үл хэрэгссэн: {PH1}. Күүкиний урт нь 4096 тэмдэгтээс бага эсвэл түүнтэй тэнцүү байх ёстой."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Энэ холболтын схемд күүки хадгалахыг зөвшөөрөөгүй."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF форматыг идэвхгүй болгох"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Завсрын санах ойг идэвхгүй болгох (DevTools-г нээлттэй үед)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript-г идэвхгүй болгох"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Үндсэн"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js-д зориулагдсан DevTools-г нээх"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Вебийн чухал хэмжүүр"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit амжилтгүй болсон: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Төхөөрөмжийн пикселийн харьцаа нь тоо эсвэл хоосон байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Төхөөрөмжийн пикселийн харьцаа нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Төхөөрөмжийн пикселийн харьцаа нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Өндөр нь тоо байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Өндөр нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Өндөр нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Өргөн нь тоо байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Өргөн нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Өргөн нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI дэлгэцтэй зөөврийн компьютер"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI дэлгэцтэй зөөврийн компьютер"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Мэдрэгчтэй зөөврийн компьютер"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Контент цуглуулж байна…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Heavy Ad Intervention-г зохицуулах"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Огцом өөрчлөлтийн асуудал: Chrome-н удахгүй гарах хувилбарт энэ хуудас ажиллахаа больж магадгүй"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Сайжруулалтын асуудал: хуудсыг сайжруулах боломж байна"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Хуудасны алдааны асуудал: хуудас зохих ёсоор ажиллахгүй байна"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Өнгө болон ялгарлын хандалт"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "аюултай"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets-г тайлбарласан"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Схемээр дүүрэн ижил сайт хэрхэн ажилладаг вэ?"
   },
@@ -1284,7 +1350,7 @@
     "message": "Итгэмжлэгдсэн вебийн үйл ажиллагааг ашиглан PWA-н чанарын шалгуурт хийсэн өөрчлөлтүүд"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm модулийн эх хооронд хуваалцахыг цуцалсан"
+    "message": "Ижил эхэд хуваалцаж буй Wasm модулийг хязгаарлаж байна"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<нэргүй>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} идэвхжүүлэхийг хүлээж байна"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Бүх бүртгэлийг харах"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1}-н Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Үйлчилгээний ажилчид"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Захиалгат хадгалах сангийн квотыг дуурайлгах"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Хадгалах сангийн квот Нууцлалын горимд хязгаарлагдмал"
@@ -2949,7 +3021,7 @@
     "message": "Гуравдагч тал"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Дэд домэйнүүдийг тааруулах"
+    "message": "Дэд домэйн тааруулах"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Эх"
@@ -2964,7 +3036,7 @@
     "message": "Токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "токенууд"
+    "message": "{PH1} токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ашиглалтын хязгаарлалт"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Сануулга. # удаа давтсан}other{Сануулга. # удаа давтсан}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Энэ хажуугийн цэсийг Chrome-н ирээдүйн хувилбарт хасна. Хэрэв танд санал хүсэлт байвал бидэнд дараахаар мэдэгдэнэ үү"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "асуудал хянагч"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Түүхийн автомат гүйцээлт"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# байт, {percentage}}other{# байт, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} байт ({PH2} %) нь (хараахан) гүйцэтгээгүй JavaScript-н блокт хамаарч байна."
+    "message": "{PH1} байт ({PH2}) нь (хараахан) гүйцэтгээгүй JavaScript-н блокт хамаарч байна."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} байт ({PH2} %) нь дор хаяж нэг удаа гүйцэтгэсэн JavaScript-н блокт хамаарч байна."
+    "message": "{PH1} байт ({PH2}) нь дор хаяж нэг удаа гүйцэтгэсэн JavaScript-н блокт хамаарч байна."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} байт ({PH2} %) нь (хараахан) гүйцэтгээгүй функцэд хамаарч байна."
+    "message": "{PH1} байт ({PH2}) нь (хараахан) гүйцэтгээгүй функцэд хамаарч байна."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} байт ({PH2} %) нь дор хаяж нэг удаа гүйцэтгэсэн функцэд хамаарч байна."
+    "message": "{PH1} байт ({PH2}) нь дор хаяж нэг удаа гүйцэтгэсэн функцэд хамаарч байна."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Файлын {PH1} %-ийг ашиглаагүй. Файлын {PH2} %-ийг ашигласан"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Нийт байт"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath-г хуулах"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Элементийг таслах"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Таслах"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Элементийг устгах"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Элементийг нуух"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Элементийг буулгах"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Буулгах"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Харагдах хүртэл гүйлгэх"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Стекийн мөрийг харуул"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Хэрэглэгчийн агентын DOM сүүдрийг харуулах"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Стекийн мөр"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Үг багтаах"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Төхөөрөмжийн пикселийн харьцаа нь тоо эсвэл хоосон байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Төхөөрөмжийн пикселийн харьцаа нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Төхөөрөмжийн пикселийн харьцаа нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Өндөр нь тоо байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Өндөр нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Өндөр нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Өргөн нь тоо байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Өргөн нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Өргөн нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Төхөөрөмжийн пикселийн харьцаа нэмэх"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Төхөөрөмжийн төрөл"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Хэмжээс"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Засах…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Таблет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Захиалгат төхөөрөмж нэмэх..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Төхөөрөмж"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Төхөөрөмжийн нэр"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Төхөөрөмжийн нэр хоосон байж болохгүй."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Төхөөрөмжийн нэр {PH1} тэмдэгтээс бага байх ёстой."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Төхөөрөмжийн пикселийн харьцаа"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Эмуляц хийсэн төхөөрөмжүүд"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Өндөр"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Хэрэглэгчийн агентын мөр"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Хэрэглэгчийн агентын төрөл"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Өргөн"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI дэлгэцтэй зөөврийн компьютер"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI дэлгэцтэй зөөврийн компьютер"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Мэдрэгчтэй зөөврийн компьютер"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Байршил нэмэх..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Захиалгат байршил"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Өргөрөг"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Өргөрөг"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Өргөрөг нь тоо байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Өргөрөг нь {PH1}-тай тэнцүү эсвэл үүнээс илүү байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Өргөрөг нь {PH1}-тай тэнцүү эсвэл үүнээс бага байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Хэл болон улсын код"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Хэл болон улсын код нь цагаан толгойн тэмдэгтүүд агуулах ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Байршлын нэр"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Байршлын нэр хоосон байх боломжгүй"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Байршлын нэр {PH1} тэмдэгтээс бага байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Уртраг"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Уртраг"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Уртраг нь тоо байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Уртраг нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Уртраг нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Цагийн бүсийн ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Цагийн бүсийн ID-д цагаан толгойн тэмдэгтүүд агуулах ёстой"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Эх кодод харуулах"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Хулганын гүйлгэгч эсвэл дээш/доош товчоор тохируулна уу. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (альфа)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (бета)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Захиалгат чиглэл"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Төхөөрөмжийн чиглэлийг альфа болгож тохируулсан: {PH1}, бета: {PH2}, гамма: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Дэлгэц доош харсан"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Дэлгэц дээш харсан байна"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Эргүүлэхийн тулд чиглэлийг идэвхжүүлнэ үү"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Алдаа"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Сонгосон идэвхгүй төлөвийг эмуляц хийхийг хүчилнэ"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Товшилтын оронд хүрэлтийг хүчилнэ"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (гамма)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Зүүн тийш хэвтээ"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Баруун тийш хэвтээ"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Өргөрөг"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Хэл болон улсын код"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Байршил"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Байршил боломжгүй"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Уртраг"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Удирдах"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Байршлын жагсаалтыг удирдах"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Даралт байхгүй"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Унтраах"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Чиглэл"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Бусад…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Дарна"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Босоо"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Босоо урвуу чиглэлтэй"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Урьдчилсан тохируулга"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Шинэчлэх"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Төхөөрөмжийн чиглэлийг шинэчлэх"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y-тэнхлэгийн эргэн тойронд эргүүлэхийн тулд Shift дээр дарж, босоо чирнэ үү"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Цагийн бүсийн ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Брэнд нэмэх"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архитектур"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Архитектур (ж.нь x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1}-г устгах"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Брэнд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "{PH1} брэнд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Брэндийн өмч"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Хувилбар {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брэндүүд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Устгах"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Төхөөрөмжийн загвар"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Төхөөрөмжийн өмч"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Хөтчийн бүтэн хувилбар"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Хөтчийн бүтэн хувилбар (ж.нь 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Мобайл"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Бүтэцлэгдсэн толгой хэсгийн мөр байдлаар төлөөлөх боломжгүй."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Платформ (ж.нь Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Платформын өмч"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Платформын хувилбар"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Хэрэглэгчийн агентын заавар"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Шинэчлэх"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Хэрэглэгчийн агентын клиентийн заавар нь хөтөч болон төхөөрөмжийг бүртгэлийн илүү сайн нууцлалын тусламжтай илүү бүтэцлэгдсэн байдлаар тодорхойлдог хэрэглэгчийн агентын өөр хувилбар юм. Нэмэлт мэдээлэл авахын тулд товчлуурыг товшино уу."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Хувилбар"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "хурдатгал хэмжигч"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Бүрэн хэмжээтэй дэлгэцийн агшин авах"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "төхөөрөмж"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "төхөөрөмжийн чиглэл"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Төхөөрөмжид тулгуурласан"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Төхөөрөмж"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Идэвхгүй илрүүлэгчийн төлөвийг эмуляц хийх"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Хүчлэхийг идэвхжүүлсэн"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "геолокаци"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Төхөөрөмжийн хүрээг нуу"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Шугамыг нуу"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "хэл болон улсын код"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "хэл болон улсын код"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Байршил"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Идэвхгүй эмуляц байхгүй"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Мэдрэгчид"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Төхөөрөмжийн хүрээг харуул"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Төхөөрөмжүүдийг харуул"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Байршлыг харуулах"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Медиа асуулгыг харуул"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Шугамыг харуулах"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Мэдрэгчийг харуулах"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "цагийн бүсүүд"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Төхөөрөмжийн самбарыг асаах/унтраах"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Хүрэх"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Хэрэглэгч идэвхтэй байна. Дэлгэцийг түгжсэн"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Хэрэглэгч идэвхтэй байна. Дэлгэцийн түгжээг тайлсан"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Хэрэглэгч идэвхгүй байна. Дэлгэцийг түгжсэн"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Хэрэглэгч идэвхгүй байна. Дэлгэцийн түгжээг тайлсан"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Үйл явдал сонсогчийг устгах"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Домэйн"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Сүлжээний самбарт энэ Set-Cookie толгой хэсгийг багтаасан сүлжээний хүсэлтийг харуулах"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# күүки}other{# күүки}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Raw Set-Cookie толгой хэсэг}other{# Raw Set-Cookie толгой хэсэг}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Нэр"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "сануулга"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Нуусан асуудал"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Нөлөөлсөн нөөц"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Итгэмжит вебийн үйл ажиллагаа"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Бүх нуусан асуудлыг ил болгох"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блоклосон"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm модулийн URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Үүнтэй төстэй асуудлыг ил болгох"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Үүнтэй төстэй асуудлыг нуух"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Асуудлын цэсийг нуух"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP зөрчил"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range толгой хэсгийн дэмжлэг"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Рэндэрлэгчийн нэр"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Нягтрал"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Өгөгдлийг нууна: мөн хоёртын том объект: URL-ууд"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Урвуулах"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Хайлтын шүүлтүүрийг урвуулна"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах"
   },
@@ -6564,7 +6315,7 @@
     "message": "Завсрын санах ойг идэвхгүй болгох"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Завсрын санах ойг идэвхгүй болгох (DevTools нээлттэй үед)"
+    "message": "Завсрын санах ойг идэвхгүй болгох (DevTools-г нээлттэй үед)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Дахин ачаалах / шилжих үед хуудсан дээрх логийг бүү арилга"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Асуулгын мөрийн параметр"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data-тай бүртгэсэн атрибут: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Хандуулагчийн бодлого"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Аюулгүй байдлыг харуулах"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Байршил нэмэх..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Захиалгат байршил"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Өргөрөг"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Өргөрөг"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Өргөрөг нь тоо байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Өргөрөг нь {PH1}-тай тэнцүү эсвэл үүнээс илүү байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Өргөрөг нь {PH1}-тай тэнцүү эсвэл үүнээс бага байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Хэл болон улсын код"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Хэл болон улсын код нь цагаан толгойн тэмдэгтүүд агуулах ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Байршлын нэр"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Байршлын нэр хоосон байх боломжгүй"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Байршлын нэр {PH1} тэмдэгтээс бага байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Уртраг"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Уртраг"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Уртраг нь тоо байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Уртраг нь {PH1}-тай тэнцүү эсвэл түүнээс их байх ёстой"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Уртраг нь {PH1}-тай тэнцүү эсвэл түүнээс бага байх ёстой."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Цагийн бүсийн ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Цагийн бүсийн ID-д цагаан толгойн тэмдэгтүүд агуулах ёстой"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Хулганын гүйлгэгч эсвэл дээш/доош товчоор тохируулна уу. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (альфа)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (бета)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Захиалгат чиглэл"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Төхөөрөмжийн чиглэлийг альфа болгож тохируулсан: {PH1}, бета: {PH2}, гамма: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Дэлгэц доош харсан"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Дэлгэц дээш харсан байна"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Эргүүлэхийн тулд чиглэлийг идэвхжүүлнэ үү"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Алдаа"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Сонгосон идэвхгүй төлөвийг эмуляц хийхийг хүчилнэ"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Товшилтын оронд хүрэлтийг хүчилнэ"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (гамма)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Зүүн тийш хэвтээ"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Баруун тийш хэвтээ"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Өргөрөг"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Хэл болон улсын код"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Байршил"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Байршил боломжгүй"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Уртраг"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Удирдах"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Байршлын жагсаалтыг удирдах"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Даралт байхгүй"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Унтраах"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Чиглэл"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Бусад…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Дарна"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Босоо"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Босоо урвуу чиглэлтэй"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Урьдчилсан тохируулга"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Шинэчлэх"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Төхөөрөмжийн чиглэлийг шинэчлэх"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y-тэнхлэгийн эргэн тойронд эргүүлэхийн тулд Shift дээр дарж, босоо чирнэ үү"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Цагийн бүсийн ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "хурдатгал хэмжигч"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "төхөөрөмжийн чиглэл"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Төхөөрөмжид тулгуурласан"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Идэвхгүй илрүүлэгчийн төлөвийг эмуляц хийх"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Хүчлэхийг идэвхжүүлсэн"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "геолокаци"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "хэл болон улсын код"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "хэл болон улсын код"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Байршил"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Идэвхгүй эмуляц байхгүй"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Мэдрэгчид"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Байршлыг харуулах"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Мэдрэгчийг харуулах"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "цагийн бүсүүд"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Хүрэх"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Хэрэглэгч идэвхтэй байна. Дэлгэцийг түгжсэн"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Хэрэглэгч идэвхтэй байна. Дэлгэцийн түгжээг тайлсан"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Хэрэглэгч идэвхгүй байна. Дэлгэцийг түгжсэн"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Хэрэглэгч идэвхгүй байна. Дэлгэцийн түгжээг тайлсан"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Файлын нэрийн загвар нэмэх"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "САНУУЛГА:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Захиалгат төхөөрөмж нэмэх..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Төхөөрөмж"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Төхөөрөмжийн нэр"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Төхөөрөмжийн нэр хоосон байж болохгүй."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Төхөөрөмжийн нэр {PH1} тэмдэгтээс бага байх ёстой."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Төхөөрөмжийн пикселийн харьцаа"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Эмуляц хийсэн төхөөрөмжүүд"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Өндөр"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Хэрэглэгчийн агентын мөр"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Хэрэглэгчийн агентын төрөл"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Өргөн"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Брэнд нэмэх"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Архитектур"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Архитектур (ж.нь x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1}-г устгах"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Брэнд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} брэнд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Брэндийн өмч"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Хувилбар {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Брэндүүд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Устгах"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Төхөөрөмжийн загвар"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Төхөөрөмжийн өмч"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Хөтчийн бүтэн хувилбар"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Хөтчийн бүтэн хувилбар (ж.нь 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобайл"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Бүтэцлэгдсэн толгой хэсгийн мөр байдлаар төлөөлөх боломжгүй."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформ (ж.нь Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Платформын өмч"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Платформын хувилбар"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Хэрэглэгчийн агентын заавар"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Шинэчлэх"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Хэрэглэгчийн агентын клиентийн заавар нь хөтөч болон төхөөрөмжийг бүртгэлийн илүү сайн нууцлалын тусламжтай илүү бүтэцлэгдсэн байдлаар тодорхойлдог хэрэглэгчийн агентын өөр хувилбар юм. Нэмэлт мэдээлэл авахын тулд товчлуурыг товшино уу."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Хувилбар"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Төхөөрөмж"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Төхөөрөмжүүдийг харуул"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Баримтжуулалт"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Хугарлын цэгүүдийг идэвхгүй болгох"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS нэгжийг 10-аар бууруулах"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS нэгжийг {PH1}-р бууруулах"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Догол мөрийг илрүүлэх"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Тэмдэг рүү очих"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS нэгжийг 10-аар өсгөх"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS нэгжийг {PH1}-р өсгөх"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Дараагийн засах байршил руу очих"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Дараахаар эрэмбэлэх"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Огцом өөрчлөлтийн асуудал: Chrome-н удахгүй гарах хувилбарт энэ хуудас ажиллахаа больж магадгүй"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# огцом өөрчлөлт}other{# огцом өөрчлөлт}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Сайжруулалтын асуудал: хуудсыг сайжруулах боломж байна"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Хуудасны алдааны асуудал: хуудас зохих ёсоор ажиллахгүй байна"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# хуудасны алдаа}other{# хуудасны алдаа}}"
@@ -10758,7 +10827,7 @@
     "message": "Асуудлыг асуудлын табд харуулахын тулд товшино уу"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Асуудлын табыг нээхийн тулд товшиж, '{title}' асуудлыг харуулна уу"
+    "message": "Асуудлын табыг нээж, дараах асуудлыг харуулахын тулд товшино уу: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Энэ удаад асуудал боломжгүй байна"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Бүгд"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Оролтыг устгах"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ж.нь /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Күүкиг тохируулсан байсан эх схемийг (Secure, NonSecure) харуулна. Хэрэв схем тодорхойгүй бол энэ нь Unset-г харуулна."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}-с хойш"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Дуусах хугацаа тэмдэглэгч нь {date}-с хойших огноотой харгалзах {seconds} юм"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Утга"

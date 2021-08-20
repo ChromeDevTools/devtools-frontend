@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Ismeretlen hiba"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} nap"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} óra"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} perc"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} mp"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Ablak"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Gyors 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Nem áll rendelkezésre tartalom az előzetes kérelemhez"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nincs rendelkezésre álló tartalom, mert a kérelem át lett irányítva"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "A WebSockettel kapcsolatos tartalmak jelenleg nem támogatottak"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Nincs korlátozva"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} – befejezett betöltés: {PH2} „{PH3}”."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "A Set-Cookie fejléce figyelmen kívül lett hagyva a következő URL-ről származó válaszban: {PH1}. A cookie-nak legfeljebb 4096 karakterből kell állnia."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Lassú 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Ez a cookie le lett tiltva, mert rendelkezett a(z) „Secure” attribútummal, és a kapcsolat nem volt biztonságos."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "A Set-Cookie fejléce figyelmen kívül lett hagyva a következő URL-ről származó válaszban: {PH1}. A cookie-nak legfeljebb 4096 karakterből kell állnia."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "A kapcsolat sablonja számára nem engedélyezett a cookie-k tárolása."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF-formátum letiltása"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Gyorsítótár letiltása (ha a DevTools meg van nyitva)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript letiltása"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Elsődleges"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "A következőhöz tartozó DevTools megnyitása: Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Alapvető webes vitals-mutatók"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "A(z) LiveEdit nem sikerült: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Az eszköz képpontarányának számnak vagy üres mezőnek kell lennie."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Az eszköz képpontarányának legalább a következőnek kell lennie: {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Az eszköz képpontaránya legfeljebb {PH1} lehet."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "A magasság csak számérték lehet."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "A magasság legyen nagyobb vagy egyenlő, mint {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "A magasság legyen kisebb vagy egyenlő, mint {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "A szélesség csak számérték lehet."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "A szélesség legyen nagyobb vagy egyenlő, mint {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "A szélesség legfeljebb {PH1} lehet."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Laptop HiDPI-képernyővel"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Laptop MDPI-képernyővel"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Érintős laptop"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Tartalom összegyűjtése…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Túl nagy hirdetési beavatkozások kezelése"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Kompatibilitástörő változással kapcsolatos probléma: Előfordulhat, hogy az oldal nem működik majd a közelgő Chrome-verzióban"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Fejlesztési probléma: Lehetőség van az oldal javítására."
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Oldalhibával kapcsolatos probléma: az oldal nem megfelelően működik."
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Kisegítő színek és kontraszt"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "nem biztonságos"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "A(z) First-Party Sets magyarázata"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "A sémaalapú azonos webhely működése"
   },
@@ -1284,7 +1350,7 @@
     "message": "A Trusted Web Activityt használó PWA-kra vonatkozó minőségi feltételek módosításai"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "A Wasm-modul eredeteken átívelő megosztásának megszüntetése"
+    "message": "A Wasm-modul megosztásának korlátozása ugyanarra az eredetre"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<névtelen>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} várakozik az aktiválásra"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Az összes regisztráció megtekintése"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker a következőhöz: {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Egyéni tárhelykvóta szimulálása"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "A tárolási kvóta korlátozva van inkognitó módban"
@@ -2949,7 +3021,7 @@
     "message": "Harmadik fél"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Aldomainek egyeztetése"
+    "message": "Aldomain-egyeztetés"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Eredet"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "token"
+    "message": "{PH1} token"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Használati korlátozás"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{# alkalommal ismétlődő figyelmeztetés}other{# alkalommal ismétlődő figyelmeztetés}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Ezt az oldalsávot a Chrome egy későbbi verziójában eltávolítjuk. Ha visszajelzést szeretne küldeni, a következő segítségével teheti meg:"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "problémakövető"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Automatikus kiegészítés az előzményekből"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bájt, {percentage}}other{# bájt, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bájt ({PH2} %) (még) nem végrehajtott JavaScript-tömbökhöz tartozik."
+    "message": "{PH1} bájt ({PH2}) (még) nem végrehajtott JavaScript-tömbökhöz tartozik."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bájt ({PH2} %) olyan JavaScript-blokkokhoz tartozik, amelyeket legalább egyszer végrehajtottak."
+    "message": "{PH1} bájt ({PH2}) olyan JavaScript-tömbökhöz tartozik, amelyeket legalább egyszer végrehajtottak."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bájt ({PH2} %) (még) nem végrehajtott funkciókhoz tartozik."
+    "message": "{PH1} bájt ({PH2}) (még) nem végrehajtott függvényekhez tartozik."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bájt ({PH2} %) olyan függvényekhez tartozik, amelyeket legalább egyszer végrehajtottak."
+    "message": "{PH1} bájt ({PH2}) olyan függvényekhez tartozik, amelyeket legalább egyszer végrehajtottak."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1}% a fájlból használatlan, {PH2}% a fájlból felhasználva"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Összes bájt"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath másolása"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Elem kivágása"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Kivágás"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Elem törlése"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Elem elrejtése"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Elem beillesztése"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Beillesztés"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Görgetés a megjelenítési területre"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Veremkivonat megjelenítése"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Felhasználóiügynök-árnyék (DOM) megjelenítése"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Veremkivonat"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Szavak tördelése"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Az eszköz képpontarányának számnak vagy üres mezőnek kell lennie."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Az eszköz képpontarányának legalább a következőnek kell lennie: {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Az eszköz képpontaránya legfeljebb {PH1} lehet."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "A magasság csak számérték lehet."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "A magasság legyen nagyobb vagy egyenlő, mint {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "A magasság legyen kisebb vagy egyenlő, mint {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "A szélesség csak számérték lehet."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "A szélesség legyen nagyobb vagy egyenlő, mint {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "A szélesség legfeljebb {PH1} lehet."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Eszköz-képpontarány hozzáadása"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Eszköztípus"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Méretek"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Szerkesztés…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Táblagép"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Egyéni eszköz hozzáadása…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Eszköz"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Eszköz neve"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Az eszköznév nem lehet üres."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Az eszköz nevének kevesebb karakterből kell állnia, mint {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Eszköz képpontaránya"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulált eszközök"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Magasság"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Felhasználói ügynök karakterlánca"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Felhasználói ügynök típusa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Szélesség"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop HiDPI-képernyővel"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop MDPI-képernyővel"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Érintős laptop"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Hely hozzáadása…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Egyéni helyek"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Szélesség"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Szélesség"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Szélességként számot kell megadni"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "A szélesség minimális értéke {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Az hosszúség legfeljebb {PH1} lehet."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Nyelv- és országkód"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "A nyelv- és országkódnak betűket kell tartalmaznia"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Hely neve"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "A hely neve nem lehet üres"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "A hely nevének kevesebb karakterből kell állnia, mint {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Hosszúság"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Hosszúság"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Hosszúságként számot kell megadni"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "A hosszúság minimális értéke {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Az hosszúság legyen legfeljebb {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Időzóna-azonosító"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Az időzóna-azonosítónak betűket kell tartalmaznia"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Felfedés a forráskódban"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "A korrigálás az egérgörgővel vagy a fel/le gombbal lehetséges. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (béta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Egyéni tájolás"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Az eszköz tájolása a következőre van állítva: alfa: {PH1}, béta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Lefelé néző képernyő"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Felfelé néző képernyő"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Tájolás elforgatásának engedélyezése"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Hiba"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Kényszeríti a kiválaszott tétlen állapot emulációját"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Kattintás helyett érintés kényszerítése"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Balra néző, fekvő"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Jobbra néző, fekvő"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Szélesség"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Nyelv- és országkód"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Hely"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "A hely nem áll rendelkezésre"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Hosszúság"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Kezelés"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Helyek listájának a kezelése"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Nincs felülbírálás"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Ki"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Tájolás"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Egyéb…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Felülbírálások"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Álló"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Fejjel lefelé álló"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Előre beállított értékek"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Visszaállítás"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Eszköz tájolásának visszaállítása"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Az y-tengely mentén való forgatáshoz: Shift + vízszintes húzás"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Időzóna-azonosító"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Márka hozzáadása"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architektúra"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Architektúra (pl. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} törlése"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Márka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Márka: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Márkatulajdonságok"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Verzió: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Márkák"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Törlés"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Az eszköz modellje"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Eszköztulajdonságok"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Teljes böngészős verzió"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Teljes böngészőverzió (pl. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Nem képviselhető strukturált fejléckarakterláncként."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Operációs rendszer"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platform (pl. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Operációs rendszerrel kapcsolatos tulajdonságok"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Platformverzió"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Felhasználói ügynök ügyféltippjei"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Frissítés"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "A felhasználói ügynök ügyféltippjei alternatívát kínálnak a felhasználói ügynök karakterláncához, és strukturáltabban azonosítják a böngészőt és az eszközt, jobb adatvédelmi megoldásokkal. További információért kattintson a gombra."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Verzió"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "gyorsulásmérő"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Teljes méretű képernyőkép készítése"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "eszköz"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "eszköz tájolása"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Eszközalapú"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Eszközök"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Az Idle Detector állapotának emulálása"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Kényszerített engedélyezés"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "földrajzihely-meghatározás"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Eszközkeret elrejtése"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Vonalzók elrejtése"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "nyelv- és országkód"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "nyelv- és országkódok"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Földrajzi helyek"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Ne emuláljon tétlen állapotot"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Érzékelők"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Eszközkeret megjelenítése"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Eszközök megjelenítése"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Helyek megjelenítése"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Médialekérdezések megjelenítése"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Vonalzók megjelenítése"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Érzékelők megjelenítése"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "időzónák"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Eszköz eszköztárának be-/kikapcsolása"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Érintés"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Aktív felhasználó, zárolt képernyő"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Aktív felhasználó, feloldott képernyő"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Tétlen felhasználó, zárolt képernyő"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Tétlen felhasználó, feloldott képernyő"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Eseményfigyelő törlése"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domain"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Azoknak a hálózati kérelmeknek a megjelenítése a hálózati panelen, amelyek tartalmazzák ezt a(z) Set-Cookie fejlécet"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}other{# cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 nyers Set-Cookie fejléc}other{# nyers Set-Cookie fejléc}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Név"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "figyelmeztetés"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Rejtett problémák"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Érintett források"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Megbízható internetes tevékenységek"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Az összes elrejtett probléma megjelenítése"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "letiltva"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm-modul URL-je"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Az ehhez hasonló problémák megjelenítése"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Az ehhez hasonló problémák elrejtése"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Problémák elrejtése menü"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-visszaélések"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range fejléc támogatása"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Megjelenítő neve"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Felbontás"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "A data: és a blob: paramétert tartalmazó URL-ek elrejtése"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Invertálás"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Megfordítja a keresési szűrőt"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "További információ"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Lekérdezési karakterlánc paraméterei"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Rögzített hozzárendelés trigger-data elemmel: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Hivatkozói irányelv"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Biztonság megjelenítése"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Hely hozzáadása…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Egyéni helyek"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Szélesség"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Szélesség"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Szélességként számot kell megadni"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "A szélesség minimális értéke {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Az hosszúség legfeljebb {PH1} lehet."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Nyelv- és országkód"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "A nyelv- és országkódnak betűket kell tartalmaznia"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Hely neve"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "A hely neve nem lehet üres"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "A hely nevének kevesebb karakterből kell állnia, mint {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Hosszúság"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Hosszúság"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Hosszúságként számot kell megadni"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "A hosszúság minimális értéke {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Az hosszúság legyen legfeljebb {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Időzóna-azonosító"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Az időzóna-azonosítónak betűket kell tartalmaznia"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "A korrigálás az egérgörgővel vagy a fel/le gombbal lehetséges. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (béta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Egyéni tájolás"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Az eszköz tájolása a következőre van állítva: alfa: {PH1}, béta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Lefelé néző képernyő"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Felfelé néző képernyő"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Tájolás elforgatásának engedélyezése"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Hiba"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Kényszeríti a kiválaszott tétlen állapot emulációját"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Kattintás helyett érintés kényszerítése"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Balra néző, fekvő"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Jobbra néző, fekvő"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Szélesség"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Nyelv- és országkód"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Hely"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "A hely nem áll rendelkezésre"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Hosszúság"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Kezelés"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Helyek listájának a kezelése"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Nincs felülbírálás"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Ki"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Tájolás"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Egyéb…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Felülbírálások"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Álló"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Fejjel lefelé álló"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Előre beállított értékek"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Visszaállítás"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Eszköz tájolásának visszaállítása"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Az y-tengely mentén való forgatáshoz: Shift + vízszintes húzás"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Időzóna-azonosító"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "gyorsulásmérő"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "eszköz tájolása"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Eszközalapú"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Az Idle Detector állapotának emulálása"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Kényszerített engedélyezés"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "földrajzihely-meghatározás"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "nyelv- és országkód"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "nyelv- és országkódok"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Földrajzi helyek"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Ne emuláljon tétlen állapotot"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Érzékelők"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Helyek megjelenítése"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Érzékelők megjelenítése"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "időzónák"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Érintés"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Aktív felhasználó, zárolt képernyő"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Aktív felhasználó, feloldott képernyő"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Tétlen felhasználó, zárolt képernyő"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Tétlen felhasználó, feloldott képernyő"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Fájlnévminta hozzáadása"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "FIGYELEM:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Egyéni eszköz hozzáadása…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Eszköz"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Eszköz neve"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Az eszköznév nem lehet üres."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Az eszköz nevének kevesebb karakterből kell állnia, mint {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Eszköz képpontaránya"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emulált eszközök"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Magasság"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Felhasználói ügynök karakterlánca"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Felhasználói ügynök típusa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Szélesség"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Márka hozzáadása"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Architektúra"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Architektúra (pl. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} törlése"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Márka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Márka: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Márkatulajdonságok"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Verzió: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Márkák"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Törlés"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Az eszköz modellje"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Eszköztulajdonságok"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Teljes böngészős verzió"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Teljes böngészőverzió (pl. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Nem képviselhető strukturált fejléckarakterláncként."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Operációs rendszer"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platform (pl. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Operációs rendszerrel kapcsolatos tulajdonságok"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Platformverzió"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Felhasználói ügynök ügyféltippjei"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Frissítés"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "A felhasználói ügynök ügyféltippjei alternatívát kínálnak a felhasználói ügynök karakterláncához, és strukturáltabban azonosítják a böngészőt és az eszközt, jobb adatvédelmi megoldásokkal. További információért kattintson a gombra."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Verzió"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Eszközök"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Eszközök megjelenítése"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentáció"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Töréspontok deaktiválása"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS-egység csökkentése ennyivel: 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS-egység csökkentése ennyivel: {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Behúzás észlelése"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Ugrás szimbólumhoz"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS-egység növelése ennyivel: 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS-egység növelése ennyivel: {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Ugrás a következő szerkesztési helyre"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rendezés:"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Kompatibilitástörő változással kapcsolatos probléma: Előfordulhat, hogy az oldal nem működik majd a közelgő Chrome-verzióban"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# kompatibilitástörő változás}other{# kompatibilitástörő változás}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Fejlesztési probléma: Lehetőség van az oldal javítására."
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Oldalhibával kapcsolatos probléma: az oldal nem megfelelően működik."
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# hiba az oldalon}other{# hiba az oldalon}}"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Összes"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Beírt szöveg törlése"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "pl. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Azt a forrássablont (Secure, NonSecure) mutatja, amelyen be lett állítva a cookie. Ha séma ismeretlen, a(z) Unset érték látható."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} után"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "A lejárat időbélyege {seconds}, amely {date} utáni dátumnak felel meg"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Érték"

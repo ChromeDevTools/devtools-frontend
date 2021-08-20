@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "അജ്ഞാതമായ പിശക്"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ദിവസം"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} മണിക്കൂർ"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} മിനിറ്റ്"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} സെക്കന്റ്"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "വിന്‍ഡോ"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "വർക്കർ"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "വേഗതയേറിയ 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "പ്രീഫ്ലൈറ്റ് അഭ്യർത്ഥനയ്ക്ക് ഉള്ളടക്കമൊന്നും ലഭ്യമല്ല"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "ഈ അഭ്യർത്ഥന റീഡയറക്റ്റ് ചെയ്‌തതിനാൽ ഉള്ളടക്കമൊന്നും ലഭ്യമല്ല"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets-നുള്ള ഉള്ളടക്കം നിലവിൽ പിന്തുണയ്ക്കുന്നില്ല"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "ത്രോട്ടിലിംഗ് ഇല്ല"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} ലോഡ് ചെയ്യൽ പൂർത്തിയായി: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "ഇനിപ്പറയുന്ന URL-ൽ നിന്നുള്ള പ്രതികരണം കാരണം Set-Cookie ഹെഡ്ഡർ അവഗണിച്ചു: {PH1}. കുക്കിയുടെ നീളം 4096 പ്രതീകങ്ങളോ അതിൽ കുറവോ ആയിരിക്കണം."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "വേഗത കുറഞ്ഞ 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "\"Secure\" ആട്രിബ്യൂട്ട് ഉള്ളതിനാലും കണക്ഷൻ സുരക്ഷിതമല്ലാത്തതിനാലും ഈ കുക്കി ബ്ലോക്ക് ചെയ്തു."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "ഇനിപ്പറയുന്ന URL-ൽ നിന്നുള്ള പ്രതികരണം കാരണം Set-Cookie ഹെഡ്ഡർ അവഗണിച്ചു: {PH1}. കുക്കിയുടെ നീളം 4096 പ്രതീകങ്ങളോ അതിൽ കുറവോ ആയിരിക്കണം."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "ഈ കണക്ഷന്റെ സ്കീമിന് കുക്കികൾ സംഭരിക്കാൻ അനുവാദമില്ല."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF ഫോർമാറ്റ് പ്രവർത്തനരഹിതമാക്കുക"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "കാഷെ പ്രവർത്തനരഹിതമാക്കുക (DevTools ഓണായിരിക്കുമ്പോൾ)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript പ്രവർത്തനരഹിതമാക്കുക"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "പ്രധാനപ്പെട്ടത്"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js എന്നതിന് സമർപ്പിത DevTools തുറക്കുക"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "കോർ വെബ് വൈറ്റലുകൾ"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit പരാജയപ്പെട്ടു: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം ഒരു സംഖ്യ അല്ലെങ്കിൽ ശൂന്യം ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "ഉയരം ഒരു സംഖ്യ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "ഉയരം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "ഉയരം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "വീതി ഒരു സംഖ്യ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "വീതി {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "വീതി {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI സ്‌ക്രീൻ ഉള്ള ലാപ്ടോപ്പ്"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI സ്‌ക്രീൻ ഉള്ള ലാപ്ടോപ്പ്"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "ടച്ച് ഉള്ള ലാപ്ടോപ്പ്"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "ഉള്ളടക്കം ശേഖരിക്കുന്നു…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "പരസ്യങ്ങളുടെ അമിതമായ ഇടപെടലുകൾ കൈകാര്യം ചെയ്യുന്നു"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "ബ്രേക്കിംഗ് ചേഞ്ച് പ്രശ്നം: Chrome-ന്റെ വരാനിരിക്കുന്ന പതിപ്പിൽ പേജ് പ്രവർത്തനം അവസാനിപ്പിച്ചേക്കാം"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "മെച്ചപ്പെടുത്തൽ പ്രശ്നം: പേജ് മെച്ചപ്പെടുത്താൻ അവസരമുണ്ട്"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "ഒരു പേജ് പിശക് പ്രശ്നം: പേജ് ശരിയായി പ്രവർത്തിക്കുന്നില്ല"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "നിറം, ദൃശ്യതീവ്രത ഉപയോഗസഹായി"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "സുരക്ഷിതമല്ലാത്തത്"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets വിവരിച്ചിരിക്കുന്നു"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "സ്കീംഫുൾ Same-Site എങ്ങനെ പ്രവർത്തിക്കുന്നു"
   },
@@ -1284,7 +1350,7 @@
     "message": "വിശ്വസ്‌ത വെബ് ആക്റ്റിവിറ്റി ഉപയോഗിക്കുന്ന PWA-കൾക്കായുള്ള നിലവാര മാനദണ്ഡങ്ങളിലെ മാറ്റങ്ങൾ"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm ക്രോസ്-ഒറിജിൻ മൊഡ്യൂൾ പങ്കിടൽ അവസാനിപ്പിക്കൽ"
+    "message": "same-origin-ലേക്ക് Wasm മൊഡ്യൂൾ പങ്കിടുന്നത് നിയന്ത്രിക്കുന്നു"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<അജ്ഞാതം>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} സജീവമാക്കാൻ കാത്തിരിക്കുന്നു"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "എല്ലാ രജിസ്‌ട്രേഷനുകളും കാണുക"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1}-ന് ഉള്ള Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "സർവീസ് വർക്കറുകൾ"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "ഇഷ്‍ടാനുസൃത സ്റ്റോറേജ് ക്വാട്ട സിമുലേറ്റ് ചെയ്യുക"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "അദൃശ്യ മോഡിൽ സ്‌റ്റോറേജ് ക്വാട്ട പരിമിതപ്പെടുത്തിയിരിക്കുന്നു"
@@ -2949,7 +3021,7 @@
     "message": "മൂന്നാം കക്ഷി"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "ഉപഡൊമെയ്‌നുകൾ പൊരുത്തപ്പെടുത്തുക"
+    "message": "ഉപഡൊമെയ്‌ൻ പൊരുത്തം"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ഒറിജിൻ"
@@ -2964,7 +3036,7 @@
     "message": "ടോക്കൺ"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ടോക്കണുകൾ"
+    "message": "{PH1} ടോക്കണുകൾ"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ഉപയോഗ നിയന്ത്രണം"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{മുന്നറിയിപ്പ്, # തവണ ആവർത്തിച്ചു}other{മുന്നറിയിപ്പ്, # തവണ ആവർത്തിച്ചു}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Chrome-ന്റെ ഭാവി പതിപ്പിൽ ഈ സൈഡ്‌ബാർ നീക്കം ചെയ്യും. നിങ്ങൾക്ക് ഫീഡ്ബാക്ക് ഉണ്ടെങ്കിൽ, ഇതിലൂടെ ഞങ്ങളെ അറിയിക്കുക"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "പ്രശ്ന ട്രാക്കർ"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ചരിത്രത്തിൽ നിന്ന് സ്വയമേവ പൂർത്തിയാക്കുക"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# ബൈറ്റ്, {percentage}}other{# ബൈറ്റുകൾ, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "(ഇതുവരെ) നടപ്പിലാക്കിയിട്ടില്ലാത്ത JavaScript-കളുടേതാണ് {PH1} ബൈറ്റുകൾ ({PH2} %)."
+    "message": "(ഇതുവരെ) നടപ്പിലാക്കിയിട്ടില്ലാത്ത JavaScript ബ്ലോക്കുകളിൽ ഉൾപ്പെടുന്നവയാണ് {PH1} ബൈറ്റുകൾ ({PH2})."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "ഒരിക്കലെങ്കിലും നടപ്പിലാക്കിയിട്ടുള്ള JavaScript ബ്ലോക്കുകളിൽ ഉൾപ്പെടുന്നവയാണ് {PH1} ബൈറ്റുകൾ ({PH2}%)"
+    "message": "ഒരിക്കലെങ്കിലും നടപ്പിലാക്കിയിട്ടുള്ള JavaScript ബ്ലോക്കുകളിൽ ഉൾപ്പെടുന്നവയാണ് {PH1} ബൈറ്റുകൾ ({PH2})."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "(ഇതുവരെ) നടപ്പിലാക്കിയിട്ടില്ലാത്ത ഫംഗ്‌ഷനുകളുടേതാണ് {PH1} ബൈറ്റുകൾ ({PH2} %)."
+    "message": "(ഇതുവരെ) നടപ്പിലാക്കിയിട്ടില്ലാത്ത ഫംഗ്‌ഷനുകളുടേതാണ് {PH1} ബൈറ്റുകൾ ({PH2})."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "ഒരിക്കലെങ്കിലും നടപ്പിലാക്കിയിട്ടുള്ള ഫംഗ്ഷനുകളിൽ ഉൾപ്പെടുന്നവയാണ് {PH1} ബൈറ്റുകൾ ({PH2} %)."
+    "message": "ഒരിക്കലെങ്കിലും നടപ്പിലാക്കിയിട്ടുള്ള ഫംഗ്ഷനുകളിൽ ഉൾപ്പെടുന്നവയാണ് {PH1} ബൈറ്റുകൾ ({PH2})."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ഫയൽ ഉപയോഗിച്ചിട്ടില്ല, {PH2} % ഫയൽ ഉപയോഗിച്ചു"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "ആകെ ബൈറ്റുകൾ"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath പകർത്തുക"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "എലമെന്റ് മുറിക്കുക"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "മുറിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "എലമെന്റ് ഇല്ലാതാക്കുക"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "എലമെന്റ് മറയ്ക്കുക"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "എലമെന്റ് ഒട്ടിക്കുക"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "ഒട്ടിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "കാണാൻ സ്ക്രോൾ ചെയ്യുക"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്സ് കാണിക്കുക"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "ഉപയോക്തൃ ഏജന്റ് ഷാഡോ DOM കാണിക്കുക"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്സ്"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "വേഡ് റാപ്പ്"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം ഒരു സംഖ്യ അല്ലെങ്കിൽ ശൂന്യം ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "ഉയരം ഒരു സംഖ്യ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "ഉയരം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "ഉയരം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "വീതി ഒരു സംഖ്യ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "വീതി {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "വീതി {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "ഉപകരണ പിക്‌സൽ അനുപാതം ചേർക്കുക"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "ഉപകരണ തരം"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "അളവുകൾ"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "എഡിറ്റ് ചെയ്യുക…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ടാബ്‌ലെറ്റ്"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "ഇഷ്‌ടാനുസൃത ഉപകരണം ചേർക്കുക..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "ഉപകരണം"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "ഉപകരണത്തിന്റെ പേര്"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "ഉപകരണത്തിന്റെ പേര് നൽകാതിരിക്കാനാകില്ല."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "ഉപകരണത്തിന്റെ പേര് {PH1} പ്രതീകങ്ങളിൽ കുറവായിരിക്കണം."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "അനുകരിച്ച ഉപകരണങ്ങൾ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "ഉയരം"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗ്"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "ഉപയോക്തൃ ഏജന്റ് തരം"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "വീതി"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI സ്‌ക്രീൻ ഉള്ള ലാപ്ടോപ്പ്"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI സ്‌ക്രീൻ ഉള്ള ലാപ്ടോപ്പ്"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "ടച്ച് ഉള്ള ലാപ്ടോപ്പ്"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "ലൊക്കേഷൻ ചേർക്കുക..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "ഇഷ്‍ടാനുസൃത ലൊക്കേഷനുകൾ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "അക്ഷാംശം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "അക്ഷാംശം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "അക്ഷാംശം ഒരു സംഖ്യ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "അക്ഷാംശം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "അക്ഷാംശം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "പ്രാദേശിക ഭാഷ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "പ്രാദേശിക ഭാഷയിൽ അക്ഷരമാലാ പ്രതീകങ്ങൾ അടങ്ങിയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "ലൊക്കേഷന്റെ പേര്"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "ലൊക്കേഷന്റെ പേര് നൽകാതിരിക്കാനാകില്ല"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "ലൊക്കേഷന്റെ പേര് {PH1} പ്രതീകങ്ങളിൽ കുറവായിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "രേഖാംശം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "രേഖാംശം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "രേഖാംശം ഒരു സംഖ്യ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "രേഖാംശം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "രേഖാംശം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "ടൈംസോൺ ഐഡി"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "ടൈംസോൺ ഐഡിയിൽ അക്ഷരമാലാ പ്രതീകങ്ങൾ അടങ്ങിയിരിക്കണം"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "സോഴ്‌സ് കോഡിൽ വെളിപ്പെടുത്തുക"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "മൗസ് വീൽ അല്ലെങ്കിൽ Up/Down കീകൾ ഉപയോഗിച്ച് ക്രമീകരിക്കുക. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ആൽഫ)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (ബീറ്റ)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "ഇഷ്‌ടാനുസൃത ഓറിയന്റേഷൻ"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "ഉപകരണ ഓറിയന്റേഷൻ ആൽഫ: {PH1}, ബീറ്റ: {PH2}, ഗാമ: {PH3} ആയി സജ്ജീകരിച്ചു"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "ഡിസ്പ്ലേ താഴേക്ക്"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ഡിസ്പ്ലേ മുകളിലേക്ക്"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "റൊട്ടേറ്റ് ചെയ്യാൻ ഓറിയന്റേഷൻ പ്രവർത്തനക്ഷമമാക്കുക"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "പിശക്"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "തിരഞ്ഞെടുത്ത നിഷ്‌ക്രിയ അവസ്ഥ അനുകരിക്കൽ നിർബന്ധമാക്കുന്നു"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "ക്ലിക്ക് ചെയ്യുന്നതിന് പകരം ടച്ച് ചെയ്യൽ നിർബന്ധമാക്കുന്നു"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (ഗാമ)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "ഇടതുവശത്ത് ലാൻഡ്സ്കേപ്പ്"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "വലതുവശത്ത് ലാൻഡ്സ്കേപ്പ്"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "അക്ഷാംശം"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "പ്രാദേശിക ഭാഷ"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "ലൊക്കേഷൻ"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "ലൊക്കേഷൻ ലഭ്യമല്ല"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "രേഖാംശം"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "മാനേജ് ചെയ്യുക"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "ലൊക്കേഷനുകളുടെ ലിസ്റ്റ് മാനേജ് ചെയ്യുക"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "അസാധുവാക്കൽ ഇല്ല"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "ഓഫാണ്"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "ഓറിയന്റേഷൻ"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "മറ്റുള്ളവ…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "അസാധുവാക്കലുകൾ"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "പോർട്രെയ്‌റ്റ്"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "തലകീഴായി ഉള്ള പോർട്രെയ്‌റ്റ്"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "പ്രീസെറ്റുകൾ"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "റീസെറ്റ് ചെയ്യുക"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "ഉപകരണ ഓറിയന്റേഷൻ റീസെറ്റ് ചെയ്യുക"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Y-അക്ഷത്തിന് ചുറ്റും റൊട്ടേറ്റ് ചെയ്യാൻ Shift അമർത്തി തിരശ്ചീനമായി വലിച്ചിടുക"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "ടൈംസോൺ ഐഡി"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "ബ്രാൻഡ് ചേർക്കുക"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ആർക്കിടെക്ച്ചർ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "ആർക്കി‌ടെക്‌ച്ചർ (ഉദാ. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ഇല്ലാതാക്കുക"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "ബ്രാൻഡ്"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "ബ്രാൻഡ് {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ബ്രാൻഡിന്റെ പ്രോപ്പർട്ടികൾ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "പതിപ്പ് {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ബ്രാൻഡുകൾ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ഇല്ലാതാക്കുക"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ഉപകരണ മോഡൽ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "ഉപകരണ പ്രോപ്പർട്ടികൾ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "മുഴുവൻ ബ്രൗസർ പതിപ്പ്"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "പൂർണ്ണ ബ്രൗസർ പതിപ്പ് (ഉദാ. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "മൊബൈൽ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "ഘടനാപരമായ ഹെഡ്ഡറുകളുടെ സ്ട്രിംഗായി പ്രതിനിധീകരിക്കാൻ കഴിയില്ല."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "പ്ലാറ്റ്‌ഫോം"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "പ്ലാറ്റ്‌ഫോം (ഉദാ. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "പ്ലാറ്റ്‌ഫോം പ്രോപ്പർട്ടികൾ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "പ്ലാറ്റ്‌ഫോം പതിപ്പ്"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "അപ്ഡേറ്റ് ചെയ്യുക"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "മികച്ച സ്വകാര്യതാ പരിരക്ഷ കണക്കിലെടുത്ത് കൂടുതൽ ഘടനാപരമായ രീതിയിൽ ബ്രൗസറിനെയും ഉപകരണത്തെയും തിരിച്ചറിയുന്ന, ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗിന്റെ ഒരു ബദലാണ് ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ. കൂടുതലറിയാൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "പതിപ്പ്"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "ആക്‌സിലറോമീറ്റർ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "പൂർണ്ണ വലുപ്പത്തിലുള്ള സ്ക്രീന്‍ഷോട്ട് ക്യാപ്‌ചർ ചെയ്യുക"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "ഉപകരണം"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "ഉപകരണ ഓറിയന്റേഷൻ"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "ഉപകരണം അടിസ്ഥാനമാക്കിയുള്ളത്"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "ഉപകരണങ്ങൾ"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "നിഷ്‌ക്രിയ ഡിറ്റക്ടർ നില അനുകരിക്കുക"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "നിർബന്ധമായി പ്രവർത്തനക്ഷമമാക്കി"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "ജിയോലൊക്കേഷൻ"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "ഉപകരണ ഫ്രെയിം മറയ്ക്കുക"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "റൂളറുകൾ മറയ്ക്കുക"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "പ്രാദേശിക ഭാഷ"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "പ്രാദേശിക ഭാഷകൾ"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "ലൊക്കേഷനുകൾ"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "നിഷ്ക്രിയ നിലയുടെ അനുകരണമില്ല"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "സെൻസറുകൾ"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "ഉപകരണ ഫ്രെയിം കാണിക്കുക"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "ഉപകരണങ്ങൾ കാണിക്കുക"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "ലൊക്കേഷനുകൾ കാണിക്കുക"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "മീഡിയാ ചോദ്യങ്ങൾ കാണിക്കുക"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "റൂളറുകൾ കാണിക്കുക"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "സെൻസറുകൾ കാണിക്കുക"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "സമയമേഖലകൾ"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "ഉപകരണ ടൂൾബാർ മാറ്റുക"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "ടച്ച്"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "ഉപയോക്താവ് സജീവമാണ്, സ്‌ക്രീൻ ലോക്ക് ചെയ്‌തു"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "ഉപയോക്താവ് സജീവമാണ്, സ്‌ക്രീൻ അൺലോക്ക് ചെയ്‌തു"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "ഉപയോക്താവ് നിഷ്‌ക്രിയമാണ്, സ്‌ക്രീൻ ലോക്ക് ചെയ്‌തു"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "ഉപയോക്താവ് നിഷ്‌ക്രിയമാണ്, സ്‌ക്രീൻ അൺലോക്ക് ചെയ്‌തു"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "ഇവന്റ് ലിസണർ ഇല്ലാതാക്കുക"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "ഡൊമെയ്ൻ"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "നെറ്റ്‌വർക്ക് പാനലിൽ ഈ Set-Cookie ഹെഡ്ഡർ അടങ്ങിയ നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ കാണിക്കുക"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# കുക്കി}other{# കുക്കികൾ}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 റോ Set-Cookie ഹെഡ്ഡർ}other{# റോ Set-Cookie ഹെഡ്ഡറുകൾ}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "പേര്"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "മുന്നറിയിപ്പ്"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "മറച്ചിരിക്കുന്ന പ്രശ്നങ്ങൾ"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ബാധിച്ച ഉറവിടങ്ങൾ"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "വിശ്വസ്‌ത വെബ് ആക്റ്റിവിറ്റി"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "മറച്ചിരിക്കുന്ന എല്ലാ പ്രശ്നങ്ങളും മറച്ചത് പഴയപടിയാക്കുക"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ബ്ലോക്ക് ചെയ്‌തു"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm മൊഡ്യൂൾ URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "ഇത് പോലുള്ള പ്രശ്നങ്ങൾ മറച്ചത് പഴയപടിയാക്കുക"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "ഇത് പോലുള്ള പ്രശ്നങ്ങൾ മറയ്ക്കുക"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "പ്രശ്നങ്ങളുടെ മെനു മറയ്ക്കുക"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP ലംഘനങ്ങൾ"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range ഹെഡ്ഡർ പിന്തുണ"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "റെൻഡററിന്റെ പേര്"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "റെസല്യൂഷൻ"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "data:, blob: URL-കൾ മറയ്ക്കുന്നു"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "വിപരീതമാക്കുക"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "തിരയൽ ഫിൽട്ടർ വിപരീതമാക്കുന്നു"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "അന്വേഷണ സ്ട്രിംഗ് പാരാമീറ്ററുകൾ"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data ഉപയോഗിച്ച് റെക്കോർഡ് ചെയ്ത ആട്രിബ്യൂഷൻ: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "റഫറർ നയം"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "സുരക്ഷ കാണിക്കുക"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "ലൊക്കേഷൻ ചേർക്കുക..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "ഇഷ്‍ടാനുസൃത ലൊക്കേഷനുകൾ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "അക്ഷാംശം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "അക്ഷാംശം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "അക്ഷാംശം ഒരു സംഖ്യ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "അക്ഷാംശം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "അക്ഷാംശം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "പ്രാദേശിക ഭാഷ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "പ്രാദേശിക ഭാഷയിൽ അക്ഷരമാലാ പ്രതീകങ്ങൾ അടങ്ങിയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "ലൊക്കേഷന്റെ പേര്"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "ലൊക്കേഷന്റെ പേര് നൽകാതിരിക്കാനാകില്ല"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "ലൊക്കേഷന്റെ പേര് {PH1} പ്രതീകങ്ങളിൽ കുറവായിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "രേഖാംശം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "രേഖാംശം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "രേഖാംശം ഒരു സംഖ്യ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "രേഖാംശം {PH1} എന്നതിന് സമമോ അതിൽ കൂടുതലോ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "രേഖാംശം {PH1} എന്നതിന് സമമോ അതിൽ കുറവോ ആയിരിക്കണം"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "ടൈംസോൺ ഐഡി"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "ടൈംസോൺ ഐഡിയിൽ അക്ഷരമാലാ പ്രതീകങ്ങൾ അടങ്ങിയിരിക്കണം"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "മൗസ് വീൽ അല്ലെങ്കിൽ Up/Down കീകൾ ഉപയോഗിച്ച് ക്രമീകരിക്കുക. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ആൽഫ)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (ബീറ്റ)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "ഇഷ്‌ടാനുസൃത ഓറിയന്റേഷൻ"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "ഉപകരണ ഓറിയന്റേഷൻ ആൽഫ: {PH1}, ബീറ്റ: {PH2}, ഗാമ: {PH3} ആയി സജ്ജീകരിച്ചു"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "ഡിസ്പ്ലേ താഴേക്ക്"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ഡിസ്പ്ലേ മുകളിലേക്ക്"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "റൊട്ടേറ്റ് ചെയ്യാൻ ഓറിയന്റേഷൻ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "പിശക്"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "തിരഞ്ഞെടുത്ത നിഷ്‌ക്രിയ അവസ്ഥ അനുകരിക്കൽ നിർബന്ധമാക്കുന്നു"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "ക്ലിക്ക് ചെയ്യുന്നതിന് പകരം ടച്ച് ചെയ്യൽ നിർബന്ധമാക്കുന്നു"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (ഗാമ)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "ഇടതുവശത്ത് ലാൻഡ്സ്കേപ്പ്"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "വലതുവശത്ത് ലാൻഡ്സ്കേപ്പ്"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "അക്ഷാംശം"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "പ്രാദേശിക ഭാഷ"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "ലൊക്കേഷൻ"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "ലൊക്കേഷൻ ലഭ്യമല്ല"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "രേഖാംശം"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "മാനേജ് ചെയ്യുക"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "ലൊക്കേഷനുകളുടെ ലിസ്റ്റ് മാനേജ് ചെയ്യുക"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "അസാധുവാക്കൽ ഇല്ല"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "ഓഫാണ്"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "ഓറിയന്റേഷൻ"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "മറ്റുള്ളവ…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "അസാധുവാക്കലുകൾ"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "പോർട്രെയ്‌റ്റ്"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "തലകീഴായി ഉള്ള പോർട്രെയ്‌റ്റ്"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "പ്രീസെറ്റുകൾ"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "റീസെറ്റ് ചെയ്യുക"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "ഉപകരണ ഓറിയന്റേഷൻ റീസെറ്റ് ചെയ്യുക"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Y-അക്ഷത്തിന് ചുറ്റും റൊട്ടേറ്റ് ചെയ്യാൻ Shift അമർത്തി തിരശ്ചീനമായി വലിച്ചിടുക"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "ടൈംസോൺ ഐഡി"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "ആക്‌സിലറോമീറ്റർ"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "ഉപകരണ ഓറിയന്റേഷൻ"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "ഉപകരണം അടിസ്ഥാനമാക്കിയുള്ളത്"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "നിഷ്‌ക്രിയ ഡിറ്റക്ടർ നില അനുകരിക്കുക"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "നിർബന്ധമായി പ്രവർത്തനക്ഷമമാക്കി"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "ജിയോലൊക്കേഷൻ"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "പ്രാദേശിക ഭാഷ"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "പ്രാദേശിക ഭാഷകൾ"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "ലൊക്കേഷനുകൾ"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "നിഷ്ക്രിയ നിലയുടെ അനുകരണമില്ല"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "സെൻസറുകൾ"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "ലൊക്കേഷനുകൾ കാണിക്കുക"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "സെൻസറുകൾ കാണിക്കുക"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "സമയമേഖലകൾ"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "ടച്ച്"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "ഉപയോക്താവ് സജീവമാണ്, സ്‌ക്രീൻ ലോക്ക് ചെയ്‌തു"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "ഉപയോക്താവ് സജീവമാണ്, സ്‌ക്രീൻ അൺലോക്ക് ചെയ്‌തു"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "ഉപയോക്താവ് നിഷ്‌ക്രിയമാണ്, സ്‌ക്രീൻ ലോക്ക് ചെയ്‌തു"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "ഉപയോക്താവ് നിഷ്‌ക്രിയമാണ്, സ്‌ക്രീൻ അൺലോക്ക് ചെയ്‌തു"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ഫയലിന്റെ പേരിന്റെ പാറ്റേൺ ചേർക്കുക"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "മുന്നറിയിപ്പ്:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "ഇഷ്‌ടാനുസൃത ഉപകരണം ചേർക്കുക..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "ഉപകരണം"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "ഉപകരണത്തിന്റെ പേര്"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "ഉപകരണത്തിന്റെ പേര് നൽകാതിരിക്കാനാകില്ല."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "ഉപകരണത്തിന്റെ പേര് {PH1} പ്രതീകങ്ങളിൽ കുറവായിരിക്കണം."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "ഉപകരണ പിക്‌സൽ അനുപാതം"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "അനുകരിച്ച ഉപകരണങ്ങൾ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "ഉയരം"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗ്"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "ഉപയോക്തൃ ഏജന്റ് തരം"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "വീതി"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ബ്രാൻഡ് ചേർക്കുക"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "ആർക്കിടെക്ച്ചർ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "ആർക്കി‌ടെക്‌ച്ചർ (ഉദാ. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} ഇല്ലാതാക്കുക"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ബ്രാൻഡ്"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "ബ്രാൻഡ് {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "ബ്രാൻഡിന്റെ പ്രോപ്പർട്ടികൾ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "പതിപ്പ് {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ബ്രാൻഡുകൾ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "ഇല്ലാതാക്കുക"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "ഉപകരണ മോഡൽ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "ഉപകരണ പ്രോപ്പർട്ടികൾ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "മുഴുവൻ ബ്രൗസർ പതിപ്പ്"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "പൂർണ്ണ ബ്രൗസർ പതിപ്പ് (ഉദാ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "മൊബൈൽ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "ഘടനാപരമായ ഹെഡ്ഡറുകളുടെ സ്ട്രിംഗായി പ്രതിനിധീകരിക്കാൻ കഴിയില്ല."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "പ്ലാറ്റ്‌ഫോം"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "പ്ലാറ്റ്‌ഫോം (ഉദാ. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "പ്ലാറ്റ്‌ഫോം പ്രോപ്പർട്ടികൾ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "പ്ലാറ്റ്‌ഫോം പതിപ്പ്"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "അപ്ഡേറ്റ് ചെയ്യുക"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "മികച്ച സ്വകാര്യതാ പരിരക്ഷ കണക്കിലെടുത്ത് കൂടുതൽ ഘടനാപരമായ രീതിയിൽ ബ്രൗസറിനെയും ഉപകരണത്തെയും തിരിച്ചറിയുന്ന, ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗിന്റെ ഒരു ബദലാണ് ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ. കൂടുതലറിയാൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "പതിപ്പ്"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "ഉപകരണങ്ങൾ"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "ഉപകരണങ്ങൾ കാണിക്കുക"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ഡോക്യുമെന്റേഷൻ"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "ബ്രേക്ക്പോയിന്റുകൾ നിഷ്‌ക്രിയമാക്കുക"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS യൂണിറ്റ് 10 ആയി കുറയ്‌ക്കുക"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS യൂണിറ്റ് {PH1} ആയി കുറയ്‌ക്കുക"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ഇൻഡന്റേഷൻ കണ്ടെത്തുക"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "ചിഹ്നത്തിലേക്ക് പോകുക"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS യൂണിറ്റ് 10 മടങ്ങ് വർദ്ധിപ്പിക്കുക"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS യൂണിറ്റ് {PH1} ആയി വർദ്ധിപ്പിക്കുക"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "അടുത്ത എഡിറ്റിംഗ് ലൊക്കേഷനിലേക്ക് പോകുക"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ഇപ്രകാരം അടുക്കുക"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "ബ്രേക്കിംഗ് ചേഞ്ച് പ്രശ്നം: Chrome-ന്റെ വരാനിരിക്കുന്ന പതിപ്പിൽ പേജ് പ്രവർത്തനം അവസാനിപ്പിച്ചേക്കാം"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ബ്രേക്കിംഗ് ചേഞ്ച്}other{# ബ്രേക്കിംഗ് ചേഞ്ചുകൾ}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "മെച്ചപ്പെടുത്തൽ പ്രശ്നം: പേജ് മെച്ചപ്പെടുത്താൻ അവസരമുണ്ട്"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "ഒരു പേജ് പിശക് പ്രശ്നം: പേജ് ശരിയായി പ്രവർത്തിക്കുന്നില്ല"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# പേജ് പിശക്}other{# പേജ് പിശകുകൾ}}"
@@ -10758,7 +10827,7 @@
     "message": "പ്രശ്നങ്ങളുടെ ടാബിൽ പ്രശ്നം കാണിക്കാൻ ക്ലിക്ക് ചെയ്യുക"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "പ്രശ്നങ്ങളുടെ ടാബ് തുറന്ന് '{title}' എന്ന പ്രശ്നം കാണിക്കാൻ ക്ലിക്ക് ചെയ്യുക"
+    "message": "പ്രശ്നങ്ങളുടെ ടാബ് തുറന്ന് ഈ പ്രശ്നം കാണിക്കുന്നതിന് ക്ലിക്ക് ചെയ്യുക: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "പ്രശ്നം ഇപ്പോൾ ലഭ്യമല്ല"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "എല്ലാം"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ഇൻപുട്ട് മായ്‌ക്കുക"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ഉദാ. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "കുക്കി സജ്ജീകരിച്ച ഉറവിട സ്കീം (Secure, NonSecure) കാണിക്കുന്നു. സ്കീം അജ്ഞാതമാണെങ്കിൽ, ഇത് Unset എന്ന് കാണിക്കുന്നു."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}-ന് ശേഷം"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "കാലഹരണപ്പെടൽ ടൈംസ്റ്റാമ്പ് {seconds} ആണ്, ഇത് {date}-ന് ശേഷമുള്ള തീയതിയുമായി യോജിക്കുന്നു"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "മൂല്യം"

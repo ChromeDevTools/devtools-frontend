@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Невідома помилка"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} дн."
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} год"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} хв"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} мкс"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} мс"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} с"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Вікно"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Працівник"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Швидка мережа 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Немає контенту, доступного для попереднього запиту"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Контент недоступний, оскільки запит було переспрямовано"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Контент для WebSockets зараз не підтримується"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Без обмеження пропускної спроможності"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} завантажено: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Заголовок Set-Cookie ігнорується у відповіді з URL-адреси: {PH1}. Довжина файлу cookie не може перевищувати 4096 символів."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Повільна мережа 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Цей файл cookie заблоковано, оскільки він містив атрибут Secure, а з’єднання було незахищеним."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Заголовок Set-Cookie ігнорується у відповіді з URL-адреси: {PH1}. Довжина файлу cookie не може перевищувати 4096 символів."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Схема цього з'єднання не може зберігати файли cookie."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Вимкнути формат AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Вимкнути кеш (коли відкрито Інструменти розробника)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Вимкнути JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Основна"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Відкрийте інструменти розробника для середовища Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Основні веб-показники"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Помилка – LiveEdit: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Коефіцієнт пікселів для пристрою має бути числом або порожнім значенням."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Коефіцієнт пікселів для пристрою має бути не менший за {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Коефіцієнт пікселів для пристрою має бути не більший за {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Значення висоти має бути числом."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Значення висоти має бути не менше за {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Значення висоти має бути не більше за {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Укажіть ширину в числовому значенні."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Значення ширини має бути не менше за {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Значення ширини має бути не більше за {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Ноутбук з екраном HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Ноутбук з екраном MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Ноутбук із сенсорним пристроєм"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Збір контенту…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Обробка важких оголошень"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Помилка критичної зміни: сторінка може перестати працювати в майбутній версії Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Помилка покращення: існує можливість покращити сторінку"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Помилка сторінки: сторінка працює неправильно"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Спеціальні можливості, пов'язані з кольором і контрастом"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets: пояснення"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Як працює Schemeful Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Зміни критеріїв якості для прогресивних веб-додатків з надійною діяльністю в Інтернеті"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Припинення міждоменного доступу до модулів Wasm"
+    "message": "Обмеження доступу до модуля Wasm з одного джерела"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонімно>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "№{PH1} очікує на активацію"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Показати всі реєстрації"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker: {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Файли Service Worker"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Імітувати власну квоту на зберігання"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Квота сховища в режимі анонімного перегляду обмежена"
@@ -2949,7 +3021,7 @@
     "message": "Сторонні розробники"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Зіставити субдомени"
+    "message": "Зіставлення субдоменів"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Джерело"
@@ -2964,7 +3036,7 @@
     "message": "Маркер"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "маркери"
+    "message": "Токенів: {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Обмеження використання"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Попередження, повторюється # раз}one{Попередження, повторюється # раз}few{Попередження, повторюється # рази}many{Попередження, повторюється # разів}other{Попередження, повторюється # разу}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Цю бічну панель буде вилучено в майбутній версії Chrome. Якщо ви хочете залишити відгук, повідомте нас через"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "систему відстеження помилок"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Автозавершення з історії"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# байт, {percentage}}one{# байт, {percentage}}few{# байти, {percentage}}many{# байтів, {percentage}}other{# байта, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} Б ({PH2}%) займають блоки JavaScript, які (ще) не виконувалися."
+    "message": "{PH1} Б ({PH2}) займають блоки JavaScript, які (ще) не виконувалися."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} Б ({PH2}%) займають блоки JavaScript, що виконувалися принаймні один раз."
+    "message": "{PH1} Б ({PH2}) займають блоки JavaScript, що виконувалися принаймні один раз."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} Б ({PH2}%) займають функції, які (ще) не виконувалися."
+    "message": "{PH1} Б ({PH2}) займають функції, які (ще) не виконувалися."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} Б ({PH2}%) займають функції, які виконувалися принаймні один раз."
+    "message": "{PH1} Б ({PH2}) займають функції, які виконувалися принаймні один раз."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Не використано {PH1}% файлу, використано {PH2}%"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Усього байтів"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Скопіювати XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Вирізати елемент"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Вирізати"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Видалити елемент"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Сховати елемент"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Вставити елемент"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Вставити"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Покрутити до видимої області"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Показати трасування стека"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Показати тіньові вузли DOM агента користувача"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Трасування стека"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Перенесення слів"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Коефіцієнт пікселів для пристрою має бути числом або порожнім значенням."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Коефіцієнт пікселів для пристрою має бути не менший за {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Коефіцієнт пікселів для пристрою має бути не більший за {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Значення висоти має бути числом."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Значення висоти має бути не менше за {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Значення висоти має бути не більше за {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Укажіть ширину в числовому значенні."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Значення ширини має бути не менше за {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Значення ширини має бути не більше за {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Додати коефіцієнт пікселів для пристрою"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Тип пристрою"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Розміри"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Редагувати…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Додати власний пристрій…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Пристрій"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Назва пристрою"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Укажіть назву пристрою."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Кількість символів у назві пристрою має бути менша за {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Коефіцієнт пікселів для пристрою"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Емульовані пристрої"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Висота"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Сегмент агента користувача"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Тип агента користувача"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Ширина"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Ноутбук з екраном HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Ноутбук з екраном MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Ноутбук із сенсорним пристроєм"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Додати місце…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Власні місця"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Шир."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Широта"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Значення широти має бути числом"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Значення широти має бути більшим або дорівнювати {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Значення широти має бути не більше за {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Мовний код"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Мовний код повинен містити алфавітні символи"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Назва місця"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Укажіть назву місця"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Назва місця має містити до {PH1} симв."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Довг."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Довгота"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Значення довготи має бути числом"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Значення довготи має бути не менше за {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Значення довготи має бути не більше за {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Ідентифікатор часового поясу"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Ідентифікатор часового поясу повинен містити алфавітні символи"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Показати у вихідному коді"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Налаштуйте за допомогою коліщатка миші або клавіш зі стрілками вгору та вниз. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (альфа)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (бета)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Спеціальна орієнтація"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Вибрані параметри орієнтації пристрою – альфа: {PH1}, бета: {PH2}, гамма: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Екран спрямовано вниз"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Екран спрямовано вгору"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Увімкнути обертання для орієнтації"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Помилка"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Примусова емуляція вибраного неактивного стану"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Примусово застосовуються дотики замість кліків"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (гамма)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Альбомна орієнтація (ліворуч)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Альбомна орієнтація (праворуч)"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Широта"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Мовний код"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Місцезнаходження"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Немає даних про місце"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Довгота"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Керувати"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Керувати списком місць"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Без замін"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Вимкнути"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Орієнтація"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Інше…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Перевизначення"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Портретна орієнтація"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Поворот портретної орієнтації на 180 градусів"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Набори налаштувань"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Скинути"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Скинути орієнтацію пристрою"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Натисніть клавішу Shift і перетягуйте горизонтально, щоб обертати навколо осі Y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Ідентифікатор часового поясу"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Додати бренд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архітектура"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Архітектура (наприклад, x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Видалити ({PH1})"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Бренд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Бренд: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Властивості бренду"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Версія {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Бренди"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Видалити"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Модель пристрою"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Властивості пристрою"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Повна версія веб-переглядача"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Повна версія веб-переглядача (наприклад, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Мобільний пристрій"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Не можна показати як сегмент структурованих заголовків."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Платформа (наприклад, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Властивості платформи"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Версія платформи"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Підказки клієнта щодо агента користувача"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Оновити"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Підказки клієнта щодо агента користувача використовуються замість сегментів агента користувача. Вони більш структуровано визначають веб-переглядач і пристрій та посилюють захист конфіденційності. Натисніть кнопку, щоб дізнатися докладніше."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Версія"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "акселерометр"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Зробити знімок екрана в повному розмірі"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "пристрій"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "орієнтація пристрою"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Залежно від пристрою"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Пристрої"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Створити емуляцію стану неактивного детектора"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Примусово ввімкнено"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "геолокація"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Сховати рамку пристрою"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Сховати лінійки"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "мовний код"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "мовні коди"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Місця"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Немає неактивних емуляцій"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Датчики"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Показати рамку пристрою"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Показати пристрої"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Показати місця"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Показати медіазапити"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Показати лінійки"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Показати датчики"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "часові пояси"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Увімкнути або вимкнути панель інструментів пристрою"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Дотик"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Користувач активний, екран заблоковано"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Користувач активний, екран розблоковано"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Користувач неактивний, екран заблоковано"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Користувач неактивний, екран розблоковано"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Видалити блок прослуховування подій"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Домен"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Показати запити мережі, які включають заголовок Set-Cookie на панелі \"Мережа\""
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# файл cookie}one{# файл cookie}few{# файли cookie}many{# файлів cookie}other{# файлу cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 рядок заголовка Set-Cookie}one{# рядок заголовка Set-Cookie}few{# рядки заголовка Set-Cookie}many{# рядків заголовка Set-Cookie}other{# рядка заголовка Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Назва"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "попередження"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Приховані проблеми"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Уражені ресурси"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надійна діяльність в Інтернеті"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Показати всі приховані проблеми"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "заблоковано"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL-адреса модуля Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Показати схожі проблеми"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Сховати схожі проблеми"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Сховати меню проблем"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Порушення правил щодо безпеки контенту"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Підтримка заголовків Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Назва засобу обробки відео"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Роздільна здатність"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Приховує URL-адреси data: і blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Інвертувати"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Інвертує фільтр пошуку"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Докладніше"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Параметри рядка запиту"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Атрибуція, записана за допомогою елемента trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Правило щодо напрямку переходу"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Показати панель \"Безпека\""
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Додати місце…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Власні місця"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Шир."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Широта"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Значення широти має бути числом"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Значення широти має бути більшим або дорівнювати {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Значення широти має бути не більше за {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Мовний код"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Мовний код повинен містити алфавітні символи"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Назва місця"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Укажіть назву місця"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Назва місця має містити до {PH1} симв."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Довг."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Довгота"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Значення довготи має бути числом"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Значення довготи має бути не менше за {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Значення довготи має бути не більше за {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Ідентифікатор часового поясу"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Ідентифікатор часового поясу повинен містити алфавітні символи"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Налаштуйте за допомогою коліщатка миші або клавіш зі стрілками вгору та вниз. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (альфа)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (бета)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Спеціальна орієнтація"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Вибрані параметри орієнтації пристрою – альфа: {PH1}, бета: {PH2}, гамма: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Екран спрямовано вниз"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Екран спрямовано вгору"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Увімкнути обертання для орієнтації"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Помилка"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Примусова емуляція вибраного неактивного стану"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Примусово застосовуються дотики замість кліків"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (гамма)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Альбомна орієнтація (ліворуч)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Альбомна орієнтація (праворуч)"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Широта"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Мовний код"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Місцезнаходження"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Немає даних про місце"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Довгота"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Керувати"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Керувати списком місць"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Без замін"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Вимкнути"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Орієнтація"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Інше…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Перевизначення"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Портретна орієнтація"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Поворот портретної орієнтації на 180 градусів"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Набори налаштувань"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Скинути"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Скинути орієнтацію пристрою"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Натисніть клавішу Shift і перетягуйте горизонтально, щоб обертати навколо осі Y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Ідентифікатор часового поясу"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "акселерометр"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "орієнтація пристрою"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Залежно від пристрою"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Створити емуляцію стану неактивного детектора"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Примусово ввімкнено"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "геолокація"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "мовний код"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "мовні коди"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Місця"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Немає неактивних емуляцій"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Датчики"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Показати місця"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Показати датчики"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "часові пояси"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Дотик"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Користувач активний, екран заблоковано"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Користувач активний, екран розблоковано"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Користувач неактивний, екран заблоковано"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Користувач неактивний, екран розблоковано"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Додати шаблон назви файлу"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ПОПЕРЕДЖЕННЯ:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Додати власний пристрій…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Пристрій"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Назва пристрою"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Укажіть назву пристрою."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Кількість символів у назві пристрою має бути менша за {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Коефіцієнт пікселів для пристрою"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Емульовані пристрої"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Висота"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Сегмент агента користувача"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Тип агента користувача"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Ширина"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Додати бренд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Архітектура"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Архітектура (наприклад, x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Видалити ({PH1})"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Бренд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Бренд: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Властивості бренду"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Версія {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Бренди"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Видалити"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Модель пристрою"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Властивості пристрою"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Повна версія веб-переглядача"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Повна версія веб-переглядача (наприклад, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобільний пристрій"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Не можна показати як сегмент структурованих заголовків."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформа"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформа (наприклад, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Властивості платформи"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Версія платформи"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Підказки клієнта щодо агента користувача"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Оновити"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Підказки клієнта щодо агента користувача використовуються замість сегментів агента користувача. Вони більш структуровано визначають веб-переглядач і пристрій та посилюють захист конфіденційності. Натисніть кнопку, щоб дізнатися докладніше."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Версія"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Пристрої"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Показати пристрої"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Документація"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Деактивувати точки зупину"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Зменшити одиницю CSS на 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Зменшити одиницю CSS на {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Виявляти відступ"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Перейти до символу"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Збільшити одиницю CSS на 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Збільшити одиницю CSS на {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Перейти до наступного місця редагування"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Порядок сортування"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Помилка критичної зміни: сторінка може перестати працювати в майбутній версії Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# критична зміна}one{# критична зміна}few{# критичні зміни}many{# критичних змін}other{# критичної зміни}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Помилка покращення: існує можливість покращити сторінку"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Помилка сторінки: сторінка працює неправильно"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# помилка на сторінці}one{# помилка на сторінці}few{# помилки на сторінці}many{# помилок на сторінці}other{# помилки на сторінці}}"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Усі"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Очистити"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "наприклад, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Показано схему джерела (Secure, NonSecure), для якого було встановлено файл cookie. Якщо схема невідома, буде значення Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "після {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Позначка часу закінчення терміну дії ({seconds}) відповідає даті після {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Значення"

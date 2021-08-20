@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Ralat tidak diketahui"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} hari"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} jam"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Tetingkap"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Pekerja"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G Laju"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Tiada kandungan tersedia untuk permintaan prapelancaran"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Tiada kandungan tersedia kerana permintaan ini telah diubah hala"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Kandungan untuk WebSocket tidak disokong pada masa ini"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Tiada pendikitan"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} selesai memuatkan: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Pengepala Set-Cookie diabaikan dalam respons daripada URL: {PH1}. Panjang kuki hendaklah kurang daripada atau sama dengan 4096 aksara."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G Perlahan"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Kuki ini telah disekat kerana mempunyai atribut \"Secure\" dan sambungan tidak selamat."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Pengepala Set-Cookie diabaikan dalam respons daripada URL: {PH1}. Panjang kuki hendaklah kurang daripada atau sama dengan 4096 aksara."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Skema sambungan ini tidak dibenarkan menyimpan kuki."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Lumpuhkan format AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Lumpuhkan cache (semasa DevTools dibuka)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Lumpuhkan JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Utama"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Buka DevTools khusus untuk Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Vital Web Teras"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit gagal: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Nisbah piksel peranti mestilah nombor atau kosong."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Nisbah piksel peranti mesti lebih besar daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Nisbah piksel peranti mesti kurang daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Tinggi mestilah dalam bentuk nombor."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Tinggi mesti lebih besar daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Tinggi mesti kurang daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Lebar mestilah dalam bentuk nombor."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Lebar mesti lebih besar daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Lebar mesti kurang daripada atau sama dengan {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Komputer riba dengan skrin HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Komputer riba dengan skrin MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Komputer riba dengan sentuhan"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Mengumpulkan kandungan…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Mengendalikan Campur Tangan Iklan Berat"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Isu perubahan memutus: halaman mungkin berhenti berfungsi pada versi Chrome yang akan datang"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Isu peningkatan: terdapat peluang untuk meningkatkan mutu halaman"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Isu ralat halaman: halaman tidak berfungsi dengan betul"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Kebolehaksesan warna dan kontras"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "tidak selamat"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets dijelaskan"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Cara Laman Sama Berskema Berfungsi"
   },
@@ -1284,7 +1350,7 @@
     "message": "Perubahan pada kriteria kualiti untuk PWA menggunakan Aktiviti Web yang Dipercayai"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Penamatan perkongsian modul rentas asalan Wasm"
+    "message": "Menyekat perkongsian modul Wasm kepada asalan yang sama"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<awanama>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} menunggu untuk diaktifkan"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Lihat semua pendaftaran"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker selama {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Pekerja Perkhidmatan"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulasikan kuota storan tersuai"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Kuota storan dihadkan dalam mod Inkognito"
@@ -2949,7 +3021,7 @@
     "message": "Pihak Ketiga"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Padankan Subdomain"
+    "message": "Pemadanan Subdomain"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Asalan"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "token"
+    "message": "{PH1} token"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Sekatan Penggunaan"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Amaran, Diulang # kali}other{Amaran, Diulang # kali}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Bar sisi ini akan dialih keluar dalam versi Chrome yang akan datang. Jika anda mempunyai maklum balas, sila beritahu kami melalui"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "penjejak isu"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autolengkap daripada sejarah"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bait, {percentage}}other{# bait, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bait ({PH2} %) ialah milik blok JavaScript yang belum (lagi) dilaksanakan."
+    "message": "{PH1} bait ({PH2}) milik blok JavaScript yang belum (lagi) dilaksanakan."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bait ({PH2} %) milik blok JavaScript yang telah dilaksanakan sekurang-kurangnya sekali."
+    "message": "{PH1} bait ({PH2}) milik blok JavaScript yang telah dilaksanakan sekurang-kurangnya sekali."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bait ({PH2} %) milik fungsi yang belum (lagi) dilaksanakan."
+    "message": "{PH1} bait ({PH2}) milik fungsi yang belum (lagi) dilaksanakan."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bait ({PH2} %) milik fungsi yang telah dilaksanakan sekurang-kurangnya sekali."
+    "message": "{PH1} bait ({PH2}) milik fungsi yang telah dilaksanakan sekurang-kurangnya sekali."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % daripada fail tidak digunakan, {PH2} % fail digunakan"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Jumlah Bait"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Salin XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Unsur potong"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Potong"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Padamkan unsur"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Sembunyikan unsur"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Tampal unsur"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Tampal"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Tatal ke paparan"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Paparkan Surih Tindanan"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Paparkan bebayang agen pengguna DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Surih Tindanan"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Pembalutan kata"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Nisbah piksel peranti mestilah nombor atau kosong."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Nisbah piksel peranti mesti lebih besar daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Nisbah piksel peranti mesti kurang daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Tinggi mestilah dalam bentuk nombor."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Tinggi mesti lebih besar daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Tinggi mesti kurang daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Lebar mestilah dalam bentuk nombor."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Lebar mesti lebih besar daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Lebar mesti kurang daripada atau sama dengan {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Tambah nisbah piksel peranti"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Jenis peranti"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimensi"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Edit…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Tambah peranti tersuai..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Peranti"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Nama Peranti"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Nama peranti tidak boleh kosong."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Nama peranti mesti kurang daripada {PH1} aksara."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Nisbah piksel peranti"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Peranti yang Diemulasikan"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Tinggi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Rentetan ejen pengguna"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Jenis ejen pengguna"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Lebar"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Komputer riba dengan skrin HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Komputer riba dengan skrin MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Komputer riba dengan sentuhan"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Tambah lokasi..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Lokasi tersuai"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Latitud mestilah dalam bentuk nombor"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Latitud mesti lebih besar daripada atau sama dengan {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Latitud mesti kurang daripada atau sama dengan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Penempatan"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Penempatan mesti mengandungi aksara abjad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Nama lokasi"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Nama lokasi tidak boleh kosong"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Nama lokasi mestilah kurang daripada {PH1} aksara"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Panjang"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Longitud mestilah dalam bentuk nombor"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Longitud mesti lebih besar daripada atau sama dengan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Longitud mesti kurang daripada atau sama dengan {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "ID Zon Waktu"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "ID Zon Waktu mesti mengandungi aksara abjad"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Dedahkan dalam kod sumber"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Laraskan dengan roda tetikus atau kekunci ke atas/ke bawah. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Sesuaikan orientasi"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Orientasi peranti ditetapkan kepada alfa: {PH1}, beta: {PH2}, gama: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Paparan ke bawah"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Paparan ke atas"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Dayakan orientasi untuk memutar"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Ralat"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Memaksa emulasi keadaan melahu yang dipilih"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Memaksa sentuhan dan bukannya klik"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Landskap ke kiri"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Landskap kanan"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitud"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Penempatan"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Lokasi"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Lokasi tidak tersedia"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitud"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Urus"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Urus senarai lokasi"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Tiada penggantian"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Mati"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientasi"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Lain-lain…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Penggantian"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Potret"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Potret terbalik"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Pratetapan"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Tetapkan semula"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Tetapkan semula orientasi peranti"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift+seret secara mendatar untuk memutar di sekeliling paksi y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "ID Zon Waktu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Tambah Jenama"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Seni bina"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Seni bina (cth. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Padamkan {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Jenama"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Jenama {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Sifat jenama"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Versi {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Jenama"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Padam"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model peranti"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Sifat peranti"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Versi penuh penyemak imbas"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Versi penuh penyemak imbas (mis. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mudah Alih"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Tidak dapat digambarkan sebagai rentetan pengepala berstruktur."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platform (mis. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Sifat platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Versi platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Pembayang pelanggan ejen pengguna"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Kemas kini"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Pembayang pelanggan ejen pengguna adalah alternatif bagi rentetan ejen pengguna yang mengenal pasti penyemak imbas dan peranti dengan cara yang lebih tersusun dengan perakaunan privasi yang lebih baik. Klik butang untuk mengetahui lebih lanjut."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versi"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "akselerometer"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Tangkap tangkapan skrin saiz penuh"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "peranti"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "orientasi peranti"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Berasaskan peranti"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Peranti"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulasikan keadaan Pengesan Melahu"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Didayakan secara paksa"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolokasi"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Sembunyikan bingkai peranti"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Sembunyikan pembaris"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "penempatan"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "penempatan"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Lokasi"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Tiada emulasi melahu"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Penderia"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Paparkan bingkai peranti"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Paparkan Peranti"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Paparkan Lokasi"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Paparkan pertanyaan media"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Paparkan pembaris"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Paparkan Penderia"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "zon waktu"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Togol bar alat peranti"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Sentuh"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Pengguna aktif, skrin dikunci"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Pengguna aktif, skrin dibuka kunci"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Pengguna melahu, skrin dikunci"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Pengguna melahu, skrin dibuka kunci"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Padamkan pendengar peristiwa"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domain"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Paparkan permintaan rangkaian yang merangkumi pengepala Set-Cookie ini dalam panel rangkaian"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# kuki}other{# kuki}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Pengepala Set-Cookie mentah}other{# Pengepala Set-Cookie mentah}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nama"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "amaran"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Isu tersembunyi"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Sumber Terjejas"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Aktiviti Web yang Dipercayai"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Nyahsembunyikan semua isu yang disembunyikan"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "disekat"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL Modul Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Nyahsembunyikan isu seperti ini"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Sembunyikan isu seperti ini"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Sembunyikan menu isu"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Pelanggaran CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Sokongan pengepala Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Nama pemapar"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Peleraian"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Menyembunyikan URL data: dan blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Songsang"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Menyongsangkan penapis carian"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Ketahui lebih lanjut"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Parameter Rentetan Pertanyaan"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Atribusi yang direkodkan dengan trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Dasar Perujuk"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Paparkan Keselamatan"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Tambah lokasi..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Lokasi tersuai"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Latitud mestilah dalam bentuk nombor"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Latitud mesti lebih besar daripada atau sama dengan {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Latitud mesti kurang daripada atau sama dengan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Penempatan"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Penempatan mesti mengandungi aksara abjad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Nama lokasi"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Nama lokasi tidak boleh kosong"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Nama lokasi mestilah kurang daripada {PH1} aksara"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Panjang"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Longitud mestilah dalam bentuk nombor"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Longitud mesti lebih besar daripada atau sama dengan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Longitud mesti kurang daripada atau sama dengan {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "ID Zon Waktu"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "ID Zon Waktu mesti mengandungi aksara abjad"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Laraskan dengan roda tetikus atau kekunci ke atas/ke bawah. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Sesuaikan orientasi"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Orientasi peranti ditetapkan kepada alfa: {PH1}, beta: {PH2}, gama: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Paparan ke bawah"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Paparan ke atas"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Dayakan orientasi untuk memutar"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Ralat"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Memaksa emulasi keadaan melahu yang dipilih"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Memaksa sentuhan dan bukannya klik"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Landskap ke kiri"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Landskap kanan"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitud"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Penempatan"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Lokasi"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Lokasi tidak tersedia"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitud"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Urus"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Urus senarai lokasi"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Tiada penggantian"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Mati"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientasi"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Lain-lain…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Penggantian"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Potret"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Potret terbalik"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Pratetapan"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Tetapkan semula"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Tetapkan semula orientasi peranti"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift+seret secara mendatar untuk memutar di sekeliling paksi y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "ID Zon Waktu"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "akselerometer"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "orientasi peranti"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Berasaskan peranti"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulasikan keadaan Pengesan Melahu"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Didayakan secara paksa"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolokasi"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "penempatan"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "penempatan"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Lokasi"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Tiada emulasi melahu"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Penderia"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Paparkan Lokasi"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Paparkan Penderia"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "zon waktu"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Sentuh"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Pengguna aktif, skrin dikunci"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Pengguna aktif, skrin dibuka kunci"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Pengguna melahu, skrin dikunci"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Pengguna melahu, skrin dibuka kunci"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Tambah corak nama fail"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "AMARAN:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Tambah peranti tersuai..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Peranti"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Nama Peranti"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Nama peranti tidak boleh kosong."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Nama peranti mesti kurang daripada {PH1} aksara."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Nisbah piksel peranti"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Peranti yang Diemulasikan"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Tinggi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Rentetan ejen pengguna"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Jenis ejen pengguna"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Lebar"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Tambah Jenama"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Seni bina"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Seni bina (cth. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Padamkan {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Jenama"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Jenama {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Sifat jenama"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Versi {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Jenama"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Padam"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Model peranti"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Sifat peranti"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Versi penuh penyemak imbas"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Versi penuh penyemak imbas (mis. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mudah Alih"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Tidak dapat digambarkan sebagai rentetan pengepala berstruktur."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platform (mis. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Sifat platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Versi platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Pembayang pelanggan ejen pengguna"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Kemas kini"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Pembayang pelanggan ejen pengguna adalah alternatif bagi rentetan ejen pengguna yang mengenal pasti penyemak imbas dan peranti dengan cara yang lebih tersusun dengan perakaunan privasi yang lebih baik. Klik butang untuk mengetahui lebih lanjut."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versi"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Peranti"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Paparkan Peranti"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentasi"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Nyahaktifkan titik putus"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Unit CSS susutan sebanyak 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Unit CSS susutan sebanyak {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Kesan indentasi"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Pergi ke simbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Unit CSS tokokan sebanyak 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Unit CSS tokokan sebanyak {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Langkau ke lokasi pengeditan seterusnya"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Isih Mengikut"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Isu perubahan memutus: halaman mungkin berhenti berfungsi pada versi Chrome yang akan datang"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# perubahan memutus}other{# perubahan memutus}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Isu peningkatan: terdapat peluang untuk meningkatkan mutu halaman"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Isu ralat halaman: halaman tidak berfungsi dengan betul"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# ralat halaman}other{# ralat halaman}}"
@@ -10758,7 +10827,7 @@
     "message": "Klik untuk memaparkan isu dalam tab isu"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Klik untuk membuka tab isu dan memaparkan isu '{title}'"
+    "message": "Klik untuk membuka tab isu dan memaparkan isu: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Isu tidak tersedia pada masa ini"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Semua"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Kosongkan input"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "contoh: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Memaparkan skema sumber (Secure, NonSecure) yang ditetapkan pada kuki. Jika skema tidak diketahui, sifat ini menunjukkan Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "selepas {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Cap masa tamat tempoh ialah {seconds}, yang sepadan dengan tarikh selepas {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Nilai"

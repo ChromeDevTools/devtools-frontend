@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "不明的錯誤"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} 天"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} 小時"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} 分鐘"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} 微秒"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} 毫秒"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} 秒"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "視窗"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "快速 3G 網路"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "預檢要求沒有可用內容"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "沒有可用內容，因為這項要求已重新導向"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "目前不支援 WebSockets 內容"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "不進行節流"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} 已完成載入：{PH2}「{PH3}」。"
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie 標頭在以下網址的回應中遭到忽略：{PH1}。Cookie 長度應少於或等於 4096 個字元。"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "慢速 3G 網路"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "這個 Cookie 含有「Secure」屬性，而且採用了不安全的連線方式，因此遭到封鎖。"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie 標頭在以下網址的回應中遭到忽略：{PH1}。Cookie 長度應少於或等於 4096 個字元。"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "這個連線的架構無法保存 Cookie。"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "停用 AVIF 格式"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "停用快取 (開發人員工具為開啟狀態)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "停用 JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "主要"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "開啟 Node.js 專用的開發人員工具"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "網站體驗核心指標"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit 失敗：{PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "裝置像素比例必須為數字，或者直接留空。"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "裝置像素比例必須大於或等於 {PH1}。"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "裝置像素比例必須小於或等於 {PH1}。"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "高度必須是數字。"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "高度必須大於或等於 {PH1}。"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "高度必須小於或等於 {PH1}。"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "寬度必須是數字。"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "寬度必須大於或等於 {PH1}。"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "寬度必須小於或等於 {PH1}。"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "配備 HiDPI 螢幕的筆電"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "配備 MDPI 螢幕的筆電"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "觸控式筆電"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "正在收集內容…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "處理重度耗資源廣告的干涉機制"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "破壞性變更問題：網頁在日後的 Chrome 版本中可能會停止運作"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "可改善的問題：網頁有改進空間"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "網頁錯誤問題：網頁無法正常運作"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "關於顏色與對比的無障礙功能"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "不安全項目"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets 說明"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site 的運作方式"
   },
@@ -1284,7 +1350,7 @@
     "message": "透過受信任網路活動整合 PWA 時的品質標準有所變更"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm 跨來源模組共用功能即將淘汰"
+    "message": "將 Wasm 模組共用功能限制為相同來源"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<匿名>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} 正在等待啟用"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "查看所有註冊項目"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} 的 Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Worker"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "模擬自訂儲存空間配額"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "無痕模式下可使用的儲存空間配額有限"
@@ -2949,7 +3021,7 @@
     "message": "第三方"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "與子網域相符"
+    "message": "子網域比對"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "來源"
@@ -2964,7 +3036,7 @@
     "message": "權杖"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "權杖"
+    "message": "{PH1} 個權杖"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "用量限制"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{警告訊息，已重複顯示 # 次}other{警告訊息，已重複顯示 # 次}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "這個側欄會在日後的 Chrome 版本中移除。如果你有任何意見，請使用以下工具與我們聯絡："
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "問題追蹤工具"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "以歷史記錄自動完成"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# 個位元組 ({percentage})}other{# 個位元組 ({percentage})}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "有 {PH1} 個位元組 ({PH2} %) 隸屬於從未執行過的 JavaScript 區塊。"
+    "message": "有 {PH1} 個位元組 ({PH2}) 隸屬於從未執行過的 JavaScript 區塊。"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "有 {PH1} 個位元組 ({PH2} %) 隸屬於執行過至少一次的 JavaScript 區塊。"
+    "message": "有 {PH1} 個位元組 ({PH2}) 隸屬於執行過至少一次的 JavaScript 區塊。"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "有 {PH1} 個位元組 ({PH2} %) 隸屬於從未執行過的函式。"
+    "message": "有 {PH1} 個位元組 ({PH2}) 隸屬於從未執行過的函式。"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "有 {PH1} 個位元組 ({PH2} %) 隸屬於執行過至少一次的函式。"
+    "message": "有 {PH1} 個位元組 ({PH2}) 隸屬於執行過至少一次的函式。"
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % 檔案未使用，{PH2} % 檔案已使用"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "位元組總計"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "複製 XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "剪下元素"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "剪下"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "刪除元素"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "隱藏元素"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "貼上元素"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "貼上"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "捲動查看"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "顯示「堆疊追蹤」工具"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "顯示使用者代理程式陰影 DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "堆疊追蹤"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "自動換行"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "裝置像素比例必須為數字，或者直接留空。"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "裝置像素比例必須大於或等於 {PH1}。"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "裝置像素比例必須小於或等於 {PH1}。"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "高度必須是數字。"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "高度必須大於或等於 {PH1}。"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "高度必須小於或等於 {PH1}。"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "寬度必須是數字。"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "寬度必須大於或等於 {PH1}。"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "寬度必須小於或等於 {PH1}。"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "新增裝置像素比例"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "裝置類型"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "尺寸"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "編輯…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "平板電腦"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "新增自訂裝置..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "裝置"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "裝置名稱"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "裝置名稱不得留空。"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "裝置名稱必須少於 {PH1} 個字元。"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "裝置像素比例"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "模擬的裝置"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "高度"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "使用者代理程式字串"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "使用者代理程式類型"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "寬度"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "配備 HiDPI 螢幕的筆電"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "配備 MDPI 螢幕的筆電"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "觸控式筆電"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "新增位置..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "自訂地點"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "緯度"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "緯度"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "緯度必須是數字"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "緯度值必須大於或等於 {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "緯度必須小於或等於 {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "語言代碼"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "語言代碼必須包含英文字母字元"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "地點名稱"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "位置名稱不得留空"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "位置名稱必須少於 {PH1} 個字元"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "經度"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "經度"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "經度必須是數字"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "經度必須大於或等於 {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "經度必須小於或等於 {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "時區 ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "時區 ID 必須包含英文字母字元"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "顯示在原始碼中"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "利用滑鼠滾輪或向上/下鍵來調整數值，同時按住下列按鍵可控制增減幅度。{PH1} 鍵：±10，Shift 鍵：±1，Alt 鍵：±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (Alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (Beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "自訂螢幕方向"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "已將裝置螢幕方向設為 Alpha：{PH1}；Beta：{PH2}；Gamma：{PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "螢幕向下"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "螢幕頂端朝上"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "啟用螢幕方向覆寫功能即可旋轉"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "錯誤"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "強制執行所選閒置狀態的模擬作業"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "強制從點擊改為觸控"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (Gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "橫向 (向左)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "橫向 (向右)"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "緯度"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "語言代碼"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "地點"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "無法取得位置資訊"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "經度"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "管理"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "管理位置清單"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "禁止覆寫"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "關閉"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "螢幕方向"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "其他…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "覆寫"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "直向"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "縱向 (上下顛倒)"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "預設"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "重設"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "重設裝置螢幕方向"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "按住 Shift 鍵並橫向拖曳，就能以 y 軸為準進行旋轉"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "時區 ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "新增品牌"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "架構"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "架構 (例如：x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "刪除 {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "品牌"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "品牌 {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "品牌屬性"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "{PH1} 版"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "品牌"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "刪除"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "裝置型號"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "裝置屬性"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "完整瀏覽器版本"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "完整瀏覽器版本 (例如 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "行動裝置"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "無法顯示為結構化標頭字串。"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "平台"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "平台 (例如：Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "平台屬性"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "平台版本"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "使用者代理程式用戶端提示"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "更新"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "使用者代理程式用戶端提示是使用者代理程式字串的替代文字，能以結構更完善的方式識別瀏覽器和裝置，同時進一步保障隱私權。如需瞭解詳情，請按一下說明按鈕。"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "版本"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "加速計"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "擷取完整大小的螢幕截圖"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "裝置"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "裝置螢幕方向"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "依據裝置"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "裝置"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "模擬 Idle Detector 狀態"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "已啟用強制設定"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "地理位置"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "隱藏裝置邊框"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "隱藏尺規"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "語言代碼"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "語言代碼"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "位置"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "沒有閒置的模擬作業"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "感應器"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "顯示裝置邊框"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "顯示裝置"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "顯示地區"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "顯示媒體查詢"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "顯示尺規"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "顯示感應器"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "時區"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "切換裝置工具列"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "觸控"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "使用者未閒置，螢幕已鎖定"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "使用者未閒置，螢幕已解鎖"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "使用者閒置中，螢幕已鎖定"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "使用者閒置中，螢幕已解鎖"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "刪除事件監聽器"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "網域"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "顯示網路面板中包含這個 Set-Cookie 標頭的網路要求"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# 個 Cookie}other{# 個 Cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 個原始 Set-Cookie 標頭}other{# 個原始 Set-Cookie 標頭}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "名稱"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "警告"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "隱藏的問題"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "受影響的資源"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "受信任的網路活動"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "取消隱藏所有隱藏的問題"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "已封鎖"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm 模組網址"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "取消隱藏類似問題"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "隱藏類似問題"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "隱藏問題選單"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP 違規情事"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "支援 Range 標頭"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "轉譯器名稱"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "解析度"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "隱藏 data: 和 blob: 網址"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "反轉"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "反轉搜尋篩選器"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "瞭解詳情"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "查詢字串參數"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "含有 trigger-data 的記錄歸因：{PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "參照網址政策"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "顯示安全性"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "新增位置..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "自訂地點"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "緯度"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "緯度"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "緯度必須是數字"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "緯度值必須大於或等於 {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "緯度必須小於或等於 {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "語言代碼"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "語言代碼必須包含英文字母字元"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "地點名稱"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "位置名稱不得留空"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "位置名稱必須少於 {PH1} 個字元"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "經度"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "經度"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "經度必須是數字"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "經度必須大於或等於 {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "經度必須小於或等於 {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "時區 ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "時區 ID 必須包含英文字母字元"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "利用滑鼠滾輪或向上/下鍵來調整數值，同時按住下列按鍵可控制增減幅度。{PH1} 鍵：±10，Shift 鍵：±1，Alt 鍵：±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (Alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (Beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "自訂螢幕方向"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "已將裝置螢幕方向設為 Alpha：{PH1}；Beta：{PH2}；Gamma：{PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "螢幕向下"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "螢幕頂端朝上"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "啟用螢幕方向覆寫功能即可旋轉"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "錯誤"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "強制執行所選閒置狀態的模擬作業"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "強制從點擊改為觸控"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (Gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "橫向 (向左)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "橫向 (向右)"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "緯度"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "語言代碼"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "地點"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "無法取得位置資訊"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "經度"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "管理"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "管理位置清單"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "禁止覆寫"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "關閉"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "螢幕方向"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "其他…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "覆寫"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "直向"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "縱向 (上下顛倒)"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "預設"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "重設"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "重設裝置螢幕方向"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "按住 Shift 鍵並橫向拖曳，就能以 y 軸為準進行旋轉"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "時區 ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "加速計"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "裝置螢幕方向"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "依據裝置"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "模擬 Idle Detector 狀態"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "已啟用強制設定"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "地理位置"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "語言代碼"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "語言代碼"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "位置"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "沒有閒置的模擬作業"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "感應器"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "顯示地區"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "顯示感應器"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "時區"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "觸控"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "使用者未閒置，螢幕已鎖定"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "使用者未閒置，螢幕已解鎖"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "使用者閒置中，螢幕已鎖定"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "使用者閒置中，螢幕已解鎖"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "新增檔案名稱格式"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "警告："
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "新增自訂裝置..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "裝置"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "裝置名稱"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "裝置名稱不得留空。"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "裝置名稱必須少於 {PH1} 個字元。"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "裝置像素比例"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "模擬的裝置"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "高度"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "使用者代理程式字串"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "使用者代理程式類型"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "寬度"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "新增品牌"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "架構"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "架構 (例如：x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "刪除 {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "品牌"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "品牌 {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "品牌屬性"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "{PH1} 版"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "品牌"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "刪除"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "裝置型號"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "裝置屬性"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "完整瀏覽器版本"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "完整瀏覽器版本 (例如 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "行動裝置"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "無法顯示為結構化標頭字串。"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "平台"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "平台 (例如：Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "平台屬性"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "平台版本"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "使用者代理程式用戶端提示"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "更新"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "使用者代理程式用戶端提示是使用者代理程式字串的替代文字，能以結構更完善的方式識別瀏覽器和裝置，同時進一步保障隱私權。如需瞭解詳情，請按一下說明按鈕。"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "版本"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "裝置"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "顯示裝置"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "說明文件"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "停用中斷點"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "將 CSS 單位減少 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "將 CSS 單位減少 {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "偵測縮排"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "前往符號部分"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "將 CSS 單位增加 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "將 CSS 單位增加 {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "跳到下一個編輯位置"
@@ -9846,7 +9924,7 @@
     "message": "解讀回覆"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "維度"
+    "message": "尺寸"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC 時間"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "排序依據"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "破壞性變更問題：網頁在日後的 Chrome 版本中可能會停止運作"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# 項破壞性變更}other{# 項破壞性變更}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "可改善的問題：網頁有改進空間"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "網頁錯誤問題：網頁無法正常運作"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# 項頁面錯誤}other{# 項頁面錯誤}}"
@@ -10758,7 +10827,7 @@
     "message": "按一下即可在問題分頁中顯示問題"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "按一下即可開啟問題分頁並顯示問題「{title}」"
+    "message": "按一下即可開啟問題分頁並顯示問題：{title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "目前無法取得問題"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "全部"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "清除輸入內容"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "例如：/small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "顯示先前設定 Cookie 的來源架構 (Secure、NonSecure)。如果架構不明，這裡會顯示 Unset。"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}之後"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "到期日時間戳記為 {seconds}，也就是 {date}之後的日期"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "值"

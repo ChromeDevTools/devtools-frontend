@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "නොදන්නා දෝෂයකි"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "දින {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "පැය {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "මිනි {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "කවුළුව"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "වැඩකරු"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "වේගවත් 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Preflight සඳහා ලබා ගත හැකි අන්තර්ගතය නැත"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "මෙම ඉල්ලීම ප්‍රතියොමු කළ බැවින් ලබා ගත හැකි අන්තර්ගතය නැත"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets සඳහා වන අන්තර්ගතය දැනට සහාය නොදක්වයි"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "තෙරපීමක් නැත"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} පූරණය කිරීම අවසන් විය: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Url වෙතින් ලැබෙන ප්‍රතිචාරයක් ලෙස සෙට්-කුකී ශීර්ෂකය නොසලකා හරිනු ලැබේ: {PH1}. කුකී දිග අනුලකුණු 4096ට වඩා අඩු හෝ සමාන විය යුතුය."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "මන්දගාමී 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "මෙම කුකී එයට \"Secure\" උපලක්ෂණය ඇති නමුත් සම්බන්ධතාව සුරක්ෂිත නැති බැවින් අවහිර කරන ලදි."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Url වෙතින් ලැබෙන ප්‍රතිචාරයක් ලෙස සෙට්-කුකී ශීර්ෂකය නොසලකා හරිනු ලැබේ: {PH1}. කුකී දිග අනුලකුණු 4096ට වඩා අඩු හෝ සමාන විය යුතුය."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "මෙම සම්බන්ධතාවයේ යෝජනා ක්‍රමය කුකි ගබඩා කිරීමට ඉඩ නොදේ."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF ආකෘතිය අබල කරන්න"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "හැඹිලිය අබල කරන්න (DevTools විවෘතව තිබියදී)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ජාවාස්ක්‍රිප්ට් අබල කරන්න"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "ප්‍රධාන"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js සඳහා කැප කළ DevTools විවෘත කරන්න"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ප්‍රධාන වෙබ් වැදගත්කම්"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit අසාර්ථක විය: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "උපාංග පික්සල අනුපාතය අංකයක් හෝ හිස් විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "උපාංග පික්සල අනුපාතය {PH1} හෝ ඊට වඩා වැඩි විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "උපාංග පික්සල අනුපාතය {PH1}ට වඩා අඩු හෝ සමාන විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "උස සංඛ්‍යාවක් විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "උස {PH1}ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "උස {PH1}ට අඩු හෝ ඊට සමාන විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "පළල අංකයක් විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "අගය {PH1}ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "අගය {PH1}ට අඩු හෝ ඊට වඩා වැඩි විය යුතුය."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI තිරය සහිත ලැප්ටොප්"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI තිරය සහිත ලැප්ටොප්"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "ස්පර්ශය සහිත ලැප්ටොප්"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "අන්තර්ගත රැස් කරමින්…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "බර වෙළඳ දැන්වීම් මැදිහත්වීම් හැසිරවීම්"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "බිඳින වෙනස ගැටලුවක්: පිටුව Chrome හි ඉදිරියට එන අනුවාදයක වැඩ කිරීම නවතා දැමිය හැකිය"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "වැඩිදියුණු කිරීමේ ගැටලුවකි: පිටුව වැඩිදියුණු කිරීමට අවස්ථාවක් තිබේ"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "පිටු දෝෂ ගැටලුවකි: පිටුව නිවැරදිව ක්‍රියා නොකරයි"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "වර්ණ සහ විභේදන ප්‍රවේශ්‍යතාව"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "අනාරක්ෂිත"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets විස්තර කරන ලදි"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "යෝජනා ක්‍රම සහිත එකම අඩවිය ක්‍රියා කරන ආකාරය"
   },
@@ -1284,7 +1350,7 @@
     "message": "විශ්වාසදායී වෙබ් ක්‍රියාකාරකම් භාවිත කරමින් PWA සඳහා ගුණාත්මක නිර්ණායකවලට වෙනස් කිරීම්"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm හරස් මූලාරම්භ මොඩියුල බෙදා ගැනීම අත් හැරීම"
+    "message": "Wasm මොඩියුලය එකම මූලාරම්භයට බෙදා ගැනීම සීමා කරමින්"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<නිර්නාමික>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} සක්‍රිය කිරීමට බලා සිටී"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "සියලු ලියාපදිංචි කිරීම් බලන්න"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} සඳහා Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "සේවා වැඩකරුවන්"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "අභිරුචි ගබඩා පංගුව අනුකරණය කරන්න"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "අප්‍රසිද්ධ ප්‍රකාරය තුළ ගබඩා පංගුව සීමිතයි"
@@ -2949,7 +3021,7 @@
     "message": "තෙවන පාර්ශ්වය"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "උපවසම් ගළපන්න"
+    "message": "උපවසම් ගැළපීම"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "මූලාරම්භය"
@@ -2964,7 +3036,7 @@
     "message": "ටෝකනය"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ටෝකන"
+    "message": "ටෝකන {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "භාවිතය සීමා කිරීම"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{අනතුරු ඇඟවීමයි, වාර #ක් පුනරාවර්තනය කරන ලදි}one{අනතුරු ඇඟවීමයි, වාර #ක් පුනරාවර්තනය කරන ලදි}other{අනතුරු ඇඟවීමයි, වාර #ක් පුනරාවර්තනය කරන ලදි}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Chrome හි අනාගත අනුවාදයකමෙම පැති තීරුව ඉවත් කරනු ඇත. ඔබට ප්‍රතිපෝෂණ තිබේ නම්, කරුණාකර ඒ හරහා අපට දන්වන්න"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "ගැටලු නිරීක්ෂකය"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ඉතිහාසයෙන් ස්වයං පුරවන්න"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{බයිට #, {percentage}}one{බයිට #, {percentage}}other{බයිට #, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "බයිට {PH1}ක් ({PH2} %) (තවම) ක්‍රියාත්මක කර ඇති ජාවාස්ක්‍රිප්ට කොටස්වලට අයත් වේ."
+    "message": "බයිට {PH1}ක් ({PH2}) (තවම) ක්‍රියාත්මක කර ඇති ජාවාස්ක්‍රිප්ට කොටස්වලට අයත් වේ."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "බයිට {PH1}ක් ({PH2} %) අවම වශයෙන් එක් වරක්වත් ක්‍රියාත්මක කර ඇති ජාවාස්ක්‍රිප්ට කොටස්වලට අයත් වේ."
+    "message": "බයිට {PH1}ක් ({PH2}) අවම වශයෙන් එක් වරක්වත් ක්‍රියාත්මක කර ඇති ජාවාස්ක්‍රිප්ට කොටස්වලට අයත් වේ."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "බයිට {PH1} ({PH2} %) (තවම) ක්‍රියාත්මක කර නැති කාර්යවලට අයත්ය."
+    "message": "බයිට {PH1} ({PH2}) (තවම) ක්‍රියාත්මක කර නැති කාර්යවලට අයත්ය."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "බයිට {PH1}ක් ({PH2} %) අවම වශයෙන් එක් වරක්වත් ක්‍රියාත්මක කර ඇති ශ්‍රිතවලට අයත් වේ."
+    "message": "බයිට {PH1}ක් ({PH2}) අවම වශයෙන් එක් වරක්වත් ක්‍රියාත්මක කර ඇති ශ්‍රිතවලට අයත් වේ."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "ගොනුවෙන් {PH1} % භාවිත කර නැත, ගොනුවෙන් {PH2} % භාවිත කර ඇත"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "මුළු බයිට"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath පිටපත් කරන්න"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "මූලාංගය කපන්න"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "කපන්න"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "මූලාංගය මකන්න"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "මූලාංගය සඟවන්න"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "මූලාංගය අලවන්න"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "අලවන්න"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "දසුනට අනුචලනය කරන්න"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "ඇමතුම් අට්ටි අනුසාරය පෙන්වන්න"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "පරිශීලක කාරක සෙවනැල්ල DOM පෙන්වන්න"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "ඇමතුම් අට්ටි අනුසාරය"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "වචන එතුම"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "උපාංග පික්සල අනුපාතය අංකයක් හෝ හිස් විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "උපාංග පික්සල අනුපාතය {PH1} හෝ ඊට වඩා වැඩි විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "උපාංග පික්සල අනුපාතය {PH1}ට වඩා අඩු හෝ සමාන විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "උස සංඛ්‍යාවක් විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "උස {PH1}ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "උස {PH1}ට අඩු හෝ ඊට සමාන විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "පළල අංකයක් විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "අගය {PH1}ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "අගය {PH1}ට අඩු හෝ ඊට වඩා වැඩි විය යුතුය."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "උපාංග පික්සල අනුපාතය එක් කරන්න"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "උපාංග වර්ගය"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "මාන"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "සංස්කරණය කරන්න…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ටැබ්ලට්"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "අභිරුචි උපාංගය එක් කරන්න..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "උපාංගය"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "උපාංග නාමය"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "උපාංග නාමය හිස් විය නොහැකිය"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "උපාංග නම අනුලකුණු {PH1}කට වඩා අඩු විය යුතුය."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "උපාංග පික්සල අනුපාතය"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "අනුකරණය කළ උපාංග"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "උස"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "පරිශීලක නියෝජිත අනුලකුණු වැල"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "පරිශීලක නියෝජිත වර්ගය"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "පළල"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI තිරය සහිත ලැප්ටොප්"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI තිරය සහිත ලැප්ටොප්"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "ස්පර්ශය සහිත ලැප්ටොප්"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "ස්ථානය එක් කරන්න..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "අභිරුචි ස්ථාන"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "දේශා"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "අක්ෂාංශ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "අක්ෂාංශ සංඛ්‍යාවක් විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "අක්ෂාංශය {PH1}ට වඩා වැඩි හෝ සමාන විය යුතුය."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "දේශාංශ {PH1}ට අඩු හෝ සමාන විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "පෙදෙසිය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "පෙදෙසියෙහි අකාරාදී අනුලකුණු අඩංගු විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "ස්ථාන නම"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "ස්ථාන නම හිස් විය නොහැකිය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "ස්ථානය අනුලකුණු {PH1}කට වඩා අඩු විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "දිග"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "දේශාංශ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "දේශාංශ සංඛ්‍යාවක් විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "දේශාංශ {PH1} ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "දේශාංශ {PH1}ට අඩු හෝ සමාන විය යුතුය"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "වේලා කලාප ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "වේලා කලාප ID හි අකාරාදී අනුලකුණු අඩංගු විය යුතුය"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "මූලාශ්‍ර කේතය තුළ හෙළිදරව් කරන්න"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "මූසික රෝදය හෝ ඉහළ/පහළ යතුරු සමඟ සීරුමාරු කරන්න. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ඇල්ෆා)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (බීටා)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "අභිරුචි දිශානතිය"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "උපාංග දිශානතිය ඇල්ෆා ලෙස සකසා ඇත: {PH1}, බීටා: {PH2}, ගැමා: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "සංදර්ශනය පහළට"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "සංදර්ශනය කරන්න"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "දිශානතිය කරකැවීමට සබල කරන්න"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "දෝෂය"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "තෝරා ගත් නිෂ්ක්‍රීය තත්ත්ව අනුකරණය බල කරයි"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "ක්ලික් කිරීම වෙනුවට ස්පර්ශය බල කරයි"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (ගැමා)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "භූදර්ශන වම"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "භූදර්ශනය දකුණ"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "අක්ෂාංශ"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "පෙදෙසිය"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "ස්ථානය"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "ස්ථානය ලබා ගත නොහැකිය"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "දේශාංශ"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "කළමනාකරණය කරන්න"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "ස්ථාන ලැයිස්තුව කළමනාකරණය කරන්න"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "ප්‍රතික්ෂේප කිරීම නැත"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "ක්‍රියාවිරහිතයි"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "දිශානතිය"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "වෙනත්…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "ප්‍රතික්ෂේප කරයි"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "සිරස්"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "ප්‍රතිමූර්තිය ඉහළ පහළට"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "පෙර සැකසීම්"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "යළි සකසන්න"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "උපාංග දිශානතිය යළි සකසන්න"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y-අක්ෂය වටා භ්‍රමණය වීමට Shift+තිරස් අතට අදින්න"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "වේලා කලාප ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "සන්නම එක් කරන්න"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "සැකසුම"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "ගෘහ නිර්මාණ ශිල්පය (උදා. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} මකන්න"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "සන්නම"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "{PH1} සන්නම"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "සන්නම් ගුණාංග"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "අනුවාදය {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "සන්නම්"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "මකන්න"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "උපාංග මාදිලිය"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "උපාංග දේපළ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "සම්පූර්ණ බ්‍රව්සර අනුවාදය"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "සම්පූර්ණ බ්‍රවුසර අනුවාදය (උදා. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "ජංගම"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "ව්‍යුහාත්මක ශීර්ෂක අනුලකුණුවැල ලෙස නිරූපණය කළ නොහැකිය."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "වේදිකාව"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "වේදිකාව (උදා. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "වේදිකා ගුණාංග"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "වේදිකා අනුවාදය"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "යාවත්කාලීන කරන්න"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි යනු වඩා හොඳ රහස්‍යතා ගිණුම්කරණයකින් බ්‍රවුසරය සහ උපාංගය වඩාත් ව්‍යුහාත්මක ආකාරයකින් හඳුනා ගන්නා පරිශීලක නියෝජිත අනුලකුණුවැලට විකල්පයකි. තව දැන ගැනීමට බොත්තම ක්ලික් කරන්න."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "අනුවාදය"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "ත්වරණමානය"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "සම්පූර්ණ ප්‍රමාණයේ තිර රුවක් ග්‍රහණය කරන්න"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "උපාංගය"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "උපාංග දිශානතිය"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "උපාංගය-පදනම්"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "උපාංග"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "නිෂ්ක්‍රීය අනාවරක තත්ත්වය අනුකරණය කරන්න"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "බල කිරීම සබලයි"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "භු ස්ථානය"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "උපාංග රාමුව සඟවන්න"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "රූලර් සඟවන්න"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "පෙදෙසිය"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "පෙදෙසි"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "ස්ථාන"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "නිෂ්ක්‍රිය අනුකරණයක් නැත"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "සංවේදක"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "උපාංග රාමුව පෙන්වන්න"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "උපාංග පෙන්වන්න"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "ස්ථාන පෙන්වන්න"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "මාධ්‍ය විමසුම් පෙන්වන්න"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "රූලර් පෙන්වන්න"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "සංවේදක පෙන්වන්න"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "වේලා කලාප"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "උපාංග මෙවලම් තීරුව ටොගල කරන්න"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "ස්පර්ශය"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "පරිශීලක සක්‍රියයි, තිරය අගුලු දමන ලදි"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "පරිශීලක සක්‍රියයි, තිරය අගුලු හරින ලදි"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "පරිශීලක නිෂ්ක්‍රියයි, තිරය අගුලු දමන ලදි"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "පරිශීලක නිෂ්ක්‍රියයි, තිරය අගුලු හරින ලදි"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "සිදුවීම් සවන්දෙන්නන් මකන්න"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "වසම"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "ජාල පැනලය තුළ මෙම Set-Cookie ශීර්ෂකය අඩංගු ජාල ඉල්ලීම් පෙන්වන්න"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{කුකි #}one{කුකි #}other{කුකි #}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{පේළි Set-Cookie ශීර්ෂක 1}one{පේළි Set-Cookie ශීර්ෂක #}other{පේළි Set-Cookie ශීර්ෂක #}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "නම"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "අවවාදයයි"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "සැඟවුණ ගැටලු"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "බලපෑමට පත් වූ සම්පත්"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "විශ්වාසදායී වෙබ් ක්‍රියාකාරකම"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "සියලු සැඟවුණ ගැටලු සැඟවීම ඉවත් කරන්න"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "අවහිර කරන ලදි"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm මොඩියුල URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "මෙවැනි ගැටලු සැඟවීම ඉවත් කරන්න"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "මෙවැනි ගැටලු සඟවන්න"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "ගැටලු මෙනුව සඟවන්න"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP කඩ කිරීම්"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range ශීර්ෂක සහාය"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "විදහන්නාගේ නම"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "විභේදනය"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "දත්ත සඟවයි: සහ බ්ලොබ්: URLs"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "හරවන්න"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "සෙවීම් පෙරහන හරවයි"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "තව දැන ගන්න"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "විමසුම් තන්තු පරාමිති"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data සමගින් ලාක්ෂණිකය පටිගත කරන ලදි: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "යොමු කිරීමේ ප්‍රතිපත්තිය"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "ආරක්ෂාව පෙන්වන්න"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "ස්ථානය එක් කරන්න..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "අභිරුචි ස්ථාන"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "දේශා"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "අක්ෂාංශ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "අක්ෂාංශ සංඛ්‍යාවක් විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "අක්ෂාංශය {PH1}ට වඩා වැඩි හෝ සමාන විය යුතුය."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "දේශාංශ {PH1}ට අඩු හෝ සමාන විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "පෙදෙසිය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "පෙදෙසියෙහි අකාරාදී අනුලකුණු අඩංගු විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "ස්ථාන නම"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "ස්ථාන නම හිස් විය නොහැකිය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "ස්ථානය අනුලකුණු {PH1}කට වඩා අඩු විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "දිග"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "දේශාංශ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "දේශාංශ සංඛ්‍යාවක් විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "දේශාංශ {PH1} ට සමාන හෝ ඊට වඩා වැඩි විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "දේශාංශ {PH1}ට අඩු හෝ සමාන විය යුතුය"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "වේලා කලාප ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "වේලා කලාප ID හි අකාරාදී අනුලකුණු අඩංගු විය යුතුය"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "මූසික රෝදය හෝ ඉහළ/පහළ යතුරු සමඟ සීරුමාරු කරන්න. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ඇල්ෆා)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (බීටා)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "අභිරුචි දිශානතිය"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "උපාංග දිශානතිය ඇල්ෆා ලෙස සකසා ඇත: {PH1}, බීටා: {PH2}, ගැමා: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "සංදර්ශනය පහළට"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "සංදර්ශනය කරන්න"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "දිශානතිය කරකැවීමට සබල කරන්න"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "දෝෂය"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "තෝරා ගත් නිෂ්ක්‍රීය තත්ත්ව අනුකරණය බල කරයි"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "ක්ලික් කිරීම වෙනුවට ස්පර්ශය බල කරයි"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (ගැමා)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "භූදර්ශන වම"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "භූදර්ශනය දකුණ"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "අක්ෂාංශ"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "පෙදෙසිය"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "ස්ථානය"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "ස්ථානය ලබා ගත නොහැකිය"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "දේශාංශ"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "කළමනාකරණය කරන්න"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "ස්ථාන ලැයිස්තුව කළමනාකරණය කරන්න"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "ප්‍රතික්ෂේප කිරීම නැත"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "ක්‍රියාවිරහිතයි"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "දිශානතිය"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "වෙනත්…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "ප්‍රතික්ෂේප කරයි"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "සිරස්"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "ප්‍රතිමූර්තිය ඉහළ පහළට"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "පෙර සැකසීම්"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "යළි සකසන්න"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "උපාංග දිශානතිය යළි සකසන්න"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y-අක්ෂය වටා භ්‍රමණය වීමට Shift+තිරස් අතට අදින්න"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "වේලා කලාප ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "ත්වරණමානය"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "උපාංග දිශානතිය"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "උපාංගය-පදනම්"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "නිෂ්ක්‍රීය අනාවරක තත්ත්වය අනුකරණය කරන්න"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "බල කිරීම සබලයි"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "භු ස්ථානය"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "පෙදෙසිය"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "පෙදෙසි"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "ස්ථාන"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "නිෂ්ක්‍රිය අනුකරණයක් නැත"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "සංවේදක"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "ස්ථාන පෙන්වන්න"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "සංවේදක පෙන්වන්න"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "වේලා කලාප"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "ස්පර්ශය"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "පරිශීලක සක්‍රියයි, තිරය අගුලු දමන ලදි"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "පරිශීලක සක්‍රියයි, තිරය අගුලු හරින ලදි"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "පරිශීලක නිෂ්ක්‍රියයි, තිරය අගුලු දමන ලදි"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "පරිශීලක නිෂ්ක්‍රියයි, තිරය අගුලු හරින ලදි"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ගොනු නම් රටාව එක් කරන්න"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "අවවාදයයි:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "අභිරුචි උපාංගය එක් කරන්න..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "උපාංගය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "උපාංග නාමය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "උපාංග නාමය හිස් විය නොහැකිය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "උපාංග නම අනුලකුණු {PH1}කට වඩා අඩු විය යුතුය."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "උපාංග පික්සල අනුපාතය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "අනුකරණය කළ උපාංග"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "උස"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "පරිශීලක නියෝජිත අනුලකුණු වැල"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "පරිශීලක නියෝජිත වර්ගය"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "පළල"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "සන්නම එක් කරන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "සැකසුම"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "ගෘහ නිර්මාණ ශිල්පය (උදා. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} මකන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "සන්නම"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} සන්නම"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "සන්නම් ගුණාංග"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "අනුවාදය {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "සන්නම්"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "මකන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "උපාංග මාදිලිය"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "උපාංග දේපළ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "සම්පූර්ණ බ්‍රව්සර අනුවාදය"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "සම්පූර්ණ බ්‍රවුසර අනුවාදය (උදා. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "ජංගම"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "ව්‍යුහාත්මක ශීර්ෂක අනුලකුණුවැල ලෙස නිරූපණය කළ නොහැකිය."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "වේදිකාව"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "වේදිකාව (උදා. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "වේදිකා ගුණාංග"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "වේදිකා අනුවාදය"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "යාවත්කාලීන කරන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "පරිශීලක නියෝජිත සේවාලාභී ඉඟි යනු වඩා හොඳ රහස්‍යතා ගිණුම්කරණයකින් බ්‍රවුසරය සහ උපාංගය වඩාත් ව්‍යුහාත්මක ආකාරයකින් හඳුනා ගන්නා පරිශීලක නියෝජිත අනුලකුණුවැලට විකල්පයකි. තව දැන ගැනීමට බොත්තම ක්ලික් කරන්න."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "අනුවාදය"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "උපාංග"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "උපාංග පෙන්වන්න"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ලේඛනය"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "බිඳුම් ලක්ෂ්‍ය අක්‍රිය කරන්න"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "10කින් CSS ඒකකය අඩු කරන්න"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS ඒකකය {PH1}කින් අඩු කරන්න"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "එබුම අනාවරණය කර ගන්න"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "සංකේතයට යන්න"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "10කින් CSS ඒකකය වැඩි කරන්න"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS ඒකකය {PH1}කින් වැඩි කරන්න"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "ඊළඟ සංස්කරණය කිරීමේ ස්ථානයට යන්න"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "මේ අනුව අනුපිළිවෙළට සකසන්න"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "බිඳින වෙනස ගැටලුවක්: පිටුව Chrome හි ඉදිරියට එන අනුවාදයක වැඩ කිරීම නවතා දැමිය හැකිය"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{බිඳුම් වෙනස් කිරීම් #}one{බිඳුම් වෙනස් කිරීම් #}other{බිඳුම් වෙනස් කිරීම් #}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "වැඩිදියුණු කිරීමේ ගැටලුවකි: පිටුව වැඩිදියුණු කිරීමට අවස්ථාවක් තිබේ"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "පිටු දෝෂ ගැටලුවකි: පිටුව නිවැරදිව ක්‍රියා නොකරයි"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{පිටු ‍දෝෂ #}one{පිටු ‍දෝෂ #}other{පිටු ‍දෝෂ #}}"
@@ -10758,7 +10827,7 @@
     "message": "ගැටලු ටැබයෙහි ගැටලුව පෙන්වීමට ක්ලික් කරන්න"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "ගැටලු ටැබය විවෘත කිරීමට සහ '{title}' ගැටලුව පෙන්වීමට ක්ලික් කරන්න"
+    "message": "ගැටලු ටැබය විවෘත කිරීමට සහ ගැටලුව පෙන්වීමට ක්ලික් කරන්න: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "මෙම අවස්ථාවේදී ගැටලුව නොතිබේ"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "සියල්ල"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ආදානය හිස් කරන්න"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "උදා. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "කුකිය සකසා ඇති මූලාශ්‍ර යෝජනා ක්‍රමය පෙන්වයි (Secure, NonSecure). යෝජනා ක්‍රමය නොදන්නේ නම්, මෙය Unset පෙන්වයි."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}ට පසුව"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "කල් ඉකුත් වීමේ වේලා මුද්‍රාව {seconds} වන අතර, එය {date}ට පසු දිනයකට අනුරූපී වේ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "අගය"

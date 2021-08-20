@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Error desconegut"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} dies"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} hores"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Finestra"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Treballador"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G ràpida"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "No hi ha cap contingut disponible per a la sol·licitud de comprovació preliminar"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "No hi ha cap contingut disponible perquè aquesta sol·licitud s'ha redirigit"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Actualment no s'admet el contingut per a WebSockets"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Sense limitació"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} s'ha acabat de carregar: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "La capçalera Set-Cookie s'ignora com a resposta de l'URL: {PH1}. La longitud de la galeta ha de ser igual o inferior a 4096 caràcters."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G lenta"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Aquesta galeta s'ha bloquejat perquè tenia l'atribut \"Secure\" i la connexió no era segura."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "La capçalera Set-Cookie s'ignora com a resposta de l'URL: {PH1}. La longitud de la galeta ha de ser igual o inferior a 4096 caràcters."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "L'esquema d'aquesta connexió no té permís per emmagatzemar galetes."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Desactiva el format AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Desactiva la memòria cau (mentre DevTools estigui obert)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desactiva JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Principal"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Obre les DevTools específiques per a Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Dades vitals principals del lloc web"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit ha fallat: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "La relació de píxels del dispositiu ha de ser un número o ha d'estar en blanc."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "La relació de píxels del dispositiu ha de ser superior o igual a {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "La relació de píxels del dispositiu ha de ser inferior o igual a {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "L'alçada ha de ser un número"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "L'alçada ha de ser superior o igual a {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "L'alçada ha de ser igual o inferior a {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "L'amplada ha de ser un número."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "L'amplada ha de ser superior o igual a {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "L'amplada ha de ser igual o inferior a {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Portàtil amb pantalla HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Portàtil amb pantalla MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Portàtil amb dispositiu tàctil"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "S'està recollint contingut…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestió de les intervencions d'anuncis pesats"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Problema relacionat amb un canvi conflictiu: la pàgina pot deixar de funcionar en properes versions de Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Problema de millora: hi ha la possibilitat de millorar la pàgina"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Problema d'error de pàgina: la pàgina no funciona correctament"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Accessibilitat del color i el contrast"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "no segur"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets explicats"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Com funciona Schemeful Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Canvis als criteris de qualitat per a PWA utilitzant Activitat web de confiança"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Desactivació de la compartició del mòdul de diversos orígens de WebAssembly"
+    "message": "S'està restringint la compartició del mòdul Wasm a same-origin"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anònim>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "S'està esperant per activar el número {PH1}"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Mostra tots els registres"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker durant {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simula la quota d'emmagatzematge personalitzada"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "La quota d'emmagatzematge està limitada al mode d'incògnit"
@@ -2949,7 +3021,7 @@
     "message": "Tercer"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Cerca coincidències als subdominis"
+    "message": "Coincidència de subdominis"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Origen"
@@ -2964,7 +3036,7 @@
     "message": "Testimoni"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "testimonis"
+    "message": "{PH1} testimonis"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Restricció de l'ús"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Advertiment, repetit # vegada}other{Advertiment, repetit # vegades}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Aquesta barra lateral se suprimirà en una versió futura de Chrome. Si tens suggeriments, envia'ns-els mitjançant"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "l'eina de seguiment de problemes"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Compleció automàtica a partir de l'historial"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# byte, {percentage}}other{# bytes, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bytes ({PH2}%) pertanyen a blocs de JavaScript que (encara) no s'han executat."
+    "message": "{PH1} bytes ({PH2}%) pertanyen a blocs de JavaScript que (encara) no s'han executat."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bytes ({PH2}%) pertanyen a blocs de JavaScript que s'han executat com a mínim una vegada."
+    "message": "{PH1} bytes ({PH2}%) pertanyen a blocs de JavaScript que s'han executat com a mínim una vegada."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bytes ({PH2}%) pertanyen a funcions que (encara) no s'han executat."
+    "message": "{PH1} bytes ({PH2}%) pertanyen a funcions que (encara) no s'han executat."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bytes ({PH2}%) pertanyen a funcions que s'han executat com a mínim una vegada."
+    "message": "{PH1} bytes ({PH2}%) pertanyen a funcions que s'han executat com a mínim una vegada."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Un {PH1}% del fitxer no s'ha utilitzat; un {PH2}% del fitxer s'ha utilitzat"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Total de bytes"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copia XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Element de tall"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Retalla"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Suprimeix l'element"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Amaga l'element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Enganxa l'element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Enganxa"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Desplaça fins que sigui visible"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Mostra la traça de la pila"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Mostra l'ombra DOM d'agent d'usuari"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Traça de la pila"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Ajust de paraules"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "La relació de píxels del dispositiu ha de ser un número o ha d'estar en blanc."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "La relació de píxels del dispositiu ha de ser superior o igual a {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "La relació de píxels del dispositiu ha de ser inferior o igual a {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "L'alçada ha de ser un número"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "L'alçada ha de ser superior o igual a {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "L'alçada ha de ser igual o inferior a {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "L'amplada ha de ser un número."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "L'amplada ha de ser superior o igual a {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "L'amplada ha de ser igual o inferior a {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Afegeix la relació de píxels del dispositiu"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Tipus de dispositiu"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimensions"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Edita…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tauleta"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Afegeix un dispositiu personalitzat..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Dispositiu"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Nom del dispositiu"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "El nom del dispositiu no pot estar buit."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "El nom del dispositiu ha de tenir un nombre de caràcters inferior a {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Relació de píxels del dispositiu"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Dispositius emulats"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Alçada"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Cadena d'agent d'usuari"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Tipus d'agent d'usuari"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Amplada"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Portàtil amb pantalla HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Portàtil amb pantalla MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Portàtil amb dispositiu tàctil"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Afegeix una ubicació..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Ubicacions personalitzades"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Latitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "La latitud ha de ser un número"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "La latitud ha de ser igual o superior a {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "La latitud ha de ser igual o inferior a {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Configuració regional"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "La configuració regional ha de contenir caràcters alfabètics"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Nom de la ubicació"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "El nom de la ubicació no pot estar buit"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "El nom de la ubicació ha de tenir un nombre de caràcters inferior a {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Longitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitud"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "La longitud ha de ser un número"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "La longitud ha de ser superior o igual a {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "La longitud ha de ser igual o inferior a {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Identificador de zona horària"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "L'identificador de la zona horària ha de contenir caràcters alfabètics"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Mostra al codi font"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Ajusta la imatge amb la rodeta del ratolí o les tecles amunt i avall. {PH1}: ±10, Maj: ±1 i Alt: ±0,01."
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Orientació personalitzada"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Orientació del dispositiu establerta en alfa: {PH1}, beta: {PH2} i gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Pantalla cap avall"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Pantalla cap amunt"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Permet que l'orientació giri"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Error"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Força l'emulació de l'estat inactiu seleccionat"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Força el toc en lloc del clic"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Horitzontal cap a l'esquerra"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Horitzontal cap a la dreta"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitud"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Configuració regional"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Ubicació"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Ubicació no disponible"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitud"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Gestiona"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Gestiona la llista d'ubicacions"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Cap substitució"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Desactiva"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientació"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Altres…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Substitucions"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Vertical"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Vertical cap per avall"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Valors predefinits"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Restableix"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Restableix l'orientació del dispositiu"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Maj+arrossega horitzontalment per girar sobre l'eix y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Identificador de zona horària"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Afegeix una marca"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arquitectura"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arquitectura (per exemple, x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Suprimeix {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Marca"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Marca {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Propietats de la marca"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Versió {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Marques"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Suprimeix"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model del dispositiu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Propietats del dispositiu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Versió completa del navegador"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Versió completa del navegador (per exemple, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mòbil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "No es pot representar com a cadena de capçaleres estructurades."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Plataforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Plataforma (per exemple, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Propietats de la plataforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Versió de la plataforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Suggeriments del client d'agent d'usuari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Actualitza"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Els suggeriments del client d'agent d'usuari són una alternativa a la cadena d'agent d'usuari que identifica el navegador i el dispositiu de manera més estructurada i tenint més en compte la privadesa. Fes clic al botó per obtenir més informació."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versió"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "acceleròmetre"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Fes una captura de pantalla completa"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "dispositiu"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "orientació del dispositiu"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "En funció del dispositiu"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Dispositius"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emula l'estat del detector inactiu"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "S'ha activat de manera forçada"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolocalització"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Amaga el marc del dispositiu"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Amaga els regles"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "configuració regional"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "configuracions regionals"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Ubicacions"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Cap emulació inactiva"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensors"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Mostra el marc del dispositiu"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Mostra els dispositius"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Mostra les ubicacions"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Mostra les consultes multimèdia"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Mostra els regles"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Mostra els sensors"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "zones horàries"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Commuta la barra d'eines del dispositiu"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Toc"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Usuari actiu; pantalla bloquejada"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Usuari actiu; pantalla desbloquejada"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Usuari inactiu; pantalla bloquejada"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Usuari inactiu; pantalla desbloquejada"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Suprimeix el detector d'esdeveniments"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domini"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Mostra les sol·licituds de xarxa que incloguin aquesta capçalera de Set-Cookie al tauler Xarxa"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# galeta}other{# galetes}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 capçalera de Set-Cookie sense processar}other{# capçaleres de Set-Cookie sense processar}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nom"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "advertiment"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Problemes amagats"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afectats"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Activitat web de confiança"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Deixa d'amagar tots els problemes amagats"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloquejat"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL del mòdul de WebAssembly"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Deixa d'amagar aquest tipus de problemes"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Amaga aquest tipus de problemes"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Amaga el menú de problemes"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Infraccions relacionades amb la CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Assistència amb la capçalera Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Nom del renderitzador"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Resolució"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Amaga els URL data: i blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Inversió"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Inverteix el filtre de cerca"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Més informació"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Paràmetres de la cadena de consulta"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Atribució registrada amb trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Política de referències"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Mostra la seguretat"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Afegeix una ubicació..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Ubicacions personalitzades"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Latitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "La latitud ha de ser un número"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "La latitud ha de ser igual o superior a {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "La latitud ha de ser igual o inferior a {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Configuració regional"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "La configuració regional ha de contenir caràcters alfabètics"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Nom de la ubicació"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "El nom de la ubicació no pot estar buit"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "El nom de la ubicació ha de tenir un nombre de caràcters inferior a {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Longitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitud"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "La longitud ha de ser un número"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "La longitud ha de ser superior o igual a {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "La longitud ha de ser igual o inferior a {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Identificador de zona horària"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "L'identificador de la zona horària ha de contenir caràcters alfabètics"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Ajusta la imatge amb la rodeta del ratolí o les tecles amunt i avall. {PH1}: ±10, Maj: ±1 i Alt: ±0,01."
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Orientació personalitzada"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Orientació del dispositiu establerta en alfa: {PH1}, beta: {PH2} i gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Pantalla cap avall"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Pantalla cap amunt"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Permet que l'orientació giri"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Error"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Força l'emulació de l'estat inactiu seleccionat"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Força el toc en lloc del clic"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Horitzontal cap a l'esquerra"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Horitzontal cap a la dreta"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitud"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Configuració regional"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Ubicació"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Ubicació no disponible"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitud"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Gestiona"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Gestiona la llista d'ubicacions"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Cap substitució"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Desactiva"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientació"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Altres…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Substitucions"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Vertical"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Vertical cap per avall"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Valors predefinits"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Restableix"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Restableix l'orientació del dispositiu"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Maj+arrossega horitzontalment per girar sobre l'eix y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Identificador de zona horària"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "acceleròmetre"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "orientació del dispositiu"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "En funció del dispositiu"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emula l'estat del detector inactiu"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "S'ha activat de manera forçada"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolocalització"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "configuració regional"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "configuracions regionals"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Ubicacions"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Cap emulació inactiva"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensors"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Mostra les ubicacions"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Mostra els sensors"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "zones horàries"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Toc"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Usuari actiu; pantalla bloquejada"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Usuari actiu; pantalla desbloquejada"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Usuari inactiu; pantalla bloquejada"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Usuari inactiu; pantalla desbloquejada"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Afegeix un patró de nom del fitxer"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ADVERTIMENT:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Afegeix un dispositiu personalitzat..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Dispositiu"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Nom del dispositiu"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "El nom del dispositiu no pot estar buit."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "El nom del dispositiu ha de tenir un nombre de caràcters inferior a {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Relació de píxels del dispositiu"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Dispositius emulats"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Alçada"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Cadena d'agent d'usuari"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Tipus d'agent d'usuari"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Amplada"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Afegeix una marca"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arquitectura"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arquitectura (per exemple, x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Suprimeix {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Marca"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Marca {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Propietats de la marca"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Versió {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Marques"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Suprimeix"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Model del dispositiu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Propietats del dispositiu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Versió completa del navegador"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Versió completa del navegador (per exemple, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mòbil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "No es pot representar com a cadena de capçaleres estructurades."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Plataforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Plataforma (per exemple, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Propietats de la plataforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Versió de la plataforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Suggeriments del client d'agent d'usuari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Actualitza"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Els suggeriments del client d'agent d'usuari són una alternativa a la cadena d'agent d'usuari que identifica el navegador i el dispositiu de manera més estructurada i tenint més en compte la privadesa. Fes clic al botó per obtenir més informació."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versió"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Dispositius"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Mostra els dispositius"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Documentació"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Desactiva els punts de ruptura"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Disminueix 10 punts la unitat CSS"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Disminueix {PH1} la unitat CSS"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Detecta el sagnat"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Ves al símbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Augmenta 10 punts la unitat CSS"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Augmenta {PH1} la unitat CSS"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Ves a la ubicació d'edició següent"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordena per"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Problema relacionat amb un canvi conflictiu: la pàgina pot deixar de funcionar en properes versions de Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# canvi conflictiu}other{# canvis conflictius}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Problema de millora: hi ha la possibilitat de millorar la pàgina"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Problema d'error de pàgina: la pàgina no funciona correctament"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# error de pàgina}other{# errors de pàgina}}"
@@ -10758,7 +10827,7 @@
     "message": "Fes clic perquè es mostri el problema a la pestanya Problemes"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Fes clic per obrir la pestanya Problemes i perquè es mostri el problema {title}"
+    "message": "Fes clic per obrir la pestanya Problemes i perquè es mostri el problema: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "El problema no està disponible en aquest moment"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Tot"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Esborra l'entrada"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "per exemple, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Mostra l'esquema d'origen (Secure i NonSecure) en què s'ha establert la galeta. Si l'esquema és desconegut, es mostra Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "després del dia {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "La marca de temps de caducitat és {seconds}, que correspon a una data posterior a {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Valor"

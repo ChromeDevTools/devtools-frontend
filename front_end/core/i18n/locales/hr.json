@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Nepoznata pogreška"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} dana"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} h"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Prozor"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Djelatnik"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Brzi 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Nema dostupnog sadržaja za zahtjev za pripremnu provjeru"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nema dostupnog sadržaja jer je zahtjev preusmjeren"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Sadržaj za WebSockets trenutačno nije podržan"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Bez potiskivanja"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Dovršeno je učitavanje {PH1}: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Zaglavlje kolačića Set-Cookie zanemareno je u odgovoru s URL-a: {PH1}. Duljina kolačića može biti najviše 4096 znakova."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Spori 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Taj je kolačić blokiran jer je imao atribut Secure, a veza nije bila sigurna."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Zaglavlje kolačića Set-Cookie zanemareno je u odgovoru s URL-a: {PH1}. Duljina kolačića može biti najviše 4096 znakova."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Shemi ove veze nije dopušteno pohranjivanje kolačića."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Onemogući format AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Onemogući predmemoriju (dok su razvojni alati otvoreni)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Onemogući JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Glavno"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Otvorite namjenske razvojne alate za Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Ključni pokazatelji web-stranice"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit neuspješno je: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Omjer piksela uređaja mora se izraziti brojem ili ostaviti praznim."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Omjer piksela uređaja mora biti {PH1} ili veći."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Omjer piksela uređaja mora biti {PH1} ili manji."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Visina se mora izraziti brojem."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Visina mora biti {PH1} ili veća."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Visina mora biti {PH1} ili manja."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Širina se mora izraziti brojem."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Širina mora biti {PH1} ili veća."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Širina mora biti {PH1} ili manja."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Prijenosno računalo s HiDPI zaslonom"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Prijenosno računalo s MDPI zaslonom"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Prijenosno računalo s dodirom"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Prikupljanje sadržaja…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Upravljanje intervencijama povezanim s velikim oglasima"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Problem potencijalno štetne izmjene: stranica može prestati funkcionirati u novijoj verziji Chromea"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Problem s poboljšanjem: dostupna je prilika za poboljšanje stranice"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Pogreška stranice: stranica ne radi ispravno"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Pristupačnost za boju i kontrast"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "nesiguran"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Objašnjenje za First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Kako funkcionira Schemeful Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Promjene kriterija kvalitete za PWA pomoću Pouzdane aktivnosti na webu"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Obustavljanje dijeljenja Wasm modula različitih porijekla"
+    "message": "Ograničavanje dijeljenja Wasm modula na isto porijeklo"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Čeka se uključivanje #{PH1}"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Prikaži sve registracije"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker na {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Uslužni alati"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simuliraj prilagođenu kvotu pohrane"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Kvota pohrane ograničena je u anonimnom načinu"
@@ -2964,7 +3036,7 @@
     "message": "Oznaka"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "oznake"
+    "message": "Oznake: {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ograničenje upotrebe"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Upozorenje, ponovljeno # put}one{Upozorenje, ponovljeno # put}few{Upozorenje, ponovljeno # puta}other{Upozorenje, ponovljeno # puta}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Ove bočne trake neće biti u budućoj verziji Chromea. Ako imate povratnih informacija, obratite nam se putem"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "praćenje poteškoća"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Automatski dovrši iz povijesti"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bajt, {percentage}}one{# bajt, {percentage}}few{# bajta, {percentage}}other{# bajtova, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bajta ({PH2} %) pripada blokovima JavaScripta koji (još) nisu izvršeni."
+    "message": "{PH1} B ({PH2}) pripada blokovima JavaScripta koji (još) nisu izvršeni."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bajtova ({PH2}%) pripada blokovima Javascripta koji su izvršeni barem jedanput."
+    "message": "{PH1} B ({PH2}) pripada blokovima JavaScripta koji su izvršeni barem jednom."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bajtova ({PH2}%) pripada funkcijama koje (još) nisu izvršene."
+    "message": "{PH1} B ({PH2}) pripada funkcijama koje (još) nisu izvršene."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bajta ({PH2}%) pripada funkcijama koje su izvršene barem jednom."
+    "message": "{PH1} B ({PH2}) pripada funkcijama koje su izvršene barem jednom."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1}% datoteke je neiskorišteno, {PH2}% datoteke je iskorišteno"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Ukupno bajtova"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopiraj XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Izreži element"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Izreži"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Izbriši element"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Sakrij element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Zalijepi element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Zalijepi"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Pomičite se dok ne postane vidljivo"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Prikaži praćenje stoga"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Prikaz sjenčenja korisničkog agenta DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Praćenje stoga"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Prelamanje riječi"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Omjer piksela uređaja mora se izraziti brojem ili ostaviti praznim."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Omjer piksela uređaja mora biti {PH1} ili veći."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Omjer piksela uređaja mora biti {PH1} ili manji."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Visina se mora izraziti brojem."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Visina mora biti {PH1} ili veća."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Visina mora biti {PH1} ili manja."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Širina se mora izraziti brojem."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Širina mora biti {PH1} ili veća."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Širina mora biti {PH1} ili manja."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Dodaj omjer piksela uređaja"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Vrsta uređaja"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimenzije"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Uredi…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Dodaj prilagođeni uređaj..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Uređaj"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Naziv uređaja"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Naziv uređaja ne može biti prazan."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Naziv uređaja mora imati manje od {PH1} znakova."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Omjer piksela uređaja"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulirani uređaji"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Visina"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Niz korisničkog agenta"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Vrsta korisničkog agenta"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Širina"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Prijenosno računalo s HiDPI zaslonom"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Prijenosno računalo s MDPI zaslonom"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Prijenosno računalo s dodirom"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Dodaj lokaciju..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Prilagođene lokacije"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Šir"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Zemljopisna širina"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Zemljopisna širina mora se izraziti brojem"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Zemljopisna širina mora biti {PH1} ili veća."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Zemljopisna širina mora biti {PH1} ili manja."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Oznaka zemlje/jezika"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Oznaka zemlje/jezika mora sadržavati abecedne znakove"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Naziv lokacije"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Naziv lokacije ne može biti prazan"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Naziv lokacije mora imati manje od {PH1} znakova"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Dugo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Zemljopisna dužina"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Zemljopisna dužina mora se izraziti brojem"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Zemljopisna dužina mora biti {PH1} ili veća."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Zemljopisna dužina mora biti {PH1} ili manja"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "ID vremenske zone"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "ID vremenske zone mora sadržavati abecedne znakove"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Otkrij u izvornom kodu"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Prilagodite kotačićem miša ili tipkama gore/dolje. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Prilagođeno usmjerenje"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Usmjerenje uređaja postavljeno na alfa: {PH1}, beta: {PH2}, gama: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Zaslon usmjeren prema dolje"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Prikaz prema gore"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Omogući zakretanje usmjerenja"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Pogreška"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Nameće emulaciju odabranog neaktivnog stanja"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Nameće dodir umjesto klika"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Pejzaž lijevo"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Pejzaž desno"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Zemljopisna širina"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Oznaka zemlje/jezika"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Lokacija"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Lokacija nije dostupna"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Zemljopisna dužina"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Upravljaj"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Upravljaj popisom lokacija"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Bez nadjačavanja"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Isključeno"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Usmjerenje"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Ostalo…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Nadjačavanja"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Portret"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Preokrenuti portret"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Unaprijed definirane postavke"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Poništi"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Poništi usmjerenje uređaja"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Pritisnite tipku Shift i povucite vodoravno za zakretanje oko osi y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "ID vremenske zone"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Dodajte robnu marku"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arhitektura"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arhitektura (npr. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Izbrišite {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Robna marka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Robna marka {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Svojstva robne marke"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Verzija {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Robne marke"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Izbriši"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model uređaja"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Svojstva uređaja"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Puna verzija preglednika"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Puna verzija preglednika (npr. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobilni uređaj"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Ne može se predstaviti kao niz strukturiranih zaglavlja."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platforma (npr. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Svojstva platforme"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Verzija platforme"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Prilagodbe klijenta korisničkog agenta"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Ažuriraj"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Prilagodbe klijenta korisničkog agenta alternativa su nizu korisničkog agenta koja prepoznaje preglednik i uređaj na više strukturiran način uz bolji izračun privatnosti. Kliknite gumb da biste saznali više."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Verzija"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "mjerač ubrzanja"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Snimi snimku zaslona u punoj veličini"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "uređaj"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "usmjerenje uređaja"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Temeljeno na uređaju"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Uređaji"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emuliraj stanje detektora u mirovanju"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Prisilno omogućeno"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolociranje"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Sakrij okvir uređaja"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Sakrij ravnala"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "oznaka zemlje/jezika"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "oznake zemlje/jezika"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Lokacije"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Nema emulacije stanja mirovanja"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Senzori"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Prikaži okvir uređaja"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Prikaži uređaje"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Prikaži lokacije"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Prikaži upite o medijima"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Pokaži ravnala"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Prikaži senzore"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "vremenske zone"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Prebaci alatnu traku uređaja"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Dodir"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Korisnik je aktivan, zaslon je zaključan"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Korisnik je aktivan, zaslon je otključan"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Korisnik je neaktivan, zaslon je zaključan"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Korisnik je neaktivan, zaslon je otključan"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Izbriši slušatelja događaja"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domena"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Prikažite mrežne zahtjeve koji uključuju ovo zaglavlje Set-Cookie na ploči mreže"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# kolačić}one{# kolačić}few{# kolačića}other{# kolačića}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 neobrađeno Set-Cookie zaglavlje}one{# neobrađeno Set-Cookie zaglavlje}few{# neobrađena Set-Cookie zaglavlja}other{# neobrađenih Set-Cookie zaglavlja}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Naziv"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "upozorenje"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Skrivene poteškoće"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Zahvaćeni resursi"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Pouzdana aktivnost na webu"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Otkrij sve skrivene poteškoće"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokiran"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL Wasm modula"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Otkrij poteškoće poput ove"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Sakrij poteškoće poput ove"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Izbornik Skrivanje poteškoća"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Kršenja CSP-a"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Podrška za zaglavlje Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Ime ispunjivača"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Razlučivost"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Skrivanje URL-ova za data: i blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Preokretanje"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Obrće filtar za pretraživanje"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Saznajte više"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Parametri niza upita"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Snimljena atribucija s trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Pravila preporuke"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Prikaži Sigurnost"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Dodaj lokaciju..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Prilagođene lokacije"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Šir"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Zemljopisna širina"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Zemljopisna širina mora se izraziti brojem"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Zemljopisna širina mora biti {PH1} ili veća."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Zemljopisna širina mora biti {PH1} ili manja."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Oznaka zemlje/jezika"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Oznaka zemlje/jezika mora sadržavati abecedne znakove"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Naziv lokacije"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Naziv lokacije ne može biti prazan"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Naziv lokacije mora imati manje od {PH1} znakova"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Dugo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Zemljopisna dužina"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Zemljopisna dužina mora se izraziti brojem"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Zemljopisna dužina mora biti {PH1} ili veća."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Zemljopisna dužina mora biti {PH1} ili manja"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "ID vremenske zone"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "ID vremenske zone mora sadržavati abecedne znakove"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Prilagodite kotačićem miša ili tipkama gore/dolje. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Prilagođeno usmjerenje"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Usmjerenje uređaja postavljeno na alfa: {PH1}, beta: {PH2}, gama: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Zaslon usmjeren prema dolje"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Prikaz prema gore"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Omogući zakretanje usmjerenja"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Pogreška"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Nameće emulaciju odabranog neaktivnog stanja"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Nameće dodir umjesto klika"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Pejzaž lijevo"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Pejzaž desno"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Zemljopisna širina"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Oznaka zemlje/jezika"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Lokacija"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Lokacija nije dostupna"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Zemljopisna dužina"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Upravljaj"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Upravljaj popisom lokacija"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Bez nadjačavanja"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Isključeno"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Usmjerenje"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Ostalo…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Nadjačavanja"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Portret"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Preokrenuti portret"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Unaprijed definirane postavke"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Poništi"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Poništi usmjerenje uređaja"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Pritisnite tipku Shift i povucite vodoravno za zakretanje oko osi y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "ID vremenske zone"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "mjerač ubrzanja"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "usmjerenje uređaja"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Temeljeno na uređaju"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emuliraj stanje detektora u mirovanju"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Prisilno omogućeno"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolociranje"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "oznaka zemlje/jezika"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "oznake zemlje/jezika"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Lokacije"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Nema emulacije stanja mirovanja"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Senzori"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Prikaži lokacije"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Prikaži senzore"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "vremenske zone"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Dodir"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Korisnik je aktivan, zaslon je zaključan"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Korisnik je aktivan, zaslon je otključan"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Korisnik je neaktivan, zaslon je zaključan"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Korisnik je neaktivan, zaslon je otključan"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Dodaj uzorak naziva datoteka"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "UPOZORENJE:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Dodaj prilagođeni uređaj..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Uređaj"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Naziv uređaja"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Naziv uređaja ne može biti prazan."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Naziv uređaja mora imati manje od {PH1} znakova."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Omjer piksela uređaja"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emulirani uređaji"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Visina"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Niz korisničkog agenta"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Vrsta korisničkog agenta"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Širina"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Dodajte robnu marku"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arhitektura"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arhitektura (npr. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Izbrišite {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Robna marka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Robna marka {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Svojstva robne marke"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Verzija {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Robne marke"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Izbriši"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Model uređaja"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Svojstva uređaja"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Puna verzija preglednika"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Puna verzija preglednika (npr. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobilni uređaj"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Ne može se predstaviti kao niz strukturiranih zaglavlja."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platforma (npr. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Svojstva platforme"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Verzija platforme"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Prilagodbe klijenta korisničkog agenta"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Ažuriraj"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Prilagodbe klijenta korisničkog agenta alternativa su nizu korisničkog agenta koja prepoznaje preglednik i uređaj na više strukturiran način uz bolji izračun privatnosti. Kliknite gumb da biste saznali više."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Verzija"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Uređaji"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Prikaži uređaje"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentacija"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktiviraj prijelomne točke"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Smanjenje jedinice CSS-a za 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Smanjenje jedinice CSS-a za {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Otkrij uvlake"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Idi na simbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Povećanje jedinice CSS-a za 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Povećanje jedinice CSS-a za {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Skoči na sljedeću lokaciju za uređivanje"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Poredaj po"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Problem potencijalno štetne izmjene: stranica može prestati funkcionirati u novijoj verziji Chromea"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# potencijalno štetna izmjena}one{# potencijalno štetna izmjena}few{# potencijalno štetne izmjene}other{# potencijalno štetnih izmjena}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Problem s poboljšanjem: dostupna je prilika za poboljšanje stranice"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Pogreška stranice: stranica ne radi ispravno"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# pogreška na stranici}one{# pogreška na stranici}few{# pogreške na stranici}other{# pogrešaka na stranici}}"
@@ -10758,7 +10827,7 @@
     "message": "Kliknite da biste prikazali poteškoću na kartici poteškoća"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Kliknite da biste otvorili karticu poteškoća i prikazali poteškoću {title}"
+    "message": "Kliknite da biste otvorili karticu poteškoća i prikazali poteškoću: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Poteškoća trenutačno nije dostupna"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Sve"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Izbriši unos"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "npr. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Prikazuje izvornu shemu (Secure, NonSecure) na kojoj je kolačić postavljen. Ako je shema nepoznata, prikazat će se Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "nakon {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Vremenska oznaka isteka je {seconds}, što odgovara datumu nakon {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Vrijednost"

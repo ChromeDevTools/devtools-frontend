@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "שגיאה לא ידועה"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ימים"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} שעות"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} דקות"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} אלפיות השנייה"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} שנ'"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "חלון"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "קובץ שירות"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G מהיר"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "אין תוכן זמין לבקשת קדם-ההפעלה"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "אין תוכן זמין כי הבקשה הזו הופנתה אוטומטית"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "בשלב זה אין תמיכה בתוכן של WebSockets"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "ללא ויסות נתונים (throttle)"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} סיים לטעון: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "המערכת מתעלמת מקובץ ה-cookie המוגדר בתגובה מכתובת URL: {PH1}. קובץ ה-cookie יכול לכלול 4,096 תווים לכל היותר."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G איטי"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "קובץ ה-cookie נחסם כי הוא כולל את המאפיין \"Secure\" והחיבור לא היה מאובטח."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "המערכת מתעלמת מקובץ ה-cookie המוגדר בתגובה מכתובת URL: {PH1}. קובץ ה-cookie יכול לכלול 4,096 תווים לכל היותר."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "לסכימת החיבור אין הרשאה לאחסן קובצי cookie."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "השבתה של הפורמט AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "השבתת המטמון (בזמן שכלי הפיתוח פתוחים)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "השבתה של JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "ראשי"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "פתיחת כלי הפיתוח הייעודיים של Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "דוח ה-Web Vitals הבסיסיים"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit נכשל: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "יש להזין מספר בשדה של יחס הפיקסלים במכשיר, או להשאיר אותו ריק."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "יחס הפיקסלים של המכשיר צריך להיות גדול מ-{PH1} או שווה ערך לו."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "יחס הפיקסלים של המכשיר צריך להיות קטן מ-{PH1} או שווה לו."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "יש לציין את הגובה באמצעות מספר."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "הערך חייב להיות גדול מ-{PH1} או שווה לו."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "הגובה חייב להיות קטן מ-{PH1} או שווה לו."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "הרוחב צריך להיות מספר."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "הערך חייב להיות גדול מ-{PH1} או שווה לו."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "הרוחב חייב להיות קטן מ-{PH1} או שווה לו."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "מחשב נייד עם מסך HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "מחשב נייד עם מסך MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "מחשב נייד עם מסך מגע"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "מתבצע איסוף תוכן…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "איך לטפל בבעיות של מודעות כבדות"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "בעיית שינוי תוכנה שעלול לגרום לכשל: ייתכן שהדף יפסיק לפעול בגרסה עתידית של Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "בעיה בנוגע לשיפור: יש הזדמנות לשפר את הדף"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "בעיית שגיאה בדף: הדף לא פועל כראוי"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "נגישות של הצבע והניגודיות"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "הקשר לא מאובטח"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "הסבר על First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "איך אתרים באותה סכימה פועלים"
   },
@@ -1284,7 +1350,7 @@
     "message": "שינויים בקריטריונים של איכות באפליקציות PWA המשתמשות בפעילות מהימנה באינטרנט"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "הוצאה משימוש של שיתוף מודול מרובה מקורות של Wasm"
+    "message": "הגבלת השיתוף של מודול Wasm לערך same-origin"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<אנונימי>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "מס' {PH1} בהמתנה להפעלה"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "לכל הרישומים"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker במשך {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "קובצי שירות (service worker)"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "הדמיה של מכסת אחסון מותאמת אישית"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "מכסת האחסון מוגבלת במצב אנונימי"
@@ -2949,7 +3021,7 @@
     "message": "צד שלישי"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "התאמה של תת-דומיינים"
+    "message": "התאמה בין תת-דומיינים"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "מקור"
@@ -2964,7 +3036,7 @@
     "message": "אסימון"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "אסימונים"
+    "message": "{PH1} אסימונים"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "הגבלת שימוש"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{אזהרה, חזרה פעם אחת}two{אזהרה, חזרה פעמיים}many{אזהרה, חזרה # פעמים}other{אזהרה, חזרה # פעמים}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "סרגל הצד הזה יוסר באחת מהגרסאות הבאות של Chrome. יש לך משוב? אפשר לשלוח אותו דרך"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "מעקב אחר בעיות"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "השלמה אוטומטית מההיסטוריה"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{בייט אחד, {percentage}}two{# בייט, {percentage}}many{# בייט, {percentage}}other{# בייט, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} בייט ({PH2}%) שייכים לבלוקים של JavaScript אשר (עדיין) לא בוצעו."
+    "message": "{PH1} בייטים ({PH2}) שייכים לבלוקים של JavaScript אשר (עדיין) לא בוצעו."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} בייטים (% {PH2}) שייכים לחסימות של JavaScript שבוצעו לפחות פעם אחת."
+    "message": "{PH1} בייטים ({PH2}) שייכים לחסימות של JavaScript שבוצעו לפחות פעם אחת."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} בייטים (% {PH2}) שייכים לפונקציות אשר (עדיין) לא בוצעו."
+    "message": "{PH1} בייטים ({PH2}) שייכים לפונקציות אשר (עדיין) לא בוצעו."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} בייטים (%{PH2}) שייכים לפונקציות שביצעו פעם אחת לפחות."
+    "message": "{PH1} בייטים ({PH2}) שייכים לפונקציות שבוצעו לפחות פעם אחת."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "% {PH1} מהקובץ לא בשימוש, % {PH2} מהקובץ בשימוש"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %‎"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "נפח כולל (בייטים)"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "העתקת XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "חיתוך הרכיב"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "גזירה"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "מחיקת הרכיב"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "הסתרת אלמנט"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "הדבקת הרכיב"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "הדבקה"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "גלילה עד שהתוכן יהיה גלוי לעין"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "הצגת דוח קריסות"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "הצגה של צללית סוכן המשתמש DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "דוח קריסות"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "גלישת שורות"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "יש להזין מספר בשדה של יחס הפיקסלים במכשיר, או להשאיר אותו ריק."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "יחס הפיקסלים של המכשיר צריך להיות גדול מ-{PH1} או שווה ערך לו."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "יחס הפיקסלים של המכשיר צריך להיות קטן מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "יש לציין את הגובה באמצעות מספר."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "הערך חייב להיות גדול מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "הגובה חייב להיות קטן מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "הרוחב צריך להיות מספר."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "הערך חייב להיות גדול מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "הרוחב חייב להיות קטן מ-{PH1} או שווה לו."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "הוספת יחס הפיקסלים של המכשיר"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "סוג המכשיר"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "מידות"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "עריכה…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "טאבלט"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "הוספת מכשיר מותאם אישית..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "מכשיר"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "שם המכשיר"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "שם המכשיר לא יכול להישאר ריק."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "שם המכשיר חייב להכיל פחות מ-{PH1} תווים"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "יחס הפיקסלים של המכשיר"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "אמולציה של מכשירים"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "גובה"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "מחרוזת של סוכן משתמש"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "סוג סוכן המשתמש"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "רוחב"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "מחשב נייד עם מסך HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "מחשב נייד עם מסך MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "מחשב נייד עם מסך מגע"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "הוספת מיקום..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "מיקומים מותאמים אישית"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "קו רוחב"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "קו רוחב חייב להיות מספר"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "קו הרוחב חייב להיות גדול מ-{PH1} או שווה לו"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "הרוחב חייב להיות קטן מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "לוקאל"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "הלוקאל חייב לכלול תווים מהאלפבית"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "שם המיקום"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "שם המיקום לא יכול להיות ריק"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "שם המיקום צריך לכלול פחות מ-{PH1} תווים"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "ארוך"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "קו אורך"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "קו האורך חייב להיות מספר"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "קו האורך חייב להיות גדול מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "האורך חייב להיות קטן מ-{PH1} או שווה לו."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "מזהה אזור הזמן"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "מזהה אזור זמן חייב להכיל תווים אלפביתיים"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "הצגה בקוד מקור"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "כוונון עם גלגל העכבר או באמצעות המקשים חץ למעלה/חץ למטה. {PH1}: ±10, ,Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (אלפא)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (בטא)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "כיוון בהתאמה אישית"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "כיוון המכשיר הוגדר לאלפא: {PH1}, בטא: {PH2}, גמא: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "תצוגה כלפי מטה"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "תצוגה כלפי מעלה"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "יש להפעיל שינוי כיוון כדי לסובב"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "שגיאה"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "אילוץ האמולציה שנבחרה של מצב ללא פעילות"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "מאלץ מגע במקום לחיצה"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (גאמא)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "לרוחב משמאל"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "ימינה לרוחב"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "קו רוחב"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "לוקאל"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "מיקום"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "המיקום לא זמין"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "קו אורך"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "ניהול"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "ניהול רשימת המיקומים"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "ללא שינוי מברירת המחדל"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "כבוי"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "כיוון"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "אחר…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "שינויים מברירת המחדל"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "לאורך"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "לאורך במהופך"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "הגדרות קבועות מראש"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "איפוס"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "איפוס של כיוון המכשיר"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "יש להזיז ולגרור אופקית כדי לסובב על ציר ה-y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "מזהה אזור זמן"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "הוספת מותג"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ארכיטקטורה"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "ארכיטקטורה (לדוגמה: x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "מחיקת {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "מותג"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "מותג: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "מאפייני המותג"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "גרסה {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "מותגים"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "מחיקה"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "דגם המכשיר"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "מאפייני המכשיר"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "גרסת דפדפן מלא"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "גרסת דפדפן מלאה (לדוגמה: 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "נייד"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "לא ניתן לייצוג כמחרוזת כותרות מובנית."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "פלטפורמה"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "פלטפורמה (לדוגמה: Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "מאפייני הפלטפורמה"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "גרסת הפלטפורמה"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "רמזים על הלקוח (Client Hints) לגבי הסוכן המשתמש"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "עדכון"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "עצות ללקוח של סוכן משתמש הן חלופה למחרוזת של סוכן משתמש. הן מזהות את הדפדפן והמכשיר באופן מובנה יותר ועם ניהול פרטיות טוב יותר. יש ללחוץ על הלחצן למידע נוסף."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "גרסה"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "מד תאוצה"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "צילום מסך בגודל מלא"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "מכשיר"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "כיוון המכשיר"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "תלוי מכשיר"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "מכשירים"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "אמולציה של מצב לא פעיל של גלאי"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "האילוץ הופעל"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "מיקום גאוגרפי"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "הסתרת מסגרת המכשיר"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "הסתרת הסרגלים"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "לוקאל"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "לוקאלים"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "מיקומים"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "לא נמצאה אמולציה ללא פעילות"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "חיישנים"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "הצגת מסגרת סביב המכשיר"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "הצגת המכשירים"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "הצגת מיקומים"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "הצגת שאילתות מדיה"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "הצגת סרגלים"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "הצגת חיישנים"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "אזורי זמן"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "החלפת המצב של סרגל הכלים של המכשיר"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "מגע"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "המשתמש פעיל, המסך ננעל"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "המשתמש פעיל, נעילת המסך בוטלה"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "משתמש לא פעיל, המסך ננעל"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "משתמש ללא פעילות, נעילת המסך בוטלה"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "מחיקת event listener"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "דומיין"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "הצגה של בקשות הרשת עם כותרת Set-Cookie הזו בחלונית 'רשת'"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{קובץ cookie אחד}two{# קובצי cookie}many{# קובצי cookie}other{# קובצי cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{כותרת גולמית אחת מסוג Set-Cookie}two{# כותרות גולמיות מסוג Set-Cookie}many{# כותרות גולמיות מסוג Set-Cookie}other{# כותרות גולמיות מסוג Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "שם"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "אזהרה"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "בעיות מוסתרות"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "מקורות המידע שהושפעו"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "פעילות מהימנה באינטרנט"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "ביטול ההסתרה של כל הבעיות המוסתרות"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "נחסם"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "כתובת URL של מודול Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "ביטול ההסתרה של בעיות כאלה"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "הסתרה של בעיות כאלה"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "הסתרה של תפריט הבעיות"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "הפרות של CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "תמיכה בכותרת Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "שם הכלי לעיבוד"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "רזולוציה"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "מסתיר נתונים: ו-blob: כתובות URL"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "היפוך"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "היפוך המסנן של החיפוש"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "מידע נוסף"
   },
@@ -6564,7 +6315,7 @@
     "message": "השבתת המטמון"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "השבתת מטמון (בזמן שכלי הפיתוח פתוחים)"
+    "message": "השבתת המטמון (בזמן שכלי הפיתוח פתוחים)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "אין לנקות את היומן בזמן הניווט / הטעינה מחדש של הדף"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "פרמטרים למחרוזות שאילתה"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "תועד שיוך עם trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "מדיניות הגורם המפנה"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "הצגת חלונית האבטחה"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "הוספת מיקום..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "מיקומים מותאמים אישית"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "קו רוחב"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "קו רוחב חייב להיות מספר"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "קו הרוחב חייב להיות גדול מ-{PH1} או שווה לו"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "הרוחב חייב להיות קטן מ-{PH1} או שווה לו."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "לוקאל"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "הלוקאל חייב לכלול תווים מהאלפבית"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "שם המיקום"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "שם המיקום לא יכול להיות ריק"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "שם המיקום צריך לכלול פחות מ-{PH1} תווים"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "ארוך"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "קו אורך"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "קו האורך חייב להיות מספר"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "קו האורך חייב להיות גדול מ-{PH1} או שווה לו."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "האורך חייב להיות קטן מ-{PH1} או שווה לו."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "מזהה אזור הזמן"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "מזהה אזור זמן חייב להכיל תווים אלפביתיים"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "כוונון עם גלגל העכבר או באמצעות המקשים חץ למעלה/חץ למטה. {PH1}: ±10, ,Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (אלפא)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (בטא)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "כיוון בהתאמה אישית"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "כיוון המכשיר הוגדר לאלפא: {PH1}, בטא: {PH2}, גמא: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "תצוגה כלפי מטה"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "תצוגה כלפי מעלה"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "יש להפעיל שינוי כיוון כדי לסובב"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "שגיאה"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "אילוץ האמולציה שנבחרה של מצב ללא פעילות"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "מאלץ מגע במקום לחיצה"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (גאמא)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "לרוחב משמאל"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "ימינה לרוחב"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "קו רוחב"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "לוקאל"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "מיקום"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "המיקום לא זמין"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "קו אורך"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "ניהול"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "ניהול רשימת המיקומים"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "ללא שינוי מברירת המחדל"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "כבוי"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "כיוון"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "אחר…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "שינויים מברירת המחדל"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "לאורך"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "לאורך במהופך"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "הגדרות קבועות מראש"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "איפוס"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "איפוס של כיוון המכשיר"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "יש להזיז ולגרור אופקית כדי לסובב על ציר ה-y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "מזהה אזור זמן"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "מד תאוצה"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "כיוון המכשיר"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "תלוי מכשיר"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "אמולציה של מצב לא פעיל של גלאי"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "האילוץ הופעל"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "מיקום גאוגרפי"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "לוקאל"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "לוקאלים"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "מיקומים"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "לא נמצאה אמולציה ללא פעילות"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "חיישנים"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "הצגת מיקומים"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "הצגת חיישנים"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "אזורי זמן"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "מגע"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "המשתמש פעיל, המסך ננעל"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "המשתמש פעיל, נעילת המסך בוטלה"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "משתמש לא פעיל, המסך ננעל"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "משתמש ללא פעילות, נעילת המסך בוטלה"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "הוספת תבנית של שם קובץ"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "אזהרה:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "הוספת מכשיר מותאם אישית..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "מכשיר"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "שם המכשיר"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "שם המכשיר לא יכול להישאר ריק."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "שם המכשיר חייב להכיל פחות מ-{PH1} תווים"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "יחס הפיקסלים של המכשיר"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "אמולציה של מכשירים"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "גובה"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "מחרוזת של סוכן משתמש"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "סוג סוכן המשתמש"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "רוחב"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "הוספת מותג"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "ארכיטקטורה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "ארכיטקטורה (לדוגמה: x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "מחיקת {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "מותג"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "מותג: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "מאפייני המותג"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "גרסה {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "מותגים"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "מחיקה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "דגם המכשיר"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "מאפייני המכשיר"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "גרסת דפדפן מלא"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "גרסת דפדפן מלאה (לדוגמה: 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "נייד"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "לא ניתן לייצוג כמחרוזת כותרות מובנית."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "פלטפורמה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "פלטפורמה (לדוגמה: Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "מאפייני הפלטפורמה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "גרסת הפלטפורמה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "רמזים על הלקוח (Client Hints) לגבי הסוכן המשתמש"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "עדכון"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "עצות ללקוח של סוכן משתמש הן חלופה למחרוזת של סוכן משתמש. הן מזהות את הדפדפן והמכשיר באופן מובנה יותר ועם ניהול פרטיות טוב יותר. יש ללחוץ על הלחצן למידע נוסף."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "גרסה"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "מכשירים"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "הצגת המכשירים"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "תיעוד"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "השבתת נקודות העצירה (breakpoint)"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "הפחתה של יחידת CSS ב-10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "הפחתה של יחידת CSS ב-{PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "זיהוי של כניסת פיסקה"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "לסמל"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "הגדלה של יחידת CSS ב-10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "הגדלה של יחידת CSS ב-{PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "מעבר למיקום העריכה הבא"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "מיון לפי"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "בעיית שינוי תוכנה שעלול לגרום לכשל: ייתכן שהדף יפסיק לפעול בגרסה עתידית של Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{שינוי תוכנה אחד שעלול לגרום לכשל}two{# שינויי תוכנה שעלולים לגרום לכשלים}many{# שינויי תוכנה שעלולים לגרום לכשלים}other{# שינויי תוכנה שעלולים לגרום לכשלים}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "בעיה בנוגע לשיפור: יש הזדמנות לשפר את הדף"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "בעיית שגיאה בדף: הדף לא פועל כראוי"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{שגיאה אחת בדף}two{# שגיאות בדף}many{# שגיאות בדף}other{# שגיאות בדף}}"
@@ -10758,7 +10827,7 @@
     "message": "יש ללחוץ כדי להציג בעיה בכרטיסיית הבעיות"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "יש ללחוץ כדי לפתוח את כרטיסיית הבעיות ולהציג את הבעיה '{title}'"
+    "message": "צריך ללחוץ כדי לפתוח את כרטיסיית הבעיות ולהציג את הבעיה: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "הבעיה לא זמינה כרגע"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "הכול"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ניקוי הקלט"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "לדוגמה: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "הצגת סכמת המקור (Secure, NonSecure) שבה הוגדר קובץ ה-cookie. אם הסכמה לא מזוהה, יופיע Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "אחרי {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "חותמת הזמן של התפוגה היא {seconds}, התואמת לתאריך שחל אחרי {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "ערך"

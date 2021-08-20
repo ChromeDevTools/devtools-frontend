@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Hitilafu isiyojulikana"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "Siku {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "Saa {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "Dak {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "μs {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "Milisekunde {PH1}"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "Sek {PH1}"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Dirisha"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Kitoa huduma"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Mtandao wa 3G wenye kasi ya juu"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Hakuna maudhui ya ombi hili la ukaguzi yaliyopatikana"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Hakuna maudhui yaliyopatikana kwa sababu ombi hili lilielekezwa kwingine"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Maudhui ya WebSocket hayatumiki kwa sasa"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Hakuna ubanaji wa mtandao"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Imemaliza kupakia {PH1}: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Kichwa cha Kidakuzi Kilichotumwa na Seva kimepuuzwa kufuatia jibu kutoka url ya: {PH1}. Ni lazima urefu wa kidakuzi uwe chini ya au sawa na herufi 4096."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Mtandao wa 3G wenye kasi ya chini"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Kidakuzi hiki kimezuiwa kwa sababu kilikuwa na sifa ya \"Secure\" na muunganisho haukuwa salama."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Kichwa cha Kidakuzi Kilichotumwa na Seva kimepuuzwa kufuatia jibu kutoka url ya: {PH1}. Ni lazima urefu wa kidakuzi uwe chini ya au sawa na herufi 4096."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Muundo wa muunganisho huu hauruhusiwi kuhifadhi vidakuzi."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Zima muundo wa AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Zima akiba (wakati zana za DevTools zimefunguliwa)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Zima JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Kuu"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Fungua zana maalum za DevTools kwa ajili ya Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Vipengele Muhimu vya Wavuti"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit haijafaulu: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari au usijazwe."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari kubwa kuliko au sawa na {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari ndogo kuliko au sawa na {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Ni lazima thamani ya urefu iwe nambari."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Lazima thamani ya urefu iwe kubwa kuliko au sawa na {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Lazima thamani ya urefu iwe ndogo kuliko au sawa na {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Ni lazima thamani ya upana iwe nambari."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Lazima thamani ya upana iwe kubwa kuliko au sawa na {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Lazima thamani ya upana iwe ndogo kuliko au sawa na {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Kompyuta ya kupakata yenye skrini ya HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Kompyuta ya kupakata yenye skrini ya MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Kompyuta ya kupakata yenye skrini ya kugusa"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Inakusanya maudhui…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Kushughulikia Mbinu za Kudhibiti Matangazo Yasiyofaa"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Tatizo la mabadiliko yanayosababisha hitilafu: huenda ukurasa huu ukaacha kufanya kazi katika toleo lijalo la Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Tatizo la uboreshaji: kuna nafasi ya kuboresha ukurasa huu"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Tatizo la hitilafu ya ukurasa: ukurasa haufanyi kazi vizuri"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Ufikivu wa rangi na utofautishaji"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "usio salama"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Ufafanuzi kuhusu First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Jinsi 'Schemeful Same-Site' Inavyofanya Kazi"
   },
@@ -1284,7 +1350,7 @@
     "message": "Mabadiliko kwenye vigezo vya ubora vya Programu za Wavuti za Kisasa zinazotumia kipengele cha Shughuli ya Wavuti Unaoaminika"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Kipengele cha kushiriki sehemu za Wasm kwenye tovuti tofauti kimeacha kutumika"
+    "message": "Kuruhusu sehemu za Wasm zishirikiwe tu kwenye tovuti sawa"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<haijulikani>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} inasubiri kuanzishwa"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Angalia usajili wote"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker kwa {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Kitoa Huduma"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Iga nafasi maalum ya hifadhi iliyopo"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Mgawo wa hifadhi unadhibitiwa katika Hali fiche"
@@ -2949,7 +3021,7 @@
     "message": "Wengine"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Linganisha Vijikoa"
+    "message": "Kulinganisha Vijikoa"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Asili"
@@ -2964,7 +3036,7 @@
     "message": "Tokeni"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tokeni"
+    "message": "Tokeni {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Kizuizi cha Matumizi"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Onyo, Limerudiwa mara #}other{Onyo, Limerudiwa mara #}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Utepe huu utaondolewa katika toleo la baadaye la Chrome. Ikiwa una maoni, tafadhali tufahamishe kupitia"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "kifuatiliaji cha hitilafu"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Kamilisha kiotomatiki kutoka kwenye historia"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{Baiti #, {percentage}}other{Baiti #, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "Baiti {PH1} ({PH2} %) ni za mafungu ya JavaScript ambayo bado hayajatekelezwa."
+    "message": "Baiti {PH1} ({PH2}) ni za mafungu ya JavaScript ambayo bado hayajatekelezwa."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "Baiti {PH1} (asilimia {PH2}) ni za bloku za JavaScript ambazo zimetekelezwa angalau mara moja."
+    "message": "Baiti {PH1} ({PH2}) ni za mafungu ya JavaScript ambayo yametekelezwa angalau mara moja."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "Baiti {PH1} (asilimia {PH2}) ni za chaguo za kukokotoa ambazo (bado) hazijatekelezwa."
+    "message": "Baiti {PH1} ({PH2}) ni za utendaji ambao (bado) haujatekelezwa."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "Baiti {PH1} ({PH2} %) ni za vipengele ambavyo vimetekelezwa angalau mara moja."
+    "message": "Baiti {PH1} ({PH2}) ni za utendaji ambao umetekelezwa angalau mara moja."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Asilimia {PH1} ya faili haijatumika, asilimia {PH2} ya faili imetumika"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Jumla ya Baiti"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Nakili XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Kata kipengee"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Kata"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Futa kipengee"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ficha kipengee"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Kipengee cha kubandika"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Bandika"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Sogeza hadi yaonekane"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Onyesha Ufuatiliaji wa Rafu"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Onyesha kivuli cha ala ya mtumiaji cha DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Ufuatiliaji wa Rafu"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Kutosheza maneno kwenye visanduku"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari au usijazwe."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari kubwa kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Ni lazima uwiano wa pikseli wa kifaa uwe nambari ndogo kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Ni lazima thamani ya urefu iwe nambari."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Lazima thamani ya urefu iwe kubwa kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Lazima thamani ya urefu iwe ndogo kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Ni lazima thamani ya upana iwe nambari."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Lazima thamani ya upana iwe kubwa kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Lazima thamani ya upana iwe ndogo kuliko au sawa na {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Weka uwiano wa pikseli wa kifaa"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Aina ya kifaa"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Vipimo"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Badilisha…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Kompyuta kibao"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Weka kifaa maalum..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Kifaa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Jina la Kifaa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Ni sharti ujaze jina la kifaa."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Ni lazima jina la kifaa liwe na herufi zisizozidi {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Uwiano wa pikseli wa kifaa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Vifaa Vilivyoigwa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Urefu"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Mfuatano wa ala ya mtumiaji"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Aina ya ala ya mtumiaji"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Upana"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Kompyuta ya kupakata yenye skrini ya HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Kompyuta ya kupakata yenye skrini ya MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Kompyuta ya kupakata yenye skrini ya kugusa"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Weka eneo..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Maeneo maalum"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Latitudo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitudo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Ni lazima thamani ya latitudo iwe nambari"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Lazima latitudo iwe kubwa kuliko au sawa na {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Lazima thamani ya latitudo iwe ndogo kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Lugha"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Ni lazima sehemu ya lugha iwe na herufi za alfabeti"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Jina la eneo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Ni sharti ujaze jina la eneo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Ni lazima jina la eneo liwe na herufi zisizozidi {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Longitudo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitudo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Ni lazima thamani ya longitudo iwe nambari"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Lazima thamani ya longitudo iwe kubwa kuliko au sawa na {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Lazima thamani ya longitudo iwe ndogo kuliko au sawa na {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Kitambulisho cha saa za eneo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Ni lazima kitambulisho cha saa za eneo kiwe na herufi za alfabeti"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Onyesha katika msimbo wa tovuti"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Rekebisha kwa kutumia kigurudumu cha kipanya au vitufe vya juu na chini. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Mkao maalum"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Mkao wa kifaa umewekwa uwe alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Skrini imeelekezwa chini"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Skrini imeelekezwa juu"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Washa kipengele cha mkao ili uweze kuzungusha"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Hitilafu"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Hulazimisha uigaji wa hali ya kutofanya chochote iliyochaguliwa"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Hulazimisha kugusa badala ya kubofya"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Mlalo kuelekea kushoto"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Mlalo kulia"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitudo"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Lugha"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Eneo"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Maelezo ya mahali hayapatikani"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitudo"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Dhibiti"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Dhibiti orodha ya maeneo"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Hakuna ubatilishaji"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Zima"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Mkao"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Nyingine…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Ubatilishaji"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Wima"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Mkao wima uliopinduliwa"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Mipangilio iliyowekwa mapema"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Weka upya"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Badilisha mkao wa kifaa"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Bonyeza kitufe cha Shift kisha uburute kimlalo ili uzungushe jira ya y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Kitambulisho cha saa za eneo"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Weka Chapa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Muundo"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Muundo (k.m. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Futa {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Chapa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Chapa ya {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Sifa za chapa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Toleo la {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Chapa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Futa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Muundo wa kifaa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Sifa za kifaa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Toleo la kivinjari kamili"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Toleo kamili la kivinjari (k.m. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Kifaa cha mkononi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Haiwezi kuwakilishwa kama mfuatano wa vichwa wenye muundo."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Mfumo"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Mfumo (k.m. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Sifa za mfumo"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Toleo la mfumo"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Vidokezo vya programu teja ya ala ya mtumiaji"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Sasisha"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Vidokezo vya programu teja ya ala ya mtumiaji hutumiwa badala ya mfuatano wa ala ya mtumiaji na vinatambua kivinjari na kifaa kwa njia iliyoratibiwa zaidi na yenye uwajibikaji bora zaidi wa faragha. Bofya kitufe ili upate maelezo zaidi."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Toleo"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "kipima mchapuko"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Piga picha ya skrini yenye ukubwa kamili"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "kifaa"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "mkao wa kifaa"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Kulingana na kifaa"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Vifaa"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Iga hali ya Kitambuzi cha Wakati Kivinjari Hakitumiwi"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Imewashwa kwa lazima"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "kutambulisha mahali"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Ficha fremu ya kifaa"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Ficha rula"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "lugha"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "lugha"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Mahali"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Hakuna uigaji wa hali ambapo kivinjari hakitumiki"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Vitambuzi"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Onyesha fremu ya kifaa"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Onyesha Vifaa"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Onyesha Maeneo"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Onyesha hoja za maudhui"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Onyesha rula"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Onyesha Vitambuzi"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "saa za maeneo"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Onyesha au ufiche upau wa vidhibiti wa kifaa"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Kugusa"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Mtumiaji yupo, skrini imefungwa"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Mtumiaji yupo, skrini imefunguliwa"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Mtumiaji hafanyi kitu, skrini imefungwa"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Mtumiaji hafanyi kitu, skrini imefunguliwa"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Futa kisikilizaji cha tukio"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Kikoa"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Onyesha maombi ya mtandao yanayojumuisha kichwa hiki cha Set-Cookie katika dashibodi ya mtandao"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{Kidakuzi #}other{Vidakuzi #}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{Kichwa kimoja Ghafi cha Set-Cookie}other{Vichwa # Ghafi vya Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Jina"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "onyo"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Matatizo yaliyofichwa"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Nyenzo Zilizoathirika"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Shughuli ya Wavuti Unaoaminika"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Onyesha hitilafu zote zilizofichwa"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "imezuiwa"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL ya Sehemu ya Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Onyesha matatizo kama haya"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Ficha hitilafu kama hizi"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Menyu ya kuficha hitilafu"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Ukiukaji wa CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Uwezo wa kutumia kichwa cha Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Jina la kitekelezaji"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Ubora"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Huficha data: na kijisehemu cha makala: URL"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Geuza"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Hugeuza kichujio cha utafutaji"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Pata maelezo zaidi"
   },
@@ -6564,7 +6315,7 @@
     "message": "Zima akiba"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Zima akiba (wakati DevTools imefunguliwa)"
+    "message": "Zima akiba (wakati zana za DevTools zimefunguliwa)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Usifute kumbukumbu wakati wa kupakia upya / kusogeza ukurasa"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Vigezo vya Mfuatano wa Hoja"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Imerekodi tukio lenye trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Sera ya Anayeelekeza"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Onyesha Usalama"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Weka eneo..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Maeneo maalum"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Latitudo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitudo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Ni lazima thamani ya latitudo iwe nambari"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Lazima latitudo iwe kubwa kuliko au sawa na {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Lazima thamani ya latitudo iwe ndogo kuliko au sawa na {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Lugha"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Ni lazima sehemu ya lugha iwe na herufi za alfabeti"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Jina la eneo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Ni sharti ujaze jina la eneo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Ni lazima jina la eneo liwe na herufi zisizozidi {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Longitudo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitudo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Ni lazima thamani ya longitudo iwe nambari"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Lazima thamani ya longitudo iwe kubwa kuliko au sawa na {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Lazima thamani ya longitudo iwe ndogo kuliko au sawa na {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Kitambulisho cha saa za eneo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Ni lazima kitambulisho cha saa za eneo kiwe na herufi za alfabeti"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Rekebisha kwa kutumia kigurudumu cha kipanya au vitufe vya juu na chini. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Mkao maalum"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Mkao wa kifaa umewekwa uwe alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Skrini imeelekezwa chini"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Skrini imeelekezwa juu"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Washa kipengele cha mkao ili uweze kuzungusha"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Hitilafu"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Hulazimisha uigaji wa hali ya kutofanya chochote iliyochaguliwa"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Hulazimisha kugusa badala ya kubofya"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Mlalo kuelekea kushoto"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Mlalo kulia"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitudo"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Lugha"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Eneo"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Maelezo ya mahali hayapatikani"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitudo"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Dhibiti"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Dhibiti orodha ya maeneo"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Hakuna ubatilishaji"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Zima"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Mkao"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Nyingine…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Ubatilishaji"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Wima"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Mkao wima uliopinduliwa"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Mipangilio iliyowekwa mapema"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Weka upya"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Badilisha mkao wa kifaa"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Bonyeza kitufe cha Shift kisha uburute kimlalo ili uzungushe jira ya y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Kitambulisho cha saa za eneo"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "kipima mchapuko"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "mkao wa kifaa"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Kulingana na kifaa"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Iga hali ya Kitambuzi cha Wakati Kivinjari Hakitumiwi"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Imewashwa kwa lazima"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "kutambulisha mahali"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "lugha"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "lugha"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Mahali"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Hakuna uigaji wa hali ambapo kivinjari hakitumiki"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Vitambuzi"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Onyesha Maeneo"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Onyesha Vitambuzi"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "saa za maeneo"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Kugusa"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Mtumiaji yupo, skrini imefungwa"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Mtumiaji yupo, skrini imefunguliwa"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Mtumiaji hafanyi kitu, skrini imefungwa"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Mtumiaji hafanyi kitu, skrini imefunguliwa"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Weka mchoro wa jina la faili"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ONYO:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Weka kifaa maalum..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Kifaa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Jina la Kifaa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Ni sharti ujaze jina la kifaa."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Ni lazima jina la kifaa liwe na herufi zisizozidi {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Uwiano wa pikseli wa kifaa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Vifaa Vilivyoigwa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Urefu"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Mfuatano wa ala ya mtumiaji"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Aina ya ala ya mtumiaji"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Upana"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Weka Chapa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Muundo"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Muundo (k.m. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Futa {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Chapa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Chapa ya {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Sifa za chapa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Toleo la {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Chapa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Futa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Muundo wa kifaa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Sifa za kifaa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Toleo la kivinjari kamili"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Toleo kamili la kivinjari (k.m. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Kifaa cha mkononi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Haiwezi kuwakilishwa kama mfuatano wa vichwa wenye muundo."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Mfumo"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Mfumo (k.m. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Sifa za mfumo"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Toleo la mfumo"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Vidokezo vya programu teja ya ala ya mtumiaji"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Sasisha"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Vidokezo vya programu teja ya ala ya mtumiaji hutumiwa badala ya mfuatano wa ala ya mtumiaji na vinatambua kivinjari na kifaa kwa njia iliyoratibiwa zaidi na yenye uwajibikaji bora zaidi wa faragha. Bofya kitufe ili upate maelezo zaidi."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Toleo"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Vifaa"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Onyesha Vifaa"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Hati zilizopo"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Zima sehemu za kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Punguzo la kitengo cha CSS kwa10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Punguzo la kitengo cha CSS kwa {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Tambua ujongezaji ndani"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Nenda kwenye ishara"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Ongezeko la kitengo cha CSS kwa10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Ongezeko la kitengo cha CSS kwa {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Ruka kwenye eneo la kubadilisha linalofuata"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Panga Kulingana na"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Tatizo la mabadiliko yanayosababisha hitilafu: huenda ukurasa huu ukaacha kufanya kazi katika toleo lijalo la Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{Badiliko # linalosababisha hitilafu}other{Mabadiliko # yanayosababisha hitilafu}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Tatizo la uboreshaji: kuna nafasi ya kuboresha ukurasa huu"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Tatizo la hitilafu ya ukurasa: ukurasa haufanyi kazi vizuri"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{Hitilafu # ya ukurasa}other{Hitilafu # za ukurasa}}"
@@ -10758,7 +10827,7 @@
     "message": "Bofya ili uonyeshe hitilafu katika kichupo cha hitilafu"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Bofya ili ufungue kichupo cha hitilafu na uonyeshe hitilafu ya '{title}'"
+    "message": "Bofya ili ufungue kichupo cha hitilafu na uonyeshe hitilafu ya: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Tatizo hili halipatikani kwa sasa"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Yote"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Futa kichujio ulichoweka"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "k.m. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Huonyesha utaratibu chanzo (Secure, NonSecure) ambapo kidakuzi kiliwekwa. Kama utaratibu haujulikani, Unset huonyeshwa."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "baada ya {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Muhuri wa wakati wa tarehe ya mwisho wa matumizi ni {seconds}, ambao unalingana na tarehe iliyo baada ya {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Thamani"

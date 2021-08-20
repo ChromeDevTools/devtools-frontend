@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Hindi kilalang error"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} (na) araw"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} (na) oras"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} (na) min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Window"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Mabilis na 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Walang available na content para sa kahilingan sa preflight"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Walang available na content dahil na-redirect ang kahilingang ito"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Kasalukuyang hindi sinusuportahan ang content para sa WebSockets"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Walang pag-throttle"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Tapos na ang pag-load ng {PH1}: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Binabalewala ang header na Set-Cookie sa sagot mula sa url na: {PH1}. Dapat ay mas mababa sa o katumbas ng 4096 na character ang haba ng cookie."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Mabagal na 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Na-block ang cookie na ito dahil mayroon itong attribute na \"Secure\" at hindi secure ang koneksyon."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Binabalewala ang header na Set-Cookie sa sagot mula sa url na: {PH1}. Dapat ay mas mababa sa o katumbas ng 4096 na character ang haba ng cookie."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Hindi pinapayagan ang scheme ng koneksyong ito na mag-store ng cookies."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "I-disable ang format na AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "I-disable ang cache (habang nakabukas ang DevTools)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "I-disable ang JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Pangunahin"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Buksan ang nakalaang DevTools para sa Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Hindi naisagawa ang LiveEdit: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Dapat ay numero o blangko ang ratio ng pixel ng device."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang ratio ng pixel ng device."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang ratio ng pixel ng device."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Dapat ay numero ang taas."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang taas."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang taas."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Numero dapat ang lapad."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang lapad."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang lapad."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Laptop na may HiDPI na screen"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Laptop na may MDPI na screen"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Laptop na may touch device"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Kinokolekta ang content…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Pangangasiwa ng Mga Interbensyon sa Mabigat na Ad"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Isyu sa breaking change: posibleng hindi na gumana ang page sa paparating na bersyon ng Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "May isyu sa pagpapahusay: may pagkakataong mapahusay ang page"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Isyu na error sa page: hindi gumagana nang maayos ang page"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Pagiging accessible ng kulay at contrast"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "isang hindi secure"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Ipinapaliwanag ang First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Paano Gumagana ang Schemeful na Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Mga pagbabago sa mga pamantayan sa kalidad para sa mga PWA na gumagamit ng Pinagkakatiwalaang Aktibidad sa Web"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm cross-origin module na nagbabahagi ng paghinto sa paggamit"
+    "message": "Pinaghihigpitan ang pagbabahagi ng Wasm module sa parehong pinagmulan"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} ang naghihintay na ma-activate"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Tingnan ang lahat ng pagpaparehistro"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker para sa {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Mga Service Worker"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Mag-simulate ng custom na quota ng storage"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Limitado ang quota ng storage sa Incognito mode"
@@ -2949,7 +3021,7 @@
     "message": "Third Party"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Itugma ang Mga Sub-Domain"
+    "message": "Pagtutugma ng Subdomain"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Origin"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "(na) token"
+    "message": "{PH1} (na) token"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Paghihigpit sa Paggamit"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Babala, Naulit nang # beses}one{Babala, Naulit nang # beses}other{Babala, Naulit nang # na beses}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Maaalis ang sidebar na ito sa bersyon ng Chrome sa hinaharap. Kung mayroong kang feedback, ipaalam ito sa amin sa pamamagitan ng"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "tracker ng isyu"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "I-autocomplete mula sa history"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# byte, {percentage}}one{# bytes, {percentage}}other{# bytes, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bytes ({PH2} %) ang kasama sa mga block ng JavaScript na hindi (pa) na-execute."
+    "message": "{PH1} bytes ({PH2}) ang kasama sa mga block ng JavaScript na hindi (pa) na-execute."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bytes ({PH2} %) ang kabilang sa mga block ng JavaScript na naisagawa kahit isang beses lang."
+    "message": "{PH1} bytes ({PH2}) ang kabilang sa mga block ng JavaScript na na-execute kahit isang beses lang."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bytes ({PH2} %) ang kabilang sa mga function na hindi (pa) naisagawa."
+    "message": "{PH1} bytes ({PH2}) ang kabilang sa mga function na hindi (pa) na-execute."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bytes ({PH2} %) ang kasama sa mga function na na-execute nang kahit isang beses."
+    "message": "{PH1} bytes ({PH2}) ang kasama sa mga function na na-execute nang kahit isang beses lang."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ng file ang hindi pa nagagamit, {PH2} % ng file ang nagamit na"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Kabuuang Mga Byte"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopyahin ang XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "I-cut ang element"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "I-cut"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "I-delete ang element"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Itago ang element"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "I-paste ang element"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "I-paste"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Mag-scroll hanggang sa may makita"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Ipakita ang Stack Trace"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Ipakita ang shadow ng user agent na DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stack Trace"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Pag-wrap ng salita"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Dapat ay numero o blangko ang ratio ng pixel ng device."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang ratio ng pixel ng device."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang ratio ng pixel ng device."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Dapat ay numero ang taas."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang taas."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang taas."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Numero dapat ang lapad."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang lapad."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang lapad."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Magdagdag ng ratio ng pixel ng device"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Uri ng device"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Mga Dimensyon"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "I-edit…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Magdagdag ng custom na device..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Device"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Pangalan ng Device"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Hindi puwedeng blangko ang pangalan ng device."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Dapat ay mas mababa sa {PH1} (na) character ang pangalan ng device."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Ratio ng pixel ng device"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Mga Nae-emulate na Device"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Taas"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "String ng user agent"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Uri ng user agent"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Lapad"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop na may HiDPI na screen"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop na may MDPI na screen"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop na may touch device"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Magdagdag ng lokasyon..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Mga custom na lokasyon"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Numero dapat ang latitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Ang latitude ay dapat mas mataas sa o katumbas ng {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang latitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Lokalidad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Dapat ay may mga character na titik ang lokalidad"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Pangalan ng lokasyon"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Hindi puwedeng blangko ang pangalan ng lokasyon"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Dapat ay mas mababa sa {PH1} (na) character ang pangalan ng lokasyon"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Mahaba"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Numero dapat ang longitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang longitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang longitude"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Timezone ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Dapat ay may mga character na titik ang Timezone ID"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Ipakita sa source code"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Isaayos gamit ang mousewheel o pataas/pababang key {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Custom na oryentasyon"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Itinakda ang oryentasyon ng device sa alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Pababang display"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Pataas na display"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "I-enable ang oryentasyon para ma-rotate"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Error"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Puwersahang ine-emulate ang piniling idle na status"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Puwersahang ine-enable ang pagpindot sa halip na pag-click"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "I-landscape pakaliwa"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "I-landscape pakanan"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitude"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Lokalidad"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Lokasyon"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Hindi available ang lokasyon"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitude"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Pamahalaan"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Pamahalaan ang listahan ng mga lokasyon"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Walang override"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "I-off"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Oryentasyon"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Iba pa…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Mga Override"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Portrait"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Portrait na pabaliktad"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Mga Preset"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "I-reset"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "I-reset ang oryentasyon ng device"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Pindutin ang Shift+mag-drag nang pahalang para mag-rotate sa palibot ng y-axis"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Timezone ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Magdagdag ng Brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitektura"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Architecture (hal. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "I-delete ang {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Brand na {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Mga property ng brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Bersyon {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Mga Brand"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "I-delete"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Modelo ng device"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Mga property ng device"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Buong bersyon ng browser"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Buong bersyon ng browser (hal. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobile"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Hindi maipapakita bilang structured na string ng mga header."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platform (hal. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Mga property ng platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Bersyon ng platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Mga client hit ng user agent"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "I-update"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Ang mga client hint ng user agent ay alternatibo sa string ng user agent na tumutukoy sa browser at sa device sa mas structured na paraan na may mas mahusay na pagsasaalang-alang sa privacy. I-click ang button para matuto pa."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Bersyon"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "accelerometer"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "I-capture ang buong laki ng screenshot"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "device"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "oryentasyon ng device"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Batay sa device"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Mga Device"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "I-emulate ang status ng Idle Detector"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Sapilitang naka-enable"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolocation"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Itago ang frame ng device"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Itago ang mga ruler"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "lokalidad"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "mga lokalidad"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Mga Lokasyon"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Walang idle na pag-emulate"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Mga Sensor"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Ipakita ang frame ng device"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Ipakita ang Mga Device"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Ipakita ang Mga Lokasyon"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Ipakita ang mga media query"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Ipakita ang mga ruler"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Ipakita ang Mga Sensor"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "mga timezone"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "I-toggle ang toolbar ng device"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Pindutin"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Aktibo ang user, na-lock ang screen"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Aktibo ang user, na-unlock ang screen"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Idle ang user, na-lock ang screen"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Idle ang user, na-unlock ang screen"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "I-delete ang event listener"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domain"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Ipakita ang mga kahilingan ng network kung saan kasama ang header ng Set-Cookie na ito sa network panel"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}one{# cookie}other{# na cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Raw na header ng Set-Cookie}one{# Raw na header ng Set-Cookie}other{# na Raw na header ng Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Pangalan"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "babala"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Mga nakatagong isyu"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Mga Apektadong Resource"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Pinagkakatiwalaang Aktibidad sa Web"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "I-unhide ang lahat ng nakatagong isyu"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "naka-block"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL ng Wasm Module"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "I-unhide ang mga isyung tulad nito"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Itago ang mga isyung tulad nito"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Itago ang menu ng mga isyu"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Mga Paglabag sa CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Suporta sa header na Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Pangalan ng tagapag-render"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Resolution"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Itinatago ang data: at blob: mga URL"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "I-invert"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Mai-invert ang filter sa paghahanap"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Matuto pa"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Mga Parameter ng String ng Query"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Naitalang attribution na may trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Patakaran sa Referrer"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Ipakita ang Seguridad"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Magdagdag ng lokasyon..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Mga custom na lokasyon"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Numero dapat ang latitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Ang latitude ay dapat mas mataas sa o katumbas ng {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang latitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Lokalidad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Dapat ay may mga character na titik ang lokalidad"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Pangalan ng lokasyon"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Hindi puwedeng blangko ang pangalan ng lokasyon"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Dapat ay mas mababa sa {PH1} (na) character ang pangalan ng lokasyon"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Mahaba"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Numero dapat ang longitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang longitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Dapat ay mas mababa sa o katumbas ng {PH1} ang longitude"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Timezone ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Dapat ay may mga character na titik ang Timezone ID"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Isaayos gamit ang mousewheel o pataas/pababang key {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Custom na oryentasyon"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Itinakda ang oryentasyon ng device sa alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Pababang display"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Pataas na display"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "I-enable ang oryentasyon para ma-rotate"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Error"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Puwersahang ine-emulate ang piniling idle na status"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Puwersahang ine-enable ang pagpindot sa halip na pag-click"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "I-landscape pakaliwa"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "I-landscape pakanan"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitude"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Lokalidad"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Lokasyon"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Hindi available ang lokasyon"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitude"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Pamahalaan"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Pamahalaan ang listahan ng mga lokasyon"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Walang override"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "I-off"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Oryentasyon"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Iba pa…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Mga Override"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Portrait"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Portrait na pabaliktad"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Mga Preset"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "I-reset"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "I-reset ang oryentasyon ng device"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Pindutin ang Shift+mag-drag nang pahalang para mag-rotate sa palibot ng y-axis"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Timezone ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "accelerometer"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "oryentasyon ng device"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Batay sa device"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "I-emulate ang status ng Idle Detector"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Sapilitang naka-enable"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolocation"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "lokalidad"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "mga lokalidad"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Mga Lokasyon"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Walang idle na pag-emulate"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Mga Sensor"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Ipakita ang Mga Lokasyon"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Ipakita ang Mga Sensor"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "mga timezone"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Pindutin"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Aktibo ang user, na-lock ang screen"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Aktibo ang user, na-unlock ang screen"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Idle ang user, na-lock ang screen"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Idle ang user, na-unlock ang screen"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Magdagdag ng pattern ng filename"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "BABALA:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Magdagdag ng custom na device..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Pangalan ng Device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Hindi puwedeng blangko ang pangalan ng device."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Dapat ay mas mababa sa {PH1} (na) character ang pangalan ng device."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Ratio ng pixel ng device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Mga Nae-emulate na Device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Taas"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "String ng user agent"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Uri ng user agent"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Lapad"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Magdagdag ng Brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arkitektura"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Architecture (hal. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "I-delete ang {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Brand na {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Mga property ng brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Bersyon {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Mga Brand"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "I-delete"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Modelo ng device"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Mga property ng device"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Buong bersyon ng browser"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Buong bersyon ng browser (hal. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobile"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Hindi maipapakita bilang structured na string ng mga header."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platform (hal. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Mga property ng platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Bersyon ng platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Mga client hit ng user agent"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "I-update"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Ang mga client hint ng user agent ay alternatibo sa string ng user agent na tumutukoy sa browser at sa device sa mas structured na paraan na may mas mahusay na pagsasaalang-alang sa privacy. I-click ang button para matuto pa."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Bersyon"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Mga Device"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Ipakita ang Mga Device"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentasyon"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Mga breakpoint sa pag-deactivate"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Bawasan ang unit ng CSS nang 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Bawasan ang unit ng CSS nang {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Mag-detect ng pag-indent"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Simbolo ng Pumunta sa"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Dagdagan ang unit ng CSS nang 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Dagdagan ang unit ng CSS nang {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Lumaktaw sa susunod na lokasyon sa pag-edit"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Pagbukud-bukurin Ayon sa"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Isyu sa breaking change: posibleng hindi na gumana ang page sa paparating na bersyon ng Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# breaking change}one{# breaking change}other{# na breaking change}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "May isyu sa pagpapahusay: may pagkakataong mapahusay ang page"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Isyu na error sa page: hindi gumagana nang maayos ang page"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# error sa page}one{# error sa page}other{# na error sa page}}"
@@ -10758,7 +10827,7 @@
     "message": "I-click para ipakita ang isyu sa tab ng mga isyu"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "I-click para buksan ang tab ng isyu at ipakita ang isyung '{title}'"
+    "message": "I-click para buksan ang tab ng isyu at ipakita ang isyung: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hindi available ang isyu sa ngayon"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Lahat"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "I-clear ang input"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "hal. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Ipinapakita ang scheme ng source (Secure, NonSecure) kung saan itinakda ang cookie. Kung hindi kilala ang scheme, Unset ang ipinapakita nito."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "pagkatapos ng {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "{seconds} ang timestamp ng pag-expire, na tumutugma sa isang petsa pagkatapos ng {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Value"

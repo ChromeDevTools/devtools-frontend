@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Lỗi không xác định"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ngày"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} giờ"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} phút"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} micrô giây"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} mili giây"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} giây"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Cửa sổ"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Trình chạy dịch vụ"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Mạng 3G nhanh"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Không có nội dung phù hợp đối với yêu cầu kiểm tra"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Không có nội dung phù hợp do yêu cầu này đã bị chuyển hướng"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Nội dung của WebSockets hiện chưa được hỗ trợ"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Không điều tiết"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} đã tải xong: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Tiêu đề Set-Cookie đã bị bỏ qua theo URL: {PH1}. Cookie phải có độ dài nhỏ hơn hoặc bằng 4096 ký tự."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Mạng 3G chậm"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Cookie này đã bị chặn vì có thuộc tính \"Secure\" và đường kết nối là không an toàn."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Tiêu đề Set-Cookie đã bị bỏ qua theo URL: {PH1}. Cookie phải có độ dài nhỏ hơn hoặc bằng 4096 ký tự."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Giao thức của đường kết nối này không được phép lưu trữ cookie."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Tắt định dạng AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Vô hiệu hóa bộ nhớ đệm (trong khi Công cụ cho nhà phát triển đang mở)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Tắt JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Mục tiêu chính"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Mở Công cụ cho nhà phát triển chuyên dụng đối với Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Các chỉ số quan trọng về trang web"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit không thành công: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Tỷ lệ pixel của thiết bị phải ở dạng số hoặc để trống."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Tỷ lệ pixel của thiết bị phải lớn hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Tỷ lệ pixel của thiết bị phải nhỏ hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Chiều cao phải có dạng số."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Chiều cao phải lớn hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Chiều cao phải nhỏ hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Chiều rộng phải ở dạng số."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Chiều rộng phải lớn hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Chiều rộng phải nhỏ hơn hoặc bằng {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Máy tính xách tay có màn hình HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Máy tính xách tay có màn hình MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Máy tính xách tay có chức năng cảm ứng"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Đang thu thập nội dung…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Xử lý các hoạt động can thiệp vào quảng cáo tiêu tốn dung lượng"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Vấn đề về sự thay đổi có thể gây lỗi: trang có thể dừng hoạt động trong phiên bản Chrome sắp tới"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Vấn đề về cải thiện: hiện có cơ hội để cải thiện trang"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Vấn đề về lỗi trang: trang hiện hoạt động không chính xác"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Hỗ trợ tiếp cận bằng màu sắc và độ tương phản"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "an insecure"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets đã được giải thích"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Cách hoạt động của Same-Site có lược đồ"
   },
@@ -1284,7 +1350,7 @@
     "message": "Các thay đổi đối với tiêu chí chất lượng cho những PWA sử dụng Hoạt động đáng tin cậy trên web"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Ngừng chia sẻ mô-đun nhiều nguồn gốc của Wasm"
+    "message": "Hạn chế chia sẻ cùng nguồn gốc đối với mô-đun Wasm"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ẩn danh>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} đang đợi kích hoạt"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Xem tất cả dữ liệu đăng ký"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker ở {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Trình chạy dịch vụ"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Mô phỏng dung lượng lưu trữ tùy chỉnh"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Định mức bộ nhớ bị giới hạn ở chế độ Ẩn danh"
@@ -2949,7 +3021,7 @@
     "message": "Bên thứ ba"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "So khớp các miền phụ"
+    "message": "So khớp miền con"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Nguồn gốc"
@@ -2964,7 +3036,7 @@
     "message": "Mã thông báo"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "mã thông báo"
+    "message": "{PH1} mã thông báo"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Hạn chế sử dụng"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Cảnh báo, đã lặp lại # lần}other{Cảnh báo, đã lặp lại # lần}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Thanh bên này sẽ bị loại bỏ trong phiên bản Chrome sắp tới. Nếu bạn muốn phản hồi, vui lòng cho chúng tôi biết qua"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "Công cụ theo dõi sự cố"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Tự động hoàn thành bằng nhật ký hoạt động"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# byte, {percentage}}other{# byte, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} byte ({PH2} %) thuộc về các khối JavaScript chưa được thực thi."
+    "message": "{PH1} byte ({PH2}) thuộc về các khối JavaScript chưa được thực thi."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} byte ({PH2} %) thuộc về các khối JavaScript đã thực thi ít nhất một lần."
+    "message": "{PH1} byte ({PH2}) thuộc về các khối JavaScript đã thực thi ít nhất một lần."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} byte ({PH2} %) thuộc các hàm (chưa) được thực thi."
+    "message": "{PH1} byte ({PH2}) thuộc các hàm (chưa) được thực thi."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} byte ({PH2} %) thuộc về các hàm đã được thực thi ít nhất một lần."
+    "message": "{PH1} byte ({PH2}) thuộc về các hàm đã được thực thi ít nhất một lần."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % tệp chưa được sử dụng, {PH2} % tệp đã được sử dụng"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Tổng số byte"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Sao chép XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Cắt phần tử"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Cắt"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Xóa phần tử"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ẩn phần tử"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Dán phần tử"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Dán"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Cuộn cho đến khi hiển thị"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Hiển thị dấu vết ngăn xếp"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Hiển thị shadow DOM tác nhân người dùng DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Dấu vết ngăn xếp"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Tự động ngắt dòng"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Tỷ lệ pixel của thiết bị phải ở dạng số hoặc để trống."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Tỷ lệ pixel của thiết bị phải lớn hơn hoặc bằng {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Tỷ lệ pixel của thiết bị phải nhỏ hơn hoặc bằng {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Chiều cao phải có dạng số."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Chiều cao phải lớn hơn hoặc bằng {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Chiều cao phải nhỏ hơn hoặc bằng {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Chiều rộng phải ở dạng số."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Chiều rộng phải lớn hơn hoặc bằng {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Chiều rộng phải nhỏ hơn hoặc bằng {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Thêm tỷ lệ pixel của thiết bị"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Loại thiết bị"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Kích thước"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Chỉnh sửa…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Máy tính bảng"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Thêm thiết bị tùy chỉnh..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Thiết bị"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Tên thiết bị"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Không được để trống tên thiết bị."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Tên thiết bị phải ít hơn {PH1} ký tự."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Tỷ lệ pixel của thiết bị"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Thiết bị được mô phỏng"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Chiều cao"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Chuỗi tác nhân người dùng"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Loại tác nhân người dùng"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Chiều rộng"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Máy tính xách tay có màn hình HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Máy tính xách tay có màn hình MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Máy tính xách tay có chức năng cảm ứng"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Thêm vị trí..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Vị trí tùy chỉnh"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Vĩ độ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Vĩ độ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Vĩ độ phải có dạng số"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Vĩ độ phải lớn hơn hoặc bằng {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Vĩ độ phải nhỏ hơn hoặc bằng {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Ngôn ngữ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Ngôn ngữ phải chứa ký tự chữ cái"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Tên vị trí"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Không được để trống tên vị trí"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Tên vị trí phải ít hơn {PH1} ký tự"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Kinh độ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Kinh độ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Kinh độ phải ở dạng số"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Kinh độ phải lớn hơn hoặc bằng {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Kinh độ phải nhỏ hơn hoặc bằng {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Mã múi giờ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Mã múi giờ phải chứa ký tự chữ cái"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Hiển thị trong mã nguồn"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Điều chỉnh bằng con lăn chuột hoặc phím lên/xuống. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Hướng tùy chỉnh"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Hướng thiết bị được đặt thành alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Màn hình hướng xuống dưới"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Màn hình hướng lên trên"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Bật hướng để xoay"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Lỗi"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Buộc mô phỏng trạng thái rảnh đã chọn"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Buộc chạm thay vì nhấp"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Ngang bên trái"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Ngang bên phải"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Vĩ độ"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Ngôn ngữ"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Vị trí"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Không có vị trí"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Kinh độ"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Quản lý"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Quản lý danh sách vị trí"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Không ghi đè"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Tắt"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Hướng"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Khác…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Ghi đè"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Dọc"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Lộn ngược xuống theo hướng dọc"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Giá trị đặt trước"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Đặt lại"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Đặt lại hướng thiết bị"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Nhấn phím Shift + kéo ngang để xoay xung quanh trục y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Mã múi giờ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Thêm thương hiệu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Kiến trúc"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Cấu trúc (ví dụ: x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Xóa {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Thương hiệu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Thương hiệu {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Thuộc tính của thương hiệu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Phiên bản {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Thương hiệu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Xóa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Kiểu thiết bị"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Thuộc tính của thiết bị"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Phiên bản trình duyệt đầy đủ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Phiên bản trình duyệt đầy đủ (ví dụ: 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Di động"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Không thể biểu thị dưới dạng chuỗi tiêu đề có cấu trúc."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Nền tảng"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Nền tảng (ví dụ: Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Thuộc tính của nền tảng"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Phiên bản nền tảng"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Thông tin mô tả về ứng dụng tác nhân người dùng"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Cập nhật"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Thông tin mô tả của ứng dụng tác nhân người dùng là giải pháp thay thế cho chuỗi tác nhân người dùng, giúp nhận dạng trình duyệt và thiết bị theo cách có cấu trúc hơn nhờ khả năng xem xét toàn diện hơn về quyền riêng tư. Hãy nhấp vào nút này để tìm hiểu thêm."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Phiên bản"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "gia tốc kế"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Chụp ảnh màn hình với kích thước đầy đủ"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "thiết bị"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "hướng của thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Tùy theo thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Mô phỏng trạng thái của Trình phát hiện trạng thái rảnh"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Buộc bật"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "vị trí địa lý"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Ẩn khung hình của thiết bị"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Ẩn thước kẻ"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "ngôn ngữ"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "ngôn ngữ"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Vị trí"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Không mô phỏng trạng thái rảnh"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Cảm biến"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Hiển thị khung hình của thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Hiển thị các thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Hiển thị vị trí"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Hiển thị truy vấn đa phương tiện"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Hiển thị thước kẻ"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Hiển thị cảm biến"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "múi giờ"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Bật/tắt thanh công cụ trên thiết bị"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Chạm"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Người dùng đang hoạt động, màn hình đang khóa"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Người dùng đang hoạt động, màn hình đang mở khóa"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Người dùng ở trạng thái rảnh, màn hình đang khóa"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Người dùng ở trạng thái rảnh, màn hình đang mở khóa"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Xóa trình xử lý sự kiện"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Miền"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Hiển thị các yêu cầu mạng có chứa tiêu đề Set-Cookie trong bảng điều khiển mạng"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}other{# cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 tiêu đề Set-Cookie chưa định dạng}other{# tiêu đề Set-Cookie chưa định dạng}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Tên"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "cảnh báo"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Các vấn đề ẩn"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tài nguyên bị ảnh hưởng"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Hoạt động đáng tin cậy trên web"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Hiện tất cả sự cố ẩn"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bị chặn"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL mô-đun Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Hiện các vấn đề tương tự"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Ẩn các vấn đề tương tự"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Ẩn trình đơn sự cố"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Hành vi vi phạm chính sách bảo mật nội dung"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Hỗ trợ tiêu đề Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Tên trình kết xuất"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Độ phân giải"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Ẩn các URL của data: và blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Đảo ngược"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Đảo ngược bộ lọc tìm kiếm"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Tìm hiểu thêm"
   },
@@ -6606,7 +6357,7 @@
     "message": "Tìm kiếm"
   },
   "panels/network/NetworkPanel.ts | showMoreInformationInRequestRows": {
-    "message": "Hiển thị thêm thông tin trong các hàng yêu cầu"
+    "message": "Hiện thêm thông tin trong các hàng yêu cầu"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
     "message": "Hiển thị tổng quan"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Thông số chuỗi truy vấn"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Số lượt phân bổ được ghi nhận bởi trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Chính sách về người giới thiệu"
@@ -7941,7 +7695,7 @@
     "message": "Số lượng kết quả trùng khớp: {PH1}"
   },
   "panels/search/SearchResultsPane.ts | showDMore": {
-    "message": "Hiển thị thêm {PH1} kết quả"
+    "message": "Hiện thêm {PH1} kết quả"
   },
   "panels/search/SearchView.ts | clear": {
     "message": "Xóa"
@@ -8181,7 +7935,7 @@
     "message": "Ẩn bớt"
   },
   "panels/security/SecurityPanel.ts | showMoreSTotal": {
-    "message": "Hiển thị thêm (tổng số {PH1})"
+    "message": "Hiện thêm (tổng số {PH1})"
   },
   "panels/security/SecurityPanel.ts | signatureAlgorithm": {
     "message": "Thuật toán chữ ký"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Hiển thị thông tin bảo mật"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Thêm vị trí..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Vị trí tùy chỉnh"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Vĩ độ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Vĩ độ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Vĩ độ phải có dạng số"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Vĩ độ phải lớn hơn hoặc bằng {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Vĩ độ phải nhỏ hơn hoặc bằng {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Ngôn ngữ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Ngôn ngữ phải chứa ký tự chữ cái"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Tên vị trí"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Không được để trống tên vị trí"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Tên vị trí phải ít hơn {PH1} ký tự"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Kinh độ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Kinh độ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Kinh độ phải ở dạng số"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Kinh độ phải lớn hơn hoặc bằng {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Kinh độ phải nhỏ hơn hoặc bằng {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Mã múi giờ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Mã múi giờ phải chứa ký tự chữ cái"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Điều chỉnh bằng con lăn chuột hoặc phím lên/xuống. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Hướng tùy chỉnh"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Hướng thiết bị được đặt thành alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Màn hình hướng xuống dưới"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Màn hình hướng lên trên"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Bật hướng để xoay"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Lỗi"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Buộc mô phỏng trạng thái rảnh đã chọn"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Buộc chạm thay vì nhấp"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Ngang bên trái"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Ngang bên phải"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Vĩ độ"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Ngôn ngữ"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Vị trí"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Không có vị trí"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Kinh độ"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Quản lý"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Quản lý danh sách vị trí"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Không ghi đè"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Tắt"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Hướng"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Khác…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Ghi đè"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Dọc"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Lộn ngược xuống theo hướng dọc"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Giá trị đặt trước"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Đặt lại"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Đặt lại hướng thiết bị"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Nhấn phím Shift + kéo ngang để xoay xung quanh trục y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Mã múi giờ"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "gia tốc kế"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "hướng của thiết bị"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Tùy theo thiết bị"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Mô phỏng trạng thái của Trình phát hiện trạng thái rảnh"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Buộc bật"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "vị trí địa lý"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "ngôn ngữ"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "ngôn ngữ"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Vị trí"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Không mô phỏng trạng thái rảnh"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Cảm biến"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Hiển thị vị trí"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Hiển thị cảm biến"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "múi giờ"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Chạm"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Người dùng đang hoạt động, màn hình đang khóa"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Người dùng đang hoạt động, màn hình đang mở khóa"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Người dùng ở trạng thái rảnh, màn hình đang khóa"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Người dùng ở trạng thái rảnh, màn hình đang mở khóa"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Thêm mẫu tên tệp"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "CẢNH BÁO:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Thêm thiết bị tùy chỉnh..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Thiết bị"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Tên thiết bị"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Không được để trống tên thiết bị."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Tên thiết bị phải ít hơn {PH1} ký tự."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Tỷ lệ pixel của thiết bị"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Thiết bị được mô phỏng"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Chiều cao"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Chuỗi tác nhân người dùng"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Loại tác nhân người dùng"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Chiều rộng"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Thêm thương hiệu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Kiến trúc"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Cấu trúc (ví dụ: x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Xóa {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Thương hiệu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Thương hiệu {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Thuộc tính của thương hiệu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Phiên bản {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Thương hiệu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Xóa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Kiểu thiết bị"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Thuộc tính của thiết bị"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Phiên bản trình duyệt đầy đủ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Phiên bản trình duyệt đầy đủ (ví dụ: 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Di động"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Không thể biểu thị dưới dạng chuỗi tiêu đề có cấu trúc."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Nền tảng"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Nền tảng (ví dụ: Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Thuộc tính của nền tảng"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Phiên bản nền tảng"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Thông tin mô tả về ứng dụng tác nhân người dùng"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Cập nhật"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Thông tin mô tả của ứng dụng tác nhân người dùng là giải pháp thay thế cho chuỗi tác nhân người dùng, giúp nhận dạng trình duyệt và thiết bị theo cách có cấu trúc hơn nhờ khả năng xem xét toàn diện hơn về quyền riêng tư. Hãy nhấp vào nút này để tìm hiểu thêm."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Phiên bản"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Thiết bị"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Hiển thị các thiết bị"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Tài liệu"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Hủy kích hoạt điểm ngắt"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Giảm CSS xuống 10 đơn vị"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Giảm CSS xuống {PH1} đơn vị"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Phát hiện thụt lề"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Chuyển đến biểu tượng"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Tăng CSS lên 10 đơn vị"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Tăng CSS lên {PH1} đơn vị"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Chuyển đến vị trí chỉnh sửa tiếp theo"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sắp xếp theo"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Vấn đề về sự thay đổi có thể gây lỗi: trang có thể dừng hoạt động trong phiên bản Chrome sắp tới"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# thay đổi có thể gây lỗi}other{# thay đổi có thể gây lỗi}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Vấn đề về cải thiện: hiện có cơ hội để cải thiện trang"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Vấn đề về lỗi trang: trang hiện hoạt động không chính xác"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# lỗi trang}other{# lỗi trang}}"
@@ -10758,7 +10827,7 @@
     "message": "Nhấp để hiển thị sự cố trong thẻ sự cố"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Nhấp để mở thẻ sự cố và hiển thị sự cố \"{title}\""
+    "message": "Nhấp để mở thẻ sự cố và hiển thị sự cố: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hiện không hiển thị được sự cố"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Tất cả"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Xóa văn bản nhập"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "Ví dụ: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Hiển thị giao thức nguồn (Secure, NonSecure) có đặt cookie này. Nếu giao thức là không xác định, trường này sẽ hiển thị Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "sau {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Thời điểm dấu thời gian hết hạn là {seconds}, tương ứng với thời điểm sau {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Giá trị"

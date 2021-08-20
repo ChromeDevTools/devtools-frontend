@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Neznáma chyba"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} d."
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} h"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Okno"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Obsluha"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Rýchle pripojenie 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Pre požiadavku predbežnej kontroly nie je k dispozícii žiadny obsah"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nie je k dispozícii žiadny obsah, pretože táto požiadavka bola presmerovaná"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Obsah pre pripojenia WebSocket nie je momentálne podporovaný"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Žiadne obmedzenie toku dát"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Dokončilo sa načítavanie {PH1}: {PH2} {PH3}."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Hlavička nastaveného súboru cookie je ignorovaná v odpovedi z webovej adresy: {PH1}. Dĺžka súboru cookie by mala byť menšia ako 4 096 znakov, prípadne by sa mala tejto hodnote rovnať."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Pomalé pripojenie 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Tento súbor cookie bol zablokovaný, pretože mal atribút Secure a pripojenie nebolo zabezpečené."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Hlavička nastaveného súboru cookie je ignorovaná v odpovedi z webovej adresy: {PH1}. Dĺžka súboru cookie by mala byť menšia ako 4 096 znakov, prípadne by sa mala tejto hodnote rovnať."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Schéma tohto pripojenia nepovoľuje ukladanie súborov cookie."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Deaktivovať formát AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Zakázať vyrovnávaciu pamäť (kým sú otvorené nástroje pre vývojárov)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Zakázať JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Hlavné"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Otvorte vyhradené nástroje pre vývojárov pre Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Skript LiveEdit zlyhal: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Pomer pixelov zariadenia musí byť číslo alebo prázdna hodnota."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Pomer pixelov zariadenia musí byť väčší alebo rovný hodnote {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Pomer pixelov zariadenia musí byť {PH1} alebo menší."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Výška musí byť číslo."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Výška musí byť väčšia alebo rovná hodnote {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Výška musí byť menšia alebo rovná hodnote {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Šírka musí byť číslo."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Šírka musí byť väčšia alebo rovná hodnote {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Šírka musí byť menšia alebo rovná hodnote {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Laptop s obrazovkou HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Laptop s obrazovkou MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Laptop s touchpadom"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Zhromažďuje sa obsah…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Používanie blokovaní zaťažujúcich reklám"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Problém spočívajúci v zmene spôsobujúcej chybu: stránka môže v nadchádzajúcej verzii Chromu prestať fungovať"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Problém so zlepšením: k dispozícii je možnosť zlepšiť stránku"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Problém spočívajúci v chybe stránky: stránka nefunguje správne"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Dostupnosť farieb a kontrastu"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "nezabezpečené"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Vysvetlené: First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Ako Schemeful Same-Site funguje"
   },
@@ -1284,7 +1350,7 @@
     "message": "Zmeny kritérií kvality pre PWA pomocou dôveryhodnej webovej aktivity"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Ukončenie podpory zdieľania modulu Wasm so zmiešaným pôvodom"
+    "message": "Zdieľanie modulu Wasm sa obmedzuje na ten istý zdroj"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymné>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} čaká na aktiváciu"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Zobraziť všetky registrácie"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker na {PH1}"
   },
@@ -2661,7 +2730,7 @@
     "message": "Zrušiť registráciu obsluhy"
   },
   "panels/application/ServiceWorkersView.ts | update": {
-    "message": "Aktualizácia"
+    "message": "Aktualizovať"
   },
   "panels/application/ServiceWorkersView.ts | updateCycle": {
     "message": "Cyklus aktualizácie"
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Obsluhy"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulovať vlastnú kvótu priestoru"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Kvóta priestoru je v anonymnom režime obmedzená"
@@ -2949,7 +3021,7 @@
     "message": "Tretia strana"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Priradiť subdomény"
+    "message": "Priraďovanie subdomén"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Zdroj"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tokeny"
+    "message": "Tokeny: {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Obmedzenie použitia"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Upozornenie, opakované #-krát}few{Upozornenie, opakované #-krát}many{Upozornenie, opakované #-krát}other{Upozornenie, opakované #-krát}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Tento bočný panel bude v budúcej verzii Chromu odstránený. Ak máte spätnú väzbu, dajte nám to vedieť prostredníctvom služby"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "Issue Tracker"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Automatické dopĺňanie z histórie"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bajt, {percentage}}few{# bajty, {percentage}}many{# bajtu, {percentage}}other{# bajtov, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bajtov ({PH2} %) patrí blokom JavaScriptu, ktoré (ešte) neboli spustené."
+    "message": "{PH1} bajtov ({PH2}) patrí blokom jazyka JavaScript, ktoré (ešte) neboli spustené."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bajtov ({PH2} %) patrí blokom JavaScriptu, ktoré boli spustené aspoň raz."
+    "message": "{PH1} bajtov ({PH2}) patrí blokom jazyka JavaScript, ktoré boli spustené aspoň raz."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bajtov ({PH2} %) patrí funkciám, ktoré (ešte) neboli spustené."
+    "message": "{PH1} bajtov ({PH2}) patrí funkciám, ktoré (ešte) neboli spustené."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bajtov ({PH2} %) patrí funkciám, ktoré boli spustené aspoň raz."
+    "message": "{PH1} bajtov ({PH2}) patrí funkciám, ktoré boli spustené aspoň raz."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Nevyužitá časť súboru: {PH1} %. Využitá časť súboru: {PH2} %."
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Celkový počet bajtov"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopírovať XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Orezať prvok"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Vystrihnúť"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Odstrániť prvok"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Skryť prvok"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Prilepiť prvok"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Prilepiť"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Posunúť do zobrazenia"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Zobraziť sledovanie zásobníka"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Zobrazovať tieň používateľského agenta DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Sledovanie zásobníka"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Zalomenie slov"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Pomer pixelov zariadenia musí byť číslo alebo prázdna hodnota."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Pomer pixelov zariadenia musí byť väčší alebo rovný hodnote {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Pomer pixelov zariadenia musí byť {PH1} alebo menší."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Výška musí byť číslo."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Výška musí byť väčšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Výška musí byť menšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Šírka musí byť číslo."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Šírka musí byť väčšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Šírka musí byť menšia alebo rovná hodnote {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Pridať pomer pixelov zariadenia"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Typ zariadenia"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Rozmery"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Upraviť…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Pridať vlastné zariadenie…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Zariadenie"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Názov zariadenia"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Pole pre názov zariadenia nemôže byť prázdne."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Názov zariadenia musí mať maximálne tento počet znakov: {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Pomer pixelov zariadenia"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulované zariadenia"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Výška"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Reťazec používateľského agenta"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Typ používateľského agenta"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Šírka"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop s obrazovkou HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop s obrazovkou MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop s touchpadom"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Pridať miesto..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Vlastné miesta"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Zem. šírka"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Zemepisná šírka"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Zemepisná šírka musí byť číslo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Zemepisná šírka musí byť väčšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Zemepisná šírka musí byť menšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Miestne nastavenie"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Miestne nastavenie musí obsahovať abecedné znaky"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Názov miesta"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Pole pre názov miesta nesmie byť prázdne"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Názov miesta musí mať maximálne tento počet znakov: {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Zem. dĺžka"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Zemepisná dĺžka"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Zemepisná dĺžka musí byť číslo"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Zemepisná dĺžka musí byť väčšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Zemepisná dĺžka musí byť menšia alebo rovná hodnote {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Identifikátor časového pásma"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Identifikátor časového pásma musí obsahovať abecedné znaky"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Zobraziť v zdrojovom kóde"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Upravte kolieskom myši alebo klávesmi so šípkou nahor a nadol. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Vlastná orientácia"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Orientácia zariadenia bola nastavená na alfa: {PH1}, beta: {PH2}, gama: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Obrazovka dolu"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Obrazovka nahor"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Povoliť otáčanie orientácie"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Chyba"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Vynúti vybranú emuláciu nečinného stavu"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Vynúti namiesto kliknutia klepnutie"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Na šírku vľavo"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Na šírku vpravo"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Zemepisná šírka"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Miestne nastavenie"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Oblasť"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Poloha nie je k dispozícii"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Zemepisná dĺžka"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Spravovať"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Spravovať zoznam miest"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Žiadne prepísanie"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Vypnuté"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientácia"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Iné…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Prepísania"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Na výšku"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Na výšku, hore nohami"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Predvoľby"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Resetovať"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Resetovať orientáciu zariadenia"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Stlačte Shift + presúvaním vodorovne sa otáčajte okolo osi Y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Identifikátor časového pásma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Pridať značku"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Architektúra"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Architektúra (napr. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Odstrániť {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Značka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Značka {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Vlastnosti značky"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Verzia {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Značky"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Odstrániť"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Model zariadenia"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Vlastnosti zariadenia"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Verzia celého prehliadača"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Úplná verzia prehliadača (napr. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Nedá sa prezentovať ako štruktúrovaný reťazec hlavičiek."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platforma (napr. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Vlastnosti platformy"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Verzia platformy"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Tipy pre klienty používateľského agenta"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Aktualizovať"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Tipy pre klienty používateľských agentov sú alternatívou k reťazcu používateľského agenta identifikujúceho prehliadač a zariadenie štruktúrovanejším spôsobom s lepším zabezpečením súkromia. Viac sa dozviete po kliknutí na tlačidlo."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Verzia"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "akcelerometer"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Vytvoriť snímku obrazovky v plnej veľkosti"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "zariadenie"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "orientácia zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Podľa zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulovať stav detektora nečinnosti"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Vynútenie bolo povolené"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolokácia"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Skryť rám zariadenia"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Skryť pravítka"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "miestne nastavenie"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "miestne nastavenia"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Miesta"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Žiadna emulácia nečinnosti"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Senzory"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Zobraziť rám zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Zobraziť zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Zobraziť miesta"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Zobraziť dopyty týkajúce sa médií"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Zobraziť pravítka"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Zobraziť senzory"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "časové pásma"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Prepnúť panel s nástrojmi zariadenia"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Klepnutie"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Používateľ je aktívny, obrazovka bola uzamknutá"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Používateľ je aktívny, obrazovka bola odomknutá"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Používateľ je nečinný, obrazovka bola uzamknutá"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Používateľ je nečinný, obrazovka bola odomknutá"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Odstrániť prijímač udalostí"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Doména"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Zobraziť požiadavky siete, ktoré v paneli siete zahrnujú túto hlavičku Set-Cookie"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# súbor cookie}few{# súbory cookie}many{# cookies}other{# súborov cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 nespracovaná hlavička Set-Cookie}few{# nespracované hlavičky Set-Cookie}many{# Raw Set-Cookie headers}other{# nespracovaných hlavičiek Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Názov"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "upozornenie"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Skryté problémy"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Ovplyvnené zdroje"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Dôveryhodná webová aktivita"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Zobraziť všetky skryté problémy"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokované"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Webová adresa modulu Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Zobraziť skryté podobné problémy"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Skryť podobné problémy"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Skryť ponuku s problémami"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Porušenia PZO"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Podpora hlavičky Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Názov vykresľovacieho modulu"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Rozlíšenie"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Skryje webové adresy data: a blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Invertovať"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Invertuje filter vyhľadávania"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Ďalšie informácie"
   },
@@ -6564,7 +6315,7 @@
     "message": "Deaktivovať vyrovnávaciu pamäť"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Zakázať vyrovnávaciu pamäť (kým sú otvorené Nástroje pre vývojárov)"
+    "message": "Zakázať vyrovnávaciu pamäť (kým sú otvorené nástroje pre vývojárov)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Nevymazať denník pri opätovnom načítaní stránky / navigácii"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Parametre reťazca dopytu"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Zaznamenaná atribúcia s prvkom trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Pravidlá sprostredkovateľa"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Zobraziť zabezpečenie"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Pridať miesto..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Vlastné miesta"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Zem. šírka"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Zemepisná šírka"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Zemepisná šírka musí byť číslo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Zemepisná šírka musí byť väčšia alebo rovná hodnote {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Zemepisná šírka musí byť menšia alebo rovná hodnote {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Miestne nastavenie"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Miestne nastavenie musí obsahovať abecedné znaky"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Názov miesta"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Pole pre názov miesta nesmie byť prázdne"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Názov miesta musí mať maximálne tento počet znakov: {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Zem. dĺžka"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Zemepisná dĺžka"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Zemepisná dĺžka musí byť číslo"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Zemepisná dĺžka musí byť väčšia alebo rovná hodnote {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Zemepisná dĺžka musí byť menšia alebo rovná hodnote {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Identifikátor časového pásma"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Identifikátor časového pásma musí obsahovať abecedné znaky"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Upravte kolieskom myši alebo klávesmi so šípkou nahor a nadol. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Vlastná orientácia"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Orientácia zariadenia bola nastavená na alfa: {PH1}, beta: {PH2}, gama: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Obrazovka dolu"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Obrazovka nahor"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Povoliť otáčanie orientácie"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Chyba"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Vynúti vybranú emuláciu nečinného stavu"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Vynúti namiesto kliknutia klepnutie"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Na šírku vľavo"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Na šírku vpravo"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Zemepisná šírka"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Miestne nastavenie"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Oblasť"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Poloha nie je k dispozícii"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Zemepisná dĺžka"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Spravovať"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Spravovať zoznam miest"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Žiadne prepísanie"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Vypnuté"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientácia"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Iné…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Prepísania"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Na výšku"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Na výšku, hore nohami"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Predvoľby"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Resetovať"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Resetovať orientáciu zariadenia"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Stlačte Shift + presúvaním vodorovne sa otáčajte okolo osi Y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Identifikátor časového pásma"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "akcelerometer"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "orientácia zariadenia"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Podľa zariadenia"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulovať stav detektora nečinnosti"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Vynútenie bolo povolené"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolokácia"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "miestne nastavenie"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "miestne nastavenia"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Miesta"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Žiadna emulácia nečinnosti"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Senzory"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Zobraziť miesta"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Zobraziť senzory"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "časové pásma"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Klepnutie"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Používateľ je aktívny, obrazovka bola uzamknutá"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Používateľ je aktívny, obrazovka bola odomknutá"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Používateľ je nečinný, obrazovka bola uzamknutá"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Používateľ je nečinný, obrazovka bola odomknutá"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Pridať vzor názvu súboru"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "UPOZORNENIE:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Pridať vlastné zariadenie…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Zariadenie"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Názov zariadenia"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Pole pre názov zariadenia nemôže byť prázdne."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Názov zariadenia musí mať maximálne tento počet znakov: {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Pomer pixelov zariadenia"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emulované zariadenia"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Výška"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Reťazec používateľského agenta"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Typ používateľského agenta"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Šírka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Pridať značku"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Architektúra"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Architektúra (napr. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Odstrániť {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Značka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Značka {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Vlastnosti značky"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Verzia {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Značky"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Odstrániť"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Model zariadenia"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Vlastnosti zariadenia"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Verzia celého prehliadača"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Úplná verzia prehliadača (napr. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Nedá sa prezentovať ako štruktúrovaný reťazec hlavičiek."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platforma (napr. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Vlastnosti platformy"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Verzia platformy"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Tipy pre klienty používateľského agenta"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Aktualizovať"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Tipy pre klienty používateľských agentov sú alternatívou k reťazcu používateľského agenta identifikujúceho prehliadač a zariadenie štruktúrovanejším spôsobom s lepším zabezpečením súkromia. Viac sa dozviete po kliknutí na tlačidlo."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Verzia"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Zariadenia"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Zobraziť zariadenia"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentácia"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deaktivovať zlomové body"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Znížiť jednotku CSS o 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Znížiť jednotku CSS o {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Zistiť odsadenie"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Prejsť na symbol"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Zvýšiť jednotku CSS o 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Zvýšiť jednotku CSS o {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Prejsť na ďalšie miesto úprav"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Zoradiť podľa"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Problém spočívajúci v zmene spôsobujúcej chybu: stránka môže v nadchádzajúcej verzii Chromu prestať fungovať"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# zmena spôsobujúca chybu}few{# zmeny spôsobujúce chybu}many{# breaking changes}other{# zmien spôsobujúcich chybu}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Problém so zlepšením: k dispozícii je možnosť zlepšiť stránku"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Problém spočívajúci v chybe stránky: stránka nefunguje správne"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# chyba na stránke}few{# chyby na stránke}many{# page errors}other{# chýb na stránke}}"
@@ -10758,7 +10827,7 @@
     "message": "Kliknutím zobrazíte problém na karte problémov"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Kliknutím otvoríte kartu problému a zobrazíte problém {title}"
+    "message": "Kliknutím otvoríte kartu problému a zobrazíte problém: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Položka nie je momentálne k dispozícii"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Všetko"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Vymazať vstup"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "napr. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Zobrazí schému zdroja (Secure, NonSecure), v ktorej bol súbor cookie nastavený. Ak je schéma neznáma, zobrazí sa Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "po {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Časová pečiatka vypršania platnosti je {seconds} a zodpovedá dátumu po {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Hodnota"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "తెలియని ఎర్రర్"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} రోజులు"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} గంటలు"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} నిమి"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} మైక్రోసెకన్లు"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} మి.సె."
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} సె"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "విండో"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "వర్కర్"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "వేగవంతమైన 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "ప్రీ-ఫ్లయిట్ రిక్వెస్ట్‌కు సంబంధించిన కంటెంట్ ఏదీ అందుబాటులో లేదు"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "ఈ రిక్వెస్ట్ మళ్లించబడినందున కంటెంట్ ఏదీ అందుబాటులో లేదు"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSocketsలో ఉన్న కంటెంట్‌కు ప్రస్తుతం సపోర్ట్ లేదు"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "త్రోట్లింగ్ చేయడం లేదు"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} లోడ్ చేయడం పూర్తయింది: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Url నుండి ప్రతిస్పందనలో Set-Cookie హెడర్ విస్మరించబడుతుంది: {PH1}. కుక్కీ పొడవు 4096 అక్షరాల కంటే తక్కువ లేదా సమానంగా ఉండాలి."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "నెమ్మదైన 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "\"Secure\" లక్షణాన్ని కలిగి ఉన్నందున ఈ కుక్కీని బ్లాక్ చేయడం జరిగింది, కనెక్షన్ సురక్షితం కాదు."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Url నుండి ప్రతిస్పందనలో Set-Cookie హెడర్ విస్మరించబడుతుంది: {PH1}. కుక్కీ పొడవు 4096 అక్షరాల కంటే తక్కువ లేదా సమానంగా ఉండాలి."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "ఈ కనెక్షన్ స్కీమ్‌కు కుక్కీలను స్టోర్ చేసే అనుమతి లేదు."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF ఫార్మాట్‌ను డిజేబుల్ చేయండి"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "కాష్‌ను డిజేబుల్ చేయండి (DevTools తెరిచినప్పుడు)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptను డిజేబుల్ చేయండి"
@@ -732,7 +747,7 @@
     "message": "లేఅవుట్ షిఫ్ట్ ప్రాంతాలను దాచండి"
   },
   "core/sdk/sdk-meta.ts | hideLineLabels": {
-    "message": "లైన్ లేబుల్‌లను దాచండి"
+    "message": "లైన్ లేబుళ్లను దాచండి"
   },
   "core/sdk/sdk-meta.ts | hidePaintFlashingRectangles": {
     "message": "పెయింట్ ఫ్లాషింగ్ దీర్ఘచతురస్రాలను దాచండి"
@@ -789,7 +804,7 @@
     "message": "లేఅవుట్ షిఫ్ట్ ప్రాంతాలను చూపండి"
   },
   "core/sdk/sdk-meta.ts | showLineLabels": {
-    "message": "లైన్ లేబుల్‌లను చూపండి"
+    "message": "లైన్ లేబుళ్లను చూపండి"
   },
   "core/sdk/sdk-meta.ts | showLineNames": {
     "message": "లైన్ పేర్లను చూపండి"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "ప్రధానమైనది"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.jsకు సంబంధించిన డెడికేట్ చేయబడిన DevToolsను తెరవండి"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ప్రధాన వెబ్ కొలమానాలు"
@@ -1197,7 +1215,7 @@
     "message": "\"{PH1}\" ఫంక్షన్‌కు సంబంధించిన డీబగ్ చిహ్నాలు కనిపించడం లేదు"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForButDidnt": {
-    "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ చేయబడ్డాయి, కానీ సోర్స్ ఫైల్‌లు ఏవీ కనుగొనబడలేదు"
+    "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ చేయబడ్డాయి, కానీ సోర్స్ ఫైళ్లు ఏవీ కనుగొనబడలేదు"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadedDebugSymbolsForFound": {
     "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ చేయబడ్డాయి, {PH3}కానీ సోర్స్ ఫైల్(లు) కనుగొనబడ్డాయి"
@@ -1216,6 +1234,42 @@
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit విఫలమైంది: {PH1}"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "పరికర పిక్సెల్ నిష్పత్తి నంబర్ లేదా ఖాళీగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "పరికర పిక్సెల్ నిష్పత్తి {PH1} కంటే ఎక్కువ లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "పరికర పిక్సెల్ నిష్పత్తి {PH1} కంటే తక్కువ లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "ఎత్తు తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "ఎత్తు ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "ఎత్తు ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "వెడల్పు తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "వెడల్పు ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "వెడల్పు ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI స్క్రీన్‌తో ల్యాప్‌టాప్"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI స్క్రీన్‌తో ల్యాప్‌టాప్"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "టచ్‌తో కూడిన ల్యాప్‌టాప్"
   },
   "models/har/Writer.ts | collectingContent": {
     "message": "కంటెంట్‌ను సేకరిస్తోంది…"
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "హెవీ యాడ్ జోక్యాలను హ్యాండిల్ చేస్తుంది"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "తాజా మార్పు సమస్య: Chrome రాబోయే వెర్షన్‌లో పేజీ పనిచేయడం ఆగిపోవచ్చు"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "మెరుగుదల సమస్య: పేజీని మెరుగుపరిచేందుకు అవకాశం ఉంది"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "పేజీ ఎర్రర్ సమస్య: పేజీ సరిగ్గా పని చేయడం లేదు"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "రంగు, కాంట్రాస్ట్ యాక్సెసిబిలిటీ"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "సురక్షితం కాదు"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets వివరించబడ్డాయి"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site ఎలా పనిచేస్తుంది"
   },
@@ -1284,7 +1350,7 @@
     "message": "విశ్వసనీయ వెబ్ యాక్టివిటీని ఉపయోగించి PWAల క్వాలిటీ ప్రమాణాలకు మార్పులు"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm క్రాస్-ఆరిజిన్ మాడ్యూల్ షేరింగ్ విస్మరణ"
+    "message": "Wasm మాడ్యూల్, షేరింగ్‌ను అదే ఆరిజిన్‌కు పరిమితం చేస్తోంది"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<అజ్ఞాతం>"
@@ -1371,7 +1437,7 @@
     "message": "సోర్స్ మ్యాప్‌కు లింక్ చేయబడింది: {PH1}"
   },
   "models/persistence/PlatformFileSystem.ts | unableToReadFilesWithThis": {
-    "message": "PlatformFileSystem ఫైల్‌లను చదవలేదు."
+    "message": "PlatformFileSystem ఫైళ్లను చదవలేదు."
   },
   "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
     "message": "ఫోల్డర్‌ను జోడించు…"
@@ -2175,7 +2241,7 @@
     "message": "కీ పాత్: {PH1}"
   },
   "panels/application/ApplicationPanelSidebar.ts | localFiles": {
-    "message": "లోకల్ ఫైల్‌లు"
+    "message": "లోకల్ ఫైళ్లు"
   },
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
     "message": "స్థానిక స్టోరేజ్"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "యాక్టివేషన్ కోసం #{PH1} వేచి ఉన్నారు"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "అన్ని రిజిస్ట్రేషన్‌లను చూడండి"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} కోసం Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "సర్వీస్ వర్కర్‌లు"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "అనుకూల స్టోరేజ్ కోటాను అనుకరించండి"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "అజ్ఞాత మోడ్‌లో స్టోరేజ్ కోటా పరిమితంగా ఉంటుంది"
@@ -2949,7 +3021,7 @@
     "message": "థర్డ్ పార్టీ"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "సబ్-డొమైన్‌లను మ్యాచ్ చేయండి"
+    "message": "మ్యాచ్ అయ్యే ఉపడొమైన్"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ఆరిజిన్"
@@ -2964,7 +3036,7 @@
     "message": "టోకెన్"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "టోకెన్‌లు"
+    "message": "{PH1} టోకెన్‌లు"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "వినియోగానికి సంబంధించిన పరిమితి"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{హెచ్చరిక, # సారి రిపీట్ అయ్యింది}other{హెచ్చరిక, # సార్లు రిపీట్ అయ్యింది}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Chrome భవిష్యత్తు వెర్షన్‌లో ఈ సైడ్‌బార్ తొలగించబడుతుంది. మీరు మాకు ఫీడ్‌బ్యాక్ ఇవ్వాలనుకుంటే, దీని ద్వారా మాకు తెలియజేయండి"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "సమస్య ట్రాకర్"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "హిస్టరీ నుండి ఆటో-కంప్లీట్"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# బైట్, {percentage}}other{# బైట్‌లు, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} బైట్‌లు ({PH2} %) ఇంకా అమలు చేయని JavaScript బ్లాక్‌లకు చెందినవి."
+    "message": "{PH1} బైట్‌లు ({PH2}) ఇంకా ఎగ్జిక్యూట్ చేయని JavaScript బ్లాక్‌లకు చెందినవి."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} బైట్‌లు ({PH2} %) కనీసం ఒక్కసారి ఎగ్జిక్యూట్ అయిన JavaScript బ్లాక్‌లకు చెందినవి."
+    "message": "{PH1} బైట్‌లు ({PH2}) కనీసం ఒక్కసారి ఎగ్జిక్యూట్ అయిన JavaScript బ్లాక్‌లకు చెందినవి."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} బైట్‌లు ({PH2} %) ఇంకా ఎగ్జిక్యూట్ చేయని ఫంక్షన్‌లకు చెందినవి."
+    "message": "{PH1} బైట్‌లు ({PH2}) ఇంకా ఎగ్జిక్యూట్ చేయని ఫంక్షన్‌లకు చెందినవి."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} బైట్‌లు ({PH2} %) కనీసం ఒక్కసారి అమలు చేయబడిన ఫంక్షన్‌లకు చెందినవి."
+    "message": "{PH1} బైట్‌లు ({PH2}) కనీసం ఒక్కసారి ఎగ్జిక్యూట్ చేయబడిన ఫంక్షన్‌లకు చెందినవి."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ఫైల్ ఉపయోగించబడలేదు, {PH2} % ఫైల్ ఉపయోగించబడింది"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "మొత్తం బైట్‌లు"
@@ -3933,7 +4008,7 @@
     "message": "చిన్నారుల ట్యాబ్‌ను కుదించు"
   },
   "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "కాపీ చేయి"
+    "message": "కాపీ చేయండి"
   },
   "panels/elements/ElementsTreeElement.ts | copyElement": {
     "message": "ఎలిమెంట్‌ను కాపీ చేయండి"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPathను కాపీ చేయండి"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "ఎలిమెంట్‌ను కట్ చేయండి"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "కత్తిరించండి"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "ఎలిమెంట్‌ను తొలగించండి"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "ఎలిమెంట్‌ను దాచండి"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "ఎలిమెంట్‌ను పేస్ట్ చేయండి"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "పేస్ట్ చేయండి"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "చూడటానికి స్క్రోల్ చేయండి"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "స్టాక్ ట్రేస్‌ను చూపండి"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "DOM వెబ్‌సైట్ యాక్సెస్ సాధన షాడోను చూడండి"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "స్టాక్ ట్రేస్"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "పదం సర్దుబాటు"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "పరికర పిక్సెల్ నిష్పత్తి నంబర్ లేదా ఖాళీగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "పరికర పిక్సెల్ నిష్పత్తి {PH1} కంటే ఎక్కువ లేదా సమానంగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "పరికర పిక్సెల్ నిష్పత్తి {PH1} కంటే తక్కువ లేదా సమానంగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "ఎత్తు తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "ఎత్తు ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "ఎత్తు ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "వెడల్పు తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "వెడల్పు ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "వెడల్పు ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "పరికర పిక్సెల్ నిష్పత్తిని జోడించండి"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "పరికరం రకం"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "కొలతలు"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "ఎడిట్ చేయి…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "టాబ్లెట్"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "అనుకూల పరికరాన్ని జోడించు..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "పరికరం"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "పరికరం పేరు"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "పరికరం పేరు ఖాళీగా ఉండకూడదు."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "పరికర పేరు {PH1} అక్షరాలు కంటే తక్కువ ఉండాలి."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "పరికర పిక్సెల్ నిష్పత్తి"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "అనుకరించబడిన పరికరాలు"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "ఎత్తు"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన స్ట్రింగ్"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన రకం"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "వెడల్పు"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI స్క్రీన్‌తో ల్యాప్‌టాప్"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI స్క్రీన్‌తో ల్యాప్‌టాప్"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "టచ్‌తో కూడిన ల్యాప్‌టాప్"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "లొకేషన్‌ను జోడించు..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "అనుకూల లొకేషన్‌లు"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "అక్షాంశం"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "అక్షాంశం"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "అక్షాంశం తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "అక్షాంశం ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "అక్షాంశం ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "లొకేల్"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "లొకేల్ తప్పనిసరిగా ఆల్ఫాబెటిక్ అక్షరాలను కలిగి ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "లొకేషన్ పేరు"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "లొకేషన్ పేరు ఖాళీగా ఉండకూడదు"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "లొకేషన్ పేరు {PH1} అక్షరాలు కంటే తక్కువ ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "రేఖాంశం"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "రేఖాంశం"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "రేఖాంశం తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "రేఖాంశం ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "విలువ ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "టైమ్‌జోన్ ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "టైమ్‌జోన్ ID తప్పనిసరిగా ఆల్ఫాబెటిక్ అక్షరాలను కలిగి ఉండాలి"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "సోర్స్ కోడ్‌లో బహిరంగపరచండి"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "మౌస్‌వీల్ లేదా పైకి/కిందకు కీలతో సర్దుబాటు చేయండి. {PH1}: ±10, షిఫ్ట్: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (ఆల్ఫా)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (బీటా)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "అనుకూల ఓరియంటేషన్"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "పరికర ఓరియంటేషన్ ఆల్ఫా: {PH1}, బీటా: {PH2}, గామా: {PH3}కు సెట్ చేయబడింది"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "దిగువున ప్రదర్శించు"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "పైన ప్రదర్శించు"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "తిప్పడానికి ఓరియంటేషన్‌ను ఎనేబుల్ చేయండి"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "ఎర్రర్"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "ఎంచుకోబడిన ఇన్‌యాక్టివ్‌గా ఉన్న అనుకరణ స్థితిని ఫోర్స్ చేయండి"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "క్లిక్‌కు బదులుగా టచ్‌కు ఫోర్స్ చేస్తుంది"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (గామా)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "ఎడమవైపు ల్యాండ్‌స్కేప్"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "కుడివైపు ల్యాండ్‌స్కేప్"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "అక్షాంశం"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "లొకేల్"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "లొకేషన్"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "లొకేషన్ అందుబాటులో లేదు"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "రేఖాంశం"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "మేనేజ్ చేయి"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "లొకేషన్‌ల లిస్ట్‌ను మేనేజ్ చేయండి"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "ఓవర్‌రైడ్ ఏదీ లేదు"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "ఆఫ్ చేయబడుతుంది"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "ఓరియంటేషన్"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "ఇతరమైనవి…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "ఓవర్‌రైడ్‌లు"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "పోర్ట్రెయిట్"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "పోర్ట్రెయిట్ తలక్రిందులుగా ఉంది"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "ప్రీసెట్‌లు"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "రీసెట్ చేయి"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "పరికర ఓరియంటేషన్‌ను రీసెట్ చేయండి"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Y- అక్షం చుట్టూ తిప్పడానికి Shift నొక్కండి, దానితో పాటు అడ్డంగా లాగండి"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "టైమ్‌జోన్ ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "బ్రాండ్‌ను జోడించండి"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ఆర్కిటెక్చర్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "ఆర్కిటెక్చర్ (ఉదా. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1}ను తొలగించండి"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "బ్రాండ్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "{PH1} బ్రాండ్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "బ్రాండ్ ప్రాపర్టీలు"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "వెర్షన్ {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "బ్రాండ్‌లు"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "తొలగించండి"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "పరికరం మోడల్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "పరికర ప్రాపర్టీలు"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "పూర్తి బ్రౌజర్ వెర్షన్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "పూర్తి బ్రౌజర్ వెర్షన్ (ఉదా. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "మొబైల్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "నిర్మాణాత్మక హెడర్‌ల స్ట్రింగ్‌లాగా ప్రాతినిధ్యం వహించదు."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "ప్లాట్‌ఫామ్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "ప్లాట్‌ఫామ్ (ఉదా. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "ప్లాట్‌ఫామ్ ప్రాపర్టీలు"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "ప్లాట్‌ఫారమ్ వెర్షన్"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "అప్‌డేట్ చేయండి"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు బ్రౌజర్, పరికరాన్ని మెరుగైన గోప్యతా అకౌంటింగ్‌తో మరింత నిర్మాణాత్మకంగా గుర్తించే వెబ్‌సైట్ యాక్సెస్ సాధన స్ట్రింగ్‌కు ప్రత్యామ్నాయం. మరింత తెలుసుకోవడానికి బటన్‌ను నొక్కండి."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "వెర్షన్"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "యాక్సిలెరోమీటర్"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "ఫుల్ సైజ్ స్క్రీన్‌షాట్‌ను క్యాప్చర్ చేయండి"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "పరికరం"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "పరికర ఓరియంటేషన్"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "పరికర-ఆధారిత"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "పరికరాలు"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "ఇన్‌యాక్టివ్‌గా ఉన్న డిటెక్టర్ స్థితిని అనుకరించండి"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "ఫోర్స్‌గా ఎనేబుల్ చేయబడింది"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "భౌగోళిక స్థానం"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "పరికర ఫ్రేమ్‌ను దాచండి"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "రూలర్‌లను దాచండి"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "లొకేల్"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "లొకేల్‌లు"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "లొకేషన్‌లు"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "ఇన్‌యాక్టివ్‌గా ఉన్న అనుకరణ ఏదీ లేదు"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "సెన్సార్‌లు"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "పరికర ఫ్రేమ్‌ను చూపండి"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "పరికరాలను చూపండి"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "లొకేషన్‌లను చూపండి"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "మీడియా క్వెరీలను చూపండి"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "రూలర్‌లను చూపండి"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "సెన్సార్‌లను చూపండి"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "టైమ్ జోన్‌లు"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "పరికర టూల్‌బార్‌ను టోగుల్ చేయండి"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "టచ్"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "యూజర్ యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ లాక్ చేయబడింది"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "యూజర్ యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ అన్‌లాక్ చేయబడింది"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "యూజర్ ఇన్‌యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ లాక్ చేయబడింది"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "యూజర్ ఇన్‌యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ అన్‌లాక్ చేయబడింది"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "ఈవెంట్ లిజనర్‌ను తొలగించు"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "డొమైన్"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "నెట్‌వర్క్ ప్యానెల్‌లో ఈ Set-Cookie హెడర్‌ను కలిగి ఉన్న నెట్‌వర్క్ రిక్వెస్ట్‌లను చూడండి"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# కుక్కీ}other{# కుక్కీలు}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 ప్రాసెస్ చేయని Set-Cookie హెడర్}other{# ప్రాసెస్ చేయని Set-Cookie హెడర్‌లు}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "పేరు"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "హెచ్చరిక"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "దాచబడిన సమస్యలు"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ప్రభావిత రిసోర్స్‌లు"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "విశ్వసనీయ వెబ్ యాక్టివిటీ"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "దాచబడిన అన్ని సమస్యలను చూపండి"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "బ్లాక్ చేయబడింది"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm మాడ్యూల్ URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "ఇలాంటి సమస్యలను చూపండి"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "ఇలాంటి సమస్యలను దాచండి"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "సమస్యలకు సంబంధించిన మెనూను దాచండి"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP ఉల్లంఘనలు"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range హెడర్ సపోర్ట్"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "రెండరర్ పేరు"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "రిజల్యూషన్"
   },
@@ -5844,7 +5589,7 @@
     "message": "వీడియో స్తంభించే స్కోర్"
   },
   "panels/media/PlayerPropertiesView.ts | videoPlaybackRoughness": {
-    "message": "వీడియో ప్లేబ్యాక్ నాణ్యతలో అంతరం"
+    "message": "వీడియో ప్లేబ్యాక్ క్వాలిటీలో అంతరం"
   },
   "panels/media/media-meta.ts | media": {
     "message": "మీడియా"
@@ -6360,7 +6105,7 @@
     "message": "DOMContentLoaded: {PH1}"
   },
   "panels/network/NetworkLogView.ts | dropHarFilesHere": {
-    "message": "HAR ఫైల్‌లను ఇక్కడ డ్రాప్ చేయండి"
+    "message": "HAR ఫైళ్లను ఇక్కడ డ్రాప్ చేయండి"
   },
   "panels/network/NetworkLogView.ts | finishS": {
     "message": "ముగించు: {PH1}"
@@ -6373,6 +6118,12 @@
   },
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "డేటా: తో పాటు బ్లాబ్: URLలను దాస్తుంది"
+  },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "అటుఇటు మార్చండి"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "సెర్చ్ ఫిల్టర్‌ను అటుఇటు మారుస్తుంది"
   },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
@@ -6564,7 +6315,7 @@
     "message": "కాష్‌ను డిజేబుల్ చేయి"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "కాష్‌ను డిజేబుల్ చేయండి (DevTools తెరిచి ఉంచుతూ)"
+    "message": "కాష్‌ను డిజేబుల్ చేయండి (DevTools తెరిచినప్పుడు)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "పేజీ రీలోడ్ / నావిగేషన్‌లోని లాగ్‌ను క్లియర్ చేయవద్దు"
@@ -6725,6 +6476,9 @@
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "క్వెరీ స్ట్రింగ్ పారామీటర్‌లు"
   },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data ద్వారా రికార్డ్ చేయబడిన ఆట్రిబ్యూషన్: {PH1}"
+  },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "సిఫార్సు చేసిన వారి పాలసీ"
   },
@@ -6741,7 +6495,7 @@
     "message": "Payload రిక్వెస్ట్"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
-    "message": "URLను అభ్యర్థించండి"
+    "message": "URLను రిక్వెస్ట్ చేయండి"
   },
   "panels/network/RequestHeadersView.ts | responseHeaders": {
     "message": "ప్రతిస్పందన హెడర్‌లు"
@@ -7044,7 +6798,7 @@
     "message": "మరింత తెలుసుకోండి"
   },
   "panels/network/SignedExchangeInfoView.ts | requestUrl": {
-    "message": "URLను అభ్యర్థించండి"
+    "message": "URLను రిక్వెస్ట్ చేయండి"
   },
   "panels/network/SignedExchangeInfoView.ts | responseCode": {
     "message": "ప్రతిస్పందన కోడ్"
@@ -7077,7 +6831,7 @@
     "message": "క్లయింట్ అందించిన తర్కం తప్పు లేదా చెల్లదు."
   },
   "panels/network/components/RequestTrustTokensView.ts | eitherNoInputsForThisOperation": {
-    "message": "ఈ కార్యకలాపానికి ఇన్‌పుట్‌లేవీ అందుబాటులో లేవు లేదా అవుట్‌పుట్, కార్యకలాపాల కోటాను మించిపోయింది."
+    "message": "ఈ యాక్టివిటీకి ఇన్‌పుట్‌లేవీ అందుబాటులో లేవు లేదా అవుట్‌పుట్, యాక్టివిటీల కోటాను మించిపోయింది."
   },
   "panels/network/components/RequestTrustTokensView.ts | failure": {
     "message": "వైఫల్యం"
@@ -7107,7 +6861,7 @@
     "message": "విజయవంతమైంది"
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
-    "message": "ఏదో తెలియని కారణంగా కార్యకలాపం విఫలమైంది."
+    "message": "ఏదో తెలియని కారణంగా యాక్టివిటీ విఫలమైంది."
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationWasFulfilledLocally": {
     "message": "ఆపరేషన్ లోకల్‌గా పూర్తి చేయబడింది, రిక్వెస్ట్ ఏదీ పంపబడలేదు."
@@ -7347,7 +7101,7 @@
     "message": "ఆపివేస్తోంది…"
   },
   "panels/profiler/HeapProfileView.ts | thisProfileTypeHasMinimal": {
-    "message": "ఈ ప్రొఫైల్ రకం అనుకున్న దాని కంటే తక్కువ పనితీరును చూపుతోంది, దీనిని దీర్ఘకాలిక కార్యకలాపాలలో ఉపయోగించవచ్చు."
+    "message": "ఈ ప్రొఫైల్ రకం అనుకున్న దాని కంటే తక్కువ పనితీరును చూపుతోంది, దీనిని దీర్ఘకాలిక యాక్టివిటీలలో ఉపయోగించవచ్చు."
   },
   "panels/profiler/HeapProfileView.ts | totalSize": {
     "message": "మొత్తం సైజ్"
@@ -7947,7 +7701,7 @@
     "message": "క్లియర్ చేయి"
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInDFiles": {
-    "message": "{PH2} ఫైల్‌లలో {PH1} మ్యాచ్ అయ్యే లైన్‌లు కనుగొనబడ్డాయి."
+    "message": "{PH2} ఫైళ్లలో {PH1} మ్యాచ్ అయ్యే లైన్‌లు కనుగొనబడ్డాయి."
   },
   "panels/search/SearchView.ts | foundDMatchingLinesInFile": {
     "message": "1 ఫైల్‌లో {PH1} మ్యాచ్ అయ్యే లైన్‌లు కనుగొనబడ్డాయి."
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "సెక్యూరిటీని చూపు"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "లొకేషన్‌ను జోడించు..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "అనుకూల లొకేషన్‌లు"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "అక్షాంశం"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "అక్షాంశం"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "అక్షాంశం తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "అక్షాంశం ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "అక్షాంశం ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "లొకేల్"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "లొకేల్ తప్పనిసరిగా ఆల్ఫాబెటిక్ అక్షరాలను కలిగి ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "లొకేషన్ పేరు"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "లొకేషన్ పేరు ఖాళీగా ఉండకూడదు"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "లొకేషన్ పేరు {PH1} అక్షరాలు కంటే తక్కువ ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "రేఖాంశం"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "రేఖాంశం"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "రేఖాంశం తప్పనిసరిగా నంబర్ అయ్యి ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "రేఖాంశం ఖచ్చితంగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "విలువ ఖచ్చితంగా {PH1} కంటే తక్కువగా లేదా సమానంగా ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "టైమ్‌జోన్ ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "టైమ్‌జోన్ ID తప్పనిసరిగా ఆల్ఫాబెటిక్ అక్షరాలను కలిగి ఉండాలి"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "మౌస్‌వీల్ లేదా పైకి/కిందకు కీలతో సర్దుబాటు చేయండి. {PH1}: ±10, షిఫ్ట్: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (ఆల్ఫా)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (బీటా)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "అనుకూల ఓరియంటేషన్"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "పరికర ఓరియంటేషన్ ఆల్ఫా: {PH1}, బీటా: {PH2}, గామా: {PH3}కు సెట్ చేయబడింది"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "దిగువున ప్రదర్శించు"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "పైన ప్రదర్శించు"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "తిప్పడానికి ఓరియంటేషన్‌ను ఎనేబుల్ చేయండి"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "ఎర్రర్"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "ఎంచుకోబడిన ఇన్‌యాక్టివ్‌గా ఉన్న అనుకరణ స్థితిని ఫోర్స్ చేయండి"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "క్లిక్‌కు బదులుగా టచ్‌కు ఫోర్స్ చేస్తుంది"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (గామా)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "ఎడమవైపు ల్యాండ్‌స్కేప్"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "కుడివైపు ల్యాండ్‌స్కేప్"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "అక్షాంశం"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "లొకేల్"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "లొకేషన్"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "లొకేషన్ అందుబాటులో లేదు"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "రేఖాంశం"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "మేనేజ్ చేయి"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "లొకేషన్‌ల లిస్ట్‌ను మేనేజ్ చేయండి"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "ఓవర్‌రైడ్ ఏదీ లేదు"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "ఆఫ్ చేయబడుతుంది"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "ఓరియంటేషన్"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "ఇతరమైనవి…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "ఓవర్‌రైడ్‌లు"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "పోర్ట్రెయిట్"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "పోర్ట్రెయిట్ తలక్రిందులుగా ఉంది"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "ప్రీసెట్‌లు"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "రీసెట్ చేయి"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "పరికర ఓరియంటేషన్‌ను రీసెట్ చేయండి"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Y- అక్షం చుట్టూ తిప్పడానికి Shift నొక్కండి, దానితో పాటు అడ్డంగా లాగండి"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "టైమ్‌జోన్ ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "యాక్సిలెరోమీటర్"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "పరికర ఓరియంటేషన్"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "పరికర-ఆధారిత"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "ఇన్‌యాక్టివ్‌గా ఉన్న డిటెక్టర్ స్థితిని అనుకరించండి"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "ఫోర్స్‌గా ఎనేబుల్ చేయబడింది"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "భౌగోళిక స్థానం"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "లొకేల్"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "లొకేల్‌లు"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "లొకేషన్‌లు"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "ఇన్‌యాక్టివ్‌గా ఉన్న అనుకరణ ఏదీ లేదు"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "సెన్సార్‌లు"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "లొకేషన్‌లను చూపండి"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "సెన్సార్‌లను చూపండి"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "టైమ్ జోన్‌లు"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "టచ్"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "యూజర్ యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ లాక్ చేయబడింది"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "యూజర్ యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ అన్‌లాక్ చేయబడింది"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "యూజర్ ఇన్‌యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ లాక్ చేయబడింది"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "యూజర్ ఇన్‌యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ అన్‌లాక్ చేయబడింది"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ఫైల్ పేరు ఆకృతిని జోడించండి"
   },
@@ -8447,6 +8414,117 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "హెచ్చరిక:"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "అనుకూల పరికరాన్ని జోడించు..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "పరికరం"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "పరికరం పేరు"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "పరికరం పేరు ఖాళీగా ఉండకూడదు."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "పరికర పేరు {PH1} అక్షరాలు కంటే తక్కువ ఉండాలి."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "పరికర పిక్సెల్ నిష్పత్తి"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "అనుకరించబడిన పరికరాలు"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "ఎత్తు"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన స్ట్రింగ్"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన రకం"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "వెడల్పు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "బ్రాండ్‌ను జోడించండి"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "ఆర్కిటెక్చర్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "ఆర్కిటెక్చర్ (ఉదా. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1}ను తొలగించండి"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "బ్రాండ్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} బ్రాండ్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "బ్రాండ్ ప్రాపర్టీలు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "వెర్షన్ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "బ్రాండ్‌లు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "తొలగించండి"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "పరికరం మోడల్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "పరికర ప్రాపర్టీలు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "పూర్తి బ్రౌజర్ వెర్షన్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "పూర్తి బ్రౌజర్ వెర్షన్ (ఉదా. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "మొబైల్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "నిర్మాణాత్మక హెడర్‌ల స్ట్రింగ్‌లాగా ప్రాతినిధ్యం వహించదు."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "ప్లాట్‌ఫామ్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "ప్లాట్‌ఫామ్ (ఉదా. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "ప్లాట్‌ఫామ్ ప్రాపర్టీలు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "ప్లాట్‌ఫారమ్ వెర్షన్"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "అప్‌డేట్ చేయండి"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "వెబ్‌సైట్ యాక్సెస్ సాధన క్లయింట్ సూచనలు బ్రౌజర్, పరికరాన్ని మెరుగైన గోప్యతా అకౌంటింగ్‌తో మరింత నిర్మాణాత్మకంగా గుర్తించే వెబ్‌సైట్ యాక్సెస్ సాధన స్ట్రింగ్‌కు ప్రత్యామ్నాయం. మరింత తెలుసుకోవడానికి బటన్‌ను నొక్కండి."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "వెర్షన్"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "పరికరాలు"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "పరికరాలను చూపండి"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "డాక్యుమెంటేషన్"
   },
@@ -8568,7 +8646,7 @@
     "message": "వివరాలను చూపించు"
   },
   "panels/sources/DebuggerPausedMessage.ts | attributeModifications": {
-    "message": "లక్షణ సవరణలు"
+    "message": "లక్షణ ఎడిట్‌లు"
   },
   "panels/sources/DebuggerPausedMessage.ts | childSAdded": {
     "message": "చిన్నారి {PH1} జోడించబడింది"
@@ -8616,7 +8694,7 @@
     "message": "XHR లేదా ఫెచ్ చేయడం కారణంగా సస్పెండ్ చేయబడింది"
   },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
-    "message": "సబ్‌ట్రీ సవరణలు"
+    "message": "సబ్‌ట్రీ ఎడిట్‌లు"
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypePolicyViolation": {
     "message": "Trusted Type పాలసీ ఉల్లంఘన"
@@ -8637,10 +8715,10 @@
     "message": "సోర్స్ మ్యాప్‌ను జోడించండి…"
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesAreAvailable": {
-    "message": "అనుబంధించబడిన ఫైల్‌లు ఫైల్ ట్రీ లేదా {PH1} ద్వారా అందుబాటులో ఉంటాయి."
+    "message": "అనుబంధించబడిన ఫైళ్లు ఫైల్ ట్రీ లేదా {PH1} ద్వారా అందుబాటులో ఉంటాయి."
   },
   "panels/sources/DebuggerPlugin.ts | associatedFilesShouldBeAdded": {
-    "message": "అనుబంధ ఫైల్‌లను ఫైల్ ట్రీకి జోడించాలి. మీరు పరిష్కరించబడిన సోర్స్ ఫైల్‌లను సాధారణ JavaScript ఫైల్‌లుగా డీబగ్ చేయవచ్చు."
+    "message": "అనుబంధ ఫైళ్లను ఫైల్ ట్రీకి జోడించాలి. మీరు పరిష్కరించబడిన సోర్స్ ఫైళ్లను సాధారణ JavaScript ఫైల్‌లుగా డీబగ్ చేయవచ్చు."
   },
   "panels/sources/DebuggerPlugin.ts | configure": {
     "message": "కాన్ఫిగర్ చేయి"
@@ -8685,7 +8763,7 @@
     "message": "ఈ స్క్రిప్ట్ డీబగ్గర్ 'విస్మరించు' లిస్ట్‌లో ఉంది"
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
-    "message": "ఫైల్‌లు ఏవీ కనుగొనబడలేదు"
+    "message": "ఫైళ్లు ఏవీ కనుగొనబడలేదు"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "ప్రస్తుత లైన్: {PH1}. దీనికి నావిగేట్ చేయడానికి 1, {PH2} మధ్యలోని లైన్ నంబర్‌ను టైప్ చేయండి."
@@ -8709,7 +8787,7 @@
     "message": "ఆ లైన్‌కు వెళ్ళడానికి నంబర్‌ను టైప్ చేయండి."
   },
   "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "లోకల్ సవరణలు..."
+    "message": "లోకల్ ఎడిట్‌లు..."
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "ఫార్మాట్"
@@ -8889,7 +8967,7 @@
     "message": "కొత్త స్నిప్పెట్"
   },
   "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "లోకల్ ఫోల్డర్ నుండి ఫైల్‌లతో పేజీ అస్సెట్‌లను ఓవర్‌రైడ్ చేయండి"
+    "message": "లోకల్ ఫోల్డర్ నుండి ఫైళ్లతో పేజీ అస్సెట్‌లను ఓవర్‌రైడ్ చేయండి"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "తీసివేయి"
@@ -9039,7 +9117,7 @@
     "message": "ఆటో-కంప్లీట్ చేయడం"
   },
   "panels/sources/sources-meta.ts | automaticallyRevealFilesIn": {
-    "message": "సైడ్‌బార్‌లోని ఫైల్‌లను ఆటోమేటిక్‌గా బహిరంగపరచండి"
+    "message": "సైడ్‌బార్‌లోని ఫైళ్లను ఆటోమేటిక్‌గా బహిరంగపరచండి"
   },
   "panels/sources/sources-meta.ts | bracketMatching": {
     "message": "బ్రాకెట్ మ్యాచింగ్"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "బ్రేక్ పాయింట్‌లను డీయాక్టివేట్ చేయండి"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS యూనిట్‌ను 10 తగ్గించండి"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS యూనిట్‌ను {PH1} తగ్గించండి"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ఇండెంటేషన్‌ను గుర్తించండి"
@@ -9096,7 +9174,7 @@
     "message": "డీబగ్గింగ్ చేస్తున్నప్పుడు వేరియబుల్ విలువలను ఇన్‌లైన్‌లో ప్రదర్శించండి"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
-    "message": "సైడ్‌బార్‌లోని ఫైల్‌లను ఆటోమేటిక్‌గా బహిరంగపరచకండి"
+    "message": "సైడ్‌బార్‌లోని ఫైళ్లను ఆటోమేటిక్‌గా బహిరంగపరచకండి"
   },
   "panels/sources/sources-meta.ts | doNotDetectIndentation": {
     "message": "ఇండెంటేషన్‌ను గుర్తించకండి"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "చిహ్నానికి వెళ్ళండి"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS యూనిట్‌ను 10 పెంచండి"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS యూనిట్‌ను {PH1} పెంచండి"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "తర్వాతి ఎడిట్ చేస్తున్న లొకేషన్‌కు వెళ్ళండి"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "దీని ఆధారంగా క్రమపద్ధతిలో అమర్చు"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "తాజా మార్పు సమస్య: Chrome రాబోయే వెర్షన్‌లో పేజీ పనిచేయడం ఆగిపోవచ్చు"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# తాజా మార్పు}other{# తాజా మార్పులు}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "మెరుగుదల సమస్య: పేజీని మెరుగుపరిచేందుకు అవకాశం ఉంది"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "పేజీ ఎర్రర్ సమస్య: పేజీ సరిగ్గా పని చేయడం లేదు"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# పేజీ ఎర్రర్}other{# పేజీ ఎర్రర్‌లు}}"
@@ -10758,7 +10827,7 @@
     "message": "సమస్యలకు సంబంధిచిన ట్యాబ్‌లో సమస్యను చూడటానికి క్లిక్ చేయండి"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "సమస్యలకు సంబంధించిన ట్యాబ్‌ను తెరవడానికి క్లిక్ చేసి, '{title}' సమస్యను చూడండి"
+    "message": "సమస్యకు సంబంధించిన ట్యాబ్‌ను తెరవడానికి క్లిక్ చేసి, సమస్యను చూడండి: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ప్రస్తుతం సమస్య అందుబాటులో లేదు"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "అన్నీ"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ఇన్‌పుట్‌ను క్లియర్ చేయండి"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ఉదా. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "కుక్కీ సెట్ చేయబడిన సోర్స్ స్కీమ్ (Secure, NonSecure)ను చూపిస్తుంది. స్కీమ్ తెలియకపోతే, ఇది Unsetను చూపిస్తుంది."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} తర్వాత"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "టైమ్ స్టాంప్ గడువు {seconds}న ముగుస్తుంది, ఇది {date} తర్వాత వస్తుంది"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "విలువ"

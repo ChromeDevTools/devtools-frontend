@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "알 수 없는 오류"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1}일"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1}시간"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1}분"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1}마이크로초"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1}밀리초"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1}초"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "창"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "작업자"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "빠른 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "프리플라이트 요청에 사용 가능한 콘텐츠 없음"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "요청이 리디렉션되었기 때문에 사용 가능한 콘텐츠가 없습니다."
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets 콘텐츠는 현재 지원되지 않습니다."
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "제한 없음"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} 로드 완료됨: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "{PH1} URL의 응답에서 Set-Cookie 헤더가 무시되었습니다. 쿠키 길이는 4,096자(영문 기준) 이하여야 합니다."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "느린 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "\"Secure\" 속성이 있으며 연결이 안전하지 않으므로 이 쿠키가 차단되었습니다."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "{PH1} URL의 응답에서 Set-Cookie 헤더가 무시되었습니다. 쿠키 길이는 4,096자(영문 기준) 이하여야 합니다."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "이 연결의 스키마로 쿠키를 저장할 수 없습니다."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF 형식 사용 중지"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "DevTools가 열려 있는 동안 캐시 사용 중지"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "자바스크립트 사용 중지"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "기본"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js 전용 DevTools를 열어 주세요."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "코어 웹 바이탈"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit 실패: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "기기 픽셀 비율은 숫자이거나 비어 있어야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "기기 픽셀 비율은 {PH1} 이상이어야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "기기 픽셀 비율은 {PH1} 이하여야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "높이는 숫자여야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "높이는 {PH1} 이상이어야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "높이는 {PH1} 이하여야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "너비는 숫자여야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "너비는 {PH1} 이상이어야 합니다."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "너비는 {PH1} 이하여야 합니다."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI 화면 탑재 노트북"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI 화면 탑재 노트북"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "터치 지원 노트북"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "콘텐츠 수집 중…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "과도한 광고 개입 처리"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "브레이킹 체인지 문제: 향후 Chrome 버전에서 페이지가 올바르게 작동하지 않을 수 있음"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "개선 문제: 페이지를 개선할 수 있음"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "페이지 오류 문제: 페이지가 제대로 작동하지 않음"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "색상 및 대비 접근성"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "안전하지 않음"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets 설명"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site의 작동 방식"
   },
@@ -1284,7 +1350,7 @@
     "message": "신뢰할 수 있는 웹 활동을 사용한 PWA의 품질 기준 변경사항"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm 교차 출처 모듈 공유 지원 중단"
+    "message": "same-origin으로의 Wasm 모듈 공유 제한"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1}이(가) 활성화 대기 중"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "모든 등록 내역 보기"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1}의 Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "서비스 워커"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "맞춤 스토리지 한도 시뮬레이션"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "시크릿 모드에서는 저장용량 할당량이 제한됩니다"
@@ -2964,7 +3036,7 @@
     "message": "토큰"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "토큰"
+    "message": "토큰 {PH1}개"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "사용 제한"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{경고, #회 반복됨}other{경고, #회 반복됨}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "이 사이드바는 향후 Chrome 버전에서 삭제됩니다. 의견이 있다면 다음을 통해 알려 주세요."
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "Issue Tracker"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "기록에서 자동 완성"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{#바이트, {percentage}}other{#바이트, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1}바이트({PH2}%)는 아직 실행되지 않은 자바스크립트 블록에 속합니다."
+    "message": "{PH1}바이트({PH2})는 아직 실행되지 않은 자바스크립트 블록에 속합니다."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1}바이트({PH2}%)는 한 번 이상 실행된 자바스크립트 블록에 속합니다."
+    "message": "{PH1}바이트({PH2})는 한 번 이상 실행된 자바스크립트 블록에 속합니다."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1}바이트({PH2}%)는 아직 실행되지 않은 함수에 속합니다."
+    "message": "{PH1}바이트({PH2})는 (아직) 실행되지 않은 함수에 속합니다."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1}바이트({PH2}%)는 최소 한 번 실행된 적이 있는 함수에 속합니다."
+    "message": "{PH1}바이트({PH2})는 한 번 이상 실행된 적이 있는 함수에 속합니다."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "파일의 {PH1}% 사용 안 됨, 파일의 {PH2}% 사용됨"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "총 바이트 수"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath 복사"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "요소 잘라내기"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "잘라내기"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "요소 삭제"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "요소 숨기기"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "요소 붙여넣기"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "붙여넣기"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "보기로 스크롤"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "스택 트레이스 표시"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "사용자 에이전트 그림자 DOM 표시"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "스택 트레이스"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "단어 줄바꿈"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "기기 픽셀 비율은 숫자이거나 비어 있어야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "기기 픽셀 비율은 {PH1} 이상이어야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "기기 픽셀 비율은 {PH1} 이하여야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "높이는 숫자여야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "높이는 {PH1} 이상이어야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "높이는 {PH1} 이하여야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "너비는 숫자여야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "너비는 {PH1} 이상이어야 합니다."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "너비는 {PH1} 이하여야 합니다."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "기기 픽셀 비율 추가"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "기기 유형"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "크기"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "수정…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "태블릿"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "맞춤 기기 추가..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "기기"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "기기 이름"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "기기 이름은 반드시 입력해야 합니다."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "기기 이름은 {PH1}자(영문 기준) 미만이어야 합니다."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "기기 픽셀 비율"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "에뮬레이션된 기기"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "높이"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "사용자 에이전트 문자열"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "사용자 에이전트 유형"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "너비"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI 화면 탑재 노트북"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI 화면 탑재 노트북"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "터치 지원 노트북"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "위치 추가..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "맞춤 위치"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "위도"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "위도"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "위도는 숫자여야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "위도는 {PH1} 이상이어야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "위도는 {PH1} 이하여야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "언어"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "언어에는 영문자가 포함되어야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "위치 이름"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "위치 이름은 반드시 입력해야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "위치 이름은 {PH1}자(영문 기준) 이하여야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "경도"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "경도"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "경도는 숫자여야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "경도는 {PH1} 이상이어야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "경도는 {PH1} 이하여야 합니다."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "시간대 ID"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "시간대 ID에는 영문자가 포함되어야 함"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "소스 코드에서 보기"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "마우스 휠 또는 위/아래 키로 조정합니다. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α(알파)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β(베타)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "맞춤 방향"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "기기 방향이 알파: {PH1}, 베타: {PH2}, 감마: {PH3} 값으로 설정됨"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "디스플레이 다운"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "디스플레이 위로"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "방향을 회전하도록 설정"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "오류"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "선택한 유휴 상태 에뮬레이션 강제 실행"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "클릭 대신 터치 강제 실행"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ(감마)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "가로 왼쪽 정렬"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "가로 모드 오른쪽"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "위도"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "언어"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "위치"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "위치를 찾을 수 없음"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "경도"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "관리"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "위치 목록 관리"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "재정의 안함"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "꺼짐"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "방향"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "기타…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "재정의"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "세로 모드"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "세로 역방향"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "사전 설정"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "재설정"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "기기 방향 재설정"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Shift 키를 누른 상태로 가로로 드래그하여 Y축을 중심으로 회전합니다."
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "시간대 ID"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "브랜드 추가"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "아키텍처"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "아키텍처(예: x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} 삭제"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "브랜드"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "브랜드 {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "브랜드 속성"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "버전 {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "브랜드"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "삭제"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "기기 모델"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "기기 속성"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "전체 브라우저 버전"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "전체 브라우저 버전(예: 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "모바일"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "구조화된 헤더 문자열로 표현할 수 없습니다."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "플랫폼"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "플랫폼(예: Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "플랫폼 속성"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "플랫폼 버전"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "사용자 에이전트 클라이언트 힌트"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "업데이트"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "개인정보 보호가 개선되어 더 구조화된 방식으로 브라우저와 기기를 식별하는 사용자 에이전트 클라이언트 힌트가 사용자 에이전트 문자열을 대체합니다. 버튼을 클릭하여 자세히 알아보세요."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "버전"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "가속도계"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "원본 크기 스크린샷 캡처"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "기기"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "기기 방향"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "기기 기반"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "기기"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "유휴 상태 감지기 상태 에뮬레이션"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "강제 실행 사용 설정됨"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "위치정보"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "기기 프레임 숨기기"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "눈금자 숨기기"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "언어"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "언어"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "위치"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "유휴 상태 에뮬레이션 없음"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "센서"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "기기 프레임 표시"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "기기 표시"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "위치 표시"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "미디어 쿼리 표시"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "눈금자 표시"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "센서 표시"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "시간대"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "기기 툴바 전환"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "터치"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "사용자 활성 상태, 화면 잠김"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "사용자 활성 상태, 화면 잠금 해제됨"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "사용자 유휴 상태, 화면 잠김"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "사용자 유휴 상태, 화면 잠금 해제됨"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "이벤트 리스너 삭제"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "도메인"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "이 Set-Cookie 헤더를 포함하는 네트워크 요청을 네트워크 패널에 표시"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{쿠키 #개}other{쿠키 #개}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{원본 Set-Cookie 헤더 1개}other{원본 Set-Cookie 헤더 #개}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "이름"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "경고"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "숨겨진 문제"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "영향을 받는 리소스"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "신뢰할 수 있는 웹 활동"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "모든 숨겨진 문제 숨기기 취소"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "차단됨"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm 모듈 URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "비슷한 문제 숨기기 취소"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "비슷한 문제 숨기기"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "문제 메뉴 숨기기"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP 위반"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range 헤더 지원"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "렌더기 이름"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "해상도"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "data: 및 blob: URL 숨김"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "반전"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "검색 필터 반전"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "자세히 알아보기"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "쿼리 문자열 매개변수"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "기여({PH1})가 trigger-data(으)로 기록됨"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "리퍼러 정책"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "보안 표시"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "위치 추가..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "맞춤 위치"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "위도"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "위도"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "위도는 숫자여야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "위도는 {PH1} 이상이어야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "위도는 {PH1} 이하여야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "언어"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "언어에는 영문자가 포함되어야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "위치 이름"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "위치 이름은 반드시 입력해야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "위치 이름은 {PH1}자(영문 기준) 이하여야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "경도"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "경도"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "경도는 숫자여야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "경도는 {PH1} 이상이어야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "경도는 {PH1} 이하여야 합니다."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "시간대 ID"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "시간대 ID에는 영문자가 포함되어야 함"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "마우스 휠 또는 위/아래 키로 조정합니다. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α(알파)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β(베타)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "맞춤 방향"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "기기 방향이 알파: {PH1}, 베타: {PH2}, 감마: {PH3} 값으로 설정됨"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "디스플레이 다운"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "디스플레이 위로"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "방향을 회전하도록 설정"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "오류"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "선택한 유휴 상태 에뮬레이션 강제 실행"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "클릭 대신 터치 강제 실행"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ(감마)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "가로 왼쪽 정렬"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "가로 모드 오른쪽"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "위도"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "언어"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "위치"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "위치를 찾을 수 없음"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "경도"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "관리"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "위치 목록 관리"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "재정의 안함"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "꺼짐"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "방향"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "기타…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "재정의"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "세로 모드"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "세로 역방향"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "사전 설정"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "재설정"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "기기 방향 재설정"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Shift 키를 누른 상태로 가로로 드래그하여 Y축을 중심으로 회전합니다."
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "시간대 ID"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "가속도계"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "기기 방향"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "기기 기반"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "유휴 상태 감지기 상태 에뮬레이션"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "강제 실행 사용 설정됨"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "위치정보"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "언어"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "언어"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "위치"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "유휴 상태 에뮬레이션 없음"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "센서"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "위치 표시"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "센서 표시"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "시간대"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "터치"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "사용자 활성 상태, 화면 잠김"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "사용자 활성 상태, 화면 잠금 해제됨"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "사용자 유휴 상태, 화면 잠김"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "사용자 유휴 상태, 화면 잠금 해제됨"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "파일 이름 패턴 추가"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "경고:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "맞춤 기기 추가..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "기기"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "기기 이름"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "기기 이름은 반드시 입력해야 합니다."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "기기 이름은 {PH1}자(영문 기준) 미만이어야 합니다."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "기기 픽셀 비율"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "에뮬레이션된 기기"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "높이"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "사용자 에이전트 문자열"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "사용자 에이전트 유형"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "너비"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "브랜드 추가"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "아키텍처"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "아키텍처(예: x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} 삭제"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "브랜드"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "브랜드 {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "브랜드 속성"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "버전 {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "브랜드"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "삭제"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "기기 모델"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "기기 속성"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "전체 브라우저 버전"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "전체 브라우저 버전(예: 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "모바일"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "구조화된 헤더 문자열로 표현할 수 없습니다."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "플랫폼"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "플랫폼(예: Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "플랫폼 속성"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "플랫폼 버전"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "사용자 에이전트 클라이언트 힌트"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "업데이트"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "개인정보 보호가 개선되어 더 구조화된 방식으로 브라우저와 기기를 식별하는 사용자 에이전트 클라이언트 힌트가 사용자 에이전트 문자열을 대체합니다. 버튼을 클릭하여 자세히 알아보세요."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "버전"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "기기"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "기기 표시"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "문서"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "중단점 비활성화"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS 단위 10씩 감소"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS 단위 {PH1}씩 감소"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "들여쓰기 감지"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "기호로 이동"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS 단위 10씩 증가"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS 단위 {PH1}씩 증가"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "다음 수정 위치로 이동"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "정렬 기준"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "브레이킹 체인지 문제: 향후 Chrome 버전에서 페이지가 올바르게 작동하지 않을 수 있음"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{브레이킹 체인지 #개}other{브레이킹 체인지 #개}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "개선 문제: 페이지를 개선할 수 있음"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "페이지 오류 문제: 페이지가 제대로 작동하지 않음"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{페이지 오류 #건}other{페이지 오류 #건}}"
@@ -10758,7 +10827,7 @@
     "message": "클릭하여 문제 탭에 문제 표시"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "클릭하여 문제 탭을 열고 '{title}' 문제 표시"
+    "message": "클릭하여 문제 탭을 열고 {title} 문제 표시"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "현재 문제를 표시할 수 없음"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "전체"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "입력 내용 지우기"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "예: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "쿠키가 설정된 소스 스키마(Secure, NonSecure)를 표시합니다. 스키마가 알려지지 않은 경우 Unset이 표시됩니다."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} 후"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "만료 타임스탬프는 {seconds}(으)로, {date} 후 날짜에 해당합니다."
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "값"

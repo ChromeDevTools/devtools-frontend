@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Белгісіз қате"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} күн"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} сағ"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} мин"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} мкс"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} мс"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} с"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Терезе"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Жылдам 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Алдын ала жіберілетін сұрау үшін қолжетімді мазмұн жоқ."
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Бұл сұраудың бағыты ауыстырылғандықтан, қолжетімді мазмұн жоқ."
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSocket-ке арналған мазмұн қазір қолданылмайды."
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Реттелмейді"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} жүктеуді аяқтады: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "URL мекенжайынан келген жауапта Set-Cookie тақырыбы еленбеді: {PH1}. Cookie файлының ұзындығы 4096 таңба немесе одан аз болуы керек."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Баяу 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Бұл cookie файлы бөгелді, себебі оның \"Secure\" төлсипаты болды және байланыс қауіпсіз болмады."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "URL мекенжайынан келген жауапта Set-Cookie тақырыбы еленбеді: {PH1}. Cookie файлының ұзындығы 4096 таңба немесе одан аз болуы керек."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Бұл қосылымның схемасында cookie файлдарын сақтауға рұқсат жоқ."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF форматын өшіру"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Кэшті өшіру (DevTools ашық кезде)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript өшіру"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Негізгі"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js үшін арнайы DevTools құралдарын ашыңыз."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit орындалмады: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Құрылғының пиксель арақатынасы нөмірмен көрсетілуі немесе бос болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Құрылғының пиксель арақатынасы {PH1} мәнінен көп немесе оған тең болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Құрылғының пиксель арақатынасы {PH1} мәнінен аз немесе оған тең болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Биіктік мәні сан болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Биіктік {PH1} мәнінен үлкен немесе тең болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Биіктік {PH1} шамасынан кіші немесе оған тең болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Ені сан болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Ені {PH1} мәнінен үлкен немесе тең болуы керек."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Ені {PH1} мәнінен кіші немесе оған тең болуы керек."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI экранымен жабдықталған ноутбук"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI экранымен жабдықталған ноутбук"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Сенсорлы экранды ноутбук"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Мазмұн жиналуда…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ауыр жарнама үзілістерін түзету"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Негізгі өзгеріс ақауы: бұл бет Chrome браузерінің алдағы нұсқасында істемей қалуы мүмкін."
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Жақсарту ақауы: бетті жақсартуға мүмкіндік бар."
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Бет қатесінің ақауы: бұл бет дұрыс жұмыс істеп тұрған жоқ."
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Түсті және контрасты пайдалану мүмкіндігі"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "қауіпті"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets: түсіндірмесі"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Схемалық бірдей сайт қалай жұмыс істейді"
   },
@@ -1284,7 +1350,7 @@
     "message": "Интернеттегі сенімді әрекет көмегімен PWA үшін сапа критерийлеріне жасалған өзгерістер"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Түрлі бастапқы орындар үшін Wasm модулін бөлісу қолданыстан шықты"
+    "message": "Wasm модулін бір дереккөзбен бөлісуді шектеу"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимді>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} іске қосылайын деп тұр"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Барлық тіркеуді көру"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker {PH1} бойы"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Қызмет көрсету жұмысшылары"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Арнаулы жад квотасын симуляциялау"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Инкогнито режимінде жад көлемі шектеулі"
@@ -2949,7 +3021,7 @@
     "message": "Үшінші тарап"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Ішкі домендерді сәйкестіру"
+    "message": "Ішкі доменді сәйкестендіру"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Түпнұсқа"
@@ -2964,7 +3036,7 @@
     "message": "Токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "токендер"
+    "message": "{PH1} токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Пайдалануды шектеу"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Ескерту, # рет қайталанды}other{Ескерту, # рет қайталанды}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Бұл жылжыту жолағы Chrome-ның алдағы нұсқасында болмайды. Пікір білдіргіңіз келсе, мына құралды пайдаланыңыз:"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "ақауды қадағалау құралы"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Тарих деректерінен автоматты толтыру"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# байт, {percentage}}other{# байт, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} байт ({PH2} %) JavaScript блоктарына тиесілі, олар (әлі) орындалмады."
+    "message": "{PH1} байт ({PH2}) JavaScript блоктарына тиесілі, олар (әлі) орындалмады."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} байт ({PH2}%) кемінде бір рет орындалған JavaScript блоктарына тиесілі."
+    "message": "{PH1} байт ({PH2}) кемінде бір рет орындалған JavaScript блоктарына тиесілі."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} байт ({PH2}%) әлі орындалмаған функцияларға тиесілі."
+    "message": "{PH1} байт ({PH2}) әлі орындалмаған функцияларға тиесілі."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} байт ({PH2} %) кемінде бір рет орындалған функцияларға тиесілі."
+    "message": "{PH1} байт ({PH2}) кемінде бір рет орындалған функцияларға тиесілі."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Файлдың {PH1}%-ы пайдаланылмаған, файлдың {PH2}%-ы пайдаланылған"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Барлық байттар"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath көшіру"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Қиылған элемент"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Қиып алу"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Элементті жою"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Элементті жасыру"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Элементті қою"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Қою"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Көрініске айналдыру"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Трассаланған стэкті көрсету"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Пайдаланушы агенті үшін DOM көлеңкесін көрсету"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Стэкті трассалау"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Сөз тасымалы"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Құрылғының пиксель арақатынасы нөмірмен көрсетілуі немесе бос болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Құрылғының пиксель арақатынасы {PH1} мәнінен көп немесе оған тең болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Құрылғының пиксель арақатынасы {PH1} мәнінен аз немесе оған тең болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Биіктік мәні сан болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Биіктік {PH1} мәнінен үлкен немесе тең болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Биіктік {PH1} шамасынан кіші немесе оған тең болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Ені сан болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Ені {PH1} мәнінен үлкен немесе тең болуы керек."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Ені {PH1} мәнінен кіші немесе оған тең болуы керек."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Құрылғының пиксель арақатынасын қосу"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Құрылғы түрі"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Өлшемдер"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Өзгерту…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Арнаулы құрылғыны қосу…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Құрылғы"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Құрылғы атауы"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Құрылғы атауы бос болмауы керек."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Құрылғы атауы {PH1} таңбадан аз болуы керек."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Құрылғының пиксель коэффициенті"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Эмуляцияланған құрылғылар"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Биіктігі"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Пайдаланушы агенті жолы"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Пайдаланушы агентінің түрі"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Ені"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI экранымен жабдықталған ноутбук"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI экранымен жабдықталған ноутбук"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Сенсорлы экранды ноутбук"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Орын қосу…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Арнаулы орындар"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Ендік"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Ендік"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Ендік мәні сан болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Ендік {PH1} мәнінен үлкен немесе тең болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Ендік {PH1} шамасынан кіші немесе оған тең болуы керек"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Тіл"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Тілдің атауында әріптер болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Орын атауы"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Орын атауы бос болмауы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Орын атауы {PH1} таңбадан аз болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Бойлық"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Бойлық"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Бойлық сан болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Бойлық {PH1} мәнінен үлкен немесе тең болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Бойлық {PH1} мәнінен кіші немесе оған тең болуы керек."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Уақыт белдеуінің идентификаторы"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Уақыт белдеуінің идентификаторы әріптерден тұруы керек."
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Бастапқы кодта көрсету"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Тінтуір дөңгелегімен немесе жоғары/төмен пернелермен реттеңіз. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (альфа)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (бета)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Арнаулы бағыт"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Құрылғы бағдары альфаға ({PH1}), бетаға ({PH2}), гаммаға ({PH3}) орнатылды."
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Дисплей төмен қарап тұр"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Дисплей жоғары қарап тұр"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Айналдыру үшін бағытты қосу"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Қате"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Таңдалған күту күйінің эмуляциясын іске қосады."
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Басудың орнына түртуге себеп болады."
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (гамма)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Солға қарай альбомдық форматқа ауыстыру"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Оңға қарай альбомдық форматқа ауыстыру"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Ендік"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Тіл"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Орын"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Орналасқан жері белгісіз"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Бойлық"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Басқару"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Орындардың тізімін басқару"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Қайта анықталмайды"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Өшіру"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Бағыты"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Басқа…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Қайта анықталған мәндер"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Портреттік"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Төңкерілген портреттік"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Әдепкі параметрлер"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Қайтару"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Құрылғы бағытын қалпына келтіру"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Y осімен айналдыру үшін Shift пернесін басып тұрып, көлденең тартыңыз."
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Уақыт белдеуінің идентификаторы"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Бренд қосу"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Сәулет"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Құрылым (мысалы, x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} жою"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Бренд"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Бренд: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Бренд сипаттары"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Нұсқасы: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Брендтер"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Жою"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Құрылғы үлгісі"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Құрылғы сипаттары"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Браузердің толық нұсқасы"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Браузердің толық нұсқасы (мысалы, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Мобильдік"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Құрылымдалған тақырыптар жолы ретінде көрсету мүмкін емес."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Платформа (мысалы, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Платформа сипаттары"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Платформа нұсқасы"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Пайдаланушы агентінің клиент тұспалдары"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Жаңарту"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Пайдаланушы агенті клиентінің тұспалдары пайдаланушы агентінің жолына балама, ол браузерді және құрылғыны құпиялылығы жақсырақ құрылымдалған тәсілмен анықтайды. Толық ақпарат алу үшін осы түймені басыңыз."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Нұсқа"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "акселерометр"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Толық өлшемді скриншотты түсіру"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "құрылғы"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "құрылғының бағыты"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Құрылғы негізінде"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Құрылғылар"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Idle Detector күйін эмуляциялау"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Күштеп қосылды"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "геодерек"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Құрылғы жақтауын жасыру"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Сызғыштарды жасыру"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "тіл"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "тілдер"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Орындар"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Күту режиміндегі эмуляция жоқ"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Датчиктер"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Құрылғы жақтауын көрсету"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Құрылғыларды көрсету"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Орындарды көрсету"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Мультимедиа сұрауларын көрсету"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Сызғыштарды көрсету"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Датчиктерді көрсету"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "уақыт белдеулері"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Құрылғының құралдар тақтасын ауыстыру"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Сенсорлық"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Пайдаланушы белсенді, экран құлыптаулы"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Пайдаланушы белсенді, экран құлпы ашылды"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Пайдаланушы күту күйінде, экран құлыпталды"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Пайдаланушы күту күйінде, экранның құлпы ашылған"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Іс-шара тыңдау құралын жою"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Домен"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Желі панелінде осы Set-Cookie тақырыбы қамтылған желі сұрауларын көрсету"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie файлы}other{# cookie файлы}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 өңделмеген Set-Cookie тақырыбы}other{# өңделмеген Set-Cookie тақырыбы}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Аты"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "ескерту"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Жасырылған ақаулар"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Өзгерген ресурстар"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Интернеттегі сенімді әрекет"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Барлық жасырылған ақауды көрсету"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блокталды"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm модулінің URL мекенжайы"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Осыған ұқсас ақауларды көрсету"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Осыған ұқсас ақауларды жасыру"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Ақауларды жасыру мәзірі"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP ережелерін бұзу жағдайлары"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range тақырып қолдауы"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Бейнелеу құралының атауы"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Ажыратымдылық"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Деректерді жасырады: және блоб: URL мекенжайлары"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Аудару"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Іздеу сүзгісін аудару"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Толығырақ"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Сұрау жолының параметрлері"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data арқылы жазылған төлсипат: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Реферер саясаты"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Қауіпсіздікті көрсету"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Орын қосу…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Арнаулы орындар"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Ендік"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Ендік"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Ендік мәні сан болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Ендік {PH1} мәнінен үлкен немесе тең болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Ендік {PH1} шамасынан кіші немесе оған тең болуы керек"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Тіл"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Тілдің атауында әріптер болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Орын атауы"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Орын атауы бос болмауы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Орын атауы {PH1} таңбадан аз болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Бойлық"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Бойлық"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Бойлық сан болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Бойлық {PH1} мәнінен үлкен немесе тең болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Бойлық {PH1} мәнінен кіші немесе оған тең болуы керек."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Уақыт белдеуінің идентификаторы"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Уақыт белдеуінің идентификаторы әріптерден тұруы керек."
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Тінтуір дөңгелегімен немесе жоғары/төмен пернелермен реттеңіз. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (альфа)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (бета)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Арнаулы бағыт"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Құрылғы бағдары альфаға ({PH1}), бетаға ({PH2}), гаммаға ({PH3}) орнатылды."
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Дисплей төмен қарап тұр"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Дисплей жоғары қарап тұр"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Айналдыру үшін бағытты қосу"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Қате"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Таңдалған күту күйінің эмуляциясын іске қосады."
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Басудың орнына түртуге себеп болады."
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (гамма)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Солға қарай альбомдық форматқа ауыстыру"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Оңға қарай альбомдық форматқа ауыстыру"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Ендік"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Тіл"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Орын"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Орналасқан жері белгісіз"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Бойлық"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Басқару"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Орындардың тізімін басқару"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Қайта анықталмайды"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Өшіру"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Бағыты"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Басқа…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Қайта анықталған мәндер"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Портреттік"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Төңкерілген портреттік"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Әдепкі параметрлер"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Қайтару"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Құрылғы бағытын қалпына келтіру"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Y осімен айналдыру үшін Shift пернесін басып тұрып, көлденең тартыңыз."
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Уақыт белдеуінің идентификаторы"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "акселерометр"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "құрылғының бағыты"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Құрылғы негізінде"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Idle Detector күйін эмуляциялау"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Күштеп қосылды"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "геодерек"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "тіл"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "тілдер"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Орындар"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Күту режиміндегі эмуляция жоқ"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Датчиктер"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Орындарды көрсету"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Датчиктерді көрсету"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "уақыт белдеулері"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Сенсорлық"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Пайдаланушы белсенді, экран құлыптаулы"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Пайдаланушы белсенді, экран құлпы ашылды"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Пайдаланушы күту күйінде, экран құлыпталды"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Пайдаланушы күту күйінде, экранның құлпы ашылған"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Файл атауы үлгісін қосу"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ЕСКЕРТУ:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Арнаулы құрылғыны қосу…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Құрылғы"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Құрылғы атауы"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Құрылғы атауы бос болмауы керек."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Құрылғы атауы {PH1} таңбадан аз болуы керек."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Құрылғының пиксель коэффициенті"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Эмуляцияланған құрылғылар"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Биіктігі"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Пайдаланушы агенті жолы"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Пайдаланушы агентінің түрі"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Ені"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Бренд қосу"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Сәулет"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Құрылым (мысалы, x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} жою"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Бренд"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Бренд: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Бренд сипаттары"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Нұсқасы: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Брендтер"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Жою"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Құрылғы үлгісі"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Құрылғы сипаттары"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Браузердің толық нұсқасы"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Браузердің толық нұсқасы (мысалы, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобильдік"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Құрылымдалған тақырыптар жолы ретінде көрсету мүмкін емес."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформа"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформа (мысалы, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Платформа сипаттары"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Платформа нұсқасы"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Пайдаланушы агентінің клиент тұспалдары"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Жаңарту"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Пайдаланушы агенті клиентінің тұспалдары пайдаланушы агентінің жолына балама, ол браузерді және құрылғыны құпиялылығы жақсырақ құрылымдалған тәсілмен анықтайды. Толық ақпарат алу үшін осы түймені басыңыз."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Нұсқа"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Құрылғылар"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Құрылғыларды көрсету"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Құжаттама"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Тоқтату нүктелерін өшіру"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS бірлігін 10-ға азайту"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS бірлігін {PH1} мәніне азайту"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Шегіністі анықтау"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Таңбаға өту"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS бірлігін 10-ға өсіру"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS бірлігін {PH1} мәніне арттыру"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Келесі өңдеу орнына өту"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Сұрыптау шарты"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Негізгі өзгеріс ақауы: бұл бет Chrome браузерінің алдағы нұсқасында істемей қалуы мүмкін."
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# негізгі өзгеріс}other{# негізгі өзгеріс}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Жақсарту ақауы: бетті жақсартуға мүмкіндік бар."
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Бет қатесінің ақауы: бұл бет дұрыс жұмыс істеп тұрған жоқ."
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# бет қатесі}other{# бет қатесі}}"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Барлығы"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Жазбаны өшіру"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "мысалы, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Cookie файлы орнатылған дереккөз схемасын (Secure, NonSecure) көрсетеді. Схема белгісіз болса, ол Unset көрсетеді."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} кейін"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Аяқталу мерзімі белгісі: {seconds}, ол {date} кейінгі күнге сай келеді."
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Мән"

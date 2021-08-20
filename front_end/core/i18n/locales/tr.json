@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Bilinmeyen hata"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} gün"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} sa."
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} dk."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms."
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} sn."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Pencere"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Çalışan"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Hızlı 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Ön kontrol isteği için içerik yok"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Bu istek yönlendirildiği için içerik yok"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSocket içerikleri şu anda desteklenmiyor"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Kısıtlama yok"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} yüklemeyi bitirdi: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie başlığı şu URL'den gelen yanıtta yoksayıldı: {PH1}. Çerez uzunluğu 4096 karakter veya daha az olmalıdır."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Yavaş 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Bu çerez, \"Secure\" özelliğine sahip olduğu ve bağlantı güvenli olmadığı için engellendi."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie başlığı şu URL'den gelen yanıtta yoksayıldı: {PH1}. Çerez uzunluğu 4096 karakter veya daha az olmalıdır."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Bu bağlantının şemasına çerez saklama izni verilmez."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF biçimini devre dışı bırak"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Önbelleği devre dışı bırak (Geliştirici Araçları açıkken)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript'i devre dışı bırak"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Asıl"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js için özel Geliştirici Araçları'nı aç"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Önemli Web Verileri"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit başarısız oldu: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Cihaz piksel oranı bir sayı olmalı veya boş bırakılmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Cihaz piksel oranı {PH1} veya daha yüksek bir değer olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Cihaz piksel oranı {PH1} veya daha düşük bir değer olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Yükseklik değeri bir sayı olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Yükseklik {PH1} veya daha büyük olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Yükseklik {PH1} veya daha küçük olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Genişlik değeri bir sayı olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Değer {PH1} veya daha büyük olmalıdır."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Genişlik {PH1} veya daha küçük olmalıdır."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI ekranlı dizüstü bilgisayar"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI ekranlı dizüstü bilgisayar"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Dokunmatik giriş özellikli dizüstü bilgisayar"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "İçerik toplanıyor…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ağır Reklamların Araya Girmesi Sorununu Çözme"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Uyumsuzluğa yol açan değişiklik sorunu: Sayfa, Chrome'un gelecek sürümlerinden birinde çalışmayı durdurabilir"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "İyileştirme sorunu: Sayfayı iyileştirme imkanı mevcut"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Sayfa hatası sorunu: Sayfa düzgün çalışmıyor"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Renk ve kontrast erişilebilirliği"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "güvenli olmayan"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets açıklaması"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site Çalışma Şekli"
   },
@@ -1284,7 +1350,7 @@
     "message": "Güvenilir Web Etkinliği kullanan PWA'lar (Progresif Web Uygulaması) için kalite kriterlerinde değişiklikler"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm kaynaklar arası modül paylaşımının kullanımdan kaldırılması"
+    "message": "Wasm modülü paylaşımını aynı kaynakla kısıtlama"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonim>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "{PH1} numaralı hizmet çalışanı etkinleşmeyi bekliyor"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Tüm kayıtlara göz atın"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} süreyle Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Hizmet Çalışanları"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Özel depolama alanı kotasını simüle et"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Gizli modda depolama kotası sınırlıdır"
@@ -2949,7 +3021,7 @@
     "message": "Üçüncü Taraf"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Alt Alanları Eşleştir"
+    "message": "Alt Alan Adı Eşleştirme"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Kaynak"
@@ -2964,7 +3036,7 @@
     "message": "Jeton"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "jeton"
+    "message": "{PH1} jeton"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Kullanım Kısıtlaması"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Uyarı, # kez Tekrar Etti}other{Uyarı, # kez Tekrar Etti}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Bu kenar çubuğu, yeni Chrome sürümlerinden birinde kaldırılacaktır. Geri bildirimde bulunmak isterseniz lütfen bize şuradan bildirin:"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "issue tracker"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Otomatik tamamlamada geçmiş kullanılsın"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bayt, {percentage}}other{# bayt, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bayt (%{PH2}) (henüz) çalıştırılmamış JavaScript bloklarına ait."
+    "message": "{PH1} bayt ({PH2}) (henüz) çalıştırılmamış JavaScript bloklarına ait."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bayt (%{PH2}) en az bir kere çalıştırılmış JavaScript bloklarına ait."
+    "message": "{PH1} bayt ({PH2}) en az bir kere çalıştırılmış JavaScript bloklarına ait."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bayt (%{PH2}) (henüz) çalıştırılmamış işlevlere ait."
+    "message": "{PH1} bayt ({PH2}) (henüz) çalıştırılmamış işlevlere ait."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bayt (%{PH2}) en az bir kere çalıştırılmış işlevlere ait."
+    "message": "{PH1} bayt ({PH2}) en az bir kere çalıştırılmış işlevlere ait."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Dosyanın kullanılmayan kısmı %{PH1}, dosyanın kullanılan kısmı %{PH2}"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "%{PH1}"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Toplam Bayt"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath'i kopyala"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Nesneyi kes"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Kes"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Öğeyi sil"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Öğeyi gizle"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Öğeyi yapıştır"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Yapıştır"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Görünüme kaydır"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Yığın İzleme'yi (Stack Trace) göster"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Kullanıcı aracısı gölge DOM gösterimi"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Yığın İzleme"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Kelime kaydırma"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Cihaz piksel oranı bir sayı olmalı veya boş bırakılmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Cihaz piksel oranı {PH1} veya daha yüksek bir değer olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Cihaz piksel oranı {PH1} veya daha düşük bir değer olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Yükseklik değeri bir sayı olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Yükseklik {PH1} veya daha büyük olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Yükseklik {PH1} veya daha küçük olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Genişlik değeri bir sayı olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Değer {PH1} veya daha büyük olmalıdır."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Genişlik {PH1} veya daha küçük olmalıdır."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Cihaz piksel oranı ekle"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Cihaz türü"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Boyutlar"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Düzenle…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tablet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Özel cihaz ekle..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Cihaz"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Cihaz Adı"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Cihaz adı boş bırakılamaz."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Cihaz adı {PH1} karakterden kısa olmalıdır."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Cihaz piksel oranı"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emüle Edilen Cihazlar"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Yükseklik"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Kullanıcı aracısı dizesi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Kullanıcı aracısı türü"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Genişlik"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI ekranlı dizüstü bilgisayar"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI ekranlı dizüstü bilgisayar"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Dokunmatik giriş özellikli dizüstü bilgisayar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Konum ekle..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Özel konumlar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Enlem"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Enlem"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Enlem değeri bir sayı olmalıdır"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Enlem {PH1} veya daha büyük olmalıdır."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Enlem {PH1} veya daha küçük olmalıdır."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Yerel ayar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Yerel ayar alfabetik karakter içermelidir"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Konum adı"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Konum adı boş kalamaz"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Konum adı {PH1} karakterden kısa olmalıdır"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Uzun"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Boylam"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Boylam değeri bir sayı olmalıdır"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Boylam {PH1} veya daha büyük olmalıdır."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Boylam {PH1} veya daha küçük olmalıdır."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Saat dilimi kimliği"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Saat dilimi kimliği alfabetik karakterler içermelidir"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Kaynak kodunda göster"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Fare tekerleği veya yukarı/aşağı tuşlarıyla ayarlayın. {PH1}: ±10, Ön Karakter: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Özel yön"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Cihaz yönü alfa {PH1}, beta: {PH2}, gama: {PH3} olarak ayarlandı"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Ekran aşağı bakıyor"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Ekran yukarı bakıyor"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Yönün dönmesini etkinleştir"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Hata"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Seçili boşta kalma durumu emülasyonunu zorunlu kılar"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Tıklama yerine dokunmayı zorunlu kılar"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gama)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Sola yatay"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Sağ doğru yatay"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Enlem"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Yerel ayar"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Yer"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Konum bilgisi mevcut değil"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Boylam"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Yönet"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Konumların listesini yönet"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Geçersiz kılma yok"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Kapalı"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Sayfa yönü"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Diğer…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Geçersiz kılma işlemleri"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Dikey"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Baş aşağı dikey"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Hazır Ayarlar"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Sıfırla"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Cihaz yönünü sıfırla"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Y ekseninde döndürmek için Üst karakter tuşuna basıp yatay olarak sürükleyin"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Saat dilimi kimliği"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Marka Ekle"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Mimari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Mimari (ör. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} sil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Marka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Marka {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Marka özellikleri"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Sürüm {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Markalar"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Sil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Cihaz modeli"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Cihaz özellikleri"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Tam tarayıcı sürümü"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Tam tarayıcı sürümü (ör. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Cep telefonu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Yapılandırılmış başlık dizesi olarak temsil edilemez."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platform"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platform (ör. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Platform özellikleri"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Platform sürümü"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Kullanıcı Aracısı istemci ipuçları"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Güncelle"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Kullanıcı aracısı dizesine bir alternatif olan kullanıcı aracısı istemci ipuçları, tarayıcıları ve cihazları daha iyi gizlilikle daha düzenli bir biçimde tanımlar. Daha fazla bilgi edinmek için düğmeyi tıklayın."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Sürüm"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "ivme ölçer"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Tam boy ekran görüntüsü al"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "cihaz"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "cihazın yönü"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Cihaza göre"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Cihazlar"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Boşta Algılayıcı durumu emülasyonu"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Zorunlu tutma etkin"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "coğrafi konum"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Cihaz çerçevesini gizle"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Cetvelleri gizle"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "yerel ayar"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "yerel ayarlar"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Konumlar"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Boşta emülasyonu yok"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensörler"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Cihaz çerçevesini göster"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Cihazları Göster"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Konumları Göster"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Medya sorgularını göster"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Cetvelleri göster"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Sensörleri göster"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "saat dilimleri"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Cihaz araç çubuğunu aç/kapat"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Dokunma"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Kullanıcı aktif, ekran kilitli"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Kullanıcı aktif, ekran kildi açık"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Kullanıcı aktif değil, ekran kilitli"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Kullanıcı aktif değil, ekran kilidi açık"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Etkinlik işleyiciyi sil"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Alan adı"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Ağ panelinde bu Set-Cookie üstbilgisini içeren ağ isteklerini göster"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# çerez}other{# çerez}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Ham Set-Cookie üstbilgi}other{# Ham Set-Cookie üstbilgi}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Ad"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "uyarı"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Gizlenmiş konular"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Etkilenen Kaynaklar"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Güvenilir Web Etkinliği"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Tüm gizlenmiş sorunları göster"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "engellendi"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm Modülü URL'si"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Buna benzer sorunları göster"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Buna benzer sorunları gizle"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Sorunlar menüsünü gizle"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "İGP İhlalleri"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range üst bilgi desteği"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Oluşturucu adı"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Çözünürlük"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "data: ve blog: URL'lerini gizler"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Tersine Çevir"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Arama filtresini tersine çevirir"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Daha fazla bilgi"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Sorgu Dizesi Parametreleri"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data ile kaydedilen ilişkilendirme: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Yönlendirme Politikası"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Güvenlik Panelini Göster"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Konum ekle..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Özel konumlar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Enlem"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Enlem"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Enlem değeri bir sayı olmalıdır"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Enlem {PH1} veya daha büyük olmalıdır."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Enlem {PH1} veya daha küçük olmalıdır."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Yerel ayar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Yerel ayar alfabetik karakter içermelidir"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Konum adı"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Konum adı boş kalamaz"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Konum adı {PH1} karakterden kısa olmalıdır"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Uzun"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Boylam"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Boylam değeri bir sayı olmalıdır"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Boylam {PH1} veya daha büyük olmalıdır."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Boylam {PH1} veya daha küçük olmalıdır."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Saat dilimi kimliği"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Saat dilimi kimliği alfabetik karakterler içermelidir"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Fare tekerleği veya yukarı/aşağı tuşlarıyla ayarlayın. {PH1}: ±10, Ön Karakter: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Özel yön"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Cihaz yönü alfa {PH1}, beta: {PH2}, gama: {PH3} olarak ayarlandı"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Ekran aşağı bakıyor"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Ekran yukarı bakıyor"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Yönün dönmesini etkinleştir"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Hata"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Seçili boşta kalma durumu emülasyonunu zorunlu kılar"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Tıklama yerine dokunmayı zorunlu kılar"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gama)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Sola yatay"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Sağ doğru yatay"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Enlem"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Yerel ayar"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Yer"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Konum bilgisi mevcut değil"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Boylam"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Yönet"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Konumların listesini yönet"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Geçersiz kılma yok"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Kapalı"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Sayfa yönü"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Diğer…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Geçersiz kılma işlemleri"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Dikey"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Baş aşağı dikey"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Hazır Ayarlar"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Sıfırla"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Cihaz yönünü sıfırla"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Y ekseninde döndürmek için Üst karakter tuşuna basıp yatay olarak sürükleyin"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Saat dilimi kimliği"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "ivme ölçer"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "cihazın yönü"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Cihaza göre"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Boşta Algılayıcı durumu emülasyonu"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Zorunlu tutma etkin"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "coğrafi konum"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "yerel ayar"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "yerel ayarlar"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Konumlar"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Boşta emülasyonu yok"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensörler"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Konumları Göster"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Sensörleri göster"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "saat dilimleri"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Dokunma"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Kullanıcı aktif, ekran kilitli"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Kullanıcı aktif, ekran kildi açık"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Kullanıcı aktif değil, ekran kilitli"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Kullanıcı aktif değil, ekran kilidi açık"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Dosya adı kalıbı ekle"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "UYARI:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Özel cihaz ekle..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Cihaz"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Cihaz Adı"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Cihaz adı boş bırakılamaz."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Cihaz adı {PH1} karakterden kısa olmalıdır."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Cihaz piksel oranı"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emüle Edilen Cihazlar"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Yükseklik"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Kullanıcı aracısı dizesi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Kullanıcı aracısı türü"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Genişlik"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Marka Ekle"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Mimari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Mimari (ör. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} sil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Marka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Marka {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Marka özellikleri"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Sürüm {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Markalar"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Sil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Cihaz modeli"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Cihaz özellikleri"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Tam tarayıcı sürümü"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Tam tarayıcı sürümü (ör. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Cep telefonu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Yapılandırılmış başlık dizesi olarak temsil edilemez."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platform"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platform (ör. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Platform özellikleri"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Platform sürümü"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Kullanıcı Aracısı istemci ipuçları"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Güncelle"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Kullanıcı aracısı dizesine bir alternatif olan kullanıcı aracısı istemci ipuçları, tarayıcıları ve cihazları daha iyi gizlilikle daha düzenli bir biçimde tanımlar. Daha fazla bilgi edinmek için düğmeyi tıklayın."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Sürüm"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Cihazlar"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Cihazları Göster"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokümanlar"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Kesme noktalarını devre dışı bırak"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS birimini 10 birim azalt"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS birimini {PH1} azalt"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Girintiyi algıla"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Simgeye git"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS birimini 10 birim artır"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS birimini {PH1} artır"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Sıradaki düzenleme konumuna atla"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sıralama Ölçütü"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Uyumsuzluğa yol açan değişiklik sorunu: Sayfa, Chrome'un gelecek sürümlerinden birinde çalışmayı durdurabilir"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# zarar veren değişiklik}other{# zarar veren değişiklik}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "İyileştirme sorunu: Sayfayı iyileştirme imkanı mevcut"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Sayfa hatası sorunu: Sayfa düzgün çalışmıyor"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# sayfa hatası}other{# sayfa hatası}}"
@@ -10758,7 +10827,7 @@
     "message": "Sorunu, sorunlar sekmesinde göstermek için tıklayın"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Sorun sekmesini açıp \"{title}\" sorununu göstermek için tıklayın"
+    "message": "Sorun sekmesini açıp sorunu göstermek için tıklayın: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Sorun şu anda kullanılamıyor"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Tümü"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Girişi temizle"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ör. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Çerezin kurulu olduğu kaynak şemasını (Secure, NonSecure) gösterir. Şema bilinmiyorsa burada Unset görünür."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} tarihinden sonra"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Sona erme zaman damgası {seconds} ve bu da {date} sonrası bir tarihe denk geliyor"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Değer"

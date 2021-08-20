@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "ऐसी गड़बड़ी जिसकी जानकारी नहीं है"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} दिन"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} घंटे"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} मिनट"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} मि॰से॰"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} से॰"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "विंडो"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "वर्कर"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "तेज़ 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "प्रीफ़्लाइट अनुरोध के लिए कॉन्टेंट उपलब्ध नहीं है"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "कॉन्टेंट उपलब्ध नहीं है, क्योंकि यह अनुरोध रीडायरेक्ट किया गया है"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "फ़िलहाल, WebSockets पर कॉन्टेंट काम नहीं करता"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "कोई थ्रॉटलिंग नहीं"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} लोडिंग खत्म की जा रही है: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "यूआरएल से मिले जवाब में सेट-कुकी के हेडर को अनदेखा कर दिया गया: {PH1}. कुकी 4096 या इससे कम वर्णों की ही होनी चाहिए."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "स्लो 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "यह कुकी ब्लॉक कर दी गई थी, क्योंकि इसमें \"Secure\" एट्रिब्यूट था और कनेक्शन सुरक्षित नहीं था."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "यूआरएल से मिले जवाब में सेट-कुकी के हेडर को अनदेखा कर दिया गया: {PH1}. कुकी 4096 या इससे कम वर्णों की ही होनी चाहिए."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "इस कनेक्शन की योजना को कुकी सेव करने की अनुमति नहीं है."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF फ़ॉर्मैट बंद करें"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "कैश मेमोरी में सेव करने की सुविधा बंद करें (जब DevTools खुला हो)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript बंद करें"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "मुख्य"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "खास तौर पर Node.js के लिए बना DevTools खोलें"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "वेबसाइट कैसा प्रदर्शन कर रही है इसके बारे में जानकारी"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit नहीं हो पाया: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "डिवाइस पिक्सल का अनुपात कोई संख्या होनी चाहिए या खाली होना चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "डिवाइस पिक्सल का अनुपात {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "डिवाइस पिक्सल का अनुपात {PH1} से कम या इसके बराबर ही होना चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "ऊंचाई की वैल्यू संख्या में होनी चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "ऊंचाई {PH1} से ज़्यादा या इसके बराबर ही होनी चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "ऊंचाई {PH1} से कम या इसके बराबर ही होनी चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "चौड़ाई की वैल्यू एक संख्या होनी चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "चौड़ाई {PH1} से ज़्यादा या इसके बराबर ही होनी चाहिए."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "चौड़ाई {PH1} से कम या इसके बराबर ही होना चाहिए."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI स्क्रीन वाला लैपटॉप"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI स्क्रीन वाला लैपटॉप"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "टच की सुविधा वाला लैपटॉप"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "कॉन्टेंट इकट्ठा किया जा रहा है…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "विज्ञापनों की बहुत ज़्यादा अनुमतियां हैंडल करना"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "नुकसान पहुंचा सकने वाले किसी बदलाव की समस्या: Chrome के आगे आने वाले किसी वर्शन में पेज काम करना बंद कर सकता है"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "बेहतर बनाने से जुड़ी समस्या: पेज को बेहतर बनाने का अवसर है"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "पेज में गड़बड़ी की समस्या: पेज ठीक से काम नहीं कर रहा है"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "कलर और कंट्रास्ट सुलभता"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "असुरक्षित"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets के बारे में बताया गया है"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "स्कीमफ़ुल सेम-साइट के काम करने का तरीका"
   },
@@ -1284,7 +1350,7 @@
     "message": "भरोसेमंद वेब गतिविधि का इस्तेमाल करके PWA के लिए क्वालिटी से जुड़ी शर्तों में बदलाव"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm के क्रॉस-ऑरिजिन मॉड्यूल को शेयर नहीं किया जा सकता"
+    "message": "एक ही ऑरिजिन वाले Wasm मॉड्यूल को प्रतिबंधित करें"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<पहचान छिपाई गई>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} को चालू किए जाने का इंतज़ार किया जा रहा है"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "सारे रजिस्ट्रेशन देखें"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} के लिए Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "सर्विस वर्कर"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "कस्टम स्टोरेज कोटा को सिम्युलेट करें"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "गुप्त मोड में स्टोरेज सीमित होता है"
@@ -2949,7 +3021,7 @@
     "message": "तीसरा पक्ष"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "सब-डोमेन मिलाएं"
+    "message": "मिलता-जुलता सबडोमेन"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ऑरिजिन"
@@ -2964,7 +3036,7 @@
     "message": "टोकन"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "टोकन"
+    "message": "{PH1} टोकन"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "इस्तेमाल पर पाबंदी"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{चेतावनी, # बार दोहराई गई}one{चेतावनी, # बार दोहराई गई}other{चेतावनी, # बार दोहराई गई}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Chrome के आने वाले वर्शन से यह साइडबार हटा दिया जाएगा. अगर आपकी कोई राय, शिकायत है या आप कोई सुझाव देना चाहते हैं, तो कृपया हमें बताएं"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "समस्या को ट्रैक करने वाला टूल"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "इतिहास से अपने-आप भरें"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# बाइट, {percentage}}one{# बाइट, {percentage}}other{# बाइट, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} बाइट ({PH2} %) JavaScript के उन ब्लॉक के हैं जिन्हें (अभी तक) एक्ज़ीक्यूट नहीं किया गया है."
+    "message": "{PH1} बाइट ({PH2}), JavaScript के उन ब्लॉक के हैं जिन्हें (अभी तक) एक्ज़ीक्यूट नहीं किया गया है."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} बाइट ({PH2} %) का संबंध JavaScript के उन ब्लॉक से है जिन्हें कम से कम एक बार एक्ज़ीक्यूट किया गया है."
+    "message": "{PH1} बाइट ({PH2}) का संबंध JavaScript के उन ब्लॉक से है जिन्हें कम से कम एक बार एक्ज़ीक्यूट किया गया है."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} बाइट ({PH2} %) का संबंध उन फ़ंक्शन से है जिन्हें (अभी तक) एक्ज़ीक्यूट नहीं किया गया है."
+    "message": "{PH1} बाइट ({PH2}) का संबंध उन फ़ंक्शन से है जिन्हें (अभी तक) एक्ज़ीक्यूट नहीं किया गया है."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} बाइट ({PH2} %) का संबंध उन फ़ंक्शन से है जिन्हें कम से कम एक बार एक्ज़ीक्यूट किया गया है."
+    "message": "{PH1} बाइट ({PH2}) का संबंध उन फ़ंक्शन से है जिन्हें कम से कम एक बार एक्ज़ीक्यूट किया गया है."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} प्रतिशत फ़ाइल इस्तेमाल नहीं की गई, {PH2} फ़ाइल इस्तेमाल की गई"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "कुल बाइट"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath कॉपी करें"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "एलिमेंट काटें"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "एलिमेंट को कट करें"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "एलिमेंट मिटाएं"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "एलिमेंट छिपाएं"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "एलिमेंट चिपकाएं"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "चिपकाएं"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "देखने के लिए स्क्रोल करें"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "स्टैक ट्रेस दिखाएं"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "उपयोगकर्ता एजेंट के लिए शैडो DOM दिखाएं"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "स्टैक ट्रेस"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "वर्ड रैप"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "डिवाइस पिक्सल का अनुपात कोई संख्या होनी चाहिए या खाली होना चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "डिवाइस पिक्सल का अनुपात {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "डिवाइस पिक्सल का अनुपात {PH1} से कम या इसके बराबर ही होना चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "ऊंचाई की वैल्यू संख्या में होनी चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "ऊंचाई {PH1} से ज़्यादा या इसके बराबर ही होनी चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "ऊंचाई {PH1} से कम या इसके बराबर ही होनी चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "चौड़ाई की वैल्यू एक संख्या होनी चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "चौड़ाई {PH1} से ज़्यादा या इसके बराबर ही होनी चाहिए."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "चौड़ाई {PH1} से कम या इसके बराबर ही होना चाहिए."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "डिवाइस पिक्सल का अनुपात जोड़ें"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "डिवाइस किस तरह का है"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "डाइमेंशन"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "बदलाव करें…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "टैबलेट"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "अपनी पसंद का डिवाइस जोड़ें..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "डिवाइस"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "डिवाइस का नाम"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "डिवाइस का नाम डालना ज़रूरी है."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "डिवाइस का नाम {PH1} से कम वर्ण का ही होना चाहिए."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "डिवाइस पिक्सल का अनुपात"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "एम्युलेट किए गए डिवाइस"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "लंबाई"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "उपयोगकर्ता एजेंट स्ट्रिंग"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "उपयोगकर्ता एजेंट किस तरह का है"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "चौड़ाई"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI स्क्रीन वाला लैपटॉप"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI स्क्रीन वाला लैपटॉप"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "टच की सुविधा वाला लैपटॉप"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "लोकेशन जोड़ें..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "कस्टम लोकेशन"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "देशांतर"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "अक्षांश"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "अक्षांश एक संंख्या होना चाहिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "अक्षांश {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "अक्षांश {PH1} से कम या इसके बराबर ही होना चाहिए."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "स्थान-भाषा"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "स्थान-भाषा में अंग्रेज़ी के वर्ण होने ज़रूरी है"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "जगह का नाम"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "जगह का नाम डालना ज़रूरी है"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "जगह का नाम {PH1} से कम वर्ण का ही होना चाहिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "ज़्यादा समय के लिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "देशांतर"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "देशांतर एक संख्या ही होना चाहिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "देशांतर {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "देशांतर {PH1} से कम या इसके बराबर ही होना चाहिए"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "समय-क्षेत्र आईडी"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "टाइमज़ोन आईडी में अंग्रेज़ी के वर्ण होना ज़रूरी है"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "सोर्स कोड में दिखाएं"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "माउसव्हील या अप/डाउन बटन से बदलाव करना. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (अल्फ़ा)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (बीटा)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "अपनी पसंद के हिसाब से स्क्रीन की दिशा"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "डिवाइस ओरिएंटेशन को इन पर सेट किया गया, अल्फ़ा: {PH1}, बीटा: {PH2}, गामा: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "नीचे दिखाएं"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ऊपर दिखाएं"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "ओरिएंटेशन घुमाने के लिए रोटेट करें"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "गड़बड़ी"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "चुनी गई 'कुछ समय से इस्तेमाल नहीं हो रही स्थिति' को एम्युलेट करने के लिए बाध्य किया जाता है"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "क्लिक करने के बजाय छूने को बाध्य करता है"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (गामा)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "बाकी लैंडस्केप"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "लैंडस्केप राइट"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "अक्षांश"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "स्थान-भाषा"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "लोकेशन"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "जगह उपलब्ध नहीं है"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "देशांतर"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "मैनेज करें"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "अलग-अलग जगहों की सूची मैनेज करें"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "कोई बदलाव नहीं"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "बंद है"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "ओरिएंटेशन"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "अन्य…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "बदले जाते हैं"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "पोर्ट्रेट"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "पोर्ट्रेट को घुमाकर उलटा कर दें"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "प्रीसेट"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "रीसेट करें"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "डिवाइस ओरिएंटेशन रीसेट करें"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y-अक्ष के आस-पास घुमाने के लिए, Shift दबाकर दाएं-बाएं खींचें"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "समय-क्षेत्र आईडी"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "ब्रैंड जोड़ें"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "आर्किटेक्चर"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "आर्किटेक्चर (e.g. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} को मिटाएं"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "ब्रैंड"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "{PH1} ब्रैंड"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ब्रैंड प्रॉपर्टी"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "वर्शन {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ब्रैंड"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "मिटाएं"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "डिवाइस का मॉडल"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "डिवाइस की प्रॉपर्टी"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ब्राउज़र का पूरा वर्शन"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "फ़ुल ब्राउज़र वर्शन (उदाहरण के लिए, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "मोबाइल"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "इसे स्ट्रक्चर्ड हेडर स्ट्रिंग के तौर पर पेश नहीं किया जा सकता."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "प्लैटफ़ॉर्म"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "प्लैटफ़ॉर्म (उदाहरण के लिए, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "प्लैटफ़ॉर्म प्रॉपर्टी"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "प्लैटफ़ॉर्म वर्शन"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "उपयोगकर्ता एजेंट क्लाइंट के संकेत"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "अपडेट करें"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "उपयोगकर्ता एजेंट क्लाइंट के दिए संकेत उन उपयोगकर्ता एजेंट स्ट्रिंग के विकल्प होते हैं जो ब्राउज़र और डिवाइस की पहचान, ज़्यादा व्यवस्थित तरीके से बेहतर निजता के साथ करते हैं. ज़्यादा जानने के लिए बटन पर क्लिक करें."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "वर्शन"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "एक्सलरोमीटर"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "फ़ुल साइज़ का स्क्रीनशॉट लें"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "डिवाइस"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "डिवाइस ओरिएंटेशन"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "डिवाइस के हिसाब से"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "डिवाइस"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "कुछ समय से इस्तेमाल में नहीं है की स्थिति का पता लगाने वाले टूल की स्थिति को एम्युलेट करें"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "चालू करने के लिए बाध्य किया गया"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "भौगोलिक स्थान (लोकेशन)"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "डिवाइस का फ़्रेम छिपाएं"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "पैमाने छिपाएं"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "स्थान-भाषा"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "स्थान-भाषाएं"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "लोकेशन"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "ऐसा कोई एम्युलेशन नहीं है जो कुछ समय से इस्तेमाल में नहीं है"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "सेंसर"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "डिवाइस का फ़्रेम दिखाएं"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "डिवाइस दिखाएं"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "अलग-अलग जगह की जानकारी दिखाएं"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "मीडिया क्वेरी दिखाएं"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "पैमाना दिखाएं"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "सेंसर दिखाएं"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "समय क्षेत्र"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "डिवाइस टूलबार टॉगल करें"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "छुएं"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "उपयोगकर्ता सक्रिय है, स्क्रीन लॉक की गई"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "उपयोगकर्ता सक्रिय है, स्क्रीन अनलॉक की गई"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "उपयोगकर्ता कुछ समय से इस्तेमाल नहीं कर रहा है, स्क्रीन लॉक कर दी गई"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "उपयोगकर्ता कुछ समय से इस्तेमाल नहीं कर रहा है, स्क्रीन अनलॉक की गई"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "इवेंट लिसनर मिटाएं"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "डोमेन"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "नेटवर्क पैनल में नेटवर्क से जुड़े उन अनुरोधों को दिखाएं जिनमें यह Set-Cookie हेडर शामिल है"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# कुकी}one{# कुकी}other{# कुकी}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 Set-Cookie रॉ हेडर}one{# Set-Cookie रॉ हेडर}other{# Set-Cookie रॉ हेडर}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "नाम"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "चेतावनी"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "छिपी हुई समस्याएं"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "वे संसाधन जिन पर असर हुआ है"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "भरोसेमंद वेब गतिविधि"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "सभी छिपी हुई समस्याएं दिखाएं"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ब्लॉक किया गया"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm मॉड्यूल का यूआरएल"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "ऐसी समस्याएं दिखाएं"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "ऐसी समस्याएं छिपाएं"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "समस्याएं दिखाने वाला मेन्यू छिपाएं"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "सीएसपी के उल्लंघन"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range शीर्षक की मदद"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "रेंडर करने वाले का नाम"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "रिज़ॉल्यूशन"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "डेटा: और ब्लॉब: यूआरएल छिपाता है"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "इनवर्ट"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "खोज फ़िल्टर को इनवर्ट करता है"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "ज़्यादा जानें"
   },
@@ -6564,7 +6315,7 @@
     "message": "कैश मेमोरी की सुविधा बंद करें"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "कैश मेमोरी को बंद करें (जब DevTools खुले हों)"
+    "message": "कैश मेमोरी में सेव करने की सुविधा बंद करें (जब DevTools खुला हो)"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "पेज फिर से लोड होने पर या नेविगेशन के दौरान लॉग को न मिटाएं"
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "क्वेरी स्ट्रिंग पैरामीटर"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data के साथ रिकॉर्ड किया गया एट्रिब्यूशन: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "रेफ़रल देने वाले से जुड़ी नीति"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "सुरक्षा पैनल दिखाएं"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "लोकेशन जोड़ें..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "कस्टम लोकेशन"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "देशांतर"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "अक्षांश"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "अक्षांश एक संंख्या होना चाहिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "अक्षांश {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "अक्षांश {PH1} से कम या इसके बराबर ही होना चाहिए."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "स्थान-भाषा"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "स्थान-भाषा में अंग्रेज़ी के वर्ण होने ज़रूरी है"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "जगह का नाम"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "जगह का नाम डालना ज़रूरी है"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "जगह का नाम {PH1} से कम वर्ण का ही होना चाहिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "ज़्यादा समय के लिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "देशांतर"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "देशांतर एक संख्या ही होना चाहिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "देशांतर {PH1} से ज़्यादा या इसके बराबर ही होना चाहिए."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "देशांतर {PH1} से कम या इसके बराबर ही होना चाहिए"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "समय-क्षेत्र आईडी"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "टाइमज़ोन आईडी में अंग्रेज़ी के वर्ण होना ज़रूरी है"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "माउसव्हील या अप/डाउन बटन से बदलाव करना. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (अल्फ़ा)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (बीटा)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "अपनी पसंद के हिसाब से स्क्रीन की दिशा"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "डिवाइस ओरिएंटेशन को इन पर सेट किया गया, अल्फ़ा: {PH1}, बीटा: {PH2}, गामा: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "नीचे दिखाएं"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ऊपर दिखाएं"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "ओरिएंटेशन घुमाने के लिए रोटेट करें"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "गड़बड़ी"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "चुनी गई 'कुछ समय से इस्तेमाल नहीं हो रही स्थिति' को एम्युलेट करने के लिए बाध्य किया जाता है"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "क्लिक करने के बजाय छूने को बाध्य करता है"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (गामा)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "बाकी लैंडस्केप"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "लैंडस्केप राइट"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "अक्षांश"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "स्थान-भाषा"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "लोकेशन"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "जगह उपलब्ध नहीं है"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "देशांतर"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "मैनेज करें"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "अलग-अलग जगहों की सूची मैनेज करें"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "कोई बदलाव नहीं"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "बंद है"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "ओरिएंटेशन"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "अन्य…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "बदले जाते हैं"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "पोर्ट्रेट"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "पोर्ट्रेट को घुमाकर उलटा कर दें"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "प्रीसेट"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "रीसेट करें"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "डिवाइस ओरिएंटेशन रीसेट करें"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y-अक्ष के आस-पास घुमाने के लिए, Shift दबाकर दाएं-बाएं खींचें"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "समय-क्षेत्र आईडी"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "एक्सलरोमीटर"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "डिवाइस ओरिएंटेशन"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "डिवाइस के हिसाब से"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "कुछ समय से इस्तेमाल में नहीं है की स्थिति का पता लगाने वाले टूल की स्थिति को एम्युलेट करें"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "चालू करने के लिए बाध्य किया गया"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "भौगोलिक स्थान (लोकेशन)"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "स्थान-भाषा"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "स्थान-भाषाएं"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "लोकेशन"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "ऐसा कोई एम्युलेशन नहीं है जो कुछ समय से इस्तेमाल में नहीं है"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "सेंसर"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "अलग-अलग जगह की जानकारी दिखाएं"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "सेंसर दिखाएं"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "समय क्षेत्र"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "छुएं"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "उपयोगकर्ता सक्रिय है, स्क्रीन लॉक की गई"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "उपयोगकर्ता सक्रिय है, स्क्रीन अनलॉक की गई"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "उपयोगकर्ता कुछ समय से इस्तेमाल नहीं कर रहा है, स्क्रीन लॉक कर दी गई"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "उपयोगकर्ता कुछ समय से इस्तेमाल नहीं कर रहा है, स्क्रीन अनलॉक की गई"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "फ़ाइल नाम का पैटर्न जोड़ें"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "चेतावनी:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "अपनी पसंद का डिवाइस जोड़ें..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "डिवाइस"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "डिवाइस का नाम"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "डिवाइस का नाम डालना ज़रूरी है."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "डिवाइस का नाम {PH1} से कम वर्ण का ही होना चाहिए."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "डिवाइस पिक्सल का अनुपात"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "एम्युलेट किए गए डिवाइस"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "लंबाई"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "उपयोगकर्ता एजेंट स्ट्रिंग"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "उपयोगकर्ता एजेंट किस तरह का है"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "चौड़ाई"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ब्रैंड जोड़ें"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "आर्किटेक्चर"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "आर्किटेक्चर (e.g. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} को मिटाएं"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ब्रैंड"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "{PH1} ब्रैंड"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "ब्रैंड प्रॉपर्टी"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "वर्शन {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ब्रैंड"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "मिटाएं"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "डिवाइस का मॉडल"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "डिवाइस की प्रॉपर्टी"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "ब्राउज़र का पूरा वर्शन"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "फ़ुल ब्राउज़र वर्शन (उदाहरण के लिए, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "मोबाइल"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "इसे स्ट्रक्चर्ड हेडर स्ट्रिंग के तौर पर पेश नहीं किया जा सकता."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "प्लैटफ़ॉर्म"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "प्लैटफ़ॉर्म (उदाहरण के लिए, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "प्लैटफ़ॉर्म प्रॉपर्टी"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "प्लैटफ़ॉर्म वर्शन"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "उपयोगकर्ता एजेंट क्लाइंट के संकेत"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "अपडेट करें"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "उपयोगकर्ता एजेंट क्लाइंट के दिए संकेत उन उपयोगकर्ता एजेंट स्ट्रिंग के विकल्प होते हैं जो ब्राउज़र और डिवाइस की पहचान, ज़्यादा व्यवस्थित तरीके से बेहतर निजता के साथ करते हैं. ज़्यादा जानने के लिए बटन पर क्लिक करें."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "वर्शन"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "डिवाइस"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "डिवाइस दिखाएं"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "दस्तावेज़"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "ब्रेकपॉइंट बंद करें"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "सीएसएस यूनिट में 10 कम करें"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "सीएसएस यूनिट में {PH1} कम करें"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "इंडेंटेशन का पता लगाएं"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "सिंबल पर जाएं"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "सीएसएस यूनिट में 10 बढ़ाना"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "सीएसएस यूनिट में {PH1} बढ़ाएं"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "अगली एडिटिंग लोकेशन पर जाएं"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "इसके अनुसार क्रम में लगाएं"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "नुकसान पहुंचा सकने वाले किसी बदलाव की समस्या: Chrome के आगे आने वाले किसी वर्शन में पेज काम करना बंद कर सकता है"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# नुकसान पहुंचा सकने वाला बदलाव}one{# नुकसान पहुंचा सकने वाला बदलाव}other{# नुकसान पहुंचा सकने वाले बदलाव}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "बेहतर बनाने से जुड़ी समस्या: पेज को बेहतर बनाने का अवसर है"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "पेज में गड़बड़ी की समस्या: पेज ठीक से काम नहीं कर रहा है"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# पेज में गड़बड़ी}one{# पेज में गड़बड़ी}other{# पेज में गड़बड़ियां}}"
@@ -10758,7 +10827,7 @@
     "message": "समस्याओं के टैब में समस्या दिखाने के लिए, क्लिक करें"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "समस्या टैब खोलने और समस्या '{title}' देखने के लिए, क्लिक करें"
+    "message": "समस्या वाला टैब खोलने और समस्या दिखाने के लिए, क्लिक करें: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "इस समय समस्या उपलब्ध नहीं है"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "सभी"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "इनपुट मिटाएं"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "उदाहरण के लिए, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "वह सोर्स स्कीम भी दिखाई जाती है (Secure, NonSecure) जिस पर कुकी को सेट किया गया था. अगर स्कीम की जानकारी न हो, तो यह Unset दिखता है."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} के बाद"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "खत्म होने का टाइमस्टैंप {seconds} है, जो {date} के बाद की तारीख का होता है"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "मान"

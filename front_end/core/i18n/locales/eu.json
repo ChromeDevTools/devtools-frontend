@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Errore ezezaguna"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} egun"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} h"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Leihoa"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Langilea"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G bizkorra"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Ez dago edukirik erabilgarri hasierako proba-eskaerarako"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Ez dago edukirik erabilgarri eskaera birbideratu egin delako"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "WebSockets-eko edukia ez da onartzen oraingoz"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Ez bizkortu"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} kargatzen amaitu da: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie cookiearen goiburuari ez ikusiarena egin zaio URLari ({PH1}) erantzunez. Cookieak 4096 karaktere edo gutxiagoko luzera izan behar du."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G motela"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Cookie hau blokeatu egin da \"Secure\" atributua zuelako eta konexioa ez zelako segurua."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Set-Cookie cookiearen goiburuari ez ikusiarena egin zaio URLari ({PH1}) erantzunez. Cookieak 4096 karaktere edo gutxiagoko luzera izan behar du."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Konexio honen eskemak ez du cookieak gordetzeko baimenik."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Desgaitu AVIF formatua"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Desgaitu cachea (DevTools irekita dagoen bitartean)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Desgaitu JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Nagusia"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Ireki Node.js ingurunerako berariazko DevTools"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Webgunearen oinarrizko estatistikak"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Huts egin du LiveEdit eginbideak: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Zenbaki bat edo hutsune bat izan behar du gailuaren pixel-erlazioak."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "{PH1} edo handiagoa izan behar du gailuaren pixel-erlazioak."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Gailuaren pixel-erlazioak {PH1} edo gutxiagokoa izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Altuerak zenbaki bat izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Altuerak {PH1} edo gehiago izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Altuerak {PH1} edo gutxiago izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Zabalerak zenbaki bat izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Zabalerak {PH1} edo gehiago izan behar du."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Zabalerak {PH1} edo gutxiago izan behar du."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI motako pantaila duen ordenagailu eramangarria"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI motako pantaila duen ordenagailu eramangarria"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Ukipen-gailua duen ordenagailu eramangarria"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Edukia biltzen…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Iragarkien esku-hartze astunak kudeatzea"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Hutsegiteak sor ditzakeen aldaketak eragindako arazoa: litekeena da orriak funtzionatzeari uztea Chrome-ren bertsio berriarekin"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Hobekuntza-arazoa: orria hobetzeko aukera dago"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Orriko errore baten arazoa: orriak ez du behar bezala funtzionatzen"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Kolore eta kontrastearen erabilerraztasuna"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "ez-segurua"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets azalduta"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Webgune bereko eskemaren funtzionamendua"
   },
@@ -1284,7 +1350,7 @@
     "message": "Aldaketak egon dira sareko jarduera fidagarriak erabiltzen dituzten PWAen kalitate-irizpideetan"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Jatorri anitzeko Wasm moduluen artean partekatzeko aukeraren zaharkitzea"
+    "message": "Wasm modulua partekatzeko aukera jatorri berera murriztea"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonimoa>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "{PH1}.a aktibatzeko zain"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Ikusi erregistro guztiak"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker ({PH1})"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Zerbitzu-langileak"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulatu biltegiratze-kuota pertsonalizatu bat"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Biltegiratze-kuota mugatuta dago ezkutuko moduan"
@@ -2949,7 +3021,7 @@
     "message": "Hirugarrena"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Bat etorrarazi azpidomeinuak"
+    "message": "Azpidomeinuen bat-etortzea"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Jatorria"
@@ -2964,7 +3036,7 @@
     "message": "Tokena"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "token"
+    "message": "{PH1} token"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Erabiltzeko murriztapena"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Abisua, # aldiz errepikatuta}other{Abisua, # aldiz errepikatuta}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Alboko barra kendu egingo da Chrome-ren hurrengo bertsio batean. Oharrik bidali nahi baduzu, erabili"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "arazoen jarraipen-tresna"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Bete automatikoki historia erabilita"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# byte, {percentage}}other{# byte, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} byte (% {PH2}) oraindik exekutatu ez diren JavaScript-eko blokeei dagozkie."
+    "message": "{PH1} byte ({PH2}) oraindik exekutatu ez diren JavaScript-eko blokeei dagozkie."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} byte (% {PH2}) gutxienez behin exekutatu diren JavaScript-eko blokeei dagozkie."
+    "message": "{PH1} byte ({PH2}) gutxienez behin exekutatu diren JavaScript-eko blokeei dagozkie."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} byte (% {PH2}) oraindik exekutatu ez diren funtzioei dagozkie."
+    "message": "{PH1} byte ({PH2}) oraindik exekutatu ez diren funtzioei dagozkie."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} byte (% {PH2}) gutxienez behin exekutatu diren funtzioei dagozkie."
+    "message": "{PH1} byte ({PH2}) gutxienez behin exekutatu diren funtzioei dagozkie."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Fitxategiaren % {PH1} erabili gabe dago, eta % {PH2} erabilita"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "% {PH1}"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Byteak, guztira"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Kopiatu XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Ebaki elementua"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Ebaki"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Ezabatu elementua"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ezkutatu elementua"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Itsatsi elementua"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Itsatsi"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Egin gora edo behera ikusgai egon arte"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Erakutsi hutsegitearen sorrera-testuingurua"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Erakutsi erabiltzaile-agentearen DOM itzala"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Hutsegitearen sorrera-testuingurua"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Hitzak doitzea"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Zenbaki bat edo hutsune bat izan behar du gailuaren pixel-erlazioak."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "{PH1} edo handiagoa izan behar du gailuaren pixel-erlazioak."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Gailuaren pixel-erlazioak {PH1} edo gutxiagokoa izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Altuerak zenbaki bat izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Altuerak {PH1} edo gehiago izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Altuerak {PH1} edo gutxiago izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Zabalerak zenbaki bat izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Zabalerak {PH1} edo gehiago izan behar du."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Zabalerak {PH1} edo gutxiago izan behar du."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Gehitu gailuaren pixel-erlazioa"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Gailu mota"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Neurriak"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Editatu…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tableta"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Gehitu gailu pertsonalizatua…"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Gailua"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Gailuaren izena"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Gailuaren izena ezin da hutsik utzi."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "{PH1} karaktere baino gutxiago izan behar ditu gailuaren izenak."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Gailuaren pixel-erlazioa"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulatutako gailuak"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Altuera"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Erabiltzaile-agentearen katea"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Erabiltzaile-agente mota"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Zabalera"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI motako pantaila duen ordenagailu eramangarria"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI motako pantaila duen ordenagailu eramangarria"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Ukipen-gailua duen ordenagailu eramangarria"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Gehitu kokapena…"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Kokapen pertsonalizatuak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitudea"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Latitudeak zenbaki bat izan behar du"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Latitudeak {PH1} edo handiagoa izan behar du."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Latitudeak {PH1} edo txikiagoa izan behar du."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Lurraldeko ezarpenak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Lurraldeko ezarpenak karaktere alfabetikoak izan behar ditu"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Kokapenaren izena"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Kokapenaren izena ezin da hutsik egon"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Kokapenaren izenak {PH1} karaktere baino gutxiago izan behar ditu"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Luzea"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitudea"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Longitudeak zenbaki bat izan behar du"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Longitudeak {PH1} edo gehiago izan behar du."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "{PH1} edo txikiagoa izan behar du longitudeak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Ordu-zonaren IDa"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Ordu-zonaren IDak karaktere alfabetikoak izan behar ditu"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Bistaratu iturburu-kodean"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Doitu saguaren gurpilarekin, edo gora eta behera egiteko teklekin. {PH1}: ±10, Maius: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Orientazio pertsonalizatua"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Gailuaren orientazioa honela finkatu da: alfa {PH1}, beta {PH2} eta gamma {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Bistaratzea beherantz dago"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Bistaratzea gora"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Biratzeko, gaitu orientazioa"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Errorea"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Hautatutako egoera inaktiboa emulatzera behartzen du"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Klik egin beharrean ukitzera behartzen du"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Horizontalean ezkerrera"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Horizontalean eskuinera"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitudea"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Lurraldeko ezarpenak"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Kokapena"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Kokapena ez dago erabilgarri"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitudea"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Kudeatu"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Kudeatu kokapenen zerrenda"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Ez dago ordezkapenik"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Desaktibatuta"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientazioa"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Besteren bat…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Ordezkapenak"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Bertikala"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Bertikalean goitik behera"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Aurrezarpenak"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Berrezarri"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Berrezarri gailuaren orientazioa"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Maius + arrastatu horizontalean, y ardatzaren inguruan biratzeko"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Ordu-zonaren IDa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Gehitu marka bat"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitektura"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arkitektura (adibidez, x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Ezabatu {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Marka"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Marka: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Markaren propietateak"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "{PH1} bertsioa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Markak"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Ezabatu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Gailuaren modeloa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Gailuaren propietateak"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Arakatzailearen bertsio osoa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Arakatzailearen bertsio osoa (adibidez, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mugikorra"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Ezin da ordezkatu goiburu egituratuen kate gisa."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Plataforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Plataforma (adibidez, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Plataformaren propietateak"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Plataformaren bertsioa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Erabiltzaile-agentearen bezero-doikuntzak"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Eguneratu"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Erabiltzaile-agentearen katearen ordez erabil daitezke erabiltzaile-agentearen bezero-doikuntzak; era egituratuagoan identifikatzen ditu arakatzailea eta gailua eta hobeto zaintzen du pribatutasuna. Egin klik botoian informazio gehiago lortzeko."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Bertsioa"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "abiadura-neurgailua"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Atera tamaina osoko pantaila-argazkia"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "gailua"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "gailuaren orientazioa"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Gailuaren araberakoa"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Gailuak"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulatu detektagailu inaktiboaren egoera"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Behartu gaitzea"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geokokapena"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Ezkutatu gailuaren markoa"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Ezkutatu erregelak"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "lurraldeko ezarpenak"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "lurraldeko ezarpenak"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Kokapenak"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Emulazio inaktiborik ez"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sentsoreak"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Erakutsi gailuaren markoa"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Erakutsi gailuak"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Erakutsi kokapenak"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Erakutsi multimedia-eskaerak"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Erakutsi erregelak"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Erakutsi sentsoreak"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "ordu-zonak"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Aldatu gailuaren tresna-barra"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Ukipena"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Erabiltzailea aktibo, pantaila blokeatuta"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Erabiltzailea aktibo, pantaila desblokeatuta"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Erabiltzailea inaktibo, pantaila blokeatuta"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Erabiltzailea inaktibo, pantaila desblokeatuta"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Ezabatu gertaeren hautemailea"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domeinua"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Erakutsi Set-Cookie goiburu hau daukaten sareko eskaerak sare-panelean"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}other{# cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{Set-Cookie motako RAW goiburu bat}other{Set-Cookie motako # RAW goiburu}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Izena"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "abisua"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Arazo ezkutuak"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Eragina jasan duten baliabideak"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Sareko jarduera fidagarriak"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Erakutsi ezkutatutako arazo guztiak"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokeatuta"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm moduluaren URLa"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Ezkutatu honen antzeko arazoak"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Ezkutatu honen antzeko arazoak"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Ezkutatu arazoen menua"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSParen urratzeak"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range goiburuari buruzko laguntza"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Errendatzailearen izena"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Bereizmena"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Datuak \"data:\" eta \"blob:\" moduko URLak ezkutatzen ditu"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Alderantzikatu"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Bilaketa-iragazkia alderantzikatzen du"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Lortu informazio gehiago"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Kontsulta-katearen parametroak"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data sarearekin eskuduntzan erregistratuta: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Erreferentzia-emailearen gidalerroak"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Erakutsi segurtasuna"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Gehitu kokapena…"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Kokapen pertsonalizatuak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitudea"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Latitudeak zenbaki bat izan behar du"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Latitudeak {PH1} edo handiagoa izan behar du."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Latitudeak {PH1} edo txikiagoa izan behar du."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Lurraldeko ezarpenak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Lurraldeko ezarpenak karaktere alfabetikoak izan behar ditu"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Kokapenaren izena"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Kokapenaren izena ezin da hutsik egon"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Kokapenaren izenak {PH1} karaktere baino gutxiago izan behar ditu"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Luzea"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitudea"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Longitudeak zenbaki bat izan behar du"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Longitudeak {PH1} edo gehiago izan behar du."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "{PH1} edo txikiagoa izan behar du longitudeak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Ordu-zonaren IDa"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Ordu-zonaren IDak karaktere alfabetikoak izan behar ditu"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Doitu saguaren gurpilarekin, edo gora eta behera egiteko teklekin. {PH1}: ±10, Maius: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Orientazio pertsonalizatua"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Gailuaren orientazioa honela finkatu da: alfa {PH1}, beta {PH2} eta gamma {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Bistaratzea beherantz dago"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Bistaratzea gora"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Biratzeko, gaitu orientazioa"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Errorea"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Hautatutako egoera inaktiboa emulatzera behartzen du"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Klik egin beharrean ukitzera behartzen du"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Horizontalean ezkerrera"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Horizontalean eskuinera"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitudea"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Lurraldeko ezarpenak"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Kokapena"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Kokapena ez dago erabilgarri"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitudea"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Kudeatu"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Kudeatu kokapenen zerrenda"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Ez dago ordezkapenik"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Desaktibatuta"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientazioa"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Besteren bat…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Ordezkapenak"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Bertikala"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Bertikalean goitik behera"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Aurrezarpenak"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Berrezarri"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Berrezarri gailuaren orientazioa"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Maius + arrastatu horizontalean, y ardatzaren inguruan biratzeko"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Ordu-zonaren IDa"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "abiadura-neurgailua"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "gailuaren orientazioa"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Gailuaren araberakoa"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulatu detektagailu inaktiboaren egoera"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Behartu gaitzea"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geokokapena"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "lurraldeko ezarpenak"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "lurraldeko ezarpenak"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Kokapenak"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Emulazio inaktiborik ez"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sentsoreak"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Erakutsi kokapenak"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Erakutsi sentsoreak"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "ordu-zonak"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Ukipena"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Erabiltzailea aktibo, pantaila blokeatuta"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Erabiltzailea aktibo, pantaila desblokeatuta"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Erabiltzailea inaktibo, pantaila blokeatuta"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Erabiltzailea inaktibo, pantaila desblokeatuta"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Gehitu fitxategi-izenen eredua"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ABISUA:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Gehitu gailu pertsonalizatua…"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Gailua"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Gailuaren izena"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Gailuaren izena ezin da hutsik utzi."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "{PH1} karaktere baino gutxiago izan behar ditu gailuaren izenak."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Gailuaren pixel-erlazioa"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emulatutako gailuak"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Altuera"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Erabiltzaile-agentearen katea"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Erabiltzaile-agente mota"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Zabalera"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Gehitu marka bat"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arkitektura"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arkitektura (adibidez, x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Ezabatu {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Marka"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Marka: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Markaren propietateak"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "{PH1} bertsioa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Markak"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Ezabatu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Gailuaren modeloa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Gailuaren propietateak"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Arakatzailearen bertsio osoa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Arakatzailearen bertsio osoa (adibidez, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mugikorra"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Ezin da ordezkatu goiburu egituratuen kate gisa."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Plataforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Plataforma (adibidez, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Plataformaren propietateak"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Plataformaren bertsioa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Erabiltzaile-agentearen bezero-doikuntzak"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Eguneratu"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Erabiltzaile-agentearen katearen ordez erabil daitezke erabiltzaile-agentearen bezero-doikuntzak; era egituratuagoan identifikatzen ditu arakatzailea eta gailua eta hobeto zaintzen du pribatutasuna. Egin klik botoian informazio gehiago lortzeko."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Bertsioa"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Gailuak"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Erakutsi gailuak"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Dokumentazioa"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Desaktibatu eten-puntuak"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Txikitu hamar aldiz CSSren unitatea"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Txikitu {PH1} aldiz CSSren unitatea"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Hauteman koska"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Joan sinbolora"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Handitu hamar aldiz CSSren unitatea"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Handitu {PH1} aldiz CSSren unitatea"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Joan hurrengo editatze-kokapenera"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordenatzeko irizpidea"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Hutsegiteak sor ditzakeen aldaketak eragindako arazoa: litekeena da orriak funtzionatzeari uztea Chrome-ren bertsio berriarekin"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{Hutsegiteak sor ditzakeen # aldaketa}other{Hutsegiteak sor ditzaketen # aldaketa}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Hobekuntza-arazoa: orria hobetzeko aukera dago"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Orriko errore baten arazoa: orriak ez du behar bezala funtzionatzen"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# errore orrian}other{# errore orrian}}"
@@ -10758,7 +10827,7 @@
     "message": "Egin klik hemen arazoen fitxan ikusteko arazoa"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Egin klik arazoaren fitxa irekitzeko, \"{title}\" arazoa erakuts dadin"
+    "message": "Egin klik arazoaren fitxa irekitzeko, {title} arazoa erakuts dadin"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Arazoa ez dago erabilgarri une honetan"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Guztiak"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Garbitu idatzitakoa"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "adib., /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Cookiea jarri zen iturburuaren eskema (Secure, NonSecure) erakusten du. Eskema ezezaguna bada, hau agertuko da:Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} ezkero"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Iraungipenaren denbora-zigilua {seconds} da; beraz, {date} baino geroagokoa da"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Balioa"

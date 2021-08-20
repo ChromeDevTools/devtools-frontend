@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Óþekkt villa"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} dagar"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} klst."
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} mín."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Gluggi"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Þjónustuskrifta"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Hratt 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Ekkert efni tiltækt fyrir undirbúningsbeiðni"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Ekkert efni tiltækt því að þessi beiðni var framsend"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Efni fyrir WebSockets er ekki stutt eins og er"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Engin bandvíddartakmörkun"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} lauk hleðslu: {PH2} „{PH3}“."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Haus fasts fótspors er hunsaður í svari léns: {PH1}. Fótsporið verður að vera minna en eða jafnt og 4096 stafir á lengd."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Hægt 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Lokað var á þetta fótspor vegna þess að það innihélt eigindina „Secure“ og tengingin var ekki örugg."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Haus fasts fótspors er hunsaður í svari léns: {PH1}. Fótsporið verður að vera minna en eða jafnt og 4096 stafir á lengd."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Samskiptaaðferð þessarar tengingar hefur ekki heimild til að vista fótspor."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Gera AVIF snið óvirkt"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Slökkva á skyndiminni (þegar DevTools er opið)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Gera JavaScript óvirkt"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Aðalmark"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Opna sérstök forritunarverkfæri fyrir Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Mikilvæg vefgildi"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit mistókst: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Pixlahlutfall tækisins verður að vera tala eða autt."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Pixlahlutfall tækis verður að vera hærra en eða jafnt og {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Pixlahlutfall tækis verður að vera lægra en eða jafnt og {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Hæð verður að vera tala."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Hæð verður að vera meiri eða jöfn og {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Hæð verður að vera minni en eða jöfn og {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Breidd verður að vera tala."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Breidd verður að vera meiri en eða jöfn og {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Breidd verður að vera minni en eða jöfn og {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Fartölva með HiDPI-skjá"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Fartölva með MDPI-skjá"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Fartölva með snertiskjá"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Safnar efni…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Meðferð mikilla inngripa auglýsinga"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Vandamál varðandi brothætta breytingu: Síðan gæti hætt að virka í væntanlegri útgáfu Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Vandamál sem hægt er að lagfæra: Mögulega er hægt að gera síðuna enn betri"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Villa á síðu: Síðan virkar ekki rétt"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Aðgengi að lit og birtuskilum"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "er óöruggt"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Nánar um First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Svona virka „Same-Site“-fótspor með samskiptaaðferð"
   },
@@ -1284,7 +1350,7 @@
     "message": "Breytingar á gæðaviðmiðum fyrir framsækin vefforrit með traustri vefvirkni"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Úrelding deilingar Wasm-einingar þvert á uppruna"
+    "message": "Takmarkar deilingu Wasm-einingar til sama uppruna"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<nafnlaus>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Nr. {PH1} bíður eftir virkjun"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Sjá allar skráningar"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker fyrir {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Þjónustuvirkjar"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Líkja eftir sérsniðnu tiltæku geymslurými"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Geymslurými er takmarkað í huliðsstillingu"
@@ -2949,7 +3021,7 @@
     "message": "Þriðji aðili"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Samsvara við undirlén"
+    "message": "Samsvörun undirléns"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Uppruni"
@@ -2964,7 +3036,7 @@
     "message": "Lykill"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "lyklar"
+    "message": "{PH1} lyklar"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Notkunartakmarkanir"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Viðvörun, endurtekið # sinni}one{Viðvörun, endurtekið # sinni}other{Viðvörun, endurtekið # sinnum}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Þessi hliðarstika verður fjarlægð í nýrri útgáfu Chrome. Ef þú ert með ábendingu skaltu senda hana í gegnum"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "rakning vandamáls"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Sjálfvirk útfylling úr ferli"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bæti, {percentage}}one{# bæti, {percentage}}other{# bæti, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bæti ({PH2}%) tilheyra JavaScript-kóða sem ekki er (enn) búið að keyra."
+    "message": "{PH1} bæti ({PH2}) tilheyra JavaScript-kóða sem ekki er (enn) búið að keyra."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bæti ({PH2}%) tilheyra JavaScript-kóða sem búið er að keyra minnst einu sinni."
+    "message": "{PH1} bæti ({PH2}) tilheyra JavaScript-kóða sem búið er að keyra minnst einu sinni."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bæti ({PH2}%) tilheyra föllum sem ekki er (enn) búið að keyra."
+    "message": "{PH1} bæti ({PH2}) tilheyra föllum sem ekki er (enn) búið að keyra."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bæti ({PH2}%) tilheyra föllum sem búið er að keyra minnst einu sinni."
+    "message": "{PH1} bæti ({PH2}) tilheyra föllum sem búið er að keyra minnst einu sinni."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1}% af skrá ónotuð, {PH2}% af skrá notuð"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1}%"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Bæti samtals"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Afrita XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Klippa einingu"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Klippa"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Eyða einingu"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Fela einingu"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Líma einingu"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Líma"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Fletta að"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Sýna staflaröð"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Sýna skugga aðgangsbúnaðs DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Staflaröð"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Línuskipting"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Pixlahlutfall tækisins verður að vera tala eða autt."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Pixlahlutfall tækis verður að vera hærra en eða jafnt og {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Pixlahlutfall tækis verður að vera lægra en eða jafnt og {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Hæð verður að vera tala."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Hæð verður að vera meiri eða jöfn og {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Hæð verður að vera minni en eða jöfn og {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Breidd verður að vera tala."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Breidd verður að vera meiri en eða jöfn og {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Breidd verður að vera minni en eða jöfn og {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Bæta við pixlahlutfalli tækis"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Gerð tækis"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Stærð"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Breyta…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Spjaldtölva"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Bæta sérsniðnu tæki við..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Tæki"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Heiti tækis"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Heiti tækis má ekki vera autt."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Heiti tækis verður að vera styttra en {PH1} stafir á lengd."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Pixlahlutfall tækis"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Tæki sem hermt er eftir"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Hæð"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Strengur aðgangsbúnaðar"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Gerð aðgangsbúnaðar"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Breidd"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Fartölva með HiDPI-skjá"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Fartölva með MDPI-skjá"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Fartölva með snertiskjá"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Bæta staðsetningu við..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Sérsniðnar staðsetningar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Breidd."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Breiddargráða"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Breiddargráða verður að vera tala"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Breidd verður að vera meiri en eða jöfn og {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Breiddargráða verður að lægri en eða jöfn og {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Tungumálskóði"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Tungumálskóði verður að innihalda bókstafi"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Staðsetningarheiti"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Heiti staðsetningar má ekki vera autt"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Heiti staðsetningar verður að vera minna en {PH1} stafir á lengd"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Langt"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Lengdargráða"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Lengdargráða verður að vera tala"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Lengdargráða verður að vera hærri eða jöfn og {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Lengdargráða verður að vera lægri en eða jöfn og {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Auðkenni tímabeltis"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Auðkenni tímabeltisins verður að innihalda bókstafi"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Birta í upprunakóða"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Stilla með músarhjóli eða upp-/niðurlyklum. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Sérsniðin stefna"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Stefna tækis stillt á alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Skjár niður"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Skjár upp"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Virkja stefnu til að snúa"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Villa"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Þvingar fram valda hermun á biðstöðu"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Þvingar fram snertingu í stað smells"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Langsnið til vinstri"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Langsnið til hægri"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Breiddargráða"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Tungumálskóði"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Staður"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Staðsetning ekki tiltæk"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Lengdargráða"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Stjórna"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Stjórna staðsetningalista"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Engin hnekking"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Slökkt"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Stefna"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Önnur…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Hnekkingar"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Skammsnið"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Andlitsmynd á hvolfi"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Forstillingar"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Endurstilla"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Endurstilla stefnu tækis"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Ýttu á Shift og dragðu lárétt til að snúa um y-ásinn"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Auðkenni tímabeltis"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Bæta við vörumerki"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arkitektúr"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Skipulag (t.d. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Eyða {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Vörumerki"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Vörumerki {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Eiginleikar vörumerkis"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Útgáfa {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Vörumerki"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Eyða"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Gerð tækis"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Eiginleikar tækis"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Full útgáfa vafra"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Fullt útgáfunúmer vafra (t.d. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Farsímakerfi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Ekki hægt að birta sem streng skipulagðra hausa."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Verkvangur"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Verkvangur (t.d. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Eiginleikar verkvangs"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Kerfisútgáfa"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Leiðréttingar aðgangsbúnaðar biðlara"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Uppfæra"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Leiðréttingar aðgangsbúnaðar biðlara eru önnur leið fyrir streng aðgangsbúnaðar til að auðkenna vafrann og tækið á skipulagðari hátt og ná fram betri úrvinnslu persónuverndar. Smelltu á hnappinn til að fá frekari upplýsingar."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Útgáfa"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "hraðamælir"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Taka skjámynd í fullri stærð"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "tæki"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "stefna tækis"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Fer eftir tækinu"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Tæki"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Líkja eftir aðgerðarlausri greiningarstillingu"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Þvinga fram virkni"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "staðsetningarmerking"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Fela ramma tækis"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Fela reglustikur"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "tungumálskóði"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "tungumálskóðar"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Staðsetningar"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Engin aðgerðarlaus hermun"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Skynjarar"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Sýna ramma tækis"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Sýna tæki"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Sýna staðsetningar"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Sýna fyrirspurnir um efni"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Sýna reglustikur"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Sýna skynjara"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "tímabelti"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Opna/loka tækjastiku tækis"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Snerting"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Notandi virkur, skjárinn læstur"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Notandi virkur, skjárinn úr lás"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Notandi aðgerðarlaus, skjárinn læstur"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Notandi óvirkur, skjár ólæstur"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Eyða viðburðahlustanda"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Lén"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Sýna netbeiðnir sem fela í sér þennan Set-Cookie haus á Network-svæðinu"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# fótspor}one{# fótspor}other{# fótspor}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 RAW Set-Cookie haus}one{# RAW Set-Cookie hausar}other{# RAW Set-Cookie hausar}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Heiti"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "viðvörun"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Falin vandamál"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tilföng sem verða fyrir áhrifum"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Traust vefvirkni"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Sýna öll falin vandamál"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "útilokað"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Vefslóð Wasm-einingar"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Sýna vandamál eins og þetta"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Fela vandamál eins og þetta"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Valmynd falinna vandamála"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Brot á efnisöryggisstefnu (CSP)"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range stuðningur við haus"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Heiti myndþýðanda"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Upplausn"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Felur vefslóðir fyrir data: og blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Umsnúa"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Umsnýr leitarsíunni"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Frekari upplýsingar"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Færibreytur vefslóðarstrengs"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Skráð eignun með trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Regla fyrir tilvísunaraðila"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Sýna öryggi"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Bæta staðsetningu við..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Sérsniðnar staðsetningar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Breidd."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Breiddargráða"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Breiddargráða verður að vera tala"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Breidd verður að vera meiri en eða jöfn og {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Breiddargráða verður að lægri en eða jöfn og {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Tungumálskóði"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Tungumálskóði verður að innihalda bókstafi"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Staðsetningarheiti"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Heiti staðsetningar má ekki vera autt"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Heiti staðsetningar verður að vera minna en {PH1} stafir á lengd"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Langt"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Lengdargráða"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Lengdargráða verður að vera tala"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Lengdargráða verður að vera hærri eða jöfn og {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Lengdargráða verður að vera lægri en eða jöfn og {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Auðkenni tímabeltis"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Auðkenni tímabeltisins verður að innihalda bókstafi"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Stilla með músarhjóli eða upp-/niðurlyklum. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Sérsniðin stefna"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Stefna tækis stillt á alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Skjár niður"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Skjár upp"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Virkja stefnu til að snúa"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Villa"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Þvingar fram valda hermun á biðstöðu"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Þvingar fram snertingu í stað smells"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Langsnið til vinstri"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Langsnið til hægri"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Breiddargráða"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Tungumálskóði"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Staður"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Staðsetning ekki tiltæk"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Lengdargráða"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Stjórna"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Stjórna staðsetningalista"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Engin hnekking"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Slökkt"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Stefna"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Önnur…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Hnekkingar"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Skammsnið"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Andlitsmynd á hvolfi"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Forstillingar"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Endurstilla"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Endurstilla stefnu tækis"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Ýttu á Shift og dragðu lárétt til að snúa um y-ásinn"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Auðkenni tímabeltis"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "hraðamælir"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "stefna tækis"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Fer eftir tækinu"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Líkja eftir aðgerðarlausri greiningarstillingu"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Þvinga fram virkni"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "staðsetningarmerking"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "tungumálskóði"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "tungumálskóðar"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Staðsetningar"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Engin aðgerðarlaus hermun"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Skynjarar"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Sýna staðsetningar"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Sýna skynjara"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "tímabelti"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Snerting"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Notandi virkur, skjárinn læstur"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Notandi virkur, skjárinn úr lás"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Notandi aðgerðarlaus, skjárinn læstur"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Notandi óvirkur, skjár ólæstur"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Bæta við mynstri fyrir skráarheiti"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "VIÐVÖRUN:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Bæta sérsniðnu tæki við..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Tæki"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Heiti tækis"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Heiti tækis má ekki vera autt."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Heiti tækis verður að vera styttra en {PH1} stafir á lengd."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Pixlahlutfall tækis"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Tæki sem hermt er eftir"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Hæð"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Strengur aðgangsbúnaðar"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Gerð aðgangsbúnaðar"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Breidd"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Bæta við vörumerki"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arkitektúr"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Skipulag (t.d. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Eyða {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Vörumerki"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Vörumerki {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Eiginleikar vörumerkis"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Útgáfa {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Vörumerki"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Eyða"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Gerð tækis"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Eiginleikar tækis"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Full útgáfa vafra"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Fullt útgáfunúmer vafra (t.d. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Farsímakerfi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Ekki hægt að birta sem streng skipulagðra hausa."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Verkvangur"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Verkvangur (t.d. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Eiginleikar verkvangs"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Kerfisútgáfa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Leiðréttingar aðgangsbúnaðar biðlara"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Uppfæra"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Leiðréttingar aðgangsbúnaðar biðlara eru önnur leið fyrir streng aðgangsbúnaðar til að auðkenna vafrann og tækið á skipulagðari hátt og ná fram betri úrvinnslu persónuverndar. Smelltu á hnappinn til að fá frekari upplýsingar."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Útgáfa"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Tæki"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Sýna tæki"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Upplýsingaefni"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Gera stopppunkta óvirka"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Minnka CSS-einingu um 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Minnka CSS-einingu um {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Greina inndrátt"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Fara í tákn"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Stækka CSS-einingu um 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Stækka CSS-einingu um {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Hoppa yfir í næstu staðsetningu breytinga"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Raða eftir"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Vandamál varðandi brothætta breytingu: Síðan gæti hætt að virka í væntanlegri útgáfu Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# brothætt breyting}one{# brothætt breyting}other{# brothættar breytingar}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Vandamál sem hægt er að lagfæra: Mögulega er hægt að gera síðuna enn betri"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Villa á síðu: Síðan virkar ekki rétt"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# villa á síðu}one{# villa á síðu}other{# villur á síðu}}"
@@ -10758,7 +10827,7 @@
     "message": "Smelltu til að skoða vandamál á flipa vandamála"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Smelltu til að opna flipa vandamálsins og sýna vandamál „{title}“"
+    "message": "Smelltu til að opna flipa vandamálsins og sýna vandamál: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Vandamál er ekki tiltækt eins og stendur"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Allt"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Hreinsa inntak"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "t.d. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Sýnir samskiptaaðferð uppruna (Secure, NonSecure) sem fótsporið var stillt á. Þegar samskiptaaðferðin er óþekkt birtist Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "eftir {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Tímastimpill lokadags er {seconds}, sem samsvarar dagsetningu eftir {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Gildi"

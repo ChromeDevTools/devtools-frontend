@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "অজ্ঞাত আসোঁৱাহ"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} দিন"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ঘণ্টা"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} মিনিট"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} মি.ছে."
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} ছে."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "ৱিণ্ড’"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "কৰ্মী"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "দ্ৰুত 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "প্ৰিফ্লাইটৰ অনুৰোধৰ বাবে কোনো সমল উপলব্ধ নহয়"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "এই অনুৰোধটো ৰিডাইৰেক্ট কৰা হৈছে বাবে কোনো সমল উপলব্ধ নহয়"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "বৰ্তমান WebSocketsৰ সমল সমৰ্থন নকৰে"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "কোনো থ্ৰ’টলিং নাই"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} ল’ড কৰা সম্পূৰ্ণ হৈছে: {PH2} \"{PH3}\"।"
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "ছেট-কুকিৰ হেডাৰ urlৰ পৰা পোৱা সঁহাৰিত উপেক্ষা কৰা হয়: {PH1}। কুকিৰ দৈৰ্ঘ্য ৪০৯৬ টা বৰ্ণৰ সমান অথবা তাতকৈ কম হ’ব লাগে।"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "লেহেমীয়া 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "এই কুকিটো অৱৰোধ কৰা হৈছিল কাৰণ ইয়াৰ \"Secure\" এট্ৰিবিউটটো আছিল আৰু সংযোগটো সুৰক্ষিত নাছিল।"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "ছেট-কুকিৰ হেডাৰ urlৰ পৰা পোৱা সঁহাৰিত উপেক্ষা কৰা হয়: {PH1}। কুকিৰ দৈৰ্ঘ্য ৪০৯৬ টা বৰ্ণৰ সমান অথবা তাতকৈ কম হ’ব লাগে।"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "এই সংযোগৰ স্কীমটোক কুকি ষ্ট’ৰ কৰিবলৈ অনুমতি দিয়া নহয়।"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF ফৰ্মেট অক্ষম কৰক"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "কেশ্ব অক্ষম কৰক (DevTools খোলা থকা অৱস্থাত)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript অক্ষম কৰক"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "মুখ্য"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.jsৰ বাবে সমৰ্পিত DevTools খোলক"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ক’ৰ ৱেব ভাইটেল"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit বিফল হৈছে: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "ডিভাইচ পিক্সেলৰ অনুপাত এটা নম্বৰ অথবা খালী হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "ডিভাইচ পিক্সেলৰ অনুপাত {PH1}ৰ সমান অথবা ইয়াতকৈ ডাঙৰ হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "ডিভাইচ পিক্সেলৰ অনুপাত {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "উচ্চতাৰ মান এটা নম্বৰ হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "উচ্চতা {PH1}ৰ সমান অথবা তাতকৈ বেছি হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "উচ্চতা {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "প্ৰস্থৰ মান এটা নম্বৰ হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "প্ৰস্থ {PH1}ৰ সমান বা ইয়াতকৈ ডাঙৰ হ’বই লাগিব।"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "প্ৰস্থ {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI স্ক্ৰীনৰ সৈতে লেপটপ"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI স্ক্ৰীনৰ লেপটপ"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "স্পৰ্শ ব্যৱহাৰ কৰি চলাব পৰা লেপটপ"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "সমল সংগ্ৰহ কৰি থকা হৈছে…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "বিজ্ঞাপনৰ অত্যধিক হস্তক্ষেপৰ পৰিচালনা"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "পৰিৱৰ্তন সম্পৰ্কীয় এটা গুৰুত্বপূৰ্ণ সমস্যা: পৃষ্ঠাখনে Chromeৰ এটা অনাগত সংস্কৰণত কাম কৰা বন্ধ কৰিব পাৰে"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "এটা উন্নীতকৰণ সম্পৰ্কীয় সমস্যা: পৃষ্ঠাখন উন্নত কৰাৰ অৱকাশ আছে"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "পৃষ্ঠাৰ আসোঁৱাহ সম্পৰ্কীয় সমস্যা: পৃষ্ঠাখনে সঠিকভাৱে কাম কৰি থকা নাই"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ৰং আৰু কনট্ৰাষ্টৰ সাধ্য সুবিধা"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "এটা অসুৰক্ষিত"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Setsৰ বিষয়ে বৰ্ণনা কৰা হৈছে"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Siteএ কেনেকৈ কাম কৰে"
   },
@@ -1284,7 +1350,7 @@
     "message": "বিশ্বস্ত ৱেবৰ কাৰ্যকলাপ ব্যৱহাৰেৰে PWAৰ বাবে গুণগত যোগ্যতাসূচক মানৰ সলনি"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm ক্ৰছ-অৰিজিন ম’ডিউল শ্বেয়াৰ কৰাৰ বিৰোধিতা"
+    "message": "একেটা উৎসলৈ Wasm ম’ডিউল শ্বেয়াৰ কৰাটোত বাধা আৰোপ কৰি থকা হৈছে"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<বেনামী>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} সক্ৰিয় কৰিবলৈ অপেক্ষা কৰি থকা হৈছে"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "আটাইবোৰ পঞ্জীয়ন চাওক"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1}ৰ বাবে Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "সেৱা কৰ্মী"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "কাষ্টম ষ্ট'ৰেজত থকা নিৰ্ধাৰিত ঠাই ছিমুলে’ট কৰক"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "ষ্ট’ৰেজৰ কোটা ইনক’গনিট’ ম’ডত সীমিত কৰা হৈছে"
@@ -2949,7 +3021,7 @@
     "message": "তৃতীয় পক্ষ"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "মিলা ছাব-ড’মেইন"
+    "message": "ছাবড’মেইন মিলোৱা"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "উৎস"
@@ -2964,7 +3036,7 @@
     "message": "ট’কেন"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ট’কেন"
+    "message": "{PH1} টা ট’কেন"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ব্যৱহাৰৰ প্ৰতিবন্ধকতা"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{সকীয়নি, # বাৰ পুনৰাবৃত্তি হৈছে}one{সকীয়নি, # বাৰ পুনৰাবৃত্তি হৈছে}other{সকীয়নি, # বাৰ পুনৰাবৃত্তি হৈছে}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Chromeৰ ভৱিষ্যতৰ সংস্কৰণটোত এই ছাইডবাৰডাল আঁতৰোৱা হ'ব। আপোনাৰ যদি মতামত আছে, অনুগ্ৰহ কৰি আমাক ইয়াৰ জৰিয়তে জনাওক"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "সমস্যা ট্ৰেকাৰ"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ইতিহাসৰ পৰা স্বয়ংক্ৰিয়ভাৱে সম্পূৰ্ণ কৰক"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# বাইট, {percentage}}one{# বাইট, {percentage}}other{# বাইট, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} বাইট ({PH2} %) JavaScriptৰ ব্লকৰ অন্তৰ্গত যাক এই পৰ্যন্ত কাৰ্যকৰী কৰা হোৱা নাই।"
+    "message": "{PH1} বাইট ({PH2}) JavaScriptৰ ব্লকৰ অন্তৰ্গত যাক (এই পৰ্যন্ত) কাৰ্যকৰী কৰা হোৱা নাই।"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} বাইট ({PH2} %) JavaScriptৰ ব্লকৰ অন্তৰ্গত যাক অতি কমেও এবাৰ কাৰ্যকৰী কৰা হৈছে।"
+    "message": "{PH1} বাইট ({PH2}) JavaScriptৰ ব্লকৰ অন্তৰ্গত যাক অতি কমেও এবাৰ কাৰ্যকৰী কৰা হৈছে।"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} বাইট ({PH2} %) এতিয়ালৈকে কাৰ্যকৰী নকৰা ফাংশ্বনৰ অন্তৰ্গত।"
+    "message": "{PH1} বাইট ({PH2}) (এই পৰ্যন্ত) কাৰ্যকৰী নকৰা ফাংশ্বনৰ অন্তৰ্গত।"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} বাইট ({PH2} %) এনেকুৱা ফাংশ্বনৰ অন্তৰ্ভুক্ত যাক এবাৰলৈ হ’লেও কাৰ্যকৰী কৰা হৈছে।"
+    "message": "{PH1} বাইট ({PH2}) এনেকুৱা ফাংশ্বনৰ অন্তৰ্ভুক্ত যাক এবাৰলৈ হ’লেও কাৰ্যকৰী কৰা হৈছে।"
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ফাইল ব্যৱহাৰ হোৱা নাই, {PH2} % ফাইল ব্যৱহাৰ হৈছে"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "মুঠ বাইট"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath প্ৰতিলিপি কৰক"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "উপাদান কাট কৰক"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "কাটক"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "উপাদান মচক"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "উপাদান লুকুৱাওক"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "উপাদান পে’ষ্ট কৰক"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "পেষ্ট কৰক"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "দৃশ্যমান হোৱালৈ স্ক্ৰ’ল কৰক"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "ষ্টেক ট্ৰে’চ দেখুৱাওক"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "ব্যৱহাৰকাৰীৰ এজেণ্টৰ ছাঁ দেখুৱাওক DOM"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "ষ্টেক ট্ৰে’চ"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "শব্দ একেটা শাৰীতে আৱদ্ধ কৰা"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "ডিভাইচ পিক্সেলৰ অনুপাত এটা নম্বৰ অথবা খালী হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "ডিভাইচ পিক্সেলৰ অনুপাত {PH1}ৰ সমান অথবা ইয়াতকৈ ডাঙৰ হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "ডিভাইচ পিক্সেলৰ অনুপাত {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "উচ্চতাৰ মান এটা নম্বৰ হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "উচ্চতা {PH1}ৰ সমান অথবা তাতকৈ বেছি হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "উচ্চতা {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "প্ৰস্থৰ মান এটা নম্বৰ হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "প্ৰস্থ {PH1}ৰ সমান বা ইয়াতকৈ ডাঙৰ হ’বই লাগিব।"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "প্ৰস্থ {PH1}ৰ সমান অথবা ইয়াতকৈ কম হ’বই লাগিব।"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "ডিভাইচ পিক্সেলৰ অনুপাত যোগ দিয়ক"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "ডিভাইচৰ প্ৰকাৰ"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "দীঘ-প্ৰস্থ"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "সম্পাদনা কৰক…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "টেবলেট"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "কাষ্টম কৰা ডিভাইচ যোগ দিয়ক..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "ডিভাইচ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "ডিভাইচৰ নাম"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "ডিভাইচৰ নাম খালী হ’ব নোৱাৰে।"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "ডিভাইচৰ নাম {PH1} টা বৰ্ণতকৈ কম হ’বই লাগিব।"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "ডিভাইচ পিক্সেলৰ অনুপাত"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "এমুলে’ট কৰা ডিভাইচ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "উচ্চতা"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "ব্যৱহাৰকাৰীৰ এজেণ্টৰ ষ্ট্ৰীং"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "ব্যৱহাৰকাৰীৰ এজেণ্টৰ প্ৰকাৰ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "প্ৰস্থ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI স্ক্ৰীনৰ সৈতে লেপটপ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI স্ক্ৰীনৰ লেপটপ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "স্পৰ্শ ব্যৱহাৰ কৰি চলাব পৰা লেপটপ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "অৱস্থান যোগ কৰক..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "কাষ্টম অৱস্থান"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "অক্ষ্যাংশ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "অক্ষ্যাংশ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "দ্ৰাঘিমাংশ এটা নম্বৰ হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "অক্ষ্যাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ ডাঙৰ হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "দ্ৰাঘিমাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ সৰু হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "স্থানীয় ভাষা"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "স্থানীয় ভাষাৰ বৰ্ণমালা মূলক বৰ্ণ থাকিবই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "অৱস্থানৰ নাম"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "অৱস্থানৰ নাম খালী হ’ব নোৱাৰে"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "অৱস্থানৰ নাম {PH1} টা বৰ্ণতকৈ কম হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "দ্ৰাঘিমাংশ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "দ্রাঘিমাংশ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "দ্ৰাঘিমাংশ এটা নম্বৰ হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "দ্রাঘিমাংশ {PH1}ৰ সমান বা ইয়াতকৈ ডাঙৰ হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "দ্ৰাঘিমাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ সৰু হ’বই লাগিব"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "সময় মণ্ডলৰ আইডি"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "সময় মণ্ডলৰ আইডিত বৰ্ণমালাৰ বৰ্ণ থাকিবই লাগিব"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "উৎস ক’ডত প্ৰকাশ কৰক"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "মাউছহুইল অথবা আপ/ডাউন কীৰে মিলাওক। {PH1}: ±১০, শ্বিফ্ট: ±১, অল্‌ট: ±০.০১"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (আলফা)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (বিটা)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "কাষ্টম দিশ"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "ডিভাইচৰ দিশ আলফা: {PH1}, বিটা: {PH2}, গামা: {PH3}লৈ ছেট কৰা হৈছে"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "তললৈ প্ৰদৰ্শন কৰক"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ওপৰলৈ প্ৰদৰ্শন কৰক"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "ঘূৰাবলৈ দিশ সক্ষম কৰক"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "আসোঁৱাহ"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "বাছনি কৰা নিস্ক্ৰিয় স্থিতিৰ এমুলে’শ্বন বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "ক্লিক কৰাৰ পৰিৱৰ্তে স্পৰ্শ কৰাটো বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (গামা)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "লেণ্ডস্কে’প বাওঁফালে কৰক"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "সোঁফালে লেণ্ডস্কে’প কৰক"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "অক্ষ্যাংশ"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "স্থানীয় ভাষা"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "অৱস্থান"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "অৱস্থান উপলব্ধ নহয়"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "দ্রাঘিমাংশ"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "পৰিচালনা"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "অৱস্থানৰ সূচীখন পৰিচালনা কৰক"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "কোনো অ’ভাৰৰাইড নাই"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "অফ"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "দিশ"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "অন্যান্য…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "অ’ভাৰৰাইড"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "প’ৰ্ট্ৰেইট"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "বিপৰীত ফালে প’ৰ্ট্ৰেইট কৰক"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "প্ৰিছেট"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "ৰিছেট কৰক"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "ডিভাইচৰ দিশ পুনৰ ছেট কৰক"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "y-অক্ষৰ চাৰিওফালে ঘূৰাবলৈ শ্বিফ্ট বুটামটো ধৰি থাকি অনুভূমিকভাৱে টানক"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "সময় মণ্ডল আইডি"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "ব্ৰেণ্ড যোগ দিয়ক"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "স্থাপত্য-বিদ্যা"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "আৰ্কিটে’কচ্চাৰ (যেনে, x৮৬)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} মচক"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "ব্ৰেণ্ড"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "ব্ৰেণ্ড {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "ব্ৰেণ্ডৰ বৈশিষ্ট্য"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "সংস্কৰণ {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ব্ৰেণ্ড"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "মচক"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ডিভাইচৰ মডেল"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "ডিভাইচৰ বৈশিষ্ট্য"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Full ব্ৰাউজাৰৰ সংস্কৰণ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "পূৰ্ণ ব্ৰাউজাৰৰ সংস্কৰণ (যেনে, ৮৭.০.৪২৮০.৮৮)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "ম’বাইল"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "সংগঠিত হেডাৰ ষ্ট্ৰীং হিচাপে দেখুৱাব পৰা নাযায়।"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "প্লেটফ’ৰ্ম"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "প্লেটফর্ম (যেনে, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "প্লেটফৰ্মৰ বৈশিষ্ট্য"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "প্লেটফৰ্ম সংস্কৰণ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "ইউজাৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "আপডে’ট কৰক"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "ব্যৱহাৰকাৰীৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট ব্যৱহাৰকাৰীৰ এজেণ্ট ষ্ট্ৰীঙৰ বাবে এটা বিকল্প, যিয়ে ব্ৰাউজাৰ আৰু ডিভাইচটো এটা অধিক সংগঠিত উপায়ে অধিক ভাল গোপনীয়তাৰ সৈতে চিনাক্ত কৰে। অধিক জানিবলৈ বুটামটোত ক্লিক কৰক।"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "সংস্কৰণ"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "এক্সেলেৰ’মিটাৰ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "সম্পূৰ্ণ আকাৰত স্ক্ৰীনশ্বট কেপচাৰ কৰক"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "ডিভাইচ"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "ডিভাইচৰ দিশ"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "ডিভাইচ-ভিত্তিক"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "ডিভাইচ"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "নিষ্ক্রিয় চিনাক্তকাৰীৰ স্থিতি এমুলে’ট কৰক"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "বলেৰে সক্ষম কৰা"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "জিঅ’লোকেশ্বন"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "ডিভাইচ ফ্ৰে’ম লুকুৱাওক"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "ৰুলাৰ লুকুৱাওক"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "স্থানীয় ভাষা"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "স্থানীয় ভাষা"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "অৱস্থান"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "নিষ্ক্ৰিয় এমুলে’শ্বন নাই"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "ছেন্সৰ"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "ডিভাইচৰ ফ্ৰে’ম দেখুৱাওক"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "ডিভাইচ দেখুৱাওক"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "অৱস্থান দেখুৱাওক"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "মিডিয়া সম্পৰ্কে সোধা প্ৰশ্ন দেখুৱাওক"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "ৰুলাৰ দেখুৱাওক"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "ছেন্সৰ দেখুৱাওক"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "সময় মণ্ডল"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "ডিভাইচ টুলবাৰ ট’গল কৰক"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "স্পর্শ"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "ব্যৱহাৰকাৰী সক্ৰিয়, স্ক্ৰীন লক কৰা আছে"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "ব্যৱহাৰকাৰী সক্ৰিয় হৈছে, স্ক্ৰীন আনলক কৰা হৈছে"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "ব্যৱহাৰকাৰী নিষ্ক্ৰিয় হৈ আছে, স্ক্ৰীন লক কৰা হৈছে"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "ব্যৱহাৰকাৰী নিস্ক্ৰিয়, স্ক্ৰীন আনলক কৰা আছে"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "ইভেণ্ট লিছেনাৰ মচক"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "ড’মেইন"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "এই Set-Cookie হে’ডাৰটো অন্তৰ্ভুক্ত নেটৱৰ্কৰ অনুৰোধসমূহ নেটৱৰ্ক পেনেলটোত দেখুৱাওক"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# টা কুকি}one{# টা কুকি}other{# টা কুকি}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{১ টা শাৰীৰ Set-Cookie হে’ডাৰ}one{# টা শাৰীৰ Set-Cookie হে’ডাৰ}other{# টা শাৰীৰ Set-Cookie হে’ডাৰ}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "নাম"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "সকীয়নি"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "লুকুৱাই ৰখা সমস্যা"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "প্ৰভাৱিত উৎস"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "বিশ্বস্ত ৱেবৰ কাৰ্যকলাপ"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "আটাইবোৰ লুকুৱাই ৰখা সমস্যা দেখা পোৱা কৰক"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "অৱৰোধ কৰা হৈছে"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm ম’ডিউল বিষয়ক URL"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "এইধৰণৰ সমস্যাসমূহ দেখা পোৱা কৰক"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "এইটোৰ নিজৰ সমস্যাসমূহ লুকুৱাওক"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "সমস্যাৰ মেনুখন লুকুৱাওক"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP উলংঘন"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range হে’ডাৰৰ সমৰ্থন"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "ৰেণ্ডাৰাৰ নাম"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "ৰিজ’লিউশ্বন"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "ডেটা: আৰু blob: URL লুকুৱায়"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "ওলোটা কৰক"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "সন্ধানৰ ফিল্টাৰটো ওলোটা কৰে"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "অধিক জানক"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "প্ৰশ্ন বিষয়ক ষ্ট্ৰিঙৰ পেৰামিটাৰ"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-dataৰ জৰিয়তে ৰেকৰ্ড কৰা এট্ৰিবিউশ্বন: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "প্ৰসংগ দিওঁতা নীতি"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "সুৰক্ষা দেখুৱাওক"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "অৱস্থান যোগ কৰক..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "কাষ্টম অৱস্থান"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "অক্ষ্যাংশ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "অক্ষ্যাংশ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "দ্ৰাঘিমাংশ এটা নম্বৰ হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "অক্ষ্যাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ ডাঙৰ হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "দ্ৰাঘিমাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ সৰু হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "স্থানীয় ভাষা"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "স্থানীয় ভাষাৰ বৰ্ণমালা মূলক বৰ্ণ থাকিবই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "অৱস্থানৰ নাম"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "অৱস্থানৰ নাম খালী হ’ব নোৱাৰে"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "অৱস্থানৰ নাম {PH1} টা বৰ্ণতকৈ কম হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "দ্ৰাঘিমাংশ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "দ্রাঘিমাংশ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "দ্ৰাঘিমাংশ এটা নম্বৰ হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "দ্রাঘিমাংশ {PH1}ৰ সমান বা ইয়াতকৈ ডাঙৰ হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "দ্ৰাঘিমাংশ {PH1}ৰ সমান অথবা ইয়াতকৈ সৰু হ’বই লাগিব"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "সময় মণ্ডলৰ আইডি"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "সময় মণ্ডলৰ আইডিত বৰ্ণমালাৰ বৰ্ণ থাকিবই লাগিব"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "মাউছহুইল অথবা আপ/ডাউন কীৰে মিলাওক। {PH1}: ±১০, শ্বিফ্ট: ±১, অল্‌ট: ±০.০১"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (আলফা)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (বিটা)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "কাষ্টম দিশ"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "ডিভাইচৰ দিশ আলফা: {PH1}, বিটা: {PH2}, গামা: {PH3}লৈ ছেট কৰা হৈছে"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "তললৈ প্ৰদৰ্শন কৰক"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ওপৰলৈ প্ৰদৰ্শন কৰক"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "ঘূৰাবলৈ দিশ সক্ষম কৰক"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "আসোঁৱাহ"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "বাছনি কৰা নিস্ক্ৰিয় স্থিতিৰ এমুলে’শ্বন বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "ক্লিক কৰাৰ পৰিৱৰ্তে স্পৰ্শ কৰাটো বলপূৰ্বকভাৱে প্ৰয়োগ কৰে"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (গামা)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "লেণ্ডস্কে’প বাওঁফালে কৰক"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "সোঁফালে লেণ্ডস্কে’প কৰক"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "অক্ষ্যাংশ"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "স্থানীয় ভাষা"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "অৱস্থান"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "অৱস্থান উপলব্ধ নহয়"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "দ্রাঘিমাংশ"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "পৰিচালনা"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "অৱস্থানৰ সূচীখন পৰিচালনা কৰক"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "কোনো অ’ভাৰৰাইড নাই"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "অফ"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "দিশ"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "অন্যান্য…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "অ’ভাৰৰাইড"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "প’ৰ্ট্ৰেইট"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "বিপৰীত ফালে প’ৰ্ট্ৰেইট কৰক"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "প্ৰিছেট"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "ৰিছেট কৰক"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "ডিভাইচৰ দিশ পুনৰ ছেট কৰক"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "y-অক্ষৰ চাৰিওফালে ঘূৰাবলৈ শ্বিফ্ট বুটামটো ধৰি থাকি অনুভূমিকভাৱে টানক"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "সময় মণ্ডল আইডি"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "এক্সেলেৰ’মিটাৰ"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "ডিভাইচৰ দিশ"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "ডিভাইচ-ভিত্তিক"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "নিষ্ক্রিয় চিনাক্তকাৰীৰ স্থিতি এমুলে’ট কৰক"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "বলেৰে সক্ষম কৰা"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "জিঅ’লোকেশ্বন"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "স্থানীয় ভাষা"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "স্থানীয় ভাষা"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "অৱস্থান"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "নিষ্ক্ৰিয় এমুলে’শ্বন নাই"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "ছেন্সৰ"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "অৱস্থান দেখুৱাওক"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "ছেন্সৰ দেখুৱাওক"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "সময় মণ্ডল"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "স্পর্শ"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "ব্যৱহাৰকাৰী সক্ৰিয়, স্ক্ৰীন লক কৰা আছে"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "ব্যৱহাৰকাৰী সক্ৰিয় হৈছে, স্ক্ৰীন আনলক কৰা হৈছে"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "ব্যৱহাৰকাৰী নিষ্ক্ৰিয় হৈ আছে, স্ক্ৰীন লক কৰা হৈছে"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "ব্যৱহাৰকাৰী নিস্ক্ৰিয়, স্ক্ৰীন আনলক কৰা আছে"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "ফাইলৰ নামৰ আৰ্হি যোগ দিয়ক"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "সকীয়নি:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "কাষ্টম কৰা ডিভাইচ যোগ দিয়ক..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "ডিভাইচ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "ডিভাইচৰ নাম"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "ডিভাইচৰ নাম খালী হ’ব নোৱাৰে।"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "ডিভাইচৰ নাম {PH1} টা বৰ্ণতকৈ কম হ’বই লাগিব।"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "ডিভাইচ পিক্সেলৰ অনুপাত"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "এমুলে’ট কৰা ডিভাইচ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "উচ্চতা"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "ব্যৱহাৰকাৰীৰ এজেণ্টৰ ষ্ট্ৰীং"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "ব্যৱহাৰকাৰীৰ এজেণ্টৰ প্ৰকাৰ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "প্ৰস্থ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ব্ৰেণ্ড যোগ দিয়ক"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "স্থাপত্য-বিদ্যা"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "আৰ্কিটে’কচ্চাৰ (যেনে, x৮৬)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} মচক"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ব্ৰেণ্ড"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "ব্ৰেণ্ড {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "ব্ৰেণ্ডৰ বৈশিষ্ট্য"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "সংস্কৰণ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ব্ৰেণ্ড"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "মচক"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "ডিভাইচৰ মডেল"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "ডিভাইচৰ বৈশিষ্ট্য"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Full ব্ৰাউজাৰৰ সংস্কৰণ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "পূৰ্ণ ব্ৰাউজাৰৰ সংস্কৰণ (যেনে, ৮৭.০.৪২৮০.৮৮)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "ম’বাইল"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "সংগঠিত হেডাৰ ষ্ট্ৰীং হিচাপে দেখুৱাব পৰা নাযায়।"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "প্লেটফ’ৰ্ম"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "প্লেটফর্ম (যেনে, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "প্লেটফৰ্মৰ বৈশিষ্ট্য"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "প্লেটফৰ্ম সংস্কৰণ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "ইউজাৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "আপডে’ট কৰক"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "ব্যৱহাৰকাৰীৰ এজেণ্ট ক্লায়েণ্ট হিণ্ট ব্যৱহাৰকাৰীৰ এজেণ্ট ষ্ট্ৰীঙৰ বাবে এটা বিকল্প, যিয়ে ব্ৰাউজাৰ আৰু ডিভাইচটো এটা অধিক সংগঠিত উপায়ে অধিক ভাল গোপনীয়তাৰ সৈতে চিনাক্ত কৰে। অধিক জানিবলৈ বুটামটোত ক্লিক কৰক।"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "সংস্কৰণ"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "ডিভাইচ"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "ডিভাইচ দেখুৱাওক"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "নথি"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "ব্ৰেকপইণ্ট নিষ্ক্রিয় কৰক"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "১০ কৈ CSSৰ একক হ্ৰাস"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "{PH1}কৈ CSSৰ একক হ্ৰাস"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ইণ্ডেণ্টেশ্বন চিনাক্ত কৰক"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "চিহ্নলৈ যাওক"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "১০কৈ CSSৰ একক বৃদ্ধি"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "{PH1}কৈ CSSৰ একক বৃদ্ধি"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "পৰৱৰ্তী সম্পাদিত অৱস্থানলৈ যাওক"
@@ -9846,7 +9924,7 @@
     "message": "সাৰসংক্ষেপ প্ৰত্যুত্তৰ"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "মাত্ৰা"
+    "message": "দীঘ-প্ৰস্থ"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "এই অনুসৰি সজাওক"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "পৰিৱৰ্তন সম্পৰ্কীয় এটা গুৰুত্বপূৰ্ণ সমস্যা: পৃষ্ঠাখনে Chromeৰ এটা অনাগত সংস্কৰণত কাম কৰা বন্ধ কৰিব পাৰে"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# টা ব্ৰেকিঙৰ সালসলনি}one{# টা ব্ৰেকিঙৰ সালসলনি}other{# টা ব্ৰেকিঙৰ সালসলনি}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "এটা উন্নীতকৰণ সম্পৰ্কীয় সমস্যা: পৃষ্ঠাখন উন্নত কৰাৰ অৱকাশ আছে"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "পৃষ্ঠাৰ আসোঁৱাহ সম্পৰ্কীয় সমস্যা: পৃষ্ঠাখনে সঠিকভাৱে কাম কৰি থকা নাই"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# পৃষ্ঠাৰ আসোঁৱাহ}one{# পৃষ্ঠাৰ আসোঁৱাহ}other{# পৃষ্ঠাৰ আসোঁৱাহ}}"
@@ -10758,7 +10827,7 @@
     "message": "সমস্যাৰ টেবত সমস্যা দেখুৱাবলৈ ক্লিক কৰক"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "সমস্যাৰ টেব খুলিবলৈ আৰু '{title}' সমস্যাটো দেখুৱাবলৈ ক্লিক কৰক"
+    "message": "সমস্যাৰ টেবটো খুলিবলৈ আৰু সমস্যাটো দেখুৱাবলৈ: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "এই মুহূৰ্তত সমস্যা উপলব্ধ নহয়"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "আটাইবোৰ"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ইনপুট মচক"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "যেনে, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "কুকিটো যিটো উৎস স্কীম (Secure, NonSecure)ত ছেট কৰা হৈছিল তাক দেখুৱায়। যদি স্কীমটো অজ্ঞাত হয়, ই Unset দেখুৱায়।"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date}ৰ পাছত"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "টাইমষ্টেম্পৰ ম্যাদ উকলাৰ সময় {seconds}, যিটোৱে {date}ৰ পাছৰ এটা তাৰিখৰ সৈতে মিলে"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "মান"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "ያልታወቀ ስህተት"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ቀኖች"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ሰዓታት"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} ደቂቃ"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ሚሴ"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} ሴ"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "መስኮት"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "ሠራተኛ"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "ፈጣን 3ጂ"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "ለቅድመ-በረራ ጥያቄ ምንም ይዘት አይገኝም"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "ይህ ጥያቄ አቅጣጫ እንዲቀይር ስለተደረግ ምንም ይዘት ማግኘት አይቻልም"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "በአሁኑ ጊዜ ላይ ለWebSockets ይዘትን ማግኘት አይደገፍም"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "ምንም ማፈን የለም"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} መጫን አጠናቅቋል፦ {PH2} «{PH3}»።"
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "የኩኪ-አቀናብር ራስጌ በዩአርኤል ምላሽ ውስጥ ችላ ተብሏል፦ {PH1}። የኩኪ ርዝመት ከ4096 ቁምፊዎች ያነሰ ወይም እኩል መሆን አለበት።"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "ቀርፋፋ 3ጂ"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "ይህ ኩኪ የ«Secure» መገለጫ ባህሪ ስለነበረው እና የግንኙነቱ ደህንነት የተጠበቀ ስላልነበረ ታግዷል።"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "የኩኪ-አቀናብር ራስጌ በዩአርኤል ምላሽ ውስጥ ችላ ተብሏል፦ {PH1}። የኩኪ ርዝመት ከ4096 ቁምፊዎች ያነሰ ወይም እኩል መሆን አለበት።"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "የዚህ ግንኙነት መርሐግብር ኩኪዎችን እንዲያከማች አይፈቀድም።"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "የAVIF ቅርጸትን አሰናክል"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "መሸጎጫውን ያሰናክሉ (DevTools ክፍት እያለ)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ጃቫስክሪፕትን አሰናክል"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "ዋና"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "ለNode.js የተመደቡ DevTools ክፈት"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ኮር ዋና ክፍሎች"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit አልተሳካም፦ {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "የመሣሪያ ፒክሴል ውርድ ወይም ባዶ መሆነ አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "የመሣሪያ ፒክሴል ውድር ከ{PH1} መብለጥ ወይም እኩል መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "የመሣሪያ ፒክሴል ውድር ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "ቁመት ቁጥር መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "ቁመት ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "ቁመት ከ{PH1} የሚያንስ ወይም እኩል መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "ስፋት ቁጥር መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "ስፋት ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "ስፋት ከ{PH1} የሚያንስ ወይም ከእሱ እኩል መሆን አለበት።"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI ማያ ገጽ ያለው ላፕቶፕ"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "የMDPI ማያ ገጽ ያለው ላፕቶፕ"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "በመንካት የሚሰራ ላፕቶፕ"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "ይዘትን መሰብሰብ ላይ…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ከባድ የማስታወቂያ ጣልቃ ገብነትን ማስተናገድ"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "የሰባሪ ለውጥ ችግር፦ ገጹ በመጪው የChrome ስሪት ላይ መስራቱን ሊያቆም ይችላል"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "የማሻሻል ችግር፦ ገጹን ለማሻሻል ዕድሉ አለ"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "የገጽ ስህተት ችግር፦ ገጹ በትክክል እየሰራ አይደለም"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "የቀለም እና የንፅፅር ተደራሽነት"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "ድህንነቱ ያልተጠበቀ"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets ተብራርቷል"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "የታቀደ ተመሳሳይ ጣቢያ እንዴት ማቀድ እንደሚሰራ"
   },
@@ -1284,7 +1350,7 @@
     "message": "የታመነ የድር እንቅስቃሴን በመጠቀም ለPWAዎች የጥራት መስፈርት ላይ የተደረጉ ለውጦች"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "የWasm ምንጭ ተሻጋሪ ሞዱል መጋራትን ማቋረጥ"
+    "message": "የWasm ሞዱል ማጋራትን ለተመሳሳይ-ምንጭ በመገደብ ላይ"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ማንነት የማይታወቅ>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} ለማንቃት በመጠበቅ ላይ"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "ሁሉንም ምዝገባዎች ይመልከቱ"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker ለ{PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "የአገልግሎት ሠራተኞች"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "ብጁ የማከማቻ ኮታን አስመስል"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "የማከማቻ ኮታ ማንነት በማያሳውቅ ሁነታ ላይ ውስን ነው"
@@ -2949,7 +3021,7 @@
     "message": "ሦስተኛ ወገን"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "የግጥሚያ ንዑስ ጎራዎች"
+    "message": "የንዑስ ጎራ ተዛማጅነት"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ምንጭ"
@@ -2964,7 +3036,7 @@
     "message": "ማስመሰያ"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ማስመሰያዎች"
+    "message": "{PH1} ማስመሰያዎች"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "የአጠቃቀም ገደብ"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}one{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}other{ማስጠንቀቂያ፣ # ጊዜ ተደግሟል}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "ይህ የጎን አሞሌ ወደፊት በሚኖር የChrome ስሪት ላይ ይወገዳል። ግብረመልስ ካለዎት እባክዎ በሚከተለው በኩል ያሳውቁን፦"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "የችግር መከታተያ"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ከታሪክ በራስ-ሰር አጠናቅቅ"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# ባይት፣ {percentage}}one{# ባይት፣ {percentage}}other{# ባይት፣ {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} ባይት ({PH2} %) (ገና) ያልተፈጸሙ የጃቫስክሪፕት ብሎኮች ነው።"
+    "message": "{PH1} ባይቶች ({PH2}) (ገና) ያልተፈጸሙ የጃቫስክሪፕት ብሎኮች ነው።"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} ባይቶች ({PH2} %) ቢያንስ አንድ ጊዜ የፈጸሙ የጃቫስክሪፕት ብሎኮች ናቸው።"
+    "message": "{PH1} ባይቶች ({PH2}) ቢያንስ አንድ ጊዜ የፈጸሙ የጃቫስክሪፕት ብሎኮች ናቸው።"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} ባይቶች ({PH2} %) ያልተፈፀሙ (ገና) ተግባራት ናቸው።"
+    "message": "{PH1} ባይቶች ({PH2}) ያልተፈፀሙ (ገና) ተግባራት ናቸው።"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} ባይት ({PH2} %) ቢያንስ አንድ ጊዜ የተፈጸሙ ተግባራት ናቸው።"
+    "message": "{PH1} ባይት ({PH2}) ቢያንስ አንድ ጊዜ የተፈጸሙ ተግባራት ናቸው።"
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "{PH1} % ጥቅም ላይ አልዋለም {PH2} % ፋይል ጥቅም ላይ ውሏል"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "ጠቅላላ ባይት"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPathን ቅዳ"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "አባለ ነገር ቁረጥ"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "ቁረጥ"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "አባለ ነገርን ይሰርዙ"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "አባለ ነገርን ደብቅ"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "አባለ ነገርን ለጥፍ"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "ለጥፍ"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "ወደ እይታ ሸብልል"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "የመከታተያ ቁልልን አሳይ"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "የተጠቃሚ ወኪል ጥላ DOMን አሳይ"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "የመከታተያ ቁልል"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "የቃል ቅለሳ"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "የመሣሪያ ፒክሴል ውርድ ወይም ባዶ መሆነ አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "የመሣሪያ ፒክሴል ውድር ከ{PH1} መብለጥ ወይም እኩል መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "የመሣሪያ ፒክሴል ውድር ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "ቁመት ቁጥር መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "ቁመት ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "ቁመት ከ{PH1} የሚያንስ ወይም እኩል መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "ስፋት ቁጥር መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "ስፋት ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "ስፋት ከ{PH1} የሚያንስ ወይም ከእሱ እኩል መሆን አለበት።"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "የመሣሪያ ፒክስል ውድር ያክሉ"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "የመሣሪያ ዓይነት"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "ልኬቶች"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "አርትዕ…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ጡባዊ"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "ብጁ መሣሪያን ያክሉ..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "መሣሪያ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "የመሣሪያ ስም"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "የመሥሪያ ስም ባዶ ሊሆን አይችልም።"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "የመሣሪያ ስም ከ{PH1} ቁምፊዎች ማነስ ይኖርበታል።"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "የመሣሪያ ፒክሰል ውድር"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "የተመሰሉ መሳሪያዎች"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "ቁመት"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "የተጠቃሚ መረጃ መፈለጊያ ሕብረቁምፊ"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "የተጠቃሚ ወኪል ዓይነት"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "ስፋት"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI ማያ ገጽ ያለው ላፕቶፕ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "የMDPI ማያ ገጽ ያለው ላፕቶፕ"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "በመንካት የሚሰራ ላፕቶፕ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "አካባቢን አክል..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "ብጁ አካባቢዎች"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "ኬክሮስ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "ኬክሮስ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "ኬክሮስ ቁጥር መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "ኬክሮስ ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "ኬክሮስ ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "የአካባቢ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "አካባቢያዊ የፊደል ቁምፊዎችን መያዝ አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "የአካባቢ ስም"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "የአካባቢ ስም ባዶ ሊሆን አይችልም"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "የአካባቢ ስም ከ{PH1} ቁምፊዎች ያነሰ መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "ረጅም"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "ኬንትሮስ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "ኬንትሮስ ቁጥር መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "ኬንትሮስ ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "ኬንትሮስ ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "የሰዓት ሰቅ መታወቂያ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "የሰዓት ሰቅ መታወቂያ የፊደል ቁምፊዎችን መያዝ አለበት"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "በምንጭ ኮድ ውስጥ አሳይ"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "በመዳፊት ጎማ ወይም በወደ ላይ/ወደ ታች ቁልፎች አማካኝነት ያስተካክሉ። {PH1}፦ ±10፣ Shift፦ ±1፣ Alt፦ ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (አልፋ)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (ቤታ)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "ብጁ አቀማመጥ"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "የመሣሪያ አቀማመጠ ገጽ የተቀናበረው ወደ አልፋ፦ {PH1}፣ ቤታ፦ {PH2}፣ ጋማ፦ {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "ከታች አሳይ"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ማሳያ ወደ ላይ"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "ለማሽከርከር አቀማመጠ ገጽን ያንቁ"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "ስህተት"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "የተመረጠ የስራ ፈት ሁኔታ ማስመሰልን ያስገድዳል"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "ጠቅ ከማድረግ ይልቅ መንካትን ያስገድዳል"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (ጋማ)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "የመሬት ገጽታ ግራ"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "ከመሬት ገጽታ በስተቀኝ"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "ኬክሮስ"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "የአካባቢ"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "አካባቢ"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "አካባቢው የለም"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "ኬንትሮስ"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "አቀናብር"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "የአካባቢዎች ዝርዝርን ያቀናብሩ"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "ምንም የሚሻር የለም"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "አጥፋ"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "አቀማመጠ ገጽ"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "ሌላ…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "መሻሮች"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "የቁም ፎቶ"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "የቁም ፎቶ ተገልብጦ"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "ቅድመ-ቅምጦች"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "ዳግም አስጀምር"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "የመሣሪያ አቅጣጫን ዳግም ያስጀምሩ"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "በ y ዘንግ ዙሪያ ለማሽከርከር Shift+በአግድም ይጎትቱ"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "የሰዓት ሰቅ መታወቂያ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "ብራንድ ያክሉ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ሥነ ሕንጻ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "መዋቅረ ኮምፒውተር (ለምሳሌ፦ x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ሰረዝ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "የምርት ስም"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "የምርት ስም {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "የምርት ስም ባህሪዎች"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "ስሪት {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "የምርት ስሞች"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ሰርዝ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "የመሣሪያ ሞዴል"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "የመሣሪያ ባህሪዎች"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "ሙሉ የአሳሽ ስሪት"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "ሙሉ የአሳሽ ስሪት (ለምሳሌ፦ 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "ተንቀሳቃሽ ስልክ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "እንደ ተዋቀረ የራስጌዎች ሕብረቁምፊ አይወክልም።"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "መሠረተ ሥርዓት"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "መሰረተ ስርዓት (ለምሳሌ፦ Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "የመሰረተ ስርዓት ባህሪዎች"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "የመሰረተ ስርዓት ሥሪት"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "አዘምን"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች በተሻለ የግላዊነት መለያ አማካኝነት አሳሹን እና መሣሪያውን በተሻለ በተዋቀረ መልኩ ለይቶ የሚያውቅ የተጠቃሚ ወኪል ሕብረቁምፊ አማራጭ ነው። የበለጠ ለመረዳት አዝራርን ጠቅ ያድርጉ።"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "ስሪት"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "የፍጥነት መለኪያ መሣሪያ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "ባለሙሉ መጠን ቅጽበታዊ ገጽ እይታን ይቅረጽ"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "መሣሪያ"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "የመሣሪያ አቀማመጠ ገጽ"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "በመሣሪያ ላይ የተመሠረተ"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "መሣሪያዎች"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "ሥራ ፈት መመርመሪያ ሁኔታን አስመስል"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "በግዳጅ የሚነቃ"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "ጂዮ አካባቢ"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "የመሣሪያ ክፈፍን ደብቅ"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "መለኪያዎችን ደብቅ"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "የአካባቢ"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "የአካባቢዎች"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "አካባቢዎች"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "ምንም ስራ ፈት ማስመሰል የለም"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "ዳሳሾች"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "የመሣሪያ ክፈፍን አሳይ"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "መሣሪያዎችን አሳይ"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "አካባቢዎችን አሳይ"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "የሚዲያ ጥያቄዎችን አሳይ"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "ማስመሪያዎችን አሳይ"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "ዳሳሾችን አሳይ"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "የሰዓት ሰቆች"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "የመሣሪያ አሞሌን ይቀያይሩ"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "ይንኩ"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተቆልፏል"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተከፍቷል"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "የተጠቃሚ ስራ ፈት፣ ማያ ገጽ ተቆልፏል"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "የተጠቃሚ ስራ ፈትት፣ ማያ ገጽ ተከፍቷል"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "የክስተት አድማጭን ሰርዝ"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "ጎራ"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "ይህን የSet-Cookie ራስጌ በአውታረ መረብ ፓነሉ ውስጥ የሚያካትቱ የአውታረ መረብ ጥያቄዎችን አሳይ"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# ኩኪ}one{# ኩኪዎች}other{# ኩኪዎች}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 ጥሬ Set-Cookie አርዕስት}one{# ጥሬ Set-Cookie አርዕስቶች}other{# ጥሬ Set-Cookie አርዕስቶች}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "ስም"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "ማስጠንቀቂያ"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "የተደበቁ ችግሮች"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ተጽዕኖ ያረፈባቸው ግብዓቶች"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "የታመነ የድር እንቅስቃሴ"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "ሁሉንም የተደበቁ ችግሮች ግለጥ"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "የታገዱ"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "የWasm ሞዱል ዩአርኤል"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "እንዲህ ያሉ ችግሮችን ግለጥ"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "እንደዚህ ያሉ ችግሮችን ደብቅ"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "የችግሮችን ደብቅ ምናሌ"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "የሲኤስፒ ጥሰቶች"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "የRange ራስጌ ድጋፍ"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "የምስል ሠሪው ስም"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "ጥራት"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "ውሂብን ይደብቃል፦ እና ጓል፦ ዩ አር ኤል ዎች"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "ገልብጥ"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "የፍለጋ ማጣሪያውን ይገለብጣል"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "የጥያቄ ኅብረቁምፊ መለኪያዎች"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "በtrigger-data የተመዘገበ መገለጫ ባሕሪ፦ {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "የማጣቀሻ መመሪያ"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "ደህንነትን አሳይ"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "አካባቢን አክል..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "ብጁ አካባቢዎች"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "ኬክሮስ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "ኬክሮስ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "ኬክሮስ ቁጥር መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "ኬክሮስ ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "ኬክሮስ ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "የአካባቢ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "አካባቢያዊ የፊደል ቁምፊዎችን መያዝ አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "የአካባቢ ስም"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "የአካባቢ ስም ባዶ ሊሆን አይችልም"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "የአካባቢ ስም ከ{PH1} ቁምፊዎች ያነሰ መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "ረጅም"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "ኬንትሮስ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "ኬንትሮስ ቁጥር መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "ኬንትሮስ ከ{PH1} የሚበልጥ ወይም ከእሱ እኩል መሆን አለበት።"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "ኬንትሮስ ከ{PH1} ያነሰ ወይም እኩል መሆን አለበት"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "የሰዓት ሰቅ መታወቂያ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "የሰዓት ሰቅ መታወቂያ የፊደል ቁምፊዎችን መያዝ አለበት"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "በመዳፊት ጎማ ወይም በወደ ላይ/ወደ ታች ቁልፎች አማካኝነት ያስተካክሉ። {PH1}፦ ±10፣ Shift፦ ±1፣ Alt፦ ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (አልፋ)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (ቤታ)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "ብጁ አቀማመጥ"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "የመሣሪያ አቀማመጠ ገጽ የተቀናበረው ወደ አልፋ፦ {PH1}፣ ቤታ፦ {PH2}፣ ጋማ፦ {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "ከታች አሳይ"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ማሳያ ወደ ላይ"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "ለማሽከርከር አቀማመጠ ገጽን ያንቁ"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "ስህተት"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "የተመረጠ የስራ ፈት ሁኔታ ማስመሰልን ያስገድዳል"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "ጠቅ ከማድረግ ይልቅ መንካትን ያስገድዳል"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (ጋማ)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "የመሬት ገጽታ ግራ"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "ከመሬት ገጽታ በስተቀኝ"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "ኬክሮስ"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "የአካባቢ"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "አካባቢ"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "አካባቢው የለም"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "ኬንትሮስ"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "አቀናብር"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "የአካባቢዎች ዝርዝርን ያቀናብሩ"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "ምንም የሚሻር የለም"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "አጥፋ"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "አቀማመጠ ገጽ"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "ሌላ…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "መሻሮች"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "የቁም ፎቶ"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "የቁም ፎቶ ተገልብጦ"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "ቅድመ-ቅምጦች"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "ዳግም አስጀምር"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "የመሣሪያ አቅጣጫን ዳግም ያስጀምሩ"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "በ y ዘንግ ዙሪያ ለማሽከርከር Shift+በአግድም ይጎትቱ"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "የሰዓት ሰቅ መታወቂያ"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "የፍጥነት መለኪያ መሣሪያ"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "የመሣሪያ አቀማመጠ ገጽ"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "በመሣሪያ ላይ የተመሠረተ"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "ሥራ ፈት መመርመሪያ ሁኔታን አስመስል"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "በግዳጅ የሚነቃ"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "ጂዮ አካባቢ"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "የአካባቢ"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "የአካባቢዎች"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "አካባቢዎች"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "ምንም ስራ ፈት ማስመሰል የለም"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "ዳሳሾች"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "አካባቢዎችን አሳይ"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "ዳሳሾችን አሳይ"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "የሰዓት ሰቆች"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "ይንኩ"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተቆልፏል"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተከፍቷል"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "የተጠቃሚ ስራ ፈት፣ ማያ ገጽ ተቆልፏል"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "የተጠቃሚ ስራ ፈትት፣ ማያ ገጽ ተከፍቷል"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "የፋይል ስም ስርዓተ ጥለት ያክሉ"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ማስጠንቀቂያ፦"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "ብጁ መሣሪያን ያክሉ..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "መሣሪያ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "የመሣሪያ ስም"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "የመሥሪያ ስም ባዶ ሊሆን አይችልም።"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "የመሣሪያ ስም ከ{PH1} ቁምፊዎች ማነስ ይኖርበታል።"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "የመሣሪያ ፒክሰል ውድር"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "የተመሰሉ መሳሪያዎች"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "ቁመት"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "የተጠቃሚ መረጃ መፈለጊያ ሕብረቁምፊ"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "የተጠቃሚ ወኪል ዓይነት"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "ስፋት"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "ብራንድ ያክሉ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "ሥነ ሕንጻ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "መዋቅረ ኮምፒውተር (ለምሳሌ፦ x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "{PH1} ሰረዝ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "የምርት ስም"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "የምርት ስም {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "የምርት ስም ባህሪዎች"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "ስሪት {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "የምርት ስሞች"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "ሰርዝ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "የመሣሪያ ሞዴል"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "የመሣሪያ ባህሪዎች"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "ሙሉ የአሳሽ ስሪት"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "ሙሉ የአሳሽ ስሪት (ለምሳሌ፦ 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "ተንቀሳቃሽ ስልክ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "እንደ ተዋቀረ የራስጌዎች ሕብረቁምፊ አይወክልም።"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "መሠረተ ሥርዓት"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "መሰረተ ስርዓት (ለምሳሌ፦ Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "የመሰረተ ስርዓት ባህሪዎች"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "የመሰረተ ስርዓት ሥሪት"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "አዘምን"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች በተሻለ የግላዊነት መለያ አማካኝነት አሳሹን እና መሣሪያውን በተሻለ በተዋቀረ መልኩ ለይቶ የሚያውቅ የተጠቃሚ ወኪል ሕብረቁምፊ አማራጭ ነው። የበለጠ ለመረዳት አዝራርን ጠቅ ያድርጉ።"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "ስሪት"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "መሣሪያዎች"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "መሣሪያዎችን አሳይ"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ሰነዳ"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "መግቻ ቦታዎችን ያሰናክሉ"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "የሲኤስኤስ አሃድ በ10 ቀንስ"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "የሲኤስኤስ አሃድ በ{PH1} ቀንስ"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ገብን ያግኙ"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "ወደ ምልክት ይሂዱ"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "የሲኤስኤስ አሃድን በ10 መጨመር"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "የሲኤስኤስ አሃድን በ{PH1} መጨመር"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "ወደ ቀጣይ የአርትዖት አካባቢ ይዝለሉ"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ደርድር በ"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "የሰባሪ ለውጥ ችግር፦ ገጹ በመጪው የChrome ስሪት ላይ መስራቱን ሊያቆም ይችላል"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ሰባሪ ለውጥ}one{# ሰባሪ ለውጦች}other{# ሰባሪ ለውጦች}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "የማሻሻል ችግር፦ ገጹን ለማሻሻል ዕድሉ አለ"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "የገጽ ስህተት ችግር፦ ገጹ በትክክል እየሰራ አይደለም"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# የገጽ ስህተት}one{# የገጽ ስህተቶች}other{# የገጽ ስህተቶች}}"
@@ -10758,7 +10827,7 @@
     "message": "በችግሮች ትር ውስጥ ችግርን ለማሳየት ጠቅ ያድርጉ"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "የችግር ትሩን ለመክፈት እና «{title}» ችግር ለማሳየት ጠቅ ያድርጉ"
+    "message": "የችግር ትሩን ለመክፈት እና ችግሩን ለማሳየት ጠቅ ያድርጉ፦ {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "በዚህ ጊዜ የማይገኝ ችግር"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "ሁሉንም"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "ግቤትን አጽዳ"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ለምሳሌ፦ /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "የምንጭ መርሐግብሩን ያሳያል (Secure፣ NonSecure) ኩኪው በርቷል። መርሐግብሩ የማይታወቅ ከሆነ ይህ Unsetን ያሳያል።"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "ከ{date} በኋላ"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "የአገልግሎት ማብቂያው የጊዜ ማኅተም {seconds} ነው፣ ይህም ከ{date} በኋላ ካለ ቀን ጋር ይጎዳኛል"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "ዋጋ"

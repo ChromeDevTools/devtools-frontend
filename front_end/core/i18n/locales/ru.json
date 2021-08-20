@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Неизвестная ошибка"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} дн."
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ч."
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} мин."
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} мкс"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} мс"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} сек."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Окно"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G (высокая скорость)"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Для запроса предварительного процесса нет доступного контента."
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Доступного контента нет, так как этот запрос был перенаправлен."
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Контент для WebSocket пока не поддерживается."
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Без ограничения"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "Загрузка {PH1} завершена: {PH2} ({PH3})."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Заголовок Set-Cookie проигнорирован в ответе от URL: {PH1}. Длина файла cookie должна быть меньше или равна 4096 символам."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Медленная 3G-сеть"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Файл cookie заблокирован, потому что он содержал атрибут Secure, а подключение было незащищенным"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Заголовок Set-Cookie проигнорирован в ответе от URL: {PH1}. Длина файла cookie должна быть меньше или равна 4096 символам."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Схеме этого подключения запрещено сохранять файлы cookie"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Отключить формат AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Отключить кеш (пока открыты инструменты разработчика)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Отключить JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Основная"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Откройте специальные инструменты разработчика для Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Основные интернет-показатели"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "{PH1}. Сбой функции LiveEdit."
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Соотношение логических и физических пикселей устройства должно быть выражено числом или не задано."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Соотношение логических и физических пикселей устройства должно быть больше или равно {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Соотношение логических и физических пикселей устройства должно быть меньше или равно {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Высота должна быть выражена числом."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Высота должна быть больше или равна {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Высота должна быть меньше или равна {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Ширина должна быть выражена числом."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Ширина должна быть больше или равна {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Ширина должна быть меньше или равна {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Ноутбук с экраном HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Ноутбук с экраном MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Ноутбук с сенсорным экраном"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Сбор контента…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Как справиться с воздействием тяжелых объявлений"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Проблема критического изменения: страница может перестать работать в следующей версии Chrome."
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Проблема с улучшением: страницу можно улучшить."
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Ошибка страницы. Некорректная работа."
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Специальные возможности цвета и контраста"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "небезопасно"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "О проблемах First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Как работает функция переопределения сайтов"
   },
@@ -1284,7 +1350,7 @@
     "message": "Изменения критериев качества для приложений PWA, использующих безопасные действия в интернете"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Прекращение поддержки совместного использования модулей Wasm между разными источниками"
+    "message": "Совместное использование модулей Wasm только одним источником"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимный>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "Ожидает активации: #{PH1}"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Посмотреть все регистрации"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker для {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Имитировать настраиваемое место в хранилище"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "В режим инкогнито место в хранилище ограничено"
@@ -2949,7 +3021,7 @@
     "message": "Третьей стороны"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Соответствующие субдомены"
+    "message": "Применение к субдоменам"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Источник"
@@ -2964,7 +3036,7 @@
     "message": "Токен"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "токены"
+    "message": "Токены: {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ограничение на использование"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Предупреждение, # повтор}one{Предупреждение, # повтор}few{Предупреждение, # повтора}many{Предупреждение, # повторов}other{Предупреждение, # повтора}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Эта боковая панель будет удалена в будущей версии Chrome. Оставить отзыв можно через"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "Систему отслеживания ошибок"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Автозаполнение из истории"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# байт, {percentage}}one{# байт, {percentage}}few{# байта, {percentage}}many{# байт, {percentage}}other{# байта, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "Байт, принадлежащих блокам JavaScript, которые пока не были выполнены: {PH1} ({PH2} %)"
+    "message": "{PH1} Б ({PH2}) – размер блоков кода JavaScript, которые (ещё) не выполнялись"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} Б ({PH2} %) – размер блоков кода JavaScript, которые выполнялись хотя бы один раз."
+    "message": "{PH1} Б ({PH2}) – размер блоков кода JavaScript, которые выполнялись хотя бы один раз."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} Б ({PH2} %) – код функций, которые (ещё) не выполнялись"
+    "message": "{PH1} Б ({PH2}) – код функций, которые (ещё) не выполнялись"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "Байт, относящихся к функциям, которые выполнялись хотя бы один раз: {PH1} ({PH2} %)."
+    "message": "{PH1} Б ({PH2}) – код функций, которые выполнялись хотя бы один раз."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Не использовано: {PH1} % файла, использовано: {PH2} % файла"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Всего байтов"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Копировать XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Вырезать элемент"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Вырезать"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Удалить элемент"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Скрыть элемент"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Вставить элемент"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Вставить"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Прокрутить в видимую область"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Показать трассировку стека"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Показывать тень DOM для агента пользователя"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Трассировка стека"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Переносить по словам"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Соотношение логических и физических пикселей устройства должно быть выражено числом или не задано."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Соотношение логических и физических пикселей устройства должно быть больше или равно {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Соотношение логических и физических пикселей устройства должно быть меньше или равно {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Высота должна быть выражена числом."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Высота должна быть больше или равна {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Высота должна быть меньше или равна {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Ширина должна быть выражена числом."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Ширина должна быть больше или равна {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Ширина должна быть меньше или равна {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Добавить соотношение логических и физических пикселей устройства"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Тип устройства"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Размеры"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Редактировать…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Добавить пользовательское устройство"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Устройство"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Название устройства"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Укажите название устройства."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Количество символов в названии устройства должно быть меньше {PH1}."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Соотношение логических и физических пикселей устройства"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Эмулированные устройства"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Высота"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Строка агента пользователя"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Тип агента пользователя"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Ширина"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Ноутбук с экраном HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Ноутбук с экраном MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Ноутбук с сенсорным экраном"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Добавить расположение"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Пользовательские местоположения"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Широта"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Широта"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Широта должна быть выражена числом."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Широта должна быть больше или равна {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Широта должна быть меньше или равна {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Региональные настройки"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Региональные настройки должны содержать буквы."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Название местоположения"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Введите название места."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Количество символов в названии места должно быть меньше {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Долгота"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Долгота"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Долгота должна быть выражена числом."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Долгота должна быть больше или равна {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Долгота должна быть меньше или равна {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Идентификатор часового пояса"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Идентификатор часового пояса должен содержать буквы."
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Показать в исходном коде"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Меняйте значение с помощью колеса мыши или клавиш \"Вверх\" и \"Вниз\". {PH1} – ±10, Shift – ±1, Alt – ±0,01."
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (альфа)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (бета)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Пользовательская ориентация"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Ориентация устройства: альфа {PH1}, бета {PH2}, гамма {PH3}."
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Экран вниз"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Дисплеем вверх"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Чтобы поворачивать, включите ориентацию."
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Ошибка"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Запускает выбранную эмуляцию состояния бездействия."
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Позволяет использовать только сенсорный ввод."
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (гамма)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Горизонтальная с поворотом влево"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Горизонтальная с поворотом вправо"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Широта"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Региональные настройки"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Расположение"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Местонахождение неизвестно"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Долгота"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Настроить"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Изменить список мест"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Не переопределять"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Выключено"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Ориентация"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Другое"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Переопределения"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Вертикальное расположение"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Вертикальная с поворотом на 180°"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Шаблоны"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Сбросить"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Сбросить настройки ориентации устройства"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Чтобы вращать модель вокруг оси Y, зажмите Shift и перетаскивайте ее в горизонтальной плоскости."
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Идентификатор часового пояса"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Добавить браузер"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Архитектура"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Архитектура (например, x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Удалить {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Браузер"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Браузер {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Свойства браузера"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Версия {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Браузеры"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Удалить"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Модель устройства"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Свойства устройства"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Полная версия браузера"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Версия браузера полностью (например, 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Мобильный телефон"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Не может быть представлено в виде структурированной строки заголовков."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Платформа"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Платформа (например, Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Свойства платформы"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Версия платформы"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Подсказки агента пользователя клиента"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Обновить"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Подсказки агента пользователя клиента – это альтернатива строке агента пользователя. Они позволяют более структурированно определить браузер и устройство, а также повышают конфиденциальность. Нажмите кнопку, чтобы узнать больше."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Версия"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "акселерометр"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Сделать полноразмерный скриншот"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "устройство"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "ориентация устройства"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Зависит от устройства"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Устройства"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Эмулировать состояние Idle Detector"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Принудительно включено"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "геолокация"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Показать рамку устройства"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Скрыть линейки"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "региональные настройки"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "региональные настройки"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Места"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Отменить эмуляцию бездействия"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Датчики"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Показать рамку устройства"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Показать устройства"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Показать местоположения"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Показать запросы медиа"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Показать линейки"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Показать \"Датчики\""
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "часовые пояса"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Показать или скрыть панель инструментов устройства"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Касание"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Пользователь активен, экран заблокирован"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Пользователь активен, экран разблокирован"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Пользователь бездействует, экран заблокирован"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Пользователь бездействует, экран разблокирован"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Удалить прослушиватель событий"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Домен"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Показать сетевые запросы с этим заголовком Set-Cookie на панели \"Сеть\""
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# файл cookie}one{# файл cookie}few{# файла cookie}many{# файлов cookie}other{# файла cookie}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 необработанный заголовок Set-Cookie}one{# необработанный заголовок Set-Cookie}few{# необработанных заголовка Set-Cookie}many{# необработанных заголовков Set-Cookie}other{# необработанного заголовка Set-Cookie}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Название"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "предупреждение"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Скрытые проблемы"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Измененные ресурсы"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Безопасные действия в интернете"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Показать все скрытые проблемы"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "заблокировано"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL модуля Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Показать такие проблемы"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Скрыть такие проблемы"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Меню \"Скрыть проблемы\""
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Нарушения CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Поддержка заголовков Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Название средства отрисовки"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Разрешение"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Скрыть URL data: и blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Инвертировать"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Инвертировать фильтр поиска"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Подробнее…"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Параметры строки запроса"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "Зарегистрирована атрибуция на основе данных (trigger-data): {PH1}."
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Правило для URL перехода"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Показать панель \"Безопасность\""
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Добавить расположение"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Пользовательские местоположения"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Широта"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Широта"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Широта должна быть выражена числом."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Широта должна быть больше или равна {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Широта должна быть меньше или равна {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Региональные настройки"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Региональные настройки должны содержать буквы."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Название местоположения"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Введите название места."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Количество символов в названии места должно быть меньше {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Долгота"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Долгота"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Долгота должна быть выражена числом."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Долгота должна быть больше или равна {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Долгота должна быть меньше или равна {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Идентификатор часового пояса"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Идентификатор часового пояса должен содержать буквы."
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Меняйте значение с помощью колеса мыши или клавиш \"Вверх\" и \"Вниз\". {PH1} – ±10, Shift – ±1, Alt – ±0,01."
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (альфа)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (бета)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Пользовательская ориентация"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Ориентация устройства: альфа {PH1}, бета {PH2}, гамма {PH3}."
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Экран вниз"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Дисплеем вверх"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Чтобы поворачивать, включите ориентацию."
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Ошибка"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Запускает выбранную эмуляцию состояния бездействия."
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Позволяет использовать только сенсорный ввод."
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (гамма)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Горизонтальная с поворотом влево"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Горизонтальная с поворотом вправо"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Широта"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Региональные настройки"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Расположение"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Местонахождение неизвестно"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Долгота"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Настроить"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Изменить список мест"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Не переопределять"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Выключено"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Ориентация"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Другое"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Переопределения"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Вертикальное расположение"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Вертикальная с поворотом на 180°"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Шаблоны"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Сбросить"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Сбросить настройки ориентации устройства"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Чтобы вращать модель вокруг оси Y, зажмите Shift и перетаскивайте ее в горизонтальной плоскости."
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Идентификатор часового пояса"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "акселерометр"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "ориентация устройства"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Зависит от устройства"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Эмулировать состояние Idle Detector"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Принудительно включено"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "геолокация"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "региональные настройки"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "региональные настройки"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Места"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Отменить эмуляцию бездействия"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Датчики"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Показать местоположения"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Показать \"Датчики\""
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "часовые пояса"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Касание"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Пользователь активен, экран заблокирован"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Пользователь активен, экран разблокирован"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Пользователь бездействует, экран заблокирован"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Пользователь бездействует, экран разблокирован"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Добавить шаблон для названия файла"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ВНИМАНИЕ!"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Добавить пользовательское устройство"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Устройство"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Название устройства"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Укажите название устройства."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Количество символов в названии устройства должно быть меньше {PH1}."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Соотношение логических и физических пикселей устройства"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Эмулированные устройства"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Высота"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Строка агента пользователя"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Тип агента пользователя"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Ширина"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Добавить браузер"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Архитектура"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Архитектура (например, x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Удалить {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Браузер"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Браузер {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Свойства браузера"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Версия {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Браузеры"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Удалить"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Модель устройства"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Свойства устройства"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Полная версия браузера"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Версия браузера полностью (например, 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Мобильный телефон"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Не может быть представлено в виде структурированной строки заголовков."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Платформа"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Платформа (например, Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Свойства платформы"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Версия платформы"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Подсказки агента пользователя клиента"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Обновить"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Подсказки агента пользователя клиента – это альтернатива строке агента пользователя. Они позволяют более структурированно определить браузер и устройство, а также повышают конфиденциальность. Нажмите кнопку, чтобы узнать больше."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Версия"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Устройства"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Показать устройства"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Документация"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Отключить точки останова"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Уменьшение единицы измерения CSS на 10."
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Уменьшить значение свойства CSS на {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Определять отступ"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Перейти к символу"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Увеличение единицы измерения CSS на 10."
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Увеличить значение свойства CSS на {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Перейти к следующему месту редактирования"
@@ -9846,7 +9924,7 @@
     "message": "Краткий ответ"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Измерения"
+    "message": "Размеры"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "Сборка мусора DOM"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Сортировать"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Проблема критического изменения: страница может перестать работать в следующей версии Chrome."
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# критическое изменение}one{# критическое изменение}few{# критических изменения}many{# критических изменений}other{# критического изменения}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Проблема с улучшением: страницу можно улучшить."
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Ошибка страницы. Некорректная работа."
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# ошибка страницы}one{# ошибка страницы}few{# ошибки страницы}many{# ошибок страницы}other{# ошибки страницы}}"
@@ -10758,7 +10827,7 @@
     "message": "Нажмите, чтобы показать проблему на вкладке \"Проблемы\""
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Нажмите, чтобы открыть панель \"Проблемы\" и показать проблему \"{title}\""
+    "message": "Нажмите, чтобы открыть панель \"Проблемы\" и посмотреть проблему \"{title}\""
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Сведения о проблеме сейчас недоступны"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Все"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Очистить"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "Например: /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Показать схему источника (Secure, NonSecure), где был установлен файл cookie. Если схема неизвестна, вы увидите \"Unset\"."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "после {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Временная метка окончания срока действия, {seconds}, соответствует дате после {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Значение"

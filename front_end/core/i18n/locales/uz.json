@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Notanish xato"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} kun"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} soat"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} daq"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Oyna"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Tez 3G"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Erta versiya soʻrovi uchun kontent mavjud emas"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Soʻrov qayta yoʻnaltirilgani uchun kontent mavjud emas"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Hozircha WebSockets kontenti ishlamaydi"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Tarmoq qotishlarisiz"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} yuklanishi tugadi: {PH2} \"{PH3}\"."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Bu manzildan kelgan Set-Cookie sarlavhasi inkor etildi: {PH1}. Cookie uzunligi 4096 yoki undan kam belgilardan iborat boʻlishi kerak."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Sekin 3G"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Bu cookie tarkibida “Secure” atributi borligi va ulanish xavfsiz emasligi uchun bloklandi."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Bu manzildan kelgan Set-Cookie sarlavhasi inkor etildi: {PH1}. Cookie uzunligi 4096 yoki undan kam belgilardan iborat boʻlishi kerak."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Bu ulanish maketiga cookie fayllarni saqlash taqiqlanadi."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "AVIF formatini faolsizlantirish"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Keshni faolsizlantirish (DevTools ochiqligida)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScriptni faolsizlantirish"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Asosiy"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Node.js uchun maxsus DevTools panelini ochish"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Asosiy unumdorlik hisoboti"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit bajarilmadi: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Qurilma piksellar nisbati raqam yoki boʻshliqdan iborat boʻlsin."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Qurilma piksellar nisbati {PH1} bilan barobar yoki undan katta boʻlishi kerak."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Qurilma piksellar nisbati {PH1} bilan barobar yoki undan kichik boʻlishi kerak."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Boʻyi son shaklida kiritilsin."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Boʻyi {PH1} yoki undan katta boʻlishi kerak."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Boʻyi {PH1} yoki undan kichik boʻlishi kerak."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Qalinligi son bilan kiritilsin."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Eni {PH1} yoki undan katta boʻlishi kerak."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Eni {PH1} yoki undan kichik boʻlishi kerak."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "HiDPI ekranli laptop"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "MDPI ekranli laptop"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Sensorli laptop"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Kontent jamlanmoqda…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ogʻir reklama aralashuvlari bilan ishlash"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Jiddiy oʻzgarish xatosi: sahifa Chromening keyingi versiyalarida ishlamay qolishi mumkin"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Yechimli masala: sahifani yaxshilash ehtimoli bor"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Sahifada xato: sahifa ishlashida nosozlik bor"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Rang va kontrast qulayligi"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "ishonchsiz"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "First-Party Sets tavsifi"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Schemeful Same-Site qanday ishlashi"
   },
@@ -1284,7 +1350,7 @@
     "message": "Ishonchli veb faoliyat ishlatadigan PWAlar uchun sifat shartlariga oʻzgarishlar"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Wasm modullarining turli manbalar tomonidan birga ishlatilishi taʼminoti eskirdi"
+    "message": "Shu manbali Wasm mobulining ulashuvi taqiqlanadi"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonim>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} aktivatsiyasi kutilmoqda"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Barcha qaydlar"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "{PH1} uchun Service worker"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Service Workers"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Boshqa xotira sigʻimini simulyatsiya qilish"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Inkognito rejimida xotira sigʻimi cheklangan"
@@ -2949,7 +3021,7 @@
     "message": "Uchinchi tomon : Tashqi"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Mos quyi domenlar"
+    "message": "Quyi domen mosligi"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Manbasi"
@@ -2964,7 +3036,7 @@
     "message": "Token"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "tokenlar"
+    "message": "{PH1} ta token"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Foydalanish cheklovi"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Ogohlantiruv, # marta takrorlandi}other{Ogohlantiruv, # marta takrorlandi}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Bu yon panel Chromening keyingi versiyalarida olib tashlanadi. Fikr-mulohazangiz boʻlsa, bizga xabar qiling:"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "nosozliklar trekeri"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Tarixdan avtomatik kiritilishi"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# bayt, {percentage}}other{# bayt, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} bayt ({PH2} %) JavaScript bloklari (hali) bajarilmagan."
+    "message": "{PH1} bayt ({PH2}) JavaScript bloklari (hali) bajarilmagan."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} bayti ({PH2} %) JavaScript bloklari kamida bir marta bajarilgan."
+    "message": "{PH1} bayti ({PH2}) JavaScript bloklari kamida bir marta bajarilgan."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} bayti ({PH2} %) (hali) bajarilmagan funksiyalarga tegishli."
+    "message": "{PH1} bayti ({PH2}) (hali) bajarilmagan funksiyalarga tegishli."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} bayti ({PH2} %) kamida bir marta bajarilgan funksiyalarga tegishli."
+    "message": "{PH1} bayti ({PH2}) kamida bir marta bajarilgan funksiyalarga tegishli."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Faylning {PH1}% qismi ishlatilmagan, {PH2}% qismi esa band"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Jami baytlar"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "XPath kodini nusxalash"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Elementni qirqish"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Kesib olish"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Elementni olib tashlash"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Elementni berkitish"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Elementni joylash"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Joylash"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Koʻrish uchun varaqlash"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Stek trassirovkasini ochish"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "DOM foydalanuvchi agenti soyasini chiqarish"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stek trassirovkasi"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Soʻzlarni rostlash"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Qurilma piksellar nisbati raqam yoki boʻshliqdan iborat boʻlsin."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Qurilma piksellar nisbati {PH1} bilan barobar yoki undan katta boʻlishi kerak."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Qurilma piksellar nisbati {PH1} bilan barobar yoki undan kichik boʻlishi kerak."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Boʻyi son shaklida kiritilsin."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Boʻyi {PH1} yoki undan katta boʻlishi kerak."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Boʻyi {PH1} yoki undan kichik boʻlishi kerak."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Qalinligi son bilan kiritilsin."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Eni {PH1} yoki undan katta boʻlishi kerak."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Eni {PH1} yoki undan kichik boʻlishi kerak."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Qurilma piksellari nisbatini kiritish"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Qurilma turi"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Oʻlchamlari"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Tahrirlash…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Planshet"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Boshqa qurilma kiritish..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Qurilma"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Qurilma nomi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Qurilma nomi kiritilmagan."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Qurilma nomi kamida {PH1} belgidan iborat boʻlsin"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Qurilma piksellari nisbati"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulyatsiya qurilmalari"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Boʻyi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Foydalanuvchi agenti qatori"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Foydalanuvchi agenti turi"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Eni"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI ekranli laptop"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "MDPI ekranli laptop"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Sensorli laptop"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Joy kiritish..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Boshqa joylar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Kenglik"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Kenglik"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Kenglik raqamda kiritilsin"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Kenglik {PH1} yoki undan katta boʻlishi kerak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Kenglik {PH1} yoki undan kichik boʻlishi kerak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Til"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Hudud alifbo belgilari orqali kiritilsin"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Joy nomi"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Joylashuv nomi kiritilmagan"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Joylashuv nomi kamida {PH1} belgidan iborat boʻlsin"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Uzun"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Uzunlik"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Uzunlik sonli qiymatda kiritilsin"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Uzunlik {PH1} yoki undan katta boʻlishi kerak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Uzunlik {PH1} yoki undan kichik boʻlishi kerak"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Vaqt mintaqasi identifikatori"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Vaqt mintaqasi identifikatori alifbo belgilaridan iborat boʻlsin"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Manba kodini ochiqlash"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Sichqoncha gʻildiragi yoki tepaga/pastga tugmalari bilan moslang. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alpha)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Boshqa holat"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Qurilma joylashuv qiymatlari belgilandi, alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Ekrani pastga"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Ekrani tepaga"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Holat burilishlarini yoqish"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Xato"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Tanlangan kutish holatini majburiy emulyatsiya qiladi"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Klik oʻrniga teginishni majburiy ishlatadi"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Gorizontal chap"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Gorizontal oʻng"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Kenglik"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Til va hudud"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Joylashuv"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Joylashuv topilmadi"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Uzunlik"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Boshqarish"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Barcha joylarni boshqarish"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Qayta tayinlovlarsiz"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Oʻchirish"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Joylashuv"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Boshqa…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Oʻzgartirish"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Tik"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Tik tepadan pastga"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Andozalar"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Asliga qaytarish"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Qurilma joylashuvini tiklash"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Modelni y-axis oʻqi atrofida gorizontal aylantirish uchun Shiftni bosib sudrang"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Vaqt mintaqasi identifikatori"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Brend kiritish"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arxitektura"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arxitekturasi (x86 kabi)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Oʻchirish: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Brend"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Brend: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Brend xususiyatlari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "{PH1} versiyasi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Brendlar"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Oʻchirish"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Qurilma modeli"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Qurilma xususiyatlari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Brauzerning toʻliq versiyasi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Toʻliq brauzer versiyasi (87.0.4280.88 kabi)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Tartibli sarlavhalar qatori sifatida chiqmaydi."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platforma"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platforma (Android kabi)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Platforma xususiyatlari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Platforma versiyasi"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Foydalanuvchi agenti mijoz bildirgilari"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Yangilash"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Foydalanuvchi agenti mijoz bildirgilari hisoblar maxfiyligi yaxshiroq tuzilgan brauzer va qurilmalarga muqobil qatorlar hisoblanadi. Batafsil axborot uchun tugmani bosing."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versiya"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "accelerometer"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Butun hajmda skrinshot olish"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "qurilma"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "qurilma holati"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Qurilma asosida"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Qurilmalar"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Faolsizlikni aniqlash holatini emulyatsiya qilish"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Majburiy yoqilgan"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "geolokatsiya"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Qurilma freymini berkitish"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Chizgʻichlarni yopish"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "til"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "tillar"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Joylar"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Nofaollik emulyatsiya qilinmasin"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Sensorlar"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Qurilma freymini chiqarish"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Qurilmalarni chiqarish"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Mintaqalarni ochish"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Media soʻrovlarni chiqarish"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Chizgʻichlarni ochish"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Sensorlarni chiqarish"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "vaqt mintaqalari"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Qurilma asboblar paneli tugmasi"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Teginish"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Foydalanuvchi faol, ekran qulflangan"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Foydalanuvchi faol, ekran qulflanmagan"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Foydalanuvchi nofaol, ekran qulflangan"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Foydalanuvchi nofaol, ekran qulflanmagan"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Hodisa aniqlagichini oʻchirish"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domen"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Set-Cookie sarlavhasiga ega tarmoq soʻrovlarini tarmoq panelida chiqarish"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# ta cookie fayl}other{# ta cookie fayl}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 ta qator Set-Cookie sarlavhasiga ega}other{# ta qator Set-Cookie sarlavhasiga ega}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nomi"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "ogohlantiruv"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Yashirin nosozliklar"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tegishli resurslar"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Ishonchli veb faoliyat"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Barcha yashirin nosozliklarni ochish"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloklandi"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm moduli URL manzili"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Shu kabi nosozliklarni chiqarish"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Shu kabi nosozliklar chiqmasin"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Nosozliklar menyusini yopish"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP qoidabuzarliklari"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Range sarlavhalari taʼminoti"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Renderlash vositasi nomi"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Piksellar sigʻimi"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "data: va blob: URL manzillarini berkitadi"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Teskarilash"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Qidiruv filtrini teskarilaydi"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Batafsil"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Soʻrov qatori parametrlari"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "trigger-data atributiga ega soʻrov yozib olindi: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Havola qiluvchi siyosati"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Xavfsizlikni ochish"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Joy kiritish..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Boshqa joylar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Kenglik"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Kenglik"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Kenglik raqamda kiritilsin"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Kenglik {PH1} yoki undan katta boʻlishi kerak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Kenglik {PH1} yoki undan kichik boʻlishi kerak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Til"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Hudud alifbo belgilari orqali kiritilsin"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Joy nomi"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Joylashuv nomi kiritilmagan"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Joylashuv nomi kamida {PH1} belgidan iborat boʻlsin"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Uzun"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Uzunlik"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Uzunlik sonli qiymatda kiritilsin"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Uzunlik {PH1} yoki undan katta boʻlishi kerak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Uzunlik {PH1} yoki undan kichik boʻlishi kerak"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Vaqt mintaqasi identifikatori"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Vaqt mintaqasi identifikatori alifbo belgilaridan iborat boʻlsin"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Sichqoncha gʻildiragi yoki tepaga/pastga tugmalari bilan moslang. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alpha)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Boshqa holat"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Qurilma joylashuv qiymatlari belgilandi, alpha: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Ekrani pastga"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Ekrani tepaga"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Holat burilishlarini yoqish"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Xato"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Tanlangan kutish holatini majburiy emulyatsiya qiladi"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Klik oʻrniga teginishni majburiy ishlatadi"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Gorizontal chap"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Gorizontal oʻng"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Kenglik"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Til va hudud"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Joylashuv"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Joylashuv topilmadi"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Uzunlik"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Boshqarish"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Barcha joylarni boshqarish"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Qayta tayinlovlarsiz"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Oʻchirish"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Joylashuv"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Boshqa…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Oʻzgartirish"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Tik"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Tik tepadan pastga"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Andozalar"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Asliga qaytarish"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Qurilma joylashuvini tiklash"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Modelni y-axis oʻqi atrofida gorizontal aylantirish uchun Shiftni bosib sudrang"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Vaqt mintaqasi identifikatori"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "accelerometer"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "qurilma holati"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Qurilma asosida"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Faolsizlikni aniqlash holatini emulyatsiya qilish"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Majburiy yoqilgan"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "geolokatsiya"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "til"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "tillar"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Joylar"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Nofaollik emulyatsiya qilinmasin"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Sensorlar"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Mintaqalarni ochish"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Sensorlarni chiqarish"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "vaqt mintaqalari"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Teginish"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Foydalanuvchi faol, ekran qulflangan"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Foydalanuvchi faol, ekran qulflanmagan"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Foydalanuvchi nofaol, ekran qulflangan"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Foydalanuvchi nofaol, ekran qulflanmagan"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Fayl nomi andozasini kiritish"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "DIQQAT:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Boshqa qurilma kiritish..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Qurilma"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Qurilma nomi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Qurilma nomi kiritilmagan."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Qurilma nomi kamida {PH1} belgidan iborat boʻlsin"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Qurilma piksellari nisbati"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Emulyatsiya qurilmalari"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Boʻyi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Foydalanuvchi agenti qatori"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Foydalanuvchi agenti turi"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Eni"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Brend kiritish"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arxitektura"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arxitekturasi (x86 kabi)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Oʻchirish: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Brend"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Brend: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Brend xususiyatlari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "{PH1} versiyasi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Brendlar"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Oʻchirish"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Qurilma modeli"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Qurilma xususiyatlari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Brauzerning toʻliq versiyasi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Toʻliq brauzer versiyasi (87.0.4280.88 kabi)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Tartibli sarlavhalar qatori sifatida chiqmaydi."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platforma"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platforma (Android kabi)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Platforma xususiyatlari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Platforma versiyasi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Foydalanuvchi agenti mijoz bildirgilari"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Yangilash"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Foydalanuvchi agenti mijoz bildirgilari hisoblar maxfiyligi yaxshiroq tuzilgan brauzer va qurilmalarga muqobil qatorlar hisoblanadi. Batafsil axborot uchun tugmani bosing."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versiya"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Qurilmalar"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Qurilmalarni chiqarish"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Hujjatlar"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Uzish nuqtalarini faolsizlantirish"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "CSS qiymatini 10 ga kamaytiradi"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "CSS qiymati {PH1} ga kamaytirildi"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Oraliqni aniqlash"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Belgiga borish"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "CSS qiymatini 10 ga oshirildi"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "CSS qiymati {PH1} ga oshirildi"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Keyingi tahrir joyiga sakrash"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Saralash"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Jiddiy oʻzgarish xatosi: sahifa Chromening keyingi versiyalarida ishlamay qolishi mumkin"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ta uzish nuqtasi oʻzgardi}other{# ta uzish nuqtasi oʻzgardi}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Yechimli masala: sahifani yaxshilash ehtimoli bor"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Sahifada xato: sahifa ishlashida nosozlik bor"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{sahifada # ta xato}other{sahifada # ta xato}}"
@@ -10758,7 +10827,7 @@
     "message": "Muammolar panelida muammoni chiqarish uchun bosing"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Muammolar panelini ochish va “{title}” muammosini ochish uchun bosing"
+    "message": "Nosozliklar panelini ochish va {title} nosozligini chiqarish uchun bosing"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Hozircha muammo mavjud emas"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Hammasi"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Tozalash"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "m-n, /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Cookie faylda belgilangan manba maketi (Secure, NonSecure) chiqadi. Maket notanish boʻlsa, Unset chiqadi."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "{date} dan keyin"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Muddatiga {seconds} bor, {date} sanasidan keyin tugaydi"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Qiymat"

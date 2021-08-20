@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "បញ្ហាមិនស្គាល់"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} ថ្ងៃ"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} ម៉"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} ន"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} មិល្លីវិនាទី"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} វិ"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "វិនដូ"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "បុគ្គលិក"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G ល្បឿន​លឿន"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "មិនមានខ្លឹមសារសម្រាប់សំណើត្រៀមទេ"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "មិនមានខ្លឹមសារទេ ដោយសារសំណើនេះត្រូវបានបញ្ជូន​បន្ត"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "បច្ចុប្បន្នមិនអាចប្រើខ្លឹមសារសម្រាប់ WebSockets បានទេ"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "គ្មានការពន្យឺតទេ"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} បានបញ្ចប់​ការផ្ទុក៖ {PH2} \"{PH3}\"។"
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "ផ្នែកក្បាល​នៃ Set-Cookie មិនត្រូវបានអើពើ​នៅក្នុង​ការឆ្លើយតប​ពី url៖ {PH1}។ ប្រវែង​ខូគី​គួរតែ​តិចជាង ឬ​ស្មើនឹង 4096 តួអក្សរ។"
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "3G ល្បឿនយឺត"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "ខូគីនេះ​ត្រូវបាន​ទប់ស្កាត់ ដោយសារវា​មានលក្ខណៈ \"Secure\" ហើយ​ការតភ្ជាប់​មិនមាន​សុវត្ថិភាពទេ​។"
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "ផ្នែកក្បាល​នៃ Set-Cookie មិនត្រូវបានអើពើ​នៅក្នុង​ការឆ្លើយតប​ពី url៖ {PH1}។ ប្រវែង​ខូគី​គួរតែ​តិចជាង ឬ​ស្មើនឹង 4096 តួអក្សរ។"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "ទម្រង់​នៃការតភ្ជាប់នេះ​មិនត្រូវបាន​អនុញ្ញាត​ឱ្យរក្សាទុក​ខូគីទេ។"
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "បិទទម្រង់ AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "បិទឃ្លាំងបម្រុង (នៅពេលបើក DevTools)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "បិទ JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "​ចម្បង"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "បើក DevTools ដាច់ដោយឡែកសម្រាប់ Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ផ្នែកសំខាន់ៗ​នៃបណ្ដាញស្នូល​"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit មិនបាន​សម្រេច៖ {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែជា​លេខ ឬទទេ​។"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែ​ធំជាង ឬ​ស្មើនឹង {PH1}។"
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែ​តិចជាង ឬ​ស្មើនឹង {PH1}។"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "កម្ពស់​ត្រូវតែ​ជាលេខ។"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "កម្ពស់​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}។"
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "កម្ពស់​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}។"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "ទទឹង​ត្រូវតែ​ជាលេខ​។"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "ទទឹង​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}។"
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "ទទឹង​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}។"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "កុំព្យូទ័រយួរដៃ​ដែលមាន​អេក្រង់ HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "កុំព្យូទ័រយួរដៃ​ដែលមាន​អេក្រង់ MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "កុំព្យូទ័រយួរដៃ​ដែលអាចបញ្ចូល​ដោយប៉ះ​លើអេក្រង់"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "កំពុងប្រមូលខ្លឹមសារ…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ការចាត់ចែង​អន្តរាគមន៍​ការផ្សាយពាណិជ្ជកម្ម​ដែលចំណាយ​ពេលច្រើន"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "បញ្ហា​ផ្លាស់ប្ដូរ​ដែលអាច​ធ្វើឱ្យខូច៖ ទំព័រ​អាចនឹង​ឈប់ដំណើរការ​នៅក្នុង​កំណែនាពេល​ខាងមុខ​របស់ Chrome"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "បញ្ហា​ក្នុងការ​កែលម្អ៖ មានឱកាស​ក្នុងការ​កែលម្អ​ទំព័រ"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "មានបញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ៖ ទំព័រ​មិនដំណើរការ​ត្រឹមត្រូវទេ"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ភាពងាយស្រួល​នៃពន្លឺបញ្ច្រាស និង​ពណ៌"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "គ្មាន​សុវត្ថិភាព"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "បានពន្យល់អំពី First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "របៀបដែល​ខូគី​គ្រប់ទម្រង់​នៅលើគេហទំព័រ​ដូចគ្នា​ដំណើរការ"
   },
@@ -1284,7 +1350,7 @@
     "message": "ការផ្លាស់ប្ដូរ​ចំពោះ​លក្ខខណ្ឌ​គុណភាព​សម្រាប់ PWA ដោយប្រើ​សកម្មភាព​បណ្ដាញ​ដែលទុកចិត្តបាន"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "ការបញ្ឈប់​ការចែករំលែក​ម៉ូឌុល​ប្រភពដើម​ផ្សេងរបស់ Wasm"
+    "message": "ការរឹតបន្តឹងការចែករំលែកម៉ូឌុល Wasm ទៅកាន់ប្រភពដើម​ដូចគ្នា"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<អនាមិក>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} កំពុងរង់ចាំ ដើម្បីបើកដំណើរការ"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "មើលការចុះឈ្មោះទាំងអស់"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker សម្រាប់ {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "បុគ្គលិកបម្រើសេវាកម្ម"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "ត្រាប់តាមដែន​កំណត់​ទំហំ​ផ្ទុកផ្ទាល់ខ្លួន"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "កូតាទំហំ​ផ្ទុកមានដែនកំណត់នៅក្នុង​មុខងារ​ឯកជន"
@@ -2949,7 +3021,7 @@
     "message": "ភាគី​ទីបី"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "ធ្វើឱ្យត្រូវនឹង​ដែនរង"
+    "message": "ការផ្គូផ្គងដែន​រង"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "ប្រភពដើម"
@@ -2964,7 +3036,7 @@
     "message": "ថូខិន"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "ថូខិន"
+    "message": "ថូខិន {PH1}"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ការរឹតបន្តឹង​ការប្រើប្រាស់"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{ការព្រមាន​ដែលបាន​កើតឡើងវិញ # ដង}other{ការព្រមាន​ដែលបាន​កើតឡើងវិញ # ដង}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "របារចំហៀងនេះនឹងត្រូវបានលុបចេញពីកំណែក្នុងពេលអនាគតរបស់ Chrome។ ប្រសិនបើអ្នកមានមតិកែលម្អ សូមប្រាប់ឱ្យយើងដឹងតាមរយៈ"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "កម្មវិធីតាមដានបញ្ហា"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "បំពេញស្វ័យប្រវត្តិ​ពីប្រវត្តិ"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# បៃ, {percentage}}other{# បៃ, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} បៃ ({PH2} %) ជារបស់បណ្ដុំ JavaScript ដែលមិនទាន់បាន​ដំណើរការ​នៅឡើយ។"
+    "message": "{PH1} បៃ ({PH2}) ជារបស់បណ្ដុំ JavaScript ដែលមិនទាន់បាន​ដំណើរការ​នៅឡើយ។"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} បៃ ({PH2} %) ជារបស់បណ្ដុំ JavaScript ដែលបានដំណើរការយ៉ាងហោចណាស់ម្ដង។"
+    "message": "{PH1} បៃ ({PH2}) ជារបស់បណ្ដុំ JavaScript ដែលបានដំណើរការយ៉ាងហោចណាស់ម្ដង។"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} បៃ ({PH2} %) ជារបស់មុខងារ ដែលមិនទាន់បានដំណើរការនៅឡើយ។"
+    "message": "{PH1} បៃ ({PH2}) ជារបស់មុខងារ ដែលមិនទាន់បានដំណើរការនៅឡើយ។"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} បៃ ({PH2} %) ជារបស់មុខងារ​ដែលបានដំណើរការ​យ៉ាងហោចណាស់​ម្ដង។"
+    "message": "{PH1} បៃ ({PH2}) ជារបស់មុខងារ​ដែលបានដំណើរការ​យ៉ាងហោចណាស់​ម្ដង។"
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "មិនបានប្រើ {PH1} % នៃឯកសារ, បានប្រើ {PH2} % នៃឯកសារ"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "បៃ​សរុប"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "ចម្លង XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "ធាតុ \"កាត់\""
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "កាត់"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "លុប​ធាតុ"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "លាក់​ធាតុ"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "ដាក់ចូល​ធាតុ"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "ដាក់ចូល"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "រំកិល​រហូតដល់​មើលឃើញ"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "បង្ហាញ​ដានបង្គរ"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "បង្ហាញ DOM ស្រមោលភ្នាក់ងារ​អ្នក​ប្រើប្រាស់"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "ដានបង្គរ"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "ការតម្រឹម​ពាក្យ"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែជា​លេខ ឬទទេ​។"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែ​ធំជាង ឬ​ស្មើនឹង {PH1}។"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែ​តិចជាង ឬ​ស្មើនឹង {PH1}។"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "កម្ពស់​ត្រូវតែ​ជាលេខ។"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "កម្ពស់​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}។"
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "កម្ពស់​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}។"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "ទទឹង​ត្រូវតែ​ជាលេខ​។"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "ទទឹង​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}។"
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "ទទឹង​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}។"
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "បញ្ចូល​សមាមាត្រ​ភីកសែល​ឧបករណ៍"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "ប្រភេទ​ឧបករណ៍"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "វិមាត្រ"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "កែ…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "ថេប្លេត"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "បញ្ចូល​ឧបករណ៍​ផ្ទាល់ខ្លួន..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "ឧបករណ៍"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "ឈ្មោះឧបករណ៍"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "មិនអាច​ទុកឈ្មោះ​ឧបករណ៍​ឱ្យនៅទទេ​បានទេ​។"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "ឈ្មោះ​ឧបករណ៍​ត្រូវតែ​តិចជាង {PH1} តួអក្សរ​។"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "ឧបករណ៍ដែល​បានត្រាប់តាម"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "កម្ពស់"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "ជួរអក្សរនៃ​ភ្នាក់ងារ​អ្នកប្រើប្រាស់"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "ប្រភេទ​ភ្នាក់ងារ​អ្នកប្រើ​ប្រាស់"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "ទទឹង"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "កុំព្យូទ័រយួរដៃ​ដែលមាន​អេក្រង់ HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "កុំព្យូទ័រយួរដៃ​ដែលមាន​អេក្រង់ MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "កុំព្យូទ័រយួរដៃ​ដែលអាចបញ្ចូល​ដោយប៉ះ​លើអេក្រង់"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "បញ្ចូល​ទីតាំង..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "ទីតាំង​ផ្ទាល់ខ្លួន"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "រយៈ​ទទឹង"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "រយៈ​ទទឹង"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "រយៈទទឹង​ត្រូវតែ​ជាលេខ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "រយៈទទឹង​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "រយៈទទឹង​ត្រូវតែ​តិចជាង ឬ​ស្មើនឹង {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "ភាសា"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "ភាសា​ត្រូវតែមាន​តួអក្សរ​តាមលំដាប់​អក្ខរក្រម"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "ឈ្មោះ​ទីតាំង"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "មិន​អាច​ទុក​ឈ្មោះ​ទីតាំង​ឱ្យនៅទទេ​បានទេ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "ឈ្មោះទីតាំង​ត្រូវតែ​តិចជាង {PH1} តួអក្សរ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "រយៈបណ្ដោយ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "រយៈបណ្ដោយ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "រយៈបណ្ដោយ​ត្រូវតែ​ជាលេខ"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "រយៈបណ្ដោយ​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "រយៈបណ្ដោយ​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "លេខសម្គាល់​ល្វែងម៉ោង"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "លេខសម្គាល់​ល្វែងម៉ោង​ត្រូវតែមាន​តួអក្សរ​តាមលំដាប់​អក្ខរក្រម"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "បង្ហាញ​នៅក្នុង​កូដប្រភព"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "កែតម្រូវ​ដោយប្រើ​គ្រាប់ចុច​ឡើងលើ/ចុះក្រោម ឬ​គ្រាប់រំកិល​កណ្ដុរ​។ {PH1}៖ ±10, ប្ដូរ (Shift)៖ ±1, Alt៖ ±0.01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (អាល់ហ្វា)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (បេតា)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "ទិស​ផ្ទាល់ខ្លួន"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "ទិស​ឧបករណ៍​ត្រូវបានកំណត់​ទៅអាល់ហ្វា៖ {PH1}, បេតា៖ {PH2}, ហ្គាម៉ា៖ {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "បង្ហាញ​ចុះក្រោម"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "ការបង្ហាញ​បញ្ឈរ"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "បើកទិស​ដើម្បី​បង្វិល"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "មានបញ្ហា"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "បង្ខំ​ការត្រាប់តាម​ស្ថានភាព​អសកម្ម​ដែលបាន​ជ្រើសរើស"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "បង្ខំ​ការប៉ះ​ជំនួសឱ្យ​ការចុច"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (ហ្គាម៉ា)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "ផ្ដេក​ទៅឆ្វេង"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "ផ្ដេក​ទៅស្ដាំ"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "រយៈ​ទទឹង"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "ភាសា"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "ទីតាំង"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "មិនមាន​ទីតាំង​ទេ"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "រយៈបណ្ដោយ"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "គ្រប់គ្រង"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "គ្រប់គ្រង​បញ្ជី​ទីតាំង"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "មិនលុបពីលើទេ"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "បិទ"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "ទិស"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "ផ្សេងទៀត…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "ការលុប​ពីលើ"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "បញ្ឈរ"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "បញ្ឈរ​បញ្ច្រាស​ចុះក្រោម"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "ការកំណត់ជាមុន"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "កំណត់​ឡើងវិញ"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "កំណត់ទិស​ឧបករណ៍​ឡើងវិញ"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "ប្ដូរ (Shift) + អូសក្នុង​ទិសដៅផ្ដេក ដើម្បីបង្វិល​ជុំវិញអ័ក្ស y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "លេខសម្គាល់​ល្វែងម៉ោង"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "បញ្ចូលម៉ាក"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "ស្ថាបត្យកម្ម"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "ស្ថាបត្យកម្ម (ឧ. x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "លុប {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "ម៉ាក"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "ម៉ាក {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "លក្ខណសម្បត្តិ​ម៉ាក"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "កំណែ {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "ម៉ាក"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "លុប"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "ម៉ូដែល​ឧបករណ៍"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "លក្ខណសម្បត្តិ​ឧបករណ៍"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "កំណែ​កម្មវិធីរុករកតាមអ៊ីនធឺណិត​ពេញលេញ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "កំណែ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ពេញលេញ (ឧ. 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "ឧបករណ៍​ចល័ត"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "មិនអាច​តំណាង​ជាជួរអក្សរ​ផ្នែកក្បាល​ដែលរៀបចំ​តាមរចនាសម្ព័ន្ធ​បានទេ​។"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "ប្រព័ន្ធ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "ប្រព័ន្ធ (ឧ. Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "លក្ខណសម្បត្តិ​ប្រព័ន្ធ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "កំណែ​ប្រព័ន្ធ"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "ធ្វើបច្ចុប្បន្នភាព"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់​គឺជាជម្រើសផ្សេងទៀត​សម្រាប់ជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់​ដែលសម្គាល់​កម្មវិធីរុករកតាមអ៊ីនធឺណិត និងឧបករណ៍​តាមរបៀបដែលមាន​ការរៀបចំរចនាសម្ព័ន្ធត្រឹមត្រូវជាង និង​មានទំនួលខុសត្រូវ​លើឯកជនភាព​កាន់តែប្រសើរ។ សូមចុច​ប៊ូតុង ដើម្បី​ស្វែងយល់​បន្ថែម​។"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "កំណែ"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "ឧបករណ៍វាស់​បំរែបំរួលល្បឿន"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "ថត​រូបអេក្រង់​ទំហំពេញ"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "ឧបករណ៍"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "ទិស​ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "ផ្អែកលើ​ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "ត្រាប់តាម​ស្ថានភាព​ឧបករណ៍ចាប់​ភាពអសកម្ម"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "បានបើក​ការបង្ខំ"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "ទីតាំងភូមិសាស្ត្រ"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "លាក់​ស៊ុម​ឧបករណ៍"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "លាក់​បន្ទាត់"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "ភាសា"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "ភាសា"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "ទីតាំង"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "គ្មាន​ការត្រាប់តាម​អសកម្ម​ទេ"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "ឧបករណ៍ចាប់សញ្ញា"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "បង្ហាញ​ស៊ុម​ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "បង្ហាញ​ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "បង្ហាញ​ទីតាំង"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "បង្ហាញ​សំណួរ​មេឌៀ"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "បង្ហាញ​បន្ទាត់"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "បង្ហាញ​ឧបករណ៍​ចាប់សញ្ញា"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "ល្វែង​ម៉ោង"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "បិទ/បើក​របារឧបករណ៍​នៃ​ឧបករណ៍"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "ការចុច"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "អ្នកប្រើប្រាស់​សកម្ម អេក្រង់​ជាប់សោ"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "អ្នកប្រើប្រាស់​សកម្ម អេក្រង់​បាន​ដោះសោ"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "អ្នកប្រើប្រាស់​អសកម្ម អេក្រង់​ជាប់សោ"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "អ្នកប្រើប្រាស់​អសកម្ម អេក្រង់​បានដោះសោ"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "លុបមុខងារស្ដាប់ព្រឹត្តិការណ៍"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "ដែន"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "បង្ហាញសំណើបណ្ដាញ ដែលរួមបញ្ចូលផ្នែកក្បាល Set-Cookie នេះនៅក្នុងផ្ទាំងបណ្ដាញ"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{ខូគី #}other{ខូគី #}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{ផ្នែកក្បាល Set-Cookie ដែលមិនទាន់ដំណើរការ 1}other{ផ្នែកក្បាល Set-Cookie ដែលមិនទាន់ដំណើរការ #}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "ឈ្មោះ"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "ការព្រមាន"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "បញ្ហាដែលបានលាក់"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ធនធាន​ដែលរង​ការប៉ះពាល់"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "សកម្មភាព​បណ្ដាញ​ដែលទុកចិត្តបាន"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "ឈប់​លាក់បញ្ហាដែលបានលាក់ទាំងអស់"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "បាន​ទប់ស្កាត់"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL នៃម៉ូឌុល Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "ឈប់​លាក់បញ្ហាដូចនេះ"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "លាក់បញ្ហាដូចនេះ"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "លាក់ម៉ឺនុយបញ្ហា"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ការបំពាន CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "អាចប្រើ​ផ្នែកក្បាល Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "ឈ្មោះកម្មវិធីបំប្លែង"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "កម្រិតច្បាស់"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "លាក់ទិន្នន័យ៖ និង blob៖ URL"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "បញ្ច្រាស​"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "បញ្ច្រាសតម្រងស្វែងរក"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "ប៉ារ៉ាម៉ែត្រ​ជួរសំណួរ"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "លក្ខណៈដែលបានថតដែលមាន trigger-data៖ {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "គោលការណ៍សមាសធាតុណែនាំ"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "បង្ហាញសុវត្ថិភាព"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "បញ្ចូល​ទីតាំង..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "ទីតាំង​ផ្ទាល់ខ្លួន"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "រយៈ​ទទឹង"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "រយៈ​ទទឹង"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "រយៈទទឹង​ត្រូវតែ​ជាលេខ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "រយៈទទឹង​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "រយៈទទឹង​ត្រូវតែ​តិចជាង ឬ​ស្មើនឹង {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "ភាសា"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "ភាសា​ត្រូវតែមាន​តួអក្សរ​តាមលំដាប់​អក្ខរក្រម"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "ឈ្មោះ​ទីតាំង"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "មិន​អាច​ទុក​ឈ្មោះ​ទីតាំង​ឱ្យនៅទទេ​បានទេ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "ឈ្មោះទីតាំង​ត្រូវតែ​តិចជាង {PH1} តួអក្សរ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "រយៈបណ្ដោយ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "រយៈបណ្ដោយ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "រយៈបណ្ដោយ​ត្រូវតែ​ជាលេខ"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "រយៈបណ្ដោយ​ត្រូវតែ​ធំជាង ឬស្មើនឹង {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "រយៈបណ្ដោយ​ត្រូវតែ​តិចជាង ឬស្មើនឹង {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "លេខសម្គាល់​ល្វែងម៉ោង"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "លេខសម្គាល់​ល្វែងម៉ោង​ត្រូវតែមាន​តួអក្សរ​តាមលំដាប់​អក្ខរក្រម"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "កែតម្រូវ​ដោយប្រើ​គ្រាប់ចុច​ឡើងលើ/ចុះក្រោម ឬ​គ្រាប់រំកិល​កណ្ដុរ​។ {PH1}៖ ±10, ប្ដូរ (Shift)៖ ±1, Alt៖ ±0.01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (អាល់ហ្វា)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (បេតា)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "ទិស​ផ្ទាល់ខ្លួន"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "ទិស​ឧបករណ៍​ត្រូវបានកំណត់​ទៅអាល់ហ្វា៖ {PH1}, បេតា៖ {PH2}, ហ្គាម៉ា៖ {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "បង្ហាញ​ចុះក្រោម"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "ការបង្ហាញ​បញ្ឈរ"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "បើកទិស​ដើម្បី​បង្វិល"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "មានបញ្ហា"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "បង្ខំ​ការត្រាប់តាម​ស្ថានភាព​អសកម្ម​ដែលបាន​ជ្រើសរើស"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "បង្ខំ​ការប៉ះ​ជំនួសឱ្យ​ការចុច"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (ហ្គាម៉ា)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "ផ្ដេក​ទៅឆ្វេង"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "ផ្ដេក​ទៅស្ដាំ"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "រយៈ​ទទឹង"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "ភាសា"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "ទីតាំង"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "មិនមាន​ទីតាំង​ទេ"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "រយៈបណ្ដោយ"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "គ្រប់គ្រង"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "គ្រប់គ្រង​បញ្ជី​ទីតាំង"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "មិនលុបពីលើទេ"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "បិទ"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "ទិស"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "ផ្សេងទៀត…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "ការលុប​ពីលើ"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "បញ្ឈរ"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "បញ្ឈរ​បញ្ច្រាស​ចុះក្រោម"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "ការកំណត់ជាមុន"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "កំណត់​ឡើងវិញ"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "កំណត់ទិស​ឧបករណ៍​ឡើងវិញ"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "ប្ដូរ (Shift) + អូសក្នុង​ទិសដៅផ្ដេក ដើម្បីបង្វិល​ជុំវិញអ័ក្ស y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "លេខសម្គាល់​ល្វែងម៉ោង"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "ឧបករណ៍វាស់​បំរែបំរួលល្បឿន"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "ទិស​ឧបករណ៍"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "ផ្អែកលើ​ឧបករណ៍"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "ត្រាប់តាម​ស្ថានភាព​ឧបករណ៍ចាប់​ភាពអសកម្ម"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "បានបើក​ការបង្ខំ"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "ទីតាំងភូមិសាស្ត្រ"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "ភាសា"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "ភាសា"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "ទីតាំង"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "គ្មាន​ការត្រាប់តាម​អសកម្ម​ទេ"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "ឧបករណ៍ចាប់សញ្ញា"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "បង្ហាញ​ទីតាំង"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "បង្ហាញ​ឧបករណ៍​ចាប់សញ្ញា"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "ល្វែង​ម៉ោង"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "ការចុច"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "អ្នកប្រើប្រាស់​សកម្ម អេក្រង់​ជាប់សោ"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "អ្នកប្រើប្រាស់​សកម្ម អេក្រង់​បាន​ដោះសោ"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "អ្នកប្រើប្រាស់​អសកម្ម អេក្រង់​ជាប់សោ"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "អ្នកប្រើប្រាស់​អសកម្ម អេក្រង់​បានដោះសោ"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "បញ្ចូលលំនាំនៃឈ្មោះឯកសារ"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ការព្រមាន៖"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "បញ្ចូល​ឧបករណ៍​ផ្ទាល់ខ្លួន..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "ឧបករណ៍"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "ឈ្មោះឧបករណ៍"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "មិនអាច​ទុកឈ្មោះ​ឧបករណ៍​ឱ្យនៅទទេ​បានទេ​។"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "ឈ្មោះ​ឧបករណ៍​ត្រូវតែ​តិចជាង {PH1} តួអក្សរ​។"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "ឧបករណ៍ដែល​បានត្រាប់តាម"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "កម្ពស់"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "ជួរអក្សរនៃ​ភ្នាក់ងារ​អ្នកប្រើប្រាស់"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "ប្រភេទ​ភ្នាក់ងារ​អ្នកប្រើ​ប្រាស់"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "ទទឹង"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "បញ្ចូលម៉ាក"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "ស្ថាបត្យកម្ម"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "ស្ថាបត្យកម្ម (ឧ. x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "លុប {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "ម៉ាក"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "ម៉ាក {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "លក្ខណសម្បត្តិ​ម៉ាក"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "កំណែ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "ម៉ាក"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "លុប"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "ម៉ូដែល​ឧបករណ៍"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "លក្ខណសម្បត្តិ​ឧបករណ៍"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "កំណែ​កម្មវិធីរុករកតាមអ៊ីនធឺណិត​ពេញលេញ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "កំណែ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ពេញលេញ (ឧ. 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "ឧបករណ៍​ចល័ត"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "មិនអាច​តំណាង​ជាជួរអក្សរ​ផ្នែកក្បាល​ដែលរៀបចំ​តាមរចនាសម្ព័ន្ធ​បានទេ​។"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "ប្រព័ន្ធ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "ប្រព័ន្ធ (ឧ. Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "លក្ខណសម្បត្តិ​ប្រព័ន្ធ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "កំណែ​ប្រព័ន្ធ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "ធ្វើបច្ចុប្បន្នភាព"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់​គឺជាជម្រើសផ្សេងទៀត​សម្រាប់ជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់​ដែលសម្គាល់​កម្មវិធីរុករកតាមអ៊ីនធឺណិត និងឧបករណ៍​តាមរបៀបដែលមាន​ការរៀបចំរចនាសម្ព័ន្ធត្រឹមត្រូវជាង និង​មានទំនួលខុសត្រូវ​លើឯកជនភាព​កាន់តែប្រសើរ។ សូមចុច​ប៊ូតុង ដើម្បី​ស្វែងយល់​បន្ថែម​។"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "កំណែ"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "ឧបករណ៍"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "បង្ហាញ​ឧបករណ៍"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "ឯកសារ"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "បិទដំណើរការ​ចំណុចផ្អាក"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "បន្ថយ​ឯកតា CSS ចំនួន 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "បន្ថយ​ឯកតា CSS ចំនួន {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "ចាប់​ការចូលបន្ទាត់"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "ចូលទៅកាន់​និមិត្តសញ្ញា"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "បន្ថែម​ឯកតា CSS ចំនួន 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "បន្ថែម​ឯកតា CSS ចំនួន {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "រំលងទៅ​ទីតាំងកែ​បន្ទាប់"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "តម្រៀបតាម"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "បញ្ហា​ផ្លាស់ប្ដូរ​ដែលអាច​ធ្វើឱ្យខូច៖ ទំព័រ​អាចនឹង​ឈប់ដំណើរការ​នៅក្នុង​កំណែនាពេល​ខាងមុខ​របស់ Chrome"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{ការផ្លាស់ប្ដូរ​ដែល​អាច​ធ្វើឱ្យខូច #}other{ការផ្លាស់ប្ដូរ​ដែល​អាច​ធ្វើឱ្យខូច #}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "បញ្ហា​ក្នុងការ​កែលម្អ៖ មានឱកាស​ក្នុងការ​កែលម្អ​ទំព័រ"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "មានបញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ៖ ទំព័រ​មិនដំណើរការ​ត្រឹមត្រូវទេ"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{បញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ #}other{បញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ #}}"
@@ -10758,7 +10827,7 @@
     "message": "ចុចដើម្បី​បង្ហាញបញ្ហា​នៅក្នុង​ផ្ទាំងបញ្ហា"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "ចុចដើម្បីបើក​ផ្ទាំងបញ្ហា និង​បង្ហាញបញ្ហា '{title}'"
+    "message": "ចុចដើម្បីបើក​ផ្ទាំងបញ្ហា និង​បង្ហាញបញ្ហា៖ {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "មិនអាច​បង្ហាញបញ្ហា​បានទេ​នៅពេលនេះ"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "ទាំងអស់"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "សម្អាត​ការបញ្ចូល"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "ឧ. /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "បង្ហាញ​ទម្រង់​ប្រភព (Secure, NonSecure) ដែលខូគី​ត្រូវបានកំណត់​។ ប្រសិនបើ​ទម្រង់នោះ​ជាទម្រង់​ដែលមិនស្គាល់ វាបង្ហាញ Unset។"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "បន្ទាប់​ពី {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "ពេលវេលាផុតកំណត់គឺ {seconds} ដែលត្រូវនឹងកាលបរិច្ឆេទបន្ទាប់ពី {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "តម្លៃ"

@@ -203,22 +203,22 @@
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Eroare necunoscută"
   },
-  "core/i18n/i18nImpl.ts | fdays": {
+  "core/i18n/time-utilities.ts | fdays": {
     "message": "{PH1} zile"
   },
-  "core/i18n/i18nImpl.ts | fhrs": {
+  "core/i18n/time-utilities.ts | fhrs": {
     "message": "{PH1} h"
   },
-  "core/i18n/i18nImpl.ts | fmin": {
+  "core/i18n/time-utilities.ts | fmin": {
     "message": "{PH1} min"
   },
-  "core/i18n/i18nImpl.ts | fmms": {
+  "core/i18n/time-utilities.ts | fmms": {
     "message": "{PH1} μs"
   },
-  "core/i18n/i18nImpl.ts | fms": {
+  "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
-  "core/i18n/i18nImpl.ts | fs": {
+  "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
@@ -368,6 +368,9 @@
   "core/sdk/DOMDebuggerModel.ts | window": {
     "message": "Fereastră"
   },
+  "core/sdk/DOMDebuggerModel.ts | worker": {
+    "message": "Worker"
+  },
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "XHR"
   },
@@ -401,6 +404,15 @@
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Conexiune 3G rapidă"
   },
+  "core/sdk/NetworkManager.ts | noContentForPreflight": {
+    "message": "Nu există conținut disponibil pentru solicitarea preflight"
+  },
+  "core/sdk/NetworkManager.ts | noContentForRedirect": {
+    "message": "Nu există conținut disponibil deoarece solicitarea a fost redirecționată"
+  },
+  "core/sdk/NetworkManager.ts | noContentForWebSocket": {
+    "message": "Momentan, conținutul pentru cadrele WebSocket nu este acceptat"
+  },
   "core/sdk/NetworkManager.ts | noThrottling": {
     "message": "Fără limitare"
   },
@@ -415,9 +427,6 @@
   },
   "core/sdk/NetworkManager.ts | sFinishedLoadingSS": {
     "message": "{PH1} s-a încărcat: {PH2} {PH3}."
-  },
-  "core/sdk/NetworkManager.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Antetul Set-Cookie este ignorat ca răspuns de la adresa URL: {PH1}. Lungimea cookie-ului trebuie să fie mai mică decât sau egală cu 4.096 de caractere."
   },
   "core/sdk/NetworkManager.ts | slowG": {
     "message": "Conexiune 3G lentă"
@@ -481,6 +490,9 @@
   },
   "core/sdk/NetworkRequest.ts | secureOnly": {
     "message": "Acest cookie a fost blocat deoarece avea atributul „Secure” și conexiunea nu era securizată."
+  },
+  "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
+    "message": "Antetul Set-Cookie este ignorat ca răspuns de la adresa URL: {PH1}. Lungimea cookie-ului trebuie să fie mai mică decât sau egală cu 4.096 de caractere."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Schema acestei conexiuni nu este permisă pentru stocarea cookie-urilor."
@@ -604,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | disableAvifFormat": {
     "message": "Dezactivează formatul AVIF"
+  },
+  "core/sdk/sdk-meta.ts | disableCache": {
+    "message": "Dezactivează memoria cache (în timp ce DevTools este deschis)"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Dezactivează JavaScript"
@@ -817,6 +832,9 @@
   },
   "entrypoints/inspector_main/InspectorMain.ts | main": {
     "message": "Principal"
+  },
+  "entrypoints/inspector_main/InspectorMain.ts | openDedicatedTools": {
+    "message": "Deschide DevTools dedicat pentru Node.js"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Detalii de funcționare de bază pentru web"
@@ -1217,6 +1235,42 @@
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit nu a reușit: {PH1}"
   },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
+    "message": "Raportul de pixeli al dispozitivului trebuie să fie un număr sau să fie necompletat."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
+    "message": "Raportul de pixeli al dispozitivului trebuie să fie mai mare decât sau egal cu {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
+    "message": "Raportul de pixeli al dispozitivului trebuie să fie mai mic decât sau egal cu {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
+    "message": "Înălțimea trebuie să fie un număr."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
+    "message": "Înălțimea trebuie să fie mai mare decât sau egală cu {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
+    "message": "Înălțimea trebuie să fie mai mică decât sau egală cu {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
+    "message": "Lățimea trebuie să fie un număr."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
+    "message": "Lățimea trebuie să fie mai mare decât sau egală cu {PH1}."
+  },
+  "models/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
+    "message": "Lățimea trebuie să fie mai mică decât sau egală cu {PH1}."
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
+    "message": "Laptop cu ecran HiDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
+    "message": "Laptop cu ecran MDPI"
+  },
+  "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
+    "message": "Laptop cu funcție tactilă"
+  },
   "models/har/Writer.ts | collectingContent": {
     "message": "Se colectează conținut…"
   },
@@ -1256,6 +1310,15 @@
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestionarea intervențiilor pentru anunțuri care consumă multe resurse"
   },
+  "models/issues_manager/Issue.ts | breakingChangeIssue": {
+    "message": "Eroare legată de o modificare generatoare de conflicte: este posibil ca pagina să nu mai funcționeze într-o versiune Chrome viitoare"
+  },
+  "models/issues_manager/Issue.ts | improvementIssue": {
+    "message": "Problemă legată de îmbunătățiri: ai oportunitatea de a îmbunătăți pagina"
+  },
+  "models/issues_manager/Issue.ts | pageErrorIssue": {
+    "message": "Eroare legată de pagină: pagina nu funcționează corect"
+  },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Accesibilitatea pentru culori și contrast"
   },
@@ -1271,6 +1334,9 @@
   "models/issues_manager/SameSiteCookieIssue.ts | anInsecure": {
     "message": "nesecurizat"
   },
+  "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
+    "message": "Explicație pentru First-Party Sets"
+  },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Cum funcționează Schemeful Same-Site"
   },
@@ -1284,7 +1350,7 @@
     "message": "Modificări ale criteriilor de calitate pentru PWA-uri făcute folosind Activitatea web de încredere"
   },
   "models/issues_manager/WasmCrossOriginModuleSharingIssue.ts | linkTitle": {
-    "message": "Renunțare la utilizarea comună a modulului cu mai multe origini Wasm"
+    "message": "Restricționarea accesului la modulul Wasm la aceeași origine"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonim>"
@@ -2627,6 +2693,9 @@
   "panels/application/ServiceWorkersView.ts | sWaitingToActivate": {
     "message": "#{PH1} în așteptarea activării"
   },
+  "panels/application/ServiceWorkersView.ts | seeAllRegistrations": {
+    "message": "Vezi toate înregistrările"
+  },
   "panels/application/ServiceWorkersView.ts | serviceWorkerForS": {
     "message": "Service worker pentru {PH1}"
   },
@@ -2743,6 +2812,9 @@
   },
   "panels/application/StorageView.ts | serviceWorkers": {
     "message": "Instrumente Service Worker"
+  },
+  "panels/application/StorageView.ts | simulateCustomStorage": {
+    "message": "Simulează cota de stocare personalizată"
   },
   "panels/application/StorageView.ts | storageQuotaIsLimitedIn": {
     "message": "Cota de stocare este limitată în modul incognito"
@@ -2949,7 +3021,7 @@
     "message": "Terță parte"
   },
   "panels/application/components/OriginTrialTreeView.ts | matchSubDomains": {
-    "message": "Potrivește subdomeniile"
+    "message": "Potrivirea cu subdomeniile"
   },
   "panels/application/components/OriginTrialTreeView.ts | origin": {
     "message": "Origine"
@@ -2964,7 +3036,7 @@
     "message": "Indicativ"
   },
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
-    "message": "indicative"
+    "message": "{PH1} indicative"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Restricții de folosire"
@@ -3431,6 +3503,12 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Avertisment, repetat # dată}few{Avertisment, repetat de # ori}other{Avertisment, repetat de # de ori}}"
   },
+  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
+    "message": "Bara laterală va fi eliminată într-o versiune viitoare de Chrome. Dacă vrei să trimiți feedback, o poți face folosind"
+  },
+  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
+    "message": "instrumentul de urmărire a problemelor"
+  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Completarea automată din istoric"
   },
@@ -3537,22 +3615,19 @@
     "message": "{n,plural, =1{# byte, {percentage}}few{# byți, {percentage}}other{# de byți, {percentage}}}"
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOf": {
-    "message": "{PH1} byți ({PH2} %) aparțin blocurilor de JavaScript care nu au fost (încă) executate."
+    "message": "{PH1} byți ({PH2}) aparțin blocurilor de JavaScript care nu au fost (încă) executate."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToBlocksOfJavascript": {
-    "message": "{PH1} byți ({PH2} %) aparțin grupurilor din JavaScript care au fost executate cel puțin o dată."
+    "message": "{PH1} byți ({PH2}) aparțin grupurilor din JavaScript care au fost executate cel puțin o dată."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHave": {
-    "message": "{PH1} byți ({PH2} %) aparțin funcțiilor care nu au fost (încă) executate."
+    "message": "{PH1} byți ({PH2}) aparțin funcțiilor care nu au fost (încă) executate."
   },
   "panels/coverage/CoverageListView.ts | sBytesSBelongToFunctionsThatHaveExecuted": {
-    "message": "{PH1} byți ({PH2} %) aparțin funcțiilor care au fost executate cel puțin o dată."
+    "message": "{PH1} byți ({PH2}) aparțin funcțiilor care au fost executate cel puțin o dată."
   },
   "panels/coverage/CoverageListView.ts | sOfFileUnusedSOfFileUsed": {
     "message": "Procentaj din fișier nefolosit: {PH1} %, procentaj din fișier folosit: {PH2} %"
-  },
-  "panels/coverage/CoverageListView.ts | sPercent": {
-    "message": "{PH1} %"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
     "message": "Numărul total de byți"
@@ -3956,8 +4031,8 @@
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
     "message": "Copiază XPath"
   },
-  "panels/elements/ElementsTreeElement.ts | cutElement": {
-    "message": "Decupează elementul"
+  "panels/elements/ElementsTreeElement.ts | cut": {
+    "message": "Decupează"
   },
   "panels/elements/ElementsTreeElement.ts | deleteElement": {
     "message": "Șterge elementul"
@@ -4004,8 +4079,8 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ascunde elementul"
   },
-  "panels/elements/ElementsTreeElement.ts | pasteElement": {
-    "message": "Inserează elementul"
+  "panels/elements/ElementsTreeElement.ts | paste": {
+    "message": "Inserează"
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Derulează pentru a fi vizibil"
@@ -4298,6 +4373,9 @@
   "panels/elements/elements-meta.ts | showStackTrace": {
     "message": "Afișează urmărirea stivei"
   },
+  "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
+    "message": "Afișează Shadow DOM pentru user agent"
+  },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Urmărirea stivei"
   },
@@ -4306,33 +4384,6 @@
   },
   "panels/elements/elements-meta.ts | wordWrap": {
     "message": "Încadrarea cuvintelor"
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
-    "message": "Raportul de pixeli al dispozitivului trebuie să fie un număr sau să fie necompletat."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeGreater": {
-    "message": "Raportul de pixeli al dispozitivului trebuie să fie mai mare decât sau egal cu {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | devicePixelRatioMustBeLessThanOr": {
-    "message": "Raportul de pixeli al dispozitivului trebuie să fie mai mic decât sau egal cu {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeANumber": {
-    "message": "Înălțimea trebuie să fie un număr."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeGreaterThanOrEqualTo": {
-    "message": "Înălțimea trebuie să fie mai mare decât sau egală cu {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | heightMustBeLessThanOrEqualToS": {
-    "message": "Înălțimea trebuie să fie mai mică decât sau egală cu {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeANumber": {
-    "message": "Lățimea trebuie să fie un număr."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeGreaterThanOrEqualToS": {
-    "message": "Lățimea trebuie să fie mai mare decât sau egală cu {PH1}."
-  },
-  "panels/emulation/DeviceModeModel.ts | widthMustBeLessThanOrEqualToS": {
-    "message": "Lățimea trebuie să fie mai mică decât sau egală cu {PH1}."
   },
   "panels/emulation/DeviceModeToolbar.ts | addDevicePixelRatio": {
     "message": "Adaugă raportul de pixeli al dispozitivului"
@@ -4354,6 +4405,9 @@
   },
   "panels/emulation/DeviceModeToolbar.ts | deviceType": {
     "message": "Tip de dispozitiv"
+  },
+  "panels/emulation/DeviceModeToolbar.ts | dimensions": {
+    "message": "Dimensiuni"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Editează…"
@@ -4448,281 +4502,8 @@
   "panels/emulation/DeviceModeView.ts | tablet": {
     "message": "Tabletă"
   },
-  "panels/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Adaugă un dispozitiv personalizat..."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | device": {
-    "message": "Dispozitiv"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Numele dispozitivului"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Numele dispozitivului trebuie completat."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
-    "message": "Numele dispozitivului trebuie să aibă maximum {PH1} de caractere."
-  },
-  "panels/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
-    "message": "Raportul de pixeli al dispozitivului"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Dispozitive simulate"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Înălțime"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentString": {
-    "message": "Șirul pentru user agent"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | userAgentType": {
-    "message": "Tipul user agent"
-  },
-  "panels/emulation/DevicesSettingsTab.ts | width": {
-    "message": "Lățime"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "Laptop cu ecran HiDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "Laptop cu ecran MDPI"
-  },
-  "panels/emulation/EmulatedDevices.ts | laptopWithTouch": {
-    "message": "Laptop cu funcție tactilă"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | addLocation": {
-    "message": "Adaugă o locație..."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | customLocations": {
-    "message": "Locații personalizate"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | lat": {
-    "message": "Lat."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitude": {
-    "message": "Latitudine"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeANumber": {
-    "message": "Latitudinea trebuie să fie un număr"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
-    "message": "Latitudinea trebuie să fie mai mare decât sau egală cu {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
-    "message": "Latitudinea trebuie să fie mai mică decât sau egală cu {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locale": {
-    "message": "Cod local"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
-    "message": "Codul local trebuie să conțină caractere alfabetice"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationName": {
-    "message": "Numele locației"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Numele locației trebuie completat"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
-    "message": "Numele locației trebuie să aibă maximum {PH1} de caractere"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | long": {
-    "message": "Long."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitude": {
-    "message": "Longitudine"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeANumber": {
-    "message": "Longitudinea trebuie să fie un număr"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
-    "message": "Longitudinea trebuie să fie mai mare decât sau egală cu {PH1}"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
-    "message": "Longitudinea trebuie să fie mai mică decât sau egală cu {PH1}."
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneId": {
-    "message": "Codul fusului orar"
-  },
-  "panels/emulation/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
-    "message": "Codul fusului orar trebuie să conțină caractere alfabetice"
-  },
   "panels/emulation/MediaQueryInspector.ts | revealInSourceCode": {
     "message": "Afișează în codul sursă"
-  },
-  "panels/emulation/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Ajustează folosind rotița mouse-ului sau tastele săgeată în sus / săgeată în jos. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
-  },
-  "panels/emulation/SensorsView.ts | alpha": {
-    "message": "α (alfa)"
-  },
-  "panels/emulation/SensorsView.ts | beta": {
-    "message": "β (beta)"
-  },
-  "panels/emulation/SensorsView.ts | customOrientation": {
-    "message": "Orientare personalizată"
-  },
-  "panels/emulation/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "Orientarea dispozitivului este setată la alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
-  },
-  "panels/emulation/SensorsView.ts | displayDown": {
-    "message": "Cu ecranul în jos"
-  },
-  "panels/emulation/SensorsView.ts | displayUp": {
-    "message": "Cu ecranul în sus"
-  },
-  "panels/emulation/SensorsView.ts | enableOrientationToRotate": {
-    "message": "Activează orientarea pentru a roti"
-  },
-  "panels/emulation/SensorsView.ts | error": {
-    "message": "Eroare"
-  },
-  "panels/emulation/SensorsView.ts | forcesSelectedIdleStateEmulation": {
-    "message": "Forțează simularea stării inactive selectate"
-  },
-  "panels/emulation/SensorsView.ts | forcesTouchInsteadOfClick": {
-    "message": "Aplică forțat atingerea în locul clicului"
-  },
-  "panels/emulation/SensorsView.ts | gamma": {
-    "message": "γ (gamma)"
-  },
-  "panels/emulation/SensorsView.ts | landscapeLeft": {
-    "message": "Peisaj stânga"
-  },
-  "panels/emulation/SensorsView.ts | landscapeRight": {
-    "message": "Peisaj dreapta"
-  },
-  "panels/emulation/SensorsView.ts | latitude": {
-    "message": "Latitudine"
-  },
-  "panels/emulation/SensorsView.ts | locale": {
-    "message": "Cod local"
-  },
-  "panels/emulation/SensorsView.ts | location": {
-    "message": "Locație"
-  },
-  "panels/emulation/SensorsView.ts | locationUnavailable": {
-    "message": "Locație indisponibilă"
-  },
-  "panels/emulation/SensorsView.ts | longitude": {
-    "message": "Longitudine"
-  },
-  "panels/emulation/SensorsView.ts | manage": {
-    "message": "Gestionează"
-  },
-  "panels/emulation/SensorsView.ts | manageTheListOfLocations": {
-    "message": "Gestionează lista locațiilor"
-  },
-  "panels/emulation/SensorsView.ts | noOverride": {
-    "message": "Nicio modificare"
-  },
-  "panels/emulation/SensorsView.ts | off": {
-    "message": "Dezactivată"
-  },
-  "panels/emulation/SensorsView.ts | orientation": {
-    "message": "Orientare"
-  },
-  "panels/emulation/SensorsView.ts | other": {
-    "message": "Alta…"
-  },
-  "panels/emulation/SensorsView.ts | overrides": {
-    "message": "Modificări"
-  },
-  "panels/emulation/SensorsView.ts | portrait": {
-    "message": "Portret"
-  },
-  "panels/emulation/SensorsView.ts | portraitUpsideDown": {
-    "message": "Portret cu susul în jos"
-  },
-  "panels/emulation/SensorsView.ts | presets": {
-    "message": "Presetări"
-  },
-  "panels/emulation/SensorsView.ts | reset": {
-    "message": "Resetează"
-  },
-  "panels/emulation/SensorsView.ts | resetDeviceOrientation": {
-    "message": "Resetează orientarea dispozitivului"
-  },
-  "panels/emulation/SensorsView.ts | shiftdragHorizontallyToRotate": {
-    "message": "Apasă pe Shift + trage pe orizontală pentru a roti în jurul axei y"
-  },
-  "panels/emulation/SensorsView.ts | timezoneId": {
-    "message": "Codul fusului orar"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Adaugă marca"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecture": {
-    "message": "Arhitectură"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
-    "message": "Arhitectură (de ex., x86)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Șterge {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandName": {
-    "message": "Marcă"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
-    "message": "Marcă: {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
-    "message": "Proprietățile mărcii"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
-    "message": "Versiunea {PH1}"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | brands": {
-    "message": "Mărci"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Șterge"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
-    "message": "Modelul dispozitivului"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
-    "message": "Proprietățile dispozitivului"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
-    "message": "Versiune completă a browserului"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
-    "message": "Versiunea completă a browserului (de ex., 87.0.4280.88)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
-    "message": "Mobil"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
-    "message": "Nu se poate reprezenta ca șir de anteturi structurat"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
-    "message": "Platformă"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
-    "message": "Platformă (de ex., Android)"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
-    "message": "Proprietățile platformei"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
-    "message": "Versiunea platformei"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | title": {
-    "message": "Indicii pentru clientul user agent"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | update": {
-    "message": "Actualizează"
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Indiciile pentru clientul user agent sunt o alternativă la șirul pentru user agent, care identifică browserul și dispozitivul într-un mod mai structurat, cu o mai bună gestionare a confidențialității. Dă clic pe buton pentru a afla mai multe."
-  },
-  "panels/emulation/components/UserAgentClientHintsForm.ts | version": {
-    "message": "Versiune"
-  },
-  "panels/emulation/emulation-meta.ts | accelerometer": {
-    "message": "accelerometru"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
     "message": "Realizează o captură de ecran la dimensiune completă"
@@ -4736,24 +4517,6 @@
   "panels/emulation/emulation-meta.ts | device": {
     "message": "dispozitiv"
   },
-  "panels/emulation/emulation-meta.ts | deviceOrientation": {
-    "message": "orientarea dispozitivului"
-  },
-  "panels/emulation/emulation-meta.ts | devicebased": {
-    "message": "Pe bază de dispozitiv"
-  },
-  "panels/emulation/emulation-meta.ts | devices": {
-    "message": "Dispozitive"
-  },
-  "panels/emulation/emulation-meta.ts | emulateIdleDetectorState": {
-    "message": "Simulează starea detectorului inactiv"
-  },
-  "panels/emulation/emulation-meta.ts | forceEnabled": {
-    "message": "Activată forțat"
-  },
-  "panels/emulation/emulation-meta.ts | geolocation": {
-    "message": "localizare geografică"
-  },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "Ascunde cadrul pentru dispozitiv"
   },
@@ -4763,29 +4526,8 @@
   "panels/emulation/emulation-meta.ts | hideRulers": {
     "message": "Ascunde riglele"
   },
-  "panels/emulation/emulation-meta.ts | locale": {
-    "message": "cod local"
-  },
-  "panels/emulation/emulation-meta.ts | locales": {
-    "message": "coduri locale"
-  },
-  "panels/emulation/emulation-meta.ts | locations": {
-    "message": "Locații"
-  },
-  "panels/emulation/emulation-meta.ts | noIdleEmulation": {
-    "message": "Nicio simulare inactivă"
-  },
-  "panels/emulation/emulation-meta.ts | sensors": {
-    "message": "Senzori"
-  },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Afișează un cadru pentru dispozitiv"
-  },
-  "panels/emulation/emulation-meta.ts | showDevices": {
-    "message": "Afișează dispozitivele"
-  },
-  "panels/emulation/emulation-meta.ts | showLocations": {
-    "message": "Afișează locațiile"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
     "message": "Afișează interogările media"
@@ -4793,29 +4535,8 @@
   "panels/emulation/emulation-meta.ts | showRulers": {
     "message": "Afișează riglele"
   },
-  "panels/emulation/emulation-meta.ts | showSensors": {
-    "message": "Afișează Senzorii"
-  },
-  "panels/emulation/emulation-meta.ts | timezones": {
-    "message": "fusuri orare"
-  },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Activează / dezactivează bara de instrumente a dispozitivului"
-  },
-  "panels/emulation/emulation-meta.ts | touch": {
-    "message": "Atingere"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenLocked": {
-    "message": "Utilizator activ, ecran blocat"
-  },
-  "panels/emulation/emulation-meta.ts | userActiveScreenUnlocked": {
-    "message": "Utilizator activ, ecran deblocat"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenLocked": {
-    "message": "Utilizator inactiv, ecran blocat"
-  },
-  "panels/emulation/emulation-meta.ts | userIdleScreenUnlocked": {
-    "message": "Utilizator inactiv, ecran deblocat"
   },
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Șterge funcția de procesare a evenimentelor"
@@ -4910,8 +4631,14 @@
   "panels/issues/AffectedCookiesView.ts | domain": {
     "message": "Domeniu"
   },
+  "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
+    "message": "Afișează solicitările din rețea care includ acest antet Set-Cookie în panoul de rețea"
+  },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}few{# cookie-uri}other{# de cookie-uri}}"
+  },
+  "panels/issues/AffectedCookiesView.ts | nRawCookieLines": {
+    "message": "{n,plural, =1{1 antet Set-Cookie brut}few{# anteturi Set-Cookie brute}other{# de anteturi Set-Cookie brute}}"
   },
   "panels/issues/AffectedCookiesView.ts | name": {
     "message": "Nume"
@@ -5165,6 +4892,9 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "avertisment"
   },
+  "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
+    "message": "Probleme ascunse"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Resursele afectate"
   },
@@ -5243,6 +4973,9 @@
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Activitate web de încredere"
   },
+  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
+    "message": "Reafișează toate problemele ascunse"
+  },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blocat"
   },
@@ -5263,6 +4996,15 @@
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Adresa URL a modulului Wasm"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
+    "message": "Reafișează problemele similare"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
+    "message": "Ascunde problemele similare"
+  },
+  "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
+    "message": "Ascunde meniul cu probleme"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Încălcări CSP"
@@ -5819,6 +5561,9 @@
   "panels/media/PlayerPropertiesView.ts | rangeHeaderSupport": {
     "message": "Compatibilitate cu antetul Range"
   },
+  "panels/media/PlayerPropertiesView.ts | rendererName": {
+    "message": "Numele dispozitivului de redare"
+  },
   "panels/media/PlayerPropertiesView.ts | resolution": {
     "message": "Rezoluție"
   },
@@ -6374,6 +6119,12 @@
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
     "message": "Ascunde adresele URL data: și blob:"
   },
+  "panels/network/NetworkLogView.ts | invertFilter": {
+    "message": "Inversează"
+  },
+  "panels/network/NetworkLogView.ts | invertsFilter": {
+    "message": "Inversează filtrul de căutare"
+  },
   "panels/network/NetworkLogView.ts | learnMore": {
     "message": "Află mai multe"
   },
@@ -6724,6 +6475,9 @@
   },
   "panels/network/RequestHeadersView.ts | queryStringParameters": {
     "message": "Parametri de șiruri de interogare"
+  },
+  "panels/network/RequestHeadersView.ts | recordedAttribution": {
+    "message": "S-a înregistrat o atribuire cu trigger-data: {PH1}"
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
     "message": "Politica privind adresele URL sursă"
@@ -8321,6 +8075,219 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Afișează Securitate"
   },
+  "panels/sensors/LocationsSettingsTab.ts | addLocation": {
+    "message": "Adaugă o locație..."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
+    "message": "Locații personalizate"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | lat": {
+    "message": "Lat."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitude": {
+    "message": "Latitudine"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeANumber": {
+    "message": "Latitudinea trebuie să fie un număr"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeGreaterThanOrEqual": {
+    "message": "Latitudinea trebuie să fie mai mare decât sau egală cu {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | latitudeMustBeLessThanOrEqualToS": {
+    "message": "Latitudinea trebuie să fie mai mică decât sau egală cu {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locale": {
+    "message": "Cod local"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | localeMustContainAlphabetic": {
+    "message": "Codul local trebuie să conțină caractere alfabetice"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationName": {
+    "message": "Numele locației"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
+    "message": "Numele locației trebuie completat"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
+    "message": "Numele locației trebuie să aibă maximum {PH1} de caractere"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | long": {
+    "message": "Long."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitude": {
+    "message": "Longitudine"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeANumber": {
+    "message": "Longitudinea trebuie să fie un număr"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeGreaterThanOr": {
+    "message": "Longitudinea trebuie să fie mai mare decât sau egală cu {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
+    "message": "Longitudinea trebuie să fie mai mică decât sau egală cu {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
+    "message": "Codul fusului orar"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
+    "message": "Codul fusului orar trebuie să conțină caractere alfabetice"
+  },
+  "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
+    "message": "Ajustează folosind rotița mouse-ului sau tastele săgeată în sus / săgeată în jos. {PH1}: ±10, Shift: ±1, Alt: ±0,01"
+  },
+  "panels/sensors/SensorsView.ts | alpha": {
+    "message": "α (alfa)"
+  },
+  "panels/sensors/SensorsView.ts | beta": {
+    "message": "β (beta)"
+  },
+  "panels/sensors/SensorsView.ts | customOrientation": {
+    "message": "Orientare personalizată"
+  },
+  "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
+    "message": "Orientarea dispozitivului este setată la alfa: {PH1}, beta: {PH2}, gamma: {PH3}"
+  },
+  "panels/sensors/SensorsView.ts | displayDown": {
+    "message": "Cu ecranul în jos"
+  },
+  "panels/sensors/SensorsView.ts | displayUp": {
+    "message": "Cu ecranul în sus"
+  },
+  "panels/sensors/SensorsView.ts | enableOrientationToRotate": {
+    "message": "Activează orientarea pentru a roti"
+  },
+  "panels/sensors/SensorsView.ts | error": {
+    "message": "Eroare"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
+    "message": "Forțează simularea stării inactive selectate"
+  },
+  "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
+    "message": "Aplică forțat atingerea în locul clicului"
+  },
+  "panels/sensors/SensorsView.ts | gamma": {
+    "message": "γ (gamma)"
+  },
+  "panels/sensors/SensorsView.ts | landscapeLeft": {
+    "message": "Peisaj stânga"
+  },
+  "panels/sensors/SensorsView.ts | landscapeRight": {
+    "message": "Peisaj dreapta"
+  },
+  "panels/sensors/SensorsView.ts | latitude": {
+    "message": "Latitudine"
+  },
+  "panels/sensors/SensorsView.ts | locale": {
+    "message": "Cod local"
+  },
+  "panels/sensors/SensorsView.ts | location": {
+    "message": "Locație"
+  },
+  "panels/sensors/SensorsView.ts | locationUnavailable": {
+    "message": "Locație indisponibilă"
+  },
+  "panels/sensors/SensorsView.ts | longitude": {
+    "message": "Longitudine"
+  },
+  "panels/sensors/SensorsView.ts | manage": {
+    "message": "Gestionează"
+  },
+  "panels/sensors/SensorsView.ts | manageTheListOfLocations": {
+    "message": "Gestionează lista locațiilor"
+  },
+  "panels/sensors/SensorsView.ts | noOverride": {
+    "message": "Nicio modificare"
+  },
+  "panels/sensors/SensorsView.ts | off": {
+    "message": "Dezactivată"
+  },
+  "panels/sensors/SensorsView.ts | orientation": {
+    "message": "Orientare"
+  },
+  "panels/sensors/SensorsView.ts | other": {
+    "message": "Alta…"
+  },
+  "panels/sensors/SensorsView.ts | overrides": {
+    "message": "Modificări"
+  },
+  "panels/sensors/SensorsView.ts | portrait": {
+    "message": "Portret"
+  },
+  "panels/sensors/SensorsView.ts | portraitUpsideDown": {
+    "message": "Portret cu susul în jos"
+  },
+  "panels/sensors/SensorsView.ts | presets": {
+    "message": "Presetări"
+  },
+  "panels/sensors/SensorsView.ts | reset": {
+    "message": "Resetează"
+  },
+  "panels/sensors/SensorsView.ts | resetDeviceOrientation": {
+    "message": "Resetează orientarea dispozitivului"
+  },
+  "panels/sensors/SensorsView.ts | shiftdragHorizontallyToRotate": {
+    "message": "Apasă pe Shift + trage pe orizontală pentru a roti în jurul axei y"
+  },
+  "panels/sensors/SensorsView.ts | timezoneId": {
+    "message": "Codul fusului orar"
+  },
+  "panels/sensors/sensors-meta.ts | accelerometer": {
+    "message": "accelerometru"
+  },
+  "panels/sensors/sensors-meta.ts | deviceOrientation": {
+    "message": "orientarea dispozitivului"
+  },
+  "panels/sensors/sensors-meta.ts | devicebased": {
+    "message": "Pe bază de dispozitiv"
+  },
+  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
+    "message": "Simulează starea detectorului inactiv"
+  },
+  "panels/sensors/sensors-meta.ts | forceEnabled": {
+    "message": "Activată forțat"
+  },
+  "panels/sensors/sensors-meta.ts | geolocation": {
+    "message": "localizare geografică"
+  },
+  "panels/sensors/sensors-meta.ts | locale": {
+    "message": "cod local"
+  },
+  "panels/sensors/sensors-meta.ts | locales": {
+    "message": "coduri locale"
+  },
+  "panels/sensors/sensors-meta.ts | locations": {
+    "message": "Locații"
+  },
+  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
+    "message": "Nicio simulare inactivă"
+  },
+  "panels/sensors/sensors-meta.ts | sensors": {
+    "message": "Senzori"
+  },
+  "panels/sensors/sensors-meta.ts | showLocations": {
+    "message": "Afișează locațiile"
+  },
+  "panels/sensors/sensors-meta.ts | showSensors": {
+    "message": "Afișează Senzorii"
+  },
+  "panels/sensors/sensors-meta.ts | timezones": {
+    "message": "fusuri orare"
+  },
+  "panels/sensors/sensors-meta.ts | touch": {
+    "message": "Atingere"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
+    "message": "Utilizator activ, ecran blocat"
+  },
+  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
+    "message": "Utilizator activ, ecran deblocat"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
+    "message": "Utilizator inactiv, ecran blocat"
+  },
+  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
+    "message": "Utilizator inactiv, ecran deblocat"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "Adaugă modelul de nume de fișier"
   },
@@ -8446,6 +8413,117 @@
   },
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "AVERTISMENT:"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
+    "message": "Adaugă un dispozitiv personalizat..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | device": {
+    "message": "Dispozitiv"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
+    "message": "Numele dispozitivului"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
+    "message": "Numele dispozitivului trebuie completat."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
+    "message": "Numele dispozitivului trebuie să aibă maximum {PH1} de caractere."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
+    "message": "Raportul de pixeli al dispozitivului"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
+    "message": "Dispozitive simulate"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | height": {
+    "message": "Înălțime"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
+    "message": "Șirul pentru user agent"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
+    "message": "Tipul user agent"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | width": {
+    "message": "Lățime"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
+    "message": "Adaugă marca"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
+    "message": "Arhitectură"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
+    "message": "Arhitectură (de ex., x86)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
+    "message": "Șterge {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
+    "message": "Marcă"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandNameAriaLabel": {
+    "message": "Marcă: {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
+    "message": "Proprietățile mărcii"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
+    "message": "Versiunea {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brands": {
+    "message": "Mărci"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
+    "message": "Șterge"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
+    "message": "Modelul dispozitivului"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceProperties": {
+    "message": "Proprietățile dispozitivului"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersion": {
+    "message": "Versiune completă a browserului"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullBrowserVersionPlaceholder": {
+    "message": "Versiunea completă a browserului (de ex., 87.0.4280.88)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
+    "message": "Mobil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | notRepresentable": {
+    "message": "Nu se poate reprezenta ca șir de anteturi structurat"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformLabel": {
+    "message": "Platformă"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformPlaceholder": {
+    "message": "Platformă (de ex., Android)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformProperties": {
+    "message": "Proprietățile platformei"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | platformVersion": {
+    "message": "Versiunea platformei"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | title": {
+    "message": "Indicii pentru clientul user agent"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | update": {
+    "message": "Actualizează"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
+    "message": "Indiciile pentru clientul user agent sunt o alternativă la șirul pentru user agent, care identifică browserul și dispozitivul într-un mod mai structurat, cu o mai bună gestionare a confidențialității. Dă clic pe buton pentru a afla mai multe."
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | version": {
+    "message": "Versiune"
+  },
+  "panels/settings/emulation/emulation-meta.ts | devices": {
+    "message": "Dispozitive"
+  },
+  "panels/settings/emulation/emulation-meta.ts | showDevices": {
+    "message": "Afișează dispozitivele"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Documentație"
@@ -9062,8 +9140,8 @@
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Dezactivează punctele de întrerupere"
   },
-  "panels/sources/sources-meta.ts | decrementCssUnitByTen": {
-    "message": "Micșorează unitatea CSS cu 10"
+  "panels/sources/sources-meta.ts | decrementCssUnitBy": {
+    "message": "Micșorează unitatea CSS cu {PH1}"
   },
   "panels/sources/sources-meta.ts | detectIndentation": {
     "message": "Detectează indentarea"
@@ -9146,8 +9224,8 @@
   "panels/sources/sources-meta.ts | goToSymbol": {
     "message": "Accesează simbolul"
   },
-  "panels/sources/sources-meta.ts | incrementCssUnitByTen": {
-    "message": "Mărește unitatea CSS cu 10"
+  "panels/sources/sources-meta.ts | incrementCssUnitBy": {
+    "message": "Mărește unitatea CSS cu {PH1}"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Accesează următoarea locație de editare"
@@ -9846,7 +9924,7 @@
     "message": "Răspuns la digest"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Parametri"
+    "message": "Dimensiuni"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
     "message": "DOM GC"
@@ -10736,17 +10814,8 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortează după"
   },
-  "ui/components/issue_counter/IssueCounter.ts | breakingChangeIssue": {
-    "message": "Eroare legată de o modificare generatoare de conflicte: este posibil ca pagina să nu mai funcționeze într-o versiune Chrome viitoare"
-  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# modificare generatoare de conflicte}few{# modificări generatoare de conflicte}other{# de modificări generatoare de conflicte}}"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | improvementIssue": {
-    "message": "Problemă legată de îmbunătățiri: ai oportunitatea de a îmbunătăți pagina"
-  },
-  "ui/components/issue_counter/IssueCounter.ts | pageErrorIssue": {
-    "message": "Eroare legată de pagină: pagina nu funcționează corect"
   },
   "ui/components/issue_counter/IssueCounter.ts | pageErrors": {
     "message": "{issueCount,plural, =1{# eroare de pagină}few{# erori de pagină}other{# de erori de pagină}}"
@@ -10758,7 +10827,7 @@
     "message": "Dă clic pentru a afișa problema în fila Probleme"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Dă clic pentru a deschide fila Probleme și afișează problema '{title}'"
+    "message": "Dă clic pentru a deschide fila Probleme și afișează problema: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Problemă indisponibilă în acest moment"
@@ -10858,6 +10927,9 @@
   },
   "ui/legacy/FilterBar.ts | allStrings": {
     "message": "Toate"
+  },
+  "ui/legacy/FilterBar.ts | clearFilter": {
+    "message": "Șterge textul introdus"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "de ex., /small[d]+/ url:a.com/b"
@@ -11167,6 +11239,12 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | sourceSchemeTooltip": {
     "message": "Afișează schema sursă (Secure, NonSecure) la care a fost setat cookie-ul. Dacă schema este necunoscută, afișează Unset."
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfter": {
+    "message": "după {date}"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | timeAfterTooltip": {
+    "message": "Marcajul temporal pentru expirare este {seconds} și corespunde unei date după {date}"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | value": {
     "message": "Valoare"

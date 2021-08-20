@@ -151,7 +151,7 @@ export class LighthouseReportRenderer extends LighthouseReport.ReportRenderer {
   }
 }
 
-// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
+// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeatures {
   private beforePrint: (() => void)|null;
   private afterPrint: (() => void)|null;

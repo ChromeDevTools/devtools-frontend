@@ -217,42 +217,17 @@ const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]
   }
 };
 
-// Please keep `knownIdentifierTypes` sorted.
-const knownIdentifierTypes = [
-  'Accessibility.AXNodeId',
-  'Audits.IssueId',
-  'Browser.BrowserContextID',
-  'Browser.WindowID',
-  'CacheStorage.CacheId',
-  'CSS.StyleSheetId',
-  'Database.DatabaseId',
-  'Debugger.BreakpointId',
-  'Debugger.CallFrameId',
-  'DOM.BackendNodeId',
-  'DOM.NodeId',
-  'DOM.SnapshotId',
-  'Fetch.RequestId',
-  'HeapProfiler.HeapSnapshotObjectId',
-  'IO.StreamHandle',
-  'LayerTree.LayerId',
-  'LayerTree.SnapshotId',
-  'Media.PlayerId',
-  'Network.InterceptionId',
-  'Network.LoaderId',
-  'Network.RequestId',
-  'Runtime.ExecutionContextId',
-  'Runtime.RemoteObjectId',
-  'Runtime.ScriptId',
-  'Runtime.UniqueDebuggerId',
-  'Security.CertificateId',
-  'Target.SessionID',
-  'Target.TargetID',
-  'ServiceWorker.RegistrationID',
-  'Page.FrameId',
-  'Page.ScriptIdentifier',
-  'WebAudio.GraphObjectId',
-  'WebAuthn.AuthenticatorId',
-];
+// Please keep the keys sorted.
+const identifierTypesOverride = new Map([
+  ['IO.StreamHandle', true],
+  ['Page.ScriptIdentifier', true],
+]);
+
+function isIdentifierTypeName(identifierName: string): boolean {
+  const looksLikeIdentifierName = identifierName.endsWith('Id') || identifierName.endsWith('ID');
+  const override = identifierTypesOverride.get(identifierName);
+  return looksLikeIdentifierName && override !== false || override;
+}
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {
   // Check if this type is an object that declares inline enum types for some of its properties.
@@ -267,7 +242,7 @@ const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {
   } else if (type.type === 'string' && type.enum) {
     // Explicit enums declared as separate types that inherit from 'string'.
     emitEnum(type.id, type.enum);
-  } else if (knownIdentifierTypes.includes(`${domain.domain}.${type.id}`)) {
+  } else if (isIdentifierTypeName(`${domain.domain}.${type.id}`)) {
     const representationType = getPropertyType(type.id, type);
     const tag = `Protocol.${domain.domain}.${type.id}`;
     const opaqueType = `OpaqueIdentifier<${representationType}, '${tag}'>`;

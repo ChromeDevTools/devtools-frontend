@@ -6,7 +6,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 import type {SortState, Column, Row} from './DataGridUtils.js';
-import {SortDirection, getRowEntryForColumnId} from './DataGridUtils.js';
+import {SortDirection, getRowEntryForColumnId, getStringifiedCellValues} from './DataGridUtils.js';
 import type {DataGridData, DataGridContextMenusConfiguration} from './DataGrid.js';
 import type {ContextMenuColumnSortClickEvent, ColumnHeaderClickEvent} from './DataGridEvents.js';
 import {DataGrid} from './DataGrid.js';
@@ -87,10 +87,9 @@ export class DataGridController extends HTMLElement {
 
     let dataToTest;
     if (key) {
-      const cell = getRowEntryForColumnId(row, key);
-      dataToTest = JSON.stringify(cell.value).toLowerCase();
+      dataToTest = getStringifiedCellValues([getRowEntryForColumnId(row, key)]);
     } else {
-      dataToTest = JSON.stringify(row.cells.map(cell => cell.value)).toLowerCase();
+      dataToTest = getStringifiedCellValues(row.cells);
     }
 
     if (regex) {

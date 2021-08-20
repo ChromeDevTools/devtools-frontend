@@ -370,5 +370,44 @@ describe('DataGridController', () => {
         ['Letter B', 'Bravo'],
       ]);
     });
+
+    it('renders only matching rows even after sorting columns', async () => {
+      const component = new DataGrid.DataGridController.DataGridController();
+      component.data = {rows, columns, filters: [createPlainTextFilter('h')]};
+      renderElementIntoDOM(component);
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const internalDataGridShadow = getInternalDataGridShadowRoot(component);
+      let renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter C', 'Charlie'],
+      ]);
+
+      const keyHeader = getHeaderCellForColumnId(internalDataGridShadow, 'key');
+      dispatchClickEvent(keyHeader);  // ASC order
+      await coordinator.done();
+      renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter C', 'Charlie'],
+      ]);
+
+      dispatchClickEvent(keyHeader);  // DESC order
+      await coordinator.done();
+      renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter C', 'Charlie'],
+        ['Letter A', 'Alpha'],
+      ]);
+
+      dispatchClickEvent(keyHeader);  // reset order
+      await coordinator.done();
+      renderedRowValues = getValuesOfAllBodyRows(internalDataGridShadow, {onlyVisible: true});
+      assert.deepEqual(renderedRowValues, [
+        ['Letter A', 'Alpha'],
+        ['Letter C', 'Charlie'],
+      ]);
+    });
   });
 });

@@ -184,7 +184,7 @@ export class DataGridController extends HTMLElement {
       this.sortRows(this.sortState);
     } else {
       // No sortstate = render the original rows.
-      this.rows = [...this.originalRows];
+      this.rows = this.cloneAndFilterRows(this.originalRows, this.filters);
       this.render();
     }
   }

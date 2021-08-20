@@ -15,7 +15,7 @@ export class IOModel extends SDKModel<void> {
     super(target);
   }
 
-  async read(handle: string, size?: number, offset?: number): Promise<string|ArrayBuffer|null> {
+  async read(handle: Protocol.IO.StreamHandle, size?: number, offset?: number): Promise<string|ArrayBuffer|null> {
     const result = await this.target().ioAgent().invoke_read({handle, offset, size});
     if (result.getError()) {
       throw new Error(result.getError());
@@ -29,7 +29,7 @@ export class IOModel extends SDKModel<void> {
     return result.data;
   }
 
-  async close(handle: string): Promise<void> {
+  async close(handle: Protocol.IO.StreamHandle): Promise<void> {
     const result = await this.target().ioAgent().invoke_close({handle});
     if (result.getError()) {
       console.error('Could not close stream.');
@@ -48,7 +48,7 @@ export class IOModel extends SDKModel<void> {
     return `blob:${result.uuid}`;
   }
 
-  async readToString(handle: string): Promise<string> {
+  async readToString(handle: Protocol.IO.StreamHandle): Promise<string> {
     const strings: string[] = [];
     const decoder = new TextDecoder();
     for (;;) {

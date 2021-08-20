@@ -5319,7 +5319,7 @@ declare namespace Protocol {
      * This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
      * `&lt;uuid&gt` is an UUID of a Blob.
      */
-    export type StreamHandle = string;
+    export type StreamHandle = OpaqueIdentifier<string, 'Protocol.IO.StreamHandle'>;
 
     export interface CloseRequest {
       /**

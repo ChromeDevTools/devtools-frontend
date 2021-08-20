@@ -43,7 +43,7 @@ const assertNewAngleFromEvent =
       assert.approximately(newAngle.value, approximateNewValue, 0.1);
     };
 
-const initialData: InlineEditor.CSSAngleImpl.CSSAngleData = {
+const initialData: InlineEditor.CSSAngle.CSSAngleData = {
   propertyName: 'background',
   propertyValue: 'linear-gradient(45deg, red, green)',
   angleText: '45deg',
@@ -52,7 +52,7 @@ const initialData: InlineEditor.CSSAngleImpl.CSSAngleData = {
 
 describe('CSSAngle', () => {
   it('can open and close a popover', () => {
-    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
+    const component = new InlineEditor.CSSAngle.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -66,13 +66,13 @@ describe('CSSAngle', () => {
   });
 
   it('can fire events when toggling the popover', () => {
-    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
+    const component = new InlineEditor.CSSAngle.CSSAngle();
     renderElementIntoDOM(component);
     let isPopoverOpen = false;
     component.data = initialData;
 
     component.addEventListener('popovertoggled', (event: Event) => {
-      const popoverToggledEvent = event as InlineEditor.CSSAngleImpl.PopoverToggledEvent;
+      const popoverToggledEvent = event as InlineEditor.CSSAngle.PopoverToggledEvent;
       isPopoverOpen = popoverToggledEvent.data.open;
     });
 
@@ -88,7 +88,7 @@ describe('CSSAngle', () => {
   });
 
   it('can change unit when the swatch is shift-clicked upon', () => {
-    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
+    const component = new InlineEditor.CSSAngle.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -96,7 +96,7 @@ describe('CSSAngle', () => {
 
     let cssAngleText = initialData.angleText;
     component.addEventListener('unitchanged', (event: Event) => {
-      const {data} = event as InlineEditor.CSSAngleImpl.UnitChangedEvent;
+      const {data} = event as InlineEditor.CSSAngle.UnitChangedEvent;
       cssAngleText = data.value;
     });
 
@@ -110,7 +110,7 @@ describe('CSSAngle', () => {
   });
 
   it('can +/- angle values when pressing UP or DOWN keys', () => {
-    const component = new InlineEditor.CSSAngleImpl.CSSAngle();
+    const component = new InlineEditor.CSSAngle.CSSAngle();
     renderElementIntoDOM(component);
     component.data = initialData;
 
@@ -118,7 +118,7 @@ describe('CSSAngle', () => {
 
     let cssAngleText = initialData.angleText;
     component.addEventListener('valuechanged', (event: Event) => {
-      const {data} = event as InlineEditor.CSSAngleImpl.ValueChangedEvent;
+      const {data} = event as InlineEditor.CSSAngle.ValueChangedEvent;
       cssAngleText = data.value;
     });
 
@@ -139,13 +139,13 @@ describe('CSSAngle', () => {
   });
 
   describe('#CSSAngleUtils', () => {
-    it('can fire InlineEditor.CSSAngleImpl.PopoverToggledEvent when toggling the popover', () => {
-      const component = new InlineEditor.CSSAngleImpl.CSSAngle();
+    it('can fire InlineEditor.CSSAngle.PopoverToggledEvent when toggling the popover', () => {
+      const component = new InlineEditor.CSSAngle.CSSAngle();
       renderElementIntoDOM(component);
       let shouldPopoverEventBeOpen = false;
       component.data = initialData;
       component.addEventListener('popovertoggled', (event: Event) => {
-        const popoverEvent = event as InlineEditor.CSSAngleImpl.PopoverToggledEvent;
+        const popoverEvent = event as InlineEditor.CSSAngle.PopoverToggledEvent;
         assert.strictEqual(popoverEvent.data.open, shouldPopoverEventBeOpen);
       });
 

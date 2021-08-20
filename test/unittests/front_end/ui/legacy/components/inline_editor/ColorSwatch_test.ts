@@ -10,7 +10,7 @@ import {assertElement, assertShadowRoot, dispatchClickEvent, renderElementIntoDO
 const {assert} = chai;
 
 function assertSwatch(
-    swatch: InlineEditor.ColorSwatchImpl.ColorSwatch,
+    swatch: InlineEditor.ColorSwatch.ColorSwatch,
     expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
   assertShadowRoot(swatch.shadowRoot);
 
@@ -34,13 +34,13 @@ function assertSwatch(
 }
 
 function createSwatch(color: Common.Color.Color|string, formatOrUseUserSetting?: string|boolean, tooltip?: string) {
-  const swatch = new InlineEditor.ColorSwatchImpl.ColorSwatch();
+  const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
   renderElementIntoDOM(swatch);
   swatch.renderColor(color, formatOrUseUserSetting, tooltip);
   return swatch;
 }
 
-function getClickTarget(swatch: InlineEditor.ColorSwatchImpl.ColorSwatch) {
+function getClickTarget(swatch: InlineEditor.ColorSwatch.ColorSwatch) {
   assertNotNullOrUndefined(swatch.shadowRoot);
   return swatch.shadowRoot.querySelector('.color-swatch-inner') as HTMLElement;
 }
@@ -129,7 +129,7 @@ describe('ColorSwatch', () => {
 
     let currentFormat = swatch.getFormat();
     swatch.addEventListener(
-        InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (e: InlineEditor.ColorSwatchImpl.FormatChangedEvent) => {
+        InlineEditor.ColorSwatch.FormatChangedEvent.eventName, (e: InlineEditor.ColorSwatch.FormatChangedEvent) => {
           currentFormat = e.data.format;
         });
 

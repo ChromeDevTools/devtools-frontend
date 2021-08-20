@@ -7,6 +7,8 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
+import colorSwatchStyles from './colorSwatch.css.js';
+
 const UIStrings = {
   /**
   *@description Icon element title in Color Swatch of the inline editor in the Styles tab
@@ -15,8 +17,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/ColorSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const getStyleSheets = ComponentHelpers.GetStylesheet.getStyleSheets;
 
 export class FormatChangedEvent extends Event {
   data: {format: string, text: string|null};
@@ -47,7 +47,7 @@ export class ColorSwatch extends HTMLElement {
   constructor() {
     super();
     this.shadow.adoptedStyleSheets = [
-      ...getStyleSheets('ui/legacy/components/inline_editor/colorSwatch.css'),
+      colorSwatchStyles,
     ];
   }
 

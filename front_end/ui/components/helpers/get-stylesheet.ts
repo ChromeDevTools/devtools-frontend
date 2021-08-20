@@ -12,7 +12,7 @@ const sheetsCache = new Map<string, {sheets: CSSStyleSheet[]}>();
  * Given a path to a stylesheet, it returns a CSSStyleSheet that can then be
  * adopted by your component.
  */
-export function getStyleSheets(path: string): CSSStyleSheet[] {
+export function legacyGetStyleSheets(path: string): CSSStyleSheet[] {
   const cachedResult = sheetsCache.get(path);
   if (cachedResult) {
     return cachedResult.sheets;
@@ -29,74 +29,30 @@ export function getStyleSheets(path: string): CSSStyleSheet[] {
 }
 
 /*
- * The getStylesheet helper in components reads styles out of the runtime cache.
+ * This is now legacy. Please do not add any more CSS Files to this list. Refer to
+ * https://crbug.com/1106746 for the new way of implementing CSS in DevTools.
+ *
+ * The legacyGetStylesheet helper in components reads styles out of the runtime cache.
  * In a proper build this is populated but in test runs because we don't load
- * all of DevTools it's not. Therefore we fetch all the CSS files and populate
+ * all of DevTools it's not. Therefore we fetch the required CSS files and populate
  * the cache before any tests are run.
  *
  * The out/Release/gen/front_end URL is prepended so within the Karma config we can proxy
  * them through to the right place, respecting Karma's ROOT_DIRECTORY setting.
  */
 export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
-  'ui/legacy/checkboxTextLabel.css',
-  'ui/legacy/closeButton.css',
-  'ui/legacy/confirmDialog.css',
-  'ui/legacy/dialog.css',
-  'ui/legacy/dropTarget.css',
-  'ui/legacy/emptyWidget.css',
-  'ui/legacy/filter.css',
-  'ui/legacy/glassPane.css',
-  'ui/legacy/infobar.css',
-  'ui/legacy/inlineButton.css',
   'ui/legacy/inspectorCommon.css',
   'ui/legacy/inspectorScrollbars.css',
+  'ui/legacy/textButton.css',
   'ui/legacy/themeColors.css',
   'ui/legacy/inspectorSyntaxHighlight.css',
-  'ui/legacy/inspectorSyntaxHighlightDark.css',
-  'ui/legacy/inspectorViewTabbedPane.css',
-  'ui/legacy/listWidget.css',
-  'ui/legacy/popover.css',
   'ui/legacy/progressIndicator.css',
-  'ui/legacy/radioButton.css',
-  'ui/legacy/remoteDebuggingTerminatedScreen.css',
-  'ui/legacy/reportView.css',
-  'ui/legacy/rootView.css',
-  'ui/legacy/searchableView.css',
-  'ui/legacy/slider.css',
-  'ui/legacy/smallBubble.css',
-  'ui/legacy/softContextMenu.css',
-  'ui/legacy/softDropDown.css',
-  'ui/legacy/softDropDownButton.css',
-  'ui/legacy/splitWidget.css',
-  'ui/legacy/toolbar.css',
-  'ui/legacy/suggestBox.css',
-  'ui/legacy/tabbedPane.css',
-  'ui/legacy/targetCrashedScreen.css',
-  'ui/legacy/textButton.css',
-  'ui/legacy/textPrompt.css',
-  'ui/legacy/treeoutline.css',
-  'ui/legacy/viewContainers.css',
-  'panels/elements/layoutPane.css',
-  'ui/legacy/components/utils/imagePreview.css',
-  'ui/legacy/components/utils/jsUtils.css',
-  'models/persistence/editFileSystemView.css',
-  'models/persistence/workspaceSettingsTab.css',
-  'panels/mobile_throttling/throttlingSettingsTab.css',
-  'panels/emulation/deviceModeToolbar.css',
-  'panels/emulation/deviceModeView.css',
-  'panels/emulation/inspectedPagePlaceholder.css',
-  'panels/emulation/mediaQueryInspector.css',
-  'ui/legacy/components/inline_editor/colorSwatch.css',
-  'entrypoints/inspector_main/nodeIcon.css',
-  'entrypoints/inspector_main/renderingOptions.css',
-  'ui/legacy/components/data_grid/dataGrid.css',
-  'panels/help/releaseNote.css',
-  'ui/legacy/components/object_ui/customPreviewComponent.css',
-  'ui/legacy/components/object_ui/objectPopover.css',
-  'ui/legacy/components/object_ui/objectPropertiesSection.css',
-  'ui/legacy/components/object_ui/objectValue.css',
-  'third_party/codemirror/codemirror.css',
-  'ui/legacy/components/text_editor/autocompleteTooltip.css',
-  'ui/legacy/components/text_editor/cmdevtools.css',
   'panels/application/serviceWorkerUpdateCycleView.css',
+  'ui/legacy/tabbedPane.css',
+  'ui/legacy/components/inline_editor/colorSwatch.css',
+  'ui/legacy/components/utils/jsUtils.css',
+  'ui/legacy/glassPane.css',
+  'ui/legacy/suggestBox.css',
+  'ui/legacy/treeoutline.css',
+  'ui/legacy/softContextMenu.css',
 ];

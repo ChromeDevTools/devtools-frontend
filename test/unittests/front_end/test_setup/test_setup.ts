@@ -27,15 +27,18 @@ before(async function() {
   this.timeout(10000);
 
   /*
- * The getStylesheet helper in components reads styles out of the runtime cache.
+ * This is now legacy. We only use this to load in the required legacy CSS files. Refer to
+ * https://crbug.com/1106746 for the new way of implementing CSS in DevTools.
+ *
+ * The legacyGetStylesheet helper in components reads styles out of the runtime cache.
  * In a proper build this is populated but in test runs because we don't load
- * all of DevTools it's not. Therefore we fetch all the CSS files and populate
+ * all of DevTools it's not. Therefore we fetch the required CSS files and populate
  * the cache before any tests are run.
  *
  * The out/Release/gen/front_end URL is prepended so within the Karma config we can proxy
  * them through to the right place, respecting Karma's ROOT_DIRECTORY setting.
  */
-  const allPromises = ComponentHelpers.GetStylesheet.CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
+  const allPromises = ComponentHelpers.LegacyGetStylesheet.CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
     const pathWithKarmaPrefix = `/base/${targetDir}/front_end/${resourcePath}`;
     return fetch(pathWithKarmaPrefix)
         .then(response => {

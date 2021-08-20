@@ -39,16 +39,18 @@ customElements.define('x-devtools-test-element', TestElement);
 const {assert} = chai;
 
 describe('ComponentHelpers', () => {
-  describe('getStylesheets', () => {
+  describe('legacyGetStylesheets', () => {
     it('returns a single stylesheet with the contents of the resource', () => {
-      const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css');
+      const sheets = ComponentHelpers.LegacyGetStylesheet.legacyGetStyleSheets('ui/legacy/inspectorCommon.css');
       assert.lengthOf(sheets, 1);
       assert.instanceOf(sheets[0], CSSStyleSheet);
     });
 
     it('caches the stylesheet rather than constructing it every time', () => {
-      const firstCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css')[0];
-      const secondCallSheet = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css')[0];
+      const firstCallSheet =
+          ComponentHelpers.LegacyGetStylesheet.legacyGetStyleSheets('ui/legacy/inspectorCommon.css')[0];
+      const secondCallSheet =
+          ComponentHelpers.LegacyGetStylesheet.legacyGetStyleSheets('ui/legacy/inspectorCommon.css')[0];
       assert.strictEqual(firstCallSheet, secondCallSheet);
     });
 
@@ -62,7 +64,7 @@ describe('ComponentHelpers', () => {
       });
 
       it('does not patch by default', () => {
-        const sheets = ComponentHelpers.GetStylesheet.getStyleSheets('ui/legacy/inspectorCommon.css');
+        const sheets = ComponentHelpers.LegacyGetStylesheet.legacyGetStyleSheets('ui/legacy/inspectorCommon.css');
         assert.lengthOf(sheets, 1);
         assert.instanceOf(sheets[0], CSSStyleSheet);
       });

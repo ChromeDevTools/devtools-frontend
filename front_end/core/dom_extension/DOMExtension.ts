@@ -457,8 +457,8 @@ Node.prototype.isSelfOrDescendant = function(node: Node|null): boolean {
   return Boolean(node) && (node === this || this.isDescendant(node));
 };
 
-Node.prototype.traverseNextNode = function(stayWithin?: Node): Node|null {
-  if (this.shadowRoot) {
+Node.prototype.traverseNextNode = function(stayWithin?: Node, skipShadowRoot?: boolean = false): Node|null {
+  if (!skipShadowRoot && this.shadowRoot) {
     return this.shadowRoot;
   }
 

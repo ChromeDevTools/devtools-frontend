@@ -8,6 +8,7 @@ import cssAngleStyles from './cssAngle.css.js';
 
 import type {Angle} from './CSSAngleUtils.js';
 import {AngleUnit, convertAngleUnit, getNewAngleFromEvent, getNextUnit, parseText, roundAngleByUnit} from './CSSAngleUtils.js';
+import {ValueChangedEvent} from './InlineEditorUtils.js';
 
 import type {CSSAngleEditorData} from './CSSAngleEditor.js';
 import {CSSAngleEditor} from './CSSAngleEditor.js';
@@ -25,15 +26,6 @@ export class PopoverToggledEvent extends Event {
   constructor(open: boolean) {
     super('popovertoggled', {});
     this.data = {open};
-  }
-}
-
-export class ValueChangedEvent extends Event {
-  data: {value: string};
-
-  constructor(value: string) {
-    super('valuechanged', {});
-    this.data = {value};
   }
 }
 

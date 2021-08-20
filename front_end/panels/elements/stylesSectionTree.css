@@ -227,6 +227,7 @@ ol.expanded {
   vertical-align: bottom;
 }
 
-devtools-css-angle {
+devtools-css-angle,
+devtools-css-length {
   display: inline-block;
 }

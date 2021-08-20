@@ -15,25 +15,25 @@ self.HeapProfilerTestRunner = self.HeapProfilerTestRunner || {};
 HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   HeapProfilerTestRunner.createJSHeapSnapshotMockObject = function() {
     return {
-      _rootNodeIndex: 0,
-      _nodeTypeOffset: 0,
-      _nodeNameOffset: 1,
-      _nodeEdgeCountOffset: 2,
-      _nodeFieldCount: 3,
-      _edgeFieldsCount: 3,
-      _edgeTypeOffset: 0,
-      _edgeNameOffset: 1,
-      _edgeToNodeOffset: 2,
-      _nodeTypes: ['hidden', 'object'],
-      _edgeTypes: ['element', 'property', 'shortcut'],
-      _edgeShortcutType: -1,
-      _edgeHiddenType: -1,
-      _edgeElementType: 0,
-      _realNodesLength: 18,
+      rootNodeIndex: 0,
+      nodeTypeOffset: 0,
+      nodeNameOffset: 1,
+      nodeEdgeCountOffset: 2,
+      nodeFieldCount: 3,
+      edgeFieldsCount: 3,
+      edgeTypeOffset: 0,
+      edgeNameOffset: 1,
+      edgeToNodeOffset: 2,
+      nodeTypes: ['hidden', 'object'],
+      edgeTypes: ['element', 'property', 'shortcut'],
+      edgeShortcutType: -1,
+      edgeHiddenType: -1,
+      edgeElementType: 0,
+      realNodesLength: 18,
       nodes: new Uint32Array([0, 0, 2, 1, 1, 2, 1, 2, 2, 1, 3, 1, 1, 4, 0, 1, 5, 0]),
       containmentEdges: new Uint32Array([2, 6, 3, 1, 7, 6, 0, 1, 6, 1, 8, 9, 1, 9, 9, 1, 10, 12, 1, 11, 15]),
       strings: ['', 'A', 'B', 'C', 'D', 'E', 'a', 'b', 'ac', 'bc', 'bd', 'ce'],
-      _firstEdgeIndexes: new Uint32Array([0, 6, 12, 18, 21, 21, 21]),
+      firstEdgeIndexes: new Uint32Array([0, 6, 12, 18, 21, 21, 21]),
       createNode: HeapSnapshotWorker.JSHeapSnapshot.prototype.createNode,
       createEdge: HeapSnapshotWorker.JSHeapSnapshot.prototype.createEdge,
       createRetainingEdge: HeapSnapshotWorker.JSHeapSnapshot.prototype.createRetainingEdge
@@ -163,7 +163,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       this.edges[nameOrIndex] = new HeapProfilerTestRunner.HeapEdge(node, type, nameOrIndex);
     },
 
-    _setBuilder: function(builder) {
+    setBuilder: function(builder) {
       if (this.builder) {
         throw new Error('node reusing is prohibited');
       }
@@ -172,7 +172,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       this.ordinal = this.builder.registerNode(this);
     },
 
-    _serialize: function(rawSnapshot) {
+    serialize: function(rawSnapshot) {
       rawSnapshot.nodes.push(this.builder.lookupNodeType(this.type));
       rawSnapshot.nodes.push(this.builder.lookupOrAddString(this.name));
       rawSnapshot.nodes.push(this.id || this.ordinal * 2 + 1);
@@ -194,7 +194,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   };
 
   HeapProfilerTestRunner.HeapEdge.prototype = {
-    _serialize: function(rawSnapshot) {
+    serialize: function(rawSnapshot) {
       if (!this.targetNode.builder) {
         throw new Error('Inconsistent state of node: ' + this.name + ' no builder assigned');
       }
@@ -276,7 +276,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       return new HeapSnapshotWorker.JSHeapSnapshot(parsedSnapshot, new HeapSnapshotWorker.HeapSnapshotProgress());
     },
 
-    _registerNode: function(node) {
+    registerNode: function(node) {
       this.nodes.push(node);
       return this.nodes.length - 1;
     },

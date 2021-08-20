@@ -294,7 +294,8 @@ async function requestHandler(request, response) {
     let fullPath = path.join(componentDocsBaseFolder, filePath);
     if (fullPath.endsWith(path.join('locales', 'en-US.json'))) {
       // Rewrite this path so we can load up the locale in the component-docs
-      fullPath = path.join(componentDocsBaseFolder, 'front_end', 'core', 'i18n', 'locales', 'en-US.json');
+      fullPath =
+          path.join(componentDocsBaseFolder, sharedResourcesBase, 'front_end', 'core', 'i18n', 'locales', 'en-US.json');
     }
 
     if (!fullPath.startsWith(devtoolsRootFolder) && !fileIsInTestFolder) {

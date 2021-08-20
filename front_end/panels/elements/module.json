@@ -6,21 +6,5 @@
     "ui/legacy/components/color_picker",
     "panels/event_listeners",
     "ui/legacy/components/text_editor"
-  ],
-    "resources": [
-    "classesPaneWidget.css",
-    "computedStyleSidebarPane.css",
-    "computedStyleWidgetTree.css",
-    "domLinkifier.css",
-    "elementsPanel.css",
-    "elementStatePaneWidget.css",
-    "elementsTreeOutline.css",
-    "layoutPane.css",
-    "metricsSidebarPane.css",
-    "platformFontsWidget.css",
-    "propertiesWidget.css",
-    "nodeStackTraceWidget.css",
-    "stylesSectionTree.css",
-    "stylesSidebarPane.css"
   ]
 }

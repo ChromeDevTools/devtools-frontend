@@ -5,7 +5,6 @@
     { "name": "panels/mobile_throttling", "type": "autostart" },
 
     { "name": "panels/accessibility" },
-    { "name": "panels/animation" },
     { "name": "panels/lighthouse" },
     { "name": "panels/browser_debugger" },
     { "name": "panels/css_overview" },

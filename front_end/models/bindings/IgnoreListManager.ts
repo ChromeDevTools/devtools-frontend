@@ -121,14 +121,18 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     return isIgnoreListed;
   }
 
-  private sourceMapAttached(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data.client as SDK.Script.Script);
-    const sourceMap = (event.data.sourceMap as SDK.SourceMap.SourceMap);
+  private sourceMapAttached(
+      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
+      void {
+    const script = event.data.client;
+    const sourceMap = event.data.sourceMap;
     this.updateScriptRanges(script, sourceMap);
   }
 
-  private sourceMapDetached(event: Common.EventTarget.EventTargetEvent): void {
-    const script = (event.data.client as SDK.Script.Script);
+  private sourceMapDetached(
+      event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
+      void {
+    const script = event.data.client;
     this.updateScriptRanges(script, null);
   }
 

@@ -58,25 +58,20 @@ export class SASSSourceMapping implements SourceMapping {
 
     this.eventListeners = [
       this.sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached,
-          event => {
-            this.sourceMapAttached(event);
-          },
-          this),
+          SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this),
       this.sourceMapManager.addEventListener(
-          SDK.SourceMapManager.Events.SourceMapDetached,
-          event => {
-            this.sourceMapDetached(event);
-          },
-          this),
+          SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this),
     ];
   }
 
   private sourceMapAttachedForTest(_sourceMap: SDK.SourceMap.SourceMap|null): void {
   }
 
-  private async sourceMapAttached(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const header = (event.data.client as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  private async sourceMapAttached(
+      event: Common.EventTarget
+          .EventTargetEvent<{client: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, sourceMap: SDK.SourceMap.SourceMap}>):
+      Promise<void> {
+    const header = event.data.client;
     const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
     const project = this.project;
     const bindings = this.bindings;
@@ -92,8 +87,11 @@ export class SASSSourceMapping implements SourceMapping {
     this.sourceMapAttachedForTest(sourceMap);
   }
 
-  private async sourceMapDetached(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const header = (event.data.client as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+  private async sourceMapDetached(
+      event: Common.EventTarget
+          .EventTargetEvent<{client: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, sourceMap: SDK.SourceMap.SourceMap}>):
+      Promise<void> {
+    const header = event.data.client;
     const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
     const bindings = this.bindings;
     for (const sourceURL of sourceMap.sourceURLs()) {

@@ -22,7 +22,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMapManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper {
+export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   private readonly target: Target;
   private isEnabled: boolean;
   private readonly relativeSourceURL: Map<T, string>;
@@ -151,7 +151,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       return;
     }
 
-    this.dispatchEventToListeners(Events.SourceMapWillAttach, client);
+    this.dispatchEventToListeners(Events.SourceMapWillAttach, {client});
 
     if (this.sourceMapById.has(sourceMapId)) {
       attach.call(this, sourceMapId, client);
@@ -177,7 +177,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       }
       if (!sourceMap) {
         for (const client of clients) {
-          this.dispatchEventToListeners(Events.SourceMapFailedToAttach, client);
+          this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
         }
         return;
       }
@@ -189,8 +189,8 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 
     function attach(this: SourceMapManager<T>, sourceMapId: string, client: T): void {
       this.sourceMapIdToClients.set(sourceMapId, client);
-      const sourceMap = this.sourceMapById.get(sourceMapId);
-      this.dispatchEventToListeners(Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
+      const sourceMap = this.sourceMapById.get(sourceMapId) as SourceMap;
+      this.dispatchEventToListeners(Events.SourceMapAttached, {client, sourceMap});
     }
   }
 
@@ -205,7 +205,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     }
     if (!this.sourceMapIdToClients.hasValue(sourceMapId, client)) {
       if (this.sourceMapIdToLoadingClients.delete(sourceMapId, client)) {
-        this.dispatchEventToListeners(Events.SourceMapFailedToAttach, client);
+        this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
       }
       return;
     }
@@ -217,7 +217,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     if (!this.sourceMapIdToClients.has(sourceMapId)) {
       this.sourceMapById.delete(sourceMapId);
     }
-    this.dispatchEventToListeners(Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
+    this.dispatchEventToListeners(Events.SourceMapDetached, {client, sourceMap});
   }
 
   private sourceMapLoadedForTest(): void {
@@ -229,9 +229,16 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 }
 
-export const Events = {
-  SourceMapWillAttach: Symbol('SourceMapWillAttach'),
-  SourceMapFailedToAttach: Symbol('SourceMapFailedToAttach'),
-  SourceMapAttached: Symbol('SourceMapAttached'),
-  SourceMapDetached: Symbol('SourceMapDetached'),
+export const enum Events {
+  SourceMapWillAttach = 'SourceMapWillAttach',
+  SourceMapFailedToAttach = 'SourceMapFailedToAttach',
+  SourceMapAttached = 'SourceMapAttached',
+  SourceMapDetached = 'SourceMapDetached',
+}
+
+export type EventTypes<T extends FrameAssociated> = {
+  [Events.SourceMapWillAttach]: {client: T},
+  [Events.SourceMapFailedToAttach]: {client: T},
+  [Events.SourceMapAttached]: {client: T, sourceMap: SourceMap},
+  [Events.SourceMapDetached]: {client: T, sourceMap: SourceMap},
 };

@@ -740,12 +740,12 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   }
 
   function markersDataDump(treeItem) {
-    if (treeItem.isClosingTag) {
+    if (treeItem.isClosingTag && treeItem.isClosingTag()) {
       return '';
     }
 
     let markers = '';
-    const node = treeItem.node;
+    const node = treeItem.node && treeItem.node();
 
     if (node) {
       markers += dumpMap('markers', node.markers);
@@ -810,7 +810,7 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i].isClosingTag()) {
+      if (!children[i].isClosingTag || !children[i].isClosingTag()) {
         print(children[i], newPrefix, depth - 1);
       } else {
         print(children[i], prefix, depth);
@@ -872,7 +872,7 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i].isClosingTag) {
+      if (!children[i].isClosingTag || !children.isClosingTag()) {
         print(children[i], newPrefix, depth - 1);
       }
     }

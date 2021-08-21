@@ -468,7 +468,7 @@ SourcesTestRunner.removeBreakpoint = function(sourceFrame, lineNumber) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
   const breakpointLocations = debuggerPlugin.breakpointManager.allBreakpointLocations();
   const breakpointLocation = breakpointLocations.find(
-      breakpointLocation => breakpointLocation.uiLocation.uiSourceCode === sourceFrame.uiSourceCode &&
+      breakpointLocation => breakpointLocation.uiLocation.uiSourceCode === sourceFrame.uiSourceCode() &&
           breakpointLocation.uiLocation.lineNumber === lineNumber);
   breakpointLocation.breakpoint.remove();
 };

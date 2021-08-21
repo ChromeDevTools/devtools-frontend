@@ -499,7 +499,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
 HeapProfilerTestRunner.clickRowAndGetRetainers = function(row, callback) {
   callback = TestRunner.safeWrap(callback);
 
-  const event = {target: row.element};
+  const event = {target: row.element()};
 
   this.currentGrid().mouseDownInDataTable(event);
   const rootNode = HeapProfilerTestRunner.currentProfileView().retainmentDataGrid.rootNode();

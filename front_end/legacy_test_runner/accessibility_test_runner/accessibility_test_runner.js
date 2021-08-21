@@ -70,7 +70,7 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
 
   const ariaSubPane = sidebarPane.ariaSubPane;
   const treeOutline = ariaSubPane.treeOutline;
-  const childNodes = treeOutline.rootElement.children;
+  const childNodes = treeOutline.rootElement().children();
 
   for (const treeElement of childNodes) {
     if (treeElement.attribute.name === attribute) {

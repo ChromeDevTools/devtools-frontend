@@ -603,7 +603,11 @@ export class TabbedPane extends VBox {
       this.triggerDropDownTimeout = null;
     }
     const rect = this.dropDownButton.getBoundingClientRect();
-    const menu = new ContextMenu(event, false, rect.left, rect.bottom);
+    const menu = new ContextMenu(event, {
+      useSoftMenu: false,
+      x: rect.left,
+      y: rect.bottom,
+    });
     for (const tab of this.tabs) {
       if (tab.shown) {
         continue;

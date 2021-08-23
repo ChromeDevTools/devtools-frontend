@@ -804,9 +804,11 @@ export class ToolbarMenuButton extends ToolbarButton {
     if (this.lastTriggerTime && Date.now() - this.lastTriggerTime < 300) {
       return;
     }
-    const contextMenu = new ContextMenu(
-        event, this.useSoftMenu, this.element.totalOffsetLeft(),
-        this.element.totalOffsetTop() + this.element.offsetHeight);
+    const contextMenu = new ContextMenu(event, {
+      useSoftMenu: this.useSoftMenu,
+      x: this.element.totalOffsetLeft(),
+      y: this.element.totalOffsetTop() + this.element.offsetHeight,
+    });
     this.contextMenuHandler(contextMenu);
     contextMenu.show();
     this.lastTriggerTime = Date.now();

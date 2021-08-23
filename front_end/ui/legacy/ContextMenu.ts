@@ -348,14 +348,7 @@ export class ContextMenu extends SubMenu {
   idInternal: number;
   private softMenu?: SoftContextMenu;
 
-  constructor(event: Event, options?: ContextMenuOptions);
-  constructor(event: Event, useSoftMenu?: boolean, x?: number, y?: number);
-  constructor(event: Event, useSoftMenuOrOptions?: boolean|ContextMenuOptions, xArg?: number, yArg?: number) {
-    const useSoftMenu =
-        Boolean(typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.useSoftMenu : useSoftMenuOrOptions);
-    const x = typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.x : xArg;
-    const y = typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.y : yArg;
-
+  constructor(event: Event, options: ContextMenuOptions = {}) {
     super(null);
     const mouseEvent = (event as MouseEvent);
     this.contextMenu = this;
@@ -364,9 +357,9 @@ export class ContextMenu extends SubMenu {
     this.pendingPromises = [];
     this.pendingTargets = [];
     this.event = mouseEvent;
-    this.useSoftMenu = useSoftMenu;
-    this.x = x === undefined ? mouseEvent.x : x;
-    this.y = y === undefined ? mouseEvent.y : y;
+    this.useSoftMenu = Boolean(options.useSoftMenu);
+    this.x = options.x === undefined ? mouseEvent.x : options.x;
+    this.y = options.y === undefined ? mouseEvent.y : options.y;
     this.handlers = new Map();
     this.idInternal = 0;
 

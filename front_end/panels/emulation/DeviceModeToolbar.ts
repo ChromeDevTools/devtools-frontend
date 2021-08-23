@@ -670,9 +670,11 @@ export class DeviceModeToolbar {
       return;
     }
 
-    const contextMenu = new UI.ContextMenu.ContextMenu(
-        event.data, false, this.modeButton.element.totalOffsetLeft(),
-        this.modeButton.element.totalOffsetTop() + (this.modeButton.element as HTMLElement).offsetHeight);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event.data, {
+      useSoftMenu: false,
+      x: this.modeButton.element.totalOffsetLeft(),
+      y: this.modeButton.element.totalOffsetTop() + (this.modeButton.element as HTMLElement).offsetHeight,
+    });
     addOrientation(EmulationModel.EmulatedDevices.Vertical, i18nString(UIStrings.portrait));
     addOrientation(EmulationModel.EmulatedDevices.Horizontal, i18nString(UIStrings.landscape));
     contextMenu.show();

@@ -66,7 +66,7 @@ export class HideIssuesMenu extends HTMLElement {
 
   onMenuOpen(event: Event): void {
     event.stopPropagation();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event, true);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
     if (this.forHiddenIssue) {
       contextMenu.headerSection().appendItem(i18nString(UIStrings.UnhideIssueByCode), () => this.onUnhideIssueByCode());
       contextMenu.show();

@@ -1605,9 +1605,11 @@ export class ConsoleViewFilter {
     const setting = this.messageLevelFiltersSetting;
     const levels = setting.get();
 
-    const contextMenu = new UI.ContextMenu.ContextMenu(
-        mouseEvent, true, this.levelMenuButton.element.totalOffsetLeft(),
-        this.levelMenuButton.element.totalOffsetTop() + (this.levelMenuButton.element as HTMLElement).offsetHeight);
+    const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
+      useSoftMenu: true,
+      x: this.levelMenuButton.element.totalOffsetLeft(),
+      y: this.levelMenuButton.element.totalOffsetTop() + (this.levelMenuButton.element as HTMLElement).offsetHeight,
+    });
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.default), () => setting.set(ConsoleFilter.defaultLevelsFilterValue()));
     for (const [level, levelText] of this.levelLabels.entries()) {

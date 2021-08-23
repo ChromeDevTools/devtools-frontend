@@ -1301,3 +1301,18 @@ ElementsTestRunner.ignoreSidebarUpdates = function() {
   Elements.StylesSidebarPane.prototype.update = function() {};
   Elements.MetricsSidebarPane.prototype.update = function() {};
 };
+
+ElementsTestRunner.getDocumentElements = function() {
+  const map = TestRunner.domModel.idToDOMNode;
+  const documents = Object.values(map).filter(n => n instanceof SDK.DOMDocument);
+  return documents;
+};
+
+ElementsTestRunner.getDocumentElement = function() {
+  const documents = ElementsTestRunner.getDocumentElements();
+  return documents.length ? documents[0] : null;
+};
+
+ElementsTestRunner.mappedNodes = function() {
+  return Object.entries(TestRunner.domModel.idToDOMNode);
+};

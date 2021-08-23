@@ -329,6 +329,12 @@ export class SubMenu extends Item {
   private static uniqueSectionName: number = 0;
 }
 
+export interface ContextMenuOptions {
+  useSoftMenu?: boolean;
+  x?: number;
+  y?: number;
+}
+
 export class ContextMenu extends SubMenu {
   protected contextMenu: this;
   private readonly defaultSectionInternal: Section;
@@ -342,7 +348,14 @@ export class ContextMenu extends SubMenu {
   idInternal: number;
   private softMenu?: SoftContextMenu;
 
-  constructor(event: Event, useSoftMenu?: boolean, x?: number, y?: number) {
+  constructor(event: Event, options?: ContextMenuOptions);
+  constructor(event: Event, useSoftMenu?: boolean, x?: number, y?: number);
+  constructor(event: Event, useSoftMenuOrOptions?: boolean|ContextMenuOptions, xArg?: number, yArg?: number) {
+    const useSoftMenu =
+        Boolean(typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.useSoftMenu : useSoftMenuOrOptions);
+    const x = typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.x : xArg;
+    const y = typeof useSoftMenuOrOptions === 'object' ? useSoftMenuOrOptions.y : yArg;
+
     super(null);
     const mouseEvent = (event as MouseEvent);
     this.contextMenu = this;
@@ -351,7 +364,7 @@ export class ContextMenu extends SubMenu {
     this.pendingPromises = [];
     this.pendingTargets = [];
     this.event = mouseEvent;
-    this.useSoftMenu = Boolean(useSoftMenu);
+    this.useSoftMenu = useSoftMenu;
     this.x = x === undefined ? mouseEvent.x : x;
     this.y = y === undefined ? mouseEvent.y : y;
     this.handlers = new Map();

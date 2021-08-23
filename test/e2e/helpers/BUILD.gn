@@ -10,6 +10,7 @@ node_ts_library("helpers") {
     "application-helpers.ts",
     "changes-helpers.ts",
     "console-helpers.ts",
+    "context-menu-helpers.ts",
     "coverage-helpers.ts",
     "cross-tool-helper.ts",
     "css-overview-helpers.ts",

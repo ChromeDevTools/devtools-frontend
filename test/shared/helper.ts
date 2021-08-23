@@ -171,18 +171,20 @@ export const pasteText = async (text: string) => {
 };
 
 // Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
-export const $ = async (selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
+export const $ =
+    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root as puppeteer.ElementHandle : frontend;
-  const element = await rootElement.$(`${handler}/${selector}`);
+  const element = await rootElement.$<ElementType>(`${handler}/${selector}`);
   return element;
 };
 
 // Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
-export const $$ = async (selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
+export const $$ =
+    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$(`${handler}/${selector}`);
+  const elements = await rootElement.$$<ElementType>(`${handler}/${selector}`);
   return elements;
 };
 
@@ -208,10 +210,10 @@ export const $$textContent = async (textContent: string, root?: puppeteer.JSHand
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const waitFor =
-    async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+export const waitFor = async<ElementType extends Element = Element>(
+    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const element = await $(selector, root, handler);
+                                 const element = await $<ElementType>(selector, root, handler);
                                  return (element || undefined);
                                }, asyncScope));
 };

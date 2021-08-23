@@ -37,9 +37,9 @@ async function getColumnPixelWidths(columns: ElementHandle<Element>[]) {
 }
 
 async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>) {
-  const cols = await $$('col', dataGrid);
+  const cols = await $$<HTMLTableColElement>('col', dataGrid);
   return Promise.all(cols.map(col => {
-    return col.evaluate(cell => Math.round(window.parseFloat((cell as HTMLElement).style.width)));
+    return col.evaluate(cell => Math.round(window.parseFloat(cell.style.width)));
   }));
 }
 

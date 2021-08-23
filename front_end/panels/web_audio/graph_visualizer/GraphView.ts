@@ -10,7 +10,7 @@ import type {NodeCreationData, NodeParamConnectionData, NodeParamDisconnectionDa
 import {NodeLabelGenerator, NodeView} from './NodeView.js';
 
 // A class that tracks all the nodes and edges of an audio graph.
-export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
+export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   contextId: string;
   private readonly nodes: Map<string, NodeView>;
   private readonly edges: Map<string, EdgeView>;
@@ -198,3 +198,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper {
 export const enum Events {
   ShouldRedraw = 'ShouldRedraw',
 }
+
+export type EventTypes = {
+  [Events.ShouldRedraw]: GraphView,
+};

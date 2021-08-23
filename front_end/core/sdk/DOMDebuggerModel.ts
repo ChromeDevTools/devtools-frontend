@@ -382,7 +382,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
           type: Protocol.DOMDebugger.DOMBreakpointType,
           enabled: boolean,
         },
-        nodeId: number|null): void {
+        nodeId: Protocol.DOM.NodeId|null): void {
       const node = nodeId ? this.domModel.nodeForId(nodeId) : null;
       if (!node) {
         return;

@@ -9,11 +9,12 @@ import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 
 export class OverlayPersistentHighlighter {
   private readonly model: OverlayModel;
-  private readonly gridHighlights: Map<number, Protocol.Overlay.GridHighlightConfig>;
-  private readonly scrollSnapHighlights: Map<number, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
-  private readonly flexHighlights: Map<number, Protocol.Overlay.FlexContainerHighlightConfig>;
-  private readonly containerQueryHighlights: Map<number, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
-  private readonly colors: Map<number, Common.Color.Color>;
+  private readonly gridHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>;
+  private readonly scrollSnapHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
+  private readonly flexHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>;
+  private readonly containerQueryHighlights:
+      Map<Protocol.DOM.NodeId, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
+  private readonly colors: Map<Protocol.DOM.NodeId, Common.Color.Color>;
   private gridColorGenerator: OverlayColorGenerator;
   private flexColorGenerator: OverlayColorGenerator;
   private flexEnabled: boolean;
@@ -60,7 +61,7 @@ export class OverlayPersistentHighlighter {
     this.resetOverlay();
   }
 
-  private buildGridHighlightConfig(nodeId: number): Protocol.Overlay.GridHighlightConfig {
+  private buildGridHighlightConfig(nodeId: Protocol.DOM.NodeId): Protocol.Overlay.GridHighlightConfig {
     const mainColor = this.colorOfGrid(nodeId);
     const background = mainColor.setAlpha(0.1);
     const gapBackground = mainColor.setAlpha(0.3);
@@ -92,7 +93,8 @@ export class OverlayPersistentHighlighter {
     };
   }
 
-  private buildFlexContainerHighlightConfig(nodeId: number): Protocol.Overlay.FlexContainerHighlightConfig {
+  private buildFlexContainerHighlightConfig(nodeId: Protocol.DOM.NodeId):
+      Protocol.Overlay.FlexContainerHighlightConfig {
     const mainColor = this.colorOfFlex(nodeId);
     return {
       containerBorder: {color: mainColor.toProtocolRGBA(), pattern: Protocol.Overlay.LineStylePattern.Dashed},
@@ -116,16 +118,16 @@ export class OverlayPersistentHighlighter {
     };
   }
 
-  highlightGridInOverlay(nodeId: number): void {
+  highlightGridInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.gridHighlights.set(nodeId, this.buildGridHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
   }
 
-  isGridHighlighted(nodeId: number): boolean {
+  isGridHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
     return this.gridHighlights.has(nodeId);
   }
 
-  colorOfGrid(nodeId: number): Common.Color.Color {
+  colorOfGrid(nodeId: Protocol.DOM.NodeId): Common.Color.Color {
     let color = this.colors.get(nodeId);
     if (!color) {
       color = this.gridColorGenerator.next();
@@ -135,43 +137,43 @@ export class OverlayPersistentHighlighter {
     return color;
   }
 
-  setColorOfGrid(nodeId: number, color: Common.Color.Color): void {
+  setColorOfGrid(nodeId: Protocol.DOM.NodeId, color: Common.Color.Color): void {
     this.colors.set(nodeId, color);
   }
 
-  hideGridInOverlay(nodeId: number): void {
+  hideGridInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.gridHighlights.has(nodeId)) {
       this.gridHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
     }
   }
 
-  highlightScrollSnapInOverlay(nodeId: number): void {
+  highlightScrollSnapInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.scrollSnapHighlights.set(nodeId, this.buildScrollSnapContainerHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
   }
 
-  isScrollSnapHighlighted(nodeId: number): boolean {
+  isScrollSnapHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
     return this.scrollSnapHighlights.has(nodeId);
   }
 
-  hideScrollSnapInOverlay(nodeId: number): void {
+  hideScrollSnapInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.scrollSnapHighlights.has(nodeId)) {
       this.scrollSnapHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
     }
   }
 
-  highlightFlexInOverlay(nodeId: number): void {
+  highlightFlexInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.flexHighlights.set(nodeId, this.buildFlexContainerHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
   }
 
-  isFlexHighlighted(nodeId: number): boolean {
+  isFlexHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
     return this.flexHighlights.has(nodeId);
   }
 
-  colorOfFlex(nodeId: number): Common.Color.Color {
+  colorOfFlex(nodeId: Protocol.DOM.NodeId): Common.Color.Color {
     let color = this.colors.get(nodeId);
     if (!color) {
       color = this.flexColorGenerator.next();
@@ -181,30 +183,30 @@ export class OverlayPersistentHighlighter {
     return color;
   }
 
-  setColorOfFlex(nodeId: number, color: Common.Color.Color): void {
+  setColorOfFlex(nodeId: Protocol.DOM.NodeId, color: Common.Color.Color): void {
     this.colors.set(nodeId, color);
   }
 
-  hideFlexInOverlay(nodeId: number): void {
+  hideFlexInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.flexHighlights.has(nodeId)) {
       this.flexHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
     }
   }
 
-  highlightContainerQueryInOverlay(nodeId: number): void {
+  highlightContainerQueryInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.containerQueryHighlights.set(nodeId, this.buildContainerQueryContainerHighlightConfig());
     this.updateHighlightsInOverlay();
   }
 
-  hideContainerQueryInOverlay(nodeId: number): void {
+  hideContainerQueryInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.containerQueryHighlights.has(nodeId)) {
       this.containerQueryHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
     }
   }
 
-  isContainerQueryHighlighted(nodeId: number): boolean {
+  isContainerQueryHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
     return this.containerQueryHighlights.has(nodeId);
   }
 
@@ -239,7 +241,7 @@ export class OverlayPersistentHighlighter {
     }
   }
 
-  private updateHighlightsForDeletedNodes(highlights: Map<number, unknown>): boolean {
+  private updateHighlightsForDeletedNodes(highlights: Map<Protocol.DOM.NodeId, unknown>): boolean {
     let needsUpdate = false;
     for (const nodeId of highlights.keys()) {
       if (this.model.getDOMModel().nodeForId(nodeId) === null) {
@@ -320,7 +322,7 @@ export class OverlayPersistentHighlighter {
  * @interface
  */
 export interface DOMModel {
-  nodeForId(nodeId: number): void;
+  nodeForId(nodeId: Protocol.DOM.NodeId): void;
 }
 /**
  * @interface

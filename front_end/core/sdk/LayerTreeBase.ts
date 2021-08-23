@@ -174,7 +174,7 @@ export class LayerTreeBase {
     return this.viewportSizeInternal;
   }
 
-  private nodeForId(id: number): DOMNode|null {
+  private nodeForId(id: Protocol.DOM.NodeId): DOMNode|null {
     return this.domModel ? this.domModel.nodeForId(id) : null;
   }
 }

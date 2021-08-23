@@ -127,7 +127,7 @@ export class DOMNode {
 
     this.id = payload.nodeId;
     this.backendNodeIdInternal = payload.backendNodeId;
-    this.domModelInternal.getIdToDOMNode()[this.id] = this;
+    this.domModelInternal.registerNode(this);
     this.nodeTypeInternal = payload.nodeType;
     this.nodeNameInternal = payload.nodeName;
     this.localNameInternal = payload.localName;
@@ -626,12 +626,12 @@ export class DOMNode {
     return attributesChanged;
   }
 
-  insertChild(prev: DOMNode, payload: Protocol.DOM.Node): DOMNode {
+  insertChild(prev: DOMNode|undefined, payload: Protocol.DOM.Node): DOMNode {
     if (!this.childrenInternal) {
       throw new Error('DOMNode._children is expected to not be null.');
     }
     const node = DOMNode.create(this.domModelInternal, this.ownerDocument, this.isInShadowTreeInternal, payload);
-    this.childrenInternal.splice(this.childrenInternal.indexOf(prev) + 1, 0, node);
+    this.childrenInternal.splice(prev ? this.childrenInternal.indexOf(prev) + 1 : 0, 0, node);
     this.renumber();
     return node;
   }
@@ -1033,9 +1033,7 @@ export class DOMDocument extends DOMNode {
 
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
-  idToDOMNode: {
-    [x: number]: DOMNode,
-  };
+  idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode> = new Map();
   private document: DOMDocument|null;
   private readonly attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
   readonly runtimeModelInternal: RuntimeModel;
@@ -1049,7 +1047,6 @@ export class DOMModel extends SDKModel<EventTypes> {
 
     this.agent = target.domAgent();
 
-    this.idToDOMNode = {};
     this.document = null;
     this.attributeLoadNodeIds = new Set();
     target.registerDOMDispatcher(new DOMDispatcher(this));
@@ -1174,7 +1171,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     return nodeId ? this.nodeForId(nodeId) : null;
   }
 
-  pushNodeByPathToFrontend(path: string): Promise<number|null> {
+  pushNodeByPathToFrontend(path: string): Promise<Protocol.DOM.NodeId|null> {
     return this.requestDocument()
         .then(() => this.agent.invoke_pushNodeByPathToFrontend({path}))
         .then(({nodeId}) => nodeId);
@@ -1197,8 +1194,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     return map;
   }
 
-  attributeModified(nodeId: number, name: string, value: string): void {
-    const node = this.idToDOMNode[nodeId];
+  attributeModified(nodeId: Protocol.DOM.NodeId, name: string, value: string): void {
+    const node = this.idToDOMNode.get(nodeId);
     if (!node) {
       return;
     }
@@ -1208,8 +1205,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.scheduleMutationEvent(node);
   }
 
-  attributeRemoved(nodeId: number, name: string): void {
-    const node = this.idToDOMNode[nodeId];
+  attributeRemoved(nodeId: Protocol.DOM.NodeId, name: string): void {
+    const node = this.idToDOMNode.get(nodeId);
     if (!node) {
       return;
     }
@@ -1233,7 +1230,7 @@ export class DOMModel extends SDKModel<EventTypes> {
           // We are calling loadNodeAttributes asynchronously, it is ok if node is not found.
           return;
         }
-        const node = this.idToDOMNode[nodeId];
+        const node = this.idToDOMNode.get(nodeId);
         if (!node) {
           return;
         }
@@ -1246,15 +1243,19 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.attributeLoadNodeIds.clear();
   }
 
-  characterDataModified(nodeId: number, newValue: string): void {
-    const node = this.idToDOMNode[nodeId];
+  characterDataModified(nodeId: Protocol.DOM.NodeId, newValue: string): void {
+    const node = this.idToDOMNode.get(nodeId);
+    if (!node) {
+      console.error('nodeId could not be resolved to a node');
+      return;
+    }
     node.setNodeValueInternal(newValue);
     this.dispatchEventToListeners(Events.CharacterDataModified, node);
     this.scheduleMutationEvent(node);
   }
 
-  nodeForId(nodeId: number|null): DOMNode|null {
-    return nodeId ? this.idToDOMNode[nodeId] || null : null;
+  nodeForId(nodeId: Protocol.DOM.NodeId|null): DOMNode|null {
+    return nodeId ? this.idToDOMNode.get(nodeId) || null : null;
   }
 
   documentUpdated(): void {
@@ -1268,7 +1269,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   private setDocument(payload: Protocol.DOM.Node|null): void {
-    this.idToDOMNode = {};
+    this.idToDOMNode = new Map();
     if (payload && 'nodeId' in payload) {
       this.document = new DOMDocument(this, payload);
     } else {
@@ -1289,60 +1290,72 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
   }
 
-  setChildNodes(parentId: number, payloads: Protocol.DOM.Node[]): void {
+  setChildNodes(parentId: Protocol.DOM.NodeId, payloads: Protocol.DOM.Node[]): void {
     if (!parentId && payloads.length) {
       this.setDetachedRoot(payloads[0]);
       return;
     }
 
-    const parent = this.idToDOMNode[parentId];
-    parent.setChildrenPayload(payloads);
+    const parent = this.idToDOMNode.get(parentId);
+    parent?.setChildrenPayload(payloads);
   }
 
-  childNodeCountUpdated(nodeId: number, newValue: number): void {
-    const node = this.idToDOMNode[nodeId];
+  childNodeCountUpdated(nodeId: Protocol.DOM.NodeId, newValue: number): void {
+    const node = this.idToDOMNode.get(nodeId);
+    if (!node) {
+      console.error('nodeId could not be resolved to a node');
+      return;
+    }
     node.setChildNodeCount(newValue);
     this.dispatchEventToListeners(Events.ChildNodeCountUpdated, node);
     this.scheduleMutationEvent(node);
   }
 
-  childNodeInserted(parentId: number, prevId: number, payload: Protocol.DOM.Node): void {
-    const parent = this.idToDOMNode[parentId];
-    const prev = this.idToDOMNode[prevId];
+  childNodeInserted(parentId: Protocol.DOM.NodeId, prevId: Protocol.DOM.NodeId, payload: Protocol.DOM.Node): void {
+    const parent = this.idToDOMNode.get(parentId);
+    const prev = this.idToDOMNode.get(prevId);
+    if (!parent) {
+      console.error('parentId could not be resolved to a node');
+      return;
+    }
     const node = parent.insertChild(prev, payload);
-    this.idToDOMNode[node.id] = node;
+    this.idToDOMNode.set(node.id, node);
     this.dispatchEventToListeners(Events.NodeInserted, node);
     this.scheduleMutationEvent(node);
   }
 
-  childNodeRemoved(parentId: number, nodeId: number): void {
-    const parent = this.idToDOMNode[parentId];
-    const node = this.idToDOMNode[nodeId];
+  childNodeRemoved(parentId: Protocol.DOM.NodeId, nodeId: Protocol.DOM.NodeId): void {
+    const parent = this.idToDOMNode.get(parentId);
+    const node = this.idToDOMNode.get(nodeId);
+    if (!parent || !node) {
+      console.error('parentId or nodeId could not be resolved to a node');
+      return;
+    }
     parent.removeChild(node);
     this.unbind(node);
     this.dispatchEventToListeners(Events.NodeRemoved, {node: node, parent: parent});
     this.scheduleMutationEvent(node);
   }
 
-  shadowRootPushed(hostId: number, root: Protocol.DOM.Node): void {
-    const host = this.idToDOMNode[hostId];
+  shadowRootPushed(hostId: Protocol.DOM.NodeId, root: Protocol.DOM.Node): void {
+    const host = this.idToDOMNode.get(hostId);
     if (!host) {
       return;
     }
     const node = DOMNode.create(this, host.ownerDocument, true, root);
     node.parentNode = host;
-    this.idToDOMNode[node.id] = node;
+    this.idToDOMNode.set(node.id, node);
     host.shadowRootsInternal.unshift(node);
     this.dispatchEventToListeners(Events.NodeInserted, node);
     this.scheduleMutationEvent(node);
   }
 
-  shadowRootPopped(hostId: number, rootId: number): void {
-    const host = this.idToDOMNode[hostId];
+  shadowRootPopped(hostId: Protocol.DOM.NodeId, rootId: Protocol.DOM.NodeId): void {
+    const host = this.idToDOMNode.get(hostId);
     if (!host) {
       return;
     }
-    const root = this.idToDOMNode[rootId];
+    const root = this.idToDOMNode.get(rootId);
     if (!root) {
       return;
     }
@@ -1352,14 +1365,14 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.scheduleMutationEvent(root);
   }
 
-  pseudoElementAdded(parentId: number, pseudoElement: Protocol.DOM.Node): void {
-    const parent = this.idToDOMNode[parentId];
+  pseudoElementAdded(parentId: Protocol.DOM.NodeId, pseudoElement: Protocol.DOM.Node): void {
+    const parent = this.idToDOMNode.get(parentId);
     if (!parent) {
       return;
     }
     const node = DOMNode.create(this, parent.ownerDocument, false, pseudoElement);
     node.parentNode = parent;
-    this.idToDOMNode[node.id] = node;
+    this.idToDOMNode.set(node.id, node);
     const pseudoType = node.pseudoType();
     if (!pseudoType) {
       throw new Error('DOMModel._pseudoElementAdded expects pseudoType to be defined.');
@@ -1373,12 +1386,12 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.scheduleMutationEvent(node);
   }
 
-  pseudoElementRemoved(parentId: number, pseudoElementId: number): void {
-    const parent = this.idToDOMNode[parentId];
+  pseudoElementRemoved(parentId: Protocol.DOM.NodeId, pseudoElementId: Protocol.DOM.NodeId): void {
+    const parent = this.idToDOMNode.get(parentId);
     if (!parent) {
       return;
     }
-    const pseudoElement = this.idToDOMNode[pseudoElementId];
+    const pseudoElement = this.idToDOMNode.get(pseudoElementId);
     if (!pseudoElement) {
       return;
     }
@@ -1388,8 +1401,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.scheduleMutationEvent(pseudoElement);
   }
 
-  distributedNodesUpdated(insertionPointId: number, distributedNodes: Protocol.DOM.BackendNode[]): void {
-    const insertionPoint = this.idToDOMNode[insertionPointId];
+  distributedNodesUpdated(insertionPointId: Protocol.DOM.NodeId, distributedNodes: Protocol.DOM.BackendNode[]): void {
+    const insertionPoint = this.idToDOMNode.get(insertionPointId);
     if (!insertionPoint) {
       return;
     }
@@ -1399,7 +1412,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   private unbind(node: DOMNode): void {
-    delete this.idToDOMNode[node.id];
+    this.idToDOMNode.delete(node.id);
     const children = node.children();
     for (let i = 0; children && i < children.length; ++i) {
       this.unbind(children[i]);
@@ -1422,7 +1435,7 @@ export class DOMModel extends SDKModel<EventTypes> {
         name: string,
         value: string,
       }[],
-      pierce: boolean = false): Promise<number[]> {
+      pierce: boolean = false): Promise<Protocol.DOM.NodeId[]> {
     await this.requestDocument();
     if (!this.document) {
       throw new Error('DOMModel.getNodesByStyle expects to have a document.');
@@ -1464,11 +1477,11 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.agent.invoke_collectClassNamesFromSubtree({nodeId}).then(({classNames}) => classNames || []);
   }
 
-  querySelector(nodeId: Protocol.DOM.NodeId, selector: string): Promise<number|null> {
+  querySelector(nodeId: Protocol.DOM.NodeId, selector: string): Promise<Protocol.DOM.NodeId|null> {
     return this.agent.invoke_querySelector({nodeId, selector}).then(({nodeId}) => nodeId);
   }
 
-  querySelectorAll(nodeId: Protocol.DOM.NodeId, selector: string): Promise<number[]|null> {
+  querySelectorAll(nodeId: Protocol.DOM.NodeId, selector: string): Promise<Protocol.DOM.NodeId[]|null> {
     return this.agent.invoke_querySelectorAll({nodeId, selector}).then(({nodeIds}) => nodeIds);
   }
 
@@ -1517,8 +1530,8 @@ export class DOMModel extends SDKModel<EventTypes> {
     return this.agent;
   }
 
-  getIdToDOMNode(): {[x: number]: DOMNode} {
-    return this.idToDOMNode;
+  registerNode(node: DOMNode): void {
+    this.idToDOMNode.set(node.id, node);
   }
 }
 

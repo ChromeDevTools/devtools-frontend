@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('OverlayColorGenerator', () => {
@@ -37,9 +38,10 @@ describeWithEnvironment('OverlayColorGenerator', () => {
     setShowViewportSizeOnResize() {},
   };
 
+  const nodeId = 1 as Protocol.DOM.NodeId;
+
   it('is able to highlight flexbox elements', () => {
     const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
-    const nodeId = 1;
     highlighter.highlightFlexInOverlay(nodeId);
     assert(highlighter.isFlexHighlighted(nodeId));
     assert(!highlighter.isGridHighlighted(nodeId));
@@ -50,7 +52,6 @@ describeWithEnvironment('OverlayColorGenerator', () => {
 
   it('is able to highlight grid elements', () => {
     const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
-    const nodeId = 1;
     highlighter.highlightGridInOverlay(nodeId);
     assert(highlighter.isGridHighlighted(nodeId));
     assert(!highlighter.isFlexHighlighted(nodeId));
@@ -61,7 +62,6 @@ describeWithEnvironment('OverlayColorGenerator', () => {
 
   it('is able to highlight scroll snap elements', () => {
     const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
-    const nodeId = 1;
     highlighter.highlightScrollSnapInOverlay(nodeId);
     assert(highlighter.isScrollSnapHighlighted(nodeId));
     assert(!highlighter.isFlexHighlighted(nodeId));
@@ -72,7 +72,6 @@ describeWithEnvironment('OverlayColorGenerator', () => {
 
   it('is able to highlight container query elements', () => {
     const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
-    const nodeId = 1;
     highlighter.highlightContainerQueryInOverlay(nodeId);
     assert(highlighter.isContainerQueryHighlighted(nodeId));
     assert(!highlighter.isFlexHighlighted(nodeId));

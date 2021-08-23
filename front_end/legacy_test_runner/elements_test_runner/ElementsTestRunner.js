@@ -1304,7 +1304,7 @@ ElementsTestRunner.ignoreSidebarUpdates = function() {
 
 ElementsTestRunner.getDocumentElements = function() {
   const map = TestRunner.domModel.idToDOMNode;
-  const documents = Object.values(map).filter(n => n instanceof SDK.DOMDocument);
+  const documents = Array.from(map.values()).filter(n => n instanceof SDK.DOMDocument);
   return documents;
 };
 
@@ -1314,5 +1314,5 @@ ElementsTestRunner.getDocumentElement = function() {
 };
 
 ElementsTestRunner.mappedNodes = function() {
-  return Object.entries(TestRunner.domModel.idToDOMNode);
+  return TestRunner.domModel.idToDOMNode.entries();
 };

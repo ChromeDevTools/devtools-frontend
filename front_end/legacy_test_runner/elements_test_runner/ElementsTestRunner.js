@@ -872,7 +872,7 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
     const newPrefix = (treeItem.root ? '' : prefix + '    ');
 
     for (let i = 0; depth && children && i < children.length; ++i) {
-      if (!children[i].isClosingTag || !children.isClosingTag()) {
+      if (!children[i].isClosingTag || !children[i].isClosingTag()) {
         print(children[i], newPrefix, depth - 1);
       }
     }

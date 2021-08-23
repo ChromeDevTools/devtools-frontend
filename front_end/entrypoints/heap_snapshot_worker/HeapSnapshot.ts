@@ -2775,7 +2775,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
       return this.hasStringNameInternal();
     }
     // @ts-ignore parseInt is successful against numbers.
-    return isNaN(parseInt(this.name(), 10));
+    return isNaN(parseInt(this.nameInternal(), 10));
   }
 
   isElement(): boolean {
@@ -2843,7 +2843,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
   }
 
   private nameInternal(): string|number {
-    return this.hasStringName() ? this.snapshot.strings[this.nameOrIndex()] : this.nameOrIndex();
+    return this.hasStringNameInternal() ? this.snapshot.strings[this.nameOrIndex()] : this.nameOrIndex();
   }
 
   private nameOrIndex(): number {

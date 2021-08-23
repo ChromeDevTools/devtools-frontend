@@ -63,10 +63,11 @@ describe('ListModel', () => {
 
   it('fires an event when elements are replaced', () => {
     const model = new UI.ListModel.ListModel([0, 1, 2]);
-    let eventData!: {index: number, removed: number[], inserted: number, keepSelectedIndex: boolean|undefined};
-    model.addEventListener(UI.ListModel.Events.ItemsReplaced, (event: {data: typeof eventData}) => {
-      eventData = event.data;
-    });
+    let eventData!: {index: number, removed: number[], inserted: number, keepSelectedIndex?: boolean|undefined};
+    model.addEventListener(
+        UI.ListModel.Events.ItemsReplaced, (event: {data: UI.ListModel.ItemsReplacedEvent<number>}) => {
+          eventData = event.data;
+        });
     model.replaceRange(0, 1, [5, 6, 7]);
     assert.deepEqual([...model], [5, 6, 7, 1, 2]);
     assert.deepEqual(eventData, {

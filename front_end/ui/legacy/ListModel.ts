@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
-export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper implements Iterable<T> {
+export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> implements Iterable<T> {
   private items: T[];
   constructor(items?: T[]) {
     super();
@@ -113,3 +113,14 @@ export class ListModel<T> extends Common.ObjectWrapper.ObjectWrapper implements 
 export enum Events {
   ItemsReplaced = 'ItemsReplaced',
 }
+
+export interface ItemsReplacedEvent<T> {
+  index: number;
+  removed: T[];
+  inserted: number;
+  keepSelectedIndex?: boolean;
+}
+
+export type EventTypes<T> = {
+  [Events.ItemsReplaced]: ItemsReplacedEvent<T>,
+};

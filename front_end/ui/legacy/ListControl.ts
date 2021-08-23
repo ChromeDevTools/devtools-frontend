@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import type {ListModel} from './ListModel.js';
+import type {ItemsReplacedEvent, ListModel} from './ListModel.js';
 import {Events as ListModelEvents} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
 
@@ -93,13 +93,8 @@ export class ListControl<T> {
     this.invalidateRange(0, length);
   }
 
-  private replacedItemsInRange(event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as {
-      index: number,
-      removed: Array<T>,
-      inserted: number,
-      keepSelectedIndex: (boolean | undefined),
-    });
+  private replacedItemsInRange(event: Common.EventTarget.EventTargetEvent<ItemsReplacedEvent<T>>): void {
+    const data = event.data;
     const from = data.index;
     const to = from + data.removed.length;
     const keepSelectedIndex = data.keepSelectedIndex;

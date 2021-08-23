@@ -11,7 +11,7 @@ import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior} from '
 import {Icon} from './Icon.js';
 import type {ListDelegate} from './ListControl.js';
 import {ListControl, ListMode} from './ListControl.js';
-import type {ListModel} from './ListModel.js';
+import type {ItemsReplacedEvent, ListModel} from './ListModel.js';
 import {Events as ListModelEvents} from './ListModel.js';
 import {appendStyle} from './utils/append-style.js';
 import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
@@ -233,8 +233,8 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     }
   }
 
-  private itemsReplaced(event: Common.EventTarget.EventTargetEvent): void {
-    const removed = (event.data.removed as T[]);
+  private itemsReplaced(event: Common.EventTarget.EventTargetEvent<ItemsReplacedEvent<T>>): void {
+    const {removed} = event.data;
     if (this.selectedItem && removed.indexOf(this.selectedItem) !== -1) {
       this.selectedItem = null;
       this.selectHighlightedItem();

@@ -254,7 +254,7 @@ export class Toolbar {
         toggleButton.setToggled(action.toggled());
         if (action.title()) {
           toggleButton.setTitle(action.title());
-          Tooltip.install(toggleButton.element, action.title());
+          Tooltip.installWithActionBinding(toggleButton.element, action.title(), action.id());
         }
       }
     }

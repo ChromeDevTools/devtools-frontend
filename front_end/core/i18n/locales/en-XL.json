@@ -917,6 +917,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "F̂ór̂ćêś ĈŚŜ prefers-color-scheme ḿêd́îá f̂éât́ûŕê"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "F̂ór̂ćêś ĈŚŜ prefers-contrast ḿêd́îá f̂éât́ûŕê"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "F̂ór̂ćêś ĈŚŜ prefers-reduced-data ḿêd́îá f̂éât́ûŕê"
   },

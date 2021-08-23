@@ -72,43 +72,50 @@ export class EmulationModel extends SDKModel<void> {
     });
 
     const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMedia');
-    const mediaFeaturePrefersColorSchemeSetting =
-        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersColorScheme');
-    const mediaFeaturePrefersReducedMotionSetting =
-        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedMotion');
-    const mediaFeaturePrefersReducedDataSetting =
-        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedData');
     const mediaFeatureColorGamutSetting =
         Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeatureColorGamut');
+    const mediaFeaturePrefersColorSchemeSetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersColorScheme');
+    const mediaFeaturePrefersContrastSetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersContrast');
+    const mediaFeaturePrefersReducedDataSetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedData');
+    const mediaFeaturePrefersReducedMotionSetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedMotion');
     // Note: this uses a different format than what the CDP API expects,
     // because we want to update these values per media type/feature
     // without having to search the `features` array (inefficient) or
     // hardcoding the indices (not readable/maintainable).
     this.mediaConfiguration = new Map([
       ['type', mediaTypeSetting.get()],
-      ['prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get()],
-      ['prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get()],
-      ['prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get()],
       ['color-gamut', mediaFeatureColorGamutSetting.get()],
+      ['prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get()],
+      ['prefers-contrast', mediaFeaturePrefersContrastSetting.get()],
+      ['prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get()],
+      ['prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get()],
     ]);
     mediaTypeSetting.addChangeListener(() => {
       this.mediaConfiguration.set('type', mediaTypeSetting.get());
+      this.updateCssMedia();
+    });
+    mediaFeatureColorGamutSetting.addChangeListener(() => {
+      this.mediaConfiguration.set('color-gamut', mediaFeatureColorGamutSetting.get());
       this.updateCssMedia();
     });
     mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
       this.mediaConfiguration.set('prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get());
       this.updateCssMedia();
     });
-    mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
-      this.mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
+    mediaFeaturePrefersContrastSetting.addChangeListener(() => {
+      this.mediaConfiguration.set('prefers-contrast', mediaFeaturePrefersContrastSetting.get());
       this.updateCssMedia();
     });
     mediaFeaturePrefersReducedDataSetting.addChangeListener(() => {
       this.mediaConfiguration.set('prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get());
       this.updateCssMedia();
     });
-    mediaFeatureColorGamutSetting.addChangeListener(() => {
-      this.mediaConfiguration.set('color-gamut', mediaFeatureColorGamutSetting.get());
+    mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
+      this.mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
       this.updateCssMedia();
     });
     this.updateCssMedia();
@@ -329,20 +336,24 @@ export class EmulationModel extends SDKModel<void> {
     const type = this.mediaConfiguration.get('type') ?? '';
     const features = [
       {
+        name: 'color-gamut',
+        value: this.mediaConfiguration.get('color-gamut') ?? '',
+      },
+      {
         name: 'prefers-color-scheme',
         value: this.mediaConfiguration.get('prefers-color-scheme') ?? '',
       },
       {
-        name: 'prefers-reduced-motion',
-        value: this.mediaConfiguration.get('prefers-reduced-motion') ?? '',
+        name: 'prefers-contrast',
+        value: this.mediaConfiguration.get('prefers-contrast') ?? '',
       },
       {
         name: 'prefers-reduced-data',
         value: this.mediaConfiguration.get('prefers-reduced-data') ?? '',
       },
       {
-        name: 'color-gamut',
-        value: this.mediaConfiguration.get('color-gamut') ?? '',
+        name: 'prefers-reduced-motion',
+        value: this.mediaConfiguration.get('prefers-reduced-motion') ?? '',
       },
     ];
     this.emulateCSSMedia(type, features);

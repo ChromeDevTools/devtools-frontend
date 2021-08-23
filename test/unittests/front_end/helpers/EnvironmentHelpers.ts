@@ -84,6 +84,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedMotion', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersContrast', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(

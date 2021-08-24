@@ -2157,15 +2157,32 @@ export function registerCommands(inspectorBackend) {
     IsolatedWorldScript: 'IsolatedWorldScript',
     InjectedStyleSheet: 'InjectedStyleSheet',
     MediaSessionImplOnServiceCreated: 'MediaSessionImplOnServiceCreated',
-    SecurityHandler: 'SecurityHandler',
-    WebAuthenticationAPI: 'WebAuthenticationAPI',
-    FileChooser: 'FileChooser',
-    Serial: 'Serial',
-    FileSystemAccess: 'FileSystemAccess',
-    MediaDevicesDispatcherHost: 'MediaDevicesDispatcherHost',
-    WebBluetooth: 'WebBluetooth',
-    WebUSB: 'WebUSB',
-    MediaSession: 'MediaSession'
+    ContentMediaSessionImplOnServiceCreated: 'ContentMediaSessionImplOnServiceCreated',
+    ContentSecurityHandler: 'ContentSecurityHandler',
+    ContentWebAuthenticationAPI: 'ContentWebAuthenticationAPI',
+    ContentFileChooser: 'ContentFileChooser',
+    ContentSerial: 'ContentSerial',
+    ContentFileSystemAccess: 'ContentFileSystemAccess',
+    ContentMediaDevicesDispatcherHost: 'ContentMediaDevicesDispatcherHost',
+    ContentWebBluetooth: 'ContentWebBluetooth',
+    ContentWebUSB: 'ContentWebUSB',
+    ContentMediaSession: 'ContentMediaSession',
+    EmbedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',
+    EmbedderSafeBrowsingTriggeredPopupBlocker: 'EmbedderSafeBrowsingTriggeredPopupBlocker',
+    EmbedderSafeBrowsingThreatDetails: 'EmbedderSafeBrowsingThreatDetails',
+    EmbedderAppBannerManager: 'EmbedderAppBannerManager',
+    EmbedderDomDistillerViewerSource: 'EmbedderDomDistillerViewerSource',
+    EmbedderDomDistillerSelfDeletingRequestDelegate: 'EmbedderDomDistillerSelfDeletingRequestDelegate',
+    EmbedderOomInterventionTabHelper: 'EmbedderOomInterventionTabHelper',
+    EmbedderOfflinePage: 'EmbedderOfflinePage',
+    EmbedderChromePasswordManagerClientBindCredentialManager:
+        'EmbedderChromePasswordManagerClientBindCredentialManager',
+    EmbedderPermissionRequestManager: 'EmbedderPermissionRequestManager',
+    EmbedderModalDialog: 'EmbedderModalDialog',
+    EmbedderExtensions: 'EmbedderExtensions',
+    EmbedderExtensionMessaging: 'EmbedderExtensionMessaging',
+    EmbedderExtensionMessagingForOpenPort: 'EmbedderExtensionMessagingForOpenPort',
+    EmbedderExtensionSentMessageToCachedFrame: 'EmbedderExtensionSentMessageToCachedFrame'
   });
   inspectorBackend.registerEnum(
       'Page.BackForwardCacheNotRestoredReasonType',
@@ -2250,6 +2267,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Page.getAppManifest', [], ['url', 'errors', 'data', 'parsed']);
   inspectorBackend.registerCommand('Page.getInstallabilityErrors', [], ['installabilityErrors']);
   inspectorBackend.registerCommand('Page.getManifestIcons', [], ['primaryIcon']);
+  inspectorBackend.registerCommand('Page.getAppId', [], ['appId']);
   inspectorBackend.registerCommand('Page.getCookies', [], ['cookies']);
   inspectorBackend.registerCommand('Page.getFrameTree', [], ['frameTree']);
   inspectorBackend.registerCommand(
@@ -2787,6 +2805,16 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'requestId', 'type': 'string', 'optional': false},
         {'name': 'authChallengeResponse', 'type': 'object', 'optional': false}
+      ],
+      []);
+  inspectorBackend.registerCommand(
+      'Fetch.continueResponse',
+      [
+        {'name': 'requestId', 'type': 'string', 'optional': false},
+        {'name': 'responseCode', 'type': 'number', 'optional': true},
+        {'name': 'responsePhrase', 'type': 'string', 'optional': true},
+        {'name': 'responseHeaders', 'type': 'object', 'optional': true},
+        {'name': 'binaryResponseHeaders', 'type': 'string', 'optional': true}
       ],
       []);
   inspectorBackend.registerCommand(

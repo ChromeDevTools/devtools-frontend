@@ -2155,6 +2155,10 @@ export namespace ProtocolMapping {
     'Page.getInstallabilityErrors': {paramsType: []; returnType: Protocol.Page.GetInstallabilityErrorsResponse;};
     'Page.getManifestIcons': {paramsType: []; returnType: Protocol.Page.GetManifestIconsResponse;};
     /**
+     * Returns the unique (PWA) app id.
+     */
+    'Page.getAppId': {paramsType: []; returnType: Protocol.Page.GetAppIdResponse;};
+    /**
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      */
@@ -2633,6 +2637,12 @@ export namespace ProtocolMapping {
      * Continues a request supplying authChallengeResponse following authRequired event.
      */
     'Fetch.continueWithAuth': {paramsType: [Protocol.Fetch.ContinueWithAuthRequest]; returnType: void;};
+    /**
+     * Continues loading of the paused response, optionally modifying the
+     * response headers. If either responseCode or headers are modified, all of them
+     * must be present.
+     */
+    'Fetch.continueResponse': {paramsType: [Protocol.Fetch.ContinueResponseRequest]; returnType: void;};
     /**
      * Causes the body of the response to be received from the server and
      * returned as a single string. May only be issued for a request that

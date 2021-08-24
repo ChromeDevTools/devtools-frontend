@@ -15421,15 +15421,31 @@
                         "IsolatedWorldScript",
                         "InjectedStyleSheet",
                         "MediaSessionImplOnServiceCreated",
-                        "SecurityHandler",
-                        "WebAuthenticationAPI",
-                        "FileChooser",
-                        "Serial",
-                        "FileSystemAccess",
-                        "MediaDevicesDispatcherHost",
-                        "WebBluetooth",
-                        "WebUSB",
-                        "MediaSession"
+                        "ContentMediaSessionImplOnServiceCreated",
+                        "ContentSecurityHandler",
+                        "ContentWebAuthenticationAPI",
+                        "ContentFileChooser",
+                        "ContentSerial",
+                        "ContentFileSystemAccess",
+                        "ContentMediaDevicesDispatcherHost",
+                        "ContentWebBluetooth",
+                        "ContentWebUSB",
+                        "ContentMediaSession",
+                        "EmbedderPopupBlockerTabHelper",
+                        "EmbedderSafeBrowsingTriggeredPopupBlocker",
+                        "EmbedderSafeBrowsingThreatDetails",
+                        "EmbedderAppBannerManager",
+                        "EmbedderDomDistillerViewerSource",
+                        "EmbedderDomDistillerSelfDeletingRequestDelegate",
+                        "EmbedderOomInterventionTabHelper",
+                        "EmbedderOfflinePage",
+                        "EmbedderChromePasswordManagerClientBindCredentialManager",
+                        "EmbedderPermissionRequestManager",
+                        "EmbedderModalDialog",
+                        "EmbedderExtensions",
+                        "EmbedderExtensionMessaging",
+                        "EmbedderExtensionMessagingForOpenPort",
+                        "EmbedderExtensionSentMessageToCachedFrame"
                     ]
                 },
                 {
@@ -15717,6 +15733,19 @@
                             "name": "primaryIcon",
                             "optional": true,
                             "type": "binary"
+                        }
+                    ]
+                },
+                {
+                    "name": "getAppId",
+                    "description": "Returns the unique (PWA) app id.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "appId",
+                            "description": "Only returns a value if the feature flag 'WebAppEnableManifestId' is enabled",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -19763,7 +19792,7 @@
                         },
                         {
                             "name": "body",
-                            "description": "A response body.",
+                            "description": "A response body. If absent, original response body will be used if\nthe request is intercepted at the response stage and empty body\nwill be used if the request is intercepted at the request stage.",
                             "optional": true,
                             "type": "binary"
                         },
@@ -19833,6 +19862,45 @@
                             "name": "authChallengeResponse",
                             "description": "Response to  with an authChallenge.",
                             "$ref": "AuthChallengeResponse"
+                        }
+                    ]
+                },
+                {
+                    "name": "continueResponse",
+                    "description": "Continues loading of the paused response, optionally modifying the\nresponse headers. If either responseCode or headers are modified, all of them\nmust be present.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "requestId",
+                            "description": "An id the client received in requestPaused event.",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "responseCode",
+                            "description": "An HTTP response code. If absent, original response code will be used.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "responsePhrase",
+                            "description": "A textual representation of responseCode.\nIf absent, a standard phrase matching responseCode is used.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "responseHeaders",
+                            "description": "Response headers. If absent, original response headers will be used.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "HeaderEntry"
+                            }
+                        },
+                        {
+                            "name": "binaryResponseHeaders",
+                            "description": "Alternative way of specifying response headers as a \\0-separated\nseries of name: value pairs. Prefer the above method unless you\nneed to represent some non-UTF8 values that can't be transmitted\nover the protocol as text.",
+                            "optional": true,
+                            "type": "binary"
                         }
                     ]
                 },

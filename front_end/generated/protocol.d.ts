@@ -10523,15 +10523,32 @@ declare namespace Protocol {
       IsolatedWorldScript = 'IsolatedWorldScript',
       InjectedStyleSheet = 'InjectedStyleSheet',
       MediaSessionImplOnServiceCreated = 'MediaSessionImplOnServiceCreated',
-      SecurityHandler = 'SecurityHandler',
-      WebAuthenticationAPI = 'WebAuthenticationAPI',
-      FileChooser = 'FileChooser',
-      Serial = 'Serial',
-      FileSystemAccess = 'FileSystemAccess',
-      MediaDevicesDispatcherHost = 'MediaDevicesDispatcherHost',
-      WebBluetooth = 'WebBluetooth',
-      WebUSB = 'WebUSB',
-      MediaSession = 'MediaSession',
+      ContentMediaSessionImplOnServiceCreated = 'ContentMediaSessionImplOnServiceCreated',
+      ContentSecurityHandler = 'ContentSecurityHandler',
+      ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
+      ContentFileChooser = 'ContentFileChooser',
+      ContentSerial = 'ContentSerial',
+      ContentFileSystemAccess = 'ContentFileSystemAccess',
+      ContentMediaDevicesDispatcherHost = 'ContentMediaDevicesDispatcherHost',
+      ContentWebBluetooth = 'ContentWebBluetooth',
+      ContentWebUSB = 'ContentWebUSB',
+      ContentMediaSession = 'ContentMediaSession',
+      EmbedderPopupBlockerTabHelper = 'EmbedderPopupBlockerTabHelper',
+      EmbedderSafeBrowsingTriggeredPopupBlocker = 'EmbedderSafeBrowsingTriggeredPopupBlocker',
+      EmbedderSafeBrowsingThreatDetails = 'EmbedderSafeBrowsingThreatDetails',
+      EmbedderAppBannerManager = 'EmbedderAppBannerManager',
+      EmbedderDomDistillerViewerSource = 'EmbedderDomDistillerViewerSource',
+      EmbedderDomDistillerSelfDeletingRequestDelegate = 'EmbedderDomDistillerSelfDeletingRequestDelegate',
+      EmbedderOomInterventionTabHelper = 'EmbedderOomInterventionTabHelper',
+      EmbedderOfflinePage = 'EmbedderOfflinePage',
+      EmbedderChromePasswordManagerClientBindCredentialManager =
+          'EmbedderChromePasswordManagerClientBindCredentialManager',
+      EmbedderPermissionRequestManager = 'EmbedderPermissionRequestManager',
+      EmbedderModalDialog = 'EmbedderModalDialog',
+      EmbedderExtensions = 'EmbedderExtensions',
+      EmbedderExtensionMessaging = 'EmbedderExtensionMessaging',
+      EmbedderExtensionMessagingForOpenPort = 'EmbedderExtensionMessagingForOpenPort',
+      EmbedderExtensionSentMessageToCachedFrame = 'EmbedderExtensionSentMessageToCachedFrame',
     }
 
     /**
@@ -10697,6 +10714,13 @@ declare namespace Protocol {
 
     export interface GetManifestIconsResponse extends ProtocolResponseWithError {
       primaryIcon?: binary;
+    }
+
+    export interface GetAppIdResponse extends ProtocolResponseWithError {
+      /**
+       * Only returns a value if the feature flag 'WebAppEnableManifestId' is enabled
+       */
+      appId?: string;
     }
 
     export interface GetCookiesResponse extends ProtocolResponseWithError {
@@ -13365,7 +13389,9 @@ declare namespace Protocol {
        */
       binaryResponseHeaders?: binary;
       /**
-       * A response body.
+       * A response body. If absent, original response body will be used if
+       * the request is intercepted at the response stage and empty body
+       * will be used if the request is intercepted at the request stage.
        */
       body?: binary;
       /**
@@ -13411,6 +13437,33 @@ declare namespace Protocol {
        * Response to  with an authChallenge.
        */
       authChallengeResponse: AuthChallengeResponse;
+    }
+
+    export interface ContinueResponseRequest {
+      /**
+       * An id the client received in requestPaused event.
+       */
+      requestId: RequestId;
+      /**
+       * An HTTP response code. If absent, original response code will be used.
+       */
+      responseCode?: integer;
+      /**
+       * A textual representation of responseCode.
+       * If absent, a standard phrase matching responseCode is used.
+       */
+      responsePhrase?: string;
+      /**
+       * Response headers. If absent, original response headers will be used.
+       */
+      responseHeaders?: HeaderEntry[];
+      /**
+       * Alternative way of specifying response headers as a \0-separated
+       * series of name: value pairs. Prefer the above method unless you
+       * need to represent some non-UTF8 values that can't be transmitted
+       * over the protocol as text.
+       */
+      binaryResponseHeaders?: binary;
     }
 
     export interface GetResponseBodyRequest {

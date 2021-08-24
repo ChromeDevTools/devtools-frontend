@@ -2411,6 +2411,11 @@ declare namespace ProtocolProxyApi {
     invoke_getManifestIcons(): Promise<Protocol.Page.GetManifestIconsResponse>;
 
     /**
+     * Returns the unique (PWA) app id.
+     */
+    invoke_getAppId(): Promise<Protocol.Page.GetAppIdResponse>;
+
+    /**
      * Returns all browser cookies. Depending on the backend support, will return detailed cookie
      * information in the `cookies` field.
      */
@@ -3284,6 +3289,14 @@ declare namespace ProtocolProxyApi {
      * Continues a request supplying authChallengeResponse following authRequired event.
      */
     invoke_continueWithAuth(params: Protocol.Fetch.ContinueWithAuthRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Continues loading of the paused response, optionally modifying the
+     * response headers. If either responseCode or headers are modified, all of them
+     * must be present.
+     */
+    invoke_continueResponse(params: Protocol.Fetch.ContinueResponseRequest):
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**

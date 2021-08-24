@@ -1294,7 +1294,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       {value: toIndex},
       {value: ArrayGroupingTreeElement.bucketThreshold},
       {value: ArrayGroupingTreeElement.sparseIterationThreshold},
-      {value: ArrayGroupingTreeElement.getOwnPropertyNamesThreshold},
     ]);
 
     await callback(jsonValue);
@@ -1303,22 +1302,19 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
      * Note: must declare params as optional.
      */
     function packRanges(
-        this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number, sparseIterationThreshold?: number,
-        getOwnPropertyNamesThreshold?: number): {
+        this: Object, fromIndex?: number, toIndex?: number, bucketThreshold?: number,
+        sparseIterationThreshold?: number): {
       ranges: number[][],
-      skipGetOwnPropertyNames: boolean,
     }|undefined {
       if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined ||
-          getOwnPropertyNamesThreshold === undefined || bucketThreshold === undefined) {
+          bucketThreshold === undefined) {
         return;
       }
       let ownPropertyNames: string[]|null = null;
       const consecutiveRange = (toIndex - fromIndex >= sparseIterationThreshold) && ArrayBuffer.isView(this);
-      const skipGetOwnPropertyNames = consecutiveRange && (toIndex - fromIndex >= getOwnPropertyNamesThreshold);
 
       function* arrayIndexes(object: Object): Generator<number, void, unknown> {
-        if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined ||
-            getOwnPropertyNamesThreshold === undefined) {
+        if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {
           return;
         }
 
@@ -1388,13 +1384,10 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
         }
       }
 
-      return {ranges: ranges, skipGetOwnPropertyNames: skipGetOwnPropertyNames};
+      return {ranges: ranges};
     }
 
-    async function callback(result: {
-      ranges: Array<Array<number>>,
-      skipGetOwnPropertyNames: boolean,
-    }|undefined): Promise<void> {
+    async function callback(result: {ranges: Array<Array<number>>}|undefined): Promise<void> {
       if (!result) {
         return;
       }
@@ -1420,8 +1413,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       if (topLevel) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // @ts-ignore
-        await ArrayGroupingTreeElement.populateNonIndexProperties(
-            treeNode, object, result.skipGetOwnPropertyNames, linkifier);
+        await ArrayGroupingTreeElement.populateNonIndexProperties(treeNode, object, linkifier);
       }
     }
   }
@@ -1489,57 +1481,14 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
 
   private static async populateNonIndexProperties(
       this: ArrayGroupingTreeElement, treeNode: UI.TreeOutline.TreeElement, object: SDK.RemoteObject.RemoteObject,
-      skipGetOwnPropertyNames: boolean, linkifier?: Components.Linkifier.Linkifier): Promise<void> {
-    // The definition of callFunction expects an unknown, and setting to `any` causes Closure to fail.
-    // However, leaving this as unknown also causes TypeScript to fail, so for now we leave this as unchecked.
-    // @ts-ignore  TODO(crbug.com/1011811): Fix after Closure is removed.
-    const result = await object.callFunction(buildObjectFragment, [{value: skipGetOwnPropertyNames}]);
-    if (!result.object || result.wasThrown) {
+      linkifier?: Components.Linkifier.Linkifier): Promise<void> {
+    const {properties, internalProperties} = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(
+        object, true /* generatePreview */, true /* nonIndexedPropertiesOnly */);
+    if (!properties) {
       return;
     }
-    const allProperties = await result.object.getOwnProperties(true /* generatePreview */);
-    result.object.release();
-    if (!allProperties.properties) {
-      return;
-    }
-    const properties = allProperties.properties;
-    properties.sort(ObjectPropertiesSection.compareProperties);
-    for (const property of properties) {
-      parentMap.set(property, this.object);
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (!ObjectPropertiesSection.isDisplayableProperty(property, (treeNode as any).property)) {
-        continue;
-      }
-      const childTreeElement = new ObjectPropertyTreeElement(property, linkifier);
-      childTreeElement.readOnly = true;
-      treeNode.appendChild(childTreeElement);
-    }
-
-    function buildObjectFragment(this: Object, skipGetOwnPropertyNames?: boolean): {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/naming-convention
-      __proto__: any,
-    } {
-      // @ts-ignore __proto__ exists on Object.
-      const result = {__proto__: this.__proto__};
-      if (skipGetOwnPropertyNames) {
-        return result;
-      }
-      const names = Object.getOwnPropertyNames(this);
-      for (let i = 0; i < names.length; ++i) {
-        const name = names[i];
-        // Array index check according to the ES5-15.4.
-        if (String(Number(name) >>> 0) === name && Number(name) >>> 0 !== 0xffffffff) {
-          continue;
-        }
-        const descriptor = Object.getOwnPropertyDescriptor(this, name);
-        if (descriptor) {
-          Object.defineProperty(result, name, descriptor);
-        }
-      }
-      return result;
-    }
+    ObjectPropertyTreeElement.populateWithProperties(
+        treeNode, properties, internalProperties, false, false, object, linkifier);
   }
 
   async onpopulate(): Promise<void> {
@@ -1559,7 +1508,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
 
   private static bucketThreshold = 100;
   private static sparseIterationThreshold = 250000;
-  private static getOwnPropertyNamesThreshold = 500000;
 }
 
 export class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {

@@ -43,7 +43,7 @@ import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
 import {appendStyle} from './utils/append-style.js';
 
-export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper implements SuggestBoxDelegate {
+export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SuggestBoxDelegate {
   private proxyElement!: HTMLElement|undefined;
   private proxyElementDisplay: string;
   private autocompletionTimeout: number;
@@ -780,3 +780,7 @@ const DefaultAutocompletionTimeout = 250;
 export enum Events {
   TextChanged = 'TextChanged',
 }
+
+export type EventTypes = {
+  [Events.TextChanged]: void,
+};

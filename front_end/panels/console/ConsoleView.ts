@@ -469,6 +469,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.messagesElement.addEventListener('click', this.messagesClicked.bind(this), false);
     this.messagesElement.addEventListener('paste', this.messagesPasted.bind(this), true);
     this.messagesElement.addEventListener('clipboard-paste', this.messagesPasted.bind(this), true);
+
     this.messagesCountElement = this.consoleToolbarContainer.createChild('div', 'message-count');
     UI.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
 
@@ -1103,8 +1104,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.updateFilterStatus();
     this.searchableViewInternal.updateSearchMatchesCount(this.regexMatchRanges.length);
     this.viewport.invalidate();
-    this.messagesCountElement.textContent =
-        i18nString(UIStrings.filteredMessagesInConsole, {PH1: this.visibleViewMessages.length});
+    this.messagesCountElement.setAttribute(
+        'aria-label', i18nString(UIStrings.filteredMessagesInConsole, {PH1: this.visibleViewMessages.length}));
   }
 
   private addGroupableMessagesToEnd(): void {

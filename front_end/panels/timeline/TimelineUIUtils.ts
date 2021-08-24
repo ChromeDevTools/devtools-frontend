@@ -197,6 +197,10 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
+  cacheScript: 'Cache Script Code',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
   compileCode: 'Compile Code',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -210,6 +214,10 @@ const UIStrings = {
   *@description Text in Timeline UIUtils of the Performance panel
   */
   compileModule: 'Compile Module',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  cacheModule: 'Cache Module Code',
   /**
    * @description Text for an event. Shown in the timeline in the Perforamnce panel.
    * "Module" refers to JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
@@ -614,10 +622,6 @@ const UIStrings = {
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
-  scriptSavedToCache: 'script saved to cache',
-  /**
-  *@description Text in Timeline UIUtils of the Performance panel
-  */
   compilationCacheSize: 'Compilation cache size',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
@@ -707,6 +711,10 @@ const UIStrings = {
   *@description Text in Timeline UIUtils of the Performance panel
   */
   streamed: 'Streamed',
+  /**
+  *@description Text in Timeline UIUtils of the Performance panel
+  */
+  eagerCompile: 'Compiling all functions eagerly',
   /**
   *@description Text in Timeline UIUtils of the Performance panel
   */
@@ -1287,10 +1295,12 @@ export class TimelineUIUtils {
         new TimelineRecordStyle(i18nString(UIStrings.xhrReadyStateChange), scripting);
     eventStyles[type.XHRLoad] = new TimelineRecordStyle(i18nString(UIStrings.xhrLoad), scripting);
     eventStyles[type.CompileScript] = new TimelineRecordStyle(i18nString(UIStrings.compileScript), scripting);
+    eventStyles[type.CacheScript] = new TimelineRecordStyle(i18nString(UIStrings.cacheScript), scripting);
     eventStyles[type.CompileCode] = new TimelineRecordStyle(i18nString(UIStrings.compileCode), scripting);
     eventStyles[type.OptimizeCode] = new TimelineRecordStyle(i18nString(UIStrings.optimizeCode), scripting);
     eventStyles[type.EvaluateScript] = new TimelineRecordStyle(i18nString(UIStrings.evaluateScript), scripting);
     eventStyles[type.CompileModule] = new TimelineRecordStyle(i18nString(UIStrings.compileModule), scripting);
+    eventStyles[type.CacheModule] = new TimelineRecordStyle(i18nString(UIStrings.cacheModule), scripting);
     eventStyles[type.EvaluateModule] = new TimelineRecordStyle(i18nString(UIStrings.evaluateModule), scripting);
     eventStyles[type.StreamingCompileScript] =
         new TimelineRecordStyle(i18nString(UIStrings.streamingCompileTask), other);
@@ -1708,9 +1718,11 @@ export class TimelineUIUtils {
         break;
       }
       case recordType.CompileModule:
+      case recordType.CacheModule:
         detailsText = Bindings.ResourceUtils.displayNameForURL(event.args['fileName']);
         break;
       case recordType.CompileScript:
+      case recordType.CacheScript:
       case recordType.EvaluateScript: {
         const url = eventData && eventData['url'];
         if (url) {
@@ -1887,12 +1899,14 @@ export class TimelineUIUtils {
         break;
       }
 
-      case recordType.CompileModule: {
+      case recordType.CompileModule:
+      case recordType.CacheModule: {
         details = linkifyLocation(null, event.args['fileName'], 0, 0);
         break;
       }
 
       case recordType.CompileScript:
+      case recordType.CacheScript:
       case recordType.EvaluateScript: {
         const url = eventData['url'];
         if (url) {
@@ -1962,14 +1976,8 @@ export class TimelineUIUtils {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static buildCompilationCacheDetails(eventData: any, contentHelper: TimelineDetailsContentHelper): void {
-    if ('producedCacheSize' in eventData) {
-      contentHelper.appendTextRow(
-          i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.scriptSavedToCache));
-      contentHelper.appendTextRow(
-          i18nString(UIStrings.compilationCacheSize),
-          Platform.NumberUtilities.bytesToString(eventData['producedCacheSize']));
-    } else if ('consumedCacheSize' in eventData) {
+  static buildConsumeCacheDetails(eventData: any, contentHelper: TimelineDetailsContentHelper): void {
+    if ('consumedCacheSize' in eventData) {
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.scriptLoadedFromCache));
       contentHelper.appendTextRow(
@@ -2164,10 +2172,34 @@ export class TimelineUIUtils {
           contentHelper.appendLocationRow(
               i18nString(UIStrings.script), url, eventData['lineNumber'], eventData['columnNumber']);
         }
+        const isEager = eventData['eager'] ?? false;
+        if (isEager) {
+          contentHelper.appendTextRow(i18nString(UIStrings.eagerCompile), true);
+        }
         const isStreamed = eventData['streamed'];
         contentHelper.appendTextRow(
             i18nString(UIStrings.streamed), isStreamed + (isStreamed ? '' : `: ${eventData['notStreamedReason']}`));
-        TimelineUIUtils.buildCompilationCacheDetails(eventData, contentHelper);
+        TimelineUIUtils.buildConsumeCacheDetails(eventData, contentHelper);
+        break;
+      }
+
+      case recordTypes.CacheModule: {
+        url = eventData && eventData['url'];
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.compilationCacheSize),
+            Platform.NumberUtilities.bytesToString(eventData['producedCacheSize']));
+        break;
+      }
+
+      case recordTypes.CacheScript: {
+        url = eventData && eventData['url'];
+        if (url) {
+          contentHelper.appendLocationRow(
+              i18nString(UIStrings.script), url, eventData['lineNumber'], eventData['columnNumber']);
+        }
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.compilationCacheSize),
+            Platform.NumberUtilities.bytesToString(eventData['producedCacheSize']));
         break;
       }
 

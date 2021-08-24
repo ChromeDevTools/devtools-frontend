@@ -1036,8 +1036,9 @@ export class TimelineModelImpl {
       }
 
       case RecordType.EvaluateScript:
+      case RecordType.CompileScript:
       // @ts-ignore fallthrough intended.
-      case RecordType.CompileScript: {
+      case RecordType.CacheScript: {
         if (typeof eventData['lineNumber'] === 'number') {
           --eventData['lineNumber'];
         }
@@ -1482,8 +1483,10 @@ export enum RecordType {
   CompileCode = 'V8.CompileCode',
   OptimizeCode = 'V8.OptimizeCode',
   EvaluateScript = 'EvaluateScript',
+  CacheScript = 'v8.produceCache',
   CompileModule = 'v8.compileModule',
   EvaluateModule = 'v8.evaluateModule',
+  CacheModule = 'v8.produceModuleCache',
   WasmStreamFromResponseCallback = 'v8.wasm.streamFromResponseCallback',
   WasmCompiledModule = 'v8.wasm.compiledModule',
   WasmCachedModule = 'v8.wasm.cachedModule',

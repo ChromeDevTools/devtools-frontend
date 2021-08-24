@@ -9875,6 +9875,12 @@
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cached Wasm Module"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Cache Module Code"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Cache Script Code"
+  },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Callback Function"
   },
@@ -10003,6 +10009,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duration"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Compiling all functions eagerly"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elements Affected"
@@ -10432,9 +10441,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script not eligible"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script saved to cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Scroll"

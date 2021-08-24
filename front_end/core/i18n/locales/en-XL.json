@@ -9875,6 +9875,12 @@
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Ĉáĉh́êd́ Ŵáŝḿ M̂ód̂úl̂é"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Ĉáĉh́ê Ḿôd́ûĺê Ćôd́ê"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Ĉáĉh́ê Śĉŕîṕt̂ Ćôd́ê"
+  },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "Ĉál̂ĺb̂áĉḱ F̂ún̂ćt̂íôń"
   },
@@ -10003,6 +10009,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "D̂úr̂át̂íôń"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Ĉóm̂ṕîĺîńĝ ál̂ĺ f̂ún̂ćt̂íôńŝ éâǵêŕl̂ý"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Êĺêḿêńt̂ś Âf́f̂éĉt́êd́"
@@ -10432,9 +10441,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ŝćr̂íp̂t́ n̂ót̂ él̂íĝíb̂ĺê"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "ŝćr̂íp̂t́ ŝáv̂éd̂ t́ô ćâćĥé"
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Ŝćr̂ól̂ĺ"

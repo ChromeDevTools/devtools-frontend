@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import {elementDragStart} from './UIUtils.js';
 
-export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
+export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private isEnabledInternal: boolean;
   private elementsInternal: Set<HTMLElement>;
   private readonly installDragOnMouseDownBound: (event: Event) => false | undefined;
@@ -110,7 +110,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
 
   sendDragMove(startX: number, currentX: number, startY: number, currentY: number, shiftKey: boolean): void {
     this.dispatchEventToListeners(
-        Events.ResizeUpdate,
+        Events.ResizeUpdateXY,
         {startX: startX, currentX: currentX, startY: startY, currentY: currentY, shiftKey: shiftKey});
   }
 
@@ -125,9 +125,43 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   ResizeStart = 'ResizeStart',
-  ResizeUpdate = 'ResizeUpdate',
+  ResizeUpdateXY = 'ResizeUpdateXY',
+  ResizeUpdatePosition = 'ResizeUpdatePosition',
   ResizeEnd = 'ResizeEnd',
 }
+
+export interface ResizeStartXYEvent {
+  startX: number;
+  currentX: number;
+  startY: number;
+  currentY: number;
+}
+
+export interface ResizeStartPositionEvent {
+  startPosition: number;
+  currentPosition: number;
+}
+
+export interface ResizeUpdateXYEvent {
+  startX: number;
+  currentX: number;
+  startY: number;
+  currentY: number;
+  shiftKey: boolean;
+}
+
+export interface ResizeUpdatePositionEvent {
+  startPosition: number;
+  currentPosition: number;
+  shiftKey: boolean;
+}
+
+export type EventTypes = {
+  [Events.ResizeStart]: ResizeStartXYEvent|ResizeStartPositionEvent,
+  [Events.ResizeUpdateXY]: ResizeUpdateXYEvent,
+  [Events.ResizeUpdatePosition]: ResizeUpdatePositionEvent,
+  [Events.ResizeEnd]: void,
+};
 
 export class SimpleResizerWidget extends ResizerWidget {
   private isVerticalInternal: boolean;
@@ -160,10 +194,10 @@ export class SimpleResizerWidget extends ResizerWidget {
   sendDragMove(startX: number, currentX: number, startY: number, currentY: number, shiftKey: boolean): void {
     if (this.isVerticalInternal) {
       this.dispatchEventToListeners(
-          Events.ResizeUpdate, {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
+          Events.ResizeUpdatePosition, {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
     } else {
       this.dispatchEventToListeners(
-          Events.ResizeUpdate, {startPosition: startX, currentPosition: currentX, shiftKey: shiftKey});
+          Events.ResizeUpdatePosition, {startPosition: startX, currentPosition: currentX, shiftKey: shiftKey});
     }
   }
 }

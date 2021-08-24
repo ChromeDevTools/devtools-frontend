@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import {Constraints} from './Geometry.js';
+import type {ResizeUpdatePositionEvent} from './ResizerWidget.js';
 import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidget.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
@@ -91,7 +92,7 @@ export class SplitWidget extends Widget {
     this.resizerWidget = new SimpleResizerWidget();
     this.resizerWidget.setEnabled(true);
     this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeStart, this.onResizeStart, this);
-    this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeUpdate, this.onResizeUpdate, this);
+    this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeUpdatePosition, this.onResizeUpdate, this);
     this.resizerWidget.addEventListener(ResizerWidgetEvents.ResizeEnd, this.onResizeEnd, this);
 
     this.defaultSidebarWidth = defaultSidebarWidth || 200;
@@ -689,11 +690,11 @@ export class SplitWidget extends Widget {
     return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
   }
 
-  private onResizeStart(_event: Common.EventTarget.EventTargetEvent): void {
+  private onResizeStart(): void {
     this.resizeStartSizeDIP = this.sidebarSizeDIP;
   }
 
-  private onResizeUpdate(event: Common.EventTarget.EventTargetEvent): void {
+  private onResizeUpdate(event: Common.EventTarget.EventTargetEvent<ResizeUpdatePositionEvent>): void {
     const offset = event.data.currentPosition - event.data.startPosition;
     const offsetDIP = ZoomManager.instance().cssToDIP(offset);
     const newSizeDIP = this.secondIsSidebar ? this.resizeStartSizeDIP - offsetDIP : this.resizeStartSizeDIP + offsetDIP;
@@ -708,7 +709,7 @@ export class SplitWidget extends Widget {
     }
   }
 
-  private onResizeEnd(_event: Common.EventTarget.EventTargetEvent): void {
+  private onResizeEnd(): void {
     this.resizeStartSizeDIP = 0;
   }
 

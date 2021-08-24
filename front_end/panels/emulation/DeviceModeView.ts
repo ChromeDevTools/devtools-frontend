@@ -201,7 +201,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     resizer.setCursor(cursor);
     resizer.addEventListener(UI.ResizerWidget.Events.ResizeStart, this.onResizeStart, this);
     resizer.addEventListener(
-        UI.ResizerWidget.Events.ResizeUpdate, this.onResizeUpdate.bind(this, widthFactor, heightFactor));
+        UI.ResizerWidget.Events.ResizeUpdateXY, this.onResizeUpdate.bind(this, widthFactor, heightFactor));
     resizer.addEventListener(UI.ResizerWidget.Events.ResizeEnd, this.onResizeEnd, this);
     return resizer;
   }
@@ -213,7 +213,7 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   private onResizeUpdate(widthFactor: number, heightFactor: number, event: {
-    data: {shiftKey: boolean, currentX: number, currentY: number, startX: number, startY: number},
+    data: UI.ResizerWidget.ResizeUpdateXYEvent,
   }): void {
     if (event.data.shiftKey !== Boolean(this.slowPositionStart)) {
       this.slowPositionStart = event.data.shiftKey ? {x: event.data.currentX, y: event.data.currentY} : null;

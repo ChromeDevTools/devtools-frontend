@@ -164,7 +164,6 @@ luci.notifier(
         name = "sheriff_email", 
         body = """
 Auto-roller {{.Build.Builder.Builder}} found a stale CL.
-
 Please check roll CLs.
 
 Builder {{.Build.Builder.Builder}} found stale CL at

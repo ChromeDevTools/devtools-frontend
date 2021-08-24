@@ -65,7 +65,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-tree-outline`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private treeData: readonly TreeNode<TreeNodeDataType>[] = [];
-  private nodeExpandedMap: WeakMap<TreeNode<TreeNodeDataType>, boolean> = new WeakMap();
+  private nodeExpandedMap: Map<string, boolean> = new Map();
   private domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
   private hasRenderedAtLeastOnce = false;
   /**
@@ -207,11 +207,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   private setNodeExpandedState(node: TreeNode<TreeNodeDataType>, newExpandedState: boolean): void {
-    this.nodeExpandedMap.set(node, newExpandedState);
+    this.nodeExpandedMap.set(node.id, newExpandedState);
   }
 
   private nodeIsExpanded(node: TreeNode<TreeNodeDataType>): boolean {
-    return this.nodeExpandedMap.get(node) || false;
+    return this.nodeExpandedMap.get(node.id) || false;
   }
 
   private async expandAndRecurse(node: TreeNode<TreeNodeDataType>, currentDepth: number, maxDepth: number):
@@ -337,13 +337,10 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   private isSelectedNode(node: TreeNode<TreeNodeDataType>): boolean {
-    if (node.id) {
-      if (this.selectedTreeNode && this.selectedTreeNode.id) {
-        return node.id === this.selectedTreeNode.id;
-      }
+    if (this.selectedTreeNode) {
+      return node.id === this.selectedTreeNode.id;
     }
-
-    return node === this.selectedTreeNode;
+    return false;
   }
 
   private renderNode(node: TreeNode<TreeNodeDataType>, {depth, setSize, positionInSet}: {
@@ -409,11 +406,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
             return;
           }
 
-          // If an id key was supplied for the node, match on that.
-          // Otherwise default to object equality.
-          if (node.id && this.nodePendingFocus && this.nodePendingFocus.id && node.id === this.nodePendingFocus.id) {
-            this.focusPendingNode(domNode);
-          } else if (node === this.nodePendingFocus) {
+          if (this.nodePendingFocus && node.id === this.nodePendingFocus.id) {
             this.focusPendingNode(domNode);
           }
         })}

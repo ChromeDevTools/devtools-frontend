@@ -29,18 +29,21 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
   tree: [
     {
       treeNodeData: {cssProperty: 'border', cssValue: '1px solid red'},
+      id: '1',
     },
     {
       treeNodeData: {cssProperty: 'font-size', cssValue: '20px'},
+      id: '2',
     },
     {
       treeNodeData: {cssProperty: 'margin', cssValue: '10px 5px'},
+      id: '3',
       async children() {
         return Promise.resolve<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>[]>([
-          {treeNodeData: {cssProperty: 'margin-left', cssValue: '5px'}},
-          {treeNodeData: {cssProperty: 'margin-right', cssValue: '5px'}},
-          {treeNodeData: {cssProperty: 'margin-top', cssValue: '10px'}},
-          {treeNodeData: {cssProperty: 'margin-bottom', cssValue: '10px'}},
+          {treeNodeData: {cssProperty: 'margin-left', cssValue: '5px'}, id: '4'},
+          {treeNodeData: {cssProperty: 'margin-right', cssValue: '5px'}, id: '5'},
+          {treeNodeData: {cssProperty: 'margin-top', cssValue: '10px'}, id: '6'},
+          {treeNodeData: {cssProperty: 'margin-bottom', cssValue: '10px'}, id: '7'},
         ]);
       },
     },

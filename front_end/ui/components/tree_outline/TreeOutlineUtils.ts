@@ -7,7 +7,7 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 interface BaseTreeNode<TreeNodeDataType> {
   treeNodeData: TreeNodeDataType;
   renderer?: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
-  id?: string;
+  id: string;
 }
 
 export interface TreeNodeWithChildren<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
@@ -210,13 +210,10 @@ export const getPathToTreeNode =
 const getPathToTreeNodeRecursively = async<TreeNodeDataType>(
     currentNode: TreeNode<TreeNodeDataType>, nodeToFind: TreeNode<TreeNodeDataType>,
     pathToNode: TreeNode<TreeNodeDataType>[]): Promise<TreeNode<TreeNodeDataType>[]|null> => {
-  if (nodeToFind.id && currentNode.id && currentNode.id === nodeToFind.id) {
+  if (currentNode.id === nodeToFind.id) {
     return pathToNode;
   }
 
-  if (currentNode === nodeToFind) {
-    return pathToNode;
-  }
   if (currentNode.children) {
     const children = await getNodeChildren(currentNode);
     for (const child of children) {

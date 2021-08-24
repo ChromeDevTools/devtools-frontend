@@ -107,6 +107,7 @@ export type OriginTrialTreeNodeData = Protocol.Page.OriginTrial|Protocol.Page.Or
 function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeNode<OriginTrialTreeNodeData> {
   return {
     treeNodeData: originTrial,
+    id: 'OriginTrialTreeNode#' + originTrial.trialName,
     children: async(): Promise<TreeNode<OriginTrialTreeNodeData>[]> => originTrial.tokensWithStatus.length > 1 ?
         originTrial.tokensWithStatus.map(constructTokenNode) :
         constructTokenDetailsNodes(originTrial.tokensWithStatus[0]),
@@ -134,6 +135,7 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
 function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): TreeNode<OriginTrialTreeNodeData> {
   return {
     treeNodeData: token.status,
+    id: 'TokenNode#' + token.rawTokenText,
     children: async(): Promise<TreeNode<OriginTrialTreeNodeData>[]> => constructTokenDetailsNodes(token),
     renderer: (node: TreeNode<OriginTrialTreeNodeData>, state: {isExpanded: boolean}): LitHtml.TemplateResult => {
       const tokenStatus = node.treeNodeData as string;
@@ -166,6 +168,7 @@ function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithSta
   return [
     {
       treeNodeData: token,
+      id: 'TokenDetailsNode#' + token.rawTokenText,
       renderer: renderTokenDetails,
     },
     constructRawTokenTextNode(token.rawTokenText),
@@ -175,8 +178,10 @@ function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithSta
 function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeNodeData> {
   return {
     treeNodeData: i18nString(UIStrings.rawTokenText),
+    id: 'TokenRawTextContainerNode#' + tokenText,
     children: async(): Promise<TreeNode<OriginTrialTreeNodeData>[]> => [{
       treeNodeData: tokenText,
+      id: 'TokenRawTextNode#' + tokenText,
       renderer: (data: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult => {
         const tokenText = data.treeNodeData as string;
         return LitHtml.html`

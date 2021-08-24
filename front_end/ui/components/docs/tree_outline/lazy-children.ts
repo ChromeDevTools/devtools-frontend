@@ -13,18 +13,22 @@ async function loadInSomeNodes(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<
   const europeanOffices: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
     {
       treeNodeData: 'UK',
+      id: 'UK',
       children: () => Promise.resolve([
         {
           treeNodeData: 'LON',
-          children: () => Promise.resolve([{treeNodeData: '6PS'}, {treeNodeData: 'CSG'}, {treeNodeData: 'BEL'}]),
+          id: 'LON',
+          children: () => Promise.resolve(
+              [{treeNodeData: '6PS', id: '6PS'}, {treeNodeData: 'CSG', id: 'CSG'}, {treeNodeData: 'BEL', id: 'BEL'}]),
         },
       ]),
     },
     {
       treeNodeData: 'Germany',
+      id: 'Germany',
       children: () => Promise.resolve([
-        {treeNodeData: 'MUC'},
-        {treeNodeData: 'BER'},
+        {treeNodeData: 'MUC', id: 'MUC'},
+        {treeNodeData: 'BER', id: 'MUC'},
       ]),
     },
   ];
@@ -39,9 +43,11 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<string> = {
   tree: [
     {
       treeNodeData: 'Offices',
+      id: 'Offices',
       children: () => Promise.resolve([
         {
           treeNodeData: 'Europe',
+          id: 'Europe',
           async children() {
             const children = await loadInSomeNodes();
             return children;
@@ -51,18 +57,23 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<string> = {
     },
     {
       treeNodeData: 'Products',
+      id: 'Products',
       children: () => Promise.resolve([
         {
           treeNodeData: 'Chrome',
+          id: 'Chrome',
         },
         {
           treeNodeData: 'YouTube',
+          id: 'YouTube',
         },
         {
           treeNodeData: 'Drive',
+          id: 'Drive',
         },
         {
           treeNodeData: 'Calendar',
+          id: 'Calendar',
         },
       ]),
 

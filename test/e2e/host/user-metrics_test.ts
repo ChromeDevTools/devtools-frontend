@@ -14,50 +14,30 @@ import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 
-interface UserMetric {
-  name: string;
-  value: string|number|LoadMetric;
-}
-interface UserMetricWithOptionalValue {
-  name: string;
-  value?: string|number|LoadMetric;
-}
-
-interface LoadMetric {
-  histogramName: string;
-  panelName: string;
-}
-
 interface UserMetrics {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Action: {[name: string]: number};
+}
+
+interface EnumHistogramEvent {
+  actionName: string;
+  actionCode: number;
+}
+
+interface EnumHistogramEventWithOptionalCode {
+  actionName: string;
+  actionCode?: number;
+}
+
+interface PerformanceHistogramEvent {
+  histogramName: string;
+  duration: number;
 }
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     /* eslint-disable @typescript-eslint/naming-convention */
-    __caughtEvents: UserMetric[];
-    __beginCatchEvents: () => void;
-    __endCatchEvents: () => void;
-    __panelLoaded: (evt: Event) => void;
-    __panelShown: (evt: Event) => void;
-    __panelClosed: (evt: Event) => void;
-    __sidebarPaneShown: (evt: Event) => void;
-    __actionTaken: (evt: Event) => void;
-    __keyboardShortcutFired: (evt: Event) => void;
-    __issuesPanelOpenedFrom: (evt: Event) => void;
-    __keybindSetSettingChanged: (evt: Event) => void;
-    __dualScreenDeviceEmulated: (evt: Event) => void;
-    __cssEditorOpened: (evt: Event) => void;
-    __experimentDisabled: (evt: Event) => void;
-    __experimentEnabled: (evt: Event) => void;
-    __colorFixed: (evt: Event) => void;
-    __issuesPanelIssueExpanded: (evt: Event) => void;
-    __issuesPanelResourceOpened: (evt: Event) => void;
-    __issuesPanelIssueCreated: (evt: Event) => void;
-    __developerResourceLoaded: (evt: Event) => void;
-    __developerResourceScheme: (evt: Event) => void;
     Host: {
       UserMetrics: UserMetrics,
       userMetrics: {
@@ -70,126 +50,47 @@ declare global {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-async function beginCatchEvents(frontend: puppeteer.Page) {
-  await frontend.evaluate(() => {
-    const makeHandler = (eventName: string) => (evt: Event) => {
-      const customEvt = evt as CustomEvent;
-      window.__caughtEvents.push({name: eventName, value: customEvt.detail.value});
-    };
-    window.__panelShown = makeHandler('DevTools.PanelShown');
-    window.__panelClosed = makeHandler('DevTools.PanelClosed');
-    window.__panelLoaded = makeHandler('DevTools.PanelLoaded');
-    window.__sidebarPaneShown = makeHandler('DevTools.SidebarPaneShown');
-    window.__actionTaken = makeHandler('DevTools.ActionTaken');
-    window.__keyboardShortcutFired = makeHandler('DevTools.KeyboardShortcutFired');
-    window.__issuesPanelOpenedFrom = makeHandler('DevTools.IssuesPanelOpenedFrom');
-    window.__keybindSetSettingChanged = makeHandler('DevTools.KeybindSetSettingChanged');
-    window.__dualScreenDeviceEmulated = makeHandler('DevTools.DualScreenDeviceEmulated');
-    window.__cssEditorOpened = makeHandler('DevTools.CssEditorOpened');
-    window.__experimentDisabled = makeHandler('DevTools.ExperimentDisabled');
-    window.__experimentEnabled = makeHandler('DevTools.ExperimentEnabled');
-    window.__colorFixed = makeHandler('DevTools.ColorPicker.FixedColor');
-    window.__issuesPanelIssueExpanded = makeHandler('DevTools.IssuesPanelIssueExpanded');
-    window.__issuesPanelResourceOpened = makeHandler('DevTools.IssuesPanelResourceOpened');
-    window.__issuesPanelIssueCreated = makeHandler('DevTools.IssueCreated');
-    window.__developerResourceLoaded = makeHandler('DevTools.DeveloperResourceLoaded');
-    window.__developerResourceScheme = makeHandler('DevTools.DeveloperResourceScheme');
-    window.__caughtEvents = [];
-    window.__beginCatchEvents = () => {
-      window.addEventListener('DevTools.PanelShown', window.__panelShown);
-      window.addEventListener('DevTools.PanelClosed', window.__panelClosed);
-      window.addEventListener('DevTools.PanelLoaded', window.__panelLoaded);
-      window.addEventListener('DevTools.SidebarPaneShown', window.__sidebarPaneShown);
-      window.addEventListener('DevTools.ActionTaken', window.__actionTaken);
-      window.addEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
-      window.addEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
-      window.addEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
-      window.addEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
-      window.addEventListener('DevTools.CssEditorOpened', window.__cssEditorOpened);
-      window.addEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
-      window.addEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
-      window.addEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
-      window.addEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
-      window.addEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
-      window.addEventListener('DevTools.IssueCreated', window.__issuesPanelIssueCreated);
-      window.addEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
-      window.addEventListener('DevTools.DeveloperResourceScheme', window.__developerResourceScheme);
-    };
-
-    window.__endCatchEvents = () => {
-      window.removeEventListener('DevTools.PanelShown', window.__panelShown);
-      window.removeEventListener('DevTools.PanelClosed', window.__panelClosed);
-      window.removeEventListener('DevTools.PanelLoaded', window.__panelLoaded);
-      window.removeEventListener('DevTools.SidebarPaneShown', window.__sidebarPaneShown);
-      window.removeEventListener('DevTools.ActionTaken', window.__actionTaken);
-      window.removeEventListener('DevTools.KeyboardShortcutFired', window.__keyboardShortcutFired);
-      window.removeEventListener('DevTools.IssuesPanelOpenedFrom', window.__issuesPanelOpenedFrom);
-      window.removeEventListener('DevTools.KeybindSetSettingChanged', window.__keybindSetSettingChanged);
-      window.removeEventListener('DevTools.DualScreenDeviceEmulated', window.__dualScreenDeviceEmulated);
-      window.removeEventListener('DevTools.CssEditorOpened', window.__cssEditorOpened);
-      window.removeEventListener('DevTools.ExperimentDisabled', window.__experimentDisabled);
-      window.removeEventListener('DevTools.ExperimentEnabled', window.__experimentEnabled);
-      window.removeEventListener('DevTools.ColorPicker.FixedColor', window.__colorFixed);
-      window.removeEventListener('DevTools.IssuesPanelIssueExpanded', window.__issuesPanelIssueExpanded);
-      window.removeEventListener('DevTools.IssuesPanelResourceOpened', window.__issuesPanelResourceOpened);
-      window.removeEventListener('DevTools.DeveloperResourceLoaded', window.__developerResourceLoaded);
-      window.removeEventListener('DevTools.DeveloperResourceScheme', window.__developerResourceScheme);
-    };
-
-    window.__beginCatchEvents();
-  });
+function retrieveRecordedHistogramEvents(frontend: puppeteer.Page): Promise<EnumHistogramEvent[]> {
+  // @ts-ignore
+  return frontend.evaluate(() => window.InspectorFrontendHost.recordedEnumeratedHistograms);
 }
 
-async function endCatchEvents(frontend: puppeteer.Page) {
-  await frontend.evaluate(() => {
-    window.__endCatchEvents();
-  });
+function retrieveRecordedPerformanceHistogramEvents(frontend: puppeteer.Page): Promise<PerformanceHistogramEvent[]> {
+  // @ts-ignore
+  return frontend.evaluate(() => window.InspectorFrontendHost.recordedPerformanceHistograms);
 }
 
-function retrieveCapturedEvents(frontend: puppeteer.Page) {
-  return frontend.evaluate(() => window.__caughtEvents);
-}
-
-async function assertCapturedEvents(expected: UserMetric[]) {
+async function assertHistogramEventsInclude(expected: EnumHistogramEvent[]) {
   const {frontend} = getBrowserAndPages();
-  const events = await retrieveCapturedEvents(frontend);
+  const events = await retrieveRecordedHistogramEvents(frontend);
 
-  assert.deepEqual(events, expected);
+  assert.includeDeepMembers(events, expected);
 }
 
-async function awaitCapturedEvent(expected: UserMetricWithOptionalValue) {
+async function waitForHistogramEvent(expected: EnumHistogramEventWithOptionalCode) {
   const {frontend} = getBrowserAndPages();
   await waitForFunction(async () => {
-    const events = await retrieveCapturedEvents(frontend);
-    return events.find(e => e.name === expected.name && (!('value' in expected) || e.value === expected.value));
+    const events = await retrieveRecordedHistogramEvents(frontend);
+    return events.find(
+        e => e.actionName === expected.actionName && (!('value' in expected) || e.actionCode === expected.actionCode));
   });
 }
 
 describe('User Metrics', () => {
-  beforeEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
-  });
-
   it('dispatches dock and undock events', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.evaluate(() => {
       self.Host.userMetrics.actionTaken(self.Host.UserMetrics.Action.WindowDocked);
       self.Host.userMetrics.actionTaken(self.Host.UserMetrics.Action.WindowUndocked);
     });
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.ActionTaken',
-        value: 1,  // WindowDocked.
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 1,  // WindowDocked.
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 2,  // WindowUndocked.
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 2,  // WindowUndocked.
       },
     ]);
   });
@@ -200,14 +101,14 @@ describe('User Metrics', () => {
     await frontend.keyboard.press('Escape');
     await frontend.waitForSelector('.console-view');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 10,  // drawer-console-view.
+        actionName: 'DevTools.PanelShown',
+        actionCode: 10,  // drawer-console-view.
       },
       {
-        name: 'DevTools.KeyboardShortcutFired',
-        value: 17,  // main.toggle-drawer
+        actionName: 'DevTools.KeyboardShortcutFired',
+        actionCode: 17,  // main.toggle-drawer
       },
     ]);
   });
@@ -219,23 +120,23 @@ describe('User Metrics', () => {
     await click('#tab-timeline');
     await frontend.waitForSelector('.timeline');
 
-    await assertCapturedEvents([{
-      name: 'DevTools.PanelShown',
-      value: 5,  // Timeline.
+    await assertHistogramEventsInclude([{
+      actionName: 'DevTools.PanelShown',
+      actionCode: 5,  // Timeline.
     }]);
   });
 
   it('dispatches events for triple dot items', async () => {
     await openPanelViaMoreTools('Animations');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 10,  // 'console-view'.
+        actionName: 'DevTools.PanelShown',
+        actionCode: 10,  // 'console-view'.
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 11,  // 'animations'.
+        actionName: 'DevTools.PanelShown',
+        actionCode: 11,  // 'animations'.
       },
     ]);
   });
@@ -243,36 +144,35 @@ describe('User Metrics', () => {
   it('dispatches events for opening issues drawer via hamburger menu', async () => {
     await openPanelViaMoreTools('Issues');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssuesPanelOpenedFrom',
-        value: 3,  // 'HamburgerMenu'.
+        actionName: 'DevTools.IssuesPanelOpenedFrom',
+        actionCode: 3,  // 'HamburgerMenu'.
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 10,  // 'console-view'.
+        actionName: 'DevTools.PanelShown',
+        actionCode: 10,  // 'console-view'.
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 37,  // 'issues-pane'.
+        actionName: 'DevTools.PanelShown',
+        actionCode: 37,  // 'issues-pane'.
       },
     ]);
   });
 
   it('dispatches event when opening issues drawer via command menu', async () => {
-    const {frontend} = getBrowserAndPages();
-
     await openCommandMenu();
     await typeText('issues');
     await waitFor('.filtered-list-widget-title');
     await pressKey('Enter');
     await waitFor('[aria-label="Issues panel"]');
 
-    const events = await retrieveCapturedEvents(frontend);
-    assert.deepInclude(events, {
-      name: 'DevTools.IssuesPanelOpenedFrom',
-      value: 5,  // CommandMenu
-    });
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssuesPanelOpenedFrom',
+        actionCode: 5,  // CommandMenu
+      },
+    ]);
   });
 
   it('dispatches an event when F1 is used to open settings', async () => {
@@ -281,14 +181,14 @@ describe('User Metrics', () => {
     await frontend.keyboard.press('F1');
     await waitFor('.settings-window-main');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 29,
+        actionName: 'DevTools.PanelShown',
+        actionCode: 29,
       },
       {
-        name: 'DevTools.KeyboardShortcutFired',
-        value: 22,  // settings.show
+        actionName: 'DevTools.KeyboardShortcutFired',
+        actionCode: 22,  // settings.show
       },
     ]);
   });
@@ -325,14 +225,14 @@ describe('User Metrics', () => {
 
     await waitFor('[aria-label="Activate breakpoints"]');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 4,  // sources
+        actionName: 'DevTools.PanelShown',
+        actionCode: 4,  // sources
       },
       {
-        name: 'DevTools.KeyboardShortcutFired',
-        value: 35,  // debugger.toggle-breakpoints-active
+        actionName: 'DevTools.KeyboardShortcutFired',
+        actionCode: 35,  // debugger.toggle-breakpoints-active
       },
     ]);
   });
@@ -348,22 +248,22 @@ describe('User Metrics', () => {
     const keybindSetSelect = await $('.keybinds-set-select select') as puppeteer.ElementHandle<HTMLSelectElement>;
     keybindSetSelect.select('vsCode');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 29,  // settings-preferences
+        actionName: 'DevTools.PanelShown',
+        actionCode: 29,  // settings-preferences
       },
       {
-        name: 'DevTools.KeyboardShortcutFired',
-        value: 22,  // settings.show
+        actionName: 'DevTools.KeyboardShortcutFired',
+        actionCode: 22,  // settings.show
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 38,  // settings-keybinds
+        actionName: 'DevTools.PanelShown',
+        actionCode: 38,  // settings-keybinds
       },
       {
-        name: 'DevTools.KeybindSetSettingChanged',
-        value: 1,  // vsCode
+        actionName: 'DevTools.KeybindSetSettingChanged',
+        actionCode: 1,  // vsCode
       },
     ]);
   });
@@ -373,18 +273,18 @@ describe('User Metrics', () => {
     await navigateToSecurityTab();
     await closeSecurityTab();
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 16,  // Security
+        actionName: 'DevTools.PanelShown',
+        actionCode: 16,  // Security
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 1,
+        actionName: 'DevTools.PanelShown',
+        actionCode: 1,
       },
       {
-        name: 'DevTools.PanelClosed',
-        value: 16,  // Security
+        actionName: 'DevTools.PanelClosed',
+        actionCode: 16,  // Security
       },
     ]);
   });
@@ -397,28 +297,27 @@ describe('User Metrics', () => {
     // Disable the experiment
     await customThemeCheckbox.click();
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 29,  // settings-preferences
+        actionName: 'DevTools.PanelShown',
+        actionCode: 29,  // settings-preferences
       },
       {
-        name: 'DevTools.PanelShown',
-        value: 31,  // Experiments
+        actionName: 'DevTools.PanelShown',
+        actionCode: 31,  // Experiments
       },
       {
-        name: 'DevTools.ExperimentEnabled',
-        value: 0,  // Allow extensions to load custom stylesheets
+        actionName: 'DevTools.ExperimentEnabled',
+        actionCode: 0,  // Allow extensions to load custom stylesheets
       },
       {
-        name: 'DevTools.ExperimentDisabled',
-        value: 0,  // Allow extensions to load custom stylesheets
+        actionName: 'DevTools.ExperimentDisabled',
+        actionCode: 0,  // Allow extensions to load custom stylesheets
       },
     ]);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1071850]: tracks panel loading', async () => {
+  it('tracks panel loading', async () => {
     // We specify the selected panel here because the default behavior is to go to the
     // elements panel, but this means we won't get the PanelLoaded event. Instead we
     // request that the resetPages helper sets the timeline as the target panel, and
@@ -427,65 +326,48 @@ describe('User Metrics', () => {
     await reloadDevTools({selectedPanel: {name: 'timeline'}});
     const {frontend} = getBrowserAndPages();
 
-    await beginCatchEvents(frontend);
-
     await waitFor('.timeline');
 
-    await assertCapturedEvents([
-      {
-        name: 'DevTools.PanelLoaded',
-        value: {
-          histogramName: 'DevTools.Launch.Timeline',
-          panelName: 'timeline',
-        },
-      },
-    ]);
+    const events = await retrieveRecordedPerformanceHistogramEvents(frontend);
+
+    assert.strictEqual(events.length, 1);
+    assert.strictEqual(events[0].histogramName, 'DevTools.Launch.Timeline');
   });
 });
 
 describe('User Metrics for dual screen emulation', () => {
   beforeEach(async () => {
     await startEmulationWithDualScreenFlag();
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
   });
 
   it('dispatch events when dual screen emulation started and span button hit', async () => {
     await selectDualScreen();
     await clickToggleButton();
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.DualScreenDeviceEmulated',
-        value: 0,  // Dual screen/fold device selected
+        actionName: 'DevTools.DualScreenDeviceEmulated',
+        actionCode: 0,  // Dual screen/fold device selected
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 10,  // Device mode enabled
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 10,  // Device mode enabled
       },
       {
-        name: 'DevTools.DualScreenDeviceEmulated',
-        value: 1,  // Toggle single/dual screen mode (span button)
+        actionName: 'DevTools.DualScreenDeviceEmulated',
+        actionCode: 1,  // Toggle single/dual screen mode (span button)
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 10,  // Device mode enabled.
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 10,  // Device mode enabled.
       },
     ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 
 describe('User Metrics for CSS Overview', () => {
   beforeEach(async () => {
     await enableExperiment('cssOverview');
-    // enableExperiment reloads the DevTools and removes our listeners
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
   });
 
   it('dispatch events when capture overview button hit', async () => {
@@ -493,28 +375,22 @@ describe('User Metrics for CSS Overview', () => {
 
     await click('.primary-button');  // Capture overview
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.PanelShown',
-        value: 39,  // cssoverview
+        actionName: 'DevTools.PanelShown',
+        actionCode: 39,  // cssoverview
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 41,  // CaptureCssOverviewClicked
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 41,  // CaptureCssOverviewClicked
       },
     ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 
 describe('User Metrics for CSS Editors in Styles Pane', () => {
   it('dispatch CssEditorOpened events', async () => {
     const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
 
     await frontend.evaluate(() => {
       self.Host.userMetrics.cssEditorOpened('colorPicker');
@@ -523,22 +399,22 @@ describe('User Metrics for CSS Editors in Styles Pane', () => {
       self.Host.userMetrics.cssEditorOpened('fontEditor');
     });
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 0,  // colorPicker
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 0,  // colorPicker
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 1,  // shadowEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 1,  // shadowEditor
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 2,  // bezierEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 2,  // bezierEditor
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 3,  // fontEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 3,  // fontEditor
       },
     ]);
   });
@@ -546,7 +422,6 @@ describe('User Metrics for CSS Editors in Styles Pane', () => {
   it('click swatches and listen for events', async () => {
     await enableExperiment('fontEditor');
     const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
     await goToResource('host/css-editor.html');
     await waitForElementsStyleSection();
     await waitFor('.color-swatch-inner');
@@ -562,50 +437,40 @@ describe('User Metrics for CSS Editors in Styles Pane', () => {
     await click('.largeicon-font-editor');
     await frontend.keyboard.press('Escape');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 0,  // colorPicker
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 0,  // colorPicker
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 14,  // StyleRuleEdited
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 14,  // StyleRuleEdited
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 1,  // shadowEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 1,  // shadowEditor
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 14,  // StyleRuleEdited
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 14,  // StyleRuleEdited
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 2,  // bezierEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 2,  // bezierEditor
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 14,  // StyleRuleEdited
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 14,  // StyleRuleEdited
       },
       {
-        name: 'DevTools.CssEditorOpened',
-        value: 3,  // fontEditor
+        actionName: 'DevTools.CssEditorOpened',
+        actionCode: 3,  // fontEditor
       },
     ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 
 describe('User Metrics for Color Picker', () => {
-  beforeEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-  });
-
   it('dispatch ColorPickerFixedColor events', async () => {
     const {frontend} = getBrowserAndPages();
 
@@ -615,48 +480,38 @@ describe('User Metrics for Color Picker', () => {
       self.Host.userMetrics.colorFixed('wrong');
     });
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.ColorPicker.FixedColor',
-        value: 0,  // AA
+        actionName: 'DevTools.ColorPicker.FixedColor',
+        actionCode: 0,  // AA
       },
       {
-        name: 'DevTools.ColorPicker.FixedColor',
-        value: 1,  // AAA
+        actionName: 'DevTools.ColorPicker.FixedColor',
+        actionCode: 1,  // AAA
       },
     ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 
 describe('User Metrics for sidebar panes', () => {
-  beforeEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
-  });
-
   it('dispatches sidebar panes events for navigating Elements Panel sidebar panes', async () => {
     await navigateToSidePane('Computed');
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.SidebarPaneShown',
-        value: 2,  // Computed
+        actionName: 'DevTools.SidebarPaneShown',
+        actionCode: 2,  // Computed
       },
     ]);
   });
 
   it('should not dispatch sidebar panes events for navigating to the same pane', async () => {
     await navigateToSidePane('Styles');
-    await assertCapturedEvents([]);
+
+    const {frontend} = getBrowserAndPages();
+    const events = await retrieveRecordedHistogramEvents(frontend);
+    const eventNames = events.map(event => event.actionName);
+
+    assert.notInclude(eventNames, 'DevTools.SidebarPaneShown');
   });
 });
 
@@ -664,8 +519,6 @@ describe('User Metrics for Issue Panel', () => {
   beforeEach(async () => {
     await enableExperiment('contrastIssues');
     await openPanelViaMoreTools('Issues');
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
   });
 
   it('dispatch events when issue is expanded', async () => {
@@ -674,18 +527,18 @@ describe('User Metrics for Issue Panel', () => {
 
     await click('.issue');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 15,  // SameSiteCookieIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 15,  // SameSiteCookieIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 15,  // SameSiteCookieIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 15,  // SameSiteCookieIssue
       },
       {
-        name: 'DevTools.IssuesPanelIssueExpanded',
-        value: 2,  // SameSiteCookie
+        actionName: 'DevTools.IssuesPanelIssueExpanded',
+        actionCode: 2,  // SameSiteCookie
       },
     ]);
   });
@@ -694,22 +547,22 @@ describe('User Metrics for Issue Panel', () => {
     await goToResource('elements/low-contrast.html');
     await waitFor('.issue');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 41,  // LowTextContrastIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 41,  // LowTextContrastIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 41,  // LowTextContrastIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 41,  // LowTextContrastIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 41,  // LowTextContrastIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 41,  // LowTextContrastIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 41,  // LowTextContrastIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 41,  // LowTextContrastIssue
       },
     ]);
   });
@@ -718,14 +571,14 @@ describe('User Metrics for Issue Panel', () => {
     await goToResource('issues/sab-issue.rawresponse');
     await waitFor('.issue');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 37,  // SharedArrayBufferIssue::CreationIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 37,  // SharedArrayBufferIssue::CreationIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 36,  // SharedArrayBufferIssue::TransferIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 36,  // SharedArrayBufferIssue::TransferIssue
       },
     ]);
   });
@@ -739,22 +592,22 @@ describe('User Metrics for Issue Panel', () => {
     await scrollElementIntoView('.element-reveal-icon');
     await click('.element-reveal-icon');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 1,  // ContentSecurityPolicyIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 1,  // ContentSecurityPolicyIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 1,  // ContentSecurityPolicyIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 1,  // ContentSecurityPolicyIssue
       },
       {
-        name: 'DevTools.IssuesPanelIssueExpanded',
-        value: 4,  // ContentSecurityPolicy
+        actionName: 'DevTools.IssuesPanelIssueExpanded',
+        actionCode: 4,  // ContentSecurityPolicy
       },
       {
-        name: 'DevTools.IssuesPanelResourceOpened',
-        value: 7,  // ContentSecurityPolicyElement
+        actionName: 'DevTools.IssuesPanelResourceOpened',
+        actionCode: 7,  // ContentSecurityPolicyElement
       },
     ]);
   });
@@ -768,22 +621,22 @@ describe('User Metrics for Issue Panel', () => {
     await scrollElementIntoView('.link-list x-link');
     await click('.link-list x-link');
 
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 1,  // ContentSecurityPolicyIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 1,  // ContentSecurityPolicyIssue
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 1,  // ContentSecurityPolicyIssue
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 1,  // ContentSecurityPolicyIssue
       },
       {
-        name: 'DevTools.IssuesPanelIssueExpanded',
-        value: 4,  // ContentSecurityPolicy
+        actionName: 'DevTools.IssuesPanelIssueExpanded',
+        actionCode: 4,  // ContentSecurityPolicy
       },
       {
-        name: 'DevTools.IssuesPanelResourceOpened',
-        value: 12,  // ContentSecurityPolicyLearnMore
+        actionName: 'DevTools.IssuesPanelResourceOpened',
+        actionCode: 12,  // ContentSecurityPolicyLearnMore
       },
     ]);
   });
@@ -792,23 +645,16 @@ describe('User Metrics for Issue Panel', () => {
     await goToResource('elements/quirks-mode-iframes.html');
     await waitFor('.issue');
 
-    const {frontend} = getBrowserAndPages();
-    const events = await retrieveCapturedEvents(frontend);
-    assert.deepEqual(events.sort((a, b) => Number(a.value) - Number(b.value)), [
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.IssueCreated',
-        value: 58,  // QuirksModeIssue::QuirksMode
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 58,  // QuirksModeIssue::QuirksMode
       },
       {
-        name: 'DevTools.IssueCreated',
-        value: 59,  // QuirksModeIssue::LimitedQuirksMode
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 59,  // QuirksModeIssue::LimitedQuirksMode
       },
     ]);
-  });
-
-  afterEach(async () => {
-    const {frontend} = getBrowserAndPages();
-    await endCatchEvents(frontend);
   });
 });
 
@@ -826,55 +672,43 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
     await frontend.keyboard.press('ArrowRight');
     await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
 
-    await beginCatchEvents(frontend);
-
     await click('.css-var-link');
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.ActionTaken',
-        value: 47,  // CustomPropertyLinkClicked
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 47,  // CustomPropertyLinkClicked
       },
     ]);
-
-    await endCatchEvents(frontend);
   });
 
   it('dispatch events when a custom property value is edited', async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
-
     await editCSSProperty('body, body', '--color', '#f06');
-    await assertCapturedEvents([
+    await assertHistogramEventsInclude([
       {
-        name: 'DevTools.ActionTaken',
-        value: 14,  // StyleRuleEdited
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 14,  // StyleRuleEdited
       },
       {
-        name: 'DevTools.ActionTaken',
-        value: 48,  // CustomPropertyEdited
+        actionName: 'DevTools.ActionTaken',
+        actionCode: 48,  // CustomPropertyEdited
       },
     ]);
-
-    await endCatchEvents(frontend);
   });
 });
 
 describe('User Metrics for the Page Resource Loader', () => {
   it('dispatches an event when a source map is loaded', async () => {
-    const {frontend} = getBrowserAndPages();
-    await beginCatchEvents(frontend);
     await goToResource('sources/script-with-sourcemap-without-mappings.html');
-    await awaitCapturedEvent(
+    await waitForHistogramEvent(
         {
-          name: 'DevTools.DeveloperResourceLoaded',
-          value: 0,  // LoadThroughPageViaTarget
+          actionName: 'DevTools.DeveloperResourceLoaded',
+          actionCode: 0,  // LoadThroughPageViaTarget
         },
     );
-    await awaitCapturedEvent(
+    await waitForHistogramEvent(
         {
-          name: 'DevTools.DeveloperResourceScheme',
+          actionName: 'DevTools.DeveloperResourceScheme',
         },
     );
-    await endCatchEvents(frontend);
   });
 });

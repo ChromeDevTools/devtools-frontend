@@ -60,9 +60,13 @@ Did you forget to add ${path.relative(process.cwd(), fileName)} to a BUILD.gn?\n
     return generatedFile;
   });
 
+  // We pull the timeout out of the extra mocha config, because whilst we want
+  // to override the default if it is provided, we don't want to override it if
+  // in DEBUG mode, where we set the timeout to 0.
+  const {timeout: extraMochaConfigTimeout, ...restOfExtraMochaConfig} = extraMochaConfig;
   // When we are debugging, we don't want to timeout any test. This allows to inspect the state
   // of the application at the moment of the timeout. Here, 0 denotes "indefinite timeout".
-  const timeout = process.env['DEBUG_TEST'] ? 0 : 5 * 1000;
+  const timeout = process.env['DEBUG_TEST'] ? 0 : (extraMochaConfigTimeout || 5 * 1000);
 
   const jobs = Number(process.env['JOBS']) || 1;
   const parallel = !process.env['DEBUG_TEST'] && jobs > 1;
@@ -75,7 +79,7 @@ Did you forget to add ${path.relative(process.cwd(), fileName)} to a BUILD.gn?\n
     jobs,
     reporter: path.join(__dirname, 'shared', 'mocha-resultsdb-reporter'),
     suiteName,
-    ...extraMochaConfig,
+    ...restOfExtraMochaConfig,
   };
 }
 

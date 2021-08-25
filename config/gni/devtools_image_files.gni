@@ -63,6 +63,7 @@ devtools_svg_sources = [
   "elements_panel_icon.svg",
   "errorWave.svg",
   "error_icon.svg",
+  "exclamation_mark_circle_icon.svg",
   "feedback_thin_16x16_icon.svg",
   "flex-direction-icon.svg",
   "flex-nowrap-icon.svg",

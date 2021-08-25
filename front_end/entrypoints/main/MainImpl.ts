@@ -312,7 +312,9 @@ export class MainImpl {
     Root.Runtime.experiments.register('experimentalCookieFeatures', 'Enable experimental cookie features');
 
     // Hide Issues Feature.
-    Root.Runtime.experiments.register('hideIssuesFeature', 'Enable experimental hide issues menu');
+    Root.Runtime.experiments.register(
+        'hideIssuesFeature', 'Enable experimental hide issues menu', undefined,
+        'https://developer.chrome.com/blog/new-in-devtools-94/#hide-issues');
 
     // Localized DevTools, hide "locale selector" setting behind an experiment.
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS, 'Enable localized DevTools');

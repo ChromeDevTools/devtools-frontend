@@ -1181,7 +1181,7 @@ const TrackedCSSProperties = [
   },
   {
     name: 'container-type',
-    value: 'inline-size block-size',
+    value: 'size',
   },
 ];
 

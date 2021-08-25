@@ -26,7 +26,6 @@ describe('CSSContainerQuery', () => {
     });
 
     it('gets the query axis of inline-block container query correctly', () => {
-      assert.strictEqual(getQueryAxis('block-size inline-size'), QueryAxis.Both);
       assert.strictEqual(getQueryAxis('inline-size layout style block-size'), QueryAxis.Both);
       assert.strictEqual(getQueryAxis('layout size style'), QueryAxis.Both);
       assert.strictEqual(getQueryAxis('size'), QueryAxis.Both);

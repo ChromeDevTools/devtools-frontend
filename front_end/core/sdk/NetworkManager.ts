@@ -1037,8 +1037,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
 let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
 
-export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper implements
-    SDKModelObserver<NetworkManager> {
+export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
+    implements SDKModelObserver<NetworkManager> {
   private userAgentOverrideInternal: string;
   private userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null;
   private customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null;
@@ -1431,6 +1431,14 @@ export namespace MultitargetNetworkManager {
     InterceptorsChanged = 'InterceptorsChanged',
     AcceptedEncodingsChanged = 'AcceptedEncodingsChanged',
   }
+
+  export type EventTypes = {
+    [Events.BlockedPatternsChanged]: void,
+    [Events.ConditionsChanged]: void,
+    [Events.UserAgentChanged]: void,
+    [Events.InterceptorsChanged]: void,
+    [Events.AcceptedEncodingsChanged]: void,
+  };
 }
 
 export class InterceptedRequest {

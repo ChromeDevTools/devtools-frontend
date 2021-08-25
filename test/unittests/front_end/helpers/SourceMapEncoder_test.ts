@@ -123,7 +123,7 @@ describe('SourceMapEncoder', () => {
             ['0:0 => a.js:0:0@a', '1:0 => a.js:1:0@b', '2:0 => a.js:2:0@c', '3:0 => a.js:3:0@a']));
   });
 
-  it('can encode a small realistic sample correctly', () => {
+  it('can encode small realistic samples correctly', () => {
     assert.deepEqual(
         {
           sources: ['example.js'],
@@ -154,6 +154,43 @@ describe('SourceMapEncoder', () => {
           '0:33 => example.js:5:4@d',
           '0:40 => example.js:5:13',
           '1:0',
+          // clang-format on
+        ]));
+
+    assert.deepEqual(
+        {
+          sources: ['sourcemap-stepping-source.js'],
+          names: [],
+          mappings:
+              'AAAA,oCAAoC;;AAEpC;GACG;GAAA;GAAA;GACA;GAAA;GAAA;GACA;GAAA;GAAA;;GAEA;AACH;;AAEA;GACG;GACA;GACA;;GAEA;AACH',
+          version: 3,
+          file: undefined,
+          sections: undefined,
+          sourceRoot: undefined,
+          sourcesContent: undefined,
+        },
+        SourceMapEncoder.encodeSourceMap([
+          // clang-format off
+        '0:0 => sourcemap-stepping-source.js:0:0',
+        '0:36 => sourcemap-stepping-source.js:0:36',
+        '2:0 => sourcemap-stepping-source.js:2:0',
+        '3:3 => sourcemap-stepping-source.js:3:3',
+        '4:3 => sourcemap-stepping-source.js:3:3',
+        '5:3 => sourcemap-stepping-source.js:3:3',
+        '6:3 => sourcemap-stepping-source.js:4:3',
+        '7:3 => sourcemap-stepping-source.js:4:3',
+        '8:3 => sourcemap-stepping-source.js:4:3',
+        '9:3 => sourcemap-stepping-source.js:5:3',
+        '10:3 => sourcemap-stepping-source.js:5:3',
+        '11:3 => sourcemap-stepping-source.js:5:3',
+        '13:3 => sourcemap-stepping-source.js:7:3',
+        '14:0 => sourcemap-stepping-source.js:8:0',
+        '16:0 => sourcemap-stepping-source.js:10:0',
+        '17:3 => sourcemap-stepping-source.js:11:3',
+        '18:3 => sourcemap-stepping-source.js:12:3',
+        '19:3 => sourcemap-stepping-source.js:13:3',
+        '21:3 => sourcemap-stepping-source.js:15:3',
+        '22:0 => sourcemap-stepping-source.js:16:0',
           // clang-format on
         ]));
   });

@@ -16,6 +16,7 @@ export const PAUSE_INDICATOR_SELECTOR = '.paused-status';
 export const CODE_LINE_SELECTOR = '.CodeMirror-code .CodeMirror-linenumber';
 export const SCOPE_LOCAL_VALUES_SELECTOR = 'li[aria-label="Local"] + ol';
 export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-item-title';
+export const STEP_OVER_BUTTON = '[aria-label="Step over next function call"]';
 export const TURNED_OFF_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-off';
 export const TURNED_ON_PAUSE_BUTTON_SELECTOR = 'button.toolbar-state-on';
 export const DEBUGGER_PAUSED_EVENT = 'DevTools.DebuggerPaused';

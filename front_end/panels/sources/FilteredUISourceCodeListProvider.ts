@@ -80,6 +80,10 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     return this.uiSourceCodes.length;
   }
 
+  itemContentTypeAt(itemIndex: number): Common.ResourceType.ResourceType {
+    return this.uiSourceCodes[itemIndex].contentType();
+  }
+
   itemKeyAt(itemIndex: number): string {
     return this.uiSourceCodes[itemIndex].url();
   }

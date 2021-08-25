@@ -10,7 +10,10 @@ devtools_entrypoint("bundle") {
 
   deps = [ "../../../core/common:bundle" ]
 
-  visibility = [ "../*" ]
+  visibility = [
+    "../*",
+    "../../sources:sources-typescript",
+  ]
 
   visibility += devtools_panels_visibility
 }

@@ -5,7 +5,7 @@
 import {$$, click, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
 
 export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
-const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item';
+const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item-wrapper';
 const QUICK_OPEN_ITEM_TITLE_SELECTOR = '.filtered-list-widget-title';
 
 const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;

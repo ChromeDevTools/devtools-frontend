@@ -5,6 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import * as NetworkUtils from '../network/utils/utils.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
@@ -44,6 +46,19 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
 
   filterProject(project: Workspace.Workspace.Project): boolean {
     return !project.isServiceProject();
+  }
+
+  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+    super.renderItem(itemIndex, query, titleElement, subtitleElement);
+
+    const iconElement = new IconButton.Icon.Icon();
+    iconElement.data = {
+      iconName: NetworkUtils.imageNameForResourceType(this.itemContentTypeAt(itemIndex)),
+      color: '',
+      width: '18px',
+      height: '18px',
+    };
+    titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
   }
 
   renderAsTwoRows(): boolean {

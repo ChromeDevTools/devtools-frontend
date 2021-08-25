@@ -252,7 +252,10 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
   }
 
   createElementForItem(item: number): Element {
-    const itemElement = document.createElement('div');
+    const wrapperElement = document.createElement('div');
+    wrapperElement.className = 'filtered-list-widget-item-wrapper';
+
+    const itemElement = wrapperElement.createChild('div');
     const renderAsTwoRows = this.provider && this.provider.renderAsTwoRows();
     itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
     const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
@@ -262,7 +265,7 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
       this.provider.renderItem(item, this.cleanValue(), titleElement, subtitleElement);
     }
     UI.ARIAUtils.markAsOption(itemElement);
-    return itemElement;
+    return wrapperElement;
   }
 
   heightForItem(_item: number): number {

@@ -10,7 +10,7 @@ import {TargetManager} from './TargetManager.js';
 
 let throttlingManagerInstance: CPUThrottlingManager;
 
-export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper implements
+export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
   private cpuThrottlingRateInternal: number;
 
@@ -57,6 +57,10 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper imp
 export enum Events {
   RateChanged = 'RateChanged',
 }
+
+export type EventTypes = {
+  [Events.RateChanged]: number,
+};
 
 export function throttlingManager(): CPUThrottlingManager {
   return CPUThrottlingManager.instance();

@@ -8,7 +8,7 @@ import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
 
-export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
+export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly popover: UI.GlassPane.GlassPane;
   private readonly hideProxy: () => void;
   private readonly boundOnKeyDown: (event: KeyboardEvent) => void;
@@ -147,3 +147,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
 export enum Events {
   WillShowPopover = 'WillShowPopover',
 }
+
+export type EventTypes = {
+  [Events.WillShowPopover]: void,
+};

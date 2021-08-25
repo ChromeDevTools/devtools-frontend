@@ -7,7 +7,7 @@ import type * as Host from '../../core/host/host.js';
 
 let zoomManagerInstance: ZoomManager|undefined;
 
-export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
+export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private frontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI;
   private zoomFactorInternal: number;
 
@@ -64,3 +64,12 @@ export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
 export const enum Events {
   ZoomChanged = 'ZoomChanged',
 }
+
+export interface ZoomChangedEvent {
+  from: number;
+  to: number;
+}
+
+export type EventTypes = {
+  [Events.ZoomChanged]: ZoomChangedEvent,
+};

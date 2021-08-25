@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [ "devicesSettingsTab.css" ]
 }
 
-devtools_module("device_settings_tab") {
+devtools_module("emulation") {
   sources = [ "DevicesSettingsTab.ts" ]
 
   deps = [
@@ -23,11 +23,11 @@ devtools_module("device_settings_tab") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "device_settings_tab.ts"
+  entrypoint = "emulation.ts"
 
   deps = [
     ":css_files",
-    ":device_settings_tab",
+    ":emulation",
   ]
 
   visibility = [

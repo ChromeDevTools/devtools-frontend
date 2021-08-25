@@ -5,7 +5,8 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
-import * as DevicesSettingsTab from './device_settings_tab.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import type * as Emulation from './emulation.js';
 
 const UIStrings = {
   /**
@@ -21,13 +22,23 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/emulation-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
+let loadedEmulationModule: (typeof Emulation|undefined);
+
+async function loadEmulationModule(): Promise<typeof Emulation> {
+  if (!loadedEmulationModule) {
+    loadedEmulationModule = await import('./emulation.js');
+  }
+  return loadedEmulationModule;
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   commandPrompt: i18nLazyString(UIStrings.showDevices),
   title: i18nLazyString(UIStrings.devices),
   order: 30,
   async loadView() {
-    return DevicesSettingsTab.DevicesSettingsTab.DevicesSettingsTab.instance();
+    const Emulation = await loadEmulationModule();
+    return Emulation.DevicesSettingsTab.DevicesSettingsTab.instance();
   },
   id: 'devices',
   settings: [

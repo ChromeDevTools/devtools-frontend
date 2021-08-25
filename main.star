@@ -162,9 +162,9 @@ luci.notifier(
     notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@grotations.appspotmail.com"],
     template = luci.notifier_template(
         name = "sheriff_email", 
-        body = """
-Auto-roller {{.Build.Builder.Builder}} found a stale CL.
-Please check roll CLs.
+        body = """Auto-roller {{.Build.Builder.Builder}} found a stale CL.
+
+Please check <a href=\"https://chromium-review.googlesource.com/q/owner:devtools-ci-autoroll-builder%2540chops-service-accounts.iam.gserviceaccount.com\">roll CLs</a>.
 
 Builder {{.Build.Builder.Builder}} found stale CL at
 <a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>

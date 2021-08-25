@@ -770,8 +770,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.lastShownHiddenByFilterCount = this.hiddenByFilterCount;
   }
 
-  private onConsoleMessageAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as SDK.ConsoleModel.ConsoleMessage);
+  private onConsoleMessageAdded(event: Common.EventTarget.EventTargetEvent<SDK.ConsoleModel.ConsoleMessage>): void {
+    const message = event.data;
     this.addConsoleMessage(message);
   }
 
@@ -837,8 +837,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     }
   }
 
-  private onConsoleMessageUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as SDK.ConsoleModel.ConsoleMessage);
+  private onConsoleMessageUpdated(event: Common.EventTarget.EventTargetEvent<SDK.ConsoleModel.ConsoleMessage>): void {
+    const message = event.data;
     const viewMessage = consoleMessageToViewMessage.get(message);
     if (viewMessage) {
       viewMessage.updateMessageElement();
@@ -1248,12 +1248,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     SDK.ConsoleModel.ConsoleModel.instance().addMessage(message);
   }
 
-  private commandEvaluated(event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as {
-      result: SDK.RemoteObject.RemoteObject | null,
-      commandMessage: SDK.ConsoleModel.ConsoleMessage,
-      exceptionDetails?: Protocol.Runtime.ExceptionDetails,
-    });
+  private commandEvaluated(event: Common.EventTarget.EventTargetEvent<SDK.ConsoleModel.CommandEvaluatedEvent>): void {
+    const {data} = event;
     this.prompt.history().pushHistoryItem(data.commandMessage.messageText);
     this.consoleHistorySetting.set(this.prompt.history().historyData().slice(-persistedHistorySize));
     this.printResult(data.result, data.commandMessage, data.exceptionDetails);

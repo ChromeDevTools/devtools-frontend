@@ -49,8 +49,7 @@ export class PresentationConsoleMessageManager implements
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
         SDK.ConsoleModel.Events.ConsoleCleared, this.consoleCleared, this);
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded,
-        event => this.consoleMessageAdded((event.data as SDK.ConsoleModel.ConsoleMessage)));
+        SDK.ConsoleModel.Events.MessageAdded, event => this.consoleMessageAdded(event.data));
     SDK.ConsoleModel.ConsoleModel.instance().messages().forEach(this.consoleMessageAdded, this);
   }
 

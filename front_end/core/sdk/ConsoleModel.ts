@@ -76,7 +76,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let settingsInstance: ConsoleModel;
 
-export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper implements Observer {
+export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements Observer {
   private messagesInternal: ConsoleMessage[];
   private readonly messageByExceptionId: Map<RuntimeModel, Map<number, ConsoleMessage>>;
   private warningsInternal: number;
@@ -459,6 +459,19 @@ export enum Events {
   MessageUpdated = 'MessageUpdated',
   CommandEvaluated = 'CommandEvaluated',
 }
+
+export interface CommandEvaluatedEvent {
+  result: RemoteObject;
+  commandMessage: ConsoleMessage;
+  exceptionDetails?: Protocol.Runtime.ExceptionDetails|undefined;
+}
+
+export type EventTypes = {
+  [Events.ConsoleCleared]: void,
+  [Events.MessageAdded]: ConsoleMessage,
+  [Events.MessageUpdated]: ConsoleMessage,
+  [Events.CommandEvaluated]: CommandEvaluatedEvent,
+};
 
 export interface AffectedResources {
   requestId?: Protocol.Network.RequestId;

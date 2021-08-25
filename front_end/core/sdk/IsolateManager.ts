@@ -11,7 +11,8 @@ import {TargetManager} from './TargetManager.js';
 
 let isolateManagerInstance: IsolateManager;
 
-export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper implements SDKModelObserver<RuntimeModel> {
+export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
+    SDKModelObserver<RuntimeModel> {
   private readonly isolatesInternal: Map<string, Isolate>;
   private isolateIdByModel: Map<RuntimeModel, string|null>;
   private observers: Set<Observer>;
@@ -142,6 +143,10 @@ export interface Observer {
 export enum Events {
   MemoryChanged = 'MemoryChanged',
 }
+
+export type EventTypes = {
+  [Events.MemoryChanged]: Isolate,
+};
 
 export const MemoryTrendWindowMs = 120e3;
 const PollIntervalMs = 2e3;

@@ -154,8 +154,8 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     }
   }
 
-  heapStatsChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const isolate = (event.data as SDK.IsolateManager.Isolate);
+  heapStatsChanged(event: Common.EventTarget.EventTargetEvent<SDK.IsolateManager.Isolate>): void {
+    const isolate = event.data;
     const listItem = this.itemByIsolate.get(isolate);
     if (listItem) {
       listItem.updateStats();

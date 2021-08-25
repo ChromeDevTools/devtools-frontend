@@ -188,7 +188,7 @@ export enum MIME_TYPE {
   EVENTSTREAM = 'text/event-stream',
 }
 
-export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper implements
+export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     TextUtils.ContentProvider.ContentProvider {
   private requestIdInternal: string;
   private backendRequestIdInternal?: Protocol.Network.RequestId;
@@ -1453,6 +1453,17 @@ export enum Events {
   EventSourceMessageAdded = 'EventSourceMessageAdded',
   TrustTokenResultAdded = 'TrustTokenResultAdded',
 }
+
+export type EventTypes = {
+  [Events.FinishedLoading]: NetworkRequest,
+  [Events.TimingChanged]: NetworkRequest,
+  [Events.RemoteAddressChanged]: NetworkRequest,
+  [Events.RequestHeadersChanged]: void,
+  [Events.ResponseHeadersChanged]: void,
+  [Events.WebsocketFrameAdded]: WebSocketFrame,
+  [Events.EventSourceMessageAdded]: EventSourceMessage,
+  [Events.TrustTokenResultAdded]: void,
+};
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

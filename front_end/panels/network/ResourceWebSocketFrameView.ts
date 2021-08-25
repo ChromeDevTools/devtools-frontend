@@ -278,8 +278,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this.request.removeEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
   }
 
-  private frameAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as SDK.NetworkRequest.WebSocketFrame);
+  private frameAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.WebSocketFrame>): void {
+    const frame = event.data;
     if (!this.frameFilter(frame)) {
       return;
     }

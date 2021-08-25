@@ -88,8 +88,8 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.request.removeEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 
-  private messageAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const message = (event.data as SDK.NetworkRequest.EventSourceMessage);
+  private messageAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.EventSourceMessage>): void {
+    const message = event.data;
     this.dataGrid.insertChild(new EventSourceMessageNode(message));
   }
 

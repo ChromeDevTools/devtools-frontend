@@ -46,7 +46,7 @@ component.data = {
   selectedNode: bodyCrumb,
 };
 
-component.addEventListener('breadcrumbsnodeselected', ({data}) => {
+component.addEventListener('breadcrumbsnodeselected', ({legacyDomNode}) => {
   // eslint-disable-next-line no-console
-  console.log('node selected', data);
+  console.log('node selected', legacyDomNode);
 });

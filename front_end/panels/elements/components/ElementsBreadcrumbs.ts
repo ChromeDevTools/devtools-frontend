@@ -16,11 +16,12 @@ import {NodeText} from './NodeText.js';
 import type {NodeTextData} from './NodeText.js';
 
 export class NodeSelectedEvent extends Event {
-  data: SDK.DOMModel.DOMNode;
+  static readonly eventName = 'breadcrumbsnodeselected';
+  legacyDomNode: SDK.DOMModel.DOMNode;
 
   constructor(node: DOMNode) {
-    super('breadcrumbsnodeselected', {});
-    this.data = node.legacyDomNode;
+    super(NodeSelectedEvent.eventName, {});
+    this.legacyDomNode = node.legacyDomNode;
   }
 }
 
@@ -341,6 +342,6 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    'breadcrumbsnodeselected': NodeSelectedEvent;
+    [NodeSelectedEvent.eventName]: NodeSelectedEvent;
   }
 }

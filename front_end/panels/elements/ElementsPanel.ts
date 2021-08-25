@@ -805,7 +805,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private crumbNodeSelected(event: ElementsComponents.ElementsBreadcrumbs.NodeSelectedEvent): void {
-    this.selectDOMNode(event.data, true);
+    this.selectDOMNode(event.legacyDomNode, true);
   }
 
   private treeOutlineForNode(node: SDK.DOMModel.DOMNode|null): ElementsTreeOutline|null {

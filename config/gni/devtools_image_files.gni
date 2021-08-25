@@ -85,7 +85,6 @@ devtools_svg_sources = [
   "ic_folder_default.svg",
   "ic_folder_local.svg",
   "ic_folder_network.svg",
-  "ic_help_16x16.svg",
   "ic_info_black_18dp.svg",
   "ic_memory_16x16.svg",
   "ic_page_next_16x16_icon.svg",

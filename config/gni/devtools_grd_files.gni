@@ -73,7 +73,6 @@ grd_files_release_sources = [
   "front_end/Images/ic_folder_default.svg",
   "front_end/Images/ic_folder_local.svg",
   "front_end/Images/ic_folder_network.svg",
-  "front_end/Images/ic_help_16x16.svg",
   "front_end/Images/ic_info_black_18dp.svg",
   "front_end/Images/ic_memory_16x16.svg",
   "front_end/Images/ic_page_next_16x16_icon.svg",

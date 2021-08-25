@@ -333,6 +333,15 @@ describe('User Metrics', () => {
     assert.strictEqual(events.length, 1);
     assert.strictEqual(events[0].histogramName, 'DevTools.Launch.Timeline');
   });
+
+  it('records the selected language', async () => {
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.Language',
+        actionCode: 17,  // en-US
+      },
+    ]);
+  });
 });
 
 describe('User Metrics for dual screen emulation', () => {

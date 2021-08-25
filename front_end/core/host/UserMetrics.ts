@@ -241,6 +241,15 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.LinearMemoryInspectorTarget, linearMemoryInspectorTarget, size);
   }
+
+  language(language: Intl.UnicodeBCP47LocaleIdentifier): void {
+    const size = Object.keys(Language).length + 1;
+    const languageCode = Language[language];
+    if (languageCode === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.Language, languageCode, size);
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -711,3 +720,88 @@ export enum LinearMemoryInspectorTarget {
   TypedArray = 3,
   WebAssemblyMemory = 4,
 }
+
+export const Language: Record<string, number> = {
+  'af': 1,
+  'am': 2,
+  'ar': 3,
+  'as': 4,
+  'az': 5,
+  'be': 6,
+  'bg': 7,
+  'bn': 8,
+  'bs': 9,
+  'ca': 10,
+  'cs': 11,
+  'cy': 12,
+  'da': 13,
+  'de': 14,
+  'el': 15,
+  'en-GB': 16,
+  'en-US': 17,
+  'es-419': 18,
+  'es': 19,
+  'et': 20,
+  'eu': 21,
+  'fa': 22,
+  'fi': 23,
+  'fil': 24,
+  'fr-CA': 25,
+  'fr': 26,
+  'gl': 27,
+  'gu': 28,
+  'he': 29,
+  'hi': 30,
+  'hr': 31,
+  'hu': 32,
+  'hy': 33,
+  'id': 34,
+  'is': 35,
+  'it': 36,
+  'ja': 37,
+  'ka': 38,
+  'kk': 39,
+  'km': 40,
+  'kn': 41,
+  'ko': 42,
+  'ky': 43,
+  'lo': 44,
+  'lt': 45,
+  'lv': 46,
+  'mk': 47,
+  'ml': 48,
+  'mn': 49,
+  'mr': 50,
+  'ms': 51,
+  'my': 52,
+  'ne': 53,
+  'nl': 54,
+  'no': 55,
+  'or': 56,
+  'pa': 57,
+  'pl': 58,
+  'pt-PT': 59,
+  'pt': 60,
+  'ro': 61,
+  'ru': 62,
+  'si': 63,
+  'sk': 64,
+  'sl': 65,
+  'sq': 66,
+  'sr-Latn': 67,
+  'sr': 68,
+  'sv': 69,
+  'sw': 70,
+  'ta': 71,
+  'te': 72,
+  'th': 73,
+  'tr': 74,
+  'uk': 75,
+  'ur': 76,
+  'uz': 77,
+  'vi': 78,
+  'zh': 79,
+  'zh-HK': 80,
+  'zh-TW': 81,
+  'zu': 82,
+};

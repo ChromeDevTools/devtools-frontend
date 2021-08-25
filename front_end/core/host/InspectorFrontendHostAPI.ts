@@ -246,4 +246,5 @@ export enum EnumeratedHistogram {
   DeveloperResourceScheme = 'DevTools.DeveloperResourceScheme',
   LinearMemoryInspectorRevealedFrom = 'DevTools.LinearMemoryInspector.RevealedFrom',
   LinearMemoryInspectorTarget = 'DevTools.LinearMemoryInspector.Target',
+  Language = 'DevTools.Language',
 }

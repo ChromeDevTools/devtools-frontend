@@ -166,6 +166,8 @@ export class MainImpl {
         lookupClosestDevToolsLocale: i18n.i18n.lookupClosestSupportedDevToolsLocale,
       },
     });
+    // Record the intended locale, regardless whether we are able to fetch it or not.
+    Host.userMetrics.language(devToolsLocale.locale);
 
     if (devToolsLocale.locale !== 'en-US') {
       // Always load en-US locale data as a fallback. This is important, newly added

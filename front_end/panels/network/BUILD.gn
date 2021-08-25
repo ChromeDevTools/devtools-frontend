@@ -73,6 +73,7 @@ devtools_module("network") {
     "../../panels/elements:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/search:bundle",
+    "../../panels/utils:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/icon_button:bundle",
@@ -88,7 +89,6 @@ devtools_module("network") {
     "../settings/emulation/components:bundle",
     "./components:bundle",
     "./forward:bundle",
-    "./utils:bundle",
   ]
 }
 

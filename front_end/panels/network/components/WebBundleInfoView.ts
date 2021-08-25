@@ -10,7 +10,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import {imageNameForResourceType} from '../utils/utils.js';
+import {imageNameForResourceType} from '../../../panels/utils/utils.js';
 import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
 const {render, html} = LitHtml;

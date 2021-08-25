@@ -2,18 +2,15 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../visibility.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
 
 devtools_entrypoint("bundle") {
   entrypoint = "utils.ts"
 
-  deps = [ "../../../core/common:bundle" ]
+  deps = [ "../../core/common:bundle" ]
 
-  visibility = [
-    "../*",
-    "../../sources:sources-typescript",
-  ]
+  visibility = [ "../*" ]
 
   visibility += devtools_panels_visibility
 }

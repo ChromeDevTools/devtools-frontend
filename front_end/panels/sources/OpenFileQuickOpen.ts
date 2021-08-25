@@ -5,9 +5,9 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import * as NetworkUtils from '../network/utils/utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
+import {imageNameForResourceType} from '../../panels/utils/utils.js';
 import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvider.js';
 import {SourcesView} from './SourcesView.js';
 
@@ -53,7 +53,7 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
 
     const iconElement = new IconButton.Icon.Icon();
     iconElement.data = {
-      iconName: NetworkUtils.imageNameForResourceType(this.itemContentTypeAt(itemIndex)),
+      iconName: imageNameForResourceType(this.itemContentTypeAt(itemIndex)),
       color: '',
       width: '18px',
       height: '18px',

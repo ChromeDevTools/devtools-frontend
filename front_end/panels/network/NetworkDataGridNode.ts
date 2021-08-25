@@ -53,7 +53,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
-import {imageNameForResourceType} from './utils/utils.js';
+import {imageNameForResourceType} from '../utils/utils.js';
 
 const UIStrings = {
   /**

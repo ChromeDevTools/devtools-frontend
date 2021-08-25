@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 
-export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
+export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly isNullInternal: boolean;
   private contrastRatioInternal: number|null;
   private contrastRatioAPCAInternal: number|null;
@@ -128,6 +128,10 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
 export const enum Events {
   ContrastInfoUpdated = 'ContrastInfoUpdated',
 }
+
+export type EventTypes = {
+  [Events.ContrastInfoUpdated]: void,
+};
 
 export interface ContrastInfoType {
   backgroundColors: string[]|null;

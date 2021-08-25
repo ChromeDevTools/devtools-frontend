@@ -53,7 +53,8 @@ function createMochaConfig({suiteName, extraMochaConfig = {}}) {
     const generatedFile = path.join('out', target, testSuitePath, renamedFile);
 
     if (!fs.existsSync(generatedFile)) {
-      throw new Error(`Test file missing in "ts_library": ${generatedFile}`);
+      throw new Error(`\n\nERROR RUNNING TESTS:\nTest file missing in "ts_library": ${generatedFile}.
+Did you forget to add ${path.relative(process.cwd(), fileName)} to a BUILD.gn?\n`);
     }
 
     return generatedFile;

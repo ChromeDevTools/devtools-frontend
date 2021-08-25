@@ -38,7 +38,7 @@ const UIStrings = {
   *@description Text in Heap Snapshot Proxy of a profiler tool
   *@example {functionName} PH1
   */
-  anErrorOccurredWhenACallToMethod: 'An error occurred when a call to method \'{PH1}\' was requested',
+  anErrorOccurredWhenACallToMethod: 'An error occurred when a call to method \'\'{PH1}\'\' was requested',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotProxy.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

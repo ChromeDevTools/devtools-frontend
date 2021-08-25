@@ -259,7 +259,7 @@ const UIStrings = {
   *@example {Image} PH1
   *@example {https://example.com/image.png} PH2
   */
-  sUrlSFailedToParse: '{PH1} URL \'{PH2}\' failed to parse',
+  sUrlSFailedToParse: '{PH1} URL \'\'{PH2}\'\' failed to parse',
   /**
   *@description Warning message for image resources from the manifest
   *@example {Image} PH1

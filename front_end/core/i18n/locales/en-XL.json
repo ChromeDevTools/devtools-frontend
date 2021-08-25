@@ -231,10 +231,10 @@
     "message": "N̂áv̂íĝát̂éd̂ t́ô {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "P̂ŕôf́îĺê '{PH1}' f́îńîśĥéd̂."
+    "message": "P̂ŕôf́îĺê ''{PH1}'' f́îńîśĥéd̂."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "P̂ŕôf́îĺê '{PH1}' śt̂ár̂t́êd́."
+    "message": "P̂ŕôf́îĺê ''{PH1}'' śt̂ár̂t́êd́."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
     "message": "DevTools: CPU p̂ŕôf́îĺê ṕâŕŝér̂ íŝ f́îx́îńĝ {PH1} ḿîśŝín̂ǵ ŝám̂ṕl̂éŝ."
@@ -2292,7 +2292,7 @@
     "message": "Ŝt́âŕt̂ ÚR̂Ĺ"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} ÛŔL̂ '{PH2}' f́âíl̂éd̂ t́ô ṕâŕŝé"
+    "message": "{PH1} ÛŔL̂ ''{PH2}'' f́âíl̂éd̂ t́ô ṕâŕŝé"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "T̂h́ê áp̂ṕ îś âĺr̂éâd́ŷ ín̂śt̂ál̂ĺêd́"
@@ -7206,7 +7206,7 @@
     "message": "R̂év̂éâĺ îń Ŝúm̂ḿâŕŷ v́îéŵ"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "R̂év̂éâĺ ôb́ĵéĉt́ '{PH1}' ŵít̂h́ îd́ @{PH2} îń Ŝúm̂ḿâŕŷ v́îéŵ"
+    "message": "R̂év̂éâĺ ôb́ĵéĉt́ ''{PH1}'' ŵít̂h́ îd́ @{PH2} îń Ŝúm̂ḿâŕŷ v́îéŵ"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Ŝt́ôŕê áŝ ǵl̂ób̂ál̂ v́âŕîáb̂ĺê"
@@ -7218,7 +7218,7 @@
     "message": "Ûśêŕ ôb́ĵéĉt́ r̂éâćĥáb̂ĺê f́r̂óm̂ ẃîńd̂óŵ"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ ẃĥén̂ á ĉál̂ĺ t̂ó m̂ét̂h́ôd́ '{PH1}' ŵáŝ ŕêq́ûéŝt́êd́"
+    "message": "Âń êŕr̂ór̂ óĉćûŕr̂éd̂ ẃĥén̂ á ĉál̂ĺ t̂ó m̂ét̂h́ôd́ ''{PH1}'' ŵáŝ ŕêq́ûéŝt́êd́"
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "Âĺl̂ ób̂j́êćt̂ś"
@@ -7542,7 +7542,7 @@
     "message": "Ŝáv̂é…"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Ĉán̂’t́ l̂óâd́ f̂íl̂é. Ŝúp̂ṕôŕt̂éd̂ f́îĺê éx̂t́êńŝíôńŝ: '{PH1}.'"
+    "message": "Ĉán̂’t́ l̂óâd́ f̂íl̂é. Ŝúp̂ṕôŕt̂éd̂ f́îĺê éx̂t́êńŝíôńŝ: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Ĉán̂’t́ l̂óâd́ p̂ŕôf́îĺê ẃĥíl̂é âńôt́ĥér̂ ṕr̂óf̂íl̂é îś b̂éîńĝ ŕêćôŕd̂éd̂."
@@ -7572,7 +7572,7 @@
     "message": "F̂áîĺêd́ t̂ó r̂éâd́ f̂íl̂é"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "F̂íl̂é '{PH1}' r̂éâd́ êŕr̂ór̂: {PH2}"
+    "message": "F̂íl̂é ''{PH1}'' r̂éâd́ êŕr̂ór̂: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "F̂ín̂d́ b̂ý ĉóŝt́ (>50m̂ś), n̂ám̂é ôŕ f̂íl̂é"
@@ -8430,7 +8430,7 @@
     "message": "Âd́d̂ ćôńt̂én̂t́ ŝćr̂íp̂t́ŝ t́ô íĝńôŕê ĺîśt̂ (éx̂t́êńŝíôń ŝćr̂íp̂t́ŝ ín̂ t́ĥé p̂áĝé)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Îǵn̂ór̂é ŝćr̂íp̂t́ŝ ẃĥóŝé n̂ám̂éŝ ḿât́ĉh́ '{PH1}'"
+    "message": "Îǵn̂ór̂é ŝćr̂íp̂t́ŝ ẃĥóŝé n̂ám̂éŝ ḿât́ĉh́ ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "N̂ó îǵn̂ór̂é l̂íŝt́ p̂át̂t́êŕn̂ś"

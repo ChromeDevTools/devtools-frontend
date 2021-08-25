@@ -231,10 +231,10 @@
     "message": "Navigated to {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Profile '{PH1}' finished."
+    "message": "Profile ''{PH1}'' finished."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Profile '{PH1}' started."
+    "message": "Profile ''{PH1}'' started."
   },
   "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
     "message": "DevTools: CPU profile parser is fixing {PH1} missing samples."
@@ -2292,7 +2292,7 @@
     "message": "Start URL"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' failed to parse"
+    "message": "{PH1} URL ''{PH2}'' failed to parse"
   },
   "panels/application/AppManifestView.ts | theAppIsAlreadyInstalled": {
     "message": "The app is already installed"
@@ -7206,7 +7206,7 @@
     "message": "Reveal in Summary view"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Reveal object '{PH1}' with id @{PH2} in Summary view"
+    "message": "Reveal object ''{PH1}'' with id @{PH2} in Summary view"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Store as global variable"
@@ -7218,7 +7218,7 @@
     "message": "User object reachable from window"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "An error occurred when a call to method '{PH1}' was requested"
+    "message": "An error occurred when a call to method ''{PH1}'' was requested"
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "All objects"
@@ -7542,7 +7542,7 @@
     "message": "Save…"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Can’t load file. Supported file extensions: '{PH1}.'"
+    "message": "Can’t load file. Supported file extensions: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Can’t load profile while another profile is being recorded."
@@ -7572,7 +7572,7 @@
     "message": "Failed to read file"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "File '{PH1}' read error: {PH2}"
+    "message": "File ''{PH1}'' read error: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Find by cost (>50ms), name or file"
@@ -8430,7 +8430,7 @@
     "message": "Add content scripts to ignore list (extension scripts in the page)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignore scripts whose names match '{PH1}'"
+    "message": "Ignore scripts whose names match ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "No ignore list patterns"

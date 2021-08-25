@@ -79,7 +79,7 @@ const UIStrings = {
   *@example {SomeClassConstructor} PH1
   *@example {12345} PH2
   */
-  revealObjectSWithIdSInSummary: 'Reveal object \'{PH1}\' with id @{PH2} in Summary view',
+  revealObjectSWithIdSInSummary: 'Reveal object \'\'{PH1}\'\' with id @{PH2} in Summary view',
   /**
   *@description Text to store an HTML element or JavaScript variable or expression result as a global variable
   */

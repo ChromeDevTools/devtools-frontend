@@ -86,7 +86,7 @@ const UIStrings = {
   *@example {example.file} PH1
   *@example {cannot open file} PH2
   */
-  fileSReadErrorS: 'File \'{PH1}\' read error: {PH2}',
+  fileSReadErrorS: 'File \'\'{PH1}\'\' read error: {PH2}',
   /**
   *@description Text when something is loading
   */

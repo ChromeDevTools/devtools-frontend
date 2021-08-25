@@ -53,7 +53,7 @@ const UIStrings = {
   *@description Text in Profiles Panel of a profiler tool
   *@example {'.js', '.json'} PH1
   */
-  cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'{PH1}.\'',
+  cantLoadFileSupportedFile: 'Can’t load file. Supported file extensions: \'\'{PH1}\'\'.',
   /**
   *@description Text in Profiles Panel of a profiler tool
   */

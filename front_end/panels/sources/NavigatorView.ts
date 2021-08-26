@@ -378,8 +378,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     return !project.isServiceProject();
   }
 
-  private frameAttributionAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
+  private frameAttributionAdded(
+      event: Common.EventTarget.EventTargetEvent<Bindings.NetworkProject.FrameAttributionEvent>): void {
+    const {uiSourceCode} = event.data;
     if (!this.acceptsUISourceCode(uiSourceCode)) {
       return;
     }
@@ -389,8 +390,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.addUISourceCodeNode(uiSourceCode, addedFrame);
   }
 
-  private frameAttributionRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data.uiSourceCode as Workspace.UISourceCode.UISourceCode);
+  private frameAttributionRemoved(
+      event: Common.EventTarget.EventTargetEvent<Bindings.NetworkProject.FrameAttributionEvent>): void {
+    const {uiSourceCode} = event.data;
     if (!this.acceptsUISourceCode(uiSourceCode)) {
       return;
     }

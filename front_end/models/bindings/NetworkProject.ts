@@ -41,7 +41,7 @@ const projectToTargetMap = new WeakMap<Workspace.Workspace.Project, SDK.Target.T
 
 let networkProjectManagerInstance: NetworkProjectManager;
 
-export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
+export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private constructor() {
     super();
   }
@@ -57,9 +57,21 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export const Events = {
-  FrameAttributionAdded: Symbol('FrameAttributionAdded'),
-  FrameAttributionRemoved: Symbol('FrameAttributionRemoved'),
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  FrameAttributionAdded = 'FrameAttributionAdded',
+  FrameAttributionRemoved = 'FrameAttributionRemoved',
+}
+
+export interface FrameAttributionEvent {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+}
+
+export type EventTypes = {
+  [Events.FrameAttributionAdded]: FrameAttributionEvent,
+  [Events.FrameAttributionRemoved]: FrameAttributionEvent,
 };
 
 export class NetworkProject {

@@ -177,5 +177,21 @@ ruleTester.run('check_component_naming', rule, {
       filename: 'front_end/ui/components/Foo.ts',
       errors: [{messageId: 'noTSInterface', data: {componentName: 'devtools-foo'}}]
     },
+    {
+      // Not using LitHtml.literal
+      code: `export class Foo extends HTMLElement {
+        static readonly litTagName = 'devtools-foo';
+      }
+
+      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+
+      declare global {
+        interface HTMLElementTagNameMap {
+          'devtools-foo': Foo
+        }
+      }`,
+      filename: 'front_end/ui/components/Foo.ts',
+      errors: [{messageId: 'litTagNameNotLiteral'}]
+    },
   ]
 });

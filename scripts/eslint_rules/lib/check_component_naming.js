@@ -21,6 +21,8 @@ module.exports = {
       noDefineCall: 'Could not find a defineComponent() call for the component.',
       defineCallNonLiteral: 'defineComponent() first argument must be a string literal.',
       staticLiteralInvalid: 'static readonly litTagName must use a literal string, with no interpolation.',
+      litTagNameNotLiteral:
+          'litTagName must be defined as a string passed in as LitHtml.literal`component-name`, but no tagged template was found.',
       staticLiteralNotReadonly: 'static litTagName must be readonly.'
     }
   },
@@ -99,6 +101,13 @@ module.exports = {
         const componentTagNameNode = findComponentTagNameFromStaticProperty(componentClassDefinition.body);
         if (!componentTagNameNode) {
           context.report({node: componentClassDefinition, messageId: 'noStaticTagName'});
+          return;
+        }
+        if (componentTagNameNode.value.type !== 'TaggedTemplateExpression') {
+          // This means that the value is not LitHtml.literal``. Most likely
+          // the user forgot to add LitHtml.literal and has defined the value
+          // as a regular string.
+          context.report({node: componentTagNameNode, messageId: 'litTagNameNotLiteral'});
           return;
         }
         if (componentTagNameNode.value.quasi.quasis.length > 1) {

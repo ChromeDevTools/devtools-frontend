@@ -8,7 +8,7 @@
   --override-data-grid-sent-message-row-background-color: rgb(240 246 255);
 }
 
-.-theme-with-dark-background .protocola-monitor,
+.-theme-with-dark-background .protocol-monitor,
 :host-context(.-theme-with-dark-background) .protocol-monitor {
   --override-data-grid-sent-message-row-background-color: rgb(43 46 56);
 }

@@ -5,6 +5,8 @@
 # found in the LICENSE file.
 """
 Run tests on a pinned version of chrome.
+
+DEPRECATED: please use run_test_suite.js instead.
 """
 
 import argparse
@@ -123,6 +125,9 @@ def run_tests(chrome_binary,
 
 
 def run_test():
+    print(
+        "DEPRECATED: run_test_suite.py is deprecated and will be removed in the future.\nPlease use run_test_suite.js which is newer and more robust with handling paths."
+    )
     OPTIONS = parse_options(sys.argv[1:])
     is_cygwin = sys.platform == 'cygwin'
     chrome_binary = None

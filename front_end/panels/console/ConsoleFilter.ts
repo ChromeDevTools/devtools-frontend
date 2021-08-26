@@ -68,7 +68,7 @@ export class ConsoleFilter {
     }
 
     if (message.type === SDK.ConsoleModel.FrontendMessageType.Command ||
-        message.type === SDK.ConsoleModel.FrontendMessageType.Result || message.isGroupMessage()) {
+        message.type === SDK.ConsoleModel.FrontendMessageType.Result) {
       return true;
     }
     if (message.level && !this.levelsMask[message.level as string]) {

@@ -221,8 +221,7 @@ export class AccessibilityModel extends SDKModel<void> {
   }
 
   async requestPartialAXTree(node: DOMNode): Promise<void> {
-    const {nodes} = await this.agent.invoke_getPartialAXTree(
-        {nodeId: node.id, backendNodeId: undefined, objectId: undefined, fetchRelatives: true});
+    const {nodes} = await this.agent.invoke_getPartialAXTree({nodeId: node.id, fetchRelatives: true});
     if (!nodes) {
       return;
     }
@@ -268,7 +267,7 @@ export class AccessibilityModel extends SDKModel<void> {
   }
 
   async requestRootNode(depth: number = 2, frameId?: Protocol.Page.FrameId): Promise<AccessibilityNode|undefined> {
-    const {nodes} = await this.agent.invoke_getFullAXTree({max_depth: depth, frameId});
+    const {nodes} = await this.agent.invoke_getFullAXTree({depth, frameId});
     if (!nodes) {
       return;
     }
@@ -279,7 +278,7 @@ export class AccessibilityModel extends SDKModel<void> {
 
   async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId, frameId?: Protocol.Page.FrameId):
       Promise<AccessibilityNode[]> {
-    const {nodes} = await this.agent.invoke_getChildAXNodes({id: nodeId, frameId: frameId});
+    const {nodes} = await this.agent.invoke_getChildAXNodes({id: nodeId, frameId});
     if (!nodes) {
       return [];
     }
@@ -294,8 +293,7 @@ export class AccessibilityModel extends SDKModel<void> {
       return loadedAXNode;
     }
 
-    const {nodes} = await this.agent.invoke_getPartialAXTree(
-        {nodeId: node.id, backendNodeId: undefined, objectId: undefined, fetchRelatives: true});
+    const {nodes} = await this.agent.invoke_getPartialAXTree({nodeId: node.id, fetchRelatives: true});
     if (!nodes) {
       return null;
     }

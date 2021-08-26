@@ -32,19 +32,6 @@ ruleTester.run('static_custom_event_names', rule, {
 
   invalid: [
     {
-      // Missing eventName
-      code: `class FooEvent extends Event {
-        data: string;
-
-        constructor(data: string) {
-          super('fooevent', {composed: true});
-          this.data = data;
-        }
-      }`,
-      filename: 'ui/some-component.ts',
-      errors: [{messageId: 'missingEventName'}]
-    },
-    {
       // Not readonly
       code: `class FooEvent extends Event {
         eventName = 'fooevent'
@@ -71,20 +58,6 @@ ruleTester.run('static_custom_event_names', rule, {
       }`,
       filename: 'ui/some-component.ts',
       errors: [{messageId: 'eventNameNotStatic'}]
-    },
-    {
-      // Controller not using new name
-      code: `class FooEvent extends Event {
-        static readonly eventName = 'fooevent'
-        data: string;
-
-        constructor(data: string) {
-          super('fooevent', {composed: true});
-          this.data = data;
-        }
-      }`,
-      filename: 'ui/some-component.ts',
-      errors: [{messageId: 'superEventNameWrong'}]
     },
     {
       // Controller not using new name
@@ -149,6 +122,50 @@ ruleTester.run('static_custom_event_names', rule, {
       }`,
       filename: 'ui/some-component.ts',
       errors: [{messageId: 'superEventNameWrong'}]
+    },
+    {
+      // Controller not using new name and missing the property
+      code: `class FooEvent extends Event {
+        data: string;
+
+        constructor(data: string) {
+          super('fooevent');
+          this.data = data;
+        }
+      }`,
+      filename: 'ui/some-component.ts',
+      errors: [{messageId: 'missingEventName'}],
+      output: `class FooEvent extends Event {
+        static readonly eventName = 'fooevent';data: string;
+
+        constructor(data: string) {
+          super(FooEvent.eventName);
+          this.data = data;
+        }
+      }`,
+    },
+    {
+      // Controller not using new name
+      code: `class FooEvent extends Event {
+        static readonly eventName = 'fooevent';
+        data: string;
+
+        constructor(data: string) {
+          super('fooevent');
+          this.data = data;
+        }
+      }`,
+      filename: 'ui/some-component.ts',
+      errors: [{messageId: 'superEventNameWrong'}],
+      output: `class FooEvent extends Event {
+        static readonly eventName = 'fooevent';
+        data: string;
+
+        constructor(data: string) {
+          super(FooEvent.eventName);
+          this.data = data;
+        }
+      }`,
     },
   ]
 });

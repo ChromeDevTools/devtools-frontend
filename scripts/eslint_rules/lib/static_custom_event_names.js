@@ -24,6 +24,71 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    function findConstructorAndSuperCallAndFirstArgumentToSuper(node) {
+      const foundNodes = {
+        constructor: undefined,
+        superExpression: undefined,
+        firstArgumentToSuper: undefined,
+      };
+      const constructor = node.body.body.find(bodyNode => {
+        return bodyNode.type === 'MethodDefinition' && bodyNode.key?.name === 'constructor';
+      });
+      if (!constructor) {
+        return foundNodes;
+      }
+
+      foundNodes.constructor = constructor;
+
+      const superExpression = constructor.value.body.body.find(bodyNode => {
+        const isExpression = bodyNode.type === 'ExpressionStatement';
+        if (!isExpression) {
+          return false;
+        }
+        return isExpression && bodyNode.expression.callee?.type === 'Super';
+      });
+
+      if (!superExpression) {
+        return foundNodes;
+      }
+
+      foundNodes.superExpression = superExpression;
+
+      const firstArgumentToSuper = superExpression.expression.arguments[0];
+      if (!firstArgumentToSuper) {
+        // This is invalid so bail.
+        return foundNodes;
+      }
+      foundNodes.firstArgumentToSuper = firstArgumentToSuper;
+      return foundNodes;
+    }
+
+    function tryToAutoFixIfWeCan(fixer, node) {
+      // We can autofix nodes when either:
+      // 1. They do not have the static declaration, and there is a super('fooevent') call
+      // => in this case, we can define static readonly eventName = 'fooevent' and update the super() call's first argument.
+      // 2. There is a staticEventName declared, but the super() call is using the literal. In this case, we can update the super() call's first argument.
+
+      // Note: if we cannot fix, we return an empty array, which signifies to
+      // ESLint that there's no fixes we'd like to apply.
+
+      const nodeIsMissingEventName = node.body.body[0]?.key?.name !== 'eventName';
+      const className = node.id.name;
+
+      const {firstArgumentToSuper} = findConstructorAndSuperCallAndFirstArgumentToSuper(node);
+      if (firstArgumentToSuper.type !== 'Literal') {
+        // Either it's OK, or it's some value that isn't a string literal, so we should bail.
+        return [];
+      }
+      const eventNameFromSuper = firstArgumentToSuper.value;
+      const fixes = [];
+      if (nodeIsMissingEventName) {
+        fixes.push(fixer.insertTextBefore(node.body.body[0], `static readonly eventName = '${eventNameFromSuper}';`));
+      }
+
+      fixes.push(fixer.replaceText(firstArgumentToSuper, `${className}.eventName`));
+      return fixes;
+    }
+
     return {
       ClassDeclaration(node) {
         if (!node.superClass) {
@@ -38,7 +103,13 @@ module.exports = {
         // We purposefully look at the first body node as it should be defined first
         const firstBodyNode = bodyMembersOfClass[0];
         if (!firstBodyNode || firstBodyNode.key.name !== 'eventName') {
-          context.report({node, messageId: 'missingEventName'});
+          context.report({
+            node,
+            messageId: 'missingEventName',
+            fix(fixer) {
+              return tryToAutoFixIfWeCan(fixer, node);
+            }
+          });
           return;
         }
         if (!firstBodyNode.readonly) {
@@ -49,28 +120,19 @@ module.exports = {
           return;
         }
 
-        // Now we know the static readonly eventName is defined, we check for the constructor and the super() call.
+        // Now we know the static readonly eventName is defined, we check for
+        // the constructor and the super() call.
+        const {constructor, superExpression, firstArgumentToSuper} =
+            findConstructorAndSuperCallAndFirstArgumentToSuper(node);
 
-        const constructor = node.body.body.find(bodyNode => {
-          return bodyNode.type === 'MethodDefinition' && bodyNode.key?.name === 'constructor';
-        });
         if (!constructor) {
           context.report({node, messageId: 'noConstructorFound'});
           return;
         }
-
-        const superExpression = constructor.value.body.body.find(bodyNode => {
-          const isExpression = bodyNode.type === 'ExpressionStatement';
-          if (!isExpression) {
-            return false;
-          }
-          return isExpression && bodyNode.expression.callee?.type === 'Super';
-        });
         if (!superExpression) {
           context.report({node, messageId: 'noSuperCallFound'});
           return;
         }
-        const firstArgumentToSuper = superExpression.expression.arguments[0];
         if (!firstArgumentToSuper) {
           context.report({node, messageId: 'superEventNameWrong'});
           return;
@@ -78,7 +140,13 @@ module.exports = {
 
         const customEventClassName = node.id.name;
         if (firstArgumentToSuper.type !== 'MemberExpression') {
-          context.report({node, messageId: 'superEventNameWrong'});
+          context.report({
+            node,
+            messageId: 'superEventNameWrong',
+            fix(fixer) {
+              return tryToAutoFixIfWeCan(fixer, node);
+            }
+          });
           return;
         }
         if (firstArgumentToSuper.object.name !== customEventClassName ||

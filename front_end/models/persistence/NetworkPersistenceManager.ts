@@ -14,7 +14,7 @@ import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 let networkPersistenceManagerInstance: NetworkPersistenceManager|null;
 
-export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper {
+export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private bindings: WeakMap<Workspace.UISourceCode.UISourceCode, PersistenceBinding>;
   private readonly originalResponseContentPromises: WeakMap<Workspace.UISourceCode.UISourceCode, Promise<string|null>>;
   private savingForOverrides: WeakSet<Workspace.UISourceCode.UISourceCode>;
@@ -499,6 +499,12 @@ const RESERVED_FILENAMES = new Set<string>([
   'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
 ]);
 
-export const Events = {
-  ProjectChanged: Symbol('ProjectChanged'),
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ProjectChanged = 'ProjectChanged',
+}
+
+export type EventTypes = {
+  [Events.ProjectChanged]: Workspace.Workspace.Project|null,
 };

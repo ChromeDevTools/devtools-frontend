@@ -783,7 +783,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
   }
 
-  requestWillBeSentExtraInfo({requestId, associatedCookies, headers, clientSecurityState}:
+  requestWillBeSentExtraInfo({requestId, associatedCookies, headers, clientSecurityState, connectTiming}:
                                  Protocol.Network.RequestWillBeSentExtraInfoEvent): void {
     const blockedRequestCookies: BlockedCookieWithReason[] = [];
     const includedRequestCookies = [];
@@ -799,6 +799,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       includedRequestCookies,
       requestHeaders: this.headersMapToHeadersArray(headers),
       clientSecurityState: clientSecurityState,
+      connectTiming,
     };
     this.getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }

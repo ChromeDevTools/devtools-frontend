@@ -295,11 +295,17 @@ export class RequestTimingView extends UI.Widget.VBox {
     const timing = request.timing;
     if (!timing) {
       const start = request.issueTime() !== -1 ? request.issueTime() : request.startTime !== -1 ? request.startTime : 0;
-      const middle = (request.responseReceivedTime === -1) ? Number.MAX_VALUE : request.responseReceivedTime;
+      const hasDifferentIssueAndStartTime =
+          request.issueTime() !== -1 && request.startTime !== -1 && request.issueTime() !== request.startTime;
+      const middle = (request.responseReceivedTime === -1) ?
+          (hasDifferentIssueAndStartTime ? request.startTime : Number.MAX_VALUE) :
+          request.responseReceivedTime;
       const end = (request.endTime === -1) ? Number.MAX_VALUE : request.endTime;
       addRange(RequestTimeRangeNames.Total, start, end);
       addRange(RequestTimeRangeNames.Blocking, start, middle);
-      addRange(RequestTimeRangeNames.Receiving, middle, end);
+      const state =
+          request.responseReceivedTime === -1 ? RequestTimeRangeNames.Connecting : RequestTimeRangeNames.Receiving;
+      addRange(state, middle, end);
       return result;
     }
 

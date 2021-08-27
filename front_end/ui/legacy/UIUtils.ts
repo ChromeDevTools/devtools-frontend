@@ -1332,6 +1332,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
     const root =
         createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/closeButton.css', delegatesFocus: undefined});
     this.buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
+    Tooltip.install(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.setAccessibleName(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this.buttonElement);
     const regularIcon = Icon.create('smallicon-cross', 'default-icon');

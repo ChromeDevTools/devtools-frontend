@@ -12,6 +12,7 @@ generate_css("css_files") {
     "badge.css",
     "frameDetailsReportView.css",
     "originTrialTokenRows.css",
+    "originTrialTreeView.css",
     "permissionsPolicySection.css",
     "stackTraceLinkButton.css",
     "stackTraceRow.css",

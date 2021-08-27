@@ -816,6 +816,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/components/badge.css.js",
   "front_end/panels/application/components/frameDetailsReportView.css.js",
   "front_end/panels/application/components/originTrialTokenRows.css.js",
+  "front_end/panels/application/components/originTrialTreeView.css.js",
   "front_end/panels/application/components/permissionsPolicySection.css.js",
   "front_end/panels/application/components/stackTraceLinkButton.css.js",
   "front_end/panels/application/components/stackTraceRow.css.js",

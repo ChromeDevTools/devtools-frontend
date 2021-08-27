@@ -15,7 +15,7 @@ import {LinkDecorator} from './PersistenceUtils.js';
 
 let persistenceInstance: PersistenceImpl;
 
-export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
+export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
   private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   private readonly filePathPrefixesToBindingCount: Map<string, number>;
@@ -348,9 +348,16 @@ export const NodePrefix = '(function (exports, require, module, __filename, __di
 export const NodeSuffix = '\n});';
 export const NodeShebang = '#!/usr/bin/env node';
 
-export const Events = {
-  BindingCreated: Symbol('BindingCreated'),
-  BindingRemoved: Symbol('BindingRemoved'),
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  BindingCreated = 'BindingCreated',
+  BindingRemoved = 'BindingRemoved',
+}
+
+export type EventTypes = {
+  [Events.BindingCreated]: PersistenceBinding,
+  [Events.BindingRemoved]: PersistenceBinding,
 };
 
 export class PathEncoder {

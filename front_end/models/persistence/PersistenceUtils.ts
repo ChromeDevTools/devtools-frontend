@@ -77,8 +77,8 @@ export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper implements
     persistence.addEventListener(Events.BindingRemoved, this.bindingChanged, this);
   }
 
-  private bindingChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const binding = event.data as PersistenceBinding;
+  private bindingChanged(event: Common.EventTarget.EventTargetEvent<PersistenceBinding>): void {
+    const binding = event.data;
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 

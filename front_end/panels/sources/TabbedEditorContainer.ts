@@ -108,8 +108,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.uriToUISourceCode = new Map();
   }
 
-  private onBindingCreated(event: Common.EventTarget.EventTargetEvent): void {
-    const binding = (event.data as Persistence.Persistence.PersistenceBinding);
+  private onBindingCreated(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
+      void {
+    const binding = event.data;
     this.updateFileTitle(binding.fileSystem);
 
     const networkTabId = this.tabIds.get(binding.network);
@@ -145,8 +146,9 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.updateHistory();
   }
 
-  private onBindingRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const binding = (event.data as Persistence.Persistence.PersistenceBinding);
+  private onBindingRemoved(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
+      void {
+    const binding = event.data;
     this.updateFileTitle(binding.fileSystem);
   }
 

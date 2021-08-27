@@ -270,8 +270,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  private onBindingChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const binding = (event.data as Persistence.Persistence.PersistenceBinding);
+  private onBindingChanged(event: Common.EventTarget.EventTargetEvent<Persistence.Persistence.PersistenceBinding>):
+      void {
+    const binding = event.data;
 
     // Update UISourceCode titles.
     const networkNodes = this.uiSourceCodeNodes.get(binding.network);

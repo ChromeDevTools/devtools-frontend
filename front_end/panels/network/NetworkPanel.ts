@@ -510,7 +510,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.networkLogView.addFilmStripFrames(timestamps);
   }
 
-  private onNetworkLogReset(event: Common.EventTarget.EventTargetEvent): void {
+  private onNetworkLogReset(event: Common.EventTarget.EventTargetEvent<Logs.NetworkLog.ResetEvent>): void {
     const {clearIfPreserved} = event.data;
     BlockedURLsPane.reset();
     if (!this.preserveLogSetting.get() || clearIfPreserved) {
@@ -782,8 +782,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.networkLogView.clearFilmStripFrame();
   }
 
-  private onUpdateRequest(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
+  private onUpdateRequest(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this.overviewPane.setBounds(this.calculator.minimumBoundary() * 1000, this.calculator.maximumBoundary() * 1000);

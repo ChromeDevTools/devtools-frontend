@@ -1396,8 +1396,8 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return node;
   }
 
-  private onRequestUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest);
+  private onRequestUpdated(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     this.refreshRequest(request);
   }
 

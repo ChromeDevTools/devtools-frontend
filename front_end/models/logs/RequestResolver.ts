@@ -35,8 +35,8 @@ export class RequestResolver extends
     return null;
   }
 
-  private onRequestAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const request = event.data as SDK.NetworkRequest.NetworkRequest;
+  private onRequestAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
     const backendRequestId = request.backendRequestId();
     if (backendRequestId) {
       this.onResolve(backendRequestId, request);

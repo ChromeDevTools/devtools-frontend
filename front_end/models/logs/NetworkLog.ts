@@ -46,7 +46,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let networkLogInstance: NetworkLog;
 
-export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
+export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
   private requestsInternal: SDK.NetworkRequest.NetworkRequest[];
   private sentNetworkRequests: Protocol.Network.Request[];
@@ -565,10 +565,22 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper implements
 
 const consoleMessageToRequest = new WeakMap<SDK.ConsoleModel.ConsoleMessage, SDK.NetworkRequest.NetworkRequest>();
 
-export const Events = {
-  Reset: Symbol('Reset'),
-  RequestAdded: Symbol('RequestAdded'),
-  RequestUpdated: Symbol('RequestUpdated'),
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  Reset = 'Reset',
+  RequestAdded = 'RequestAdded',
+  RequestUpdated = 'RequestUpdated',
+}
+
+export interface ResetEvent {
+  clearIfPreserved: boolean;
+}
+
+export type EventTypes = {
+  [Events.Reset]: ResetEvent,
+  [Events.RequestAdded]: SDK.NetworkRequest.NetworkRequest,
+  [Events.RequestUpdated]: SDK.NetworkRequest.NetworkRequest,
 };
 
 interface InitiatorData {

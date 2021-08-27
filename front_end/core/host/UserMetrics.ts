@@ -41,16 +41,6 @@ export class UserMetrics {
     this.launchPanelName = '';
   }
 
-  colorFixed(contrastThreshold: string): void {
-    const code = ContrastThresholds[contrastThreshold];
-    if (code === undefined) {
-      console.warn(`Unknown contrast threshold: ${contrastThreshold}`);
-      return;
-    }
-    const size = Object.keys(ContrastThresholds).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.ColorPickerFixedColor, code, size);
-  }
-
   panelShown(panelName: string): void {
     const code = PanelCodes[panelName] || 0;
     const size = Object.keys(PanelCodes).length + 1;

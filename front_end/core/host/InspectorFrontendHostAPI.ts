@@ -227,7 +227,6 @@ export interface CanShowSurveyResult {
 // eslint-disable-next-line rulesdir/const_enum
 export enum EnumeratedHistogram {
   ActionTaken = 'DevTools.ActionTaken',
-  ColorPickerFixedColor = 'DevTools.ColorPicker.FixedColor',
   PanelClosed = 'DevTools.PanelClosed',
   PanelShown = 'DevTools.PanelShown',
   SidebarPaneShown = 'DevTools.SidebarPaneShown',

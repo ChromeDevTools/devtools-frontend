@@ -42,7 +42,6 @@ declare global {
       UserMetrics: UserMetrics,
       userMetrics: {
         actionTaken(name: number): void,
-        colorFixed(threshold: string): void,
         cssEditorOpened(editorName: string): void,
       },
     };
@@ -474,29 +473,6 @@ describe('User Metrics for CSS Editors in Styles Pane', () => {
       {
         actionName: 'DevTools.CssEditorOpened',
         actionCode: 3,  // fontEditor
-      },
-    ]);
-  });
-});
-
-describe('User Metrics for Color Picker', () => {
-  it('dispatch ColorPickerFixedColor events', async () => {
-    const {frontend} = getBrowserAndPages();
-
-    await frontend.evaluate(() => {
-      self.Host.userMetrics.colorFixed('aa');
-      self.Host.userMetrics.colorFixed('aaa');
-      self.Host.userMetrics.colorFixed('wrong');
-    });
-
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.ColorPicker.FixedColor',
-        actionCode: 0,  // AA
-      },
-      {
-        actionName: 'DevTools.ColorPicker.FixedColor',
-        actionCode: 1,  // AAA
       },
     ]);
   });

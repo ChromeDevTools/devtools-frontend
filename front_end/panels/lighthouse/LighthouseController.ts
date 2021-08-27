@@ -136,7 +136,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseController
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper implements
+export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
   private manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
@@ -448,13 +448,36 @@ export const RuntimeSettings: RuntimeSetting[] = [
   },
 ];
 
-export const Events = {
-  PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
-  PageWarningsChanged: Symbol('PageWarningsChanged'),
-  AuditProgressChanged: Symbol('AuditProgressChanged'),
-  RequestLighthouseStart: Symbol('RequestLighthouseStart'),
-  RequestLighthouseCancel: Symbol('RequestLighthouseCancel'),
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  PageAuditabilityChanged = 'PageAuditabilityChanged',
+  PageWarningsChanged = 'PageWarningsChanged',
+  AuditProgressChanged = 'AuditProgressChanged',
+  RequestLighthouseStart = 'RequestLighthouseStart',
+  RequestLighthouseCancel = 'RequestLighthouseCancel',
+}
+
+export interface PageAuditabilityChangedEvent {
+  helpText: string;
+}
+
+export interface PageWarningsChangedEvent {
+  warning: string;
+}
+
+export interface AuditProgressChangedEvent {
+  message: string;
+}
+
+export type EventTypes = {
+  [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent,
+  [Events.PageWarningsChanged]: PageWarningsChangedEvent,
+  [Events.AuditProgressChanged]: AuditProgressChangedEvent,
+  [Events.RequestLighthouseStart]: boolean,
+  [Events.RequestLighthouseCancel]: void,
 };
+
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;
   configID: string;

@@ -12,6 +12,7 @@ import reportStyles from '../../third_party/lighthouse/report-assets/report.css.
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
+import type {AuditProgressChangedEvent, PageAuditabilityChangedEvent, PageWarningsChangedEvent} from './LighthouseController.js';
 import {Events, LighthouseController} from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
@@ -57,14 +58,15 @@ const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthousePanel.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let lighthousePanelInstace: LighthousePanel;
+type Nullable<T> = T|null;
 
 export class LighthousePanel extends UI.Panel.Panel {
   private readonly protocolService: ProtocolService;
   private readonly controller: LighthouseController;
   private readonly startView: StartView;
   private readonly statusView: StatusView;
-  private warningText: null;
-  private unauditableExplanation: null;
+  private warningText: Nullable<string>;
+  private unauditableExplanation: Nullable<string>;
   private readonly cachedRenderedReports: Map<ReportJSON, HTMLElement>;
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly auditResultsElement: HTMLElement;
@@ -99,8 +101,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller.addEventListener(Events.PageAuditabilityChanged, this.refreshStartAuditUI.bind(this));
     this.controller.addEventListener(Events.PageWarningsChanged, this.refreshWarningsUI.bind(this));
     this.controller.addEventListener(Events.AuditProgressChanged, this.refreshStatusUI.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseStart, event => {
-      this.startLighthouse(event);
+    this.controller.addEventListener(Events.RequestLighthouseStart, _event => {
+      this.startLighthouse();
     });
     this.controller.addEventListener(Events.RequestLighthouseCancel, _event => {
       this.cancelLighthouse();
@@ -126,7 +128,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     return Events;
   }
 
-  private refreshWarningsUI(evt: Common.EventTarget.EventTargetEvent): void {
+  private refreshWarningsUI(evt: Common.EventTarget.EventTargetEvent<PageWarningsChangedEvent>): void {
     // PageWarningsChanged fires multiple times during an audit, which we want to ignore.
     if (this.isLHAttached) {
       return;
@@ -136,7 +138,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.startView.setWarningText(evt.data.warning);
   }
 
-  private refreshStartAuditUI(evt: Common.EventTarget.EventTargetEvent): void {
+  private refreshStartAuditUI(evt: Common.EventTarget.EventTargetEvent<PageAuditabilityChangedEvent>): void {
     // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
     if (this.isLHAttached) {
       return;
@@ -147,7 +149,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.startView.setStartButtonEnabled(!evt.data.helpText);
   }
 
-  private refreshStatusUI(evt: Common.EventTarget.EventTargetEvent): void {
+  private refreshStatusUI(evt: Common.EventTarget.EventTargetEvent<AuditProgressChangedEvent>): void {
     this.statusView.updateStatus(evt.data.message);
   }
 
@@ -335,7 +337,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.buildReportUI(data as ReportJSON);
   }
 
-  private async startLighthouse(_event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async startLighthouse(): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
     try {

@@ -129,7 +129,6 @@ export const linkifyDeferredNodeReference = function(
   return root;
 };
 
-// @empty-line
 let linkifierInstance: Linkifier;
 
 export class Linkifier implements Common.Linkifier.Linkifier {

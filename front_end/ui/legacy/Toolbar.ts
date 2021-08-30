@@ -234,7 +234,6 @@ export class Toolbar {
     button.setEnabled(action.enabled());
     return button;
 
-    // @empty-line
     function makeButton(): ToolbarButton {
       const button = new ToolbarButton(action.title(), action.icon());
       if (action.title()) {

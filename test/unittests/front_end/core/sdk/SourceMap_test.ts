@@ -118,21 +118,21 @@ describe('TextSourceMap', () => {
     */
     const mappingPayload = encodeSourceMap([
       // clang-format off
-      '0:0 => example.js:0:9@add',
-      '0:8 => example.js:0:9@add',
+      '0:0 => example.js:0:9@a',
+      '0:8 => example.js:0:9@a',
       '0:12 => example.js:0:12',
-      '0:13 => example.js:0:13@variable_x',
+      '0:13 => example.js:0:13@b',
       '0:14 => example.js:0:12',
-      '0:15 => example.js:0:25@variable_y',
+      '0:15 => example.js:0:25@c',
       '0:16 => example.js:0:12',
       '0:17 => example.js:1:0',
       '0:18 => example.js:2:4',
-      '0:24 => example.js:2:11@variable_x',
+      '0:24 => example.js:2:11@b',
       '0:26 => example.js:2:4',
-      '0:27 => example.js:2:24@variable_y',
+      '0:27 => example.js:2:24@c',
       '0:28 => example.js:1:0',
       '0:29 => example.js:5:0',
-      '0:33 => example.js:5:4@global',
+      '0:33 => example.js:5:4@d',
       '0:40 => example.js:5:13',
       '1:0',
       // clang-format on
@@ -153,89 +153,6 @@ describe('TextSourceMap', () => {
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 2, 0), 0, 18);
     assert.isNull(sourceMap.sourceLineMapping('example.js', 4, 0), 'unexpected source mapping for line 4');
     assertReverseMapping(sourceMap.sourceLineMapping('example.js', 5, 0), 0, 29);
-  });
-
-  it('can do reverse lookups', () => {
-    const mappingPayload = encodeSourceMap([
-      // clang-format off
-      '0:0 => example.js:1:0',
-      '1:0 => example.js:3:0',
-      '2:0 => example.js:1:0',
-      '4:0 => other.js:5:0',
-      '5:0 => example.js:3:0',
-      '7:2 => example.js:1:0',
-      '10:5 => other.js:5:0',
-      // clang-format on
-    ]);
-
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
-
-    // Exact match for source location.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 3, 0).map(r => r.serializeToObject()), [
-      {startLine: 1, startColumn: 0, endLine: 2, endColumn: 0},
-      {startLine: 5, startColumn: 0, endLine: 7, endColumn: 2},
-    ]);
-
-    // Inexact match.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 10, 0).map(r => r.serializeToObject()), [
-      {startLine: 1, startColumn: 0, endLine: 2, endColumn: 0},
-      {startLine: 5, startColumn: 0, endLine: 7, endColumn: 2},
-    ]);
-
-    // Match with more than two locations.
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 1, 0).map(r => r.serializeToObject()), [
-      {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
-      {startLine: 2, startColumn: 0, endLine: 4, endColumn: 0},
-      {startLine: 7, startColumn: 2, endLine: 10, endColumn: 5},
-    ]);
-
-    // Match at the end of file.
-    assert.deepEqual(sourceMap.findReverseRanges('other.js', 5, 0).map(r => r.serializeToObject()), [
-      {startLine: 4, startColumn: 0, endLine: 5, endColumn: 0},
-      {startLine: 10, startColumn: 5, endLine: Infinity, endColumn: 0},
-    ]);
-
-    // No match.
-    assert.isEmpty(sourceMap.findReverseRanges('example.js', 0, 0));
-    assert.isEmpty(sourceMap.findReverseRanges('other.js', 1, 0));
-
-    // Also test the reverse lookup that returns points.
-    assert.deepEqual(sourceMap.findReverseEntries('other.js', 5, 0).map(e => e.lineNumber), [4, 10]);
-    assert.deepEqual(sourceMap.findReverseEntries('other.js', 10, 0).map(e => e.lineNumber), [4, 10]);
-  });
-
-  it('can do reverse lookups with merging', () => {
-    const mappingPayload = encodeSourceMap([
-      // clang-format off
-      '0:0 => example.js:1:0',
-      '1:0 => example.js:3:0',
-      '2:0 => example.js:1:0',
-      '3:0 => example.js:1:0',
-      '4:0 => example.js:1:0',
-      '5:0 => example.js:2:0',
-      '5:2 => example.js:2:1',
-      '5:4 => example.js:2:1',
-      '5:6 => example.js:2:2',
-      '5:8 => example.js:2:1',
-      '6:2 => example.js:2:1',
-      '6:4 => example.js:2:2',
-      '7:0 => example.js:1:0',
-      '8:0 => example.js:1:0',
-      // clang-format on
-    ]);
-
-    const sourceMap = new SDK.SourceMap.TextSourceMap('compiled.js', 'source-map.json', mappingPayload, fakeInitiator);
-
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 1, 0).map(r => r.serializeToObject()), [
-      {startLine: 0, startColumn: 0, endLine: 1, endColumn: 0},
-      {startLine: 2, startColumn: 0, endLine: 5, endColumn: 0},
-      {startLine: 7, startColumn: 0, endLine: Infinity, endColumn: 0},
-    ]);
-
-    assert.deepEqual(sourceMap.findReverseRanges('example.js', 2, 1).map(r => r.serializeToObject()), [
-      {startLine: 5, startColumn: 2, endLine: 5, endColumn: 6},
-      {startLine: 5, startColumn: 8, endLine: 6, endColumn: 4},
-    ]);
   });
 
   it('can parse source maps with segments that contain no mapping information', () => {

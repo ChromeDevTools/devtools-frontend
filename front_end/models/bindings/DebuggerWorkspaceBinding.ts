@@ -72,8 +72,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
-      Promise<RawLocationRange[]> {
-    function contained(location: SDK.DebuggerModel.Location, range: RawLocationRange): boolean {
+      Promise<{
+        start: SDK.DebuggerModel.Location,
+        end: SDK.DebuggerModel.Location,
+      }[]> {
+    function contained(location: SDK.DebuggerModel.Location, range: {
+      start: SDK.DebuggerModel.Location,
+      end: SDK.DebuggerModel.Location,
+    }): boolean {
       const {start, end} = range;
       if (start.scriptId !== location.scriptId) {
         return false;
@@ -92,17 +98,20 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
     // TODO(crbug.com/1018234): Also take into account source maps here and remove the auto-stepping
     // logic in the front-end (which is currently still an experiment) completely.
-    const rawLocation = callFrame.location();
-    if (!rawLocation) {
-      return [];
-    }
     const pluginManager = this.pluginManager;
-    let ranges: RawLocationRange[] = [];
     if (pluginManager) {
+      const rawLocation = callFrame.location();
       if (mode === SDK.DebuggerModel.StepMode.StepOut) {
         // Step out of inline function.
         return await pluginManager.getInlinedFunctionRanges(rawLocation);
       }
+      let ranges: {
+        start: SDK.DebuggerModel.Location,
+        end: SDK.DebuggerModel.Location,
+      }[]|{
+        start: SDK.DebuggerModel.Location,
+        end: SDK.DebuggerModel.Location,
+      }[] = [];
       const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
       if (uiLocation) {
         ranges = await pluginManager.uiLocationToRawLocationRanges(
@@ -110,25 +119,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
             [];
         // TODO(bmeurer): Remove the {rawLocation} from the {ranges}?
         ranges = ranges.filter(range => contained(rawLocation, range));
-        if (mode === SDK.DebuggerModel.StepMode.StepOver) {
-          // Step over an inlined function.
-          ranges = ranges.concat(await pluginManager.getInlinedCalleesRanges(rawLocation));
-        }
-        return ranges;
       }
+      if (mode === SDK.DebuggerModel.StepMode.StepOver) {
+        // Step over an inlined function.
+        ranges = ranges.concat(await pluginManager.getInlinedCalleesRanges(rawLocation));
+      }
+      return ranges;
     }
-
-    if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
-      return [];
-    }
-
-    const compilerMapping = this.debuggerModelToData.get(rawLocation.debuggerModel)?.compilerMapping;
-    if (!compilerMapping) {
-      return [];
-    }
-    ranges = compilerMapping.getLocationRangesForSameSourceLocation(rawLocation);
-    ranges = ranges.filter(range => contained(rawLocation, range));
-    return ranges;
+    return [];
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -447,7 +445,14 @@ class ModelData {
   }
 
   private beforePaused(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails): boolean {
-    return Boolean(debuggerPausedDetails.callFrames[0]);
+    const callFrame = debuggerPausedDetails.callFrames[0];
+    if (!callFrame) {
+      return false;
+    }
+    if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
+      return true;
+    }
+    return Boolean(this.compilerMapping.mapsToSourceCode(callFrame.location()));
   }
 
   dispose(): void {
@@ -559,11 +564,6 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     }
     this.update();
   }
-}
-
-export interface RawLocationRange {
-  start: SDK.DebuggerModel.Location;
-  end: SDK.DebuggerModel.Location;
 }
 
 /**

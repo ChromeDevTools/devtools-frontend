@@ -21,8 +21,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LowTextContrastIssue extends Issue {
   private issueDetails: Protocol.Audits.LowTextContrastIssueDetails;
 
-  constructor(issueDetails: Protocol.Audits.LowTextContrastIssueDetails) {
-    super('LowTextContrastIssue');
+  constructor(issueDetails: Protocol.Audits.LowTextContrastIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
+    super('LowTextContrastIssue', issuesModel);
     this.issueDetails = issueDetails;
   }
 
@@ -56,13 +56,13 @@ export class LowTextContrastIssue extends Issue {
     return IssueKind.Improvement;
   }
 
-  static fromInspectorIssue(_issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
+  static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
       LowTextContrastIssue[] {
     const lowTextContrastIssueDetails = inspectorIssue.details.lowTextContrastIssueDetails;
     if (!lowTextContrastIssueDetails) {
       console.warn('LowTextContrast issue without details received.');
       return [];
     }
-    return [new LowTextContrastIssue(lowTextContrastIssueDetails)];
+    return [new LowTextContrastIssue(lowTextContrastIssueDetails, issuesModel)];
   }
 }

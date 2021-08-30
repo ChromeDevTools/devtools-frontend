@@ -37,7 +37,8 @@ describe('AggregatedIssue', async () => {
         violatingNodeId: 3 as Protocol.DOM.BackendNodeId,
       },
     ];
-    const issues = issueDetails.map(details => new IssuesManager.LowTextContrastIssue.LowTextContrastIssue(details));
+    const issues =
+        issueDetails.map(details => new IssuesManager.LowTextContrastIssue.LowTextContrastIssue(details, mockModel));
 
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     for (const issue of issues) {

@@ -52,12 +52,14 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     super.renderItem(itemIndex, query, titleElement, subtitleElement);
 
     const iconElement = new IconButton.Icon.Icon();
+    const iconName = imageNameForResourceType(this.itemContentTypeAt(itemIndex));
     iconElement.data = {
-      iconName: imageNameForResourceType(this.itemContentTypeAt(itemIndex)),
-      color: '',
+      iconName: iconName,
+      color: 'var(--icon-color)',
       width: '18px',
       height: '18px',
     };
+    iconElement.classList.add(iconName);
     titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
   }
 

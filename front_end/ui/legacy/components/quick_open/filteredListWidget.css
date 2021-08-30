@@ -9,6 +9,13 @@
   flex-direction: column;
   flex: auto;
   border: 1px solid transparent;
+
+  --override-filtered-list-widget-highlight-text-background-color: rgb(255 255 255 / 25%);
+}
+
+.-theme-with-dark-background .filtered-list-widget,
+:host-context(.-theme-with-dark-background) .filtered-list-widget {
+  --override-filtered-list-widget-highlight-text-background-color: rgb(255 255 255 / 75%);
 }
 
 .filtered-list-widget-prompt-element {
@@ -70,7 +77,7 @@
 }
 
 .filtered-list-widget-item-wrapper.selected {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--color-primary);
 }
 
 .filtered-list-widget-item {
@@ -84,23 +91,24 @@
 }
 
 .filtered-list-widget-item span.highlight {
-  color: var(--color-text-primary);
-  font-weight: bold;
+  color: var(--color-primary);
 }
 
 .filtered-list-widget-item .filtered-list-widget-title {
   flex: auto;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 12px;
 }
 
 .filtered-list-widget-item .filtered-list-widget-subtitle {
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--color-text-disabled);
+  color: var(--color-text-secondary);
   display: flex;
   white-space: pre;
+  font-size: 12px;
 }
 
 .filtered-list-widget-item .filtered-list-widget-subtitle .first-part {
@@ -109,8 +117,54 @@
   text-overflow: ellipsis;
 }
 
+.filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
+  color: var(--color-background);
+  background-color: var(--override-filtered-list-widget-highlight-text-background-color);
+}
+
+.filtered-list-widget-item-wrapper.selected .filtered-list-widget-title,
+.filtered-list-widget-item-wrapper.selected .filtered-list-widget-subtitle {
+  color: var(--color-background);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_document {
+  --icon-color: var(--color-ic-file-document);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_image {
+  --icon-color: var(--color-ic-file-image);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_font {
+  --icon-color: var(--color-ic-file-font);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_script {
+  --icon-color: var(--color-ic-file-script);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_stylesheet {
+  --icon-color: var(--color-ic-file-stylesheet);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_webbundle {
+  --icon-color: var(--color-ic-file-webbundle);
+}
+
+.filtered-list-widget-item-wrapper devtools-icon.ic_file_default {
+  --icon-color: var(--color-ic-file-default);
+}
+
+.filtered-list-widget-item-wrapper.selected devtools-icon {
+  --icon-color: var(--color-background);
+}
+
 .filtered-list-widget-item.one-row {
   display: flex;
+}
+
+.filtered-list-widget-item.two-rows .filtered-list-widget-title {
+  font-weight: bold;
 }
 
 .tag {

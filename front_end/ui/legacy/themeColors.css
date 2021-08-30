@@ -120,6 +120,15 @@
   --color-button-primary-background-pressed: rgb(88 132 205);
   --color-button-secondary-background-hovering: rgb(26 115 232 / 10%);
   --color-button-secondary-background-pressed: rgb(26 92 178 / 25%);
+
+  /* Colors for file icons */
+  --color-ic-file-document: rgb(39 116 240);
+  --color-ic-file-image: rgb(141 214 92);
+  --color-ic-file-font: rgb(18 192 226);
+  --color-ic-file-script: rgb(240 179 0);
+  --color-ic-file-stylesheet: rgb(174 82 255);
+  --color-ic-file-webbundle: rgb(128 134 139);
+  --color-ic-file-default: rgb(128 134 139);
 }
 
 .-theme-with-dark-background {
@@ -197,4 +206,13 @@
   --color-button-primary-background-pressed: rgb(210 227 252 / 100%);
   --color-button-secondary-background-hovering: rgb(138 180 248 / 15%);
   --color-button-secondary-background-pressed: rgb(138 180 248 / 23%);
+
+  /* Colors for file icons */
+  --color-ic-file-document: rgb(39 116 240);
+  --color-ic-file-image: rgb(30 142 62);
+  --color-ic-file-font: rgb(18 181 203);
+  --color-ic-file-script: rgb(234 134 0);
+  --color-ic-file-stylesheet: rgb(161 66 244);
+  --color-ic-file-webbundle: rgb(128 134 139);
+  --color-ic-file-default: rgb(128 134 139);
 }

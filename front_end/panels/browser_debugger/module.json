@@ -3,10 +3,5 @@
     "panels/elements",
     "panels/sources",
     "panels/console"
-  ],
-    "resources": [
-    "domBreakpointsSidebarPane.css",
-    "categorizedBreakpointsSidebarPane.css",
-    "xhrBreakpointsSidebarPane.css"
   ]
 }

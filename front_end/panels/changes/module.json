@@ -5,9 +5,5 @@
     "models/persistence",
     "panels/snippets",
     "ui/legacy"
-  ],
-    "resources": [
-    "changesView.css",
-    "changesSidebar.css"
   ]
 }

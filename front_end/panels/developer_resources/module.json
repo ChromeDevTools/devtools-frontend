@@ -1,8 +1,4 @@
 {
-    "resources": [
-    "developerResourcesView.css",
-    "developerResourcesListView.css"
-  ],
   "dependencies": [
     "ui/legacy",
     "ui/legacy/components/data_grid"

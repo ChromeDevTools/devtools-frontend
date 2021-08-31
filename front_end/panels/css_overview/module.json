@@ -1,12 +1,5 @@
 {
     "dependencies": [
     "ui/legacy/components/data_grid"
-  ],
-  "resources": [
-    "cssOverview.css",
-    "cssOverviewStartView.css",
-    "cssOverviewProcessingView.css",
-    "cssOverviewCompletedView.css",
-    "cssOverviewSidebarPanel.css"
   ]
 }

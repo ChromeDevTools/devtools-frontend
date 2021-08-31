@@ -3,8 +3,5 @@
     "ui/legacy",
     "ui/legacy/components/utils",
     "ui/legacy/components/object_ui"
-  ],
-    "resources": [
-    "eventListenersView.css"
   ]
 }

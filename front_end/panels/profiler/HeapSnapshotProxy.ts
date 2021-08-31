@@ -42,7 +42,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotProxy.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper {
+export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<HeapSnapshotWorkerProxy.EventTypes> {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly eventHandler: (arg0: string, arg1: any) => void;
@@ -208,9 +208,14 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper 
 }
 
 export namespace HeapSnapshotWorkerProxy {
+
   export const enum Events {
     Wait = 'Wait',
   }
+
+  export type EventTypes = {
+    [Events.Wait]: boolean,
+  };
 }
 
 export class HeapSnapshotProxyObject {

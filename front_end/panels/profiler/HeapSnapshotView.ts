@@ -1601,7 +1601,7 @@ export class HeapProfileHeader extends ProfileHeader {
     console.assert(!this.workerProxy, 'HeapSnapshotWorkerProxy already exists');
     this.workerProxy = new HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
     this.workerProxy.addEventListener(HeapSnapshotWorkerProxy.Events.Wait, event => {
-      this.updateStatus(null, (event.data as boolean));
+      this.updateStatus(null, event.data);
     }, this);
     this.receiver = this.workerProxy.createLoader(this.uid, this.snapshotReceived.bind(this));
   }

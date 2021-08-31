@@ -1,0 +1,5 @@
+{
+  "short_name": "Test PWA",
+  "name": "Test PWA with manifest without id",
+  "start_url": "some_start_url"
+}

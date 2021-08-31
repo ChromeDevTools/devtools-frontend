@@ -8,6 +8,7 @@ node_ts_library("application") {
   sources = [
     "cookies_test.ts",
     "frame-tree_test.ts",
+    "manifest_test.ts",
     "service-worker-network_test.ts",
     "service-worker-update_test.ts",
     "session-storage_test.ts",

@@ -2114,6 +2114,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Âćt̂úâĺ ŵíd̂t́ĥ ({PH1}ṕx̂) óf̂ {PH2} {PH3} d́ôéŝ ńôt́ m̂át̂ćĥ śp̂éĉíf̂íêd́ ŵíd̂t́ĥ ({PH4}ṕx̂)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Âṕp̂ Íd̂"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "T̂h́îś îś ûśêd́ b̂ý t̂h́ê b́r̂óŵśêŕ t̂ó k̂ńôẃ ŵh́êt́ĥér̂ t́ĥé m̂án̂íf̂éŝt́ ŝh́ôúl̂d́ b̂é ûṕd̂át̂ín̂ǵ âń êx́îśt̂ín̂ǵ âṕp̂ĺîćât́îón̂, ór̂ ẃĥét̂h́êŕ ît́ r̂éf̂ér̂ś t̂ó â ńêẃ ŵéb̂ áp̂ṕ t̂h́ât́ ĉán̂ b́ê ín̂śt̂ál̂ĺêd́."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "N̂ót̂é: 'îd́' îś n̂ót̂ śp̂éĉíf̂íêd́ îń t̂h́ê ḿâńîf́êśt̂, 'śt̂ár̂t́_ûŕl̂' íŝ úŝéd̂ ín̂śt̂éâd́. T̂ó ŝṕêćîf́ŷ án̂ Áp̂ṕ Îd́ t̂h́ât́ m̂át̂ćĥéŝ t́ĥé ĉúr̂ŕêńt̂ íd̂én̂t́ît́ŷ, śêt́ t̂h́ê 'íd̂' f́îél̂d́ t̂ó ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Âṕp̂ Ḿâńîf́êśt̂"
   },

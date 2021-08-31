@@ -13,6 +13,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 const UIStrings = {
   /**
@@ -51,6 +52,21 @@ const UIStrings = {
   *@description Text in App Manifest View of the Application panel
   */
   shortName: 'Short name',
+  /**
+  *@description Label in the App Manifest View for the App Id
+  */
+  appId: 'App Id',
+  /**
+  *@description Popup-text explaining what the App Id is used for.
+  */
+  appIdExplainer:
+      'This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed.',
+  /**
+  *@description Explanation why it is advisable to specify an 'id' field in the manifest.
+  *@example {https://example.com/} PH1
+  */
+  appIdNote:
+      'Note: \'id\' is not specified in the manifest, \'start_url\' is used instead. To specify an App Id that matches the current identity, set the \'id\' field to \'\'{PH1}\'\'.',
   /**
   *@description Text for the description of something
   */
@@ -475,19 +491,23 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     if (!this.resourceTreeModel) {
       return;
     }
-    const {url, data, errors} = await this.resourceTreeModel.fetchAppManifest();
-    const installabilityErrors = await this.resourceTreeModel.getInstallabilityErrors();
-    const manifestIcons = await this.resourceTreeModel.getManifestIcons();
+    const [{url, data, errors}, installabilityErrors, manifestIcons, appId] = await Promise.all([
+      this.resourceTreeModel.fetchAppManifest(),
+      this.resourceTreeModel.getInstallabilityErrors(),
+      this.resourceTreeModel.getManifestIcons(),
+      this.resourceTreeModel.getAppId(),
+    ]);
 
     this.throttler.schedule(
-        () => this.renderManifest(url, data, errors, installabilityErrors, manifestIcons), immediately);
+        () => this.renderManifest(url, data, errors, installabilityErrors, manifestIcons, appId), immediately);
   }
 
   private async renderManifest(
       url: string, data: string|null, errors: Protocol.Page.AppManifestError[],
       installabilityErrors: Protocol.Page.InstallabilityError[], manifestIcons: {
         primaryIcon: string|null,
-      }): Promise<void> {
+      },
+      appId?: string): Promise<void> {
     if (!data && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
@@ -526,8 +546,33 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
     }
 
-    this.startURLField.removeChildren();
     const startURL = stringProperty('start_url');
+    if (appId && startURL) {
+      const appIdField = this.identitySection.appendField(i18nString(UIStrings.appId));
+      UI.ARIAUtils.setAccessibleName(appIdField, 'App Id');
+      appIdField.textContent = appId;
+
+      if (!stringProperty('id')) {
+        const exclamationIcon = new IconButton.Icon.Icon();
+        exclamationIcon.data = {
+          iconName: 'exclamation_mark_circle_icon',
+          color: 'var(--color-text-secondary)',
+          width: '16px',
+          height: '16px',
+        };
+        exclamationIcon.classList.add('inline-icon');
+        exclamationIcon.title = i18nString(UIStrings.appIdNote, {PH1: startURL});
+        appIdField.appendChild(exclamationIcon);
+      }
+
+      const helpIcon = new IconButton.Icon.Icon();
+      helpIcon.data = {iconName: 'help_outline', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+      helpIcon.classList.add('inline-icon');
+      helpIcon.title = i18nString(UIStrings.appIdExplainer);
+      appIdField.appendChild(helpIcon);
+    }
+
+    this.startURLField.removeChildren();
     if (startURL) {
       const completeURL = (Common.ParsedURL.ParsedURL.completeURL(url, startURL) as string);
       const link = Components.Linkifier.Linkifier.linkifyURL(

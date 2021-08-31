@@ -439,6 +439,11 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return {primaryIcon: response.primaryIcon || null};
   }
 
+  async getAppId(): Promise<string|undefined> {
+    const response = await this.agent.invoke_getAppId();
+    return response.appId;
+  }
+
   private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
     function framePath(frame: ResourceTreeFrame|null): ResourceTreeFrame[] {
       let currentFrame: (ResourceTreeFrame|null) = frame;

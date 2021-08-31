@@ -258,8 +258,8 @@ export class Toolbar {
       }
     }
 
-    function enabledChanged(event: Common.EventTarget.EventTargetEvent): void {
-      button.setEnabled((event.data as boolean));
+    function enabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+      button.setEnabled(event.data);
     }
   }
 

@@ -472,7 +472,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
     this.element.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
-    action.addEventListener(UI.ActionRegistration.Events.Enabled, event => this.setEnabled((event.data as boolean)));
+    action.addEventListener(UI.ActionRegistration.Events.Enabled, event => this.setEnabled(event.data));
     this.setTitle(action.title());
   }
 

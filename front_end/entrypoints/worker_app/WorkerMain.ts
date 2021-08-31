@@ -34,6 +34,9 @@ export class WorkerMainImpl extends Common.ObjectWrapper.ObjectWrapper implement
 
   async run(): Promise<void> {
     SDK.Connections.initMainConnection(async () => {
+      if (await SDK.TargetManager.TargetManager.instance().maybeAttachInitialTarget()) {
+        return;
+      }
       SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.ServiceWorker, null);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);

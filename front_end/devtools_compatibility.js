@@ -27,6 +27,13 @@
        * @type {?function(!ExtensionDescriptor)}
        */
       this._addExtensionCallback = null;
+
+      /**
+       * @type {!Promise<string>}
+       */
+      this._initialTargetIdPromise = new Promise(resolve => {
+        this._setInitialTargetId = resolve;
+      });
     }
 
     /**
@@ -299,6 +306,13 @@
       } else {
         this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);
       }
+    }
+
+    /**
+     * @param {string} targetId
+     */
+    setInitialTargetId(targetId) {
+      this._setInitialTargetId(targetId);
     }
 
     /**
@@ -941,6 +955,13 @@
      */
     recordPanelShown(panelCode) {
       // Do not record actions, as that may crash the DevTools renderer.
+    }
+
+    /**
+     * @return {!Promise<string>}
+     */
+    initialTargetId() {
+      return DevToolsAPI._initialTargetIdPromise;
     }
   };
 

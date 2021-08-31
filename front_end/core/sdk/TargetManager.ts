@@ -6,9 +6,11 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type {Type as TargetType} from './Target.js';
+import {Type as TargetType} from './Target.js';
 import {Target} from './Target.js';
 import type {SDKModel} from './SDKModel.js';
+import * as Root from '../root/root.js';
+import * as Host from '../host/host.js';
 
 let targetManagerInstance: TargetManager|undefined;
 
@@ -24,6 +26,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly modelObservers: Platform.MapUtilities.Multimap<new(arg1: Target) => SDKModel, SDKModelObserver<any>>;
   private isSuspended: boolean;
+  private browserTargetInternal: Target|null;
 
   private constructor() {
     super();
@@ -32,6 +35,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.modelListeners = new Platform.MapUtilities.Multimap();
     this.modelObservers = new Platform.MapUtilities.Multimap();
     this.isSuspended = false;
+    this.browserTargetInternal = null;
   }
 
   static instance({forceNew}: {
@@ -231,6 +235,32 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   mainTarget(): Target|null {
     return this.targetsInternal.size ? this.targetsInternal.values().next().value : null;
+  }
+
+  browserTarget(): Target|null {
+    return this.browserTargetInternal;
+  }
+
+  async maybeAttachInitialTarget(): Promise<boolean> {
+    if (!Boolean(Root.Runtime.Runtime.queryParam('browserConnection'))) {
+      return false;
+    }
+    if (!this.browserTargetInternal) {
+      this.browserTargetInternal = new Target(
+          this, /* id*/ 'main', /* name*/ 'browser', TargetType.Browser, /* parentTarget*/ null,
+          /* sessionId */ '', /* suspended*/ false, /* connection*/ null, /* targetInfo*/ undefined);
+      this.browserTargetInternal.createModels(new Set(this.modelObservers.keysArray()));
+    }
+    const targetId =
+        await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId() as Protocol.Target.TargetID;
+    // Do not await for Target.autoAttachRelated to return, as it goes throguh the renderer and we don't want to block early
+    // at front-end initialization if a renderer is stuck. The rest of target discovery and auto-attach process should happen
+    // asynchronously upon Target.attachedToTarget.
+    this.browserTargetInternal.targetAgent().invoke_autoAttachRelated({
+      targetId,
+      waitForDebuggerOnStart: true,
+    });
+    return true;
   }
 }
 

@@ -185,7 +185,10 @@ export interface InspectorFrontendHostAPI {
   isHostedMode(): boolean;
 
   setAddExtensionCallback(callback: (arg0: ExtensionDescriptor) => void): void;
+
+  initialTargetId(): Promise<string|null>;
 }
+
 export interface ContextMenuDescriptor {
   type: string;
   id?: number;

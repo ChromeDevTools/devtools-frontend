@@ -29,9 +29,16 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     this.targetManager = parentTarget.targetManager();
     this.parentTarget = parentTarget;
     this.targetAgent = parentTarget.targetAgent();
-
     parentTarget.registerTargetDispatcher(this);
-    this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
+    const browserTarget = this.targetManager.browserTarget();
+    if (browserTarget) {
+      if (browserTarget !== parentTarget) {
+        browserTarget.targetAgent().invoke_autoAttachRelated(
+            {targetId: parentTarget.id() as Protocol.Target.TargetID, waitForDebuggerOnStart: true});
+      }
+    } else {
+      this.targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
+    }
 
     if (!parentTarget.parentTarget() && !Host.InspectorFrontendHost.isUnderTest()) {
       this.targetAgent.invoke_setDiscoverTargets({discover: true});
@@ -108,7 +115,6 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     if (this.parentTargetId === targetInfo.targetId) {
       return;
     }
-
     let targetName = '';
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;

@@ -163,7 +163,8 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  protected createFrameCell(frameId: Protocol.Page.FrameId, issue: IssuesManager.Issue.Issue): HTMLElement {
+  protected createFrameCell(frameId: Protocol.Page.FrameId, issueCategory: IssuesManager.Issue.IssueCategory):
+      HTMLElement {
     const frame = this.resolveFrameId(frameId);
     const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
 
@@ -174,7 +175,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       icon.data = {iconName: 'elements_panel_icon', color: 'var(--color-link)', width: '16px', height: '16px'};
       icon.classList.add('link', 'elements-panel');
       icon.onclick = async(): Promise<void> => {
-        Host.userMetrics.issuesPanelResourceOpened(issue.getCategory(), AffectedItem.Element);
+        Host.userMetrics.issuesPanelResourceOpened(issueCategory, AffectedItem.Element);
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
         if (frame) {
           const ownerNode = await frame.getOwnerDOMNodeOrDocument();

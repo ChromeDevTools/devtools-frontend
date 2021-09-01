@@ -167,7 +167,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): void {
     const details = issue.issueDetails;
     if (details.frame) {
-      parent.appendChild(this.createFrameCell(details.frame.frameId, issue));
+      parent.appendChild(this.createFrameCell(details.frame.frameId, issue.getCategory()));
     } else {
       this.appendIssueDetailCell(parent, '');
     }

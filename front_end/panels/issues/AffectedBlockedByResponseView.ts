@@ -74,14 +74,14 @@ export class AffectedBlockedByResponseView extends AffectedResourcesView {
     element.appendChild(requestCell);
 
     if (details.parentFrame) {
-      const frameUrl = this.createFrameCell(details.parentFrame.frameId, this.issue);
+      const frameUrl = this.createFrameCell(details.parentFrame.frameId, this.issue.getCategory());
       element.appendChild(frameUrl);
     } else {
       element.appendChild(document.createElement('td'));
     }
 
     if (details.blockedFrame) {
-      const frameUrl = this.createFrameCell(details.blockedFrame.frameId, this.issue);
+      const frameUrl = this.createFrameCell(details.blockedFrame.frameId, this.issue.getCategory());
       element.appendChild(frameUrl);
     } else {
       element.appendChild(document.createElement('td'));

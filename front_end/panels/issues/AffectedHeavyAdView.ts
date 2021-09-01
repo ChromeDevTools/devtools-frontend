@@ -121,7 +121,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     element.appendChild(status);
 
     const frameId = heavyAd.frame.frameId;
-    const frameUrl = this.createFrameCell(frameId, this.issue);
+    const frameUrl = this.createFrameCell(frameId, this.issue.getCategory());
     element.appendChild(frameUrl);
 
     this.affectedResources.appendChild(element);

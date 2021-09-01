@@ -128,7 +128,8 @@ export const typeText = async (text: string) => {
   await frontend.keyboard.type(text);
 };
 
-export const pressKey = async (key: string, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) => {
+export const pressKey =
+    async (key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) => {
   const {frontend} = getBrowserAndPages();
   if (modifiers) {
     if (modifiers.control) {
@@ -146,7 +147,7 @@ export const pressKey = async (key: string, modifiers?: {control?: boolean, alt?
       await frontend.keyboard.down('Shift');
     }
   }
-  await frontend.keyboard.press(key as puppeteer.KeyInput);
+  await frontend.keyboard.press(key);
   if (modifiers) {
     if (modifiers.shift) {
       await frontend.keyboard.up('Shift');

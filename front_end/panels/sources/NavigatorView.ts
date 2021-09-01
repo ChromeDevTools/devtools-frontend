@@ -248,7 +248,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (typeWeight1 < typeWeight2) {
       return -1;
     }
-    return Platform.StringUtilities.compare(treeElement1.titleAsText(), treeElement2.titleAsText());
+    return Platform.StringUtilities.naturalOrderComparator(treeElement1.titleAsText(), treeElement2.titleAsText());
   }
 
   setPlaceholder(placeholder: UI.Widget.Widget): void {
@@ -1425,6 +1425,14 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
         this.updateTitle();
         this.rename(callback);
         return;
+      }
+      if (this.treeElement) {
+        const {parent} = this.treeElement;
+        if (parent) {
+          parent.removeChild(this.treeElement);
+          parent.appendChild(this.treeElement);
+          this.treeElement.select();
+        }
       }
       afterEditing.call(this, true);
     }

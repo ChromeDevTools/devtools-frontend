@@ -1,8 +1,5 @@
 {
   "dependencies": [
     "ui/legacy"
-  ],
-    "resources": [
-    "performanceMonitor.css"
   ]
 }

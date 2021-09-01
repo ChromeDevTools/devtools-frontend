@@ -12,23 +12,6 @@
     "ui/legacy"
   ],
     "resources": [
-    "binaryResourceView.css",
-    "blockedURLsPane.css",
-    "eventSourceMessagesView.css",
-    "networkConfigView.css",
-    "networkLogView.css",
-    "networkManageCustomHeadersView.css",
-    "networkPanel.css",
-    "networkTimingTable.css",
-    "networkWaterfallColumn.css",
-    "requestCookiesView.css",
-    "requestHeadersTree.css",
-    "requestHeadersView.css",
-    "requestHTMLView.css",
-    "requestInitiatorView.css",
-    "requestInitiatorViewTree.css",
-    "signedExchangeInfoTree.css",
-    "signedExchangeInfoView.css",
-    "webSocketFrameView.css"
+      "networkTimingTable.css"
   ]
 }

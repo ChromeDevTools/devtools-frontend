@@ -9,9 +9,6 @@
   "resources": [
     "../../third_party/lighthouse/report-assets/standalone-template.html",
     "../../third_party/lighthouse/report-assets/report.css",
-    "../../third_party/lighthouse/report-assets/report.js",
-    "lighthouseDialog.css",
-    "lighthousePanel.css",
-    "lighthouseStartView.css"
+    "../../third_party/lighthouse/report-assets/report.js"
   ]
 }

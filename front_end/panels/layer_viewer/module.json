@@ -3,10 +3,5 @@
     "ui/legacy/components/utils",
     "ui/legacy",
     "ui/legacy/components/perf_ui"
-  ],
-    "resources": [
-    "layers3DView.css",
-    "paintProfiler.css",
-    "layerDetailsView.css"
   ]
 }

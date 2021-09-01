@@ -5,11 +5,5 @@
     "ui/legacy/components/data_grid",
     "ui/legacy/components/source_frame",
     "ui/legacy/components/perf_ui"
-  ],
-    "resources": [
-    "eventDisplayTable.css",
-    "playerListView.css",
-    "playerPropertiesView.css",
-    "playerMessagesView.css"
   ]
 }

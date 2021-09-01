@@ -610,7 +610,7 @@ export class Event {
   }
 }
 
-// eslint-disable-next-line rulesdir/enforce_custom_event_names
+// eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
 export class ObjectSnapshot extends Event {
   private backingStorage: (() => Promise<string|null>)|null;
   private objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
@@ -679,7 +679,7 @@ export class ObjectSnapshot extends Event {
   }
 }
 
-// eslint-disable-next-line rulesdir/enforce_custom_event_names
+// eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
 export class AsyncEvent extends Event {
   steps: Event[];
   causedFrame: boolean;

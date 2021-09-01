@@ -49,10 +49,11 @@ function valueTypeGroupToLocalizedString(group: ValueTypeGroup): string {
 }
 
 export class TypeToggleEvent extends Event {
+  static readonly eventName = 'typetoggle';
   data: {type: ValueType, checked: boolean};
 
   constructor(type: ValueType, checked: boolean) {
-    super('typetoggle');
+    super(TypeToggleEvent.eventName);
     this.data = {type, checked};
   }
 }

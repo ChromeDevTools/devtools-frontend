@@ -18,8 +18,9 @@ export interface LinkifierData {
 }
 
 export class LinkifierClick extends Event {
+  static readonly eventName = 'linkifieractivated';
   constructor(public data: LinkifierData) {
-    super('linkifieractivated', {
+    super(LinkifierClick.eventName, {
       bubbles: true,
       composed: true,
     });

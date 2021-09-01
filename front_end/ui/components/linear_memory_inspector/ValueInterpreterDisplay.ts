@@ -50,10 +50,11 @@ export interface ValueDisplayData {
 }
 
 export class ValueTypeModeChangedEvent extends Event {
+  static readonly eventName = 'valuetypemodechanged';
   data: {type: ValueType, mode: ValueTypeMode};
 
   constructor(type: ValueType, mode: ValueTypeMode) {
-    super('valuetypemodechanged', {
+    super(ValueTypeModeChangedEvent.eventName, {
       composed: true,
     });
     this.data = {type, mode};
@@ -61,10 +62,11 @@ export class ValueTypeModeChangedEvent extends Event {
 }
 
 export class JumpToPointerAddressEvent extends Event {
+  static readonly eventName = 'jumptopointeraddress';
   data: number;
 
   constructor(address: number) {
-    super('jumptopointeraddress', {
+    super(JumpToPointerAddressEvent.eventName, {
       composed: true,
     });
     this.data = address;

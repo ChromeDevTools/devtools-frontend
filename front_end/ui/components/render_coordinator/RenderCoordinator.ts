@@ -36,14 +36,16 @@ const enum ACTION {
 }
 
 export class RenderCoordinatorQueueEmptyEvent extends Event {
+  static readonly eventName = 'renderqueueempty';
   constructor() {
-    super('renderqueueempty');
+    super(RenderCoordinatorQueueEmptyEvent.eventName);
   }
 }
 
 export class RenderCoordinatorNewFrameEvent extends Event {
+  static readonly eventName = 'newframe';
   constructor() {
-    super('newframe');
+    super(RenderCoordinatorNewFrameEvent.eventName);
   }
 }
 

@@ -25,6 +25,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
 export class AdornerSettingUpdatedEvent extends Event {
+  static readonly eventName = 'adornersettingupdated';
   data: {
     adornerName: string,
     isEnabledNow: boolean,
@@ -32,7 +33,7 @@ export class AdornerSettingUpdatedEvent extends Event {
   };
 
   constructor(adornerName: string, isEnabledNow: boolean, newSettings: AdornerSettingsMap) {
-    super('adornersettingupdated', {});
+    super(AdornerSettingUpdatedEvent.eventName, {});
     this.data = {adornerName, isEnabledNow, newSettings};
   }
 }

@@ -57,10 +57,11 @@ export {LayoutElement};
 const {render, html} = LitHtml;
 
 export class SettingChangedEvent extends Event {
+  static readonly eventName = 'settingchanged';
   data: {setting: string, value: string|boolean};
 
   constructor(setting: string, value: string|boolean) {
-    super('settingchanged', {});
+    super(SettingChangedEvent.eventName, {});
     this.data = {setting, value};
   }
 }

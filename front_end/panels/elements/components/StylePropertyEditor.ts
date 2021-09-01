@@ -48,19 +48,21 @@ interface EditableProperty {
 }
 
 export class PropertySelectedEvent extends Event {
+  static readonly eventName = 'propertyselected';
   data: {name: string, value: string};
 
   constructor(name: string, value: string) {
-    super('propertyselected', {});
+    super(PropertySelectedEvent.eventName, {});
     this.data = {name, value};
   }
 }
 
 export class PropertyDeselectedEvent extends Event {
+  static readonly eventName = 'propertydeselected';
   data: {name: string, value: string};
 
   constructor(name: string, value: string) {
-    super('propertydeselected', {});
+    super(PropertyDeselectedEvent.eventName, {});
     this.data = {name, value};
   }
 }

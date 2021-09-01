@@ -29,34 +29,37 @@ export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult 
 }
 
 export class ItemSelectedEvent<TreeNodeDataType> extends Event {
+  static readonly eventName = 'itemselected';
   data: {
     node: TreeNode<TreeNodeDataType>,
   };
 
   constructor(node: TreeNode<TreeNodeDataType>) {
-    super('itemselected', {bubbles: true, composed: true});
+    super(ItemSelectedEvent.eventName, {bubbles: true, composed: true});
     this.data = {node};
   }
 }
 
 export class ItemMouseOverEvent<TreeNodeDataType> extends Event {
+  static readonly eventName = 'itemmouseover';
   data: {
     node: TreeNode<TreeNodeDataType>,
   };
 
   constructor(node: TreeNode<TreeNodeDataType>) {
-    super('itemmouseover', {bubbles: true, composed: true});
+    super(ItemMouseOverEvent.eventName, {bubbles: true, composed: true});
     this.data = {node};
   }
 }
 
 export class ItemMouseOutEvent<TreeNodeDataType> extends Event {
+  static readonly eventName = 'itemmouseout';
   data: {
     node: TreeNode<TreeNodeDataType>,
   };
 
   constructor(node: TreeNode<TreeNodeDataType>) {
-    super('itemmouseout', {bubbles: true, composed: true});
+    super(ItemMouseOutEvent.eventName, {bubbles: true, composed: true});
     this.data = {node};
   }
 }

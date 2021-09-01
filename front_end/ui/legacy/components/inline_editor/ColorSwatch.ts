@@ -19,8 +19,9 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/Col
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FormatChangedEvent extends Event {
-  data: {format: string, text: string|null};
   static readonly eventName = 'formatchanged';
+
+  data: {format: string, text: string|null};
 
   constructor(format: string, text: string|null) {
     super(FormatChangedEvent.eventName, {});

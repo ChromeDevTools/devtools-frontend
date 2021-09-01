@@ -21,19 +21,21 @@ const styleMap = LitHtml.Directives.styleMap;
 const ContextAwareProperties = new Set(['color', 'background', 'background-color']);
 
 export class PopoverToggledEvent extends Event {
+  static readonly eventName = 'popovertoggled';
   data: {open: boolean};
 
   constructor(open: boolean) {
-    super('popovertoggled', {});
+    super(PopoverToggledEvent.eventName, {});
     this.data = {open};
   }
 }
 
 export class UnitChangedEvent extends Event {
+  static readonly eventName = 'unitchanged';
   data: {value: string};
 
   constructor(value: string) {
-    super('unitchanged', {});
+    super(UnitChangedEvent.eventName, {});
     this.data = {value};
   }
 }

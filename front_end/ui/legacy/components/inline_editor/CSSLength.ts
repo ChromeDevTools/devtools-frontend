@@ -13,8 +13,9 @@ import {ValueChangedEvent} from './InlineEditorUtils.js';
 const {render, html} = LitHtml;
 
 export class DraggingFinishedEvent extends Event {
+  static readonly eventName = 'draggingfinished';
   constructor() {
-    super('draggingfinished', {});
+    super(DraggingFinishedEvent.eventName, {});
   }
 }
 

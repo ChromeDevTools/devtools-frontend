@@ -32,6 +32,7 @@ module.exports = {
         'rulesdir/ban_style_tags_in_lit_html': 2,
         'rulesdir/check_component_naming': 2,
         'rulesdir/check_was_shown_methods': 2,
+        'rulesdir/static_custom_event_names': 2,
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': ['property', 'parameterProperty'],

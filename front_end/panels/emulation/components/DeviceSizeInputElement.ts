@@ -8,8 +8,9 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 class SizeChangedEvent extends Event {
+  static readonly eventName = 'sizechanged';
   constructor(public size: number) {
-    super('sizechanged');
+    super(SizeChangedEvent.eventName);
   }
 }
 

@@ -16,8 +16,9 @@ const {render, html} = LitHtml;
 const {PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;
 
 export class QueriedSizeRequestedEvent extends Event {
+  static readonly eventName = 'queriedsizerequested';
   constructor() {
-    super('queriedsizerequested', {});
+    super(QueriedSizeRequestedEvent.eventName, {});
   }
 }
 

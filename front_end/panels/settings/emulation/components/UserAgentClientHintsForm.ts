@@ -137,16 +137,18 @@ const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/components/U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ClientHintsChangeEvent extends Event {
+  static readonly eventName = 'clienthintschange';
   constructor() {
-    super('clienthintschange');
+    super(ClientHintsChangeEvent.eventName);
   }
 }
 
 export class ClientHintsSubmitEvent extends Event {
+  static readonly eventName = 'clienthintssubmit';
   detail: {value: Protocol.Emulation.UserAgentMetadata};
 
   constructor(value: Protocol.Emulation.UserAgentMetadata) {
-    super('clienthintssubmit');
+    super(ClientHintsSubmitEvent.eventName);
     this.detail = {value};
   }
 }

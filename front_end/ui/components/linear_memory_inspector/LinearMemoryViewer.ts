@@ -17,19 +17,21 @@ export interface LinearMemoryViewerData {
 }
 
 export class ByteSelectedEvent extends Event {
+  static readonly eventName = 'byteselected';
   data: number;
 
   constructor(address: number) {
-    super('byteselected');
+    super(ByteSelectedEvent.eventName);
     this.data = address;
   }
 }
 
 export class ResizeEvent extends Event {
+  static readonly eventName = 'resize';
   data: number;
 
   constructor(numBytesPerPage: number) {
-    super('resize');
+    super(ResizeEvent.eventName);
     this.data = numBytesPerPage;
   }
 }

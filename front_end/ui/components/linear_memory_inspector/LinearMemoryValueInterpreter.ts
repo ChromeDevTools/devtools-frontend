@@ -36,19 +36,21 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
 export class EndiannessChangedEvent extends Event {
+  static readonly eventName = 'endiannesschanged';
   data: Endianness;
 
   constructor(endianness: Endianness) {
-    super('endiannesschanged');
+    super(EndiannessChangedEvent.eventName);
     this.data = endianness;
   }
 }
 
 export class ValueTypeToggledEvent extends Event {
+  static readonly eventName = 'valuetypetoggled';
   data: {type: ValueType, checked: boolean};
 
   constructor(type: ValueType, checked: boolean) {
-    super('valuetypetoggled');
+    super(ValueTypeToggledEvent.eventName);
     this.data = {type, checked};
   }
 }

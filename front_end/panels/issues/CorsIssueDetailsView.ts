@@ -124,11 +124,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CorsIssueDetailsView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-
-  constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView);
-    this.issue = issue;
+  constructor(parent: IssueView, issue: AggregatedIssue) {
+    super(parent, issue);
     this.affectedResourcesCountElement.classList.add('cors-issue-affected-resource-label');
   }
 

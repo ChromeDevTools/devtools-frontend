@@ -9,9 +9,6 @@ import * as Protocol from '../../generated/protocol.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
-
 const UIStrings = {
   /**
   *@description Label for number of affected resources indication in issue view
@@ -58,12 +55,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedHeavyAdView.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedHeavyAdView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private appendAffectedHeavyAds(heavyAds: Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));

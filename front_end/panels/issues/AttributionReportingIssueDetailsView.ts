@@ -9,9 +9,6 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
-
 const UIStrings = {
   /**
    * @description Label for number of rows in the issue details table.
@@ -50,10 +47,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssu
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AttributionReportingIssueDetailsView extends AffectedResourcesView {
-  constructor(parentView: IssueView, private issue: AggregatedIssue) {
-    super(parentView);
-  }
-
   protected override getResourceNameWithCount(count: number): string {
     return i18nString(UIStrings.nViolations, {n: count});
   }

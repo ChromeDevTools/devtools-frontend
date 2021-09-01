@@ -8,8 +8,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedElementsView} from './AffectedElementsView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -33,13 +31,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDocumentsInQuirk
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
-  private aggregateIssue: AggregatedIssue;
   private runningUpdatePromise: Promise<void> = Promise.resolve();
-
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent, issue);
-    this.aggregateIssue = issue;
-  }
 
   update(): void {
     // Ensure that doUpdate is invoked atomically by serializing the update calls
@@ -53,7 +45,7 @@ export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
 
   private async doUpdate(): Promise<void> {
     this.clear();
-    await this.appendQuirksModeDocuments(this.aggregateIssue.getQuirksModeIssues());
+    await this.appendQuirksModeDocuments(this.issue.getQuirksModeIssues());
   }
 
   private async appendQuirksModeDocument(issue: IssuesManager.QuirksModeIssue.QuirksModeIssue): Promise<void> {

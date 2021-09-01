@@ -9,8 +9,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -57,13 +55,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-
-  constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView);
-    this.issue = issue;
-  }
-
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nViolations, {n: count});
   }

@@ -7,8 +7,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -35,13 +33,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-
-  constructor(parentView: IssueView, issue: AggregatedIssue) {
-    super(parentView);
-    this.issue = issue;
-  }
-
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nResources, {n: count});
   }

@@ -7,7 +7,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
-import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -18,13 +17,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedElementsView extends AffectedResourcesView {
-  private issue: IssuesManager.Issue.Issue;
-
-  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private async appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): Promise<void> {
     let count = 0;
     for (const element of affectedElements) {

@@ -16,6 +16,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 
 import type {IssueView} from './IssueView.js';
+import type {AggregatedIssue} from './IssueAggregator.js';
 
 const UIStrings = {
   /**
@@ -62,6 +63,7 @@ export interface CreateRequestCellOptions {
  */
 export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   private readonly parentView: IssueView;
+  protected issue: AggregatedIssue;
   protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
   private affectedResourcesCount: number;
@@ -72,10 +74,11 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   /**
    * @param resourceName - Singular and plural of the affected resource name.
    */
-  constructor(parent: IssueView) {
+  constructor(parent: IssueView, issue: AggregatedIssue) {
     super();
-    this.toggleOnClick = true;
     this.parentView = parent;
+    this.issue = issue;
+    this.toggleOnClick = true;
     this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
 
     this.affectedResources = this.createAffectedResources();

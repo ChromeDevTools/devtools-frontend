@@ -79,12 +79,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class AffectedRequestsView extends AffectedResourcesView {
-  private readonly issue: IssuesManager.Issue.Issue;
-  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
@@ -143,12 +137,6 @@ const issueTypeToNetworkHeaderMap =
     ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
-  private readonly issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private appendAffectedMixedContentDetails(mixedContentIssues:
                                                 Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>): void {
     const header = document.createElement('tr');

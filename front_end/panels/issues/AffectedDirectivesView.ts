@@ -14,9 +14,6 @@ import * as ElementsComponents from '../elements/components/components.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
-
 const UIStrings = {
   /**
   *@description Singular or plural label for number of affected CSP (content security policy,
@@ -61,12 +58,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDirectivesView.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedDirectivesView extends AffectedResourcesView {
-  private readonly issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private appendStatus(element: Element, isReportOnly: boolean): void {
     const status = document.createElement('td');
     if (isReportOnly) {

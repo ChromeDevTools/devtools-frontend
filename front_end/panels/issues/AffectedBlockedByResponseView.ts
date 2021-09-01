@@ -10,8 +10,6 @@ import * as Host from '../../core/host/host.js';
 
 import {AffectedResourcesView, AffectedItem} from './AffectedResourcesView.js';
 
-import type {IssueView} from './IssueView.js';
-
 const UIStrings = {
   /**
   *@description Noun for singular or plural network requests. Label for the affected resources section in the issue view.
@@ -34,13 +32,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedBlockedByRespons
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedBlockedByResponseView extends AffectedResourcesView {
-  private issue: IssuesManager.Issue.Issue;
-
-  constructor(parent: IssueView, issue: IssuesManager.Issue.Issue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   private appendDetails(details: Iterable<Protocol.Audits.BlockedByResponseIssueDetails>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.requestC));

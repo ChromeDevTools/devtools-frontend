@@ -10,8 +10,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-import type {AggregatedIssue} from './IssueAggregator.js';
-import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -43,12 +41,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedCookiesView.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedCookiesView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   protected getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nCookies, {n: count});
   }
@@ -109,12 +101,6 @@ export class AffectedCookiesView extends AffectedResourcesView {
 }
 
 export class AffectedRawCookieLinesView extends AffectedResourcesView {
-  private issue: AggregatedIssue;
-  constructor(parent: IssueView, issue: AggregatedIssue) {
-    super(parent);
-    this.issue = issue;
-  }
-
   protected override getResourceNameWithCount(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nRawCookieLines, {n: count});
   }

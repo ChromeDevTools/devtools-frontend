@@ -112,6 +112,22 @@ export class ReportIssueActionDelegate implements UI.ActionRegistration.ActionDe
     return reportIssueActionDelegateInstance;
   }
 }
+
+let reportTranslationIssueActionDelegateInstance: ReportTranslationIssueActionDelegate;
+export class ReportTranslationIssueActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab('https://goo.gle/devtools-translate');
+    return true;
+  }
+  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReportTranslationIssueActionDelegate {
+    const {forceNew} = opts;
+    if (!reportTranslationIssueActionDelegateInstance || forceNew) {
+      reportTranslationIssueActionDelegateInstance = new ReportTranslationIssueActionDelegate();
+    }
+
+    return reportTranslationIssueActionDelegateInstance;
+  }
+}
 export interface ReleaseNoteHighlight {
   title: string;
   subtitle: string;

@@ -4574,6 +4574,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Report a DevTools issue"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Report a translation issue"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Show What's New"
   },

@@ -28,6 +28,10 @@ const UIStrings = {
   */
   reportADevtoolsIssue: 'Report a DevTools issue',
   /**
+  *@description Title of an action in the help tool to file a translation issue
+  */
+  reportTranslationIssue: 'Report a translation issue',
+  /**
   *@description A search term referring to a software defect (i.e. bug) that can be entered in the command menu
   */
   bug: 'bug',
@@ -88,6 +92,17 @@ UI.ActionRegistration.registerActionExtension({
   tags: [i18nLazyString(UIStrings.bug)],
 });
 
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.HELP,
+  actionId: 'help.report-translation-issue',
+  title: i18nLazyString(UIStrings.reportTranslationIssue),
+  async loadActionDelegate() {
+    const Help = await loadHelpModule();
+    return Help.Help.ReportTranslationIssueActionDelegate.instance();
+  },
+  tags: [i18nLazyString(UIStrings.bug)],
+});
+
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   title: i18nLazyString(UIStrings.showWhatsNewAfterEachUpdate),
@@ -116,6 +131,12 @@ UI.ContextMenu.registerItem({
   location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
   actionId: 'help.report-issue',
   order: 11,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.MAIN_MENU_HELP_DEFAULT,
+  actionId: 'help.report-translation-issue',
+  order: 12,
 });
 
 Common.Runnable.registerLateInitializationRunnable({

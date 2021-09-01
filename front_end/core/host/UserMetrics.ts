@@ -488,6 +488,7 @@ export const KeyboardShortcutAction: {
   'layers.down': 103,
   'layers.left': 104,
   'layers.right': 105,
+  'help.report-translation-issue': 106,
 };
 
 // TODO(crbug.com/1167717): Make this a const enum again

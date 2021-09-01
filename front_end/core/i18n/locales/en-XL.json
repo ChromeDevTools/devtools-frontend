@@ -4574,6 +4574,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "R̂ép̂ór̂t́ â D́êv́T̂óôĺŝ íŝśûé"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "R̂ép̂ór̂t́ â t́r̂án̂śl̂át̂íôń îśŝúê"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Ŝh́ôẃ Ŵh́ât́'ŝ Ńêẃ"
   },

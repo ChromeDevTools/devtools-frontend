@@ -8297,6 +8297,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Âd́d̂ B́r̂án̂d́"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Âd́d̂éd̂ b́r̂án̂d́ r̂óŵ"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Âŕĉh́ît́êćt̂úr̂é"
   },
@@ -8320,6 +8323,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "V̂ér̂śîón̂ {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "D̂él̂ét̂éd̂ b́r̂án̂d́ r̂óŵ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "D̂él̂ét̂é"
@@ -8371,6 +8377,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "D̂év̂íĉé"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "D̂év̂íĉé {PH1} ŝúĉćêśŝf́ûĺl̂ý âd́d̂éd̂/úp̂d́ât́êd́."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "D̂év̂íĉé N̂ám̂é"

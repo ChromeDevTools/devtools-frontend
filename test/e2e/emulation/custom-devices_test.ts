@@ -52,7 +52,7 @@ describe('Custom devices', async () => {
 
     await tabForward();  // Focus device type.
     await tabForward();  // Focus folder.
-    await pressKey('Space');
+    await pressKey('Enter');
 
     await tabForward();  // Focus help button
     await tabForward();  // Focus brand browser.

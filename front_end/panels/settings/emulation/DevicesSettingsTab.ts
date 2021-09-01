@@ -59,6 +59,11 @@ const UIStrings = {
   *@description Error message in the Devices settings pane that declares that the device name input must not be empty
   */
   deviceNameCannotBeEmpty: 'Device name cannot be empty.',
+  /**
+  *@description Success message for screen readers when device is added.
+  *@example {TestDevice} PH1
+  */
+  deviceAddedOrUpdated: 'Device {PH1} successfully added/updated.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -67,6 +72,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<EmulationModel.EmulatedDevices.EmulatedDevice> {
   containerElement: HTMLElement;
   private readonly addCustomButton: HTMLButtonElement;
+  private readonly ariaSuccessMessageElement: HTMLElement;
   private readonly list: UI.ListWidget.ListWidget<EmulationModel.EmulatedDevices.EmulatedDevice>;
   private muteUpdate: boolean;
   private emulatedDevicesList: EmulationModel.EmulatedDevices.EmulatedDevicesList;
@@ -87,6 +93,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
         UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomDevice), this.addCustomDevice.bind(this));
     this.addCustomButton.id = 'custom-device-add-button';
     buttonsRow.appendChild(this.addCustomButton);
+    this.ariaSuccessMessageElement = this.containerElement.createChild('div', 'device-success-message');
+    UI.ARIAUtils.markAsPoliteLiveRegion(this.ariaSuccessMessageElement, false);
 
     this.list = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
     this.list.element.classList.add('devices-list');
@@ -238,6 +246,8 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     }
     this.addCustomButton.scrollIntoViewIfNeeded();
     this.addCustomButton.focus();
+    this.ariaSuccessMessageElement.setAttribute(
+        'aria-label', i18nString(UIStrings.deviceAddedOrUpdated, {PH1: device.title}));
   }
 
   beginEdit(device: EmulationModel.EmulatedDevices.EmulatedDevice):

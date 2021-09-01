@@ -12,7 +12,7 @@ const MEDIA_QUERY_INSPECTOR_SELECTOR = '.media-inspector-view';
 const DEVICE_LIST_DROPDOWN_SELECTOR = '.toolbar-button';
 const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
 const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
-const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device"]';
+const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device, unchecked"]';
 const DUAL_SCREEN_BUTTON_SELECTOR = '[aria-label="Toggle dual-screen mode"]';
 const SCREEN_DIM_INPUT_SELECTOR = '[title="Width"]';
 
@@ -76,7 +76,7 @@ export const selectEdit = async () => {
 
 export const selectDevice = async (name: string) => {
   await clickDevicesDropDown();
-  const edit = await waitFor(`[aria-label*="${name}"]`);
+  const edit = await waitFor(`[aria-label*="${name}, unchecked"]`);
   await click(edit);
 };
 

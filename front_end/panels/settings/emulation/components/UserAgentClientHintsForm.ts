@@ -122,6 +122,16 @@ const UIStrings = {
     */
   userAgentClientHintsInfo:
       'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting. Click the button to learn more.',
+  /**
+    * @description Success message when brand row is successfully added in client hints form.
+    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+    */
+  addedBrand: 'Added brand row',
+  /**
+    * @description Success message when brand row is successfully deleted in client hints form.
+    * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+    */
+  deletedBrand: 'Deleted brand row',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/components/UserAgentClientHintsForm.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -176,6 +186,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   private metaData: Protocol.Emulation.UserAgentMetadata = DEFAULT_METADATA;
   private showMobileCheckbox: boolean = false;
   private showSubmitButton: boolean = false;
+  private brandsModifiedAriaMessage: string = '';
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [userAgentClientHintsFormStyles];
@@ -210,7 +221,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   private handleTreeExpand = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter') {
-      event.preventDefault();
+      event.stopPropagation();
       this.handleTreeClick();
     }
   };
@@ -256,6 +267,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       brands,
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
+    this.brandsModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
     this.render();
   };
 
@@ -272,6 +284,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ],
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
+    this.brandsModifiedAriaMessage = i18nString(UIStrings.addedBrand);
     this.render();
     const brandInputElements = this.shadowRoot?.querySelectorAll('.brand-name-input');
     if (brandInputElements) {
@@ -518,7 +531,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           role="button"
           @click="${this.handleTreeClick}"
           tabindex="0"
-          @keypress="${this.handleTreeExpand}"
+          @keydown="${this.handleTreeExpand}"
           aria-expanded="${this.isFormOpened}"
           aria-controls="form-container"
           @disabled="${this.isFormDisabled}"
@@ -560,6 +573,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           ${deviceModelSection}
           ${submitButton}
         </form>
+        <div aria-live="polite" aria-label="${this.brandsModifiedAriaMessage}"></div>
       </section>
     `;
     // clang-format off

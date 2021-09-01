@@ -8297,6 +8297,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Add Brand"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Added brand row"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architecture"
   },
@@ -8320,6 +8323,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Version {PH1}"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Deleted brand row"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Delete"
@@ -8371,6 +8377,9 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Device"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Device {PH1} successfully added/updated."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Device Name"

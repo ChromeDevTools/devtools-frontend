@@ -8,7 +8,6 @@ import {appendStyle} from './append-style.js';
 export function injectCoreStyles(root: Element|ShadowRoot): void {
   // TODO: Migrate inspectorCommpon.css last https://crbug.com/1222666
   appendStyle(root, 'ui/legacy/inspectorCommon.css');
-  appendStyle(root, 'ui/legacy/inspectorScrollbars.css');
   appendStyle(root, 'ui/legacy/textButton.css');
   appendStyle(root, 'ui/legacy/themeColors.css');
 

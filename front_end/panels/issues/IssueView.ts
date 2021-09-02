@@ -252,6 +252,19 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.hasBeenExpandedBefore = false;
   }
 
+  /**
+   * Sets the issue to take the resources from. Assumes that the description
+   * this IssueView was initialized with fits the new issue as well, i.e.
+   * title and issue description will not be updated.
+   */
+  setIssue(issue: AggregatedIssue): void {
+    if (this.issue !== issue) {
+      this.needsUpdateOnExpand = true;
+    }
+    this.issue = issue;
+    this.affectedResourceViews.forEach(view => view.setIssue(issue));
+  }
+
   private static getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
     switch (issueKind) {
       case IssuesManager.Issue.IssueKind.BreakingChange:
@@ -301,8 +314,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     }
     header.classList.add('header');
     this.issueKindIcon = new IconButton.Icon.Icon();
-    const kind = this.issue.getKind();
-    this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
     this.issueKindIcon.classList.add('leading-issue-icon');
     this.aggregatedIssuesCount = document.createElement('span');
     const countAdorner = new Adorners.Adorner.Adorner();
@@ -311,9 +322,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       content: this.aggregatedIssuesCount,
     };
     countAdorner.classList.add('aggregated-issues-count');
-    this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;
     header.appendChild(this.issueKindIcon);
-    UI.Tooltip.Tooltip.install(this.issueKindIcon, IssuesManager.Issue.getIssueKindDescription(kind));
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');
@@ -322,12 +331,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     header.appendChild(title);
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
       header.appendChild(this.hiddenIssuesMenu);
-      const data: HiddenIssuesMenuData = {
-        issueCode: this.issue.code(),
-        forHiddenIssue: this.issue.isHidden(),
-      };
-      this.hiddenIssuesMenu.data = data;
     }
+    this.updateFromIssue();
     this.listItemElement.appendChild(header);
   }
   private showHiddenIssuesMenu(): void {
@@ -357,10 +362,17 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     if (this.issueKindIcon) {
       const kind = this.issue.getKind();
       this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
+      UI.Tooltip.Tooltip.install(this.issueKindIcon, IssuesManager.Issue.getIssueKindDescription(kind));
     }
     if (this.aggregatedIssuesCount) {
       this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;
     }
+    this.listItemElement.classList.toggle('hidden-issue', this.issue.isHidden());
+    const data: HiddenIssuesMenuData = {
+      issueCode: this.issue.code(),
+      forHiddenIssue: this.issue.isHidden(),
+    };
+    this.hiddenIssuesMenu.data = data;
   }
 
   updateAffectedResourceVisibility(): void {
@@ -422,12 +434,6 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       this.affectedResourceViews.forEach(view => view.update());
       this.updateAffectedResourceVisibility();
     }
-    const data: HiddenIssuesMenuData = {
-      issueCode: this.issue.code(),
-      forHiddenIssue: this.issue.isHidden(),
-    };
-    this.listItemElement.classList.toggle('hidden-issue', this.issue.isHidden());
-    this.hiddenIssuesMenu.data = data;
     this.needsUpdateOnExpand = !this.expanded;
     this.updateFromIssue();
   }

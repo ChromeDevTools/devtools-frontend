@@ -71,9 +71,6 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   private unresolvedFrameIds: Set<string>;
   protected requestResolver: Logs.RequestResolver.RequestResolver;
 
-  /**
-   * @param resourceName - Singular and plural of the affected resource name.
-   */
   constructor(parent: IssueView, issue: AggregatedIssue) {
     super();
     this.parentView = parent;
@@ -86,6 +83,14 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     this.requestResolver = new Logs.RequestResolver.RequestResolver();
     this.frameListeners = [];
     this.unresolvedFrameIds = new Set();
+  }
+
+  /**
+   * Sets the issue to take the resources from. Does not
+   * trigger an update, the caller needs to do that explicitly.
+   */
+  setIssue(issue: AggregatedIssue): void {
+    this.issue = issue;
   }
 
   createAffectedResourcesCounter(): HTMLElement {

@@ -280,6 +280,7 @@ export class IssuesPane extends UI.Widget.VBox {
       const parent = this.getIssueViewParent(issue);
       this.appendIssueViewToParent(issueView, parent);
     } else {
+      issueView.setIssue(issue);
       const newParent = this.getIssueViewParent(issue);
       if (issueView.parent !== newParent &&
           !(newParent instanceof UI.TreeOutline.TreeOutline && issueView.parent === newParent.rootElement())) {

@@ -12,19 +12,5 @@
     "panels/event_listeners",
     "ui/legacy/components/object_ui",
     "panels/coverage"
-  ],
-    "resources": [
-    "breakpointEditDialog.css",
-    "callStackSidebarPane.css",
-    "debuggerPausedMessage.css",
-    "javaScriptBreakpointsSidebarPane.css",
-    "navigatorTree.css",
-    "navigatorView.css",
-    "scopeChainSidebarPane.css",
-    "sourcesPanel.css",
-    "sourcesView.css",
-    "threadsSidebarPane.css",
-    "watchExpressionsSidebarPane.css",
-    "dialog.css"
   ]
 }

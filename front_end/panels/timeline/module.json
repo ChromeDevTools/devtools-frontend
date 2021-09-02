@@ -10,12 +10,6 @@
     "panels/mobile_throttling"
   ],
     "resources": [
-    "historyToolbarButton.css",
-    "invalidationsTree.css",
-    "timelineFlamechartPopover.css",
-    "timelineHistoryManager.css",
-    "timelinePanel.css",
-    "timelinePaintProfiler.css",
-    "timelineStatusDialog.css"
+    "historyToolbarButton.css"
   ]
 }

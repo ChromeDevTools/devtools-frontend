@@ -48,6 +48,11 @@
   position: relative;
 }
 
+.conditions-list-text:last-child {
+  flex-basis: 140px;
+  text-align: left;
+}
+
 .conditions-list-title {
   text-align: start;
   display: flex;

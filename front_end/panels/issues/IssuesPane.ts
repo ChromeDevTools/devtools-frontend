@@ -12,7 +12,7 @@ import {HiddenIssuesRow} from './HiddenIssuesRow.js';
 import issuesPaneStyles from './issuesPane.css.js';
 import issuesTreeStyles from './issuesTree.css.js';
 
-import type {AggregatedIssue} from './IssueAggregator.js';
+import type {AggregatedIssue, AggregationKey} from './IssueAggregator.js';
 import {Events as IssueAggregatorEvents, IssueAggregator} from './IssueAggregator.js';
 import {IssueView} from './IssueView.js';
 
@@ -161,7 +161,7 @@ let issuesPaneInstance: IssuesPane;
 
 export class IssuesPane extends UI.Widget.VBox {
   private categoryViews: Map<IssuesManager.Issue.IssueCategory, IssueCategoryView>;
-  private issueViews: Map<string, IssueView>;
+  private issueViews: Map<AggregationKey, IssueView>;
   private showThirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null;
   private issuesTree: UI.TreeOutline.TreeOutlineInShadow;
   private hiddenIssuesRow: HiddenIssuesRow;
@@ -266,7 +266,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   /** Don't call directly. Use `scheduleIssueViewUpdate` instead. */
   private async updateIssueView(issue: AggregatedIssue): Promise<void> {
-    let issueView = this.issueViews.get(issue.code());
+    let issueView = this.issueViews.get(issue.aggregationKey());
     if (!issueView) {
       const description = issue.getDescription();
       if (!description) {
@@ -276,7 +276,7 @@ export class IssuesPane extends UI.Widget.VBox {
       const markdownDescription =
           await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown(description);
       issueView = new IssueView(issue, markdownDescription);
-      this.issueViews.set(issue.code(), issueView);
+      this.issueViews.set(issue.aggregationKey(), issueView);
       const parent = this.getIssueViewParent(issue);
       this.appendIssueViewToParent(issueView, parent);
     } else {
@@ -388,7 +388,8 @@ export class IssuesPane extends UI.Widget.VBox {
 
   async reveal(issue: IssuesManager.Issue.Issue): Promise<void> {
     await this.issueViewUpdatePromise;
-    const issueView = this.issueViews.get(issue.code());
+    const key = this.aggregator.keyForIssue(issue);
+    const issueView = this.issueViews.get(key);
     if (issueView) {
       if (issueView.isForHiddenIssue()) {
         this.hiddenIssuesRow.expand();
@@ -399,6 +400,7 @@ export class IssuesPane extends UI.Widget.VBox {
       issueView.select(false, true);
     }
   }
+
   wasShown(): void {
     super.wasShown();
     this.issuesTree.registerCSSFiles([issuesTreeStyles]);

@@ -15,11 +15,12 @@ import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createFakeSetting, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
 
 describe('AggregatedIssue', async () => {
+  const aggregationKey = 'key' as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
     const issue2 = StubIssue.createFromRequestIds(['id1']);
 
-    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code');
+    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code', aggregationKey);
     aggregatedIssue.addInstance(issue1);
     aggregatedIssue.addInstance(issue2);
 
@@ -32,7 +33,7 @@ describe('AggregatedIssue', async () => {
     const issue2 = StubIssue.createFromCookieNames(['cookie2']);
     const issue3 = StubIssue.createFromCookieNames(['cookie1', 'cookie2']);
 
-    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code');
+    const aggregatedIssue = new Issues.IssueAggregator.AggregatedIssue('code', aggregationKey);
     aggregatedIssue.addInstance(issue1);
     aggregatedIssue.addInstance(issue2);
     aggregatedIssue.addInstance(issue3);
@@ -99,7 +100,7 @@ describe('IssueAggregator', async () => {
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);
-    const issueCodes = issues.map(r => r.code()).sort((a, b) => a.localeCompare(b));
+    const issueCodes = issues.map(r => r.aggregationKey().toString()).sort((a, b) => a.localeCompare(b));
     assert.deepStrictEqual(issueCodes, ['codeA', 'codeB', 'codeC']);
   });
 

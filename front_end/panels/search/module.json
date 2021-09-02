@@ -1,9 +1,5 @@
 {
   "dependencies": [
     "ui/legacy/components/utils"
-  ],
-    "resources": [
-    "searchResultsPane.css",
-    "searchView.css"
   ]
 }

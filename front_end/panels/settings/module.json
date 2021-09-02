@@ -1,10 +1,5 @@
 {
   "dependencies": [
     "ui/legacy/components/utils"
-  ],
-    "resources": [
-    "frameworkIgnoreListSettingsTab.css",
-    "settingsScreen.css",
-    "keybindsSettingsTab.css"
   ]
 }

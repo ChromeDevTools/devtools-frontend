@@ -386,9 +386,9 @@ export class IssuesPane extends UI.Widget.VBox {
     }
   }
 
-  async revealByCode(code: string): Promise<void> {
+  async reveal(issue: IssuesManager.Issue.Issue): Promise<void> {
     await this.issueViewUpdatePromise;
-    const issueView = this.issueViews.get(code);
+    const issueView = this.issueViews.get(issue.code());
     if (issueView) {
       if (issueView.isForHiddenIssue()) {
         this.hiddenIssuesRow.expand();

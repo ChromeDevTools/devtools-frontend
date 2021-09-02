@@ -27,7 +27,7 @@ export class IssueRevealer implements Common.Revealer.Revealer {
     if (view) {
       const issuesPane = await view.widget();
       if (issuesPane instanceof IssuesPane) {
-        await issuesPane.revealByCode(issue.code());
+        await issuesPane.reveal(issue);
       } else {
         throw new Error('Expected issues pane to be an instance of IssuesPane');
       }

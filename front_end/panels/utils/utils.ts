@@ -2,23 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 
 export function imageNameForResourceType(resourceType: Common.ResourceType.ResourceType): string {
-  switch (resourceType) {
-    case Common.ResourceType.resourceTypes.Document:
-      return 'ic_file_document';
-    case Common.ResourceType.resourceTypes.Image:
-      return 'ic_file_image';
-    case Common.ResourceType.resourceTypes.Font:
-      return 'ic_file_font';
-    case Common.ResourceType.resourceTypes.Script:
-      return 'ic_file_script';
-    case Common.ResourceType.resourceTypes.Stylesheet:
-      return 'ic_file_stylesheet';
-    case Common.ResourceType.resourceTypes.WebBundle:
-      return 'ic_file_webbundle';
-    default:
-      return 'ic_file_default';
+  if (resourceType.isDocument()) {
+    return 'ic_file_document';
   }
+  if (resourceType.isImage()) {
+    return 'ic_file_image';
+  }
+  if (resourceType.isFont()) {
+    return 'ic_file_font';
+  }
+  if (resourceType.isScript()) {
+    return 'ic_file_script';
+  }
+  if (resourceType.isStyleSheet()) {
+    return 'ic_file_stylesheet';
+  }
+  if (resourceType.isWebbundle()) {
+    return 'ic_file_webbundle';
+  }
+  return 'ic_file_default';
 }

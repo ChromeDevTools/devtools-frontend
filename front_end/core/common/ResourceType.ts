@@ -293,12 +293,20 @@ export class ResourceType {
     return this.isDocument() || this.isScript() || this.isStyleSheet();
   }
 
+  isFont(): boolean {
+    return this.nameInternal === 'font';
+  }
+
   isImage(): boolean {
     return this.nameInternal === 'image';
   }
 
   isFromSourceMap(): boolean {
     return this.nameInternal.startsWith('sm-');
+  }
+
+  isWebbundle(): boolean {
+    return this.nameInternal === 'webbundle';
   }
 
   toString(): string {

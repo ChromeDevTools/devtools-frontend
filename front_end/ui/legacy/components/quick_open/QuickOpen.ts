@@ -10,13 +10,9 @@ import {FilteredListWidget, getRegisteredProviders} from './FilteredListWidget.j
 
 const UIStrings = {
   /**
-  * @description Text in Quick Open of the Command Menu
+  * @description Text of the hint shows under Quick Open input box
   */
-  typeToSeeAvailableCommands: 'Type \'?\' to see available commands',
-  /**
-  * @description Aria-placeholder text for quick open dialog prompt
-  */
-  typeQuestionMarkToSeeAvailable: 'Type question mark to see available commands',
+  useTabToSwitchCommandsTypeToSeeAvailableCommands: 'Use Tab to switch commands. Type \'?\' to see available commands',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -44,8 +40,7 @@ export class QuickOpenImpl {
     const quickOpen = new this();
     const filteredListWidget = new FilteredListWidget(null, history, quickOpen.queryChanged.bind(quickOpen));
     quickOpen.filteredListWidget = filteredListWidget;
-    filteredListWidget.setPlaceholder(
-        i18nString(UIStrings.typeToSeeAvailableCommands), i18nString(UIStrings.typeQuestionMarkToSeeAvailable));
+    filteredListWidget.setHintElement(i18nString(UIStrings.useTabToSwitchCommandsTypeToSeeAvailableCommands));
     filteredListWidget.showAsDialog();
     filteredListWidget.setQuery(query);
   }

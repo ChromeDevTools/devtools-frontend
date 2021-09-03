@@ -38,6 +38,7 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
   private query!: string|undefined;
   private readonly promptElement: HTMLElement;
   private readonly prompt: UI.TextPrompt.TextPrompt;
+  private readonly hintElement: HTMLElement;
   private readonly bottomElementsContainer: HTMLElement;
   private readonly progressElement: HTMLElement;
   private progressBarElement: HTMLElement;
@@ -72,6 +73,8 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     const promptProxy = this.prompt.attach(this.promptElement);
     promptProxy.addEventListener('input', this.onInput.bind(this), false);
     promptProxy.classList.add('filtered-list-widget-prompt-element');
+
+    this.hintElement = this.contentElement.createChild('div', 'filtered-list-widget-hint');
 
     this.bottomElementsContainer = this.contentElement.createChild('div', 'vbox');
     this.progressElement = this.bottomElementsContainer.createChild('div', 'filtered-list-widget-progress');
@@ -133,8 +136,8 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     return false;
   }
 
-  setPlaceholder(placeholder: string, ariaPlaceholder?: string): void {
-    this.prompt.setPlaceholder(placeholder, ariaPlaceholder);
+  setHintElement(hint: string): void {
+    this.hintElement.textContent = hint;
   }
 
   /**

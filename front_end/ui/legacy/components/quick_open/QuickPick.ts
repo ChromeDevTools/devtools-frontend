@@ -28,7 +28,7 @@ export class QuickPick {
       const provider =
           new QuickPickProvider(items, resolve, options.matchOnDescription ? 0.5 : 0, options.matchOnDetail ? 0.25 : 0);
       const widget = new FilteredListWidget(provider);
-      widget.setPlaceholder(options.placeHolder);
+      widget.setHintElement(options.placeHolder);
       widget.setPromptTitle(options.placeHolder);
       widget.showAsDialog(options.placeHolder);
       canceledPromise = (widget.once('hidden') as Promise<undefined>);

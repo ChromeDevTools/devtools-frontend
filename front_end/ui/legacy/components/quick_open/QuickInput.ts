@@ -35,7 +35,7 @@ export class QuickInput {
       const widget = new FilteredListWidget(provider);
 
       if (options.placeHolder) {
-        widget.setPlaceholder(options.placeHolder);
+        widget.setHintElement(options.placeHolder);
       }
 
       widget.setPromptTitle(options.placeHolder || options.prompt);

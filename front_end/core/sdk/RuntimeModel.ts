@@ -577,7 +577,7 @@ export class ExecutionContext {
       if (target.type() === Type.ServiceWorker) {
         return 3;
       }
-      if (target.type() === Type.Worker) {
+      if (target.type() === Type.Worker || target.type() === Type.SharedWorker) {
         return 2;
       }
       return 1;

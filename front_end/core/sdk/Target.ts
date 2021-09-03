@@ -55,6 +55,10 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
           this.capabilitiesMask |= Capability.Browser;
         }
         break;
+      case Type.SharedWorker:
+        this.capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
+            Capability.IO | Capability.Media | Capability.Inspector;
+        break;
       case Type.Worker:
         this.capabilitiesMask =
             Capability.JS | Capability.Log | Capability.Network | Capability.Target | Capability.IO | Capability.Media;
@@ -213,6 +217,7 @@ export enum Type {
   Frame = 'frame',
   ServiceWorker = 'service-worker',
   Worker = 'worker',
+  SharedWorker = 'shared-worker',
   Node = 'node',
   Browser = 'browser',
 }

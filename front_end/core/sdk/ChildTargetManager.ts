@@ -133,6 +133,8 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       type = Type.Frame;
     } else if (targetInfo.type === 'worker') {
       type = Type.Worker;
+    } else if (targetInfo.type === 'shared_worker') {
+      type = Type.SharedWorker;
     } else if (targetInfo.type === 'service_worker') {
       type = Type.ServiceWorker;
     }

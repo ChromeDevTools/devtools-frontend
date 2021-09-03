@@ -14,11 +14,9 @@ module.exports = {
     fixable: 'code',
     schema: [],
     messages: {
-      nonMatchingTagName:
-          'Found inconsistent tag names in the component definition. Make sure the static litTagName, the tag in the defineComponent() call and the TS interface key are all identical.',
       noStaticTagName: 'Found a component class that does not define a static litTagName property.',
-      noTSInterface: 'Could not find the TS interface declaration for the component.',
-      noDefineCall: 'Could not find a defineComponent() call for the component.',
+      noTSInterface: 'Could not find the TS interface declaration for the component {{ tagName }}.',
+      noDefineCall: 'Could not find a defineComponent() call for the component {{ tagName }}.',
       defineCallNonLiteral: 'defineComponent() first argument must be a string literal.',
       staticLiteralInvalid: 'static readonly litTagName must use a literal string, with no interpolation.',
       litTagNameNotLiteral:
@@ -31,20 +29,17 @@ module.exports = {
       return node.type === 'ClassDeclaration' && node.superClass && node.superClass.name === 'HTMLElement';
     }
 
-    function findComponentClassDefinition(programNode) {
-      const nodeWithClassDeclaration = programNode.body.find(node => {
+    function findAllComponentClassDefinitions(programNode) {
+      const nodesWithClassDeclaration = programNode.body.filter(node => {
         if (node.type === 'ExportNamedDeclaration' && node.declaration) {
           return nodeIsHTMLElementClassDeclaration(node.declaration);
         }
         return nodeIsHTMLElementClassDeclaration(node);
       });
 
-      if (!nodeWithClassDeclaration) {
-        return null;
-      }
-
-      return nodeWithClassDeclaration.type === 'ExportNamedDeclaration' ? nodeWithClassDeclaration.declaration :
-                                                                          nodeWithClassDeclaration;
+      return nodesWithClassDeclaration.map(node => {
+        return node.type === 'ExportNamedDeclaration' ? node.declaration : node;
+      });
     }
 
     function findComponentTagNameFromStaticProperty(classBodyNode) {
@@ -53,8 +48,8 @@ module.exports = {
       });
     }
 
-    function findCustomElementsDefineComponentCall(programNode) {
-      return programNode.body.find(node => {
+    function findCustomElementsDefineComponentCalls(programNode) {
+      return programNode.body.filter(node => {
         if (node.type !== 'ExpressionStatement') {
           return false;
         }
@@ -69,7 +64,7 @@ module.exports = {
       });
     }
 
-    function findTypeScriptDeclareGlobalHTMLInterfaceCall(programNode) {
+    function findTypeScriptDeclareGlobalHTMLInterfaceCalls(programNode) {
       const matchingNode = programNode.body.find(node => {
         // matches `declare global {}`
         const isGlobalCall = node.type === 'TSModuleDeclaration' && node.id.name === 'global';
@@ -83,89 +78,110 @@ module.exports = {
       });
 
       if (!matchingNode) {
-        return undefined;
+        return [];
       }
 
-      return matchingNode.body.body.find(node => {
+      return matchingNode.body.body.filter(node => {
         return node.type === 'TSInterfaceDeclaration' && node.id.name === 'HTMLElementTagNameMap';
       });
     }
 
+    /** @type {Set<{classNode: any, tagName: string}>} */
+    const componentClassDefinitionLitTagNamesFound = new Set();
+
+    /** @type {Set<string>} */
+    const defineComponentCallsFound = new Set();
+
+    /** @type {Set<string>} */
+    const tsInterfaceExtendedEntriesFound = new Set();
+
     return {
       Program(node) {
-        const componentClassDefinition = findComponentClassDefinition(node);
-        if (!componentClassDefinition) {
+        /* We allow there to be multiple components defined in one file.
+         * Therefore, this rule gathers all nodes relating to the component
+         * definition and then checks that for each class found that extends
+         * HTMLElement, we have:
+         * 1) the class with a static readonly litTagName
+         * 2) The call to defineComponent
+         * 3) The global interface extension
+         * And that for each of those, the component name string (e.g. 'devtools-foo') is the same.
+         */
+
+        const componentClassDefinitions = findAllComponentClassDefinitions(node);
+        if (componentClassDefinitions.length === 0) {
+          // No components found, our work is done!
           return;
         }
 
-        const componentTagNameNode = findComponentTagNameFromStaticProperty(componentClassDefinition.body);
-        if (!componentTagNameNode) {
-          context.report({node: componentClassDefinition, messageId: 'noStaticTagName'});
-          return;
-        }
-        if (componentTagNameNode.value.type !== 'TaggedTemplateExpression') {
-          // This means that the value is not LitHtml.literal``. Most likely
-          // the user forgot to add LitHtml.literal and has defined the value
-          // as a regular string.
-          context.report({node: componentTagNameNode, messageId: 'litTagNameNotLiteral'});
-          return;
-        }
-        if (componentTagNameNode.value.quasi.quasis.length > 1) {
-          // This means that there's >1 template parts, which means they are
-          // being split by an interpolated value, which is not allowed.
-          context.report({node: componentTagNameNode, messageId: 'staticLiteralInvalid'});
-          return;
+        // Do some checks on the component classes and store the component names that we've found.
+        for (const componentClassDefinition of componentClassDefinitions) {
+          const componentTagNameNode = findComponentTagNameFromStaticProperty(componentClassDefinition.body);
+          if (!componentTagNameNode) {
+            context.report({node: componentClassDefinition, messageId: 'noStaticTagName'});
+            return;
+          }
+          if (componentTagNameNode.value.type !== 'TaggedTemplateExpression') {
+            // This means that the value is not LitHtml.literal``. Most likely
+            // the user forgot to add LitHtml.literal and has defined the value
+            // as a regular string.
+            context.report({node: componentTagNameNode, messageId: 'litTagNameNotLiteral'});
+            return;
+          }
+          if (componentTagNameNode.value.quasi.quasis.length > 1) {
+            // This means that there's >1 template parts, which means they are
+            // being split by an interpolated value, which is not allowed.
+            context.report({node: componentTagNameNode, messageId: 'staticLiteralInvalid'});
+            return;
+          }
+
+          // Enforce that the property is declared as readonly (static readonly litTagName = ...)
+          if (!componentTagNameNode.readonly) {
+            context.report({node: componentTagNameNode, messageId: 'staticLiteralNotReadonly'});
+            return;
+          }
+
+          // Grab the name of the component, e.g:
+          // LitHtml.literal`devtools-foo` will pull "devtools-foo" out.
+          const componentTagName = componentTagNameNode.value.quasi.quasis[0].value.cooked;
+          componentClassDefinitionLitTagNamesFound.add(
+              {tagName: componentTagName, classNode: componentClassDefinition});
         }
 
-        // Enforce that the property is declared as readonly (static readonly litTagName = ...)
-        if (!componentTagNameNode.readonly) {
-          context.report({node: componentTagNameNode, messageId: 'staticLiteralNotReadonly'});
-          return;
-        }
-
-        // Grab the name of the component, e.g:
-        // LitHtml.literal`devtools-foo` will pull "devtools-foo" out.
-        const componentTagName = componentTagNameNode.value.quasi.quasis[0].value.cooked;
+        // Find all defineComponent() calls and store the arguments to them.
 
         // Now find the CustomElements.defineComponent() line
-        const customElementsDefineCall = findCustomElementsDefineComponentCall(node);
-        if (!customElementsDefineCall) {
-          context.report({node, messageId: 'noDefineCall'});
-          return;
+        const customElementsDefineCalls = findCustomElementsDefineComponentCalls(node);
+        for (const customElementsDefineCall of customElementsDefineCalls) {
+          const firstArgumentToDefineCall = customElementsDefineCall.expression.arguments[0];
+          if (!firstArgumentToDefineCall || firstArgumentToDefineCall.type !== 'Literal') {
+            context.report({
+              node: customElementsDefineCall,
+              messageId: 'defineCallNonLiteral',
+            });
+            return;
+          }
+          const tagNamePassedToDefineCall = firstArgumentToDefineCall.value;
+          defineComponentCallsFound.add(tagNamePassedToDefineCall);
+        }
+        const allTSDeclareGlobalInterfaceCalls = findTypeScriptDeclareGlobalHTMLInterfaceCalls(node);
+
+        for (const interfaceDeclaration of allTSDeclareGlobalInterfaceCalls) {
+          for (const node of interfaceDeclaration.body.body) {
+            if (node.type === 'TSPropertySignature') {
+              tsInterfaceExtendedEntriesFound.add(node.key.value);
+            }
+          }
         }
 
-        const firstArgumentToDefineCall = customElementsDefineCall.expression.arguments[0];
-        if (!firstArgumentToDefineCall || firstArgumentToDefineCall.type !== 'Literal') {
-          context.report({
-            node: customElementsDefineCall,
-            messageId: 'defineCallNonLiteral',
-          });
-          return;
-        }
-        const tagNamePassedToDefineCall = firstArgumentToDefineCall.value;
-
-        if (tagNamePassedToDefineCall !== componentTagName) {
-          context.report({node: customElementsDefineCall, messageId: 'nonMatchingTagName'});
-          return;
-        }
-
-        const typeScriptInterfaceDeclare = findTypeScriptDeclareGlobalHTMLInterfaceCall(node);
-        if (!typeScriptInterfaceDeclare) {
-          context.report({
-            node,
-            messageId: 'noTSInterface',
-          });
-          return;
-        }
-        const keyForComponent = typeScriptInterfaceDeclare.body.body.find(node => {
-          // Find the declaration line for the component tag name.
-          return node.type === 'TSPropertySignature' && node.key.value === componentTagName;
-        });
-        // If we didn't find it, that means it's either not there or it's there
-        // but doesn't have the right name, so error.
-        if (!keyForComponent) {
-          context.report({node: typeScriptInterfaceDeclare, messageId: 'nonMatchingTagName'});
-          return;
+        for (const foundComponentClass of componentClassDefinitionLitTagNamesFound) {
+          const {tagName, classNode} = foundComponentClass;
+          // Check that each tagName has a matching entry in both other places we expect it.
+          if (!defineComponentCallsFound.has(tagName)) {
+            context.report({node: classNode, messageId: 'noDefineCall', data: {tagName}});
+          }
+          if (!tsInterfaceExtendedEntriesFound.has(tagName)) {
+            context.report({node: classNode, messageId: 'noTSInterface', data: {tagName}});
+          }
         }
 
         // if we got here, everything is valid and the name is correct in all three locations

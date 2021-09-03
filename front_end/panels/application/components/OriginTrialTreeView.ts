@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// eslint-disable-next-line rulesdir/check_component_naming
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
@@ -204,7 +203,7 @@ export interface OriginTrialTokenRowsData {
 }
 
 export class OriginTrialTokenRows extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-resources-origin-trial-token-rows`;
+  static readonly litTagName = LitHtml.literal`devtools-resources-origin-trial-token-rows`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tokenWithStatus: Protocol.Page.OriginTrialTokenWithStatus|null = null;
   private parsedTokenDetails: TokenField[] = [];
@@ -301,7 +300,7 @@ export interface OriginTrialTreeViewData {
 }
 
 export class OriginTrialTreeView extends HTMLElement {
-  static litTagName = LitHtml.literal`devtools-resources-origin-trial-tree-view`;
+  static readonly litTagName = LitHtml.literal`devtools-resources-origin-trial-tree-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   set data(data: OriginTrialTreeViewData) {
@@ -330,3 +329,11 @@ export class OriginTrialTreeView extends HTMLElement {
 }
 
 ComponentHelpers.CustomElements.defineComponent('devtools-resources-origin-trial-tree-view', OriginTrialTreeView);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-resources-origin-trial-tree-view': OriginTrialTreeView;
+    'devtools-resources-origin-trial-token-rows': OriginTrialTokenRows;
+    'devtools-resources-origin-trial-tree-view-badge': Badge;
+  }
+}

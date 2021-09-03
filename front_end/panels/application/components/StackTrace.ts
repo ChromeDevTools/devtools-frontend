@@ -207,8 +207,6 @@ export class StackTrace extends HTMLElement {
   }
 }
 
-// TODO(jacktfranklin): re-enable once https://crbug.com/1226741 is resolved.
-// eslint-disable-next-line rulesdir/check_component_naming
 ComponentHelpers.CustomElements.defineComponent('devtools-stack-trace-row', StackTraceRow);
 ComponentHelpers.CustomElements.defineComponent('devtools-stack-trace-link-button', StackTraceLinkButton);
 ComponentHelpers.CustomElements.defineComponent('devtools-resources-stack-trace', StackTrace);

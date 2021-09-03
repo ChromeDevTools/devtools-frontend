@@ -27,6 +27,27 @@ ruleTester.run('check_component_naming', rule, {
       filename: 'front_end/ui/components/Foo.ts'
     },
     {
+      // Multiple components in one file is valid.
+      code: `export class Foo extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
+      }
+
+      export class Bar extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-bar\`
+      }
+
+      ComponentHelpers.CustomElements.defineComponent('devtools-bar', Bar);
+      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+
+      declare global {
+        interface HTMLElementTagNameMap {
+          'devtools-foo': Foo
+          'devtools-bar': Bar
+        }
+      }`,
+      filename: 'front_end/ui/components/Foo.ts'
+    },
+    {
       code: `export class Foo extends HTMLElement {
         static readonly litTagName = LitHtml.literal\`devtools-foo\`
       }
@@ -109,10 +130,7 @@ ruleTester.run('check_component_naming', rule, {
         }
       }`,
       filename: 'front_end/ui/components/Foo.ts',
-      errors: [{
-        messageId: 'nonMatchingTagName'
-
-      }]
+      errors: [{messageId: 'noDefineCall'}]
     },
     // defineComponent call uses non literal
     {
@@ -165,7 +183,7 @@ ruleTester.run('check_component_naming', rule, {
         }
       }`,
       filename: 'front_end/ui/components/Foo.ts',
-      errors: [{messageId: 'nonMatchingTagName'}]
+      errors: [{messageId: 'noTSInterface'}]
     },
     // TS interface is missing
     {
@@ -175,7 +193,7 @@ ruleTester.run('check_component_naming', rule, {
 
       ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);`,
       filename: 'front_end/ui/components/Foo.ts',
-      errors: [{messageId: 'noTSInterface', data: {componentName: 'devtools-foo'}}]
+      errors: [{messageId: 'noTSInterface', data: {tagName: 'devtools-foo'}}]
     },
     {
       // Not using LitHtml.literal
@@ -192,6 +210,28 @@ ruleTester.run('check_component_naming', rule, {
       }`,
       filename: 'front_end/ui/components/Foo.ts',
       errors: [{messageId: 'litTagNameNotLiteral'}]
+    },
+    {
+      // Multiple components in one file is valid.
+      // But here devtools-foo is fine, but devtools-bar is missing a define call
+      code: `export class Foo extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-foo\`
+      }
+
+      export class Bar extends HTMLElement {
+        static readonly litTagName = LitHtml.literal\`devtools-bar\`
+      }
+
+      ComponentHelpers.CustomElements.defineComponent('devtools-foo', Foo);
+
+      declare global {
+        interface HTMLElementTagNameMap {
+          'devtools-foo': Foo
+          'devtools-bar': Bar
+        }
+      }`,
+      filename: 'front_end/ui/components/Foo.ts',
+      errors: [{messageId: 'noDefineCall', data: {tagName: 'devtools-bar'}}]
     },
   ]
 });

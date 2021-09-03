@@ -93,6 +93,7 @@
   margin: 6px;
   color: var(--color-text-primary);
   overflow: auto;
+  background-color: var(--color-background);
 }
 
 .resource-timing-table {

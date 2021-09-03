@@ -25,6 +25,7 @@
   left: 0;
   right: 0;
   overflow-x: hidden;
+  background-color: var(--color-background);
 }
 
 .data-grid .header-container {

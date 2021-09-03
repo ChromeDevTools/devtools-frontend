@@ -136,4 +136,5 @@
 .resources-sidebar {
   padding: 0;
   overflow-x: auto;
+  background-color: var(--color-background);
 }

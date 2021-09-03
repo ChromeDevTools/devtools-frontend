@@ -14,6 +14,16 @@
   z-index: 200;
 }
 
+.-theme-with-dark-background .network-waterfall-v-scroll {
+  /**
+  * Waterfall scrollbars are implemented as overflowing elements on top of the
+  * scrollable content. The actual content is a viewport without scrollbars.
+  * When using a dark theme, we should inform Blink that the content is dark,
+  * so that the native scrollbars are colored accordingly.
+  */
+  background: rgb(0 0 0 / 1%);
+}
+
 .network-waterfall-v-scroll.small {
   margin-top: 27px;
 }

@@ -31,10 +31,12 @@
   flex: 1 1;
   overflow: auto;
   padding: 2px 0 0 0;
+  background-color: var(--color-background);
 }
 
 .style-panes-wrapper {
   overflow: hidden scroll;
+  background-color: var(--color-background);
 }
 
 .style-panes-wrapper > div:not(:last-child) {

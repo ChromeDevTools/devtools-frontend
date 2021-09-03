@@ -837,6 +837,17 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
   transform: translateZ(0);
 }
 
+.-theme-with-dark-background .CodeMirror .CodeMirror-vscrollbar,
+.-theme-with-dark-background .CodeMirror .CodeMirror-hscrollbar {
+  /**
+   * CodeMirror scrollbars are implemented as overflowing elements on top of the
+   * scrollable content. The actual content is a viewport without scrollbars.
+   * When using a dark theme, we should inform Blink that the content is dark,
+   * so that the native scrollbars are colored accordingly.
+   */
+  background: rgb(0 0 0 / 1%);
+}
+
 .cm-trailing-whitespace {
   --override-auto-gen-cmtrailingwhitespace-backgroundcolor: rgb(255 0 0 / 5%);
 

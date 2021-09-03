@@ -8,6 +8,7 @@
   overflow: auto;
   padding: 12px;
   height: 100%;
+  background-color: var(--color-background);
 }
 
 .request-cookies-view .request-cookies-title {

@@ -220,6 +220,7 @@ iframe.fill {
 
 .overflow-auto {
   overflow: auto;
+  background-color: var(--color-background);
 }
 
 iframe.widget {

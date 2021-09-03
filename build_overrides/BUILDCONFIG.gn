@@ -44,10 +44,6 @@ declare_args() {
 }
 
 declare_args() {
-  # TODO(crbug.com/1245940): Remove temporary workaround as soon as upstream
-  # fix has landed.
-  enable_rust = false
-
   # Debug build. Enabling official builds automatically sets is_debug to false.
   is_debug = !is_official_build
 }

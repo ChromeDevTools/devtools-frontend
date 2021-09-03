@@ -655,3 +655,12 @@ export async function renderCoordinatorQueueEmpty(): Promise<void> {
     });
   });
 }
+
+export async function setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
+  const checkbox = await waitFor(selector);
+  const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
+  if (checked !== wantChecked) {
+    await click(`${selector} + label`);
+  }
+  assert.strictEqual(await checkbox.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
+}

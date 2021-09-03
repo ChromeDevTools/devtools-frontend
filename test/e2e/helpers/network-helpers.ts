@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
-import {$$, click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, goToResource, setCheckBox, waitFor, waitForFunction} from '../../shared/helper.js';
 
 const REQUEST_LIST_SELECTOR = '.network-log-grid .data';
 
@@ -58,15 +56,6 @@ export async function waitForSelectedRequestChange(initialRequestName: string|nu
     const name = await getSelectedRequestName();
     return name !== initialRequestName;
   });
-}
-
-export async function setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
-  const checkbox = await waitFor(selector);
-  const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
-  if (checked !== wantChecked) {
-    await click(`${selector} + label`);
-  }
-  assert.strictEqual(await checkbox.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
 }
 
 export async function setPersistLog(persist: boolean) {

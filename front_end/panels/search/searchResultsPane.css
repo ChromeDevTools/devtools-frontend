@@ -85,18 +85,6 @@ li.search-match:hover {
   background-color: var(--item-hover-color);
 }
 
-li.search-match .highlighted-match {
-  background-color: var(--color-syntax-5);
-}
-
-:host-context(.-theme-with-dark-background) li.search-match .highlighted-match {
-  /* The highlight color is light in dark mode so we want dark text. We need
-   * inverted color variables for this case which is logged in the dark mode
-   * tracking spreadsheet.
-   */
-  color: var(--color-background);
-}
-
 .tree-outline .devtools-link {
   text-decoration: none;
   display: block;

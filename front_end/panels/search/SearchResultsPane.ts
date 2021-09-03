@@ -217,7 +217,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
     UI.ARIAUtils.setAccessibleName(contentSpan, `${lineContent} line`);
-    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
+    UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
     return contentSpan;
   }
 

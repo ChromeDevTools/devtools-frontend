@@ -325,6 +325,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
       'sourceOrderViewer',
       'hideIssuesFeature',
+      'bfcacheDebugging',
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

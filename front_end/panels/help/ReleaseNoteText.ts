@@ -7,12 +7,32 @@
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 
 import type {ReleaseNote} from './HelpImpl.js';
 
 const continueToHereShortcut = Host.Platform.isMac() ? 'Command' : 'Control';
 const networkSearchShortcut = Host.Platform.isMac() ? 'Command+F' : 'Control+F';
 const commandMenuShortcut = Host.Platform.isMac() ? 'Command+Shift+P' : 'Control+Shift+P';
+const releaseNoteLangs = new Set(['es', 'ja', 'ko', 'pt', 'ru', 'zh']);
+
+function getReleaseNoteLang(): string {
+  const currentDevToolsUILanguage = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
+  const currentDevToolsLocale = new Intl.Locale(currentDevToolsUILanguage);
+
+  return releaseNoteLangs.has(currentDevToolsLocale.language) ? currentDevToolsLocale.language : '';
+}
+
+function getLocalizedReleaseNoteURL(url: string): string {
+  const releaseNoteURL = new URL(url);
+  const releaseNoteLang = getReleaseNoteLang();
+  if (releaseNoteLang) {
+    releaseNoteURL.pathname = `/${releaseNoteLang}${releaseNoteURL.pathname}`;
+  }
+
+  return releaseNoteURL.toString();
+}
 
 export const releaseNoteText: ReleaseNote[] = [
   {
@@ -22,25 +42,25 @@ export const releaseNoteText: ReleaseNote[] = [
       {
         title: 'Change the language of your DevTools',
         subtitle: 'Chrome DevTools now supports multiple languages, allowing you to work in your preferred language.',
-        link: 'https://developer.chrome.com/blog/new-in-devtools-94/#localized',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-94/#localized'),
       },
       {
         title: 'New Nest Hub devices in the Device list',
         subtitle: 'You can now simulate the dimensions of Nest Hub devices in DevTools.',
-        link: 'https://developer.chrome.com/blog/new-in-devtools-94/#nest-hub',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-94/#nest-hub'),
       },
       {
         title: 'Invert all network filters',
         subtitle: 'Use the new `invert` checkbox to invert all filters in the Network panel.',
-        link: 'https://developer.chrome.com/blog/new-in-devtools-94/#invert-network-filter',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-94/#invert-network-filter'),
       },
       {
         title: 'Upcoming deprecation of the Console sidebar',
         subtitle: 'The Console sidebar will be removed in favor of moving the filter UI to the toolbar.',
-        link: 'https://developer.chrome.com/blog/new-in-devtools-94/#deprecated',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-94/#deprecated'),
       },
     ],
-    link: 'https://developer.chrome.com/blog/new-in-devtools-94/',
+    link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-94'),
   },
   {
     version: 35,

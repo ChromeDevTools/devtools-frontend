@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("timeline_model") {
   testonly = true
-  sources = [ "TimelineJSProfile_test.ts" ]
+  sources = [
+    "TimelineFrameBeginFrameQueue_test.ts",
+    "TimelineJSProfile_test.ts",
+  ]
 
   deps = [ "../../../../../front_end/models/timeline_model:bundle" ]
 }

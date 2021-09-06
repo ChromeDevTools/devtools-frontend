@@ -99,7 +99,6 @@ SDK.SDKModel.SDKModel.register(SecurityModel, {capabilities: SDK.Target.Capabili
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
-  SecurityStateChanged = 'SecurityStateChanged',
   VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
 }
 
@@ -110,19 +109,6 @@ export const SummaryMessages: {[x: string]: () => string} = {
   [Protocol.Security.SecurityState.Secure]: i18nLazyString(UIStrings.thisPageIsSecureValidHttps),
   [Protocol.Security.SecurityState.InsecureBroken]: i18nLazyString(UIStrings.thisPageIsNotSecureBrokenHttps),
 };
-
-export class PageSecurityState {
-  securityState: Protocol.Security.SecurityState;
-  explanations: Protocol.Security.SecurityStateExplanation[];
-  summary: string|null;
-  constructor(
-      securityState: Protocol.Security.SecurityState, explanations: Protocol.Security.SecurityStateExplanation[],
-      summary: string|null) {
-    this.securityState = securityState;
-    this.explanations = explanations;
-    this.summary = summary;
-  }
-}
 
 export class PageVisibleSecurityState {
   securityState: Protocol.Security.SecurityState;
@@ -238,9 +224,7 @@ class SecurityDispatcher implements ProtocolProxyApi.SecurityDispatcher {
     this.model = model;
   }
 
-  securityStateChanged({securityState, explanations, summary}: Protocol.Security.SecurityStateChangedEvent): void {
-    const pageSecurityState = new PageSecurityState(securityState, explanations, summary || null);
-    this.model.dispatchEventToListeners(Events.SecurityStateChanged, pageSecurityState);
+  securityStateChanged(_event: Protocol.Security.SecurityStateChangedEvent): void {
   }
 
   visibleSecurityStateChanged({visibleSecurityState}: Protocol.Security.VisibleSecurityStateChangedEvent): void {

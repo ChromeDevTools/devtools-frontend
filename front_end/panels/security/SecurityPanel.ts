@@ -15,7 +15,7 @@ import mainViewStyles from './mainView.css.js';
 import originViewStyles from './originView.css.js';
 import sidebarStyles from './sidebar.css.js';
 
-import type {PageSecurityState, PageVisibleSecurityState} from './SecurityModel.js';
+import type {PageVisibleSecurityState} from './SecurityModel.js';
 import {Events, SecurityModel, SecurityStyleExplanation, SummaryMessages} from './SecurityModel.js';
 
 const UIStrings = {
@@ -71,22 +71,6 @@ const UIStrings = {
   *@description Text to view a security certificate
   */
   viewCertificate: 'View certificate',
-  /**
-  *@description Text in Security Panel of the Security panel
-  */
-  theSecurityOfThisPageIsUnknown: 'The security of this page is unknown.',
-  /**
-  *@description Text in Security Panel of the Security panel
-  */
-  thisPageIsNotSecure: 'This page is not secure.',
-  /**
-  *@description Text in Security Panel of the Security panel
-  */
-  thisPageIsSecureValidHttps: 'This page is secure (valid HTTPS).',
-  /**
-  *@description Text in Security Panel of the Security panel
-  */
-  thisPageIsNotSecureBrokenHttps: 'This page is not secure (broken HTTPS).',
   /**
   *@description Text in Security Panel of the Security panel
   */
@@ -549,21 +533,6 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     highlightedUrl.createChild('span').textContent = content;
 
     return highlightedUrl;
-  }
-
-  private updateSecurityState(
-      newSecurityState: Protocol.Security.SecurityState, explanations: Protocol.Security.SecurityStateExplanation[],
-      summary: string|null): void {
-    this.sidebarMainViewElement.setSecurityState(newSecurityState);
-    this.mainView.updateSecurityState(newSecurityState, explanations, summary);
-  }
-
-  private onSecurityStateChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const data = event.data as PageSecurityState;
-    const securityState = data.securityState as Protocol.Security.SecurityState;
-    const explanations = data.explanations as Protocol.Security.SecurityStateExplanation[];
-    const summary = data.summary as string | null;
-    this.updateSecurityState(securityState, explanations, summary);
   }
 
   private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
@@ -1065,47 +1034,6 @@ export class SecurityMainView extends UI.Widget.VBox {
       }
     }
     return text;
-  }
-
-  updateSecurityState(
-      newSecurityState: Protocol.Security.SecurityState, explanations: Protocol.Security.SecurityStateExplanation[],
-      summary: string|null): void {
-    // Remove old state.
-    // It's safe to call this even when this.securityState is undefined.
-    this.summarySection.classList.remove('security-summary-' + this.securityState);
-
-    // Add new state.
-    this.securityState = newSecurityState;
-
-    this.summarySection.classList.add('security-summary-' + this.securityState);
-    const summaryExplanationStrings = new Map<Protocol.Security.SecurityState, string>([
-      [Protocol.Security.SecurityState.Unknown, i18nString(UIStrings.theSecurityOfThisPageIsUnknown)],
-      [Protocol.Security.SecurityState.Insecure, i18nString(UIStrings.thisPageIsNotSecure)],
-      [Protocol.Security.SecurityState.Neutral, i18nString(UIStrings.thisPageIsNotSecure)],
-      [Protocol.Security.SecurityState.Secure, i18nString(UIStrings.thisPageIsSecureValidHttps)],
-      [Protocol.Security.SecurityState.InsecureBroken, i18nString(UIStrings.thisPageIsNotSecureBrokenHttps)],
-    ]);
-
-    // Update the color and title of the triangle icon in the lock spectrum to
-    // match the security state.
-    if (this.securityState === Protocol.Security.SecurityState.Insecure) {
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure-broken');
-      UI.Tooltip.Tooltip.install(
-          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecure));
-    } else if (this.securityState === Protocol.Security.SecurityState.InsecureBroken) {
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.add('lock-icon-insecure-broken');
-      this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure).classList.remove('lock-icon-insecure');
-      UI.Tooltip.Tooltip.install(
-          this.getLockSpectrumDiv(Protocol.Security.SecurityState.Insecure), i18nString(UIStrings.notSecureBroken));
-    }
-
-    // Use override summary if present, otherwise use base explanation
-    this.summaryText.textContent = summary || summaryExplanationStrings.get(this.securityState) || '';
-
-    this.explanations = explanations;
-
-    this.refreshExplanations();
   }
 
   updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {

@@ -7991,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "T̂h́ê śêćûŕît́ŷ d́êt́âíl̂ś âb́ôv́ê ár̂é f̂ŕôḿ t̂h́ê f́îŕŝt́ îńŝṕêćt̂éd̂ ŕêśp̂ón̂śê."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "T̂h́ê śêćûŕît́ŷ óf̂ t́ĥíŝ ṕâǵê íŝ ún̂ḱn̂óŵń."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "T̂h́ê śêŕv̂ér̂ śîǵn̂át̂úr̂é ûśêś ŜH́Â-1, ẃĥíĉh́ îś ôb́ŝól̂ét̂é. Êńâb́l̂é â ŚĤÁ-2 ŝíĝńât́ûŕê ál̂ǵôŕît́ĥḿ îńŝt́êád̂. (Ńôt́ê t́ĥíŝ íŝ d́îf́f̂ér̂én̂t́ f̂ŕôḿ t̂h́ê śîǵn̂át̂úr̂é îń t̂h́ê ćêŕt̂íf̂íĉát̂é.)"
   },
@@ -8020,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "T̂h́îś p̂áĝé îś îńŝéĉúr̂é (ûńêńĉŕŷṕt̂éd̂ H́T̂T́P̂)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "T̂h́îś p̂áĝé îś n̂ót̂ śêćûŕê (b́r̂ók̂én̂ H́T̂T́P̂Ś)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "T̂h́îś p̂áĝé îś ŝéĉúr̂é (v̂ál̂íd̂ H́T̂T́P̂Ś)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "T̂h́îś p̂áĝé îś ŝúŝṕîćîóûś"

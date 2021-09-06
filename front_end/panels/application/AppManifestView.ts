@@ -272,7 +272,7 @@ const UIStrings = {
   sSrcIsNotSet: '{PH1} `src` is not set',
   /**
   *@description Warning message for image resources from the manifest
-  *@example {Image} PH1
+  *@example {Screenshot} PH1
   *@example {https://example.com/image.png} PH2
   */
   sUrlSFailedToParse: '{PH1} URL \'\'{PH2}\'\' failed to parse',

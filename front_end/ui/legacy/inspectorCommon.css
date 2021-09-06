@@ -51,11 +51,6 @@
 
 .-theme-with-dark-background {
   /**
-   * Inherit the native form control colors when using a dark theme.
-   * Override them using CSS variables if needed.
-   */
-  color-scheme: dark;
-  /**
    * NOTE: please don't add to these colours!
    * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
    * Chat to jacktfranklin@ or petermueller@ if you have questions.

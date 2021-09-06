@@ -71,9 +71,7 @@ export class SizeInputElement extends HTMLElement {
         }
 
         input:disabled {
-          background: transparent;
           user-select: none;
-          opacity: 60%;
         }
 
         input:focus::-webkit-input-placeholder {

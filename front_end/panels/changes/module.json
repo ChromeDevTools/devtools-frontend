@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "models/workspace_diff",
     "ui/legacy/components/text_editor",
     "models/persistence",
     "panels/snippets",

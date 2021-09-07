@@ -265,7 +265,6 @@ all_devtools_files = [
   "front_end/ui/legacy/viewContainers.css",
   "front_end/panels/web_audio/module.json",
   "front_end/panels/webauthn/module.json",
-  "front_end/models/workspace_diff/module.json",
 ]
 
 lighthouse_locale_files = [

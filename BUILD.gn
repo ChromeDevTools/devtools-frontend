@@ -122,7 +122,6 @@ non_autostart_non_remote_modules = [
   "panels/timeline/timeline_module.js",
   "panels/web_audio/web_audio_module.js",
   "panels/webauthn/webauthn_module.js",
-  "models/workspace_diff/workspace_diff_module.js",
   "emulated_devices/emulated_devices_module.js",
 ]
 

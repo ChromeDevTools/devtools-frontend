@@ -314,7 +314,6 @@ grd_files_release_sources = [
   "front_end/models/workspace/workspace.js",
   "front_end/models/workspace_diff/workspace_diff-legacy.js",
   "front_end/models/workspace_diff/workspace_diff.js",
-  "front_end/models/workspace_diff/workspace_diff_module.js",
   "front_end/ndb_app.html",
   "front_end/node_app.html",
   "front_end/panels/accessibility/accessibility-legacy.js",

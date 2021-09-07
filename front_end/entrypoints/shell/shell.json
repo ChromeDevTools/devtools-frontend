@@ -24,7 +24,6 @@
     { "name": "panels/snippets" },
     { "name": "ui/legacy/components/source_frame" },
     { "name": "panels/sources" },
-    { "name": "ui/legacy/components/text_editor" },
-    { "name": "models/workspace_diff" }
+    { "name": "ui/legacy/components/text_editor" }
   ]
 }

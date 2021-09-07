@@ -297,6 +297,7 @@ export namespace ProtocolMapping {
      * And after 'enableReportingApi' for all existing reports.
      */
     'Network.reportingApiReportAdded': [Protocol.Network.ReportingApiReportAddedEvent];
+    'Network.reportingApiReportUpdated': [Protocol.Network.ReportingApiReportUpdatedEvent];
     /**
      * Fired when the node should be inspected. This happens after call to `setInspectMode` or when
      * user manually inspects an element.
@@ -2568,8 +2569,9 @@ export namespace ProtocolMapping {
     /**
      * Adds the specified target to the list of targets that will be monitored for any related target
      * creation (such as child frames, child workers and new versions of service worker) and reported
-     * through `attachedToTarget`. This cancel the effect of any previous `setAutoAttach` and is also
-     * cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
+     * through `attachedToTarget`. The specified target is also auto-attached.
+     * This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
+     * `setAutoAttach`. Only available at the Browser target.
      */
     'Target.autoAttachRelated': {paramsType: [Protocol.Target.AutoAttachRelatedRequest]; returnType: void;};
     /**

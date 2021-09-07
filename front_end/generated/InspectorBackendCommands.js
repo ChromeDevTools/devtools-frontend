@@ -1612,7 +1612,9 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerEnum(
       'Network.CrossOriginEmbedderPolicyValue',
       {None: 'None', Credentialless: 'Credentialless', RequireCorp: 'RequireCorp'});
-  inspectorBackend.registerEnum('Network.ReportStatus', {Queued: 'Queued', Pending: 'Pending'});
+  inspectorBackend.registerEnum(
+      'Network.ReportStatus',
+      {Queued: 'Queued', Pending: 'Pending', MarkedForRemoval: 'MarkedForRemoval', Success: 'Success'});
   inspectorBackend.registerEvent('Network.dataReceived', ['requestId', 'timestamp', 'dataLength', 'encodedDataLength']);
   inspectorBackend.registerEvent(
       'Network.eventSourceMessageReceived', ['requestId', 'timestamp', 'eventName', 'eventId', 'data']);
@@ -1674,6 +1676,7 @@ export function registerCommands(inspectorBackend) {
       'Network.subresourceWebBundleInnerResponseError',
       ['innerRequestId', 'innerRequestURL', 'errorMessage', 'bundleRequestId']);
   inspectorBackend.registerEvent('Network.reportingApiReportAdded', ['report']);
+  inspectorBackend.registerEvent('Network.reportingApiReportUpdated', ['report']);
   inspectorBackend.registerCommand(
       'Network.setAcceptedEncodings', [{'name': 'encodings', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand('Network.clearAcceptedEncodingsOverride', [], []);
@@ -2105,6 +2108,7 @@ export function registerCommands(inspectorBackend) {
     BrowsingInstanceNotSwapped: 'BrowsingInstanceNotSwapped',
     BackForwardCacheDisabledForDelegate: 'BackForwardCacheDisabledForDelegate',
     OptInUnloadHeaderNotPresent: 'OptInUnloadHeaderNotPresent',
+    UnloadHandlerExistsInMainFrame: 'UnloadHandlerExistsInMainFrame',
     UnloadHandlerExistsInSubFrame: 'UnloadHandlerExistsInSubFrame',
     ServiceWorkerUnregistration: 'ServiceWorkerUnregistration',
     CacheControlNoStore: 'CacheControlNoStore',
@@ -2156,8 +2160,6 @@ export function registerCommands(inspectorBackend) {
     OutstandingNetworkRequestDirectSocket: 'OutstandingNetworkRequestDirectSocket',
     IsolatedWorldScript: 'IsolatedWorldScript',
     InjectedStyleSheet: 'InjectedStyleSheet',
-    MediaSessionImplOnServiceCreated: 'MediaSessionImplOnServiceCreated',
-    ContentMediaSessionImplOnServiceCreated: 'ContentMediaSessionImplOnServiceCreated',
     ContentSecurityHandler: 'ContentSecurityHandler',
     ContentWebAuthenticationAPI: 'ContentWebAuthenticationAPI',
     ContentFileChooser: 'ContentFileChooser',

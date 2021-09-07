@@ -11755,8 +11755,15 @@
                     "type": "string",
                     "enum": [
                         "Queued",
-                        "Pending"
+                        "Pending",
+                        "MarkedForRemoval",
+                        "Success"
                     ]
+                },
+                {
+                    "id": "ReportId",
+                    "experimental": true,
+                    "type": "string"
                 },
                 {
                     "id": "ReportingApiReport",
@@ -11764,6 +11771,10 @@
                     "experimental": true,
                     "type": "object",
                     "properties": [
+                        {
+                            "name": "id",
+                            "$ref": "ReportId"
+                        },
                         {
                             "name": "initiatorUrl",
                             "description": "The URL of the document that triggered the report.",
@@ -11790,8 +11801,17 @@
                             "type": "integer"
                         },
                         {
+                            "name": "completedAttempts",
+                            "description": "The number of delivery attempts made so far, not including an active attempt.",
+                            "type": "integer"
+                        },
+                        {
                             "name": "body",
                             "type": "object"
+                        },
+                        {
+                            "name": "status",
+                            "$ref": "ReportStatus"
                         }
                     ]
                 },
@@ -13320,6 +13340,16 @@
                             "$ref": "ReportingApiReport"
                         }
                     ]
+                },
+                {
+                    "name": "reportingApiReportUpdated",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "report",
+                            "$ref": "ReportingApiReport"
+                        }
+                    ]
                 }
             ]
         },
@@ -14770,16 +14800,6 @@
                             "items": {
                                 "$ref": "GatedAPIFeatures"
                             }
-                        },
-                        {
-                            "name": "originTrials",
-                            "description": "Frame document's origin trials with at least one token present.",
-                            "experimental": true,
-                            "optional": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "OriginTrial"
-                            }
                         }
                     ]
                 },
@@ -15369,6 +15389,7 @@
                         "BrowsingInstanceNotSwapped",
                         "BackForwardCacheDisabledForDelegate",
                         "OptInUnloadHeaderNotPresent",
+                        "UnloadHandlerExistsInMainFrame",
                         "UnloadHandlerExistsInSubFrame",
                         "ServiceWorkerUnregistration",
                         "CacheControlNoStore",
@@ -15420,8 +15441,6 @@
                         "OutstandingNetworkRequestDirectSocket",
                         "IsolatedWorldScript",
                         "InjectedStyleSheet",
-                        "MediaSessionImplOnServiceCreated",
-                        "ContentMediaSessionImplOnServiceCreated",
                         "ContentSecurityHandler",
                         "ContentWebAuthenticationAPI",
                         "ContentFileChooser",
@@ -19079,7 +19098,7 @@
                 },
                 {
                     "name": "autoAttachRelated",
-                    "description": "Adds the specified target to the list of targets that will be monitored for any related target\ncreation (such as child frames, child workers and new versions of service worker) and reported\nthrough `attachedToTarget`. This cancel the effect of any previous `setAutoAttach` and is also\ncancelled by subsequent `setAutoAttach`. Only available at the Browser target.",
+                    "description": "Adds the specified target to the list of targets that will be monitored for any related target\ncreation (such as child frames, child workers and new versions of service worker) and reported\nthrough `attachedToTarget`. The specified target is also auto-attached.\nThis cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent\n`setAutoAttach`. Only available at the Browser target.",
                     "experimental": true,
                     "parameters": [
                         {

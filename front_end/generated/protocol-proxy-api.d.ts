@@ -2164,6 +2164,8 @@ declare namespace ProtocolProxyApi {
      * And after 'enableReportingApi' for all existing reports.
      */
     reportingApiReportAdded(params: Protocol.Network.ReportingApiReportAddedEvent): void;
+
+    reportingApiReportUpdated(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
   }
 
   export interface OverlayApi {
@@ -3136,8 +3138,9 @@ declare namespace ProtocolProxyApi {
     /**
      * Adds the specified target to the list of targets that will be monitored for any related target
      * creation (such as child frames, child workers and new versions of service worker) and reported
-     * through `attachedToTarget`. This cancel the effect of any previous `setAutoAttach` and is also
-     * cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
+     * through `attachedToTarget`. The specified target is also auto-attached.
+     * This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
+     * `setAutoAttach`. Only available at the Browser target.
      */
     invoke_autoAttachRelated(params: Protocol.Target.AutoAttachRelatedRequest):
         Promise<Protocol.ProtocolResponseWithError>;

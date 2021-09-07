@@ -91,7 +91,12 @@
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {
+  background-color: var(--color-primary);
   color: var(--color-background);
+}
+
+.ax-breadcrumbs .ax-node:not(.inspected):hover {
+  background-color: var(--color-background-elevation-0);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus * {

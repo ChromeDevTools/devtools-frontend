@@ -7,7 +7,8 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as UI from '../../legacy.js';
+
+import imagePreviewStyles from './imagePreview.css.js';
 
 const UIStrings = {
   /**
@@ -54,6 +55,10 @@ export interface PrecomputedFeatures {
   currentSrc?: string;
 }
 
+function isImageResource(resource: SDK.Resource.Resource|null): boolean {
+  return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
+}
+
 export class ImagePreview {
   static async build(target: SDK.Target.Target, originalImageURL: string, showDimensions: boolean, options: {
     precomputedFeatures: (PrecomputedFeatures|undefined),
@@ -73,6 +78,7 @@ export class ImagePreview {
     if (!resource || !isImageResource(resource)) {
       return null;
     }
+    const imageResource = resource;
 
     const displayName = resource.displayName;
 
@@ -82,86 +88,81 @@ export class ImagePreview {
     const resourceSize = contentSize ? contentSize : Platform.StringUtilities.base64ToSize(content);
     const resourceSizeText = resourceSize > 0 ? Platform.NumberUtilities.bytesToString(resourceSize) : '';
 
-    let fulfill: (arg0: Element|null) => void;
-    const promise = new Promise<Element|null>(x => {
-      fulfill = x;
-    });
-    const imageElement = document.createElement('img');
-    imageElement.addEventListener('load', buildContent, false);
-    imageElement.addEventListener('error', () => fulfill(null), false);
-    if (imageAltText) {
-      imageElement.alt = imageAltText;
-    }
-    resource.populateImageSource(imageElement);
-    return promise;
-
-    function isImageResource(resource: SDK.Resource.Resource|null): boolean {
-      return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
-    }
-
-    function buildContent(): void {
-      const container = document.createElement('table');
-      UI.Utils.appendStyle(container, 'ui/legacy/components/utils/imagePreview.css');
-      container.className = 'image-preview-container';
-
-      const imageRow = (container.createChild('tr').createChild('td', 'image-container') as HTMLTableDataCellElement);
-      imageRow.colSpan = 2;
-
-      const link = (imageRow.createChild('div') as HTMLLinkElement);
-      link.title = displayName;
-      link.appendChild(imageElement);
-
-      // Open image in new tab.
-      link.addEventListener('click', () => {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
-      });
-
-      const intrinsicWidth = imageElement.naturalWidth;
-      const intrinsicHeight = imageElement.naturalHeight;
-      const renderedWidth = precomputedFeatures ? precomputedFeatures.renderedWidth : intrinsicWidth;
-      const renderedHeight = precomputedFeatures ? precomputedFeatures.renderedHeight : intrinsicHeight;
-      if (showDimensions) {
-        const renderedRow = container.createChild('tr', 'row');
-
-        renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
-        renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
-
-        const aspectRatioRow = container.createChild('tr', 'row');
-        aspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedAspectRatio);
-        aspectRatioRow.createChild('td', 'description').textContent =
-            Platform.NumberUtilities.aspectRatio(renderedWidth, renderedHeight);
-
-        if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
-          const intrinsicRow = container.createChild('tr', 'row');
-          intrinsicRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicSize);
-          intrinsicRow.createChild('td', 'description').textContent = `${intrinsicWidth} × ${intrinsicHeight} px`;
-
-          const intrinsicAspectRatioRow = container.createChild('tr', 'row');
-          intrinsicAspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicAspectRatio);
-          intrinsicAspectRatioRow.createChild('td', 'description').textContent =
-              Platform.NumberUtilities.aspectRatio(intrinsicWidth, intrinsicHeight);
-        }
+    return new Promise(resolve => {
+      const imageElement = document.createElement('img');
+      imageElement.addEventListener('load', buildContent, false);
+      imageElement.addEventListener('error', () => resolve(null), false);
+      if (imageAltText) {
+        imageElement.alt = imageAltText;
       }
+      imageResource.populateImageSource(imageElement);
 
-      // File size
-      const fileRow = container.createChild('tr', 'row');
-      fileRow.createChild('td', 'title').textContent = i18nString(UIStrings.fileSize);
-      fileRow.createChild('td', 'description').textContent = resourceSizeText;
+      function buildContent(): void {
+        const shadowBoundary = document.createElement('div');
+        const shadowRoot = shadowBoundary.attachShadow({mode: 'open'});
+        shadowRoot.adoptedStyleSheets = [imagePreviewStyles];
+        const container = shadowRoot.createChild('table');
+        container.className = 'image-preview-container';
 
-      // Current source
-      const originalRow = container.createChild('tr', 'row');
-      originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
+        const imageRow = (container.createChild('tr').createChild('td', 'image-container') as HTMLTableDataCellElement);
+        imageRow.colSpan = 2;
 
-      const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
-      const sourceLink =
-          (originalRow.createChild('td', 'description description-link').createChild('span', 'source-link') as
-           HTMLLinkElement);
-      sourceLink.textContent = sourceText;
-      sourceLink.addEventListener('click', () => {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
-      });
-      fulfill(container);
-    }
+        const link = (imageRow.createChild('div') as HTMLLinkElement);
+        link.title = displayName;
+        link.appendChild(imageElement);
+
+        // Open image in new tab.
+        link.addEventListener('click', () => {
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
+        });
+
+        const intrinsicWidth = imageElement.naturalWidth;
+        const intrinsicHeight = imageElement.naturalHeight;
+        const renderedWidth = precomputedFeatures ? precomputedFeatures.renderedWidth : intrinsicWidth;
+        const renderedHeight = precomputedFeatures ? precomputedFeatures.renderedHeight : intrinsicHeight;
+        if (showDimensions) {
+          const renderedRow = container.createChild('tr', 'row');
+
+          renderedRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedSize);
+          renderedRow.createChild('td', 'description').textContent = `${renderedWidth} × ${renderedHeight} px`;
+
+          const aspectRatioRow = container.createChild('tr', 'row');
+          aspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.renderedAspectRatio);
+          aspectRatioRow.createChild('td', 'description').textContent =
+              Platform.NumberUtilities.aspectRatio(renderedWidth, renderedHeight);
+
+          if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
+            const intrinsicRow = container.createChild('tr', 'row');
+            intrinsicRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicSize);
+            intrinsicRow.createChild('td', 'description').textContent = `${intrinsicWidth} × ${intrinsicHeight} px`;
+
+            const intrinsicAspectRatioRow = container.createChild('tr', 'row');
+            intrinsicAspectRatioRow.createChild('td', 'title').textContent = i18nString(UIStrings.intrinsicAspectRatio);
+            intrinsicAspectRatioRow.createChild('td', 'description').textContent =
+                Platform.NumberUtilities.aspectRatio(intrinsicWidth, intrinsicHeight);
+          }
+        }
+
+        // File size
+        const fileRow = container.createChild('tr', 'row');
+        fileRow.createChild('td', 'title').textContent = i18nString(UIStrings.fileSize);
+        fileRow.createChild('td', 'description').textContent = resourceSizeText;
+
+        // Current source
+        const originalRow = container.createChild('tr', 'row');
+        originalRow.createChild('td', 'title').textContent = i18nString(UIStrings.currentSource);
+
+        const sourceText = Platform.StringUtilities.trimMiddle(imageURL, 100);
+        const sourceLink =
+            (originalRow.createChild('td', 'description description-link').createChild('span', 'source-link') as
+             HTMLLinkElement);
+        sourceLink.textContent = sourceText;
+        sourceLink.addEventListener('click', () => {
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(imageURL);
+        });
+        resolve(shadowBoundary);
+      }
+    });
   }
 
   static async loadDimensionsForNode(node: SDK.DOMModel.DOMNode): Promise<PrecomputedFeatures|undefined> {

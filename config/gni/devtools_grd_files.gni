@@ -1514,6 +1514,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/utils/Linkifier.js",
   "front_end/ui/legacy/components/utils/Reload.js",
   "front_end/ui/legacy/components/utils/TargetDetachedDialog.js",
+  "front_end/ui/legacy/components/utils/imagePreview.css.js",
   "front_end/ui/legacy/emptyWidget.css.js",
   "front_end/ui/legacy/inspectorCommon.css.js",
   "front_end/ui/legacy/theme_support/theme_support_impl.js",

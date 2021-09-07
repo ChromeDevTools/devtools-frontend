@@ -4,7 +4,12 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "imagePreview.css" ]
+}
 
 devtools_module("utils") {
   sources = [
@@ -30,10 +35,7 @@ devtools_module("utils") {
 }
 
 copy_to_gen("legacy_css") {
-  sources = [
-    "imagePreview.css",
-    "jsUtils.css",
-  ]
+  sources = [ "jsUtils.css" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -62,7 +64,10 @@ devtools_entrypoint("bundle") {
 devtools_entrypoint("legacy") {
   entrypoint = "utils-legacy.ts"
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    ":css_files",
+  ]
 
   visibility = [
     "../../../..:legacy_entrypoints",

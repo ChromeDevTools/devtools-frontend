@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("extensions") {
-  sources = [ "can-open-resources-with-columns_test.ts" ]
+  sources = [
+    "can-open-resources-with-columns_test.ts",
+    "debugger-language-plugins_test.ts",
+  ]
 
   deps = [
     "../../../extension-api",

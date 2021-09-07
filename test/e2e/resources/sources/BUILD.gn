@@ -16,7 +16,6 @@ copy_to_gen("sources") {
     "error-with-sourcemap.js",
     "error-with-sourcemap.js.map",
     "inline-script.html",
-    "language_extensions.html",
     "memory-worker1.js",
     "memory-worker2.js",
     "memory-workers.html",

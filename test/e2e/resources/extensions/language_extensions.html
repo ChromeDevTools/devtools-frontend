@@ -126,13 +126,12 @@ class ExtensionPluginBase {
 }
 
 /**
- * @param {!{languageServices: *}} extensionAPI
  * @param {*} pluginImpl
  * @param {string} name
  * @param {!{language: string, symbol_types: !Array<string>}} supportedScriptTypes
  */
-function RegisterExtension(extensionAPI, pluginImpl, name, supportedScriptTypes) {
-  extensionAPI.languageServices.registerLanguageExtensionPlugin(
+function RegisterExtension(pluginImpl, name, supportedScriptTypes) {
+  chrome.devtools.languageServices.registerLanguageExtensionPlugin(
       new ExtensionPluginBase(pluginImpl), name, supportedScriptTypes);
 }
 

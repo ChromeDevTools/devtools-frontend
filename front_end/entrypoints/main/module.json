@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "models/extensions",
+    "ui/legacy/components/utils",
     "models/persistence"
   ]
 }

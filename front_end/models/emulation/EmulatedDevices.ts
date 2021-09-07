@@ -7,7 +7,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -29,6 +28,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
+
+export function computeRelativeImageURL(cssURLValue: string): string {
+  return cssURLValue.replace(/@url\(([^\)]*?)\)/g, (_match: string, url: string) => {
+    return new URL(`../../emulated_devices/${url}`, import.meta.url).toString();
+  });
+}
 
 export class EmulatedDevice {
   title: string;
@@ -412,7 +417,7 @@ export class EmulatedDevice {
     if (!mode.image) {
       return '';
     }
-    return Root.Runtime.Runtime.instance().module('emulated_devices').substituteURL(mode.image);
+    return computeRelativeImageURL(mode.image);
   }
 
   outlineImage(mode: Mode): string {
@@ -420,7 +425,7 @@ export class EmulatedDevice {
     if (!orientation.outlineImage) {
       return '';
     }
-    return Root.Runtime.Runtime.instance().module('emulated_devices').substituteURL(orientation.outlineImage);
+    return computeRelativeImageURL(orientation.outlineImage);
   }
 
   orientationByName(name: string): Orientation {

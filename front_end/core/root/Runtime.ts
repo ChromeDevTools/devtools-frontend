@@ -335,14 +335,6 @@ export class Module {
     const sourceURL = getResourceURL(this.modularizeURL(resourceName));
     return loadResourcePromise(sourceURL);
   }
-
-  substituteURL(value: string): string {
-    return value.replace(/@url\(([^\)]*?)\)/g, convertURL.bind(this));
-
-    function convertURL(this: Module, match: string, url: string): string {
-      return importScriptPathPrefix + this.modularizeURL(url);
-    }
-  }
 }
 
 export class ExperimentsSupport {

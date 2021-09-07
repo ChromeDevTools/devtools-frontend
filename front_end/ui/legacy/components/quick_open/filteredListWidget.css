@@ -50,7 +50,7 @@
   flex: none;
   background: rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
-  height: 2px;
+  height: 1px;
 }
 
 .filtered-list-widget-progress-bar {
@@ -68,16 +68,16 @@
   transition: opacity 500ms;
 }
 
-.filtered-list-widget > div.container {
+.filtered-list-widget .vbox > div.container {
   flex: auto;
+  overflow-x: hidden;
   overflow-y: auto;
-  background: var(--color-background-elevation-0);
 }
 
 .filtered-list-widget-item-wrapper {
   display: inline-flex;
   height: 45px;
-  width: 488px;
+  width: 502px;
   border-bottom: 1px solid var(--color-details-hairline-light);
   padding: 8px;
 }
@@ -98,6 +98,8 @@
   align-self: center;
   color: var(--color-text-secondary);
   max-width: 446px;
+  font-size: 12px;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
 .filtered-list-widget-item span.highlight {
@@ -108,7 +110,6 @@
   flex: auto;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
 }
 
 .filtered-list-widget-item .filtered-list-widget-subtitle {
@@ -118,7 +119,6 @@
   color: var(--color-text-secondary);
   display: flex;
   white-space: pre;
-  font-size: 12px;
 }
 
 .filtered-list-widget-item .filtered-list-widget-subtitle .first-part {

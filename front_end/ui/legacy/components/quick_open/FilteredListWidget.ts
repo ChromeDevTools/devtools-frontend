@@ -157,6 +157,7 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     this.dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this.dialog.setContentPosition(null, 22);
+    this.dialog.contentElement.style.setProperty('border-radius', '4px');
     this.show(this.dialog.contentElement);
     UI.ARIAUtils.setExpanded(this.contentElement, true);
     this.dialog.once('hidden').then(() => {

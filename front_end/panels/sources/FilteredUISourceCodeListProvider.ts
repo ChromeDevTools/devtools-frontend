@@ -122,8 +122,6 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     new FilePathScoreFunction(query).calculateScore(fullDisplayName, indexes);
     const fileNameIndex = fullDisplayName.lastIndexOf('/');
 
-    titleElement.classList.add('monospace');
-    subtitleElement.classList.add('monospace');
     titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
     this.renderSubtitleElement(subtitleElement, fullDisplayName);
     /** @type {!HTMLElement} */ UI.Tooltip.Tooltip.install((subtitleElement as HTMLElement), fullDisplayName);

@@ -237,7 +237,6 @@ all_devtools_files = [
   "front_end/ui/legacy/infobar.css",
   "front_end/ui/legacy/inlineButton.css",
   "front_end/ui/legacy/inspectorCommon.css",
-  "front_end/ui/legacy/inspectorScrollbars.css",
   "front_end/ui/legacy/themeColors.css",
   "front_end/ui/legacy/inspectorSyntaxHighlight.css",
   "front_end/ui/legacy/inspectorSyntaxHighlightDark.css",

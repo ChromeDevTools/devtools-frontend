@@ -1715,7 +1715,8 @@ export const deepElementFromPoint = (document: Document|ShadowRoot|null|undefine
 
 export const deepElementFromEvent = (ev: Event): Node|null => {
   const event = (ev as MouseEvent);
-  // Some synthetic events have zero coordinates which lead to a wrong element. Better return nothing in this case.
+  // Some synthetic events have zero coordinates which lead to a wrong element.
+  // Better return nothing in this case.
   if (!event.which && !event.pageX && !event.pageY && !event.clientX && !event.clientY && !event.movementX &&
       !event.movementY) {
     return null;

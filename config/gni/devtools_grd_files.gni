@@ -1517,7 +1517,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/utils/TargetDetachedDialog.js",
   "front_end/ui/legacy/emptyWidget.css.js",
   "front_end/ui/legacy/inspectorCommon.css.js",
-  "front_end/ui/legacy/inspectorScrollbars.css.js",
   "front_end/ui/legacy/theme_support/theme_support_impl.js",
   "front_end/ui/legacy/utils/append-style.js",
   "front_end/ui/legacy/utils/create-shadow-root-with-core-styles.js",

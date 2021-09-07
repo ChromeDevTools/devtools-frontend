@@ -1,5 +1,5 @@
 {
-    "resources": [
+  "resources": [
     "checkboxTextLabel.css",
     "closeButton.css",
     "confirmDialog.css",
@@ -11,7 +11,6 @@
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
-    "inspectorScrollbars.css",
     "themeColors.css",
     "inspectorSyntaxHighlight.css",
     "inspectorSyntaxHighlightDark.css",

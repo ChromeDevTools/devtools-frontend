@@ -76,6 +76,7 @@ def builder(
     kwargs["properties"] = properties
 
     kwargs["executable"] = recipe(recipe_name)
+    kwargs["resultdb_settings"] = resultdb.settings(enable = True)
 
     luci.builder(
         swarming_tags = swarming_tags,

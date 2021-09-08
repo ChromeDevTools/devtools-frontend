@@ -814,7 +814,7 @@ export class Thread extends NamedObject {
     this.asyncEventsInternal.sort(Event.compareStartTime);
     this.eventsInternal.sort(Event.compareStartTime);
     const phases = Phase;
-    const stack = [];
+    const stack: Event[] = [];
     const toDelete = new Set<number>();
     for (let i = 0; i < this.eventsInternal.length; ++i) {
       const e = this.eventsInternal[i];

@@ -219,7 +219,7 @@ class DragHandler {
     DragHandler.rootForMouseOut = event.target instanceof Node && event.target.getRootNode() || null;
     this.dragEventsTargetDocument = targetDocument;
     try {
-      if (targetDocument.defaultView) {
+      if (targetDocument.defaultView && targetDocument.defaultView.top) {
         this.dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
       }
     } catch (e) {

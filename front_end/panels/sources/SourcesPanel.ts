@@ -1111,10 +1111,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       return;
     }
     const entry = items[0].webkitGetAsEntry();
-    if (!entry.isDirectory) {
-      return;
+    if (entry && entry.isDirectory) {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
   }
 }
 

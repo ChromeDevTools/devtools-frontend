@@ -139,3 +139,18 @@ declare class diff_match_patch {
   diff_main(text1: string, text2: string): Array<{0: number, 1: string}>;
   diff_cleanupSemantic(diff: Array<{0: number, 1: string}>): void;
 }
+
+// The following types exist in Chrome but were removed for various reasons
+// from the TypeScript DOM library.
+//
+// TODO(crbug.com/1247609): Replace use sites with appropriate web platform types.
+
+interface DOMError {
+  readonly name: string;
+  readonly message: string;
+}
+
+interface ShadowRoot {
+  elementFromPoint(x: number, y: number): Element | null;
+  getSelection(): Selection | null;
+}

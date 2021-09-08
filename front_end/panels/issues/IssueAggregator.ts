@@ -271,7 +271,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private aggregateIssueByStatus(
       aggregatedIssuesMap: Map<AggregationKey, AggregatedIssue>, issue: IssuesManager.Issue.Issue): AggregatedIssue {
-    const key = issue.code() as AggregationKey;
+    const key = issue.code() as unknown as AggregationKey;
     let aggregatedIssue = aggregatedIssuesMap.get(key);
     if (!aggregatedIssue) {
       aggregatedIssue = new AggregatedIssue(issue.code(), key);
@@ -310,7 +310,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   keyForIssue(issue: IssuesManager.Issue.Issue<string>): AggregationKey {
-    return issue.code() as AggregationKey;
+    return issue.code() as unknown as AggregationKey;
   }
 }
 

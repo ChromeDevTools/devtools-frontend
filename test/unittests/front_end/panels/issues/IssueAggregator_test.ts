@@ -15,7 +15,7 @@ import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createFakeSetting, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
 
 describe('AggregatedIssue', async () => {
-  const aggregationKey = 'key' as Issues.IssueAggregator.AggregationKey;
+  const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
     const issue2 = StubIssue.createFromRequestIds(['id1']);

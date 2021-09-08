@@ -35,7 +35,7 @@ function XWidgetfocusWidgetForNode(node: Node|null): void {
   const XWidgetCtor = customElements.get('x-widget');
   let widget = null;
   while (node) {
-    if (node instanceof XWidgetCtor) {
+    if (XWidgetCtor && node instanceof XWidgetCtor) {
       if (widget) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

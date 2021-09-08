@@ -67,7 +67,7 @@ export class Fragment {
     const template = document.createElement('template');
     template.innerHTML = html;
     const walker = template.ownerDocument.createTreeWalker(
-        template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
+        template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null);
     let valueIndex = 0;
     const emptyTextNodes = [];
     const binds: Bind[] = [];

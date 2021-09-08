@@ -1,3 +1,4 @@
 {
-  "eslint.runtime": "third_party/node/node.py"
+  "eslint.runtime": "third_party/node/node.py",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import * as Utils from './utils/utils.js';
 
 import type {Action} from './ActionRegistration.js';
 import {Events as ActionEvents} from './ActionRegistration.js';
@@ -45,7 +46,6 @@ import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 const UIStrings = {
   /**
@@ -75,8 +75,8 @@ export class Toolbar {
     this.element.className = className;
     this.element.classList.add('toolbar');
     this.enabled = true;
-    this.shadowRoot =
-        createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/toolbar.css', delegatesFocus: undefined});
+    this.shadowRoot = Utils.createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/legacy/toolbar.css', delegatesFocus: undefined});
     this.contentElement = this.shadowRoot.createChild('div', 'toolbar-shadow');
     this.insertionPoint = this.contentElement.createChild('slot');
   }

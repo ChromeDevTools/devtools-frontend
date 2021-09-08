@@ -33,8 +33,7 @@ import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
-import {appendStyle} from './utils/append-style.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import * as Utils from './utils/utils.js';
 import {XWidget} from './XWidget.js';
 
 export class WidgetElement extends HTMLDivElement {
@@ -77,7 +76,7 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
       this.element = (document.createElement('div') as WidgetElement);
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
-      this.shadowRoot = createShadowRootWithCoreStyles(this.element, {
+      this.shadowRoot = Utils.createShadowRootWithCoreStyles(this.element, {
         cssFile: undefined,
         delegatesFocus,
       });
@@ -463,9 +462,9 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
 
   registerRequiredCSS(cssFile: string): void {
     if (this.isWebComponent) {
-      appendStyle((this.shadowRoot as DocumentFragment), cssFile);
+      Utils.appendStyle((this.shadowRoot as DocumentFragment), cssFile);
     } else {
-      appendStyle(this.element, cssFile);
+      Utils.appendStyle(this.element, cssFile);
     }
   }
 

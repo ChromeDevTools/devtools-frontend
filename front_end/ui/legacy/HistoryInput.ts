@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {Keys} from './KeyboardShortcut.js';
-import {registerCustomElement} from './utils/register-custom-element.js';
+import * as Utils from './utils/utils.js';
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -23,7 +23,7 @@ export class HistoryInput extends HTMLInputElement {
 
   static create(): HistoryInput {
     if (!_constructor) {
-      _constructor = registerCustomElement('input', 'history-input', HistoryInput);
+      _constructor = Utils.registerCustomElement('input', 'history-input', HistoryInput);
     }
 
     return _constructor() as HistoryInput;

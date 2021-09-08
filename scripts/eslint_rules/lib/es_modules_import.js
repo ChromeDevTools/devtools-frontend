@@ -210,16 +210,6 @@ module.exports = {
               },
             });
           } else if (isModuleEntrypoint(importingFileName)) {
-            /**
-             * We allow ui/utils/utils.js to get away with this because it's not
-             * really a proper entry point and should be folded properly into
-             * the UI module, as it's exposed via `UI.Utils.X`.
-             * TODO * (https://crbug.com/1148274) tidy up the utils and remove this
-             * special case.
-             */
-            if (importingFileName.includes(['ui', 'legacy', 'utils', 'utils.js'].join(path.sep))) {
-              return;
-            }
             if (importingFileName.includes(['test_setup', 'test_setup.ts'].join(path.sep)) &&
                 importPath.includes([path.sep, 'helpers', path.sep].join(''))) {
               /** Within test files we allow the direct import of test helpers.

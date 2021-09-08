@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import * as Utils from './utils/utils.js';
 
 export class DropTarget {
   private element: Element;
@@ -70,7 +70,7 @@ export class DropTarget {
       return;
     }
     this.dragMaskElement = this.element.createChild('div', '');
-    const shadowRoot = createShadowRootWithCoreStyles(
+    const shadowRoot = Utils.createShadowRootWithCoreStyles(
         this.dragMaskElement, {cssFile: 'ui/legacy/dropTarget.css', delegatesFocus: undefined});
     shadowRoot.createChild('div', 'drop-target-message').textContent = this.messageText;
     this.dragMaskElement.addEventListener('drop', this.onDrop.bind(this), true);

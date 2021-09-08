@@ -46,12 +46,6 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as Issue from \'./Issue.js\';',
       filename: 'front_end/sdk/IssuesModel.js',
     },
-    // We allow the ui/utils/utils.js to do this because it's a special case entry point
-    // that really needs to be removed and folded into UI directly.
-    {
-      code: 'import {appendStyle} from \'./append-style.js\';',
-      filename: 'front_end/ui/legacy/utils/utils.js',
-    },
     {
       code: 'import * as UI from \'../../legacy.js\';',
       filename: 'front_end/ui/legacy/components/data_grid/DataGrid.ts',

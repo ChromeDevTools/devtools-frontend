@@ -31,6 +31,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Utils from './utils/utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -40,8 +41,6 @@ import type {ListDelegate} from './ListControl.js';
 import {ListControl, ListMode} from './ListControl.js';
 import {ListModel} from './ListModel.js';
 import {measurePreferredSize} from './UIUtils.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
-import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 
 const UIStrings = {
   /**
@@ -107,7 +106,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(AnchorBehavior.PreferBottom);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
-    const shadowRoot = createShadowRootWithCoreStyles(
+    const shadowRoot = Utils.createShadowRootWithCoreStyles(
         this.glassPane.contentElement, {cssFile: 'ui/legacy/suggestBox.css', delegatesFocus: undefined});
     shadowRoot.appendChild(this.element);
   }
@@ -147,7 +146,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     }
     const element = this.createElementForItem((maxItem as Suggestion));
     const preferredWidth =
-        measurePreferredSize(element, this.element).width + measuredScrollbarWidth(this.element.ownerDocument);
+        measurePreferredSize(element, this.element).width + Utils.measuredScrollbarWidth(this.element.ownerDocument);
     return Math.min(kMaxWidth, preferredWidth);
   }
 

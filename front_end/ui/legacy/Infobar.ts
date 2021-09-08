@@ -4,11 +4,11 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Utils from './utils/utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 import type {Widget} from './Widget.js';
 
 const UIStrings = {
@@ -56,8 +56,8 @@ export class Infobar {
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
     this.element = document.createElement('div');
     this.element.classList.add('flex-none');
-    this.shadowRoot =
-        createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});
+    this.shadowRoot = Utils.createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
 

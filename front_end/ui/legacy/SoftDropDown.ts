@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Utils from './utils/utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
@@ -13,8 +14,6 @@ import type {ListDelegate} from './ListControl.js';
 import {ListControl, ListMode} from './ListControl.js';
 import type {ItemsReplacedEvent, ListModel} from './ListModel.js';
 import {Events as ListModelEvents} from './ListModel.js';
-import {appendStyle} from './utils/append-style.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 const UIStrings = {
   /**
@@ -47,7 +46,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
-    appendStyle(this.element, 'ui/legacy/softDropDownButton.css');
+    Utils.appendStyle(this.element, 'ui/legacy/softDropDownButton.css');
     this.titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);
@@ -62,10 +61,12 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.list.element.classList.add('item-list');
     this.rowHeight = 36;
     this.width = 315;
-    createShadowRootWithCoreStyles(this.glassPane.contentElement, {
-      cssFile: 'ui/legacy/softDropDown.css',
-      delegatesFocus: undefined,
-    }).appendChild(this.list.element);
+    Utils
+        .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
+          cssFile: 'ui/legacy/softDropDown.css',
+          delegatesFocus: undefined,
+        })
+        .appendChild(this.list.element);
     ARIAUtils.markAsMenu(this.list.element);
 
     this.listWasShowing200msAgo = false;

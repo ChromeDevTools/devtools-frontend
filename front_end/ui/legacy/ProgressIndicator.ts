@@ -29,7 +29,7 @@
  */
 
 import type * as Common from '../../core/common/common.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
+import * as Utils from './utils/utils.js';
 
 export class ProgressIndicator implements Common.Progress.Progress {
   element: HTMLDivElement;
@@ -45,7 +45,7 @@ export class ProgressIndicator implements Common.Progress.Progress {
   constructor() {
     this.element = document.createElement('div');
     this.element.classList.add('progress-indicator');
-    this.shadowRoot = createShadowRootWithCoreStyles(
+    this.shadowRoot = Utils.createShadowRootWithCoreStyles(
         this.element, {cssFile: 'ui/legacy/progressIndicator.css', delegatesFocus: undefined});
     this.contentElement = this.shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 

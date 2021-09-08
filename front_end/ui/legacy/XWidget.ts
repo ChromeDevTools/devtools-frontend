@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../components/helpers/helpers.js';
-import {appendStyle} from './utils/append-style.js';
+import * as Utils from './utils/utils.js';
+
 import {XElement} from './XElement.js';
 
 let observer: ResizeObserver|null = null;
@@ -55,7 +56,7 @@ export class XWidget extends XElement {
   }
 
   registerRequiredCSS(cssFile: string): void {
-    appendStyle(this.shadowRootInternal || this, cssFile);
+    Utils.appendStyle(this.shadowRootInternal || this, cssFile);
   }
 
   setOnShown(callback: (() => void)|null): void {

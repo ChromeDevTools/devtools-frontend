@@ -37,11 +37,12 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import * as Utils from './utils/utils.js';
+
 import type {SuggestBoxDelegate, Suggestion} from './SuggestBox.js';
 import {SuggestBox} from './SuggestBox.js';
 import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
-import {appendStyle} from './utils/append-style.js';
 
 export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SuggestBoxDelegate {
   private proxyElement!: HTMLElement|undefined;
@@ -134,7 +135,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.boundOnMouseWheel = this.onMouseWheel.bind(this);
     this.boundClearAutocomplete = this.clearAutocomplete.bind(this);
     this.proxyElement = element.ownerDocument.createElement('span');
-    appendStyle(this.proxyElement, 'ui/legacy/textPrompt.css');
+    Utils.appendStyle(this.proxyElement, 'ui/legacy/textPrompt.css');
     this.contentElement = this.proxyElement.createChild('div', 'text-prompt-root');
     this.proxyElement.style.display = this.proxyElementDisplay;
     if (element.parentElement) {

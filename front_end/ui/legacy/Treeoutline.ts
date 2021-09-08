@@ -37,14 +37,14 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import * as Utils from './utils/utils.js';
+
 import type {Icon} from './Icon.js';
 import type {Config} from './InplaceEditor.js';
 import {InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
 import {Tooltip} from './Tooltip.js';
 import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';
-import {appendStyle} from './utils/append-style.js';
-import {createShadowRootWithCoreStyles} from './utils/create-shadow-root-with-core-styles.js';
 
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 
@@ -379,15 +379,15 @@ export class TreeOutlineInShadow extends TreeOutline {
     super();
     this.contentElement.classList.add('tree-outline');
     this.element = document.createElement('div');
-    this.shadowRoot =
-        createShadowRootWithCoreStyles(this.element, {cssFile: 'ui/legacy/treeoutline.css', delegatesFocus: undefined});
+    this.shadowRoot = Utils.createShadowRootWithCoreStyles(
+        this.element, {cssFile: 'ui/legacy/treeoutline.css', delegatesFocus: undefined});
     this.disclosureElement = this.shadowRoot.createChild('div', 'tree-outline-disclosure');
     this.disclosureElement.appendChild(this.contentElement);
     this.renderSelection = true;
   }
 
   registerRequiredCSS(cssFile: string): void {
-    appendStyle(this.shadowRoot, cssFile);
+    Utils.appendStyle(this.shadowRoot, cssFile);
   }
 
   registerCSSFiles(cssFiles: CSSStyleSheet[]): void {

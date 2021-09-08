@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {registerCustomElement} from './utils/register-custom-element.js';
+import * as Utils from './utils/utils.js';
 
 let iconConstructor: (() => Element)|null = null;
 
@@ -19,7 +19,7 @@ export class Icon extends HTMLSpanElement {
 
   static create(iconType?: string, className?: string): Icon {
     if (!iconConstructor) {
-      iconConstructor = registerCustomElement('span', 'ui-icon', Icon);
+      iconConstructor = Utils.registerCustomElement('span', 'ui-icon', Icon);
     }
 
     const icon = (iconConstructor() as Icon);

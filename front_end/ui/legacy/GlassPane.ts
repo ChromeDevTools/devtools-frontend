@@ -4,11 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Utils from './utils/utils.js';
 
 import type {Size} from './Geometry.js';
 import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
-import {measuredScrollbarWidth} from './utils/measured-scrollbar-width.js';
 import type {WidgetElement} from './Widget.js';
 import {Widget} from './Widget.js';
 
@@ -149,7 +149,7 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
 
     const showArrow = this.marginBehavior === MarginBehavior.Arrow;
     const gutterSize = showArrow ? 8 : (this.marginBehavior === MarginBehavior.NoMargin ? 0 : 3);
-    const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
+    const scrollbarSize = Utils.measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
     const container = (_containers.get((this.element.ownerDocument as Document))) as HTMLElement;

@@ -596,4 +596,5 @@ export interface ProviderRegistration {
   provider: () => Promise<Provider>;
   title?: (() => string);
   prefix: string;
+  iconName: string;
 }

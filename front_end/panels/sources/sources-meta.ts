@@ -1700,6 +1700,7 @@ UI.ContextMenu.registerItem({
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '@',
+  iconName: 'ic_command_go_to_symbol',
   title: i18nLazyString(UIStrings.goToSymbol),
   async provider() {
     const Sources = await loadSourcesModule();
@@ -1709,6 +1710,7 @@ QuickOpen.FilteredListWidget.registerProvider({
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: ':',
+  iconName: 'ic_command_go_to_line',
   title: i18nLazyString(UIStrings.goToLine),
   async provider() {
     const Sources = await loadSourcesModule();
@@ -1718,6 +1720,7 @@ QuickOpen.FilteredListWidget.registerProvider({
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '',
+  iconName: 'ic_command_open_file',
   title: i18nLazyString(UIStrings.openFile),
   async provider() {
     const Sources = await loadSourcesModule();

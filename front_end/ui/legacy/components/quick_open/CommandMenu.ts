@@ -380,6 +380,7 @@ export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate 
 
 registerProvider({
   prefix: '>',
+  iconName: 'ic_command_run_command',
   title: (): Common.UIString.LocalizedString => i18nString(UIStrings.runCommand),
   provider: () => Promise.resolve(CommandMenuProvider.instance()),
 });

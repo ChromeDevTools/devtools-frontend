@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 import {getRegisteredProviders, Provider, registerProvider} from './FilteredListWidget.js';
@@ -12,6 +13,7 @@ let helpQuickOpenInstance: HelpQuickOpen;
 export class HelpQuickOpen extends Provider {
   private providers: {
     prefix: string,
+    iconName: string,
     title: string,
   }[];
 
@@ -33,10 +35,11 @@ export class HelpQuickOpen extends Provider {
 
   private addProvider(extension: {
     prefix: string,
+    iconName: string,
     title?: () => string,
   }): void {
     if (extension.title) {
-      this.providers.push({prefix: extension.prefix || '', title: extension.title()});
+      this.providers.push({prefix: extension.prefix || '', iconName: extension.iconName, title: extension.title()});
     }
   }
 
@@ -54,8 +57,16 @@ export class HelpQuickOpen extends Provider {
 
   renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
     const provider = this.providers[itemIndex];
-    const prefixElement = titleElement.createChild('span', 'monospace');
-    prefixElement.textContent = (provider.prefix || '…') + ' ';
+
+    const iconElement = new IconButton.Icon.Icon();
+    iconElement.data = {
+      iconName: provider.iconName,
+      color: 'var(--color-text-primary)',
+      width: '18px',
+      height: '18px',
+    };
+    titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
+
     UI.UIUtils.createTextChild(titleElement, provider.title);
   }
 
@@ -72,6 +83,7 @@ export class HelpQuickOpen extends Provider {
 
 registerProvider({
   prefix: '?',
+  iconName: 'ic_command_help',
   title: undefined,
   provider: () => Promise.resolve(HelpQuickOpen.instance()),
 });

@@ -6,7 +6,6 @@
     "panels/mobile_throttling",
     "ui/legacy/components/object_ui",
     "ui/legacy/components/perf_ui",
-    "models/persistence",
     "panels/search",
     "ui/legacy/components/source_frame",
     "ui/legacy"

@@ -2,7 +2,7 @@
   "dependencies": [
     "ui/legacy/components/text_editor",
     "ui/legacy",
-    "models/persistence",
+    "ui/legacy/components/utils",
     "ui/legacy/components/object_ui"
   ],
     "resources": [

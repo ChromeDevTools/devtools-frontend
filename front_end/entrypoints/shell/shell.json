@@ -3,7 +3,6 @@
     { "name": "ui/legacy/components/utils", "type": "autostart"},
     { "name": "panels/console_counters", "type": "autostart" },
     { "name": "entrypoints/main", "type": "autostart" },
-    { "name": "models/persistence", "type": "autostart" },
     { "name": "ui/legacy", "type": "autostart" },
 
     { "name": "panels/changes" },

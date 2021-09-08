@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Pinapayagan nang may babala"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Library"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Kapag malalaki ang JavaScript library, posibleng maging hindi maganda ang performance. Gumamit ng mas maliliit na library na ganoon din ang function para mabawasan ang laki ng iyong bundle. [Matuto pa](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 malaking library ang nakita}one{# malaking library ang nakita}other{# na malaking library ang nakita}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Palitan ang mga napakalaking JavaScript library"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Umiiwas sa malalaking JavaScript library gamit ang mas maliliit na alternatibo"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ito ang pinakamalaking contentful element na na-paint sa viewport. [Matuto Pa](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Mukhang invalid na keyword ang {keyword}."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Nagbibigay-daan ang 'unsafe-inline' sa pagpapatupad ng mga hindi ligtas na in-page na script at tagapangasiwa ng event. Pag-isipang gumamit ng mga CSP nonce o hash para indibidwal na payagan ang mga script."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pag-isipang magdagdag ng 'unsafe-inline' (binabalewala ng mga browser na sumusuporta sa mga nonce/hash) para maging backward compatible sa mga lumang browser."

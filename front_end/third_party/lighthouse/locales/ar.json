@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "مسموح به مع التحذير"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "مكتبة"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "يمكن أن تؤدّي مكتبات JavaScript الكبيرة إلى ضعف في الأداء. من الأفضل أن تكون المكتبات صغيرة ومتكافئة وظيفيًا لتقليص حجم الحِزمة. [مزيد من المعلومات](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{تم العثور على مكتبة كبيرة واحدة}zero{تم العثور على # مكتبة كبيرة}two{تم العثور على مكتبتَين كبيرتَين}few{تم العثور على # مكتبات كبيرة}many{تم العثور على # مكتبة كبيرة}other{تم العثور على # مكتبة كبيرة}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "تبديل مكتبات JavaScript الكبيرة التي لا تهمّك"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "يتم تجنُّب مكتبات JavaScript الكبيرة باستخدام مكتبات صغيرة"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "هذا هو الجزء من المحتوى الذي تم عرضه بأكبر سرعة على الصفحة ضمن إطار العرض. [مزيد من المعلومات](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "الكلمة الرئيسية {keyword} غير صالحة."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "يسمح 'unsafe-inline' بتنفيذ نصوص برمجية ومعالجات أحداث غير آمنة في الصفحة. ننصحك باستخدام أرقام CSP الخاصة أو أجزائها للسماح بالنصوص البرمجية كل على حدة."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "ننصحك بإضافة الأمر التوجيهي 'unsafe-inline' (الذي تتجاهله المتصفِّحات المتوافقة مع nonces/hashes) لجعل CSP متوافقة مع أنظمة المتصفِّحات القديمة."

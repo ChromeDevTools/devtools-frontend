@@ -232,6 +232,7 @@ Auditing: Keep request counts low and transfer sizes small
 Auditing: Minimize third-party usage
 Auditing: Lazy load third-party resources with facades
 Auditing: Largest Contentful Paint element
+Auditing: Largest Contentful Paint image was not lazily loaded
 Auditing: Avoid large layout shifts
 Auditing: Avoid long main-thread tasks
 Auditing: Avoids `unload` event listeners
@@ -384,7 +385,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 8.3.0
+Version: 8.4.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,
@@ -486,6 +487,7 @@ label: notApplicable
 largest-contentful-paint: numeric
 largest-contentful-paint-element: informative
 layout-shift-elements: notApplicable
+lcp-lazy-loaded: notApplicable
 legacy-javascript: numeric
 link-name: notApplicable
 link-text: pass
@@ -571,7 +573,7 @@ viewport: fail
 viewport-ad-density: notApplicable
 visual-order-follows-dom: manual
 
-# of .lh-audit divs: 159
+# of .lh-audit divs: 161
 
 .lh-audit divs:
 accesskeys
@@ -660,6 +662,7 @@ js-libraries
 label
 largest-contentful-paint-element
 layout-shift-elements
+lcp-lazy-loaded
 legacy-javascript
 link-name
 link-text
@@ -729,6 +732,7 @@ uses-text-compression
 valid-lang
 valid-source-maps
 video-caption
+viewport
 viewport
 viewport
 viewport-ad-density

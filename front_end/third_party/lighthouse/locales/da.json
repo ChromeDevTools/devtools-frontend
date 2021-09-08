@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Tilladt med advarsel"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Bibliotek"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Store JavaScript-biblioteker kan kompromittere ydeevnen. Brug i stedet mindre og funktionelt tilsvarende biblioteker for at reducere størrelsen på dine pakker. [Få flere oplysninger](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 stort bibliotek blev fundet}one{# stort bibliotek blev fundet}other{# store biblioteker blev fundet}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Udskift unødvendigt store JavaScript-biblioteker"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Undgår store JavaScript-biblioteker ved hjælp af mindre alternativer"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Dette element har den største udfyldning af indhold i det synlige område. [Få flere oplysninger](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} lader til at være et ugyldigt søgeord."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inline\" tillader, at der kan køres \"unsafe in-page\"-scripts og hændelseshandlers. Overvej at bruge CSP-nonces eller -hashes til at tillade scripts på individuel basis."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Overvej at tilføje \"unsafe-inline\" (ignoreres af browsere, der understøtter nonces/hashes) for at gøre CSP'en bagudkompatibel med ældre browsere."

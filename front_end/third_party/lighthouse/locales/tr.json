@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "İzin verildi ancak uyarı içeriyor"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Kitaplık"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Büyük JavaScript kitaplıkları kötü performansa yol açabilir. Paketinizin boyutunu küçültmek için daha küçük, işlevsel olarak eş değerde kitaplıklar kullanın. [Daha fazla bilgi](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 büyük kitaplık bulundu}other{# büyük kitaplık bulundu}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Gereksiz bir şekilde büyük olan JavaScript kitaplıklarını değiştirin"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Daha küçük alternatifleri olan büyük JavaScript kitaplıklarını kullanmaktan kaçının"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Bu, görüntü alanı içinde boyanan en büyük zengin içerikli öğedir. [Daha Fazla Bilgi](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} geçersiz bir anahtar kelime gibi görünüyor."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inline\", güvenli olmayan sayfa içi komut dosyalarının ve etkinlik işleyicilerin yürütülmesine izin verir. Komut dosyalarına ayrı ayrı izin vermek için CSP nonce veya hash değerleri kullanmayı düşünün."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için \"unsafe-inline\" yönergesi (nonce/hash destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."

@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Được phép nhưng có cảnh báo"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Thư viện"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Các thư viện JavaScript lớn có thể dẫn đến hiệu suất kém. Hãy ưu tiên các thư viện nhỏ hơn, có chức năng tương đương để giảm kích thước gói của bạn. [Tìm hiểu thêm](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Tìm thấy 1 thư viện lớn}other{Tìm thấy # thư viện lớn}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Thay thế các thư viện JavaScript lớn không cần thiết"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Dùng các thư viện JavaScript nhỏ thay cho thư viện lớn"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Đây là thành phần nội dung lớn nhất hiển thị trong khung nhìn. [Tìm hiểu thêm](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Có vẻ như {keyword} là một từ khóa không hợp lệ."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inline\" cho phép thực thi nhiều trình xử lý sự kiện và tập lệnh không an toàn trong trang. Hãy cân nhắc dùng nonces hoặc hashes của CSP để cho phép thực thi từng tập lệnh."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Hãy cân nhắc thêm \"unsafe-inline\" (bị các trình duyệt hỗ trợ nonces/hashes bỏ qua) để tương thích ngược với những trình duyệt cũ."

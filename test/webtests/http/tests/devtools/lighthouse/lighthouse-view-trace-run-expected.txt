@@ -29,6 +29,7 @@ interactive
 largest-contentful-paint
 largest-contentful-paint-element
 layout-shift-elements
+lcp-lazy-loaded
 legacy-javascript
 long-tasks
 main-thread-tasks
@@ -70,6 +71,7 @@ uses-rel-preconnect
 uses-rel-preload
 uses-responsive-images
 uses-text-compression
+viewport
 
 View Trace Button Text: "View Original Trace"
 View Trace Button Title: "The performance metrics above are simulated and won't match the timings found in this trace. Disable simulated throttling in "Lighthouse Settings" if you want the timings to match."

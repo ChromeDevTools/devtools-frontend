@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "எச்சரிக்கையுடன் அனுமதிக்கப்பட்டது"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "லைப்ரரி"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "பெரிய அளவிலான JavaScript லைப்ரரிகள் மோசமான செயல்திறனுக்கு வழிவகுக்கலாம் என்பதால் அவற்றுக்கு நிகராகச் செயல்படக்கூடிய, சிறிய லைப்ரரிகளைத் தேர்வுசெய்து உங்கள் தொகுப்பின் அளவைக் குறைக்கவும். [மேலும் அறிக](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 பெரிய அளவிலான லைப்ரரி உள்ளது}other{# பெரிய அளவிலான லைப்ரரிகள் உள்ளன}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "அவசியமற்ற பெரிய அளவிலான JavaScript லைப்ரரிகளைத் தவிர்த்திடுங்கள்"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "பெரிய அளவிலான JavaScript லைப்ரரிகளுக்குப் பதிலாகச் சிறிய அளவிலான லைப்ரரிகளைப் பயன்படுத்துங்கள்"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "இது காட்சிப் பகுதிக்குள் தோன்றக்கூடிய உள்ளடக்கமுள்ள மிகப்பெரிய உறுப்பாகும். [மேலும் அறிக](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} தவறான தேடல் குறிப்பு போல் தெரிகிறது."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "பக்கத்தில் உள்ள பாதுகாப்பற்ற ஸ்கிரிப்ட்டுகள் & ஈவண்ட் ஹேண்ட்லர்கள் இயக்கத்தை 'unsafe-inline' அனுமதிக்கிறது. ஸ்கிரிப்ட்டுகளைத் தனியாக அனுமதிக்க, CSP nonces/hashes என்பதைப் பயன்படுத்தவும்."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "பழைய உலாவிகளுடன் இணக்கமாக இருக்கும் வகையில் 'unsafe-inline' (nonces/hashes என்பதை ஆதரிக்கும் உலாவிகளால் புறக்கணிக்கப்பட்டது) என்பதைச் சேர்ப்பதைக் கருத்தில் கொள்ளவும்."

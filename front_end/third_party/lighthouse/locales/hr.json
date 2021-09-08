@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Dopušteno uz upozorenje"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Biblioteka"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Veće biblioteke JavaScripta mogu uzrokovati lošu izvedbu. Dajte prednost manjim bibliotekama s ekvivalentnim funkcijama kako biste smanjili veličinu paketa. [Saznajte više](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Pronađena je jedna velika biblioteka}one{Pronađena je # velika biblioteka}few{Pronađene su # velike biblioteke}other{Pronađeno je # velikih biblioteka}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Zamijenite nepotrebno velike biblioteke JavaScripta"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Izbjegavajte velike biblioteke JavaScripta ako postoje manje alternative"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ovo je element s najvećim renderiranjem sadržaja unutar vidljivog dijela. [Saznajte više](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Čini se da {keyword} nije važeća ključna riječ."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Direktiva unsafe-inline omogućuje izvršavanje nesigurnih skripti i rukovatelja događajima unutar stranice. Savjetujemo vam da koristite CSP nonceove ili hasheve kako biste omogućavali skripte pojedinačno."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Savjetujemo vam da koristite unsafe-inline (koji ignoriraju preglednici koji podržavaju nonceove/hasheve) radi kompatibilnosti s prijašnjim verzijama preglednika."

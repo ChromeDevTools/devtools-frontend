@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Zugelassen mit Warnung"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Bibliothek"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Große JavaScript-Bibliotheken können die Ursache für schlechte Leistung sein. Verwenden Sie kleinere, funktionell gleichwertige Bibliotheken, um die Bundle-Größe zu verringern. [Weitere Informationen.](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 große Bibliothek gefunden}other{# große Bibliotheken gefunden}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Unnötig große JavaScript-Bibliotheken ersetzen"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Verhindert große JavaScript-Bibliotheken durch kleinere Alternativen"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Dies ist das größte Inhaltselement, das im Darstellungsbereich angezeigt wird. [Weitere Informationen](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "„{keyword}“ ist ein ungültiges Keyword."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "„unsafe-inline“ lässt die Ausführung unsicherer In-Page-Skripts und Event-Handler zu. Sie können CSP-Nonces oder -Hashes verwenden, um Skripts einzeln zuzulassen."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Sie können „unsafe-inline“ hinzufügen (wird von Browsern ignoriert, die Nonces/Hashes unterstützen), um mit älteren Browsern kompatibel zu sein."

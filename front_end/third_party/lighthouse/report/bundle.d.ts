@@ -1,4 +1,4 @@
-export type DOM_ = any;
+
 export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'envItem' | 'footer' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'metricsToggle' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'topbar' | 'warningsToplevel';
 export type I18n<T> = any;
 export type CRCSegment = {
@@ -74,6 +74,7 @@ export class DOM {
      * @return {!DocumentFragment} A clone of the cached component.
      */
     createComponent(componentName: any): DocumentFragment;
+    clearComponentCache(): void;
     /**
      * @param {string} text
      * @return {Element}
@@ -127,6 +128,13 @@ export class DOM {
      * @param {ParentNode} context
      */
     findAll<T_3 extends string>(query: T_3, context: ParentNode): Element[];
+    /**
+     * Fires a custom DOM event on target.
+     * @param {string} name Name of the event.
+     * @param {Node=} target DOM node to fire the event on.
+     * @param {*=} detail Custom data to include.
+     */
+    fireEventOn(name: string, target?: Node | undefined, detail?: any | undefined): void;
 }
 /**
  * @license
@@ -155,15 +163,11 @@ export class ReportRenderer {
     /** @type {DOM} */
     _dom: DOM;
     /**
-     * @param {LH.Result} result
+     * @param {LH.Result} lhr
      * @param {Element} container Parent element to render the report into.
      * @return {!Element}
      */
-    renderReport(result: any, container: Element): Element;
-    /**
-     * @param {ParentNode} _
-     */
-    setTemplateContext(_: ParentNode): void;
+    renderReport(lhr: any, container: Element): Element;
     /**
      * @param {LH.ReportResult} report
      * @return {DocumentFragment}
@@ -199,44 +203,6 @@ export class ReportRenderer {
 }
 export class ReportUIFeatures {
     /**
-     * The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly.
-     * @param {LH.Result} json
-     * @protected
-     */
-    protected static computeWindowNameSuffix(json: any): string;
-    /**
-     * Opens a new tab to the online viewer and sends the local page's JSON results
-     * to the online viewer using URL.fragment
-     * @param {LH.Result} json
-     * @protected
-     */
-    protected static openViewer(json: any): void;
-    /**
-     * Opens a new tab to the treemap app and sends the JSON results using URL.fragment
-     * @param {LH.Result} json
-     */
-    static openTreemap(json: any): void;
-    /**
-     * Opens a new tab to an external page and sends data using postMessage.
-     * @param {{lhr: LH.Result} | LH.Treemap.Options} data
-     * @param {string} url
-     * @param {string} windowName
-     * @protected
-     */
-    protected static openTabAndSendData(data: {
-        lhr: any;
-    } | any, url: string, windowName: string): void;
-    /**
-     * Opens a new tab to an external page and sends data via base64 encoded url params.
-     * @param {{lhr: LH.Result} | LH.Treemap.Options} data
-     * @param {string} url_
-     * @param {string} windowName
-     * @protected
-     */
-    protected static openTabWithUrlData(data: {
-        lhr: any;
-    } | any, url_: string, windowName: string): Promise<void>;
-    /**
      * @param {DOM} dom
      */
     constructor(dom: DOM);
@@ -246,65 +212,18 @@ export class ReportUIFeatures {
     _dom: DOM;
     /** @type {Document} */
     _document: Document;
-    /** @type {DropDown} */
-    _dropDown: DropDown;
-    /** @type {boolean} */
-    _copyAttempt: boolean;
-    /** @type {HTMLElement} */
-    topbarEl: HTMLElement;
-    /** @type {HTMLElement} */
-    scoreScaleEl: HTMLElement;
-    /** @type {HTMLElement} */
-    stickyHeaderEl: HTMLElement;
-    /** @type {HTMLElement} */
-    highlightEl: HTMLElement;
+    _topbar: TopbarFeatures;
     /**
      * Handle media query change events.
      * @param {MediaQueryList|MediaQueryListEvent} mql
      */
     onMediaQueryChange(mql: MediaQueryList | MediaQueryListEvent): void;
     /**
-     * Handle copy events.
-     * @param {ClipboardEvent} e
-     */
-    onCopy(e: ClipboardEvent): void;
-    /**
-     * Handler for tool button.
-     * @param {Event} e
-     */
-    onDropDownMenuClick(e: Event): void;
-    /**
-     * Keyup handler for the document.
-     * @param {KeyboardEvent} e
-     */
-    onKeyUp(e: KeyboardEvent): void;
-    /**
-     * Collapses all audit `<details>`.
-     * open a `<details>` element.
-     */
-    collapseAllDetails(): void;
-    /**
-     * Expands all audit `<details>`.
-     * Ideally, a print stylesheet could take care of this, but CSS has no way to
-     * open a `<details>` element.
-     */
-    expandAllDetails(): void;
-    /**
-     * @private
-     * @param {boolean} [force]
-     */
-    private _toggleDarkTheme;
-    _updateStickyHeaderOnScroll(): void;
-    /**
      * Adds tools button, print, and other functionality to the report. The method
      * should be called whenever the report needs to be re-rendered.
-     * @param {LH.Result} report
+     * @param {LH.Result} lhr
      */
-    initFeatures(report: any): void;
-    /**
-     * @param {ParentNode} _
-     */
-    setTemplateContext(_: ParentNode): void;
+    initFeatures(lhr: any): void;
     /**
      * @param {{container?: Element, text: string, icon?: string, onClick: () => void}} opts
      */
@@ -315,20 +234,22 @@ export class ReportUIFeatures {
         onClick: () => void;
     }): any;
     /**
-     * Finds the first scrollable ancestor of `element`. Falls back to the document.
-     * @param {Element} element
-     * @return {Node}
+     * Returns the html that recreates this report.
+     * @return {string}
      */
-    _getScrollParent(element: Element): Node;
-    _enableFireworks(): void;
+    getReportHtml(): string;
     /**
-     * Fires a custom DOM event on target.
-     * @param {string} name Name of the event.
-     * @param {Node=} target DOM node to fire the event on.
-     * @param {*=} detail Custom data to include.
+     * Save json as a gist. Unimplemented in base UI features.
      */
-    _fireEventOn(name: string, target?: Node | undefined, detail?: any | undefined): void;
+    saveAsGist(): void;
+    _enableFireworks(): void;
     _setupMediaQueryListeners(): void;
+    /**
+     * Resets the state of page before capturing the page for export.
+     * When the user opens the exported HTML page, certain UI elements should
+     * be in their closed state (not opened) and the templates should be unstamped.
+     */
+    _resetUIState(): void;
     _setupThirdPartyFilter(): void;
     /**
      * @param {Element} el
@@ -342,40 +263,11 @@ export class ReportUIFeatures {
      * @return {Array<HTMLElement>}
      */
     _getThirdPartyRows(rowEls: HTMLElement[], finalUrl: string): Array<HTMLElement>;
-    _setupStickyHeaderElements(): void;
-    /**
-     * Copies the report JSON to the clipboard (if supported by the browser).
-     */
-    onCopyButtonClick(): void;
-    /**
-     * Resets the state of page before capturing the page for export.
-     * When the user opens the exported HTML page, certain UI elements should
-     * be in their closed state (not opened) and the templates should be unstamped.
-     */
-    _resetUIState(): void;
-    _print(): void;
-    /**
-     * Sets up listeners to collapse audit `<details>` when the user closes the
-     * print dialog, all `<details>` are collapsed.
-     */
-    _setUpCollapseDetailsAfterPrinting(): void;
-    /**
-     * Returns the html that recreates this report.
-     * @return {string}
-     * @protected
-     */
-    protected getReportHtml(): string;
-    /**
-     * Save json as a gist. Unimplemented in base UI features.
-     * @protected
-     */
-    protected saveAsGist(): void;
     /**
      * Downloads a file (blob) using a[download].
      * @param {Blob|File} blob The file to save.
-     * @private
      */
-    private _saveFile;
+    _saveFile(blob: Blob | File): void;
 }
 type LineContentType = number;
 declare namespace LineContentType {
@@ -554,72 +446,92 @@ declare class CategoryRenderer {
      */
     createPermalinkSpan(element: Element, id: string): void;
 }
-declare class DropDown {
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+declare class TopbarFeatures {
     /**
+     * @param {ReportUIFeatures} reportUIFeatures
      * @param {DOM} dom
      */
-    constructor(dom: DOM);
-    /** @type {DOM} */
+    constructor(reportUIFeatures: ReportUIFeatures, dom: DOM);
+    /** @type {LH.Result} */
+    lhr: any;
+    _reportUIFeatures: ReportUIFeatures;
     _dom: DOM;
+    /** @type {Document} */
+    _document: Document;
+    _dropDownMenu: DropDownMenu;
+    _copyAttempt: boolean;
     /** @type {HTMLElement} */
-    _toggleEl: HTMLElement;
+    topbarEl: HTMLElement;
     /** @type {HTMLElement} */
-    _menuEl: HTMLElement;
-    /**
-     * Keydown handler for the document.
-     * @param {KeyboardEvent} e
-     */
-    onDocumentKeyDown(e: KeyboardEvent): void;
-    /**
-     * Click handler for tools button.
-     * @param {Event} e
-     */
-    onToggleClick(e: Event): void;
+    scoreScaleEl: HTMLElement;
+    /** @type {HTMLElement} */
+    stickyHeaderEl: HTMLElement;
+    /** @type {HTMLElement} */
+    highlightEl: HTMLElement;
     /**
      * Handler for tool button.
+     * @param {Event} e
+     */
+    onDropDownMenuClick(e: Event): void;
+    /**
+     * Keyup handler for the document.
      * @param {KeyboardEvent} e
      */
-    onToggleKeydown(e: KeyboardEvent): void;
+    onKeyUp(e: KeyboardEvent): void;
     /**
-     * Focus out handler for the drop down menu.
-     * @param {FocusEvent} e
+     * Handle copy events.
+     * @param {ClipboardEvent} e
      */
-    onMenuFocusOut(e: FocusEvent): void;
+    onCopy(e: ClipboardEvent): void;
     /**
-     * Handler for tool DropDown.
-     * @param {KeyboardEvent} e
+     * Collapses all audit `<details>`.
+     * open a `<details>` element.
      */
-    onMenuKeydown(e: KeyboardEvent): void;
+    collapseAllDetails(): void;
+    _updateStickyHeaderOnScroll(): void;
     /**
-     * @param {?HTMLElement=} startEl
-     * @return {HTMLElement}
+     * @param {LH.Result} lhr
      */
-    _getNextMenuItem(startEl?: (HTMLElement | null) | undefined): HTMLElement;
+    enable(lhr: any): void;
     /**
-     * @param {Array<Node>} allNodes
-     * @param {?HTMLElement=} startNode
-     * @return {HTMLElement}
+     * Copies the report JSON to the clipboard (if supported by the browser).
      */
-    _getNextSelectableNode(allNodes: Array<Node>, startNode?: (HTMLElement | null) | undefined): HTMLElement;
+    onCopyButtonClick(): void;
     /**
-     * @param {?HTMLElement=} startEl
-     * @return {HTMLElement}
+     * Expands all audit `<details>`.
+     * Ideally, a print stylesheet could take care of this, but CSS has no way to
+     * open a `<details>` element.
      */
-    _getPreviousMenuItem(startEl?: (HTMLElement | null) | undefined): HTMLElement;
+    expandAllDetails(): void;
+    _print(): void;
     /**
-     * @param {function(MouseEvent): any} menuClickHandler
+     * Resets the state of page before capturing the page for export.
+     * When the user opens the exported HTML page, certain UI elements should
+     * be in their closed state (not opened) and the templates should be unstamped.
      */
-    setup(menuClickHandler: (arg0: MouseEvent) => any): void;
-    close(): void;
+    resetUIState(): void;
     /**
-     * @param {HTMLElement} firstFocusElement
+     * Finds the first scrollable ancestor of `element`. Falls back to the document.
+     * @param {Element} element
+     * @return {Node}
      */
-    open(firstFocusElement: HTMLElement): void;
+    _getScrollParent(element: Element): Node;
+    /**
+     * Sets up listeners to collapse audit `<details>` when the user closes the
+     * print dialog, all `<details>` are collapsed.
+     */
+    _setUpCollapseDetailsAfterPrinting(): void;
+    _setupStickyHeaderElements(): void;
 }
 declare class DetailsRenderer {
     /**
      * @param {DOM} dom
-     * @param {{fullPageScreenshot?: LH.Artifacts.FullPageScreenshot}} [options]
+     * @param {{fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot}} [options]
      */
     constructor(dom: DOM, options?: {
         fullPageScreenshot?: any;
@@ -767,5 +679,73 @@ declare class DetailsRenderer {
      * @return {Element}
      */
     _renderCode(text: string): Element;
+}
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+/** @typedef {import('./dom.js').DOM} DOM */
+declare class DropDownMenu {
+    /**
+     * @param {DOM} dom
+     */
+    constructor(dom: DOM);
+    /** @type {DOM} */
+    _dom: DOM;
+    /** @type {HTMLElement} */
+    _toggleEl: HTMLElement;
+    /** @type {HTMLElement} */
+    _menuEl: HTMLElement;
+    /**
+     * Keydown handler for the document.
+     * @param {KeyboardEvent} e
+     */
+    onDocumentKeyDown(e: KeyboardEvent): void;
+    /**
+     * Click handler for tools button.
+     * @param {Event} e
+     */
+    onToggleClick(e: Event): void;
+    /**
+     * Handler for tool button.
+     * @param {KeyboardEvent} e
+     */
+    onToggleKeydown(e: KeyboardEvent): void;
+    /**
+     * Focus out handler for the drop down menu.
+     * @param {FocusEvent} e
+     */
+    onMenuFocusOut(e: FocusEvent): void;
+    /**
+     * Handler for tool DropDown.
+     * @param {KeyboardEvent} e
+     */
+    onMenuKeydown(e: KeyboardEvent): void;
+    /**
+     * @param {?HTMLElement=} startEl
+     * @return {HTMLElement}
+     */
+    _getNextMenuItem(startEl?: (HTMLElement | null) | undefined): HTMLElement;
+    /**
+     * @param {Array<Node>} allNodes
+     * @param {?HTMLElement=} startNode
+     * @return {HTMLElement}
+     */
+    _getNextSelectableNode(allNodes: Array<Node>, startNode?: (HTMLElement | null) | undefined): HTMLElement;
+    /**
+     * @param {?HTMLElement=} startEl
+     * @return {HTMLElement}
+     */
+    _getPreviousMenuItem(startEl?: (HTMLElement | null) | undefined): HTMLElement;
+    /**
+     * @param {function(MouseEvent): any} menuClickHandler
+     */
+    setup(menuClickHandler: (arg0: MouseEvent) => any): void;
+    close(): void;
+    /**
+     * @param {HTMLElement} firstFocusElement
+     */
+    open(firstFocusElement: HTMLElement): void;
 }
 export {};

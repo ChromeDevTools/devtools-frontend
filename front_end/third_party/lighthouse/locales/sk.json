@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Povolené s upozornením"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Knižnica"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Veľké knižnice JavaScriptu môžu viesť k slabej výkonnosti. Uprednostnite menšie knižnice s rovnakými funkciami, aby ste tak znížili veľkosť súpravy. [Ďalšie informácie](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Bola nájdená 1 veľká knižnica}few{Boli nájdené # veľké knižnice}many{# large libraries found}other{Bolo nájdených # veľkých knižníc}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Nahraďte zbytočne veľké knižnice JavaScript"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Zabráni vytvoreniu veľkých knižníc JavaScriptu menšími alternatívami"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Toto je najväčší prvok s obsahom vykreslený v oblasti zobrazenia. [Ďalšie informácie](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Zdá sa, že {keyword} je neplatné kľúčové slovo."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline umožňuje spustenie nebezpečných stránkových skriptov a obslužných nástrojov udalostí. Odporúčame povoliť skripty individuálne pomocou iba raz použiteľných čísiel alebo hodnôt hash PZO."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Odporúčame pridať direktívu unsafe-inline (ignorovanú prehliadačmi podporujúcimi iba raz použiteľné čísla a hodnoty hash), aby boli pravidlá spätne kompatibilné so staršími prehliadačmi."

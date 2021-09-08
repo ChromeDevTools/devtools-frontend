@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Tillatt med advarsel"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Bibliotek"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Store JavaScript-bibliotek kan føre til lav ytelse. Du bør bruke mindre bibliotek med tilsvarende funksjonalitet for å redusere pakkestørrelsen. [Finn ut mer](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 stort bibliotek funnet}other{# store bibliotek funnet}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Bytt ut unødvendig store JavaScript-bibliotek"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Unngår store JavaScript-bibliotek der det finnes mindre alternativer"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Dette er det største innholdsrike elementet som ble tegnet innenfor det synlige området. [Finn ut mer](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} ser ut til å være et ugyldig nøkkelord."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "«unsafe-inline» muliggjør kjøring av utrygge skript og hendelsesbehandlere på siden. Vurder å bruke CSP-engangsverdier eller -hasher for å la skript kjøre individuelt."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Vurder å legge til «unsafe-inline» (ignoreres av nettlesere som støtter engangsverdier eller hasher) for bakoverkompatibilitet med eldre nettlesere."

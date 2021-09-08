@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Dovoljeno z opozorilom"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Knjižnica"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Velike knjižnice JavaScript lahko povzročijo slabo učinkovitost delovanja. Če želite zmanjšati velikost svežnja, namesto tega uporabite manjše, funkcionalno enakovredne knjižnice. [Več o tem](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Najdena je bila 1 velika knjižnica}one{Najdena je bila # velika knjižnica}two{Najdeni sta bili # veliki knjižnici}few{Najdene so bile # velike knjižnice}other{Najdenih je bilo # velikih knjižnic}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Zamenjava nepotrebno velikih knjižnic JavaScript"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Izogiba se velikim knjižnicam JavaScript z manjšimi nadomestnimi knjižnicami"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "To je največji vsebinski element, izrisan znotraj vidnega območja. [Več o tem](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Videti je, da je {keyword} neveljavna ključna beseda."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Element »unsafe-inline« omogoča izvajanje na strani umeščenih skriptov, ki niso varni, in rutin za obravnavo dogodkov. Razmislite o uporabi žetonov ali zgoščenih vrednosti za pravilnik CSP, s katerim bi omogočali posamezne skripte."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Razmislite o dodajanju elementa »unsafe-inline« (brskalniki, ki podpirajo žetone/zgoščene vrednosti, ga prezrejo) zaradi povratne združljivosti s starejšimi brskalniki."

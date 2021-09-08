@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Atļauts ar brīdinājumu"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Bibliotēka"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Lielu JavaScript bibliotēku izmantošana var sekmēt sliktu veiktspēju. Lai samazinātu komplekta lielumu, ieteicams izmantot mazākas, funkcionāli līdzvērtīgas bibliotēkas. [Uzziniet vairāk](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Tika atrasta viena liela bibliotēka}zero{Tika atrastas # lielas bibliotēkas}one{Tika atrasta # liela bibliotēka}other{Tika atrastas # lielas bibliotēkas}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Aizvietojiet pārmērīgi lielas JavaScript bibliotēkas"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Ja ir pieejamas mazākas bibliotēkas, lielas JavaScript bibliotēkas netiek izmantotas"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Tas ir lielākais skatvietā atveidotais satura elements. [Uzzināt vairāk](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} ir nederīgs atslēgvārds."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Atslēgvārds “unsafe-inline” ļauj izpildīt nedrošus lapā ievietotus skriptus un notikumu apdarinātājus. Apsveriet iespēju atļaut skriptus pa vienam, izmantojot SDP vienreizējos kodus vai jaucējvērtības."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Lai nodrošinātu atpakaļsaderību ar vecākām pārlūkprogrammām, varat pievienot atslēgvārdu “unsafe-inline” (pārlūkprogrammās, kas atbalsta vienreizējos kodus vai jaucējvērtības, šis atslēgvārds tiks ignorēts)."

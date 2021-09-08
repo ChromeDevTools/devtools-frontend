@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "హెచ్చరికతో అనుమతించబడింది"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "లైబ్రరీ"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "పెద్ద JavaScript లైబ్రరీలు పేలవమైన పనితీరుకు దారితీయవచ్చు. మీ బండిల్ సైజ్‌ను తగ్గించడానికి, చిన్నగా ఉండి, సమానమైన పనితీరును కనబరిచే లైబ్రరీలకు ప్రాధాన్యత ఇవ్వండి. [మరింత తెలుసుకోండి](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 పెద్ద లైబ్రరీ కనుగొనబడింది}other{# పెద్ద లైబ్రరీలు కనుగొనబడ్డాయి}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "అనవసరమైన పెద్ద JavaScript లైబ్రరీలను రీప్లేస్ చేయండి"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "పెద్ద JavaScript లైబ్రరీల స్థానంలో చిన్నవిగా ఉండే ప్రత్యామ్నాయాలను ఉపయోగించండి"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "ఇది వీక్షణ పోర్ట్‌లో పెయింట్ చేయబడిన, అన్నిటికంటే ఎక్కువ కంటెంట్ ఉన్న ఎలిమెంట్. [మరింత తెలుసుకోండి](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} చెల్లని కీవర్డ్‌లాగా అనిపిస్తుంది."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline' సురక్షితంకాని unsafe in-page స్క్రిప్ట్‌లు, అలాగే ఈవెంట్ హ్యాండ్లర్‌ల అమలును అనుమతిస్తుంది. స్క్రిప్ట్‌లను వ్యక్తిగతంగా అనుమతించేందుకు CSP nonces లేదా hashesను ఉపయోగించడాన్ని పరిగణించండి."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటానికి 'unsafe-inline' (nonces/hashes సపోర్ట్ చేసే బ్రౌజర్‌ల ద్వారా విస్మరించబడినవి) జోడించడాన్ని పరిగణించండి."

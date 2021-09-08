@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Sallittu varoituksen kanssa"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Kirjasto"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Suuret JavaScript-kirjastot voivat heikentää suorituskykyä. Pienennä paketin kokoa valitsemalla pienempiä, toiminnoiltaan vastaavia kirjastoja. [Lue lisää](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 suuri kirjasto löydetty}other{# suurta kirjastoa löydetty}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Korvaa tarpeettoman suuret JavaScript-kirjastot"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Välttää suuria JavaScript-kirjastoja, jos pienempi vaihtoehto on saatavilla"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Tämä on näkymän suurin renderöity sisältö. [Lue lisää](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Näyttää siltä, että {keyword} on virheellinen avainsana."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inlinen\" avulla voidaan suorittaa vaarallisia sivun sisäisiä skriptejä ja tapahtumien käsittelijöitä. Harkitse skriptien salliminen yksitellen käyttämällä CSP-nonceja tai ‑hasheja."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Harkitse \"unsafe-inlinen\" (jonka nonceja/hasheja tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."

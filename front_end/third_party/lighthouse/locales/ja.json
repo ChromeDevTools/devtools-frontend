@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "許可（警告あり）"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "ライブラリ"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "JavaScript ライブラリのサイズが大きいと、パフォーマンスが低下することがあります。小さいサイズで同等の機能を持つライブラリを使用して、バンドルサイズを抑えてください。[詳細](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 件のサイズの大きいライブラリが見つかりました}other{# 件のサイズの大きいライブラリが見つかりました}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "必要以上にサイズの大きい JavaScript ライブラリを置き換えます"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "サイズの大きい JavaScript ライブラリをサイズの小さいものに置き換えます"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "ビューポート内で描画された最大のコンテンツ要素です。[詳細](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} は無効なキーワードのようです。"
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline' が指定されているため、安全でないページ内スクリプトやイベント ハンドラを実行できる状態になっています。CSP nonce または hash を使用して、スクリプトを個別に許可することを検討してください。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "古いブラウザとの下位互換性を保つため、'unsafe-inline' を追加することを検討してください（nonce / hash をサポートしているブラウザでは無視されます）。"

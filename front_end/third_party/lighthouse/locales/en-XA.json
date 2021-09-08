@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "[Åļļöŵéð ŵîţĥ ŵåŕñîñĝ one two three]"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "[Ļîбŕåŕý one]"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "[Ļåŕĝé ĴåvåŠçŕîþţ ļîбŕåŕîéš çåñ ļéåð ţö þööŕ þéŕƒöŕmåñçé. Þŕéƒéŕ šmåļļéŕ, ƒûñçţîöñåļļý éqûîvåļéñţ ļîбŕåŕîéš ţö ŕéðûçé ýöûŕ бûñðļé šîžé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{[1 ļåŕĝé ļîбŕåŕý ƒöûñð one two three four five]}other{[# ļåŕĝé ļîбŕåŕîéš ƒöûñð one two three four five]}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "[Ŕéþļåçé ûññéçéššåŕîļý ļåŕĝé ĴåvåŠçŕîþţ ļîбŕåŕîéš one two three four five six seven eight nine ten]"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "[Åvöîðš ļåŕĝé ĴåvåŠçŕîþţ ļîбŕåŕîéš ŵîţĥ šmåļļéŕ åļţéŕñåţîvéš one two three four five six seven eight nine ten eleven twelve]"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "[Ţĥîš îš ţĥé ļåŕĝéšţ çöñţéñţƒûļ éļéméñţ þåîñţéð ŵîţĥîñ ţĥé vîéŵþöŕţ. ᐅ[ᐊĻéåŕñ Möŕéᐅ](https://web.dev/lighthouse-largest-contentful-paint/)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "[ᐅ{keyword}ᐊ šéémš ţö бé åñ îñvåļîð ķéýŵöŕð. one two three four five six seven eight]"
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "['ûñšåƒé-îñļîñé' åļļöŵš ţĥé éxéçûţîöñ öƒ ûñšåƒé îñ-þåĝé šçŕîþţš åñð évéñţ ĥåñðļéŕš. Çöñšîðéŕ ûšîñĝ ÇŠÞ ñöñçéš öŕ ĥåšĥéš ţö åļļöŵ šçŕîþţš îñðîvîðûåļļý. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "[Çöñšîðéŕ åððîñĝ 'ûñšåƒé-îñļîñé' (îĝñöŕéð бý бŕöŵšéŕš šûþþöŕţîñĝ ñöñçéš/ĥåšĥéš) ţö бé бåçķŵåŕð çömþåţîбļé ŵîţĥ öļðéŕ бŕöŵšéŕš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"

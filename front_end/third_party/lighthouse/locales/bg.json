@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Разрешено с предупреждение"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Библиотека"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Големите библиотеки на JavaScript могат да доведат до слаба ефективност. Приоритизирайте по-малки и еквивалентно функционални библиотеки, за да намалите размера на пакета си. [Научете повече](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Бе открита 1 библиотека с голям размер}other{Бяха открити # библиотеки с голям размер}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Замяна на неоправдано големите библиотеки на JavaScript"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Избягва големи библиотеки на JavaScript чрез по-малки алтернативи"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Този елемент е най-голямото съдържание, изобразено в прозоречния изглед. [Научете повече](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Изглежда, че {keyword} е невалидна ключова дума."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline позволява изпълнението на опасни скриптове в страницата и манипулатори на събитието. Обмислете дали да не използвате nonce или хешове в CSP, за да разрешавате скриптове поотделно."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Обмислете дали да не добавите unsafe-inline (пренебрегва се от браузъри, които поддържат nonce и хешове), за да се обезпечи обратна съвместимост с по-стари браузъри."

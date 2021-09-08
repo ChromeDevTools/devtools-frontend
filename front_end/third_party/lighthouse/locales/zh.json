@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "允许（附带警告）"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "库"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "大型 JavaScript 库可能会导致性能不佳。最好使用功能相当且规模较小的 JavaScript 库，以缩减软件包大小。[了解详情](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)。"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{发现了 1 个大型库}other{发现了 # 个大型库}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "替换不必要的大型 JavaScript 库"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "请避免使用大型 JavaScript 库，尽量用功能相当且规模较小的库替换"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "这是此视口内渲染的最大内容元素。[了解详情](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword}似乎是无效关键字。"
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "“unsafe-inline”允许执行不安全的页内脚本和事件处理脚本。建议您使用 CSP nonces 或 hashes 来逐一允许各个脚本。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建议您添加“unsafe-inline”（会被支持 nonces/hashes 的浏览器忽略），以便向后兼容旧版浏览器。"

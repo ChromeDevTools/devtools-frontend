@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Dozwolony z ostrzeżeniem"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Biblioteka"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Duże biblioteki JavaScript mogą obniżać wydajność. Aby zmniejszyć rozmiar pakietu, korzystaj z mniejszych bibliotek z takimi samymi funkcjami. [Więcej informacji](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Znaleziono 1 dużą bibliotekę}few{Znaleziono # duże biblioteki}many{Znaleziono # dużych bibliotek}other{Znaleziono # dużej biblioteki}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Zastąp biblioteki JavaScript, które są niepotrzebnie duże"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Używa mniejszych odpowiedników zamiast dużych bibliotek JavaScript"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "To największy wyrenderowany element treści w widocznym obszarze. [Więcej informacji](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} jest prawdopodobnie nieprawidłowym słowem kluczowym."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Dyrektywa „unsafe-inline” zezwala na wykonywanie niebezpiecznych skryptów na stronie i uruchamianie modułów obsługi zdarzeń. Zastanów się, czy nie użyć liczb jednorazowych lub haszy CSP, aby zezwolić osobno na poszczególne skrypty."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Zastanów się, czy nie dodać dyrektywy „unsafe-inline” (ignorowanej przez przeglądarki obsługujące liczby jednorazowe i hasze), aby uzyskać zgodność wsteczną ze starszymi przeglądarkami."

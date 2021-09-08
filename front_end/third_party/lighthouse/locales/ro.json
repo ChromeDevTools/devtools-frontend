@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Permisă cu avertisment"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Bibliotecă"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Bibliotecile JavaScript mari pot duce la performanțe slabe. Alege biblioteci mai mici, echivalente funcțional, pentru a reduce dimensiunea grupului. [Află mai multe](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{A fost găsită o bibliotecă mare}few{Au fost găsite # biblioteci mari}other{Au fost găsite # de biblioteci mari}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Înlocuiește bibliotecile JavaScript inutil de mari"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Evită bibliotecile JavaScript mari cu alternative mai mici"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Acesta este cel mai mare element de conținut redat în aria vizibilă. [Află mai multe](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} pare un cuvânt cheie nevalid."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline permite executarea de scripturi în pagină și handlere pentru evenimente nesigure. Îți recomandăm să folosești valori nonce sau hash pentru CSP pentru a accepta scripturile individual."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Îți recomandăm să adaugi opțiunea unsafe-inline (ignorată de browserele care acceptă valori nonce/hash) pentru retrocompatibilitatea cu browsere mai vechi."

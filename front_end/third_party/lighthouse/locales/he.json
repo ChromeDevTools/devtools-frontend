@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "הכתובת אושרה עם אזהרה"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "ספרייה"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "שימוש בספריות JavaScript גדולות עלול להוביל לביצועים נמוכים. עדיף להשתמש בספריות קטנות יותר, בעלות פונקציונליות זהה, כדי להקטין את גודל החבילה. [למידע נוסף](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{נמצאה ספרייה גדולה אחת}two{נמצאו # ספריות גדולות}many{נמצאו # ספריות גדולות}other{נמצאו # ספריות גדולות}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "יש להחליף ספריות JavaScript גדולות מדי"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "כדאי להימנע משימוש בספריות JavaScript גדולות כשיש חלופות קטנות יותר"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "זהו הרכיב הגדול ביותר המכיל תוכן שמוצג בתוך אזור התצוגה. [מידע נוסף](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "נראה שמילת המפתח {keyword} אינה תקנית."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "הרכיב unsafe-inline מאפשר להפעיל בדף סקריפטים וגורמים מטפלים באירועים שאינם בטוחים. רצוי להשתמש בגיבובים או בצפנים חד-פעמיים של CSP כדי להתיר הפעלה של כל סקריפט בנפרד."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "כדאי להוסיף רכיב 'unsafe-inline' (דפדפנים שתומכים בגיבובים/צפנים חד-פעמיים יתעלמו ממנו) לצורך תאימות לאחור עם דפדפנים ישנים."

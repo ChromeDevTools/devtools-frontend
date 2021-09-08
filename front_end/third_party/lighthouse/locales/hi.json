@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "चेतावनी के साथ अनुमति दी गई"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "लाइब्रेरी"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "JavaScript की लाइब्रेरी बड़ी होने से परफ़ॉर्मेंस खराब हो सकती है. इस बंडल का साइज़ कम करने के लिए छोटी और बराबर काम करने वाली लाइब्रेरी को प्राथमिकता दें. [ज़्यादा जानें](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 बड़ी लाइब्रेरी मिली}one{# बड़ी लाइब्रेरी मिली}other{# बड़ी लाइब्रेरी मिलीं}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "गैर-ज़रूरी रूप से बड़ी JavaScript लाइब्रेरी को बदलें"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "बड़ी JavaScript लाइब्रेरी से बचें, इनकी जगह छोटे विकल्प आज़माएं"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "यह व्यूपोर्ट में पेंट किया गया सबसे बड़ा कॉन्टेंटफ़ुल एलिमेंट है. [ज़्यादा जानें](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} एक गलत/अमान्य कीवर्ड लग रहा है."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline', असुरक्षित इन-पेज स्क्रिप्ट और इवेंट हैंडलर चलाने की अनुमति देता है. एक-एक करके स्क्रिप्ट को अनुमति देने के लिए, CSP nonces या hashes इस्तेमाल करें."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "'unsafe-inline' जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. nonces/hashes के साथ काम करने वाले ब्राउज़र पर 'unsafe-inline' को अनदेखा किया जा सकता है."

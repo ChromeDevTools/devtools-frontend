@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Povoleno s upozorněním"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Knihovna"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Velké javascriptové knihovny mohou snižovat rychlost. Abyste dosáhli menších balíčků, používejte raději menší funkčně rovnocenné knihovny. [Další informace](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Byla nalezena 1 velká knihovna}few{Byly nalezeny # velké knihovny}many{Bylo nalezeno # velké knihovny}other{Bylo nalezeno # velkých knihoven}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Zbytečně velké javascriptové knihovny nahraďte jinými alternativami"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Místo velkých javascriptových knihoven jsou použity menší alternativy"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Toto je největší obsahový prvek vykreslený v zobrazované oblasti. [Další informace](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} je zřejmě neplatné klíčové slovo."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline umožňuje spouštění skriptů na stránce a obslužných rutin událostí, které nejsou bezpečné. Zvažte, zda nepoužít hodnoty nonce nebo hash CSP, abyste skripty povolovali individuálně."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Zvažte, zda nepřidat unsafe-inline (ignorováno prohlížeči, které podporují hodnoty nonce/hash) z důvodu zpětné kompatibility se staršími prohlížeči."

@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Âĺl̂óŵéd̂ ẃît́ĥ ẃâŕn̂ín̂ǵ"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "L̂íb̂ŕâŕŷ"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "L̂ár̂ǵê J́âv́âŚĉŕîṕt̂ ĺîb́r̂ár̂íêś ĉán̂ ĺêád̂ t́ô ṕôór̂ ṕêŕf̂ór̂ḿâńĉé. P̂ŕêf́êŕ ŝḿâĺl̂ér̂, f́ûńĉt́îón̂ál̂ĺŷ éq̂úîv́âĺêńt̂ ĺîb́r̂ár̂íêś t̂ó r̂éd̂úĉé ŷóûŕ b̂ún̂d́l̂é ŝíẑé. [L̂éâŕn̂ ḿôŕê](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount, plural,\n    =1 {1 l̂ár̂ǵê ĺîb́r̂ár̂ý f̂óûńd̂}\n    other {# ĺâŕĝé l̂íb̂ŕâŕîéŝ f́ôún̂d́}\n    }"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "R̂ép̂ĺâćê ún̂ńêćêśŝár̂íl̂ý l̂ár̂ǵê J́âv́âŚĉŕîṕt̂ ĺîb́r̂ár̂íêś"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Âv́ôíd̂ś l̂ár̂ǵê J́âv́âŚĉŕîṕt̂ ĺîb́r̂ár̂íêś ŵít̂h́ ŝḿâĺl̂ér̂ ál̂t́êŕn̂át̂ív̂éŝ"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "T̂h́îś îś t̂h́ê ĺâŕĝéŝt́ ĉón̂t́êńt̂f́ûĺ êĺêḿêńt̂ ṕâín̂t́êd́ ŵít̂h́îń t̂h́ê v́îéŵṕôŕt̂. [Ĺêár̂ń M̂ór̂é](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1021,6 +1006,15 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Âv́ôíd̂ ĺâŕĝé l̂áŷóût́ ŝh́îf́t̂ś"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Âb́ôv́ê-t́ĥé-f̂ól̂d́ îḿâǵêś t̂h́ât́ âŕê ĺâźîĺŷ ĺôád̂éd̂ ŕêńd̂ér̂ ĺât́êŕ îń t̂h́ê ṕâǵê ĺîf́êćŷćl̂é, ŵh́îćĥ ćâń d̂él̂áŷ t́ĥé l̂ár̂ǵêśt̂ ćôńt̂én̂t́f̂úl̂ ṕâín̂t́. [L̂éâŕn̂ ḿôŕê](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ îḿâǵê ẃâś l̂áẑíl̂ý l̂óâd́êd́"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "L̂ár̂ǵêśt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ îḿâǵê ẃâś n̂ót̂ ĺâźîĺŷ ĺôád̂éd̂"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "L̂íŝt́ŝ t́ĥé l̂ón̂ǵêśt̂ t́âśk̂ś ôń t̂h́ê ḿâín̂ t́ĥŕêád̂, úŝéf̂úl̂ f́ôŕ îd́êńt̂íf̂ýîńĝ ẃôŕŝt́ ĉón̂t́r̂íb̂út̂ór̂ś t̂ó îńp̂út̂ d́êĺâý. [L̂éâŕn̂ ḿôŕê](https://web.dev/long-tasks-devtools/)"
@@ -1539,7 +1533,7 @@
     "message": "P̂áĝé ĥáŝ v́âĺîd́ ŝóûŕĉé m̂áp̂ś"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Âd́d̂ á `<meta name=\"viewport\">` t̂áĝ t́ô óp̂t́îḿîźê ýôúr̂ áp̂ṕ f̂ór̂ ḿôb́îĺê śĉŕêén̂ś. [L̂éâŕn̂ ḿôŕê](https://web.dev/viewport/)."
+    "message": "Â `<meta name=\"viewport\">` ńôt́ ôńl̂ý ôṕt̂ím̂íẑéŝ ýôúr̂ áp̂ṕ f̂ór̂ ḿôb́îĺê śĉŕêén̂ śîźêś, b̂út̂ ál̂śô ṕr̂év̂én̂t́ŝ [á 300 m̂íl̂ĺîśêćôńd̂ d́êĺâý t̂ó ûśêŕ îńp̂út̂](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Ĺêár̂ń m̂ór̂é](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "N̂ó `<meta name=\"viewport\">` t̂áĝ f́ôún̂d́"
@@ -1728,7 +1722,7 @@
     "message": "M̂íŝśîńĝ b́âśê-úr̂í âĺl̂óŵś îńĵéĉt́êd́ <b̂áŝé> t̂áĝś t̂ó ŝét̂ t́ĥé b̂áŝé ÛŔL̂ f́ôŕ âĺl̂ ŕêĺât́îv́ê ÚR̂Ĺŝ (é.ĝ. śĉŕîṕt̂ś) t̂ó âń ât́t̂áĉḱêŕ ĉón̂t́r̂ól̂ĺêd́ d̂óm̂áîń. Ĉón̂śîd́êŕ ŝét̂t́îńĝ b́âśê-úr̂í t̂ó 'n̂ón̂é' ôŕ 'ŝél̂f́'."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Êĺêḿêńt̂ś ĉón̂t́r̂ól̂ĺêd́ b̂ý ôb́ĵéĉt́-ŝŕĉ ár̂é ĉón̂śîd́êŕêd́ l̂éĝáĉý f̂éât́ûŕêś. Ĉón̂śîd́êŕ ŝét̂t́îńĝ ób̂j́êćt̂-śr̂ć t̂ó 'n̂ón̂é' t̂ó p̂ŕêv́êńt̂ t́ĥé îńĵéĉt́îón̂ óf̂ ṕl̂úĝín̂ś t̂h́ât́ êx́êćût́ê ún̂śâf́ê śĉŕîṕt̂ś."
+    "message": "M̂íŝśîńĝ ób̂j́êćt̂-śr̂ć âĺl̂óŵś t̂h́ê ín̂j́êćt̂íôń ôf́ p̂ĺûǵîńŝ t́ĥát̂ éx̂éĉút̂é ûńŝáf̂é ŝćr̂íp̂t́ŝ. Ćôńŝíd̂ér̂ śêt́t̂ín̂ǵ ôb́ĵéĉt́-ŝŕĉ t́ô 'ńôńê' íf̂ ýôú ĉán̂."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "ŝćr̂íp̂t́-ŝŕĉ d́îŕêćt̂ív̂é îś m̂íŝśîńĝ. T́ĥíŝ ćâń âĺl̂óŵ t́ĥé êx́êćût́îón̂ óf̂ ún̂śâf́ê śĉŕîṕt̂ś."
@@ -1742,6 +1736,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "N̂ón̂ćêś ŝh́ôúl̂d́ b̂é ât́ l̂éâśt̂ 8 ćĥár̂áĉt́êŕŝ ĺôńĝ."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Âv́ôíd̂ úŝín̂ǵ p̂ĺâín̂ ÚR̂Ĺ ŝćĥém̂éŝ ({keyword}) ín̂ t́ĥíŝ d́îŕêćt̂ív̂é. P̂ĺâín̂ ÚR̂Ĺ ŝćĥém̂éŝ ál̂ĺôẃ ŝćr̂íp̂t́ŝ t́ô b́ê śôúr̂ćêd́ f̂ŕôḿ âń ûńŝáf̂é d̂óm̂áîń."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Âv́ôíd̂ úŝín̂ǵ p̂ĺâín̂ ẃîĺd̂ćâŕd̂ś ({keyword}) îń t̂h́îś d̂ír̂éĉt́îv́ê. Ṕl̂áîń ŵíl̂d́ĉár̂d́ŝ ál̂ĺôẃ ŝćr̂íp̂t́ŝ t́ô b́ê śôúr̂ćêd́ f̂ŕôḿ âń ûńŝáf̂é d̂óm̂áîń."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "N̂ó ĈŚP̂ ćôńf̂íĝúr̂éŝ á r̂ép̂ór̂t́îńĝ d́êśt̂ín̂át̂íôń. T̂h́îś m̂ák̂éŝ ít̂ d́îf́f̂íĉúl̂t́ t̂ó m̂áîńt̂áîń t̂h́ê ĆŜṔ ôv́êŕ t̂ím̂é âńd̂ ḿôńît́ôŕ f̂ór̂ án̂ý b̂ŕêák̂áĝéŝ."
   },
@@ -1749,7 +1749,7 @@
     "message": "T̂h́ê ŕêṕôŕt̂ín̂ǵ d̂éŝt́îńât́îón̂ íŝ ón̂ĺŷ ćôńf̂íĝúr̂éd̂ v́îá t̂h́ê ŕêṕôŕt̂-t́ô d́îŕêćt̂ív̂é. T̂h́îś d̂ír̂éĉt́îv́ê íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ îń Ĉh́r̂óm̂íûḿ-b̂áŝéd̂ b́r̂óŵśêŕŝ śô ít̂ íŝ ŕêćôḿm̂én̂d́êd́ t̂ó âĺŝó ûśê á r̂ép̂ór̂t́-ûŕî d́îŕêćt̂ív̂é."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Ĥóŝt́ âĺl̂óŵĺîśt̂ś ĉán̂ f́r̂éq̂úêńt̂ĺŷ b́ê b́ŷṕâśŝéd̂. Ćôńŝíd̂ér̂ úŝín̂ǵ 'ŝt́r̂íĉt́-d̂ýn̂ám̂íĉ' ín̂ ćôḿb̂ín̂át̂íôń ŵít̂h́ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ."
+    "message": "Ĥóŝt́ âĺl̂óŵĺîśt̂ś ĉán̂ f́r̂éq̂úêńt̂ĺŷ b́ê b́ŷṕâśŝéd̂. Ćôńŝíd̂ér̂ úŝín̂ǵ ĈŚP̂ ńôńĉéŝ ór̂ h́âśĥéŝ ín̂śt̂éâd́, âĺôńĝ ẃît́ĥ 'śt̂ŕîćt̂-d́ŷńâḿîć' îf́ n̂éĉéŝśâŕŷ."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Ûńk̂ńôẃn̂ ĆŜṔ d̂ír̂éĉt́îv́ê."

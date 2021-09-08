@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Дозволено із застереженням"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Бібліотека"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Великі бібліотеки JavaScript можуть призвести до низької продуктивності. Щоб зменшити розмір пакета, використовуйте менші бібліотеки з такими ж функціями. [Докладніше](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Знайдено 1 велику бібліотеку}one{Знайдено # велику бібліотеку}few{Знайдено # великі бібліотеки}many{Знайдено # великих бібліотек}other{Знайдено # великої бібліотеки}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Замініть великі бібліотеки JavaScript, які мають менші альтернативи"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Уникає великих бібліотек JavaScript, для яких є менші альтернативи"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Це найбільший елемент контенту, який видно в області перегляду. [Докладніше](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Схоже, {keyword} – це недійсне ключове слово."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "unsafe-inline дозволяє виконувати ненадійні вбудовані скрипти та застосовувати обробники подій. Щоб дозволити окремі скрипти, скористатися nonces або hashes для CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Додайте команду unsafe-inline (ігнорується веб-переглядачами, що підтримують nonces/hashes) для зворотної сумісності зі старішими веб-переглядачами."

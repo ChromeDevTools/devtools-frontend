@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Consentito con avviso"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Libreria"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Le librerie JavaScript di grandi dimensioni possono causare scarse prestazioni. Usa preferibilmente librerie di dimensioni ridotte con funzionalità equivalenti per ridurre le dimensioni dei bundle. [Ulteriori informazioni](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 libreria di grandi dimensioni trovata}other{# librerie di grandi dimensioni trovate}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Sostituisci le librerie JavaScript di dimensioni inutilmente grandi"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Evita librerie JavaScript di grandi dimensioni per cui esistono alternative di dimensioni inferiori"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Si tratta dell'elemento identificato come Largest Contentful Paint all'interno dell'area visibile. [Ulteriori informazioni](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} sembra essere una parola chiave non valida."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "L'istruzione \"unsafe-inline\" consente l'esecuzione di gestori di eventi e script in-page non sicuri. Potresti usare hash o nonce CSP per consentire singoli script."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Potresti aggiungere l'istruzione \"unsafe-inline\" (ignorata dai browser che supportano nonce/hash) per la compatibilità con le versioni precedenti dei browser."

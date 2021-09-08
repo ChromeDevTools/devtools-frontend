@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Allowed with warning"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Library"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Large JavaScript libraries can lead to poor performance. Prefer smaller, functionally equivalent libraries to reduce your bundle size. [Learn more](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount, plural,\n    =1 {1 large library found}\n    other {# large libraries found}\n    }"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Replace unnecessarily large JavaScript libraries"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Avoids large JavaScript libraries with smaller alternatives"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "This is the largest contentful element painted within the viewport. [Learn More](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1021,6 +1006,15 @@
   },
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Avoid large layout shifts"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Above-the-fold images that are lazily loaded render later in the page lifecycle, which can delay the largest contentful paint. [Learn more](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Largest Contentful Paint image was lazily loaded"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Largest Contentful Paint image was not lazily loaded"
   },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Lists the longest tasks on the main thread, useful for identifying worst contributors to input delay. [Learn more](https://web.dev/long-tasks-devtools/)"
@@ -1539,7 +1533,7 @@
     "message": "Page has valid source maps"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Add a `<meta name=\"viewport\">` tag to optimize your app for mobile screens. [Learn more](https://web.dev/viewport/)."
+    "message": "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents [a 300 millisecond delay to user input](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Learn more](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "No `<meta name=\"viewport\">` tag found"
@@ -1728,7 +1722,7 @@
     "message": "Missing base-uri allows injected <base> tags to set the base URL for all relative URLs (e.g. scripts) to an attacker controlled domain. Consider setting base-uri to 'none' or 'self'."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elements controlled by object-src are considered legacy features. Consider setting object-src to 'none' to prevent the injection of plugins that execute unsafe scripts."
+    "message": "Missing object-src allows the injection of plugins that execute unsafe scripts. Consider setting object-src to 'none' if you can."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "script-src directive is missing. This can allow the execution of unsafe scripts."
@@ -1742,6 +1736,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Nonces should be at least 8 characters long."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Avoid using plain URL schemes ({keyword}) in this directive. Plain URL schemes allow scripts to be sourced from an unsafe domain."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Avoid using plain wildcards ({keyword}) in this directive. Plain wildcards allow scripts to be sourced from an unsafe domain."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportingDestinationMissing": {
     "message": "No CSP configures a reporting destination. This makes it difficult to maintain the CSP over time and monitor for any breakages."
   },
@@ -1749,7 +1749,7 @@
     "message": "The reporting destination is only configured via the report-to directive. This directive is only supported in Chromium-based browsers so it is recommended to also use a report-uri directive."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Host allowlists can frequently be bypassed. Consider using 'strict-dynamic' in combination with CSP nonces or hashes."
+    "message": "Host allowlists can frequently be bypassed. Consider using CSP nonces or hashes instead, along with 'strict-dynamic' if necessary."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Unknown CSP directive."

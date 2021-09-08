@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "允許 (附警告)"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "程式庫"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "大型的 JavaScript 程式庫可能會導致效能欠佳。最好使用功能相等且較小型的程式庫來降低套裝大小。[瞭解詳情](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)。"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{找到 1 個大型程式庫}other{找到 # 個大型程式庫}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "取代不必要的大型 JavaScript 程式庫"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "避免使用大型 JavaScript 程式庫，以較小型的程式庫取代"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "這是在檢視區中繪製的最大內容元素。[瞭解詳情](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} 似乎是無效關鍵字。"
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "「unsafe-inline」會允許執行不安全的頁面內嵌指令碼和事件處理常式。建議使用 CSP nonce 或 hash 逐一允許指令碼。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建議新增「unsafe-inline」，以便退回兼容舊版瀏覽器 (支援 nonce/hash 的瀏覽器會忽略 unsafe-inline)。"

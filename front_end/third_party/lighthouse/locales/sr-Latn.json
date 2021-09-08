@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Dozvoljen uz upozorenje"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Biblioteka"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Velike JavaScript biblioteke mogu da dovedu do lošeg učinka. Koristite manje, funkcionalno ekvivalentne biblioteke da biste smanjili veličinu paketa. [Saznajte više](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Pronađena je 1 velika biblioteka}one{Pronađena je # velika biblioteka}few{Pronađene su # velike biblioteke}other{Pronađeno je # velikih biblioteka}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Zamenite nepotrebno velike JavaScript biblioteke"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Izbegava velike JavaScript biblioteke za koje postoje manje alternative"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ovo je najveći element sadržaja koji je prikazan u oblasti prikaza. [Saznajte više](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Izgleda da je {keyword} nevažeća ključna reč."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Direktiva unsafe-inline omogućava izvršavanje nebezbednih skripti i obrađivača događaja na stranici. Savetujemo vam da koristite CSP jednokratne ključeve ili heševe da biste pojedinačno dozvoljavali skripte."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Savetujemo vam da dodate direktivu unsafe-inline (koju ignorišu pregledači koji podržavaju jednokratne ključeve/hešove) radi kompatibilnosti unazad sa starijim pregledačima."

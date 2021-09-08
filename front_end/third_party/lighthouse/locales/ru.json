@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Разрешено (есть предупреждение)"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Библиотека"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Большие библиотеки JavaScript могут привести к низкой производительности. Чтобы уменьшить размер пакета, рекомендуем использовать функционально эквивалентные библиотеки меньшего размера. [Подробнее…](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Обнаружена 1 большая библиотека}one{Обнаружена # большая библиотека}few{Обнаружено # больших библиотеки}many{Обнаружено # больших библиотек}other{Обнаружено # большой библиотеки}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Замените ненужные большие библиотеки JavaScript"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Не содержит большие библиотеки JavaScript с альтернативами меньшего размера"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Это самый большой элемент контента, отрисованный в области просмотра. [Подробнее…](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} — недопустимое ключевое слово."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Директива unsafe-inline позволяет выполнять небезопасные скрипты и обработчики событий на странице. Чтобы разрешать отдельные скрипты, используйте nonce или hash в политике CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Чтобы обеспечить обратную совместимость со старыми браузерами, добавьте директиву unsafe-inline (игнорируется браузерами, которые поддерживают nonce или hash)."

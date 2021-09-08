@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "허용됨(경고 포함)"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "라이브러리"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "큰 자바스크립트 라이브러리는 성능을 저하시킬 수 있습니다. 기능은 동일하되 크기가 작은 라이브러리를 사용하여 번들 크기를 줄이세요. [자세히 알아보기](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{큰 라이브러리 1개 발견됨}other{큰 라이브러리 #개 발견됨}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "불필요하게 큰 자바스크립트 라이브러리 대체"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "큰 자바스크립트 라이브러리를 작은 라이브러리로 대체"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "표시 영역에 페인팅된 가장 큰 콘텐츠가 포함된 요소입니다. [자세히 알아보기](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword}은(는) 잘못된 키워드인 것 같습니다."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline'은 안전하지 않은 인페이지 스크립트 및 이벤트 핸들러의 실행을 허용합니다. CSP nonce 또는 hash를 사용해 스크립트를 개별적으로 허용하는 것이 좋습니다."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "기존 브라우저와의 하위 호환성을 위하여 'unsafe-inline(nonce/hash를 지원하는 브라우저에서 무시됨)'을 추가하는 것이 좋습니다."

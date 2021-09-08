@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Permitido com um alerta"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Biblioteca"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Bibliotecas grandes do JavaScript podem resultar em um desempenho fraco. Use bibliotecas menores com equivalência funcional para reduzir o tamanho do pacote. [Saiba mais](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 biblioteca grande encontrada}one{# biblioteca grande encontrada}other{# bibliotecas grandes encontradas}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Substitua bibliotecas do JavaScript que são grandes demais"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Evita bibliotecas grandes do JavaScript, com alternativas menores"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Este é o maior elemento com conteúdo na janela de visualização. [Saiba mais](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Parece que {keyword} é uma palavra-chave inválida."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "\"unsafe-inline\" permite a execução de scripts não seguros na página, além de manipuladores de eventos. Use os nonces ou hashes de CSP para permitir scripts individualmente."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Adicione \"unsafe-inline\", ignorado por navegadores compatíveis com nonces/hashes, para oferecer compatibilidade com versões anteriores dos navegadores."

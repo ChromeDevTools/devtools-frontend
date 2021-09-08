@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Επιτρέπεται με προειδοποίηση"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Βιβλιοθήκη"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Οι μεγάλες βιβλιοθήκες JavaScript ενδέχεται να οδηγήσουν σε κακή απόδοση. Προτιμήστε μικρότερες βιβλιοθήκες με αντίστοιχη λειτουργικότητα για να μειώσετε το μέγεθος πακέτου. [Μάθετε περισσότερα](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{Βρέθηκε μία μεγάλη βιβλιοθήκη}other{Βρέθηκαν # μεγάλες βιβλιοθήκες}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Αντικατάσταση των βιβλιοθηκών JavaScript που είναι αδικαιολόγητα μεγάλες"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Αποφεύγει τις μεγάλες βιβλιοθήκες JavaScript με μικρότερες εναλλακτικές"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Αυτό είναι το μεγαλύτερο χρωματισμένο στοιχείο με περιεχόμενο στη θύρα προβολής. [Μάθετε περισσότερα](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Το {keyword} φαίνεται ότι είναι μη έγκυρη λέξη-κλειδί."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "Το unsafe-inline επιτρέπει την εκτέλεση μη ασφαλών σεναρίων στη σελίδα και δεικτών χειρισμού συμβάντων. Εξετάστε το ενδεχόμενο χρήσης αριθμών nonce ή κατακερματισμών CSP για να επιτρέπεται μεμονωμένα σενάρια."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Εξετάστε το ενδεχόμενο να προσθέσετε το unsafe-inline (παραβλέπεται από προγράμματα περιήγησης που υποστηρίζουν αριθμούς nonce/κατακερματισμούς) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."

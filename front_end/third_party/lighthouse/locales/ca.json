@@ -992,21 +992,6 @@
   "lighthouse-core/audits/is-on-https.js | warning": {
     "message": "Permès amb un advertiment"
   },
-  "lighthouse-core/audits/large-javascript-libraries.js | columnLibraryName": {
-    "message": "Biblioteca"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | description": {
-    "message": "Les biblioteques grans de JavaScript poden comportar un rendiment baix. Per reduir la mida del paquet, dona preferència a les biblioteques més petites que tinguin funcions equivalents. [Obtén més informació](https://developers.google.com/web/fundamentals/performance/webpack/decrease-frontend-size#optimize_dependencies)."
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | displayValue": {
-    "message": "{libraryCount,plural, =1{1 biblioteca gran trobada}other{# biblioteques grans trobades}}"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | failureTitle": {
-    "message": "Substitueix les biblioteques innecessàriament grans de JavaScript"
-  },
-  "lighthouse-core/audits/large-javascript-libraries.js | title": {
-    "message": "Evita les biblioteques grans de JavaScript amb alternatives més petites"
-  },
   "lighthouse-core/audits/largest-contentful-paint-element.js | description": {
     "message": "Aquest és l'element més gran amb contingut que hi ha a la finestra gràfica. [Més informació](https://web.dev/lighthouse-largest-contentful-paint/)"
   },
@@ -1756,9 +1741,6 @@
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "\"{keyword}\" sembla una paraula clau no vàlida."
-  },
-  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "La directiva \"unsafe-inline\" permet l'execució de scripts in-page i gestors d'esdeveniments no segurs. Pots utilitzar nonces o valors resum de la CSP per permetre els scripts individualment."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pots optar per afegir \"unsafe-inline\" (els navegadors que admeten nonces o valors resum l'ignoren) perquè sigui retrocompatible amb navegadors més antics."

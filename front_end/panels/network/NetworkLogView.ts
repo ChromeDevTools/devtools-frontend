@@ -748,12 +748,10 @@ export class NetworkLogView extends UI.Widget.VBox implements
     if (!items.length) {
       return;
     }
-    const entry = items[0].webkitGetAsEntry();
-    if (entry.isDirectory) {
-      return;
+    const file = items[0].getAsFile();
+    if (file) {
+      this.onLoadFromFile(file);
     }
-
-    entry.file(this.onLoadFromFile.bind(this));
   }
 
   async onLoadFromFile(file: File): Promise<void> {

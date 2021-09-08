@@ -317,15 +317,14 @@ export class LighthousePanel extends UI.Panel.Panel {
     }
     const item = items[0];
     if (item.kind === 'file') {
-      const entry = items[0].webkitGetAsEntry();
-      if (!entry.isFile) {
+      const file = items[0].getAsFile();
+      if (!file) {
         return;
       }
-      entry.file((file: Blob) => {
-        const reader = new FileReader();
-        reader.onload = (): void => this.loadedFromFile(reader.result as string);
-        reader.readAsText(file);
-      });
+
+      const reader = new FileReader();
+      reader.onload = (): void => this.loadedFromFile(reader.result as string);
+      reader.readAsText(file);
     }
   }
 

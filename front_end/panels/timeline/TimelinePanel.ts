@@ -1246,11 +1246,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.loadFromURL(url);
       }
     } else if (item.kind === 'file') {
-      const entry = items[0].webkitGetAsEntry();
-      if (!entry.isFile) {
+      const file = items[0].getAsFile();
+      if (!file) {
         return;
       }
-      entry.file(this.loadFromFile.bind(this));
+      this.loadFromFile(file);
     }
   }
 }

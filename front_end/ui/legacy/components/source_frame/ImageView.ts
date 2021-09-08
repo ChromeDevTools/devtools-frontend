@@ -236,8 +236,11 @@ export class ImageView extends UI.View.SimpleView {
       return;
     }
 
-    const entry = items[0].webkitGetAsEntry();
-    const encoded = !entry.name.endsWith('.svg');
+    const file = items[0].getAsFile();
+    if (!file) {
+      return;
+    }
+    const encoded = !file.name.endsWith('.svg');
     const fileCallback = (file: Blob): void => {
       const reader = new FileReader();
       reader.onloadend = (): void => {
@@ -259,6 +262,6 @@ export class ImageView extends UI.View.SimpleView {
         reader.readAsText(file);
       }
     };
-    entry.file(fileCallback);
+    fileCallback(file);
   }
 }

@@ -557,6 +557,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Disable cache (while DevTools is open)"
   },
+  "core/sdk/sdk-meta.ts | disabledDarkMode": {
+    "message": "Disable"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
   },
@@ -611,6 +614,9 @@
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Emulate a focused page"
   },
+  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
+    "message": "Emulate auto dark mode"
+  },
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "Emulate blurred vision"
   },
@@ -649,6 +655,9 @@
   },
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Enable custom formatters"
+  },
+  "core/sdk/sdk-meta.ts | enabledDarkMode": {
+    "message": "Enable"
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Enable JavaScript"
@@ -910,6 +919,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Emulates a focused page."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
+    "message": "Enables automatic dark mode for the inspected page."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Forces CSS color-gamut media feature"

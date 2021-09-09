@@ -134,6 +134,10 @@ const UIStrings = {
   */
   emulatesAFocusedPage: 'Emulates a focused page.',
   /**
+  * @description Explanation text for the 'Emulate a focused page' setting in the Rendering tool.
+  */
+  emulatesAutoDarkMode: 'Enables automatic dark mode for the inspected page.',
+  /**
   * @description Explanation text for the 'Emulate CSS media type' setting in the Rendering tool.
   * This setting overrides the CSS media type on the page:
   * https://developer.mozilla.org/en-US/docs/Web/CSS/@media#media_types
@@ -280,6 +284,10 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.forcesVisionDeficiencyEmulation),
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
 
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.appendSelect(
+        i18nString(UIStrings.emulatesAutoDarkMode),
+        Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this.appendCheckbox(

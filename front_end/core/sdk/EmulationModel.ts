@@ -120,6 +120,12 @@ export class EmulationModel extends SDKModel<void> {
     });
     this.updateCssMedia();
 
+    const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode');
+    autoDarkModeSetting.addChangeListener(() => this.emulateAutoDarkMode(autoDarkModeSetting.get()));
+    if (autoDarkModeSetting.get()) {
+      this.emulateAutoDarkMode(autoDarkModeSetting.get());
+    }
+
     const visionDeficiencySetting = Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency');
     visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get()));
     if (visionDeficiencySetting.get()) {
@@ -264,6 +270,24 @@ export class EmulationModel extends SDKModel<void> {
     if (this.cssModel) {
       this.cssModel.mediaQueryResultChanged();
     }
+  }
+
+  private static parseAutoDarkModeSetting(setting: string): boolean|undefined {
+    switch (setting) {
+      case 'default':
+        return undefined;
+      case 'enabled':
+        return true;
+      case 'disabled':
+        return false;
+      default:
+        throw Error('unrecognized auto dark mode setting');
+    }
+  }
+
+  private async emulateAutoDarkMode(setting: string): Promise<void> {
+    const enabled = EmulationModel.parseAutoDarkModeSetting(setting);
+    await this.emulationAgent.invoke_setAutoDarkModeOverride({enabled});
   }
 
   private async emulateVisionDeficiency(type: Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType):

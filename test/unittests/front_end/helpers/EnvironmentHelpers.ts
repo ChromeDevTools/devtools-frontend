@@ -94,6 +94,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulatedVisionDeficiency', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulateAutoDarkMode', '', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'localFontsDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showPaintRects', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showLayoutShiftRegions', false),

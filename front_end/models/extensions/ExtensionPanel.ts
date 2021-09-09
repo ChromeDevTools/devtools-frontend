@@ -32,6 +32,7 @@ import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js'
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as ExtensionAPI from './ExtensionAPI.js';
 import type {ExtensionServer} from './ExtensionServer.js';
 import {ExtensionNotifierView, ExtensionView} from './ExtensionView.js';
 
@@ -61,8 +62,7 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
   }
 
   searchCanceled(): void {
-    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.CancelSearch);
+    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
     this.searchableViewInternal.updateSearchMatchesCount(0);
   }
 
@@ -72,18 +72,15 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, _jumpBackwards?: boolean): void {
     const query = searchConfig.query;
-    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
+    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch, query);
   }
 
   jumpToNextSearchResult(): void {
-    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.NextSearchResult);
+    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }
 
   jumpToPreviousSearchResult(): void {
-    // @ts-expect-error TODO(crbug.com/1011811): Fix after extensionAPI is migrated.
-    this.server.notifySearchAction(this.id, Extensions.extensionAPI.panels.SearchAction.PreviousSearchResult);
+    this.server.notifySearchAction(this.id, ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult);
   }
 
   supportsCaseSensitiveSearch(): boolean {

@@ -86,15 +86,12 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   private findNodeWithEvent(event: SDK.TracingModel.Event): TimelineModel.TimelineProfileTree.Node|null {
     const iterators = [this.currentTree.children().values()];
-
     while (iterators.length) {
-      // @ts-ignore crbug.com/1011811 there is no common iterator type between Closure and TypeScript
-      const iterator = iterators[iterators.length - 1].next();
-      if (iterator.done) {
+      const {done, value: child} = iterators[iterators.length - 1].next();
+      if (done) {
         iterators.pop();
         continue;
       }
-      const child = (iterator.value as TimelineModel.TimelineProfileTree.Node);
       if (child.event === event) {
         return child;
       }

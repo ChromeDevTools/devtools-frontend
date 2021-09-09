@@ -3629,15 +3629,6 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
 
   set hidden(hidden: boolean) {
     this.hiddenInternal = hidden;
-    this.dispatchEventToListeners(TimelineCategory.Events.VisibilityChanged, this);
-  }
-}
-
-export namespace TimelineCategory {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
-    VisibilityChanged = 'VisibilityChanged',
   }
 }
 

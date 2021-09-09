@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui/legacy/components/text_editor",
-    "ui/legacy/components/utils",
     "panels/snippets",
     "ui/legacy"
   ]

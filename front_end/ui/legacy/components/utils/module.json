@@ -1,9 +1,0 @@
-{
-  "dependencies": [
-    "ui/legacy"
-  ],
-    "resources": [
-    "imagePreview.css",
-    "jsUtils.css"
-  ]
-}

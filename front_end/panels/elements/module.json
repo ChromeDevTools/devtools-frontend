@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy/components/utils",
+    "ui/legacy",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/color_picker",
     "panels/event_listeners",

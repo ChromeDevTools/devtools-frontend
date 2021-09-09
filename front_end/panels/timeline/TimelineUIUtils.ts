@@ -44,6 +44,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import invalidationsTreeStyles from './invalidationsTree.css.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
@@ -2960,8 +2962,10 @@ export class TimelineUIUtils {
     if (!imageURL) {
       return null;
     }
-    const container = document.createElement('div');
-    UI.Utils.appendStyle(container, 'ui/legacy/components/utils/imagePreview.css');
+    const stylesContainer = document.createElement('div');
+    const shadowRoot = stylesContainer.attachShadow({mode: 'open'});
+    shadowRoot.adoptedStyleSheets = [imagePreviewStyles];
+    const container = shadowRoot.createChild('div') as HTMLDivElement;
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = (container.createChild('img') as HTMLImageElement);
     img.src = imageURL;
@@ -2978,7 +2982,7 @@ export class TimelineUIUtils {
         keyEvent.consume(true);
       }
     });
-    return container;
+    return stylesContainer;
   }
 
   static createEventDivider(event: SDK.TracingModel.Event, zeroTime: number): Element {

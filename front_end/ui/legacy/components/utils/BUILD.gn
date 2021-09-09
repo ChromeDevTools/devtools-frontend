@@ -8,7 +8,10 @@ import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "imagePreview.css" ]
+  sources = [
+    "imagePreview.css",
+    "jsUtils.css",
+  ]
 }
 
 devtools_module("utils") {
@@ -32,10 +35,6 @@ devtools_module("utils") {
     "../../../../models/workspace:bundle",
     "../../../../ui/legacy:bundle",
   ]
-}
-
-copy_to_gen("legacy_css") {
-  sources = [ "jsUtils.css" ]
 }
 
 devtools_entrypoint("bundle") {

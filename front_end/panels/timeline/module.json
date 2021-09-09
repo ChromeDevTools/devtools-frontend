@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy/components/utils",
+    "ui/legacy",
     "panels/coverage",
     "panels/layer_viewer",
     "ui/legacy/components/perf_ui",

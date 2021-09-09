@@ -1,6 +1,6 @@
 {
   "dependencies": [
     "ui/legacy/components/quick_open",
-    "ui/legacy/components/utils"
+    "ui/legacy"
   ]
 }

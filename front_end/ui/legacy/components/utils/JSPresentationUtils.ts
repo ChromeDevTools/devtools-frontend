@@ -41,6 +41,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
 
 import {Linkifier} from './Linkifier.js';
+import jsUtilsStyles from './jsUtils.css.js';
 
 const UIStrings = {
   /**
@@ -201,8 +202,8 @@ export function buildStackTracePreviewContents(
   const element = document.createElement('span');
   element.classList.add('monospace');
   element.style.display = 'inline-block';
-  const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-      element, {cssFile: 'ui/legacy/components/utils/jsUtils.css', delegatesFocus: undefined});
+  const shadowRoot =
+      UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   if (!stackTrace) {
     return {element, links: []};

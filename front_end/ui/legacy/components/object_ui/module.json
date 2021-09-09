@@ -1,7 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy",
-    "ui/legacy/components/utils"
+    "ui/legacy"
   ],
     "resources": [
     "customPreviewComponent.css",

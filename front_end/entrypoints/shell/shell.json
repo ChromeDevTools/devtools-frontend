@@ -1,6 +1,5 @@
 {
   "modules": [
-    { "name": "ui/legacy/components/utils", "type": "autostart"},
     { "name": "panels/console_counters", "type": "autostart" },
     { "name": "entrypoints/main", "type": "autostart" },
     { "name": "ui/legacy", "type": "autostart" },

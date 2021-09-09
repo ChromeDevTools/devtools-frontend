@@ -1,6 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy/components/utils",
+    "ui/legacy",
     "panels/emulation"
   ]
 }

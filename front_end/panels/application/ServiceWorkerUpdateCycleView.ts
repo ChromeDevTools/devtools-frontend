@@ -133,7 +133,6 @@ export class ServiceWorkerUpdateCycleView {
 
   private createTimingTable(): void {
     this.tableElement.classList.add('service-worker-update-timing-table');
-    UI.Utils.appendStyle(this.tableElement, 'panels/application/serviceWorkerUpdateCycleView.css');
     const timeRanges = this.calculateServiceWorkerUpdateRanges();
     this.updateTimingTable(timeRanges);
   }

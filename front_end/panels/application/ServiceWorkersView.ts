@@ -11,6 +11,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import serviceWorkersViewStyles from './serviceWorkersView.css.js';
+import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 
 import type * as Protocol from '../../generated/protocol.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -463,7 +464,9 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
   }
   wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([serviceWorkersViewStyles]);
+    this.registerCSSFiles([
+      serviceWorkersViewStyles,
+    ]);
   }
 }
 
@@ -827,9 +830,15 @@ export class Section {
   }
 
   private wrapWidget(container: Element): Element {
-    const shadowRoot =
-        UI.Utils.createShadowRootWithCoreStyles(container, {cssFile: undefined, delegatesFocus: undefined});
-    UI.Utils.appendStyle(shadowRoot, 'panels/application/serviceWorkersView.css');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(container, {
+      cssFile: [
+        serviceWorkersViewStyles,
+        /* These styles are for the timing table in serviceWorkerUpdateCycleView but this is the widget that it is rendered
+           * inside so we are registering the files here. */
+        serviceWorkerUpdateCycleViewStyles,
+      ],
+      delegatesFocus: undefined,
+    });
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

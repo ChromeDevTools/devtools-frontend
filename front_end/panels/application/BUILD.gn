@@ -17,6 +17,7 @@ generate_css("css_files") {
     "resourcesPanel.css",
     "resourcesSidebar.css",
     "serviceWorkerCacheViews.css",
+    "serviceWorkerUpdateCycleView.css",
     "serviceWorkersView.css",
     "storageView.css",
   ]

@@ -10,9 +10,5 @@
     "panels/mobile_throttling",
     "panels/network",
     "panels/sources"
-  ],
-    "resources": [
-      "serviceWorkersView.css",
-      "serviceWorkerUpdateCycleView.css"
   ]
 }

@@ -833,6 +833,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/resourcesPanel.css.js",
   "front_end/panels/application/resourcesSidebar.css.js",
   "front_end/panels/application/serviceWorkerCacheViews.css.js",
+  "front_end/panels/application/serviceWorkerUpdateCycleView.css.js",
   "front_end/panels/application/serviceWorkersView.css.js",
   "front_end/panels/application/storageView.css.js",
   "front_end/panels/browser_debugger/CSPViolationBreakpointsSidebarPane.js",

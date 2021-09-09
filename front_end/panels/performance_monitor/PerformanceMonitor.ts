@@ -439,7 +439,7 @@ export const enum Format {
   Bytes = 'Bytes',
 }
 
-export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
+export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   element: Element;
   private readonly enabledChartsSetting: Common.Settings.Setting<string[]>;
   private readonly enabledCharts: Set<string>;
@@ -553,9 +553,13 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export const enum Events {
+const enum Events {
   MetricChanged = 'MetricChanged',
 }
+
+type EventTypes = {
+  [Events.MetricChanged]: void,
+};
 
 let numberFormatter: Intl.NumberFormat;
 let percentFormatter: Intl.NumberFormat;

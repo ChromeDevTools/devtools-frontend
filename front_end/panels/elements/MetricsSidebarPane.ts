@@ -98,7 +98,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     return Promise.all(promises) as unknown as Promise<void>;
   }
 
-  onCSSModelChanged(): void {
+  override onCSSModelChanged(): void {
     this.update();
   }
 

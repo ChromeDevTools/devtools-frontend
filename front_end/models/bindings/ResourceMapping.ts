@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -190,8 +189,7 @@ class ModelInfo {
     ];
   }
 
-  private async styleSheetChanged(
-      event: Common.EventTarget.EventTargetEvent<{styleSheetId: Protocol.CSS.StyleSheetId, edit?: SDK.CSSModel.Edit}>):
+  private async styleSheetChanged(event: Common.EventTarget.EventTargetEvent<SDK.CSSModel.StyleSheetChangedEvent>):
       Promise<void> {
     const header = this.cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !header.isInline || (header.isInline && header.isMutable)) {

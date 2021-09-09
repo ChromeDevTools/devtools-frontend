@@ -47,6 +47,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
+import type {ComputedStyleChangedEvent} from './ComputedStyleModel.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -670,8 +671,8 @@ export class StylesSidebarPane extends ElementsSidebarPane {
     }
   }
 
-  onCSSModelChanged(event?: Common.EventTarget.EventTargetEvent): void {
-    const edit = event && event.data ? event.data.edit as SDK.CSSModel.Edit | null : null;
+  override onCSSModelChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyleChangedEvent>): void {
+    const edit = event?.data && 'edit' in event.data ? event.data.edit : null;
     if (edit) {
       for (const section of this.allSections()) {
         section.styleSheetEdited(edit);

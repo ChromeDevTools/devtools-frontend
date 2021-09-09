@@ -741,13 +741,24 @@ export enum Events {
   StyleSheetRemoved = 'StyleSheetRemoved',
 }
 
+export interface StyleSheetChangedEvent {
+  styleSheetId: Protocol.CSS.StyleSheetId;
+  edit?: Edit;
+}
+
+export interface PseudoStateForcedEvent {
+  node: DOMNode;
+  pseudoClass: string;
+  enable: boolean;
+}
+
 export type EventTypes = {
   [Events.FontsUpdated]: void,
   [Events.MediaQueryResultChanged]: void,
   [Events.ModelWasEnabled]: void,
-  [Events.PseudoStateForced]: {node: DOMNode, pseudoClass: string, enable: boolean},
+  [Events.PseudoStateForced]: PseudoStateForcedEvent,
   [Events.StyleSheetAdded]: CSSStyleSheetHeader,
-  [Events.StyleSheetChanged]: {styleSheetId: Protocol.CSS.StyleSheetId, edit?: Edit},
+  [Events.StyleSheetChanged]: StyleSheetChangedEvent,
   [Events.StyleSheetRemoved]: CSSStyleSheetHeader,
 };
 

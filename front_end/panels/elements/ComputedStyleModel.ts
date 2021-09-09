@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
+export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private nodeInternal: SDK.DOMModel.DOMNode|null;
   private cssModelInternal: SDK.CSSModel.CSSModel|null;
   private eventListeners: Common.EventTarget.EventDescriptor[];
@@ -57,9 +57,9 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 
-  private onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<unknown>|null): void {
+  private onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyleChangedEvent>|null): void {
     delete this.computedStylePromise;
-    this.dispatchEventToListeners(Events.ComputedStyleChanged, event ? event.data : null);
+    this.dispatchEventToListeners(Events.ComputedStyleChanged, event?.data ?? null);
   }
 
   private onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
@@ -123,6 +123,14 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
 export const enum Events {
   ComputedStyleChanged = 'ComputedStyleChanged',
 }
+
+export type ComputedStyleChangedEvent = SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|
+                                        SDK.CSSModel.StyleSheetChangedEvent|void|SDK.CSSModel.PseudoStateForcedEvent|
+                                        null;
+
+export type EventTypes = {
+  [Events.ComputedStyleChanged]: ComputedStyleChangedEvent,
+};
 
 export class ComputedStyle {
   node: SDK.DOMModel.DOMNode;

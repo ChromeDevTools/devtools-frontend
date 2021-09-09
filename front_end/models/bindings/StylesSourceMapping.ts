@@ -30,7 +30,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -152,9 +151,7 @@ export class StylesSourceMapping implements SourceMapping {
     }
   }
 
-  private styleSheetChanged(
-      event: Common.EventTarget.EventTargetEvent<{styleSheetId: Protocol.CSS.StyleSheetId, edit?: SDK.CSSModel.Edit}>):
-      void {
+  private styleSheetChanged(event: Common.EventTarget.EventTargetEvent<SDK.CSSModel.StyleSheetChangedEvent>): void {
     const header = this.cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !this.acceptsHeader(header)) {
       return;

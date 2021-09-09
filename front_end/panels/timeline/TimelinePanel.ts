@@ -573,8 +573,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateSettingsPaneVisibility();
   }
 
-  private appendExtensionsToToolbar(event: Common.EventTarget.EventTargetEvent): void {
-    const provider = (event.data as Extensions.ExtensionTraceProvider.ExtensionTraceProvider);
+  private appendExtensionsToToolbar(
+      event: Common.EventTarget.EventTargetEvent<Extensions.ExtensionTraceProvider.ExtensionTraceProvider>): void {
+    const provider = event.data;
     const setting = TimelinePanel.settingForTraceProvider(provider);
     const checkbox = this.createSettingCheckbox(setting, provider.longDisplayName());
     this.panelToolbar.appendToolbarItem(checkbox);

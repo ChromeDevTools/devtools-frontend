@@ -1039,9 +1039,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  private extensionSidebarPaneAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const pane = (event.data as Extensions.ExtensionPanel.ExtensionSidebarPane);
-    this.addExtensionSidebarPane(pane);
+  private extensionSidebarPaneAdded(
+      event: Common.EventTarget.EventTargetEvent<Extensions.ExtensionPanel.ExtensionSidebarPane>): void {
+    this.addExtensionSidebarPane(event.data);
   }
 
   private addExtensionSidebarPane(pane: Extensions.ExtensionPanel.ExtensionSidebarPane): void {

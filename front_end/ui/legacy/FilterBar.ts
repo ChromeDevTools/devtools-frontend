@@ -69,7 +69,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilterBar extends HBox {
+export class FilterBar extends HBox implements Common.EventTarget.EventTarget<FilterBarEventTypes> {
   private enabled: boolean;
   private readonly stateSetting: Common.Settings.Setting<boolean>;
   private readonly filterButtonInternal: ToolbarSettingToggle;
@@ -180,6 +180,10 @@ export class FilterBar extends HBox {
 export const enum FilterBarEvents {
   Changed = 'Changed',
 }
+
+export type FilterBarEventTypes = {
+  [FilterBarEvents.Changed]: void,
+};
 
 export interface FilterUI extends Common.EventTarget.EventTarget {
   isActive(): boolean;

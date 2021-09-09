@@ -634,7 +634,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return this.networkItemView;
   }
 
-  private handleFilterChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private handleFilterChanged(): void {
     this.hideRequestPanel();
   }
 

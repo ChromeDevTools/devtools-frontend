@@ -258,7 +258,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
   }
 }
 
-export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
+export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<ResourceScriptFile.EventTypes> {
   private readonly resourceScriptMapping: ResourceScriptMapping;
   private readonly uiSourceCodeInternal: Workspace.UISourceCode.UISourceCode;
   scriptInternal: SDK.Script.Script|undefined;
@@ -372,7 +372,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
       await this.resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.scriptInternal);
       delete this.isDivergingFromVMInternal;
       this.hasDivergedFromVMInternal = true;
-      this.dispatchEventToListeners(ResourceScriptFile.Events.DidDivergeFromVM, this.uiSourceCodeInternal);
+      this.dispatchEventToListeners(ResourceScriptFile.Events.DidDivergeFromVM);
     }
   }
 
@@ -382,7 +382,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
       this.isMergingToVMInternal = true;
       await this.resourceScriptMapping.debuggerWorkspaceBinding.updateLocations(this.scriptInternal);
       delete this.isMergingToVMInternal;
-      this.dispatchEventToListeners(ResourceScriptFile.Events.DidMergeToVM, this.uiSourceCodeInternal);
+      this.dispatchEventToListeners(ResourceScriptFile.Events.DidMergeToVM);
     }
   }
 
@@ -440,10 +440,13 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 export namespace ResourceScriptFile {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
+  export const enum Events {
     DidMergeToVM = 'DidMergeToVM',
     DidDivergeFromVM = 'DidDivergeFromVM',
   }
+
+  export type EventTypes = {
+    [Events.DidMergeToVM]: void,
+    [Events.DidDivergeFromVM]: void,
+  };
 }

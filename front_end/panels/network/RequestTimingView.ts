@@ -40,6 +40,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {Events} from './NetworkTimeCalculator.js';
 
+import networkingTimingTableStyles from './networkTimingTable.css.js';
+
 const UIStrings = {
   /**
   *@description Text used to label the time taken to receive an HTTP/2 Push message.
@@ -360,7 +362,6 @@ export class RequestTimingView extends UI.Widget.VBox {
   static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
-    UI.Utils.appendStyle(tableElement, 'panels/network/networkTimingTable.css');
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');
@@ -647,6 +648,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     this.request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
     this.calculator.addEventListener(Events.BoundariesChanged, this.refresh, this);
+    this.registerCSSFiles([networkingTimingTableStyles]);
     this.refresh();
   }
 

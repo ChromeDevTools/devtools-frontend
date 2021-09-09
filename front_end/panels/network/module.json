@@ -8,8 +8,5 @@
     "panels/search",
     "ui/legacy/components/source_frame",
     "ui/legacy"
-  ],
-    "resources": [
-      "networkTimingTable.css"
   ]
 }

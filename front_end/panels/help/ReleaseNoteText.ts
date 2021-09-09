@@ -36,6 +36,33 @@ function getLocalizedReleaseNoteURL(url: string): string {
 
 export const releaseNoteText: ReleaseNote[] = [
   {
+    version: 37,
+    header: 'Highlights from the Chrome 95 update',
+    highlights: [
+      {
+        title: 'New CSS length authoring tools',
+        subtitle: 'Drag to change the unit value and select unit type from the dropdown in the Styles pane.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-95/#length'),
+      },
+      {
+        title: 'Hide issues in the Issues tab',
+        subtitle: 'Hide irrelevant issues so you can focus only on those issues that matter to you.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-95/#hide-issues'),
+      },
+      {
+        title: 'Improved the display of properties in the Properties pane and Sources panel',
+        subtitle: 'Always bold and sort own properties first, flatten the display of properties, and more.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-95/#properties'),
+      },
+      {
+        title: 'Lighthouse 8.4',
+        subtitle: 'A new audit to detect when the LCP element is lazy-loaded.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-95/#lighthouse'),
+      },
+    ],
+    link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-95'),
+  },
+  {
     version: 36,
     header: 'Highlights from the Chrome 94 update',
     highlights: [

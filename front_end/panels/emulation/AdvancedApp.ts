@@ -73,7 +73,7 @@ export class AdvancedApp implements Common.App.App {
     this.inspectedPagePlaceholder.update();
   }
 
-  private openToolboxWindow(event: Event): void {
+  private openToolboxWindow(event: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
     if (event.data.to !== UI.DockController.DockState.UNDOCKED) {
       return;
     }
@@ -106,7 +106,7 @@ export class AdvancedApp implements Common.App.App {
     }
   }
 
-  private onBeforeDockSideChange(event: Event): void {
+  private onBeforeDockSideChange(event: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
     if (event.data.to === UI.DockController.DockState.UNDOCKED && this.toolboxRootView) {
       // Hide inspectorView and force layout to mimic the undocked state.
       this.rootSplitWidget.hideSidebar();
@@ -116,7 +116,7 @@ export class AdvancedApp implements Common.App.App {
     this.changingDockSide = true;
   }
 
-  private onDockSideChange(event?: Event): void {
+  private onDockSideChange(event?: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
     this.updateDeviceModeView();
 
     const toDockSide = event ? event.data.to : UI.DockController.DockController.instance().dockSide();
@@ -133,7 +133,7 @@ export class AdvancedApp implements Common.App.App {
     }
   }
 
-  private onAfterDockSideChange(event: Event): void {
+  private onAfterDockSideChange(event: Common.EventTarget.EventTargetEvent<UI.DockController.ChangeEvent>): void {
     // We may get here on the first dock side change while loading without BeforeDockSideChange.
     if (!this.changingDockSide) {
       return;

@@ -63,7 +63,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/DockController.ts', UIString
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let dockControllerInstance: DockController;
 
-export class DockController extends Common.ObjectWrapper.ObjectWrapper {
+export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private canDockInternal: boolean;
   readonly closeButton: ToolbarButton;
   private readonly currentDockStateSetting: Common.Settings.Setting<DockState>;
@@ -174,10 +174,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners(Events.DockSideChanged, eventData);
   }
 
-  private setIsDockedResponse(eventData: {
-    from: string|undefined,
-    to: string,
-  }): void {
+  private setIsDockedResponse(eventData: ChangeEvent): void {
     this.dispatchEventToListeners(Events.AfterDockSideChanged, eventData);
     if (this.savedFocus) {
       (this.savedFocus as HTMLElement).focus();
@@ -212,6 +209,17 @@ export const enum Events {
   DockSideChanged = 'DockSideChanged',
   AfterDockSideChanged = 'AfterDockSideChanged',
 }
+
+export interface ChangeEvent {
+  from: DockState|undefined;
+  to: DockState;
+}
+
+export type EventTypes = {
+  [Events.BeforeDockSideChanged]: ChangeEvent,
+  [Events.DockSideChanged]: ChangeEvent,
+  [Events.AfterDockSideChanged]: ChangeEvent,
+};
 
 let toggleDockActionDelegateInstance: ToggleDockActionDelegate;
 

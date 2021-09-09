@@ -67,6 +67,12 @@ export const assertCurrentFocusedCellIs = (shadowRoot: ShadowRoot, {column, row}
   assert.strictEqual(cell.getAttribute('data-col-index'), String(column), 'The column index was not as expected.');
 };
 
+export const assertSelectedRowIs = (shadowRoot: ShadowRoot, row: number) => {
+  const selectedRow = shadowRoot.querySelector('tr.selected');
+  assertElement(selectedRow, HTMLTableRowElement);
+  assert.strictEqual(selectedRow.getAttribute('aria-rowindex'), String(row), 'The row index was not as expected.');
+};
+
 export const focusCurrentlyFocusableCell = (shadowRoot: ShadowRoot) => {
   const cell = getFocusableCell(shadowRoot);
   dispatchFocusEvent(cell);

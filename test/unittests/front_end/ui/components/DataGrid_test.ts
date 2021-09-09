@@ -6,10 +6,10 @@ import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
-import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
+import {assertElement, assertShadowRoot, dispatchClickEvent, dispatchFocusOutEvent, dispatchKeyDownEvent, getEventPromise, renderElementIntoDOM, stripLitHtmlCommentNodes} from '../../helpers/DOMHelpers.js';
 import {withMutations} from '../../helpers/MutationHelpers.js';
 
-import {assertCurrentFocusedCellIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusCurrentlyFocusableCell, getAllRows, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
+import {assertCurrentFocusedCellIs, assertSelectedRowIs, emulateUserFocusingCellAt, emulateUserKeyboardNavigation, focusCurrentlyFocusableCell, getAllRows, getCellByIndexes, getFocusableCell, getHeaderCellForColumnId, getHeaderCells, getValuesOfAllBodyRows, getValuesOfBodyRowByAriaIndex} from './DataGridHelpers.js';
 
 const {assert} = chai;
 
@@ -598,6 +598,38 @@ describe('DataGrid', () => {
       // // Ensure the row is updated to be marked as selected
       selectedRow = component.shadowRoot.querySelector('tbody tr.selected');
       assertElement(selectedRow, HTMLTableRowElement);
+    });
+
+    it('persists over re-renders when not focused', async () => {
+      const rows = createRows();
+      const component = renderDataGrid({rows, columns: columnsWithNoneSortable});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+
+      focusCurrentlyFocusableCell(component.shadowRoot);
+      await coordinator.done();
+
+      const wrapper = component.shadowRoot.querySelector('.wrapping-container');
+      if (wrapper) {
+        dispatchFocusOutEvent(wrapper);
+      }
+      await coordinator.done();
+      assertSelectedRowIs(component.shadowRoot, 1);
+
+      rows.push({
+        cells: [
+          {columnId: 'city', value: 'Vienna'},
+          {columnId: 'country', value: 'Austria'},
+          {columnId: 'population', value: '1.92m'},
+        ],
+      });
+      component.data = {
+        columns: columnsWithNoneSortable,
+        rows,
+        activeSort: null,
+      };
+      await coordinator.done();
+      assertSelectedRowIs(component.shadowRoot, 1);
     });
   });
 

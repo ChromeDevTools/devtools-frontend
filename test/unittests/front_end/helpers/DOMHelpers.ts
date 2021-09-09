@@ -139,6 +139,11 @@ export function dispatchFocusEvent<T extends Element>(element: T, options: Focus
   element.dispatchEvent(focusEvent);
 }
 
+export function dispatchFocusOutEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
+  const focusEvent = new FocusEvent('focusout', options);
+  element.dispatchEvent(focusEvent);
+}
+
 /**
  * Dispatches a keydown event. Errors if the event was not dispatched successfully.
  */

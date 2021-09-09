@@ -219,7 +219,7 @@ export class PermissionsPolicySection extends HTMLElement {
           <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
             ReportView.ReportView.ReportSectionDivider.litTagName}>
         `,
-        this.shadow,
+        this.shadow, {host: this},
       );
       // clang-format on
     });

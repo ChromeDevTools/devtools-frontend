@@ -579,7 +579,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       </section>
     `;
     // clang-format off
-    LitHtml.render(output, this.shadow);
+    LitHtml.render(output, this.shadow, {host: this});
     // clang-format on
   }
 

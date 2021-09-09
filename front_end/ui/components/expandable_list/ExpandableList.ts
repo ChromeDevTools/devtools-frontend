@@ -57,7 +57,7 @@ export class ExpandableList extends HTMLElement {
         </div>
       </div>
     `,
-        this.shadow);
+        this.shadow, {host: this});
     // clang-format on
   }
 }

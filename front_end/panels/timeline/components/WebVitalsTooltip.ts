@@ -36,7 +36,7 @@ export class WebVitalsTooltip extends HTMLElement {
     LitHtml.render(LitHtml.html`<div class="tooltip">
         ${this.content}
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format off
   }
 }

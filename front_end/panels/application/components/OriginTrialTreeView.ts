@@ -89,7 +89,7 @@ export class Badge extends HTMLElement {
         LitHtml.html`
       ${this.adorner}
     `,
-        this.shadow);
+        this.shadow, {host: this});
   }
 }
 
@@ -289,7 +289,7 @@ export class OriginTrialTokenRows extends HTMLElement {
         ${tokenDetailRows}
       </div>
     `,
-        this.shadow);
+        this.shadow, {host: this});
   }
 }
 
@@ -324,7 +324,7 @@ export class OriginTrialTreeView extends HTMLElement {
         } as TreeOutline.TreeOutline.TreeOutlineData<OriginTrialTreeNodeData>}">
       </${TreeOutline.TreeOutline.TreeOutline.litTagName}>
     `,
-        this.shadow);
+        this.shadow, {host: this});
   }
 }
 

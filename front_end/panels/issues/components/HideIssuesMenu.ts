@@ -99,7 +99,7 @@ export class HideIssuesMenu extends HTMLElement {
         >
         </${IconButton.Icon.Icon.litTagName}>
         </button>
-      `, this.shadow);
+      `, this.shadow, {host: this});
     }
   }
 

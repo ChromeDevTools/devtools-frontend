@@ -11,6 +11,9 @@ module.exports = {
       // component_docs folder.
       '@typescript-eslint/explicit-function-return-type': 0,
       'rulesdir/ban_style_tags_in_lit_html': 0,
+      // We use LitHtml to help render examples sometimes and we don't use
+      // {host: this} as often the `this` is the window.
+      'rulesdir/lit_html_host_this': 0,
     }
   }]
 };

@@ -146,7 +146,7 @@ export class RequestTrustTokensReport extends HTMLElement {
         ${this.renderParameterSection()}
         ${this.renderResultSection()}
       </${ReportView.ReportView.Report.litTagName}>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 

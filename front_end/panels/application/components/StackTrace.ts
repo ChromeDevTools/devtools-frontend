@@ -191,7 +191,7 @@ export class StackTrace extends HTMLElement {
         LitHtml.html`
           <span>${i18nString(UIStrings.cannotRenderStackTrace)}</span>
         `,
-        this.shadow);
+        this.shadow, {host: this});
       return;
     }
     const expandableRows = this.createRowTemplates();
@@ -202,7 +202,7 @@ export class StackTrace extends HTMLElement {
         } as ExpandableList.ExpandableList.ExpandableListData}>
         </${ExpandableList.ExpandableList.ExpandableList.litTagName}>
       `,
-      this.shadow);
+      this.shadow, {host: this});
     // clang-format on
   }
 }

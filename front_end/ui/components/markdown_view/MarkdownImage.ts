@@ -70,7 +70,7 @@ export class MarkdownImage extends HTMLElement {
     }
     const {isIcon} = this.imageData;
     const imageComponent = isIcon ? this.getIconComponent() : this.getImageComponent();
-    LitHtml.render(imageComponent, this.shadow);
+    LitHtml.render(imageComponent, this.shadow, {host: this});
   }
 }
 

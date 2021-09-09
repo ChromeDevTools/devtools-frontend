@@ -118,7 +118,7 @@ export class TrustTokensView extends HTMLElement {
         </${IconButton.Icon.Icon.litTagName}>
         ${this.renderGridOrNoDataMessage()}
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 

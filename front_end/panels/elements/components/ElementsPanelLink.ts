@@ -42,7 +42,7 @@ export class ElementsPanelLink extends HTMLElement {
         @click=${this.onElementRevealIconClick}
         @mouseenter=${this.onElementRevealIconMouseEnter}
         @mouseleave=${this.onElementRevealIconMouseLeave}></span>
-      `, this.shadow);
+      `, this.shadow, {host: this});
     // clang-format on
   }
 }

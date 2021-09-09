@@ -89,7 +89,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
       ${this.renderMainFrameInformation(this.getMainFrame())}
       </${ReportView.ReportView.Report.litTagName}>
     `;
-    LitHtml.render(html, this.contentElement);
+    LitHtml.render(html, this.contentElement, {host: this});
   }
 
   private getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {

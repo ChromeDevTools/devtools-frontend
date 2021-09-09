@@ -86,7 +86,7 @@ export class Button extends HTMLElement {
           </${IconButton.Icon.Icon.litTagName}>` : ''}
           <slot></slot>
         </button>
-      `, this.shadow);
+      `, this.shadow, {host: this});
     // clang-format on
   }
 }

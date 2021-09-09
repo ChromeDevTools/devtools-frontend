@@ -57,7 +57,7 @@ export class Report extends HTMLElement {
         ${this.reportTitle ? LitHtml.html`<div class="report-title">${this.reportTitle}</div>` : LitHtml.nothing}
         <slot></slot>
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 }
@@ -82,7 +82,7 @@ export class ReportSectionHeader extends HTMLElement {
       <div class="section-header">
         <slot></slot>
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 }
@@ -102,7 +102,7 @@ export class ReportSectionDivider extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <div class="section-divider">
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 }
@@ -121,7 +121,7 @@ export class ReportKey extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="key"><slot></slot></div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 }
@@ -140,7 +140,7 @@ export class ReportValue extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="value"><slot></slot></div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 }

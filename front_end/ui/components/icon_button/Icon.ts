@@ -106,7 +106,7 @@ export class Icon extends HTMLElement {
       // clang-format off
       LitHtml.render(LitHtml.html`
         <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
-      `, this.shadow);
+      `, this.shadow, {host: this});
       // clang-format on
     });
   }

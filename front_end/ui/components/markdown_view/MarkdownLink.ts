@@ -44,7 +44,7 @@ export class MarkdownLink extends HTMLElement {
     const output = LitHtml.html`
       <x-link class="devtools-link" href=${this.linkUrl}>${this.linkText}</x-link>
     `;
-    LitHtml.render(output, this.shadow);
+    LitHtml.render(output, this.shadow, {host: this});
     // clang-format on
   }
 }

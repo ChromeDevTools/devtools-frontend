@@ -13,7 +13,8 @@ describe('Wasm cross-origin sharing issue', async () => {
     await goToResourceWithCustomHost('a.devtools.test', 'issues/wasm-co-sharing.html');
   });
 
-  it('should appear when cross-origin sharing a wasm module', async () => {
+  // Disabled until wasm module sharing is reenabled.
+  it.skip('[crbug.com/1247980] should appear when cross-origin sharing a wasm module', async () => {
     await navigateToIssuesTab();
     await expandIssue();
     const issueElement = await getIssueByTitle('Share WebAssembly modules only between same-origin environments');

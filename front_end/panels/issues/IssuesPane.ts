@@ -244,7 +244,7 @@ export class IssuesPane extends UI.Widget.VBox {
       tooltipCallback: (): void => {
         const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(
             IssuesManager.IssuesManager.IssuesManager.instance(), false);
-        UI.Tooltip.Tooltip.install(issueCounter, issueEnumeration);
+        issueCounter.title = issueEnumeration;
       },
       displayMode: IssueCounter.IssueCounter.DisplayMode.ShowAlways,
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),

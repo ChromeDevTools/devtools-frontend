@@ -192,7 +192,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
           }
         }
       };
-      UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.clickToRevealTheFramesDomNodeIn));
+      icon.title = i18nString(UIStrings.clickToRevealTheFramesDomNodeIn);
       frameCell.appendChild(icon);
     }
     frameCell.appendChild(document.createTextNode(url));

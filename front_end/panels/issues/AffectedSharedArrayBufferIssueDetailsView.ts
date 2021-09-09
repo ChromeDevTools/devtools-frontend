@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
@@ -76,11 +75,11 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     switch (type) {
       case Protocol.Audits.SharedArrayBufferIssueType.CreationIssue:
         status.textContent = i18nString(UIStrings.instantiation);
-        UI.Tooltip.Tooltip.install(status, i18nString(UIStrings.aSharedarraybufferWas));
+        status.title = i18nString(UIStrings.aSharedarraybufferWas);
         break;
       case Protocol.Audits.SharedArrayBufferIssueType.TransferIssue:
         status.textContent = i18nString(UIStrings.transfer);
-        UI.Tooltip.Tooltip.install(status, i18nString(UIStrings.sharedarraybufferWasTransferedTo));
+        status.title = i18nString(UIStrings.sharedarraybufferWasTransferedTo);
         break;
     }
     element.appendChild(status);

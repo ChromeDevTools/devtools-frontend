@@ -175,7 +175,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
     } else {
       const filename = extractShortPath(mixedContent.insecureURL);
       const cell = this.appendIssueDetailCell(element, filename, 'affected-resource-mixed-content-info');
-      UI.Tooltip.Tooltip.install(cell, mixedContent.insecureURL);
+      cell.title = mixedContent.insecureURL;
     }
 
     this.appendIssueDetailCell(
@@ -362,7 +362,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     if (this.issueKindIcon) {
       const kind = this.issue.getKind();
       this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
-      UI.Tooltip.Tooltip.install(this.issueKindIcon, IssuesManager.Issue.getIssueKindDescription(kind));
+      this.issueKindIcon.title = IssuesManager.Issue.getIssueKindDescription(kind);
     }
     if (this.aggregatedIssuesCount) {
       this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;

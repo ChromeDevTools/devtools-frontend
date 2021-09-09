@@ -47,7 +47,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.filtersControl = new Filters();
-    this.filtersControl.addEventListener(Filters.Events.FilterChanged, this.onFilterChanged, this);
+    this.filtersControl.addEventListener(Events.FilterChanged, this.onFilterChanged, this);
     this.init();
     this.delegate = delegate;
     this.dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
@@ -155,7 +155,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 }
 
-export class Filters extends Common.ObjectWrapper.ObjectWrapper {
+export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly categoryFilter: Category;
   private readonly durationFilter: IsLong;
   private readonly filtersInternal: (IsLong|Category)[];
@@ -211,7 +211,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
   }
 
   private notifyFiltersChanged(): void {
-    this.dispatchEventToListeners(Filters.Events.FilterChanged);
+    this.dispatchEventToListeners(Events.FilterChanged);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -219,10 +219,10 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
   private static readonly durationFilterPresetsMs = [0, 1, 15];
 }
 
-export namespace Filters {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Events {
-    FilterChanged = 'FilterChanged',
-  }
+const enum Events {
+  FilterChanged = 'FilterChanged',
 }
+
+type EventTypes = {
+  [Events.FilterChanged]: void,
+};

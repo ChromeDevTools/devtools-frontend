@@ -1024,6 +1024,7 @@ declare namespace Protocol {
       AttributionSourceUntrustworthyOrigin = 'AttributionSourceUntrustworthyOrigin',
       AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
       AttributionTriggerDataTooLarge = 'AttributionTriggerDataTooLarge',
+      AttributionEventSourceTriggerDataTooLarge = 'AttributionEventSourceTriggerDataTooLarge',
     }
 
     /**
@@ -4962,6 +4963,14 @@ declare namespace Protocol {
        * Whether to enable to disable focus emulation.
        */
       enabled: boolean;
+    }
+
+    export interface SetAutoDarkModeOverrideRequest {
+      /**
+       * Whether to enable or disable automatic dark mode.
+       * If not specified, any existing override will be cleared.
+       */
+      enabled?: boolean;
     }
 
     export interface SetCPUThrottlingRateRequest {
@@ -10531,8 +10540,9 @@ declare namespace Protocol {
       KeyboardLock = 'KeyboardLock',
       WebOTPService = 'WebOTPService',
       OutstandingNetworkRequestDirectSocket = 'OutstandingNetworkRequestDirectSocket',
-      IsolatedWorldScript = 'IsolatedWorldScript',
+      InjectedJavascript = 'InjectedJavascript',
       InjectedStyleSheet = 'InjectedStyleSheet',
+      Dummy = 'Dummy',
       ContentSecurityHandler = 'ContentSecurityHandler',
       ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
       ContentFileChooser = 'ContentFileChooser',

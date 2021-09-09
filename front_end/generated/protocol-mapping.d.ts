@@ -1474,6 +1474,11 @@ export namespace ProtocolMapping {
     'Emulation.setFocusEmulationEnabled':
         {paramsType: [Protocol.Emulation.SetFocusEmulationEnabledRequest]; returnType: void;};
     /**
+     * Automatically render all web contents using a dark theme.
+     */
+    'Emulation.setAutoDarkModeOverride':
+        {paramsType: [Protocol.Emulation.SetAutoDarkModeOverrideRequest?]; returnType: void;};
+    /**
      * Enables CPU throttling to emulate slow CPUs.
      */
     'Emulation.setCPUThrottlingRate': {paramsType: [Protocol.Emulation.SetCPUThrottlingRateRequest]; returnType: void;};

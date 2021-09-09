@@ -1323,6 +1323,12 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Automatically render all web contents using a dark theme.
+     */
+    invoke_setAutoDarkModeOverride(params: Protocol.Emulation.SetAutoDarkModeOverrideRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Enables CPU throttling to emulate slow CPUs.
      */
     invoke_setCPUThrottlingRate(params: Protocol.Emulation.SetCPUThrottlingRateRequest):

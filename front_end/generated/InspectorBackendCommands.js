@@ -268,7 +268,8 @@ export function registerCommands(inspectorBackend) {
     InvalidAttributionData: 'InvalidAttributionData',
     AttributionSourceUntrustworthyOrigin: 'AttributionSourceUntrustworthyOrigin',
     AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin',
-    AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge'
+    AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge',
+    AttributionEventSourceTriggerDataTooLarge: 'AttributionEventSourceTriggerDataTooLarge'
   });
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
@@ -989,6 +990,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Emulation.resetPageScaleFactor', [], []);
   inspectorBackend.registerCommand(
       'Emulation.setFocusEmulationEnabled', [{'name': 'enabled', 'type': 'boolean', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Emulation.setAutoDarkModeOverride', [{'name': 'enabled', 'type': 'boolean', 'optional': true}], []);
   inspectorBackend.registerCommand(
       'Emulation.setCPUThrottlingRate', [{'name': 'rate', 'type': 'number', 'optional': false}], []);
   inspectorBackend.registerCommand(
@@ -2158,8 +2161,9 @@ export function registerCommands(inspectorBackend) {
     KeyboardLock: 'KeyboardLock',
     WebOTPService: 'WebOTPService',
     OutstandingNetworkRequestDirectSocket: 'OutstandingNetworkRequestDirectSocket',
-    IsolatedWorldScript: 'IsolatedWorldScript',
+    InjectedJavascript: 'InjectedJavascript',
     InjectedStyleSheet: 'InjectedStyleSheet',
+    Dummy: 'Dummy',
     ContentSecurityHandler: 'ContentSecurityHandler',
     ContentWebAuthenticationAPI: 'ContentWebAuthenticationAPI',
     ContentFileChooser: 'ContentFileChooser',

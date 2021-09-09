@@ -1524,7 +1524,8 @@
                         "InvalidAttributionData",
                         "AttributionSourceUntrustworthyOrigin",
                         "AttributionUntrustworthyOrigin",
-                        "AttributionTriggerDataTooLarge"
+                        "AttributionTriggerDataTooLarge",
+                        "AttributionEventSourceTriggerDataTooLarge"
                     ]
                 },
                 {
@@ -7558,6 +7559,19 @@
                         {
                             "name": "enabled",
                             "description": "Whether to enable to disable focus emulation.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setAutoDarkModeOverride",
+                    "description": "Automatically render all web contents using a dark theme.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enabled",
+                            "description": "Whether to enable or disable automatic dark mode.\nIf not specified, any existing override will be cleared.",
+                            "optional": true,
                             "type": "boolean"
                         }
                     ]
@@ -15439,8 +15453,9 @@
                         "KeyboardLock",
                         "WebOTPService",
                         "OutstandingNetworkRequestDirectSocket",
-                        "IsolatedWorldScript",
+                        "InjectedJavascript",
                         "InjectedStyleSheet",
+                        "Dummy",
                         "ContentSecurityHandler",
                         "ContentWebAuthenticationAPI",
                         "ContentFileChooser",

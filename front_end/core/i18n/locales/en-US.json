@@ -6140,14 +6140,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "Headers"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "Headers and request body"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "Initiator"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "Messages"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "Payload"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "Preview"
@@ -6590,12 +6590,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "Decoded:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "(empty)"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "Form Data"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(from disk cache)"
   },
@@ -6632,9 +6626,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Provisional headers are shown. Disable cache to see full headers."
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "Query String Parameters"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "Recorded attribution with trigger-data: {PH1}"
   },
@@ -6649,9 +6640,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "Request Method"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "Request Payload"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "Request URL"
@@ -6680,32 +6668,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "To use this resource from a different site, the server may relax the cross-origin resource policy response header:"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(unable to decode value)"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "View decoded"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "view decoded"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "View parsed"
   },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
-    "message": "view parsed"
-  },
   "panels/network/RequestHeadersView.ts | viewSource": {
     "message": "View source"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "view source"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "View URL-encoded"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "view URL-encoded"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Request call stack"
@@ -6715,6 +6682,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "This request has no initiator data."
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "Copy value"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "(empty)"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "Form Data"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "Query String Parameters"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "Request Payload"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "Show more"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "(unable to decode value)"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "View decoded"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "view decoded"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "View parsed"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "view parsed"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "View source"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "view source"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "View URL-encoded"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "view URL-encoded"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Failed to load response data"

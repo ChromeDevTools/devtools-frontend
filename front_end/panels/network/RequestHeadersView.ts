@@ -41,7 +41,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
-import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/objectPropertiesSection.css.js';
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -57,11 +56,6 @@ const UIStrings = {
   */
   general: 'General',
   /**
-  * @description Text in Request Headers View of the Network panel. This is a noun-phrase meaning the
-  * payload of a network request.
-  */
-  requestPayload: 'Request Payload',
-  /**
   *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
   */
   copyValue: 'Copy value',
@@ -76,19 +70,7 @@ const UIStrings = {
   /**
   *@description Text in Request Headers View of the Network panel
   */
-  unableToDecodeValue: '(unable to decode value)',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
   requestUrl: 'Request URL',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  queryStringParameters: 'Query String Parameters',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  formData: 'Form Data',
   /**
   *@description Text to show more content
   */
@@ -98,41 +80,9 @@ const UIStrings = {
   */
   viewParsed: 'View parsed',
   /**
-  *@description Text to show an item is empty
-  */
-  empty: '(empty)',
-  /**
   *@description Text for toggling the view of header data (e.g. query string parameters) from parsed to source in the headers tab
   */
   viewSource: 'View source',
-  /**
-  * @description Text for toggling header data (e.g. query string parameters) from decoded to
-  * encoded in the headers tab or in the cookies preview. URL-encoded is a different data format for
-  * the same data, which the user sees when they click this command.
-  */
-  viewUrlEncoded: 'View URL-encoded',
-  /**
-  *@description Text for toggling header data (e.g. query string parameters) from encoded to decoded in the headers tab or in the cookies preview
-  */
-  viewDecoded: 'View decoded',
-  /**
-  *@description Text for toggling header data (e.g. query string parameters) from decoded to
-  * encoded in the headers tab or in the cookies preview. URL-encoded is a different data format for
-  * the same data, which the user sees when they click this command.
-  */
-  viewUrlEncodedL: 'view URL-encoded',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  viewDecodedL: 'view decoded',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  viewParsedL: 'view parsed',
-  /**
-  *@description Text in Request Headers View of the Network panel
-  */
-  viewSourceL: 'view source',
   /**
   *@description Text in Request Headers View of the Network panel
   */
@@ -250,7 +200,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class RequestHeadersView extends UI.Widget.VBox {
   private request: SDK.NetworkRequest.NetworkRequest;
-  private decodeRequestParameters: boolean;
   private showRequestHeadersText: boolean;
   private showResponseHeadersText: boolean;
   private highlightedElement: UI.TreeOutline.TreeElement|null;
@@ -262,9 +211,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
   private readonly referrerPolicyItem: UI.TreeOutline.TreeElement;
   private readonly responseHeadersCategory: Category;
   private readonly requestHeadersCategory: Category;
-  private queryStringCategory: Category;
-  private formDataCategory: Category;
-  private requestPayloadCategory: Category;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
@@ -272,14 +218,8 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.element.classList.add('request-headers-view');
 
     this.request = request;
-    this.decodeRequestParameters = true;
     this.showRequestHeadersText = false;
     this.showResponseHeadersText = false;
-
-    const contentType = request.requestContentType();
-    if (contentType) {
-      this.decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
-    }
 
     this.highlightedElement = null;
 
@@ -306,9 +246,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     this.responseHeadersCategory = new Category(root, 'responseHeaders', '');
     this.requestHeadersCategory = new Category(root, 'requestHeaders', '');
-    this.queryStringCategory = new Category(root, 'queryString', '');
-    this.formDataCategory = new Category(root, 'formData', '');
-    this.requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
   }
 
   wasShown(): void {
@@ -320,7 +257,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refreshHTTPInformation, this);
 
     this.refreshURL();
-    this.refreshQueryString();
     this.refreshRequestHeaders();
     this.refreshResponseHeaders();
     this.refreshHTTPInformation();
@@ -426,73 +362,10 @@ export class RequestHeadersView extends UI.Widget.VBox {
     return fragment;
   }
 
-  private formatParameter(value: string, className: string, decodeParameters: boolean): Element {
-    let errorDecoding = false;
-
-    if (decodeParameters) {
-      value = value.replace(/\+/g, ' ');
-      if (value.indexOf('%') >= 0) {
-        try {
-          value = decodeURIComponent(value);
-        } catch (e) {
-          errorDecoding = true;
-        }
-      }
-    }
-    const div = document.createElement('div');
-    if (className) {
-      div.className = className;
-    }
-    if (value === '') {
-      div.classList.add('empty-value');
-    }
-    if (errorDecoding) {
-      div.createChild('span', 'header-decode-error').textContent = i18nString(UIStrings.unableToDecodeValue);
-    } else {
-      div.textContent = value;
-    }
-    return div;
-  }
-
   private refreshURL(): void {
     const requestURL = this.request.url();
     this.urlItem.title = this.formatHeader(i18nString(UIStrings.requestUrl), requestURL);
     this.addEntryContextMenuHandler(this.urlItem, requestURL);
-  }
-
-  private refreshQueryString(): void {
-    const queryString = this.request.queryString();
-    const queryParameters = this.request.queryParameters;
-    this.queryStringCategory.hidden = !queryParameters;
-    if (queryParameters) {
-      this.refreshParams(
-          i18nString(UIStrings.queryStringParameters), queryParameters, queryString, this.queryStringCategory);
-    }
-  }
-
-  private async refreshFormData(): Promise<void> {
-    const formData = await this.request.requestFormData();
-    if (!formData) {
-      this.formDataCategory.hidden = true;
-      this.requestPayloadCategory.hidden = true;
-      return;
-    }
-
-    const formParameters = await this.request.formParameters();
-    if (formParameters) {
-      this.formDataCategory.hidden = false;
-      this.requestPayloadCategory.hidden = true;
-      this.refreshParams(i18nString(UIStrings.formData), formParameters, formData, this.formDataCategory);
-    } else {
-      this.requestPayloadCategory.hidden = false;
-      this.formDataCategory.hidden = true;
-      try {
-        const json = JSON.parse(formData);
-        this.refreshRequestJSONPayload(json, formData);
-      } catch (e) {
-        this.populateTreeElementWithSourceText(this.requestPayloadCategory, formData);
-      }
-    }
   }
 
   private populateTreeElementWithSourceText(treeElement: UI.TreeOutline.TreeElement, sourceText: string|null): void {
@@ -535,220 +408,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
     sourceTextElement.appendChild(showMoreButton);
   }
 
-  private refreshParams(
-      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
-      paramsTreeElement: UI.TreeOutline.TreeElement): void {
-    paramsTreeElement.removeChildren();
-
-    paramsTreeElement.listItemElement.removeChildren();
-    paramsTreeElement.listItemElement.createChild('div', 'selection fill');
-    UI.UIUtils.createTextChild(paramsTreeElement.listItemElement, title);
-
-    const headerCount = document.createElement('span');
-    headerCount.classList.add('header-count');
-    const numberOfParams = params ? params.length : 0;
-    headerCount.textContent = `\xA0(${numberOfParams})`;
-    paramsTreeElement.listItemElement.appendChild(headerCount);
-
-    const shouldViewSource = viewSourceForItems.has(paramsTreeElement);
-    if (shouldViewSource) {
-      this.appendParamsSource(title, params, sourceText, paramsTreeElement);
-    } else {
-      this.appendParamsParsed(title, params, sourceText, paramsTreeElement);
-    }
-  }
-
-  private appendParamsSource(
-      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
-      paramsTreeElement: UI.TreeOutline.TreeElement): void {
-    this.populateTreeElementWithSourceText(paramsTreeElement, sourceText);
-
-    const listItemElement = paramsTreeElement.listItemElement;
-
-    const viewParsed = function(this: RequestHeadersView, event: Event): void {
-      listItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
-
-      viewSourceForItems.delete(paramsTreeElement);
-      this.refreshParams(title, params, sourceText, paramsTreeElement);
-      event.consume();
-    };
-
-    const viewParsedContextMenu = (event: Event): void => {
-      if (!paramsTreeElement.expanded) {
-        return;
-      }
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
-      contextMenu.show();
-    };
-
-    const viewParsedButton = this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
-    listItemElement.appendChild(viewParsedButton);
-
-    listItemElement.addEventListener('contextmenu', viewParsedContextMenu);
-  }
-
-  private appendParamsParsed(
-      title: string, params: SDK.NetworkRequest.NameValue[]|null, sourceText: string|null,
-      paramsTreeElement: UI.TreeOutline.TreeElement): void {
-    for (const param of params || []) {
-      const paramNameValue = document.createDocumentFragment();
-      if (param.name !== '') {
-        const name = this.formatParameter(param.name + ': ', 'header-name', this.decodeRequestParameters);
-        const value = this.formatParameter(param.value, 'header-value source-code', this.decodeRequestParameters);
-        paramNameValue.appendChild(name);
-        paramNameValue.createChild('span', 'header-separator');
-        paramNameValue.appendChild(value);
-      } else {
-        paramNameValue.appendChild(
-            this.formatParameter(i18nString(UIStrings.empty), 'empty-request-header', this.decodeRequestParameters));
-      }
-
-      const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
-      this.addEntryContextMenuHandler(paramTreeElement, param.value);
-      paramsTreeElement.appendChild(paramTreeElement);
-    }
-
-    const listItemElement = paramsTreeElement.listItemElement;
-
-    const viewSource = function(this: RequestHeadersView, event: Event): void {
-      listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
-
-      viewSourceForItems.add(paramsTreeElement);
-      this.refreshParams(title, params, sourceText, paramsTreeElement);
-      event.consume();
-    };
-
-    const toggleURLDecoding = function(this: RequestHeadersView, event: Event): void {
-      listItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
-      this.toggleURLDecoding(event);
-    };
-
-    const viewSourceContextMenu = (event: Event): void => {
-      if (!paramsTreeElement.expanded) {
-        return;
-      }
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      const section = contextMenu.newSection();
-      section.appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
-      const viewURLEncodedText =
-          this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
-      section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event));
-      contextMenu.show();
-    };
-
-    const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
-    listItemElement.appendChild(viewSourceButton);
-
-    const toggleTitle =
-        this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncodedL) : i18nString(UIStrings.viewDecodedL);
-    const toggleButton = this.createToggleButton(toggleTitle);
-    toggleButton.addEventListener('click', toggleURLDecoding.bind(this), false);
-    listItemElement.appendChild(toggleButton);
-
-    listItemElement.addEventListener('contextmenu', viewSourceContextMenu);
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private refreshRequestJSONPayload(parsedObject: any, sourceText: string): void {
-    const rootListItem = this.requestPayloadCategory;
-    rootListItem.removeChildren();
-
-    const rootListItemElement = rootListItem.listItemElement;
-    rootListItemElement.removeChildren();
-    rootListItemElement.createChild('div', 'selection fill');
-    UI.UIUtils.createTextChild(rootListItemElement, this.requestPayloadCategory.title.toString());
-
-    if (viewSourceForItems.has(rootListItem)) {
-      this.appendJSONPayloadSource(rootListItem, parsedObject, sourceText);
-    } else {
-      this.appendJSONPayloadParsed(rootListItem, parsedObject, sourceText);
-    }
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendJSONPayloadSource(rootListItem: Category, parsedObject: any, sourceText: string): void {
-    const rootListItemElement = rootListItem.listItemElement;
-    this.populateTreeElementWithSourceText(rootListItem, sourceText);
-
-    const viewParsed = function(this: RequestHeadersView, event: Event): void {
-      rootListItemElement.removeEventListener('contextmenu', viewParsedContextMenu);
-      viewSourceForItems.delete(rootListItem);
-      this.refreshRequestJSONPayload(parsedObject, sourceText);
-      event.consume();
-    };
-
-    const viewParsedButton = this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
-    rootListItemElement.appendChild(viewParsedButton);
-
-    const viewParsedContextMenu = (event: Event): void => {
-      if (!rootListItem.expanded) {
-        return;
-      }
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
-      contextMenu.show();
-    };
-
-    rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
-  }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendJSONPayloadParsed(rootListItem: Category, parsedObject: any, sourceText: string): void {
-    const object = (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject) as SDK.RemoteObject.LocalJSONObject);
-    const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
-    section.title = (object.description as string);
-    section.expand();
-    // `editable` is not a valid property for `ObjectUI.ObjectPropertiesSection.RootElement`. Only for
-    // `ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection`. We do not know if this assignment is
-    // safe to delete.
-    // @ts-ignore
-    section.editable = false;
-    rootListItem.childrenListElement.classList.add('source-code', 'object-properties-section');
-
-    rootListItem.appendChild(section);
-    const rootListItemElement = rootListItem.listItemElement;
-
-    const viewSource = function(this: RequestHeadersView, event: Event): void {
-      rootListItemElement.removeEventListener('contextmenu', viewSourceContextMenu);
-
-      viewSourceForItems.add(rootListItem);
-      this.refreshRequestJSONPayload(parsedObject, sourceText);
-      event.consume();
-    };
-
-    const viewSourceContextMenu = (event: Event): void => {
-      if (!rootListItem.expanded) {
-        return;
-      }
-      const contextMenu = new UI.ContextMenu.ContextMenu(event);
-      contextMenu.newSection().appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
-      contextMenu.show();
-    };
-
-    const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
-    rootListItemElement.appendChild(viewSourceButton);
-
-    rootListItemElement.addEventListener('contextmenu', viewSourceContextMenu);
-  }
-
-  private createViewSourceToggle(viewSource: boolean, handler: (arg0: Event) => void): Element {
-    const viewSourceToggleTitle = viewSource ? i18nString(UIStrings.viewParsedL) : i18nString(UIStrings.viewSourceL);
-    const viewSourceToggleButton = this.createToggleButton(viewSourceToggleTitle);
-    viewSourceToggleButton.addEventListener('click', handler, false);
-    return viewSourceToggleButton;
-  }
-
-  private toggleURLDecoding(event: Event): void {
-    this.decodeRequestParameters = !this.decodeRequestParameters;
-    this.refreshQueryString();
-    this.refreshFormData();
-    event.consume();
-  }
-
   private refreshRequestHeaders(): void {
     const treeElement = this.requestHeadersCategory;
     const headers = this.request.requestHeaders().slice();
@@ -768,8 +427,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
       toggleButton.addEventListener('click', this.toggleRequestHeadersText.bind(this), false);
       treeElement.listItemElement.appendChild(toggleButton);
     }
-
-    this.refreshFormData();
   }
 
   private refreshResponseHeaders(): void {
@@ -1057,8 +714,6 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.revealAndHighlight(this.getCategoryForSection(section), header);
   }
 }
-
-const viewSourceForItems = new WeakSet<Category|UI.TreeOutline.TreeElement>();
 
 const headerNames = new WeakMap<UI.TreeOutline.TreeElement, string>();
 

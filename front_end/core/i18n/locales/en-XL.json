@@ -6140,14 +6140,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "Ĥéâd́êŕŝ"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "Ĥéâd́êŕŝ án̂d́ r̂éq̂úêśt̂ b́ôd́ŷ"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "Îńît́îát̂ór̂"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "M̂éŝśâǵêś"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "P̂áŷĺôád̂"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "P̂ŕêv́îéŵ"
@@ -6590,12 +6590,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "D̂éĉód̂éd̂:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "(êḿp̂t́ŷ)"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "F̂ór̂ḿ D̂át̂á"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(f̂ŕôḿ d̂íŝḱ ĉáĉh́ê)"
   },
@@ -6632,9 +6626,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "P̂ŕôv́îśîón̂ál̂ h́êád̂ér̂ś âŕê śĥóŵń. D̂íŝáb̂ĺê ćâćĥé t̂ó ŝéê f́ûĺl̂ h́êád̂ér̂ś."
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "Q̂úêŕŷ Śt̂ŕîńĝ Ṕâŕâḿêt́êŕŝ"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "R̂éĉór̂d́êd́ ât́t̂ŕîb́ût́îón̂ ẃît́ĥ trigger-data: {PH1}"
   },
@@ -6649,9 +6640,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "R̂éq̂úêśt̂ Ḿêt́ĥód̂"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "R̂éq̂úêśt̂ Ṕâýl̂óâd́"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "R̂éq̂úêśt̂ ÚR̂Ĺ"
@@ -6680,32 +6668,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "T̂ó ûśê t́ĥíŝ ŕêśôúr̂ćê f́r̂óm̂ á d̂íf̂f́êŕêńt̂ śît́ê, t́ĥé ŝér̂v́êŕ m̂áŷ ŕêĺâx́ t̂h́ê ćr̂óŝś-ôŕîǵîń r̂éŝóûŕĉé p̂ól̂íĉý r̂éŝṕôńŝé ĥéâd́êŕ:"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(ûńâb́l̂é t̂ó d̂éĉód̂é v̂ál̂úê)"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "V̂íêẃ d̂éĉód̂éd̂"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "v̂íêẃ d̂éĉód̂éd̂"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
     "message": "V̂íêẃ p̂ár̂śêd́"
   },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
-    "message": "v̂íêẃ p̂ár̂śêd́"
-  },
   "panels/network/RequestHeadersView.ts | viewSource": {
     "message": "V̂íêẃ ŝóûŕĉé"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "v̂íêẃ ŝóûŕĉé"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "V̂íêẃ ÛŔL̂-én̂ćôd́êd́"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "v̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "R̂éq̂úêśt̂ ćâĺl̂ śt̂áĉḱ"
@@ -6715,6 +6682,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "T̂h́îś r̂éq̂úêśt̂ h́âś n̂ó îńît́îát̂ór̂ d́ât́â."
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "Ĉóp̂ý v̂ál̂úê"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "(êḿp̂t́ŷ)"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "F̂ór̂ḿ D̂át̂á"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "Q̂úêŕŷ Śt̂ŕîńĝ Ṕâŕâḿêt́êŕŝ"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "R̂éq̂úêśt̂ Ṕâýl̂óâd́"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "Ŝh́ôẃ m̂ór̂é"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "(ûńâb́l̂é t̂ó d̂éĉód̂é v̂ál̂úê)"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "V̂íêẃ d̂éĉód̂éd̂"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "v̂íêẃ d̂éĉód̂éd̂"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "V̂íêẃ p̂ár̂śêd́"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "v̂íêẃ p̂ár̂śêd́"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "V̂íêẃ ŝóûŕĉé"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "v̂íêẃ ŝóûŕĉé"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "V̂íêẃ ÛŔL̂-én̂ćôd́êd́"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "v̂íêẃ ÛŔL̂-én̂ćôd́êd́"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "F̂áîĺêd́ t̂ó l̂óâd́ r̂éŝṕôńŝé d̂át̂á"

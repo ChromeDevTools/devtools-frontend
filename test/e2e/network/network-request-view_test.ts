@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type {ElementHandle} from 'puppeteer';
 import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
@@ -123,8 +124,8 @@ describe('The Network Request view', async () => {
     await click(headersTabHeader);
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
     const headersView = await waitFor('.request-headers-view');
-    const outline = await $$('[role=treeitem]:not(.hidden)', headersView);
-    const expectedPatterns = [
+    const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
+    const expectedHeadersContent = [
       'General',
       [
         'Request URL: https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
@@ -161,11 +162,33 @@ describe('The Network Request view', async () => {
         'User-Agent: Mozilla/5.0 %',
         'x-same-domain: 1',
       ],
+    ].flat();
+
+    async function assertOutlineMatches(expectedPatterns: string[], outline: ElementHandle<Element>[]) {
+      const regexpSpecialChars = /[-\/\\^$*+?.()|[\]{}]/g;
+      for (const item of outline) {
+        const actualText = await item.evaluate(el => el.textContent || '');
+        const expectedPattern = expectedPatterns.shift();
+        if (expectedPattern) {
+          assert.match(actualText, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
+        } else {
+          assert.fail('Unexpected text: ' + actualText);
+        }
+      }
+    }
+
+    await assertOutlineMatches(expectedHeadersContent, headersOutline);
+
+    const payloadTabHeader = await waitFor('[aria-label=Payload][role="tab"]', networkView);
+    await click(payloadTabHeader);
+    await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
+    const payloadView = await waitFor('.request-payload-view');
+    const payloadOutline = await $$('[role=treeitem]:not(.hidden)', payloadView);
+    const expectedPayloadContent = [
       'Query String Parameters (2)view sourceview URL-encoded',
+      ['id: 42', 'param: a b'],
+      'Form Data (4)view sourceview URL-encoded',
       [
-        'id: 42',
-        'param: a b',
-        'Form Data (4)view sourceview URL-encoded',
         'foo: alpha',
         'bar: beta:42:0',
         'baz: ',
@@ -173,15 +196,6 @@ describe('The Network Request view', async () => {
       ],
     ].flat();
 
-    const regexpSpecialChars = /[-\/\\^$*+?.()|[\]{}]/g;
-    for (const item of outline) {
-      const actualText = await item.evaluate(el => el.textContent || '');
-      const expectedPattern = expectedPatterns.shift();
-      if (expectedPattern) {
-        assert.match(actualText, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
-      } else {
-        assert.fail('Unexpected text: ' + actualText);
-      }
-    }
+    await assertOutlineMatches(expectedPayloadContent, payloadOutline);
   });
 });

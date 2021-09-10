@@ -112,6 +112,11 @@ Network.RequestHeadersView = NetworkModule.RequestHeadersView.RequestHeadersView
 /**
  * @constructor
  */
+Network.RequestPayloadView = NetworkModule.RequestPayloadView.RequestPayloadView;
+
+/**
+ * @constructor
+ */
 Network.RequestPreviewView = NetworkModule.RequestPreviewView.RequestPreviewView;
 
 /**

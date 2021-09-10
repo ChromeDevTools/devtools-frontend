@@ -39,6 +39,7 @@ import {EventSourceMessagesView} from './EventSourceMessagesView.js';
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
+import {RequestPayloadView} from './RequestPayloadView.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
 import {RequestResponseView} from './RequestResponseView.js';
@@ -53,7 +54,7 @@ const UIStrings = {
   /**
   *@description Text in Network Item View of the Network panel
   */
-  headersAndRequestBody: 'Headers and request body',
+  payload: 'Payload',
   /**
   *@description Text in Network Item View of the Network panel
   */
@@ -129,6 +130,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly resourceViewTabSetting: Common.Settings.Setting<NetworkForward.UIRequestLocation.UIRequestTabs>;
   private readonly headersView: RequestHeadersView;
+  private payloadView: RequestPayloadView|null;
   private readonly responseView: RequestResponseView|undefined;
   private cookiesView: RequestCookiesView|null;
   private initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
@@ -146,7 +148,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.headersView = new RequestHeadersView(request);
     this.appendTab(
         NetworkForward.UIRequestLocation.UIRequestTabs.Headers, i18nString(UIStrings.headers), this.headersView,
-        i18nString(UIStrings.headersAndRequestBody));
+        i18nString(UIStrings.headers));
+
+    this.payloadView = null;
+    this.maybeAppendPayloadPanel();
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -201,7 +206,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   wasShown(): void {
     super.wasShown();
     this.requestInternal.addEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
     this.requestInternal.addEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this.maybeAppendCookiesPanel, this);
     this.requestInternal.addEventListener(
@@ -221,11 +226,16 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   willHide(): void {
     this.requestInternal.removeEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this.maybeAppendCookiesPanel, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
     this.requestInternal.removeEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this.maybeAppendCookiesPanel, this);
     this.requestInternal.removeEventListener(
         SDK.NetworkRequest.Events.TrustTokenResultAdded, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+  }
+
+  private async requestHeadersChanged(): Promise<void> {
+    this.maybeAppendCookiesPanel();
+    this.maybeAppendPayloadPanel();
   }
 
   private maybeAppendCookiesPanel(): void {
@@ -236,6 +246,16 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.Cookies, i18nString(UIStrings.cookies), this.cookiesView,
           i18nString(UIStrings.requestAndResponseCookies));
+    }
+  }
+
+  private async maybeAppendPayloadPanel(): Promise<void> {
+    if (this.requestInternal.queryParameters || await this.requestInternal.requestFormData()) {
+      this.payloadView = new RequestPayloadView(this.requestInternal);
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.Payload, i18nString(UIStrings.payload), this.payloadView,
+          i18nString(UIStrings.payload), /* userGesture=*/ void 0,
+          /* isCloseable=*/ void 0, /* index=*/ 1);
     }
   }
 

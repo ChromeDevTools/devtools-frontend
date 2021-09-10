@@ -181,8 +181,8 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     this.layers3DView.updateLayerSnapshot(layer);
   }
 
-  private onPaintProfileRequested(event: Common.EventTarget.EventTargetEvent): void {
-    const selection = event.data as LayerViewer.LayerViewHost.Selection;
+  private onPaintProfileRequested({data: selection}:
+                                      Common.EventTarget.EventTargetEvent<LayerViewer.LayerViewHost.Selection>): void {
     this.layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (!snapshotWithRect) {
         return;

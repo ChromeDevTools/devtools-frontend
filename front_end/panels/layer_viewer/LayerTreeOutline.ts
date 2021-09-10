@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -53,7 +54,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class LayerTreeOutline extends UI.TreeOutline.TreeOutline implements LayerView {
+export class LayerTreeOutline extends UI.TreeOutline.TreeOutline implements Common.EventTarget.EventTarget<EventTypes>,
+                                                                            LayerView {
   private layerViewHost: LayerViewHost;
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private lastHoveredNode: LayerTreeElement|null;
@@ -229,11 +231,13 @@ export class LayerTreeOutline extends UI.TreeOutline.TreeOutline implements Laye
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export const enum Events {
   PaintProfilerRequested = 'PaintProfilerRequested',
 }
+
+export type EventTypes = {
+  [Events.PaintProfilerRequested]: Selection,
+};
 
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   // Watch out: This is different from treeOutline that

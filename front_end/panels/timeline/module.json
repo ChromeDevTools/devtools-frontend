@@ -7,8 +7,5 @@
     "ui/legacy/components/data_grid",
     "panels/profiler",
     "panels/mobile_throttling"
-  ],
-    "resources": [
-    "historyToolbarButton.css"
   ]
 }

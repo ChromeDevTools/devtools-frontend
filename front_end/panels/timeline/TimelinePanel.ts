@@ -45,6 +45,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import timelinePanelStyles from './timelinePanel.css.js';
 import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 
@@ -500,6 +501,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // History
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(this.historyManager.button());
+    this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);
     this.panelToolbar.appendSeparator();
 
     // View

@@ -215,7 +215,6 @@ all_devtools_files = [
   "front_end/third_party/lighthouse/report-assets/report.css",
   "front_end/third_party/lighthouse/report-assets/report.js",
   "front_end/third_party/lighthouse/report-assets/standalone-template.html",
-  "front_end/panels/timeline/historyToolbarButton.css",
   "front_end/panels/timeline/module.json",
   "front_end/ui/legacy/checkboxTextLabel.css",
   "front_end/ui/legacy/closeButton.css",

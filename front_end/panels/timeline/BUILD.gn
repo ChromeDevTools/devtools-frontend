@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "historyToolbarButton.css",
     "invalidationsTree.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",

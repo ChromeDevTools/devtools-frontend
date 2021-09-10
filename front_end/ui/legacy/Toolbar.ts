@@ -85,6 +85,10 @@ export class Toolbar {
     return this.compactLayout;
   }
 
+  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
+    this.shadowRoot.adoptedStyleSheets = this.shadowRoot.adoptedStyleSheets.concat(cssFiles);
+  }
+
   setCompactLayout(enable: boolean): void {
     if (this.compactLayout === enable) {
       return;

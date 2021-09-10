@@ -344,34 +344,26 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum PointerEventsBehavior {
+export const enum PointerEventsBehavior {
   BlockedByGlassPane = 'BlockedByGlassPane',
   PierceGlassPane = 'PierceGlassPane',
   PierceContents = 'PierceContents',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum AnchorBehavior {
+export const enum AnchorBehavior {
   PreferTop = 'PreferTop',
   PreferBottom = 'PreferBottom',
   PreferLeft = 'PreferLeft',
   PreferRight = 'PreferRight',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SizeBehavior {
+export const enum SizeBehavior {
   SetExactSize = 'SetExactSize',
   SetExactWidthMaxHeight = 'SetExactWidthMaxHeight',
   MeasureContent = 'MeasureContent',
 }
 
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum MarginBehavior {
+export const enum MarginBehavior {
   Arrow = 'Arrow',
   DefaultMargin = 'DefaultMargin',
   NoMargin = 'NoMargin',

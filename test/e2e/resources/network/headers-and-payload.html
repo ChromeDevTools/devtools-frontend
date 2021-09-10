@@ -1,0 +1,18 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  fetch('image.svg?id=42&param=a%20b', {
+    'headers': {
+      'accept': '*/*',
+      'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'x-same-domain': '1',
+    },
+    'referrer': 'https://example.com/',
+    'referrerPolicy': 'strict-origin-when-cross-origin',
+    'body': 'foo=alpha&bar=beta%3A42%3A0&baz&',
+    'method': 'POST',
+  });
+</script>

@@ -9,6 +9,7 @@ copy_to_gen("network") {
     "cacheable.rawresponse",
     "csp-report-only.rawresponse",
     "fetch.html",
+    "headers-and-payload.html",
     "image.svg",
     "last-modified.html",
     "last-modified.rawresponse",

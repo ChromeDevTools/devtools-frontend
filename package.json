@@ -54,5 +54,8 @@
     "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh",
     "unittest": "scripts/test/run_unittests.py --no-text-coverage",
     "watch": "third_party/node/node.py --output scripts/watch_build.js"
+  },
+  "devDependencies": {
+    "sync-fetch": "latest"
   }
 }

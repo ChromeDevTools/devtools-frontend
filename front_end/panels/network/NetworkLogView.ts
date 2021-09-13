@@ -1717,6 +1717,15 @@ export class NetworkLogView extends UI.Widget.VBox implements
     return true;
   }
 
+  private isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   private parseFilterQuery(query: string, invert: boolean): void {
     // A query string can have multiple filters, some of them regular
     // expressions, some not. Each one of those filters can be negated with a
@@ -1734,6 +1743,8 @@ export class NetworkLogView extends UI.Widget.VBox implements
             NetworkLogView.requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
       } else if (descriptor.regex) {
         filter = NetworkLogView.requestPathFilter.bind(null, (regex as RegExp));
+      } else if (this.isValidUrl(text)) {
+        filter = NetworkLogView.requestUrlFilter.bind(null, text);
       } else {
         filter = NetworkLogView.requestPathFilter.bind(
             null, new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i'));

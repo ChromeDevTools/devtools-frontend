@@ -208,6 +208,7 @@ template("node_ts_library") {
   ts_library(target_name) {
     module = "commonjs"
     testonly = true
+    reset_timestamps = true
 
     inputs =
         [ devtools_location_prepend + "node_modules/@types/node/index.d.ts" ]

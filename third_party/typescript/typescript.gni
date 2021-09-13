@@ -116,6 +116,13 @@ template("ts_library") {
 
     if (_test_only) {
       args += [ "--test-only" ]
+      inputs += [
+        devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
+        devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
+        devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
+        devtools_location_prepend +
+            "node_modules/@types/karma-chai-sinon/index.d.ts",
+      ]
     }
 
     if (_no_emit) {
@@ -202,11 +209,8 @@ template("node_ts_library") {
     module = "commonjs"
     testonly = true
 
-    inputs = [
-      devtools_location_prepend + "node_modules/@types/node/index.d.ts",
-      devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
-      devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
-    ]
+    inputs =
+        [ devtools_location_prepend + "node_modules/@types/node/index.d.ts" ]
 
     forward_variables_from(invoker,
                            [

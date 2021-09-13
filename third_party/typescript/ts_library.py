@@ -229,6 +229,7 @@ def main():
     tsconfig_output_location = path.join(os.getcwd(), opts.tsconfig_output_location)
     tsconfig_output_directory = path.dirname(tsconfig_output_location)
     tsbuildinfo_name = path.basename(tsconfig_output_location) + '.tsbuildinfo'
+    runs_in_node_environment = opts.module == "commonjs"
 
     def get_relative_path_from_output_directory(file_to_resolve):
         return path.relpath(path.join(os.getcwd(), file_to_resolve), tsconfig_output_directory)
@@ -244,10 +245,18 @@ def main():
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions']['rootDir'] = get_relative_path_from_output_directory(opts.front_end_directory)
-    tsconfig['compilerOptions']['typeRoots'] = opts.test_only and [
+    tsconfig['compilerOptions']['typeRoots'] = (
+        opts.test_only or runs_in_node_environment
+    ) and [
         get_relative_path_from_output_directory(TYPES_NODE_MODULES_DIRECTORY)
     ] or []
     if opts.test_only:
+        tsconfig['compilerOptions']['types'] = [
+            "mocha", "chai", "sinon", "karma-chai-sinon"
+        ]
+        if runs_in_node_environment:
+            tsconfig['compilerOptions']['types'] += ["node"]
+    if runs_in_node_environment:
         tsconfig['compilerOptions']['moduleResolution'] = 'node'
     if opts.no_emit:
         tsconfig['compilerOptions']['emitDeclarationOnly'] = True

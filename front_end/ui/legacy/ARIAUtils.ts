@@ -108,6 +108,18 @@ export function markAsListitem(element: Element): void {
   element.setAttribute('role', 'listitem');
 }
 
+export function markAsMain(element: Element): void {
+  element.setAttribute('role', 'main');
+}
+
+export function markAsComplementary(element: Element): void {
+  element.setAttribute('role', 'complementary');
+}
+
+export function markAsNavigation(element: Element): void {
+  element.setAttribute('role', 'navigation');
+}
+
 /**
  * Must contain children whose role is option.
  */

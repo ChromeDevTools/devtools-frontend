@@ -3965,6 +3965,9 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Show badges"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "DOM tree breadcrumbs"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(text)"
   },
@@ -4103,6 +4106,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Computed"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "DOM tree explorer"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "Element state: {PH1}"
   },
@@ -4123,6 +4129,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Show Computed Styles sidebar"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "Side panel content"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "Side panel toolbar"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Styles"
@@ -11605,6 +11617,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools is now available in {PH1}!"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "Tool drawer"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "Main toolbar"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "More Tools"

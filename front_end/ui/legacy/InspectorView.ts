@@ -51,6 +51,7 @@ import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from 
 import {ViewManager} from './ViewManager.js';
 import type {Widget} from './Widget.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
+import * as ARIAUtils from './ARIAUtils.js';
 
 const UIStrings = {
   /**
@@ -97,6 +98,14 @@ const UIStrings = {
    * @example {German} PH1
    */
   setToSpecificLanguage: 'Switch DevTools to {PH1}',
+  /**
+  *@description The aria label for main toolbar
+  */
+  mainToolbar: 'Main toolbar',
+  /**
+  *@description The aria label for the drawer.
+  */
+  drawer: 'Tool drawer',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -142,6 +151,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.drawerTabbedPane.setTabDelegate(this.tabDelegate);
 
+    const drawerElement = this.drawerTabbedPane.element;
+    ARIAUtils.markAsComplementary(drawerElement);
+    ARIAUtils.setAccessibleName(drawerElement, i18nString(UIStrings.drawer));
+
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
@@ -158,6 +171,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
+
+    const mainHeaderElement = this.tabbedPane.headerElement();
+    ARIAUtils.markAsNavigation(mainHeaderElement);
+    ARIAUtils.setAccessibleName(mainHeaderElement, i18nString(UIStrings.mainToolbar));
 
     // Store the initial selected panel for use in launch histograms
     Host.userMetrics.setLaunchPanel(this.tabbedPane.selectedTabId);

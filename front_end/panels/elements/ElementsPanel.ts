@@ -124,6 +124,18 @@ const UIStrings = {
   * @example {::after, ::before} PH1
   */
   elementStateS: 'Element state: {PH1}',
+  /**
+  * @description Accessible name for side panel toolbar.
+  */
+  sidePanelToolbar: 'Side panel toolbar',
+  /**
+  * @description Accessible name for side panel contents.
+  */
+  sidePanelContent: 'Side panel content',
+  /**
+  * @description Accessible name for the DOM tree explorer view.
+  */
+  domTreeExplorer: 'DOM tree explorer',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
@@ -204,6 +216,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
     stackElement.appendChild(this.contentElementInternal);
     stackElement.appendChild(crumbsContainer);
+
+    UI.ARIAUtils.markAsMain(this.contentElementInternal);
+    UI.ARIAUtils.setAccessibleName(this.contentElementInternal, i18nString(UIStrings.domTreeExplorer));
 
     this.splitWidget.setMainWidget(this.searchableViewInternal);
     this.splitMode = null;
@@ -986,6 +1001,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     if (this.splitMode !== _splitMode.Vertical) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }
+
+    const headerElement = tabbedPane.headerElement();
+    UI.ARIAUtils.markAsNavigation(headerElement);
+    UI.ARIAUtils.setAccessibleName(headerElement, i18nString(UIStrings.sidePanelToolbar));
+
+    const contentElement = tabbedPane.tabbedPaneContentElement();
+    UI.ARIAUtils.markAsComplementary(contentElement);
+    UI.ARIAUtils.setAccessibleName(contentElement, i18nString(UIStrings.sidePanelContent));
 
     const stylesView = new UI.View.SimpleView(i18nString(UIStrings.styles));
     this.sidebarPaneView.appendView(stylesView);

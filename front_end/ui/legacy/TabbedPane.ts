@@ -204,6 +204,10 @@ export class TabbedPane extends VBox {
     return this.headerElementInternal;
   }
 
+  tabbedPaneContentElement(): Element {
+    return this.contentElementInternal;
+  }
+
   isTabCloseable(id: string): boolean {
     const tab = this.tabsById.get(id);
     return tab ? tab.isCloseable() : false;

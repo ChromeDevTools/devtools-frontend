@@ -3965,6 +3965,9 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Ŝh́ôẃ b̂ád̂ǵêś"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "D̂ÓM̂ t́r̂éê b́r̂éâd́ĉŕûḿb̂ś"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(t̂éx̂t́)"
   },
@@ -4103,6 +4106,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Ĉóm̂ṕût́êd́"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "D̂ÓM̂ t́r̂éê éx̂ṕl̂ór̂ér̂"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "Êĺêḿêńt̂ śt̂át̂é: {PH1}"
   },
@@ -4123,6 +4129,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Ŝh́ôẃ Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "Ŝíd̂é p̂án̂él̂ ćôńt̂én̂t́"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "Ŝíd̂é p̂án̂él̂ t́ôól̂b́âŕ"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Ŝt́ŷĺêś"
@@ -11605,6 +11617,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "D̂év̂T́ôól̂ś îś n̂óŵ áv̂áîĺâb́l̂é îń {PH1}!"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "T̂óôĺ d̂ŕâẃêŕ"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "M̂áîń t̂óôĺb̂ár̂"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "M̂ór̂é T̂óôĺŝ"

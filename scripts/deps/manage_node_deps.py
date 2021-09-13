@@ -38,6 +38,7 @@ LICENSES = [
 
 # List all DEPS here.
 DEPS = {
+    "@istanbuljs/schema": "0.1.3",
     "@types/chai": "4.2.21",
     "@types/codemirror": "0.0.108",
     "@types/estree": "0.0.50",
@@ -67,7 +68,7 @@ DEPS = {
     "eslint-plugin-lit-a11y": "1.0.1",
     "eslint-plugin-mocha": "9.0.0",
     "eslint-plugin-rulesdir": "0.2.0",
-    "istanbul-lib-instrument": "4.0.3",
+    "istanbul-lib-instrument": "5.0.2",
     "istanbul-lib-report": "3.0.0",
     "karma": "6.3.4",
     "karma-chai": "0.1.0",

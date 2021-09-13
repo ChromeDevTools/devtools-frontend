@@ -181,7 +181,9 @@ describe("gensync({})", () => {
     test("default arity", () => {
       expect(
         gensync({
-          sync: function(a, b, c, d, e, f, g){ throwTestError(); },
+          sync: function(a, b, c, d, e, f, g) {
+            throwTestError();
+          },
           async: throwTestError,
         }).length
       ).toBe(7);
@@ -440,6 +442,18 @@ describe("gensync.all()", () => {
 
     await expectResult(fn, undefined, {
       error: DID_ERROR,
+      expectSync: true,
+      syncErrback: false,
+    });
+  });
+
+  test("empty list", async () => {
+    const fn = gensync(function*() {
+      yield* gensync.all([]);
+    });
+
+    await expectResult(fn, undefined, {
+      value: undefined,
       expectSync: true,
       syncErrback: false,
     });

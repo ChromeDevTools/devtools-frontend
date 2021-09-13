@@ -258,7 +258,7 @@ declare global {
         (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
          testHook:
              (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-         injectedScriptId: number) => void;
+         injectedScriptId: string) => void;
     buildExtensionAPIInjectedScript(
         extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
         testHook: undefined|((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
@@ -384,7 +384,7 @@ namespace APIImpl {
 self.injectedExtensionAPI = function(
     extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
     testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-    injectedScriptId: number): void {
+    injectedScriptId: string): void {
   const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
 

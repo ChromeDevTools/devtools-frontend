@@ -16,6 +16,7 @@ group("resources") {
     "css_overview",
     "elements",
     "emulation",
+    "extensions",
     "host",
     "inline_editor",
     "issues",

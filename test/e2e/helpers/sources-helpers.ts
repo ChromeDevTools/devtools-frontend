@@ -151,6 +151,23 @@ export async function waitForHighlightedLineWhichIncludesText(expectedTextConten
   });
 }
 
+export async function waitForHighlightedLine(lineNumber: number) {
+  await waitForFunction(async () => {
+    const selectedLineNumber = await waitFor('.CodeMirror-activeline-gutter > .CodeMirror-linenumber');
+    const text = await selectedLineNumber.evaluate(node => node.textContent);
+    return Number(text) === lineNumber;
+  });
+}
+
+export async function getToolbarText() {
+  const toolbar = await waitFor('.sources-toolbar');
+  if (!toolbar) {
+    return [];
+  }
+  const textNodes = await $$('.toolbar-text', toolbar);
+  return Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
+}
+
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
   await navigateToLine(frontend, index);
   const breakpointLine = await getLineNumberElement(index);

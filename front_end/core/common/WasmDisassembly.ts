@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../platform/platform.js';
+
 /**
  * Metadata to map between bytecode offsets and line numbers in the
  * disassembly for WebAssembly modules.
@@ -25,19 +27,9 @@ export class WasmDisassembly {
   }
 
   bytecodeOffsetToLineNumber(bytecodeOffset: number): number {
-    let l = 0, r: number = this.offsets.length - 1;
-    while (l <= r) {
-      const m = Math.floor((l + r) / 2);
-      const offset = this.offsets[m];
-      if (offset < bytecodeOffset) {
-        l = m + 1;
-      } else if (offset > bytecodeOffset) {
-        r = m - 1;
-      } else {
-        return m;
-      }
-    }
-    return l;
+    return Platform.ArrayUtilities.upperBound(
+               this.offsets, bytecodeOffset, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -
+        1;
   }
 
   lineNumberToBytecodeOffset(lineNumber: number): number {
@@ -54,7 +46,7 @@ export class WasmDisassembly {
       if (functionIndex < this.functionBodyOffsets.length) {
         const offset = this.lineNumberToBytecodeOffset(lineNumber);
         if (offset >= this.functionBodyOffsets[functionIndex].start) {
-          lineNumber = this.bytecodeOffsetToLineNumber(this.functionBodyOffsets[functionIndex++].end);
+          lineNumber = this.bytecodeOffsetToLineNumber(this.functionBodyOffsets[functionIndex++].end) + 1;
           continue;
         }
       }

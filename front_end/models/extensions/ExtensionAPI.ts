@@ -149,7 +149,7 @@ export namespace PrivateAPI {
     evaluateOptions?: EvaluateOptions,
   };
   type SetSidebarPageRequest = {command: Commands.SetSidebarPage, id: string, page: string};
-  type OpenResourceRequest = {command: Commands.OpenResource, url: string, lineNumber: number};
+  type OpenResourceRequest = {command: Commands.OpenResource, url: string, lineNumber: number, columnNumber: number};
   type SetOpenResourceHandlerRequest = {command: Commands.SetOpenResourceHandler, handlerPresent: boolean};
   type ReloadRequest = {
     command: Commands.Reload,
@@ -258,7 +258,7 @@ declare global {
         (extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
          testHook:
              (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-         injectedScriptId: string) => void;
+         injectedScriptId: number) => void;
     buildExtensionAPIInjectedScript(
         extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
         testHook: undefined|((extensionServer: unknown, extensionAPI: unknown) => unknown)): string;
@@ -384,7 +384,7 @@ namespace APIImpl {
 self.injectedExtensionAPI = function(
     extensionInfo: ExtensionDescriptor, inspectedTabId: string, themeName: string, keysToForward: number[],
     testHook: (extensionServer: APIImpl.ExtensionServerClient, extensionAPI: APIImpl.InspectorExtensionAPI) => unknown,
-    injectedScriptId: string): void {
+    injectedScriptId: number): void {
   const keysToForwardSet = new Set<number>(keysToForward);
   const chrome = window.chrome || {};
 
@@ -576,8 +576,13 @@ self.injectedExtensionAPI = function(
       }
     },
 
-    openResource: function(url: string, lineNumber: number, callback?: (response: unknown) => unknown): void {
-      extensionServer.sendRequest({command: PrivateAPI.Commands.OpenResource, url, lineNumber}, callback);
+    openResource: function(
+        url: string, lineNumber: number, columnNumber?: number, _callback?: (response: unknown) => unknown): void {
+      const callbackArg = extractCallbackArgument(arguments);
+      // Handle older API:
+      const columnNumberArg = typeof columnNumber === 'number' ? columnNumber : 0;
+      extensionServer.sendRequest(
+          {command: PrivateAPI.Commands.OpenResource, url, lineNumber, columnNumber: columnNumberArg}, callbackArg);
     },
 
     get SearchAction(): {[key: string]: string} {

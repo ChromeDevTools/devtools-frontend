@@ -68,7 +68,7 @@ export namespace Chrome {
       themeName: string;
 
       create(title: string, iconPath: string, pagePath: string, callback?: (panel: ExtensionPanel) => unknown): void;
-      openResource(url: string, lineNumber: number, callback?: () => unknown): void;
+      openResource(url: string, lineNumber: number, columnNumber?: number, callback?: () => unknown): void;
     }
 
     export interface Request {

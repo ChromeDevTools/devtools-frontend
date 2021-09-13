@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
-import type * as puppeteer from 'puppeteer';
+import type * as pptr from 'puppeteer';
 import {getBrowserAndPages, getResourcesPath, waitFor} from '../../shared/helper.js';
 
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
@@ -12,7 +12,7 @@ const globalThis: any = global;
 
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
-// FIXME(chromium:1248945): Replace with crypto.randomUUID() once Chromium updates its version of node.js
+// FIXME: Replace with crypt.randomUUID() once Chromium updates its version of node.js
 function guid() {
   const digits = '0123456789abcdef';
   const rnd = () => digits[Math.floor(Math.random() * (digits.length - 1))];
@@ -34,10 +34,9 @@ export async function loadExtension(name: string, startPage?: string) {
   loadExtensionPromise = load.catch(() => {});
   return load;
 
-  async function doLoad(frontend: puppeteer.Page, extensionInfo: {startPage: string, name: string}) {
+  async function doLoad(frontend: pptr.Page, extensionInfo: {startPage: string, name: string}) {
     // @ts-ignore The pptr API doesn't allow us to remove the API injection after we're done.
     const session = await frontend._client;
-    // TODO(chromium:1246836) remove once real extension tests are available
     const injectedAPI = await frontend.evaluate(
         extensionInfo => globalThis.buildExtensionAPIInjectedScript(
             extensionInfo, undefined, 'default', globalThis.UI.shortcutRegistry.globalShortcutKeys()),

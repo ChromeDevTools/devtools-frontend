@@ -30,9 +30,9 @@ const UIStrings = {
    */
   anInsecure: 'an insecure',  // eslint-disable-line rulesdir/l10n_no_unused_message
   /**
-   * @description Label for a link for SameParty Issues.
+   * @description Label for a link for SameParty Issues. 'Attribute' refers to a cookie attribute.
    */
-  firstPartySetsExplained: '`First-Party Sets` explained',
+  firstPartySetsExplained: '`First-Party Sets` and the `SameParty` attribute',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -418,7 +418,15 @@ function sameSiteExcludeContextDowngradeSet(isSecure: boolean): LazyMarkdownIssu
 const sameSiteInvalidSameParty: LazyMarkdownIssueDescription = {
   file: 'SameSiteInvalidSameParty.md',
   links: [{
-    link: 'https://developer.chrome.com/docs/privacy-sandbox/first-party-sets/',
+    link: 'https://developer.chrome.com/blog/first-party-sets-sameparty/',
+    linkTitle: i18nLazyString(UIStrings.firstPartySetsExplained),
+  }],
+};
+
+const samePartyCrossPartyContextSet: LazyMarkdownIssueDescription = {
+  file: 'SameSiteSamePartyCrossPartyContextSet.md',
+  links: [{
+    link: 'https://developer.chrome.com/blog/first-party-sets-sameparty/',
     linkTitle: i18nLazyString(UIStrings.firstPartySetsExplained),
   }],
 };
@@ -451,4 +459,5 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Secure', sameSiteExcludeContextDowngradeSet(true)],
   ['SameSiteCookieIssue::ExcludeContextDowngrade::SetCookie::Insecure', sameSiteExcludeContextDowngradeSet(false)],
   ['SameSiteCookieIssue::ExcludeInvalidSameParty::SetCookie', sameSiteInvalidSameParty],
+  ['SameSiteCookieIssue::ExcludeSamePartyCrossPartyContext::SetCookie', samePartyCrossPartyContextSet],
 ]);

@@ -1350,7 +1350,7 @@
     "message": "a secure"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets explained"
+    "message": "First-Party Sets and the SameParty attribute"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "How Schemeful Same-Site Works"

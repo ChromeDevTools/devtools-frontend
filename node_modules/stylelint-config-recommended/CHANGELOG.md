@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.0
+
+- Removed: `stylelint` less than `13.13.0` from peer dependencies.
+- Added: `no-invalid-position-at-import-rule` rule.
+- Added: `no-irregular-whitespace` rule.
+- Fixed: `selector-type-no-unknown` for custom elements.
+
 ## 4.0.0
 
 - Removed: `stylelint` less than `13.12.0` from peer dependencies.

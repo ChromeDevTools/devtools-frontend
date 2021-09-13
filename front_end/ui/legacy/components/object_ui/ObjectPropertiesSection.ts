@@ -1345,8 +1345,10 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       if (consecutiveRange) {
         count = toIndex - fromIndex + 1;
       } else {
-        for (const i of arrayIndexes(this))  // eslint-disable-line
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const ignored of arrayIndexes(this)) {
           ++count;
+        }
       }
 
       let bucketSize: number = count;

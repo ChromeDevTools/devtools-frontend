@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.6.0](https://github.com/inspect-js/is-core-module/compare/v2.5.0...v2.6.0) - 2021-08-17
+
+### Commits
+
+- [Dev Deps] update `eslint`, `tape` [`6cc928f`](https://github.com/inspect-js/is-core-module/commit/6cc928f8a4bba66aeeccc4f6beeac736d4bd3081)
+- [New] add `stream/consumers` to node `&gt;= 16.7` [`a1a423e`](https://github.com/inspect-js/is-core-module/commit/a1a423e467e4cc27df180234fad5bab45943e67d)
+- [Refactor] Remove duplicated `&&` operand [`86faea7`](https://github.com/inspect-js/is-core-module/commit/86faea738213a2433c62d1098488dc9314dca832)
+- [Tests] include prereleases [`a4da7a6`](https://github.com/inspect-js/is-core-module/commit/a4da7a6abf7568e2aa4fd98e69452179f1850963)
+
 ## [v2.5.0](https://github.com/inspect-js/is-core-module/compare/v2.4.0...v2.5.0) - 2021-07-12
 
 ### Commits

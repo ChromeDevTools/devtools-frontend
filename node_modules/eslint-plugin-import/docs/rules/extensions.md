@@ -110,7 +110,7 @@ import bar from './bar';
 
 import Component from './Component';
 
-import express from 'express';
+import foo from '@/foo';
 ```
 
 The following patterns are not considered problems when configuration set to "always":
@@ -122,9 +122,9 @@ import bar from './bar.json';
 
 import Component from './Component.jsx';
 
-import express from 'express/index.js';
-
 import * as path from 'path';
+
+import foo from '@/foo.js';
 ```
 
 The following patterns are considered problems when configuration set to "ignorePackages":
@@ -149,6 +149,7 @@ import Component from './Component.jsx';
 
 import express from 'express';
 
+import foo from '@/foo'
 ```
 
 The following patterns are not considered problems when configuration set to `['error', 'always', {ignorePackages: true} ]`:
@@ -160,6 +161,7 @@ import baz from 'foo/baz.js';
 
 import express from 'express';
 
+import foo from '@/foo';
 ```
 
 ## When Not To Use It

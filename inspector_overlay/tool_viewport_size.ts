@@ -29,7 +29,7 @@ export class ViewportSizeOverlay extends Overlay {
   }
 
   drawViewSize() {
-    const viewportSize = this.visualViewportSize || this.viewportSize;
+    const viewportSize = this.viewportSizeForMediaQueries || this.viewportSize;
     const text = `${formatNumber(viewportSize.width)}px \xD7 ${formatNumber(viewportSize.height)}px`;
     const canvasWidth = this.canvasWidth || 0;
     this.context.save();

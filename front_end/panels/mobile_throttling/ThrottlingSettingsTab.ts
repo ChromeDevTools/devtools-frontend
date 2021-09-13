@@ -210,19 +210,23 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     const titles = content.createChild('div', 'conditions-edit-row');
     const nameLabel = titles.createChild('div', 'conditions-list-text conditions-list-title');
     const nameStr = i18nString(UIStrings.profileName);
-    nameLabel.textContent = nameStr;
+    const nameLabelText = nameLabel.createChild('div', 'conditions-list-title-text');
+    nameLabelText.textContent = nameStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
     const downloadLabel = titles.createChild('div', 'conditions-list-text');
     const downloadStr = i18nString(UIStrings.download);
-    downloadLabel.textContent = downloadStr;
+    const downloadLabelText = downloadLabel.createChild('div', 'conditions-list-title-text');
+    downloadLabelText.textContent = downloadStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
     const uploadLabel = titles.createChild('div', 'conditions-list-text');
+    const uploadLabelText = uploadLabel.createChild('div', 'conditions-list-title-text');
     const uploadStr = i18nString(UIStrings.upload);
-    uploadLabel.textContent = uploadStr;
+    uploadLabelText.textContent = uploadStr;
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
     const latencyLabel = titles.createChild('div', 'conditions-list-text');
     const latencyStr = i18nString(UIStrings.latency);
-    latencyLabel.textContent = latencyStr;
+    const latencyLabelText = latencyLabel.createChild('div', 'conditions-list-title-text');
+    latencyLabelText.textContent = latencyStr;
 
     const fields = content.createChild('div', 'conditions-edit-row');
     const nameInput = editor.createInput('title', 'text', '', titleValidator);

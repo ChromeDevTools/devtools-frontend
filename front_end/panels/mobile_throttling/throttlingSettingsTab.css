@@ -97,3 +97,7 @@
   right: 0;
   color: var(--color-text-disabled);
 }
+
+.editor-buttons {
+  margin-top: 10px;
+}

@@ -173,6 +173,11 @@
   display: block;
 }
 
+.data-grid th.sort-ascending,
+.data-grid th.sort-descending {
+  padding-right: 14px;
+}
+
 .data-grid th.sortable:hover {
   background-color: var(--color-background-highlight);
 }

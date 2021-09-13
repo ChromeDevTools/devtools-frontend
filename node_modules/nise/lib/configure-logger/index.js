@@ -24,7 +24,7 @@ function configureLogger(config) {
     }
 
     return function logError(label, e) {
-        var msg = label + " threw exception: ";
+        var msg = `${label} threw exception: `;
         var err = {
             name: e.name || label,
             message: e.message || e.toString(),
@@ -36,7 +36,7 @@ function configureLogger(config) {
             throw err;
         }
 
-        config.logger(msg + "[" + err.name + "] " + err.message);
+        config.logger(`${msg}[${err.name}] ${err.message}`);
 
         if (err.stack) {
             config.logger(err.stack);

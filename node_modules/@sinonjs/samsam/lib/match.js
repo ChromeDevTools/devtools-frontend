@@ -167,7 +167,7 @@ function match(object, matcherOrValue) {
 }
 /* eslint-enable complexity */
 
-forEach(Object.keys(createMatcher), function(key) {
+forEach(Object.keys(createMatcher), function (key) {
     match[key] = createMatcher[key];
 });
 

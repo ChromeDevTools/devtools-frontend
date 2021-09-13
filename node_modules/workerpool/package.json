@@ -1,7 +1,7 @@
 {
   "name": "workerpool",
   "license": "Apache-2.0",
-  "version": "6.1.4",
+  "version": "6.1.5",
   "description": "Offload tasks to a pool of workers on node.js and in the browser",
   "homepage": "https://github.com/josdejong/workerpool",
   "author": "Jos de Jong <wjosdejong@gmail.com> (https://github.com/josdejong)",

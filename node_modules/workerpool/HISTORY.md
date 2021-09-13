@@ -2,6 +2,12 @@
 https://github.com/josdejong/workerpool
 
 
+## 2021-06-17, version 6.1.5
+
+- Fix v6.1.4 not being marked as latest anymore on npm due to bug fix
+  release v2.3.4.
+
+
 ## 2021-04-05, version 6.1.4
 
 - Fix terminating a pool throwing an error when used in the browser.
@@ -143,6 +149,11 @@ This may have impact on your project depending on your setup.
 
 - Enable usage in ES6 Webpack projects.
 - Dropped support for AMD module system.
+
+
+## 2021-06-17, version 2.3.4
+
+- Backport fix for Node.js 16, see #309. Thanks @mansona.
 
 
 ## 2018-09-12, version 2.3.3

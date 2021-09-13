@@ -32,7 +32,7 @@ function matchObject(actual, expectation, matcher) {
         expectedKeys = concat(expectedKeys, getOwnPropertySymbols(expectation));
     }
 
-    return every(expectedKeys, function(key) {
+    return every(expectedKeys, function (key) {
         var exp = expectation[key];
         var act = actual[key];
 

@@ -22,7 +22,6 @@ console.log(answer);
 // => 2
 ```
 
-
 ## With cached references
 
 ```js

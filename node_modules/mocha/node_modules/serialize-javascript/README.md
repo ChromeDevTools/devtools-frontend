@@ -5,7 +5,7 @@ Serialize JavaScript to a _superset_ of JSON that includes regular expressions, 
 
 [![npm Version][npm-badge]][npm]
 [![Dependency Status][david-badge]][david]
-[![Build Status][travis-badge]][travis]
+![Test](https://github.com/yahoo/serialize-javascript/workflows/Test/badge.svg)
 
 ## Overview
 
@@ -137,8 +137,6 @@ See the [LICENSE file][LICENSE] for license text and copyright information.
 [npm-badge]: https://img.shields.io/npm/v/serialize-javascript.svg?style=flat-square
 [david]: https://david-dm.org/yahoo/serialize-javascript
 [david-badge]: https://img.shields.io/david/yahoo/serialize-javascript.svg?style=flat-square
-[travis]: https://travis-ci.org/yahoo/serialize-javascript
-[travis-badge]: https://img.shields.io/travis/yahoo/serialize-javascript.svg?style=flat-square
 [express-state]: https://github.com/yahoo/express-state
 [JSON.stringify]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-[LICENSE]: https://github.com/yahoo/serialize-javascript/blob/master/LICENSE
+[LICENSE]: https://github.com/yahoo/serialize-javascript/blob/main/LICENSE

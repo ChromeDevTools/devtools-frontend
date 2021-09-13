@@ -24,7 +24,7 @@ function createSet(array) {
     var items = typeOf(array) === "array" ? array : [];
     var set = new Set();
 
-    forEach(items, function(item) {
+    forEach(items, function (item) {
         set.add(item);
     });
 

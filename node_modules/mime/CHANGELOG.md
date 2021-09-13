@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.2](https://github.com/broofa/mime/compare/v2.5.0...v2.5.2) (2021-02-17)
+
+
+### Bug Fixes
+
+* update to mime-db@1.46.0, fixes [#253](https://github.com/broofa/mime/issues/253) ([f10e6aa](https://github.com/broofa/mime/commit/f10e6aa62e1356de7e2491d7fb4374c8dac65800))
+
 ## [2.5.0](https://github.com/broofa/mime/compare/v2.4.7...v2.5.0) (2021-01-16)
 
 

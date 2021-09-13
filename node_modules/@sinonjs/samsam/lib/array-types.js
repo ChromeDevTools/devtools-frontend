@@ -10,7 +10,7 @@ var ARRAY_TYPES = [
     Int32Array,
     Uint32Array,
     Float32Array,
-    Float64Array
+    Float64Array,
 ];
 
 module.exports = ARRAY_TYPES;

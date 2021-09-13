@@ -22,5 +22,5 @@ module.exports = {
     isMap: isMap,
     isNegZero: isNegZero,
     isSet: isSet,
-    match: match
+    match: match,
 };

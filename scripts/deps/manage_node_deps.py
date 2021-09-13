@@ -69,7 +69,7 @@ DEPS = {
     "eslint-plugin-rulesdir": "0.2.0",
     "istanbul-lib-instrument": "4.0.3",
     "istanbul-lib-report": "3.0.0",
-    "karma": "6.3.0",
+    "karma": "6.3.4",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",
     "karma-coverage": "2.0.3",
@@ -79,7 +79,7 @@ DEPS = {
     "karma-sourcemap-loader": "0.3.8",
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
-    "mocha": "9.0.0",
+    "mocha": "9.1.1",
     # Purposefully not the latest; we keep this in sync with what stylelint
     # depends on
     "postcss": "7.0.35",
@@ -89,7 +89,7 @@ DEPS = {
     "rollup": "2.55.0",
     "rollup-plugin-minify-html-template-literals": "1.2.0",
     "rollup-plugin-terser": "7.0.2",
-    "sinon": "10.0.0",
+    "sinon": "11.1.2",
     "source-map-support": "0.5.19",
     "stylelint": "13.13.1",
     "stylelint-config-standard": "21.0.0",

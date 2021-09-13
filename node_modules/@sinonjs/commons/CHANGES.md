@@ -1,5 +1,19 @@
 # Changes
 
+## 1.8.3
+
+- [`6af2d0c`](https://github.com/sinonjs/commons/commit/6af2d0cf33e9fd1e4aaef5308fd16a9cd78a5782)
+  Bump y18n from 4.0.0 to 4.0.1 (dependabot[bot])
+    >
+    > Bumps [y18n](https://github.com/yargs/y18n) from 4.0.0 to 4.0.1.
+    > - [Release notes](https://github.com/yargs/y18n/releases)
+    > - [Changelog](https://github.com/yargs/y18n/blob/master/CHANGELOG.md)
+    > - [Commits](https://github.com/yargs/y18n/commits)
+    >
+    > Signed-off-by: dependabot[bot] <support@github.com>
+
+_Released on 2021-04-08._
+
 ## 1.8.2
 
 - [`6b7a796`](https://github.com/sinonjs/commons/commit/6b7a796ffc088b43dc283cc4477a7d641720dc96)

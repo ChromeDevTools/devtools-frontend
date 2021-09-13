@@ -86,7 +86,9 @@ const anymatch = (matchers, testString, options = DEFAULT_OPTIONS) => {
     .filter(item => typeof item === 'string' && item.charAt(0) === BANG)
     .map(item => item.slice(1))
     .map(item => picomatch(item, opts));
-  const patterns = mtchers.map(matcher => createPattern(matcher, opts));
+  const patterns = mtchers
+    .filter(item => typeof item !== 'string' || (typeof item === 'string' && item.charAt(0) !== BANG))
+    .map(matcher => createPattern(matcher, opts));
 
   if (testString == null) {
     return (testString, ri = false) => {

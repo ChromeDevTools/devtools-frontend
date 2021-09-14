@@ -32,7 +32,8 @@ import * as Trie from './Trie.js';
 import * as WasmDisassembly from './WasmDisassembly.js';
 import * as Worker from './Worker.js';
 
-/* This is re-exported here because we moved UIString into platform from
+/*
+ * This is re-exported here because we moved UIString into platform from
  * common and wanted to avoid a huge rename of imports. A future CL will
  * update all references to `Common.UIString` to `Platform.UIString`.
  */

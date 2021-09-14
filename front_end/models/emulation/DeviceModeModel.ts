@@ -113,7 +113,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.appliedDeviceScaleFactorInternal = window.devicePixelRatio;
     this.appliedUserAgentTypeInternal = UA.Desktop;
     this.experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
-    this.webPlatformExperimentalFeaturesEnabledInternal = Boolean(eval('window.getWindowSegments'));
+    this.webPlatformExperimentalFeaturesEnabledInternal = Boolean(eval('"segments" in window.visualViewport'));
 
     this.scaleSettingInternal = Common.Settings.Settings.instance().createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.

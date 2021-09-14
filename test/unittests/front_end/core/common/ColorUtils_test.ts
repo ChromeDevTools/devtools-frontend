@@ -68,6 +68,16 @@ it('is able to calculate the contrast ratio (APCA) between two colors', () => {
       bgColor: '#234',
       expectedContrast: 1.276075977788573,
     },
+    {
+      fgColor: 'rgb(158 158 158)',
+      bgColor: 'white',
+      expectedContrast: 54.799,
+    },
+    {
+      fgColor: 'rgba(0 0 0 / 38%)',
+      bgColor: 'white',
+      expectedContrast: 54.743,
+    },
   ];
   for (const test of tests) {
     const fg = Common.Color.Color.parse(test.fgColor)?.rgba();

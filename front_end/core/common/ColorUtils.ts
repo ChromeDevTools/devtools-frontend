@@ -108,8 +108,7 @@ export function luminanceAPCA([rSRGB, gSRGB, bSRGB]: number[]): number {
  * See https://github.com/Myndex/SAPC-APCA
  */
 export function contrastRatioAPCA(fgRGBA: number[], bgRGBA: number[]): number {
-  const blendedFg = blendColors(fgRGBA, bgRGBA);
-  return contrastRatioByLuminanceAPCA(luminanceAPCA(blendedFg), luminanceAPCA(bgRGBA));
+  return contrastRatioByLuminanceAPCA(luminanceAPCA(fgRGBA), luminanceAPCA(bgRGBA));
 }
 
 function clampLuminance(value: number): number {

@@ -154,3 +154,12 @@ interface ShadowRoot {
   elementFromPoint(x: number, y: number): Element | null;
   getSelection(): Selection | null;
 }
+
+interface HTMLDialogElement {
+  open: boolean;
+  returnValue: string;
+
+  close(returnValue?: string): void;
+  show(): void;
+  showModal(): void;
+}

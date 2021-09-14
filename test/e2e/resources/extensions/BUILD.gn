@@ -8,5 +8,6 @@ copy_to_gen("extensions") {
   sources = [
     "empty_extension.html",
     "language_extensions.html",
+    "test_panel.html",
   ]
 }

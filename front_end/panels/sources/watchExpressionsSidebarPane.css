@@ -7,17 +7,12 @@
 .watch-expression-delete-button {
   position: absolute;
   top: 5px;
-  right: 6px;
+  right: 16px;
   cursor: pointer;
   opacity: 0%;
-  min-width: 20px;
 }
 
 .watch-expression-header:hover .watch-expression-delete-button {
-  opacity: 50%;
-}
-
-.watch-expression-header:hover .watch-expression-delete-button:hover {
   opacity: 100%;
 }
 
@@ -101,7 +96,7 @@ li.watch-expression-tree-item {
 }
 
 li.watch-expression-tree-item:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--color-background-elevation-1);
 }
 
 .watch-expression-header:focus-visible {

@@ -15,7 +15,7 @@ generate_ci_configs(
     configurations = [
         config_section(
             name = "ci",
-            branch = "refs/heads/master",
+            branch = "refs/heads/main",
             view = "Main",
             name_suffix = "",
             notifiers = ["devtools tree closer"],
@@ -24,7 +24,7 @@ generate_ci_configs(
         config_section(
             name = "chromium",
             repo = "https://chromium.googlesource.com/chromium/src",
-            branch = "refs/heads/master",
+            branch = "refs/heads/main",
             name_suffix = " (chromium)",
             builder_group = "chromium.devtools-frontend",
             notifiers = ["devtools tree closer"],

@@ -151,41 +151,43 @@ cq_retry_config = cq.retry_config(
     timeout_weight = 4,
 )
 
-cq_master_builders = [
-    "devtools_frontend_linux_blink_light_rel",
-    "devtools_frontend_linux_off",
-    "devtools_frontend_linux_rel",
-    "devtools_frontend_mac_rel",
-    "devtools_frontend_win64_rel",
-    "devtools_frontend_linux_dbg",
-    "dtf_presubmit_linux",
-    "dtf_presubmit_win64",
-]
-
-cq_master_experiment_builders = [
-    # Quarantine a builder here
-    # This will make them experiment 100%
-    "devtools_frontend_linux_off",
-]
+cq_main = struct(
+    builders = [
+        "devtools_frontend_linux_blink_light_rel",
+        "devtools_frontend_linux_off",
+        "devtools_frontend_linux_rel",
+        "devtools_frontend_mac_rel",
+        "devtools_frontend_win64_rel",
+        "devtools_frontend_linux_dbg",
+        "dtf_presubmit_linux",
+        "dtf_presubmit_win64",
+    ],
+    experiment_builders = [
+        # Quarantine a builder here
+        # This will make them experiment 100%
+        "devtools_frontend_linux_off",
+    ],
+    includable_only_builders = [
+        "devtools_frontend_mac_rel",
+    ],
+)
 
 def experiment_builder(builder):
-    if builder in cq_master_experiment_builders:
+    if builder in cq_main.experiment_builders:
         return 100
     else:
         return None
 
-cq_master_includable_only_builders = [
-    "devtools_frontend_mac_rel",
-]
+
 
 def includable_only_builder(builder):
-    return builder in cq_master_includable_only_builders
+    return builder in cq_main.includable_only_builders
 
 luci.cq_group(
-    name = "master",
+    name = "main",
     watch = cq.refset(
         repo = "https://chromium.googlesource.com/devtools/devtools-frontend",
-        refs = ["refs/heads/master", "refs/heads/main"],
+        refs = ["refs/heads/main"],
     ),
     acls = cq_acls,
     tree_status_host = "devtools-status.appspot.com",
@@ -197,7 +199,7 @@ luci.cq_group(
             experiment_percentage = experiment_builder(builder),
             includable_only = includable_only_builder(builder),
         )
-        for builder in cq_master_builders
+        for builder in cq_main.builders
     ],
 )
 

@@ -1,6 +1,6 @@
 defaults = struct(
     cipd_package = "infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build",
-    cipd_version = "refs/heads/master",
+    cipd_version = "refs/heads/main",
     swarming_tags = ["vpython:native-python-wrapper"],
     repo = "https://chromium.googlesource.com/devtools/devtools-frontend",
     favicon = "https://storage.googleapis.com/chrome-infra-public/logo/devtools.png",

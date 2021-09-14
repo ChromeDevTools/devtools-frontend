@@ -51,6 +51,7 @@ devtools_module("issues_manager") {
 }
 
 devtools_issue_description_files = [
+  "arAttributionEventSourceTriggerDataTooLarge.md",
   "arAttributionSourceUntrustworthyFrameOrigin.md",
   "arAttributionSourceUntrustworthyOrigin.md",
   "arAttributionTriggerDataTooLarge.md",

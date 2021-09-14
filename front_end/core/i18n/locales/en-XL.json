@@ -4841,6 +4841,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "F̂ŕâḿê"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
+    "message": "Îńv̂ál̂íd̂ event-source-trigger-data"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "Îńv̂ál̂íd̂ attributionsourceeventid"
   },

@@ -273,6 +273,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/TwaDigitalAssetLinksFailed.md",
   "front_end/models/issues_manager/descriptions/TwaHttpError.md",
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
+  "front_end/models/issues_manager/descriptions/arAttributionEventSourceTriggerDataTooLarge.md",
   "front_end/models/issues_manager/descriptions/arAttributionSourceUntrustworthyFrameOrigin.md",
   "front_end/models/issues_manager/descriptions/arAttributionSourceUntrustworthyOrigin.md",
   "front_end/models/issues_manager/descriptions/arAttributionTriggerDataTooLarge.md",

@@ -104,7 +104,10 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           links: [],
         };
       case IssueCode.AttributionEventSourceTriggerDataTooLarge:
-        return null;
+        return {
+          file: 'arAttributionEventSourceTriggerDataTooLarge.md',
+          links: [],
+        };
     }
   }
 

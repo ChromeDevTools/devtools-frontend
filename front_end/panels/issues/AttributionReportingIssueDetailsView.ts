@@ -42,6 +42,11 @@ const UIStrings = {
    * parameter.
    */
   invalidTriggerData: 'Invalid `trigger-data`',
+  /**
+   * @description Label for the column showing the invalid value used for the
+   * 'event-source-trigger-data' query parameter.
+   */
+  invalidEventSourceTriggerData: 'Invalid `event-source-trigger-data`',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -89,6 +94,10 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendColumnTitle(header, i18nString(UIStrings.request));
         this.appendColumnTitle(header, i18nString(UIStrings.invalidTriggerData));
         break;
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionEventSourceTriggerDataTooLarge:
+        this.appendColumnTitle(header, i18nString(UIStrings.request));
+        this.appendColumnTitle(header, i18nString(UIStrings.invalidEventSourceTriggerData));
+        break;
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
         this.appendColumnTitle(header, i18nString(UIStrings.frame));
         this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -132,6 +141,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionTriggerDataTooLarge:
+      case IssuesManager.AttributionReportingIssue.IssueCode.AttributionEventSourceTriggerDataTooLarge:
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyOrigin:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionData:
         this.appendRequestOrEmptyCell(element, details.request);

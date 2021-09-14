@@ -30,7 +30,7 @@
 import type * as Platform from '../platform/platform.js';
 import type {EventDescriptor, EventTarget, EventTargetEvent, EventType, EventPayload, EventPayloadToRestParameters} from './EventTarget.js';
 
-interface ListenerCallbackTuple {
+export interface ListenerCallbackTuple {
   thisObject?: Object;
   listener: (arg0: EventTargetEvent) => void;
   disposed?: boolean;
@@ -105,4 +105,39 @@ export class ObjectWrapper<Events = any> implements EventTarget<Events> {
       }
     }
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Constructor = new (...args: any[]) => {};
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function eventMixin<Events, Base extends Constructor>(base: Base) {
+  return class EventHandling extends base implements EventTarget<Events> {
+    #events = new ObjectWrapper<Events>();
+
+    addEventListener<T extends EventType<Events>>(
+        eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void,
+        thisObject?: Object): EventDescriptor<Events, T> {
+      return this.#events.addEventListener(eventType, listener, thisObject);
+    }
+
+    once<T extends EventType<Events>>(eventType: T): Promise<EventPayload<Events, T>> {
+      return this.#events.once(eventType);
+    }
+
+    removeEventListener<T extends EventType<Events>>(
+        eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void, thisObject?: Object): void {
+      this.#events.removeEventListener(eventType, listener, thisObject);
+    }
+
+    hasEventListeners(eventType: EventType<Events>): boolean {
+      return this.#events.hasEventListeners(eventType);
+    }
+
+    dispatchEventToListeners<T extends EventType<Events>>(
+        eventType: Platform.TypeScriptUtilities.NoUnion<T>,
+        ...eventData: EventPayloadToRestParameters<EventPayload<Events, T>>): void {
+      this.#events.dispatchEventToListeners(eventType, ...eventData);
+    }
+  };
 }

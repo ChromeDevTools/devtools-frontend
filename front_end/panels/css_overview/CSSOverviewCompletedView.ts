@@ -300,8 +300,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     // TODO(paullewis): update the links in the panels in case source has been .
   }
 
-  private sideBarItemSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const data = (event.data as string);
+  private sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const {data} = event;
     const section = (this.fragment as UI.Fragment.Fragment).$(data);
     if (!section) {
       return;

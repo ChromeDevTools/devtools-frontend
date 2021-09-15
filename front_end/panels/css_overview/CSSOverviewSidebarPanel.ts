@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -16,7 +17,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
+export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static get ITEM_CLASS_NAME(): string {
     return 'overview-sidebar-panel-item';
@@ -97,3 +99,8 @@ export const enum SidebarEvents {
   ItemSelected = 'ItemSelected',
   Reset = 'Reset',
 }
+
+export type EventTypes = {
+  [SidebarEvents.ItemSelected]: string,
+  [SidebarEvents.Reset]: void,
+};

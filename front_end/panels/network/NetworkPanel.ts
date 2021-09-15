@@ -766,18 +766,18 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     appendRevealItem.call(this, request);
   }
 
-  private onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const timestamp = (event.data as number);
+  private onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
+    const timestamp = event.data;
     this.overviewPane.setWindowTimes(0, timestamp);
   }
 
-  private onFilmFrameEnter(event: Common.EventTarget.EventTargetEvent): void {
-    const timestamp = (event.data as number);
+  private onFilmFrameEnter(event: Common.EventTarget.EventTargetEvent<number>): void {
+    const timestamp = event.data;
     this.networkOverview.selectFilmStripFrame(timestamp);
     this.networkLogView.selectFilmStripFrame(timestamp / 1000);
   }
 
-  private onFilmFrameExit(_event: Common.EventTarget.EventTargetEvent): void {
+  private onFilmFrameExit(): void {
     this.networkOverview.clearFilmStripFrame();
     this.networkLogView.clearFilmStripFrame();
   }

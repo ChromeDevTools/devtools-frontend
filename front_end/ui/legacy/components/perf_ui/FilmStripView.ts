@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
@@ -33,7 +34,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilmStripView extends UI.Widget.HBox {
+export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
   private statusLabel: HTMLElement;
   private zeroTime!: number;
   private spanTime!: number;
@@ -194,6 +195,12 @@ export enum Events {
   FrameEnter = 'FrameEnter',
   FrameExit = 'FrameExit',
 }
+
+export type EventTypes = {
+  [Events.FrameSelected]: number,
+  [Events.FrameEnter]: number,
+  [Events.FrameExit]: number,
+};
 
 export const Modes = {
   TimeBased: 'TimeBased',

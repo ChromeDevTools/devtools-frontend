@@ -501,7 +501,7 @@ export class VersionController {
   }
 
   static get currentVersion(): number {
-    return 30;
+    return 31;
   }
 
   updateVersion(): void {
@@ -996,6 +996,13 @@ export class VersionController {
     // Remove old settings
     removeSetting(panelCloseableTabSetting);
     removeSetting(drawerCloseableTabSetting);
+  }
+
+  private updateVersionFrom30To31(): void {
+    // Remove recorder_recordings setting that was used for storing recordings
+    // by an old recorder experiment.
+    const recordingsSetting = Settings.instance().createSetting('recorder_recordings', []);
+    removeSetting(recordingsSetting);
   }
 
   private migrateSettingsFromLocalStorage(): void {

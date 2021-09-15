@@ -1000,7 +1000,8 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   }
 }
 
-export class TimelineStackView extends UI.Widget.VBox {
+export class TimelineStackView extends
+    Common.ObjectWrapper.eventMixin<TimelineStackView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private readonly treeView: TimelineTreeView;
   private readonly dataGrid: DataGrid.ViewportDataGrid.ViewportDataGrid<unknown>;
 
@@ -1059,4 +1060,8 @@ export namespace TimelineStackView {
   export enum Events {
     SelectionChanged = 'SelectionChanged',
   }
+
+  export type EventTypes = {
+    [Events.SelectionChanged]: void,
+  };
 }

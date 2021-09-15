@@ -69,7 +69,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilterBar extends HBox implements Common.EventTarget.EventTarget<FilterBarEventTypes> {
+export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterUIEventTypes, typeof HBox>(HBox)
+    implements Common.EventTarget.EventTarget<FilterBarEventTypes> {
   private enabled: boolean;
   private readonly stateSetting: Common.Settings.Setting<boolean>;
   private readonly filterButtonInternal: ToolbarSettingToggle;
@@ -120,7 +121,7 @@ export class FilterBar extends HBox implements Common.EventTarget.EventTarget<Fi
     this.stateSetting.set(true);
   }
 
-  private filterChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private filterChanged(): void {
     this.updateFilterButton();
     this.dispatchEventToListeners(FilterBarEvents.Changed);
   }
@@ -193,6 +194,10 @@ export interface FilterUI extends Common.EventTarget.EventTarget {
 export const enum FilterUIEvents {
   FilterChanged = 'FilterChanged',
 }
+
+export type FilterUIEventTypes = {
+  [FilterUIEvents.FilterChanged]: void,
+};
 
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
   private readonly filterElement: HTMLDivElement;

@@ -864,7 +864,7 @@ export class NetworkLogView extends UI.Widget.VBox implements
     this.textFilterUI.setSuggestionProvider(this.suggestionBuilder.completions.bind(this.suggestionBuilder));
   }
 
-  private filterChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private filterChanged(): void {
     this.removeAllNodeHighlights();
     this.parseFilterQuery(this.textFilterUI.value(), this.invertFilterUI.checked());
     this.filterRequests();

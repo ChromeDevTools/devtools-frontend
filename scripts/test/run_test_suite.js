@@ -47,6 +47,11 @@ const yargsObject =
           type: 'string',
           desc: 'A comma separated glob (or just a file path) to select specific test files to execute.'
         })
+        .option('mocha-fgrep', {
+          type: 'string',
+          desc:
+              'Mocha\'s fgrep option [https://mochajs.org/#-fgrep-string-f-string] which only runs teses whose titles contain the provided string',
+        })
         // test-file-pattern can be provided as a flag or as a positional
         // argument. $0 here is Yarg's syntax for the default command:
         // https://github.com/yargs/yargs/blob/master/docs/advanced.md#default-commands
@@ -165,7 +170,8 @@ function executeTestSuite({
   chromeFeatures,
   testFilePattern,
   coverage,
-  cwd
+  cwd,
+  mochaOptions = {},
 }) {
   /**
   * Internally within various scripts (Mocha configs, Conductor, etc), we rely on
@@ -196,6 +202,13 @@ function executeTestSuite({
   const testSuiteConfig = path.join(absoluteTestSuitePath, '.mocharc.js');
   validatePathExistsOrError('.mocharc.js location', testSuiteConfig);
   argumentsForNode.push('--config', testSuiteConfig);
+
+  for (const [mochaKey, mochaValue] of Object.entries(mochaOptions)) {
+    if (mochaValue !== undefined) {
+      argumentsForNode.push(`--${mochaKey}`, mochaValue);
+      log(`extra mocha flag: --${mochaKey}=${mochaValue}`);
+    }
+  }
   const result = childProcess.spawnSync(nodePath(), argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd});
   return result.status;
 }
@@ -270,7 +283,10 @@ function main() {
       testFilePattern: configurationFlags['test-file-pattern'],
       coverage: configurationFlags['coverage'] && '1',
       target,
-      cwd: configurationFlags['cwd']
+      cwd: configurationFlags['cwd'],
+      mochaOptions: {
+        fgrep: configurationFlags['mocha-fgrep'],
+      }
     });
   } catch (error) {
     log('Unexpected error when running test suite', error);

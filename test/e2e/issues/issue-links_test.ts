@@ -9,7 +9,8 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('Issue links in the console tab', async () => {
-  it('should reveal the right issue', async () => {
+  // Skipping the test for now as the backend functionality was reverted.
+  it.skip('[crbug.com/1241860] should reveal the right issue', async () => {
     await navigateToConsoleTab();
     await goToResource('issues/cors-issue-2.html');
     const issueLinkIcon = await waitFor('devtools-issue-link-icon');

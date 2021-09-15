@@ -66,7 +66,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ProfileLauncherView extends UI.Widget.VBox {
+export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   readonly panel: ProfilesPanel;
   private contentElementInternal: HTMLElement;
   readonly selectedProfileTypeSetting: Common.Settings.Setting<string>;
@@ -232,3 +233,7 @@ export class ProfileLauncherView extends UI.Widget.VBox {
 export enum Events {
   ProfileTypeSelected = 'ProfileTypeSelected',
 }
+
+export type EventTypes = {
+  [Events.ProfileTypeSelected]: ProfileType,
+};

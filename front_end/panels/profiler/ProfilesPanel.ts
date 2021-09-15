@@ -282,8 +282,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.launcherView.profileFinished();
   }
 
-  onProfileTypeSelected(event: Common.EventTarget.EventTargetEvent): void {
-    this.selectedProfileType = (event.data as ProfileType);
+  onProfileTypeSelected(event: Common.EventTarget.EventTargetEvent<ProfileType>): void {
+    this.selectedProfileType = event.data;
     this.updateProfileTypeSpecificUI();
   }
 

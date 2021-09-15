@@ -85,7 +85,8 @@ interface GroupExpansionState {
   [key: string]: boolean;
 }
 
-export class FlameChart extends UI.Widget.VBox implements Calculator, ChartViewportDelegate {
+export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+    implements Calculator, ChartViewportDelegate {
   private readonly groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
   private groupExpansionState: GroupExpansionState;
   private readonly flameChartDelegate: FlameChartDelegate;
@@ -2320,6 +2321,13 @@ export enum Events {
   EntrySelected = 'EntrySelected',
   EntryHighlighted = 'EntryHighlighted',
 }
+
+export type EventTypes = {
+  [Events.CanvasFocused]: number|void,
+  [Events.EntryInvoked]: number,
+  [Events.EntrySelected]: number,
+  [Events.EntryHighlighted]: number,
+};
 
 export const Colors = {
   SelectedGroupBackground: 'hsl(215, 85%, 98%)',

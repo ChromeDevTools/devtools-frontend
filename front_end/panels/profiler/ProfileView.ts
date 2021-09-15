@@ -413,7 +413,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     });
   }
 
-  async onEntryInvoked(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  async onEntryInvoked(event: Common.EventTarget.EventTargetEvent<number>): Promise<void> {
     if (!this.dataProvider) {
       return;
     }

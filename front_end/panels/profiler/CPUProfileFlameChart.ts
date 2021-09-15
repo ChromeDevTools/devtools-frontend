@@ -190,9 +190,9 @@ export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.Searchabl
     this.overviewPane.selectRange(timeLeft, timeRight);
   }
 
-  onEntrySelected(event: Common.EventTarget.EventTargetEvent): void {
+  onEntrySelected(event: Common.EventTarget.EventTargetEvent<void|number>): void {
     if (event.data) {
-      const eventIndex = Number(event.data);
+      const eventIndex = event.data;
       this.mainPane.setSelectedEntry(eventIndex);
       if (eventIndex === -1) {
         this.entrySelected = false;
@@ -205,7 +205,7 @@ export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.Searchabl
     }
   }
 
-  onEntryInvoked(event: Common.EventTarget.EventTargetEvent): void {
+  onEntryInvoked(event: Common.EventTarget.EventTargetEvent<number>): void {
     this.onEntrySelected(event);
     this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryInvoked, event.data);
   }

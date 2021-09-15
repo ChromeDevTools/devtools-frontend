@@ -150,8 +150,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly detailsView: TimelineDetailsView;
-  private readonly onMainEntrySelected: (event?: Common.EventTarget.EventTargetEvent) => void;
-  private readonly onNetworkEntrySelected: (event?: Common.EventTarget.EventTargetEvent) => void;
+  private readonly onMainEntrySelected: (event?: Common.EventTarget.EventTargetEvent<number>) => void;
+  private readonly onNetworkEntrySelected: (event?: Common.EventTarget.EventTargetEvent<number>) => void;
   private nextExtensionIndex: number;
   private readonly boundRefresh: () => void;
   private selectedTrack: TimelineModel.TimelineModel.Track|null;
@@ -361,9 +361,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.scheduleUpdate();
   }
 
-  private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent): void {
+  private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    const entryIndex = (commonEvent.data as number);
+    const entryIndex = commonEvent.data;
     const event = this.mainDataProvider.eventByIndex(entryIndex);
     if (!event) {
       return;

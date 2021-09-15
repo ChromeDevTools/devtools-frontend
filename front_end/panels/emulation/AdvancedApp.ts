@@ -7,20 +7,10 @@ import * as Host from '../../core/host/host.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeWrapper} from './DeviceModeWrapper.js';
+import type {Bounds} from './InspectedPagePlaceholder.js';
 import {Events, InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let appInstance: AdvancedApp;
-
-interface Event {
-  data: {
-    to: UI.DockController.DockState,
-    from: UI.DockController.DockState|undefined,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  };
-}
 
 export class AdvancedApp implements Common.App.App {
   private rootSplitWidget!: UI.SplitWidget.SplitWidget;
@@ -170,7 +160,7 @@ export class AdvancedApp implements Common.App.App {
     return UI.DockController.DockController.instance().dockSide() !== UI.DockController.DockState.UNDOCKED;
   }
 
-  private onSetInspectedPageBounds(event: Event): void {
+  private onSetInspectedPageBounds(event: Common.EventTarget.EventTargetEvent<Bounds>): void {
     if (this.changingDockSide) {
       return;
     }

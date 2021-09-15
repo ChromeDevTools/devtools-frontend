@@ -22,7 +22,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ConsolePrompt extends UI.Widget.Widget {
+export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+    UI.Widget.Widget) {
   private addCompletionsFromHistory: boolean;
   private historyInternal: ConsoleHistoryManager;
   private initialText: string;
@@ -455,3 +456,7 @@ export class ConsoleHistoryManager {
 export const enum Events {
   TextChanged = 'TextChanged',
 }
+
+export type EventTypes = {
+  [Events.TextChanged]: void,
+};

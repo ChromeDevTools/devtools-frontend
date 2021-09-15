@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -155,7 +156,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export class LayerDetailsView extends UI.Widget.Widget implements LayerView {
+export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+    UI.Widget.Widget) implements LayerView {
   private readonly layerViewHost: LayerViewHost;
   private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
   private layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
@@ -469,6 +471,10 @@ const compositingReasonIdToReason = new Map([
 export enum Events {
   PaintProfilerRequested = 'PaintProfilerRequested',
 }
+
+export type EventTypes = {
+  [Events.PaintProfilerRequested]: Selection,
+};
 
 export const slowScrollRectNames = new Map([
   [SDK.LayerTreeBase.Layer.ScrollRectType.NonFastScrollable, i18nLazyString(UIStrings.nonFastScrollable)],

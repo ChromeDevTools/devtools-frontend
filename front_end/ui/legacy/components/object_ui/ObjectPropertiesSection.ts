@@ -1547,20 +1547,20 @@ export class ObjectPropertiesSectionsTreeExpandController {
     }
   }
 
-  private elementAttached(event: Common.EventTarget.EventTargetEvent): void {
-    const element = (event.data as UI.TreeOutline.TreeElement);
+  private elementAttached(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
+    const element = event.data;
     if (element.isExpandable() && this.expandedProperties.has(this.propertyPath(element))) {
       element.expand();
     }
   }
 
-  private elementExpanded(event: Common.EventTarget.EventTargetEvent): void {
-    const element = (event.data as UI.TreeOutline.TreeElement);
+  private elementExpanded(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
+    const element = event.data;
     this.expandedProperties.add(this.propertyPath(element));
   }
 
-  private elementCollapsed(event: Common.EventTarget.EventTargetEvent): void {
-    const element = (event.data as UI.TreeOutline.TreeElement);
+  private elementCollapsed(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
+    const element = event.data;
     this.expandedProperties.delete(this.propertyPath(element));
   }
 

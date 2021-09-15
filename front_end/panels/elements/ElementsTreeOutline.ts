@@ -74,7 +74,9 @@ const elementsTreeOutlineByDOMModel = new WeakMap<SDK.DOMModel.DOMModel, Element
 
 const populatedTreeElements = new Set<ElementsTreeElement>();
 
-export class ElementsTreeOutline extends UI.TreeOutline.TreeOutline {
+export class ElementsTreeOutline extends
+    Common.ObjectWrapper.eventMixin<ElementsTreeOutline.EventTypes, typeof UI.TreeOutline.TreeOutline>(
+        UI.TreeOutline.TreeOutline) {
   treeElementByNode: WeakMap<SDK.DOMModel.DOMNode, ElementsTreeElement>;
   private readonly shadowRoot: ShadowRoot;
   readonly elementInternal: HTMLElement;
@@ -1426,6 +1428,11 @@ export namespace ElementsTreeOutline {
     SelectedNodeChanged = 'SelectedNodeChanged',
     ElementsTreeUpdated = 'ElementsTreeUpdated',
   }
+
+  export type EventTypes = {
+    [Events.SelectedNodeChanged]: {node: SDK.DOMModel.DOMNode|null, focus: boolean},
+    [Events.ElementsTreeUpdated]: SDK.DOMModel.DOMNode[],
+  };
 }
 
 // clang-format off

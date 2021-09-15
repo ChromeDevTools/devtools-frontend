@@ -508,7 +508,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.applicationCacheListTreeElement.setExpandable(false);
   }
 
-  private treeElementAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private treeElementAdded(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
     // On tree item selection its itemURL and those of its parents are persisted.
     // On reload/navigation we check for matches starting from the root on the
     // path to the current element. Matching nodes are expanded until we hit a
@@ -519,14 +519,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       return;
     }
     const element = event.data;
-    const elementPath = [element];
-    for (let parent = element.parent; parent && parent.itemURL; parent = parent.parent) {
-      elementPath.push(parent);
+    const elementPath = [element as UI.TreeOutline.TreeElement | ApplicationPanelTreeElement];
+    for (let parent = element.parent as UI.TreeOutline.TreeElement | ApplicationPanelTreeElement | null;
+         parent && 'itemURL' in parent && parent.itemURL; parent = parent.parent) {
+      elementPath.push(parent as ApplicationPanelTreeElement);
     }
 
     let i = selection.length - 1;
     let j = elementPath.length - 1;
-    while (i >= 0 && j >= 0 && selection[i] === elementPath[j].itemURL) {
+    while (i >= 0 && j >= 0 && selection[i] === (elementPath[j] as ApplicationPanelTreeElement).itemURL) {
       if (!elementPath[j].expanded) {
         if (i > 0) {
           elementPath[j].expand();

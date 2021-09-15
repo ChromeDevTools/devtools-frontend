@@ -48,7 +48,25 @@ import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing}
 
 const nodeToParentTreeElementMap = new WeakMap<Node, TreeElement>();
 
-export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ElementAttached = 'ElementAttached',
+  ElementsDetached = 'ElementsDetached',
+  ElementExpanded = 'ElementExpanded',
+  ElementCollapsed = 'ElementCollapsed',
+  ElementSelected = 'ElementSelected',
+}
+
+export type EventTypes = {
+  [Events.ElementAttached]: TreeElement,
+  [Events.ElementsDetached]: void,
+  [Events.ElementExpanded]: TreeElement,
+  [Events.ElementCollapsed]: TreeElement,
+  [Events.ElementSelected]: TreeElement,
+};
+
+export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly rootElementInternal: TreeElement;
   renderSelection: boolean;
   selectedTreeElement: TreeElement|null;
@@ -358,16 +376,6 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
 
   onStartedEditingTitle(_treeElement: TreeElement): void {
   }
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum Events {
-  ElementAttached = 'ElementAttached',
-  ElementsDetached = 'ElementsDetached',
-  ElementExpanded = 'ElementExpanded',
-  ElementCollapsed = 'ElementCollapsed',
-  ElementSelected = 'ElementSelected',
 }
 
 export class TreeOutlineInShadow extends TreeOutline {

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -54,8 +54,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class LayerTreeOutline extends UI.TreeOutline.TreeOutline implements Common.EventTarget.EventTarget<EventTypes>,
-                                                                            LayerView {
+export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.TreeOutline.TreeOutline>(
+    UI.TreeOutline.TreeOutline) implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
   private layerViewHost: LayerViewHost;
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private lastHoveredNode: LayerTreeElement|null;
@@ -220,7 +220,7 @@ export class LayerTreeOutline extends UI.TreeOutline.TreeOutline implements Comm
       if (this.layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.showPaintProfiler),
-            () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection), false);
+            () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection as Selection), false);
       }
     }
     this.layerViewHost.showContextMenu(contextMenu, selection);

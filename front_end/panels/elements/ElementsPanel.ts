@@ -480,14 +480,15 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.updateTreeOutlineVisibleWidth();
   }
 
-  private selectedNodeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    let selectedNode: null|(SDK.DOMModel.DOMNode | null) = (event.data.node as SDK.DOMModel.DOMNode | null);
+  private selectedNodeChanged(
+      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode | null, focus: boolean}>): void {
+    let selectedNode = event.data.node;
 
     // If the selectedNode is a pseudoNode, we want to ensure that it has a valid parentNode
     if (selectedNode && (selectedNode.pseudoType() && !selectedNode.parentNode)) {
       selectedNode = null;
     }
-    const focus = (event.data.focus as boolean);
+    const {focus} = event.data;
     for (const treeOutline of this.treeOutlines) {
       if (!selectedNode || ElementsTreeOutline.forDOMModel(selectedNode.domModel()) !== treeOutline) {
         treeOutline.selectDOMNode(null);
@@ -776,8 +777,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  private updateBreadcrumbIfNeeded(event: Common.EventTarget.EventTargetEvent): void {
-    const nodes = (event.data as SDK.DOMModel.DOMNode[]);
+  private updateBreadcrumbIfNeeded(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>): void {
+    const nodes = event.data;
     /* If we don't have a selected node then we can tell the breadcrumbs that & bail. */
     const selectedNode = this.selectedDOMNode();
     if (!selectedNode) {

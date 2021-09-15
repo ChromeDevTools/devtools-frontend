@@ -200,7 +200,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     element: HTMLElement,
     forceSelect: () => void,
   }[];
-  private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent) => void;
+  private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
   protected elementInternal: HTMLElement|null;
   private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
@@ -227,7 +227,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     this.message = consoleMessage;
     this.linkifier = linkifier;
     this.requestResolver = requestResolver;

@@ -22,7 +22,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ChangesSidebar extends UI.Widget.Widget {
+export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+    UI.Widget.Widget) {
   private treeoutline: UI.TreeOutline.TreeOutlineInShadow;
   private readonly treeElements: Map<Workspace.UISourceCode.UISourceCode, UISourceCodeTreeElement>;
   private readonly workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
@@ -109,6 +110,10 @@ export class ChangesSidebar extends UI.Widget.Widget {
 export const enum Events {
   SelectedUISourceCodeChanged = 'SelectedUISourceCodeChanged',
 }
+
+export type EventTypes = {
+  [Events.SelectedUISourceCodeChanged]: void,
+};
 
 export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   uiSourceCode: Workspace.UISourceCode.UISourceCode;

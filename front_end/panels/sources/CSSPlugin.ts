@@ -261,12 +261,12 @@ export class CSSPlugin extends Plugin {
     this.swatchPopoverHelper.show(this.spectrum, swatch, this.swatchPopoverHidden.bind(this));
   }
 
-  private spectrumResized(_event: Common.EventTarget.EventTargetEvent): void {
+  private spectrumResized(): void {
     this.swatchPopoverHelper.reposition();
   }
 
-  private spectrumChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const colorString = (event.data as string);
+  private spectrumChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const colorString = event.data;
     const color = Common.Color.Color.parse(colorString);
     if (!color || !this.currentSwatch) {
       return;

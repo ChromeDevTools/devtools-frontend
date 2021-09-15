@@ -115,7 +115,7 @@ export class ColorSwatchPopoverIcon {
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private swatch: InlineEditor.ColorSwatch.ColorSwatch;
   private contrastInfo: ColorPicker.ContrastInfo.ContrastInfo|null;
-  private readonly boundSpectrumChanged: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly boundSpectrumChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private spectrum?: ColorPicker.Spectrum.Spectrum;
   private scrollerElement?: Element;
@@ -206,12 +206,12 @@ export class ColorSwatchPopoverIcon {
     }
   }
 
-  private spectrumResized(_event: Common.EventTarget.EventTargetEvent): void {
+  private spectrumResized(): void {
     this.swatchPopoverHelper.reposition();
   }
 
-  private spectrumChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const color = Common.Color.Color.parse((event.data as string));
+  private spectrumChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const color = Common.Color.Color.parse(event.data);
     if (!color) {
       return;
     }

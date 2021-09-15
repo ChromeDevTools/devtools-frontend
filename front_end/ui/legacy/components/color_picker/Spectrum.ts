@@ -125,7 +125,7 @@ const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
 
 const colorElementToColor = new WeakMap<HTMLElement, string>();
 
-export class Spectrum extends UI.Widget.VBox {
+export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private colorElement: HTMLElement;
   private colorDragElement: HTMLElement;
   private dragX: number;
@@ -1211,6 +1211,11 @@ export enum Events {
   ColorChanged = 'ColorChanged',
   SizeChanged = 'SizeChanged',
 }
+
+export type EventTypes = {
+  [Events.ColorChanged]: string,
+  [Events.SizeChanged]: void,
+};
 
 const COLOR_CHIP_SIZE = 24;
 const ITEMS_PER_PALETTE_ROW = 8;

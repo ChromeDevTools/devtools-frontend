@@ -16,7 +16,8 @@ declare global {
 
 const PAGE_TITLE = 'TestPanel';
 describe('Extension panels', async () => {
-  it('can perform search actions', async () => {
+  // Test fails a lot on mac currently
+  it.skipOnPlatforms(['mac'], '[crbug.com/1249774] can perform search actions', async () => {
     const extension = await loadExtension('TestExtension');
 
     const page = new URL(`${getResourcesPath()}/extensions/test_panel.html`).pathname;

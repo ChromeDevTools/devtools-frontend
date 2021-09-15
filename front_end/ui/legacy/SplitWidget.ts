@@ -38,7 +38,7 @@ import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-export class SplitWidget extends Widget {
+export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
   private sidebarElementInternal: HTMLElement;
   private mainElement: HTMLElement;
   private resizerElementInternal: HTMLElement;
@@ -868,6 +868,11 @@ export enum Events {
   SidebarSizeChanged = 'SidebarSizeChanged',
   ShowModeChanged = 'ShowModeChanged',
 }
+
+export type EventTypes = {
+  [Events.SidebarSizeChanged]: number,
+  [Events.ShowModeChanged]: string,
+};
 
 const MinPadding = 20;
 export interface SettingForOrientation {

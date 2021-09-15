@@ -56,6 +56,7 @@ import {ElementsTreeOutline} from './ElementsTreeOutline.js';
 import type {MarkerDecorator} from './MarkerDecorator.js';
 import {MetricsSidebarPane} from './MetricsSidebarPane.js';
 import {Events as StylesSidebarPaneEvents, StylesSidebarPane} from './StylesSidebarPane.js';
+import type {StylesUpdateCompletedEvent} from './StylesSidebarPane.js';
 
 const UIStrings = {
   /**
@@ -972,7 +973,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     let skippedInitialTabSelectedEvent = false;
 
-    const toggleMetricsWidget = (event: Common.EventTarget.EventTargetEvent): void => {
+    const toggleMetricsWidget = (event: Common.EventTarget.EventTargetEvent<StylesUpdateCompletedEvent>): void => {
       this.metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
     };
 

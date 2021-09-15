@@ -51,7 +51,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ConsoleSidebar extends UI.Widget.VBox {
+export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private readonly tree: UI.TreeOutline.TreeOutlineInShadow;
   private selectedTreeElement: UI.TreeOutline.TreeElement|null;
   private readonly treeElements: FilterTreeElement[];
@@ -145,6 +145,10 @@ export class ConsoleSidebar extends UI.Widget.VBox {
 export const enum Events {
   FilterSelected = 'FilterSelected',
 }
+
+export type EventTypes = {
+  [Events.FilterSelected]: void,
+};
 
 class ConsoleSidebarTreeElement extends UI.TreeOutline.TreeElement {
   protected filterInternal: ConsoleFilter;

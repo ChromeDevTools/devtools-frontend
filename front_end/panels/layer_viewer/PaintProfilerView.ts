@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -75,7 +76,8 @@ let categories: {[x: string]: PaintProfilerCategory}|null = null;
 
 let logItemCategoriesMap: {[x: string]: PaintProfilerCategory}|null = null;
 
-export class PaintProfilerView extends UI.Widget.HBox {
+export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(
+    UI.Widget.HBox) {
   private canvasContainer: HTMLElement;
   private readonly progressBanner: HTMLElement;
   private pieChart: PerfUI.PieChart.PieChart;
@@ -421,6 +423,10 @@ export class PaintProfilerView extends UI.Widget.HBox {
 export enum Events {
   WindowChanged = 'WindowChanged',
 }
+
+export type EventTypes = {
+  [Events.WindowChanged]: void,
+};
 
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;

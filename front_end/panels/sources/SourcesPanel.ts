@@ -643,8 +643,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private editorSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  private editorSelected(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     if (this.editorView.mainWidget() &&
         Common.Settings.Settings.instance().moduleSetting('autoRevealInNavigator').get()) {
       this.revealInNavigator(uiSourceCode, true);

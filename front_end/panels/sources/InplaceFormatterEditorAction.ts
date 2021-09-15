@@ -10,7 +10,7 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {EditorAction, SourcesView} from './SourcesView.js';
+import type {EditorAction, EditorClosedEvent, SourcesView} from './SourcesView.js';
 import {Events, registerEditorAction} from './SourcesView.js';
 
 const UIStrings = {
@@ -45,13 +45,13 @@ export class InplaceFormatterEditorAction implements EditorAction {
     return inplaceFormatterEditorActionInstance;
   }
 
-  private editorSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const uiSourceCode = (event.data as Workspace.UISourceCode.UISourceCode);
+  private editorSelected(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
+    const uiSourceCode = event.data;
     this.updateButton(uiSourceCode);
   }
 
-  private editorClosed(event: Common.EventTarget.EventTargetEvent): void {
-    const wasSelected = (event.data.wasSelected as boolean);
+  private editorClosed(event: Common.EventTarget.EventTargetEvent<EditorClosedEvent>): void {
+    const {wasSelected} = event.data;
     if (wasSelected) {
       this.updateButton(null);
     }

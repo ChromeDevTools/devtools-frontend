@@ -40,8 +40,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable,
-                                                           UI.SearchableView.Replaceable {
+export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+    implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
   private placeholderOptionArray: {
     element: HTMLElement,
     handler: Function,
@@ -446,7 +446,10 @@ export class SourcesView extends UI.Widget.VBox implements TabbedEditorContainer
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();
 
-    this.dispatchEventToListeners(Events.EditorSelected, this.editorContainer.currentFile());
+    const currentFile = this.editorContainer.currentFile();
+    if (currentFile) {
+      this.dispatchEventToListeners(Events.EditorSelected, currentFile);
+    }
   }
 
   private removeToolbarChangedListener(): void {
@@ -580,6 +583,16 @@ export  // TODO(crbug.com/1167717): Make this a const enum again
       EditorClosed = 'EditorClosed',
       EditorSelected = 'EditorSelected',
     }
+
+export interface EditorClosedEvent {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  wasSelected: boolean;
+}
+
+export type EventTypes = {
+  [Events.EditorClosed]: EditorClosedEvent,
+  [Events.EditorSelected]: Workspace.UISourceCode.UISourceCode,
+};
 
 /**
  * @interface

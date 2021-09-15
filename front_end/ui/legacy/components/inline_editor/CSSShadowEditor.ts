@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
@@ -40,7 +41,8 @@ const defaultUnit: string = 'px';
 const sliderThumbRadius: number = 6;
 const canvasSize: number = 88;
 
-export class CSSShadowEditor extends UI.Widget.VBox {
+export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   private readonly typeField: HTMLElement;
   private readonly outsetButton: HTMLElement;
   private readonly insetButton: HTMLElement;
@@ -429,3 +431,7 @@ export class CSSShadowEditor extends UI.Widget.VBox {
 export enum Events {
   ShadowChanged = 'ShadowChanged',
 }
+
+export type EventTypes = {
+  [Events.ShadowChanged]: CSSShadowModel,
+};

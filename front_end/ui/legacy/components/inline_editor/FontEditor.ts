@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
@@ -113,7 +114,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/FontEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FontEditor extends UI.Widget.VBox {
+export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private readonly selectedNode: SDK.DOMModel.DOMNode|null;
   private readonly propertyMap: Map<string, string>;
   private readonly fontSelectorSection: HTMLElement;
@@ -427,6 +428,16 @@ export enum Events {
   FontChanged = 'FontChanged',
   FontEditorResized = 'FontEditorResized',
 }
+
+export interface FontChangedEvent {
+  propertyName: string;
+  value: string;
+}
+
+export type EventTypes = {
+  [Events.FontChanged]: FontChangedEvent,
+  [Events.FontEditorResized]: void,
+};
 
 class FontPropertyInputs {
   private showSliderMode: boolean;

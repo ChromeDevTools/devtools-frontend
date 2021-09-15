@@ -33,7 +33,7 @@ export class BezierPopoverIcon {
   private treeElement: StylePropertyTreeElement;
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private swatch: InlineEditor.Swatches.BezierSwatch;
-  private readonly boundBezierChanged: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly boundBezierChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private bezierEditor?: InlineEditor.BezierEditor.BezierEditor;
   private scrollerElement?: Element;
@@ -84,8 +84,8 @@ export class BezierPopoverIcon {
     }
   }
 
-  private bezierChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.swatch.setBezierText((event.data as string));
+  private bezierChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    this.swatch.setBezierText(event.data);
     this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
   }
 
@@ -206,7 +206,7 @@ export class ColorSwatchPopoverIcon {
     }
   }
 
-  private spectrumResized(): void {
+  private spectrumResized(_event: Common.EventTarget.EventTargetEvent<void>): void {
     this.swatchPopoverHelper.reposition();
   }
 
@@ -255,7 +255,8 @@ export class ShadowSwatchPopoverHelper {
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
   private readonly shadowSwatch: InlineEditor.Swatches.CSSShadowSwatch;
   private iconElement: HTMLSpanElement;
-  private readonly boundShadowChanged: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly boundShadowChanged:
+      (event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowModel.CSSShadowModel>) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private cssShadowEditor?: InlineEditor.CSSShadowEditor.CSSShadowEditor;
   private scrollerElement?: Element;
@@ -308,8 +309,8 @@ export class ShadowSwatchPopoverHelper {
     }
   }
 
-  private shadowChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.shadowSwatch.setCSSShadow((event.data as InlineEditor.CSSShadowModel.CSSShadowModel));
+  private shadowChanged(event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowModel.CSSShadowModel>): void {
+    this.shadowSwatch.setCSSShadow(event.data);
     this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
   }
 
@@ -342,7 +343,8 @@ export class FontEditorSectionManager {
   private parentPane: StylesSidebarPane|null;
   private fontEditor: InlineEditor.FontEditor.FontEditor|null;
   private scrollerElement: Element|null;
-  private readonly boundFontChanged: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly boundFontChanged:
+      (event: Common.EventTarget.EventTargetEvent<InlineEditor.FontEditor.FontChangedEvent>) => void;
   private readonly boundOnScroll: () => void;
   private readonly boundResized: () => void;
   constructor(
@@ -364,7 +366,7 @@ export class FontEditorSectionManager {
     this.boundResized = this.fontEditorResized.bind(this);
   }
 
-  private fontChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private fontChanged(event: Common.EventTarget.EventTargetEvent<InlineEditor.FontEditor.FontChangedEvent>): void {
     const {propertyName, value} = event.data;
     const treeElement = this.treeElementMap.get(propertyName);
     this.updateFontProperty(propertyName, value, treeElement);

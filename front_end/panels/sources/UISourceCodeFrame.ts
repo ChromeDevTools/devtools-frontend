@@ -51,7 +51,9 @@ import {ScriptOriginPlugin} from './ScriptOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
-export class UISourceCodeFrame extends SourceFrame.SourceFrame.SourceFrameImpl {
+export class UISourceCodeFrame extends
+    Common.ObjectWrapper.eventMixin<EventTypes, typeof SourceFrame.SourceFrame.SourceFrameImpl>(
+        SourceFrame.SourceFrame.SourceFrameImpl) {
   private uiSourceCodeInternal: Workspace.UISourceCode.UISourceCode;
   private readonly diff: SourceFrame.SourceCodeDiff.SourceCodeDiff|undefined;
   private muteSourceCodeEvents: boolean;
@@ -919,3 +921,7 @@ function messageLevelComparator(a: Workspace.UISourceCode.Message, b: Workspace.
 export enum Events {
   ToolbarItemsChanged = 'ToolbarItemsChanged',
 }
+
+export type EventTypes = {
+  [Events.ToolbarItemsChanged]: void,
+};

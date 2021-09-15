@@ -99,7 +99,8 @@ const uniformSamplerLocations = new Map<WebGLProgram, WebGLUniformLocation|null>
 
 const imageForTexture = new Map<WebGLTexture, HTMLImageElement>();
 
-export class Layers3DView extends UI.Widget.VBox implements LayerView {
+export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+    implements LayerView {
   private readonly failBanner: UI.Widget.VBox;
   private readonly layerViewHost: LayerViewHost;
   private transformController: TransformController;
@@ -891,6 +892,11 @@ export enum Events {
   PaintProfilerRequested = 'PaintProfilerRequested',
   ScaleChanged = 'ScaleChanged',
 }
+
+export type EventTypes = {
+  [Events.PaintProfilerRequested]: Selection,
+  [Events.ScaleChanged]: void,
+};
 
 export const enum ChromeTexture {
   Left = 0,

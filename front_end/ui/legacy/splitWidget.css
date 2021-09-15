@@ -52,7 +52,7 @@
   top: 0;
   bottom: 0;
   width: 6px;
-  z-index: 500;
+  z-index: 4000;
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-resizer {
@@ -60,7 +60,7 @@
   left: 0;
   right: 0;
   height: 6px;
-  z-index: 500;
+  z-index: 4000;
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {

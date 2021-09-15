@@ -692,8 +692,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.panel.showView(view);
   }
 
-  private async updateDatabaseTables(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const database = (event.data as DatabaseModelDatabase);
+  private async updateDatabaseTables(event: Common.EventTarget.EventTargetEvent<DatabaseModelDatabase>): Promise<void> {
+    const database = event.data;
 
     if (!database) {
       return;

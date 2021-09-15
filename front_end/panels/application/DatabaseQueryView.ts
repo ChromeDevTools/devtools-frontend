@@ -27,6 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -46,7 +47,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DatabaseQueryView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class DatabaseQueryView extends UI.Widget.VBox {
+export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   database: Database;
   private queryWrapper: HTMLElement;
   private readonly promptContainer: HTMLElement;
@@ -315,6 +317,10 @@ export class DatabaseQueryView extends UI.Widget.VBox {
 export enum Events {
   SchemaUpdated = 'SchemaUpdated',
 }
+
+export type EventTypes = {
+  [Events.SchemaUpdated]: Database,
+};
 
 export const SQL_BUILT_INS = [
   'SELECT ',

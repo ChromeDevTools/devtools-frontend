@@ -69,7 +69,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilterBar extends HBox implements Common.EventTarget.EventTarget<FilterBarEventTypes> {
+export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTypes, typeof HBox>(HBox) {
   private enabled: boolean;
   private readonly stateSetting: Common.Settings.Setting<boolean>;
   private readonly filterButtonInternal: ToolbarSettingToggle;
@@ -185,7 +185,7 @@ export type FilterBarEventTypes = {
   [FilterBarEvents.Changed]: void,
 };
 
-export interface FilterUI extends Common.EventTarget.EventTarget {
+export interface FilterUI extends Common.EventTarget.EventTarget<FilterUIEventTypes> {
   isActive(): boolean;
   element(): Element;
 }
@@ -194,7 +194,11 @@ export const enum FilterUIEvents {
   FilterChanged = 'FilterChanged',
 }
 
-export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
+export type FilterUIEventTypes = {
+  [FilterUIEvents.FilterChanged]: void,
+};
+
+export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filterElement: HTMLDivElement;
   private readonly filterInputElement: HTMLElement;
   private prompt: TextPrompt;
@@ -261,7 +265,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements 
   }
 
   private valueChanged(): void {
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
     this.updateEmptyStyles();
   }
 
@@ -274,7 +278,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper implements 
   }
 }
 
-export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
+export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filtersElement: HTMLDivElement;
   private readonly typeFilterElementTypeNames: WeakMap<HTMLElement, string>;
   private allowedTypes: Set<string>;
@@ -350,7 +354,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper impl
       element.classList.toggle('selected', active);
       ARIAUtils.setSelected(element, active);
     }
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
   }
 
   private addBit(name: string, label: string, title?: string): void {
@@ -447,7 +451,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper impl
   static readonly ALL_TYPES = 'all';
 }
 
-export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper implements FilterUI {
+export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filterElement: HTMLDivElement;
   private readonly activeWhenChecked: boolean;
   private label: CheckboxLabel;
@@ -490,7 +494,7 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper impleme
   }
 
   private fireUpdated(): void {
-    this.dispatchEventToListeners(FilterUIEvents.FilterChanged, null);
+    this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
   }
 
   setColor(backgroundColor: string, borderColor: string): void {

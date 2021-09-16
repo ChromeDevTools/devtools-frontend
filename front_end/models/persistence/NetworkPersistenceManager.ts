@@ -14,7 +14,8 @@ import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 let networkPersistenceManagerInstance: NetworkPersistenceManager|null;
 
-export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
+    SDK.TargetManager.Observer {
   private bindings: WeakMap<Workspace.UISourceCode.UISourceCode, PersistenceBinding>;
   private readonly originalResponseContentPromises: WeakMap<Workspace.UISourceCode.UISourceCode, Promise<string|null>>;
   private savingForOverrides: WeakSet<Workspace.UISourceCode.UISourceCode>;
@@ -64,6 +65,15 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     this.eventDescriptors = [];
     this.enabledChanged();
+
+    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+  }
+
+  targetAdded(): void {
+    this.updateActiveProject();
+  }
+  targetRemoved(): void {
+    this.updateActiveProject();
   }
 
   static instance(opts: {

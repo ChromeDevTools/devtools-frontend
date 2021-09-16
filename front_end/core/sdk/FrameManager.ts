@@ -141,8 +141,8 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
   }
 
-  private frameNavigated(event: Common.EventTarget.EventTargetEvent): void {
-    const frame = (event.data as ResourceTreeFrame);
+  private frameNavigated(event: Common.EventTarget.EventTargetEvent<ResourceTreeFrame>): void {
+    const frame = event.data;
     this.dispatchEventToListeners(Events.FrameNavigated, {frame});
     if (frame.isTopFrame()) {
       this.dispatchEventToListeners(Events.TopFrameNavigated, {frame});

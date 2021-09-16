@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
+
 import * as ARIAUtils from './ARIAUtils.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
@@ -37,7 +39,7 @@ import type {DevToolsCloseButton} from './UIUtils.js';
 import type {WidgetElement} from './Widget.js';
 import {WidgetFocusRestorer} from './Widget.js';
 
-export class Dialog extends GlassPane {
+export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
   private tabIndexBehavior: OutsideTabIndexBehavior;
   private tabIndexMap: Map<HTMLElement, number>;
   private focusRestorer: WidgetFocusRestorer|null;
@@ -94,7 +96,7 @@ export class Dialog extends GlassPane {
       this.targetDocument.removeEventListener('keydown', this.targetDocumentKeyDownHandler, true);
     }
     this.restoreTabIndexOnElements();
-    this.dispatchEventToListeners('hidden');
+    this.dispatchEventToListeners(Events.Hidden);
     Dialog.instance = null;
   }
 
@@ -197,6 +199,14 @@ export class Dialog extends GlassPane {
 
   private static instance: Dialog|null = null;
 }
+
+export const enum Events {
+  Hidden = 'hidden',
+}
+
+export type EventTypes = {
+  [Events.Hidden]: void,
+};
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

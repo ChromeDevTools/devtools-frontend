@@ -4,7 +4,7 @@
 
 import * as Diff from '../../../../third_party/diff/diff.js';
 import * as UI from '../../legacy.js';
-import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+import {Events as FilteredListWidgetEvents, FilteredListWidget, Provider} from './FilteredListWidget.js';
 export interface QuickPickItem {
   label: string;
   description?: string;
@@ -21,9 +21,8 @@ export class QuickPick {
     throw new ReferenceError('Instance type not implemented.');
   }
 
-  static show(items: QuickPickItem[], options: QuickPickOptions): Promise<QuickPickItem|undefined> {
-    let canceledPromise: Promise<undefined> =
-        new Promise<undefined>(_r => {});  // Intentionally creates an unresolved promise
+  static show(items: QuickPickItem[], options: QuickPickOptions): Promise<QuickPickItem|void> {
+    let canceledPromise = new Promise<void>(_r => {});  // Intentionally creates an unresolved promise
     const fulfilledPromise = new Promise<QuickPickItem>(resolve => {
       const provider =
           new QuickPickProvider(items, resolve, options.matchOnDescription ? 0.5 : 0, options.matchOnDetail ? 0.25 : 0);
@@ -31,7 +30,7 @@ export class QuickPick {
       widget.setHintElement(options.placeHolder);
       widget.setPromptTitle(options.placeHolder);
       widget.showAsDialog(options.placeHolder);
-      canceledPromise = (widget.once('hidden') as Promise<undefined>);
+      canceledPromise = widget.once(FilteredListWidgetEvents.Hidden);
       widget.setQuery('');
     });
 

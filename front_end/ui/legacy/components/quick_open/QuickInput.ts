@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 
-import {FilteredListWidget, Provider} from './FilteredListWidget.js';
+import {Events as FilteredListWidgetEvents, FilteredListWidget, Provider} from './FilteredListWidget.js';
 
 const UIStrings = {
   /**
@@ -27,9 +27,8 @@ export class QuickInput {
     throw new ReferenceError('Instance type not implemented.');
   }
 
-  static show(options: QuickInputOptions): Promise<string|undefined> {
-    let canceledPromise: Promise<undefined> =
-        new Promise<undefined>(_r => {});  // Intentionally creates an unresolved promise
+  static show(options: QuickInputOptions): Promise<string|void> {
+    let canceledPromise = new Promise<void>(_r => {});  // Intentionally creates an unresolved promise
     const fulfilledPromise = new Promise<string>(resolve => {
       const provider = new QuickInputProvider(options, resolve);
       const widget = new FilteredListWidget(provider);
@@ -40,7 +39,7 @@ export class QuickInput {
 
       widget.setPromptTitle(options.placeHolder || options.prompt);
       widget.showAsDialog(options.prompt);
-      canceledPromise = (widget.once('hidden') as Promise<undefined>);
+      canceledPromise = widget.once(FilteredListWidgetEvents.Hidden);
 
       widget.setQuery(options.value || '');
       if (options.valueSelection) {

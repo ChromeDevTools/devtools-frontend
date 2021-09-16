@@ -5,6 +5,7 @@
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
@@ -28,7 +29,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl.ListDelegate<number> {
+export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) implements UI.ListControl.ListDelegate<number> {
   private promptHistory: string[];
   private scoringTimer: number;
   private filterTimer: number;
@@ -160,8 +162,8 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     this.dialog.contentElement.style.setProperty('border-radius', '4px');
     this.show(this.dialog.contentElement);
     UI.ARIAUtils.setExpanded(this.contentElement, true);
-    this.dialog.once('hidden').then(() => {
-      this.dispatchEventToListeners('hidden');
+    this.dialog.once(UI.Dialog.Events.Hidden).then(() => {
+      this.dispatchEventToListeners(Events.Hidden);
     });
     // @ts-ignore
     this.dialog.show();
@@ -528,6 +530,14 @@ export class FilteredListWidget extends UI.Widget.VBox implements UI.ListControl
     }
   }
 }
+
+export const enum Events {
+  Hidden = 'hidden',
+}
+
+export type EventTypes = {
+  [Events.Hidden]: void,
+};
 
 export class Provider {
   private refreshCallback!: () => void;

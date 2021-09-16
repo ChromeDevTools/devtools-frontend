@@ -271,14 +271,21 @@ export class CommandMenuProvider extends Provider {
 
   renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     const command = this.commands[itemIndex];
+
     titleElement.removeChildren();
-    const tagElement = (titleElement.createChild('span', 'tag') as HTMLElement);
-    const index = Platform.StringUtilities.hashCode(command.category()) % MaterialPaletteColors.length;
-    tagElement.style.backgroundColor = MaterialPaletteColors[index];
-    tagElement.textContent = command.category();
     UI.UIUtils.createTextChild(titleElement, command.title());
     FilteredListWidget.highlightRanges(titleElement, query, true);
+
     subtitleElement.textContent = command.shortcut();
+
+    const tagElement = (titleElement.parentElement?.parentElement?.createChild('span', 'tag') as HTMLElement);
+    if (!tagElement) {
+      return;
+    }
+    const index = Platform.StringUtilities.hashCode(command.category()) % MaterialPaletteColors.length;
+    tagElement.style.backgroundColor = MaterialPaletteColors[index];
+    tagElement.style.color = 'var(--color-background)';
+    tagElement.textContent = command.category();
   }
 
   selectItem(itemIndex: number|null, _promptValue: string): void {

@@ -85,11 +85,16 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return -item.line - 1;
   }
 
-  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+  renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
     const item = this.items[itemIndex];
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
-    subtitleElement.textContent = ':' + (item.line + 1);
+
+    const tagElement = (titleElement.parentElement?.parentElement?.createChild('span', 'tag') as HTMLElement);
+    if (!tagElement) {
+      return;
+    }
+    tagElement.textContent = ':' + (item.line + 1);
   }
 
   selectItem(itemIndex: number|null, _promptValue: string): void {

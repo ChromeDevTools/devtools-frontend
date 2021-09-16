@@ -18,7 +18,7 @@ export const SHORTCUT_CHORD_TIMEOUT = 1000;
 
 export let VS_CODE_SHORTCUTS_SHORTCUTS = ['CtrlKCtrlS'];
 export let VS_CODE_SETTINGS_SHORTCUTS = ['Shift?', 'Ctrl,'];
-export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'SettingsShortcutsCtrl + K Ctrl + S';
+export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'ShortcutsCtrl + K Ctrl + SSettings';
 export let VS_CODE_PAUSE_SHORTCUTS = ['Ctrl\\', 'F5', 'ShiftF5'];
 export let CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl + 1', 'Ctrl + 2'];
 export let CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl + 1 Ctrl + 2'];

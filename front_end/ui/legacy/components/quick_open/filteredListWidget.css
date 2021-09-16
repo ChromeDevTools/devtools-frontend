@@ -75,10 +75,12 @@
 }
 
 .filtered-list-widget-item-wrapper {
-  display: inline-flex;
-  width: 502px;
+  color: var(--color-text-primary);
+  display: flex;
   border-bottom: 1px solid var(--color-details-hairline-light);
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   padding-left: 8px;
+  padding-right: 8px;
 }
 
 .filtered-list-widget-item-wrapper devtools-icon {
@@ -95,14 +97,16 @@
   text-overflow: ellipsis;
   overflow: hidden;
   align-self: center;
-  color: var(--color-text-primary);
   max-width: 446px;
   font-size: 12px;
-  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
-.filtered-list-widget-item span.highlight {
+.filtered-list-widget-item.two-rows span.highlight {
   color: var(--color-primary);
+}
+
+.filtered-list-widget-item.one-row span.highlight {
+  font-weight: bold;
 }
 
 .filtered-list-widget-item .filtered-list-widget-title {
@@ -126,13 +130,22 @@
   text-overflow: ellipsis;
 }
 
+.filtered-list-widget-item-wrapper .tag {
+  padding: 0 12px;
+  border-radius: 4px;
+  line-height: 24px;
+  height: 24px;
+  align-self: center;
+}
+
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
   color: var(--color-background);
   background-color: var(--override-filtered-list-widget-highlight-text-background-color);
 }
 
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-title,
-.filtered-list-widget-item-wrapper.selected .filtered-list-widget-subtitle {
+.filtered-list-widget-item-wrapper.selected .filtered-list-widget-subtitle,
+.filtered-list-widget-item-wrapper.selected .tag {
   color: var(--color-background);
 }
 
@@ -174,6 +187,15 @@
   padding-top: 8px;
   padding-bottom: 8px;
   display: flex;
+  flex: auto;
+}
+
+.filtered-list-widget-item.one-row .filtered-list-widget-title {
+  flex: none;
+}
+
+.filtered-list-widget-item.one-row .filtered-list-widget-subtitle::before {
+  content: ' ';
 }
 
 .filtered-list-widget-item.two-rows {
@@ -186,22 +208,10 @@
   font-weight: bold;
 }
 
-.tag {
-  color: var(--color-background);
-  padding: 1px 3px;
-  margin-right: 5px;
-  border-radius: 2px;
-  line-height: 18px;
-}
-
-.filtered-list-widget-item .tag .highlight {
-  color: var(--color-background);
-}
-
 .not-found-text {
   height: 34px;
   line-height: 34px;
-  padding-left: 4px;
+  padding-left: 8px;
   font-style: italic;
   color: var(--color-text-disabled);
   background: var(--color-background-elevation-0);

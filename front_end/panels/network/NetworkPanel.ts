@@ -369,7 +369,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return this.throttlingSelect;
   }
 
-  private onWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onWindowChanged(event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>):
+      void {
     const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1000);
     const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1000);
     this.networkLogView.setWindow(startTime, endTime);

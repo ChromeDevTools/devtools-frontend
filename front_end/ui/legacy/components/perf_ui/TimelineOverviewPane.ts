@@ -36,7 +36,8 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import type {Calculator} from './TimelineGrid.js';
 
-export class TimelineOverviewPane extends UI.Widget.VBox {
+export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   private readonly overviewCalculator: TimelineOverviewCalculator;
   private readonly overviewGrid: OverviewGrid;
   private readonly cursorArea: HTMLElement;
@@ -254,6 +255,15 @@ export class TimelineOverviewPane extends UI.Widget.VBox {
 export enum Events {
   WindowChanged = 'WindowChanged',
 }
+
+export interface WindowChangedEvent {
+  startTime: number;
+  endTime: number;
+}
+
+export type EventTypes = {
+  [Events.WindowChanged]: WindowChangedEvent,
+};
 
 export class TimelineOverviewCalculator implements Calculator {
   private minimumBoundaryInternal!: number;

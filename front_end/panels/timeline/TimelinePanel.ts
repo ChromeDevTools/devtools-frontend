@@ -448,7 +448,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.loader = TimelineLoader.loadFromEvents(events, this);
   }
 
-  private onOverviewWindowChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onOverviewWindowChanged(
+      event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>): void {
     if (!this.performanceModel) {
       return;
     }

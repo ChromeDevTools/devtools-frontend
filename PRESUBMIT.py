@@ -206,6 +206,14 @@ def _CheckDevToolsRunESLintTests(input_api, output_api):
     # tests if so.
     # We don't do this on every CL as most do not touch the rules, but if we do
     # change them we need to make sure all the tests are passing.
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+        ]
+        import devtools_paths
+    finally:
+        sys.path = original_sys_path
     eslint_rules_dir_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'scripts', 'eslint_rules')
     eslint_rules_affected_files = _getAffectedFiles(input_api,
@@ -215,8 +223,7 @@ def _CheckDevToolsRunESLintTests(input_api, output_api):
     if (len(eslint_rules_affected_files) == 0):
         return []
 
-    mocha_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                        'node_modules', '.bin', 'mocha')
+    mocha_path = devtools_paths.mocha_path()
     eslint_tests_path = input_api.os_path.join(eslint_rules_dir_path, 'tests',
                                                '*_test.js')
 

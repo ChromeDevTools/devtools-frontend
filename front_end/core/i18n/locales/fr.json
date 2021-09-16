@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Forcer la caractéristique média CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Forcer la caractéristique média CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Forcer la caractéristique média CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "La largeur réelle ({PH1} px) de {PH2} {PH3} ne correspond pas à celle spécifiée ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID d'appli"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Permet au navigateur de savoir si le fichier manifeste doit mettre à jour une application existante ou s'il se rapporte à une nouvelle appli Web qui peut être installée."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Remarque : \"id\" n'est pas indiqué dans le fichier manifeste, \"start_url\" est utilisé à la place. Pour spécifier un ID d'appli correspondant à l'identité actuelle, définissez le champ \"id\" sur \"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Fichier manifeste d'appli"
   },
@@ -2130,7 +2142,7 @@
     "message": "L'attribut src de {PH1} n'est pas défini"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} Échec de l'analyse de l'URL {PH2}."
+    "message": "Échec de l'analyse de l'URL {PH1} \"{PH2}\""
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Capture d'écran"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "État du cache amélioré"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explications"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "La dernière navigation n'a pas été mise en cache, car"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Dernière navigation sur le frame principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navigation normale"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Fonctionnalités bloquant le cache amélioré"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restauré à partir du cache amélioré"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Disponibles dans une future version de Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Récupération de l'arrière-plan"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Signaler un problème dans les outils de développement"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Signaler un problème de traduction"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Voir les nouveautés"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problèmes masqués"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Afficher tous les problèmes"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Ressources affectées"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Activité Web fiable"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Afficher tous les problèmes masqués"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloqué"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Exécutez une requête ou appuyez sur {PH1} pour enregistrer l'actualisation."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Lancez l'enregistrement ({PH1}) pour voir l'activité réseau."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Enregistrez le journal réseau ({PH1}) pour afficher l'activité du réseau."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Enregistrement de l'activité réseau…"
@@ -7215,7 +7236,7 @@
     "message": "Objet utilisateur accessible depuis la fenêtre"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Une erreur s'est produite lorsque la méthode {PH1} a été demandée"
+    "message": "Une erreur s'est produite lorsque la méthode \"{PH1}\" a été demandée"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Les chronologies d'allocation montrent les allocations de mémoire JavaScript instrumentées au fil du temps. Une fois le profil enregistré, vous pouvez sélectionner un intervalle de temps pour voir les objets qui y ont été alloués et étaient toujours actifs à la fin de l'enregistrement. Utilisez ce type de profil pour isoler les fuites de mémoire."
@@ -7566,7 +7587,7 @@
     "message": "Arborescence (descendante)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Impossible de charger le fichier. Extensions de fichier compatibles : {PH1}."
+    "message": "Impossible de charger le fichier. Extensions de fichier compatibles : \"{PH1}\"."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Impossible de charger un profil quand un autre est en cours d'enregistrement."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Tout effacer"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Sens"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentation"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Horodatage"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Type"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Moniteur de protocole"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Les détails de sécurité ci-dessus proviennent de la première réponse examinée."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Sécurité inconnue pour cette page."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "La signature du serveur utilise SHA-1, qui est obsolète. Activez l'algorithme de signature SHA-2 à la place. Notez que ceci est différent de la signature du certificat."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Cette page n'est pas sécurisée (HTTP non chiffré)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Cette page n'est pas sécurisée."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Cette page n'est pas sécurisée (HTTPS brisé)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Cette page est sécurisée (HTTPS valide)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Cette page est suspecte"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Appareil"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "L'appareil {PH1} a bien été ajouté/mis à jour."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nom de l'appareil"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Ajouter une marque"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Ligne des marques ajoutée"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architecture"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Supprimer"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Ligne des marques supprimée"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modèle de l'appareil"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tâche asynchrone"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Mettre en cache le code du module"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Mettre en cache le code du script"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Module Wasm en cache"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durée"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Compilation rapide de toutes les fonctions…"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Éléments concernés"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script non éligible"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script enregistré dans le cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Script"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Appuyez sur Entrée pour confirmer ou sur Échap pour annuler.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Saisissez un point d'interrogation pour voir les commandes disponibles"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Appuyez sur \"?\" pour voir les commandes disponibles"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Utilisez \"Tabulation\" pour changer de commande. Appuyez sur \"?\" pour voir les commandes disponibles"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Ouvrir le fichier"

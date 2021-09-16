@@ -243,10 +243,10 @@
     "message": "Naar {PH1} genavigeerd"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Profiel '{PH1}' is voltooid."
+    "message": "Profiel {PH1} is voltooid."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Profiel '{PH1}' is gestart."
+    "message": "Profiel {PH1} is gestart."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animatie"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Dwingt de mediafunctie prefers-color-scheme voor css af"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Dwingt de mediafunctie prefers-contrast voor css af"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Dwingt de mediafunctie prefers-reduced-data voor css af"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Daadwerkelijke breedte ({PH1} pixels) van {PH2} {PH3} komt niet overeen met de opgegeven breedte ({PH4} pixels)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "App-ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Dit wordt gebruikt door de browser om te bepalen of het manifest een bestaande app moet updaten of dat het verwijst naar een nieuwe web-app die kan worden geïnstalleerd."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Opmerking: 'id' is niet opgegeven in het manifest. In plaats daarvan wordt 'start_url' gebruikt. Als je een app-ID wilt opgeven die overeenkomt met de huidige identiteit, stel je het veld 'id' in op {PH1}."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "App-manifest"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status van Back-Forward Cache"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Uitleg"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "De laatste navigatie is niet opgeslagen in het cachegeheugen omdat"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Laatste mainframenavigatie"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normale navigatie"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Functies die Back-Forward Cache voorkomen"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Hersteld uit Back-Forward Cache"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Ondersteund in een toekomstige versie van Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ophalen op de achtergrond"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Een probleem met DevTools melden"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Een vertaalprobleem melden"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Tonen wat er nieuw is"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Verborgen problemen"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Alle problemen zichtbaar maken"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Getroffen resources"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Vertrouwde webactiviteit"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Alle verborgen problemen zichtbaar maken"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "geblokkeerd"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Voer een verzoek uit of selecteer {PH1} om het herladen op te nemen."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Maak een opname ({PH1}) om netwerkactiviteit te tonen."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Netwerklogboek opnemen ({PH1}) om netwerkactiviteit te tonen."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Netwerkactiviteit opnemen…"
@@ -7215,7 +7236,7 @@
     "message": "Gebruikersobject bereikbaar vanuit venster"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Er is een fout opgetreden bij het aanroepen van methode '{PH1}'"
+    "message": "Er is een fout opgetreden bij het aanroepen van de methode {PH1}"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Toewijzingstijdlijnen tonen geïnstrumenteerde JavaScript-geheugentoewijzingen in de tijd. Nadat het profiel is vastgelegd, kun je een tijdsinterval selecteren om objecten te zien die daarin zijn toegewezen en nog actief waren aan het einde van de opname. Gebruik dit profieltype om geheugenlekken te isoleren."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Alles wissen"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Richting"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentatie"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Tijdstempel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Type"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protocolmonitor"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "De beveiligingsgegevens hierboven zijn van de eerste gecontroleerde reactie."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "De beveiliging van deze pagina is onbekend."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "De serverhandtekening gebruikt het verouderde SHA-1. Gebruik in plaats daarvan een SHA-2-handtekeningalgoritme. (Dit is een andere handtekening dan die in het certificaat.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Deze pagina is onveilig (niet-versleutelde HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Deze pagina is niet beveiligd."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Deze pagina is niet beveiligd (verbroken HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Deze pagina is beveiligd (geldige HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Deze pagina is verdacht"
@@ -8316,7 +8325,7 @@
     "message": "Contentscripts toevoegen aan negeerlijst (extensiescripts op de pagina)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Scripts negeren waarvan de namen overeenkomen met '{PH1}'"
+    "message": "Scripts negeren waarvan de namen overeenkomen met {PH1}"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Geen patronen voor negeerlijst"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Apparaat"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Apparaat {PH1} is toegevoegd/geüpdatet."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Apparaatnaam"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Merk toevoegen"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Merkrij toegevoegd"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architectuur"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Verwijderen"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Merkrij verwijderd"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Apparaatmodel"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynchrone taak"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Code voor cachemodule"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Code voor cachescript"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Wasm-module in het cachegeheugen"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duur"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Alle functies compileren"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Beïnvloede elementen"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script komt niet in aanmerking"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script opgeslagen in cachegeheugen"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scripts schrijven"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Druk op Enter om te bevestigen of op Escape om te annuleren.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Typ een vraagteken om beschikbare opdrachten te bekijken"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Typ '?' om beschikbare opdrachten te bekijken"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Gebruik Tab om tussen opdrachten te schakelen. Typ '?' om beschikbare opdrachten te bekijken."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Bestand openen"

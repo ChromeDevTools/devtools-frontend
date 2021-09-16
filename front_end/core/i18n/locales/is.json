@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Þvingar fram CSS-efniseiginleika prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Þvingar fram CSS-efniseiginleika prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Þvingar fram CSS-efniseiginleika prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Raunbreidd ({PH1} px) á {PH2} {PH3} stemmir ekki við tilgreinda breidd ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Auðkenni forrits"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Vafrinn notar þetta til að greina hvort að upplýsingaskráin ætti að uppfæra núverandi forrit eða hvort hún vísar í nýtt vefforrit sem hægt er að setja upp."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Ath.: „id“ er ekki tilgreint í upplýsingaskránni, „start_url“ er notað þess í stað. Stilltu reitinn „id“ á „{PH1}“ til að tilgreina auðkenni forrits sem passar við núverandi auðkenni."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Upplýsingaskrá forrits"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Staða á „skyndiminni til baka / áfram“"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Útskýringar"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Síðasta leiðsögn var ekki geymd í skyndiminni af eftirfarandi ástæðu"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Síðasta fletting í aðalramma"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Venjuleg fletting"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Eiginleikar sem stöðva „skyndiminni til baka / áfram“"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Endurheimt úr „skyndiminni til baka / áfram“"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "Vefslóð"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Stutt í nýrri útgáfu Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Gagnaflutningur í bakgrunni"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Tilkynna um vandamál í DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Tilkynna vandamál varðandi þýðingu"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Sýna nýjungar"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Falin vandamál"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Sýna öll vandamál"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tilföng sem verða fyrir áhrifum"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Traust vefvirkni"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Sýna öll falin vandamál"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "útilokað"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Sendu beiðni eða ýttu á {PH1} til að taka upp endurhleðsluna."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Skrá ({PH1}) til að birta netvirkni"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Skrá netannál ({PH1}) til að sýna netvirkni."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Upptaka netvirkni í gangi…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Hreinsa allt"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Stefna"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Upplýsingaefni"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Tímastimpill"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tegund"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Yfirlit samskiptareglna"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Öryggisupplýsingarnar hér að ofan eru úr svarinu sem fyrst var skoðað."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Öryggi þessarar síðu er óþekkt."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Undirskrift þjónsins notar SHA-1, sem er úrelt. Kveiktu á reikniriti sem notar SHA-2 undirskrift í staðinn. (Athugaðu að þetta er ekki sama undirskrift og í vottorðinu.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Þessi síða er óörugg (ódulkóðað HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Þessi síða er ekki örugg."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Þessi síða er óörugg (bilað HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Þessi síða er örugg (gilt HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Þessi síða er grunsamleg"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Tæki"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Tækinu {PH1} var bætt við/uppfært."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Heiti tækis"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Bæta við vörumerki"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Vörumerkjalínu bætt við"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkitektúr"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Eyða"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Vörumerkjalínu var eytt"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Gerð tækis"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Ósamstillt verkefni"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kóði skyndiminniseiningar"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kóði fyrir skriftu skyndiminnis"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Wasm-eining í skyndiminni"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Lengd"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Þýða allar aðgerðir strax"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Einingar sem urðu fyrir áhrifum"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skrifta er ólæsileg"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skrifta vistuð í skyndiminni"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Forskrift"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Ýttu á „Enter“ til að staðfesta eða „Escape“ til að hætta við)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Sláðu inn spurningarmerki til að sjá tiltækar skipanir"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Sláðu inn „?“ til að sjá tiltækar skipanir"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Notaðu dálkalykilinn til að skipta á milli skipana. Sláðu inn „?“ til að sjá tiltækar skipanir"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Opna skrá"

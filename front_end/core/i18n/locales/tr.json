@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme medya özelliğini zorunlu kılar"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast medya özelliğini zorunlu kılar"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data medya özelliğini zorunlu kılar"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} görselinin gerçek genişliği ({PH1} piksel), belirtilen genişlikle ({PH4} piksel) eşleşmiyor"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Uygulama Kimliği"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Tarayıcı tarafından, manifest dosyasının mevcut bir uygulamayı güncellemesi gerekip gerekmediği veya yüklenebilecek yeni bir web uygulamasına işaret edip etmediğini öğrenmek için kullanılır."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Not: Manifest dosyasında \"id\" belirtilmemiş, onun yerine \"start_url\" kullanılmış. Mevcut kimliğinizle eşleşen bir Uygulama Kimliği belirtmek için \"id\" alanını ''{PH1}'' olarak ayarlayın."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Uygulama Manifesti"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src ayarlanmadı"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL \"{PH2}\" ayrıştırılamadı"
+    "message": "{PH1} \"{PH2}\" URL'si ayrıştırılamadı"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ekran görüntüsü"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Geri-İleri Önbellek Durumu"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Açıklamalar"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Son gezinmenin önbelleğe alınmama nedeni"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Son Ana Çerçeve Gezinmesi"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal gezinme"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Geri-ileri önbelleği engelleyen özellikler"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Geri-ileri önbellekten geri yüklendi"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Yeni Chrome sürümlerinden birinde desteklenecektir)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Arka planda getirme"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Geliştirici Araçları sorunu raporla"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Çeviri sorununu bildirme"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Yenilikler aracını göster"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Gizlenmiş konular"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Tüm sorunları göster"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Etkilenen Kaynaklar"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Güvenilir Web Etkinliği"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Tüm gizlenmiş sorunları göster"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "engellendi"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Yeniden yüklemeyi kaydetmek için istek yapın veya {PH1} tuşlarına basın."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Ağ etkinliğini görüntülemek için kaydet ({PH1})."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Ağ etkinliğini görmek için ağ günlüğünü ({PH1}) kaydedin."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Ağ etkinliği kaydediliyor…"
@@ -7203,7 +7224,7 @@
     "message": "Özet görünümünde göster"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "@{PH2} kimlikli '{PH1}' nesnesini Özet görünümünde göster"
+    "message": "@{PH2} kimlikli \"{PH1}\" nesnesini Özet görünümünde göster"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Genel değişken olarak sakla"
@@ -7521,7 +7542,7 @@
     "message": "Dosya okunamadı"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "\"{PH1}\" dosya okuma hatası: {PH2}"
+    "message": "\"{PH1}\" dosyasında okuma hatası: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Harcanan süre (>50ms), ad veya dosyaya göre arama"
@@ -7566,7 +7587,7 @@
     "message": "Ağaç (Yukarıdan Aşağıya)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Dosya yüklenemiyor. Desteklenen dosya uzantıları: '{PH1}.'"
+    "message": "Dosya yüklenemiyor. Desteklenen dosya uzantıları: \"{PH1}\"."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Başka bir profil kaydedilirken profil yüklenemez."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Tümünü temizle"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Yol tarifi"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokümanlar"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Zaman damgası"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tür"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokol izleyici"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Yukarıdaki güvenlik ayrıntıları ilk incelenen yanıttan alındı."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Bu sayfanın güvenlik durumu bilinmiyor."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Sunucu imzası artık geçerli olmayan SHA-1 algoritması kullanıyor. Bunun yerine bir SHA-2 imza algoritması etkinleştirin. (Bunun sertifikadaki imzadan farklı olduğunu unutmayın.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Bu sayfa güvenli değil (şifrelenmemiş HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Bu sayfa güvenli değil."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Bu sayfa güvenli değil (çalışmayan HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Bu sayfa güvenli (geçerli HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Bu sayfa şüpheli"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Cihaz"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} cihazı başarıyla eklendi/güncellendi."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Cihaz Adı"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Marka Ekle"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Marka satırı eklendi"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Mimari"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Sil"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Marka satırı silindi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Cihaz modeli"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Eş Zamansız Görev"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Önbellek Modülü Kodu"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Önbellek Komut Dosyası Kodu"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Önbelleğe Alınan Wasm Modülü"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Süre"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Tüm işlevler için etraflı derleme yapılıyor"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Etkilenen Öğeler"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "komut dosyası uygun değil"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "komut dosyası önbelleğe kaydedildi"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Komut dosyası çalıştırma"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Onaylamak için \"Enter\", iptal etmek için \"Escape\" tuşuna basın.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Kullanılabilir komutları görmek için soru işareti girin"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Kullanılabilir komutları görmek için \"?\" yazın"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Komutları değiştirmek için Sekme'yi kullanın. Kullanılabilir komutları görmek için \"?\" yazın"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Dosya aç"

@@ -243,10 +243,10 @@
     "message": "{PH1} پر نیویگیٹ کیا گیا"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "پروفائل کا '{PH1}' مکمل ہو گیا۔"
+    "message": "پروفائل کا ''{PH1}'' مکمل ہو گیا۔"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "پروفائل '{PH1}' کو شروع کیا گیا۔"
+    "message": "پروفائل ''{PH1}'' کو شروع کیا گیا۔"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "اینیمیشن"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme‎ میڈیا کی خصوصیت کو فورس کرتا ہے"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast‎ میڈیا کی خصوصیت کو فورس کرتا ہے"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data‎ میڈیا کی خصوصیت کو فورس کرتا ہے"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} کی اصل چوڑائی (px{PH1}) متعین کردہ چوڑائی (px{PH4}) سے مماثل نہیں ہے۔"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ایپ ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "یہ براؤزر کے ذریعے یہ جاننے کے لیے استعمال کیا جاتا ہے کہ مینی فیسٹ کو موجودہ ایپلیکیشن کو اپ ڈیٹ کرنا چاہیے یا اس سے مراد ایک نئی ویب ایپ ہے جو انسٹال کی جا سکتی ہے۔"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "نوٹ: مینی فیسٹ میں 'ID' متعین نہیں ہے، اس کے بجائے 'URL شروع کریں' کو استعمال کیا جاتا ہے۔ ایپ ID کا تعین کرنے کے لیے جو موجودہ شناخت سے مماثل ہے، 'ID' فیلڈ کو ''{PH1}'' پر سیٹ کریں۔"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ایپ مینی فیسٹ"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src سیٹ نہیں ہے"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}URL'{PH2}' کو پارس کرنے میں ناکام"
+    "message": "{PH1}URL''{PH2}'' کو پارس کرنے میں ناکام"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "اسکرین شاٹ"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "بیک فارورڈ کیش کا اسٹیٹس"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "وضاحتیں"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "پچھلا نیویگیشن کیش نہیں ہوا کیونکہ"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "آخری مین فریم نیویگیشن"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "عام نیویگیشن"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "بیک فارورڈ کیش کو روکنے والی خصوصیات"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "بیک فارورڈ کیش سے بحال کردہ"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome کے آئندہ ورژن میں تعاون یافتہ)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "پس منظر کی بازیابی"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools مسئلہ کی اطلاع دیں"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "ترجمہ کے مسئلے کی اطلاع دیں"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "دکھائیں کہ نیا کیا ہے"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "چھپے ہوئے مسائل"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "سبھی مسائل کی پوشیدگی ختم کریں"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "متاثرہ وسائل"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "معتبر ویب سرگرمی"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "تمام چھپے ہوئے مسائل کی پوشیدگی ختم کریں"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "Wasm ماڈیول کی منتقلی مسدود کر دی گئی"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "دوبارہ لوڈ کو ریکارڈ کرنے کے لیے درخواست کریں یا {PH1} دبائيں۔"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "نیٹ ورک کی سرگرمی کو ڈسپلے کرنے کیلئے ({PH1}) ریکارڈ کریں۔"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "نیٹ ورک کی سرگرمی ڈسپلے کرنے کے لیے نیٹ ورک لاگ ({PH1}) ریکارڈ کریں۔"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "نیٹ ورک کی سرگرمی ریکارڈ ہو رہی ہے…"
@@ -7203,7 +7224,7 @@
     "message": "خلاصہ منظر میں ظاہر کریں"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "آبجیکٹ '{PH1}' کو خلاصہ منظر میں id @{PH2} کے ساتھ ظاہر کریں"
+    "message": "آبجیکٹ ''{PH1}'' کو خلاصہ منظر میں id @{PH2} کے ساتھ ظاہر کریں"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "عالمگیر متغیر کے طور پر اسٹور کریں"
@@ -7215,7 +7236,7 @@
     "message": "صارف آبجیکٹ ونڈو سے قابل رسائی ہے"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' طریقہ پر کال کی درخواست کرنے پر ایک خرابی پیش آ گئی"
+    "message": "''{PH1}'' طریقے پر کال کی درخواست کرنے پر ایک خرابی پیش آ گئی"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "الوکیشنز ٹائم لائنز وقت گزرنے کے ساتھ ساتھ انسٹرومنٹڈ JavaScript میموری کی الوکیشنز دکھاتی ہیں۔ پروفائل ریکارڈ ہونے کے بعد آپ آبجیکٹس دیکھنے کے لیے وقفے کا وقت منتخب کر سکتے ہیں جس کے اندر تفویض کیے گئے اور ریکارڈنگ ختم ہونے تک ابھی بھی قابل استعمال ہیں۔ میموری لیکس کو علیحدہ کرنے کے لیے اس پروفائل کی قسم کا استعمال کریں۔"
@@ -7521,7 +7542,7 @@
     "message": "فائل پڑھنے میں ناکام"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' فائل پڑھنے میں خرابی: {PH2}"
+    "message": "''{PH1}'' فائل پڑھنے میں خرابی: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "لاگت (‎>50ms)، نام یا فائل کے لحاظ سے تلاش کریں"
@@ -7566,7 +7587,7 @@
     "message": "ٹری (ٹاپ ڈاؤن)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "فائل لوڈ نہیں ہو سکتی۔ تعاون یافتہ فائل ایکسٹینشنز: '{PH1}۔'"
+    "message": "فائل لوڈ نہیں ہو سکتی۔ تعاون یافتہ فائل ایکسٹینشنز: ''{PH1}\"۔"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "پروفائل لوڈ نہیں ہو سکتی کیونکہ دوسری پروفائل ریکارڈ ہو رہی ہے۔"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "سب صاف کریں"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "ڈائریکشن"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "دستاویزات"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "ٹائم اسٹیمپ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "قسم"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "پروٹوکول مانیٹر"
@@ -7755,7 +7776,7 @@
     "message": "یہ صفحہ محفوظ نہیں ہے۔"
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "یہ صفحہ محفوظ نہیں ہے (ٹوٹا ہوا HTTPS)"
+    "message": "یہ صفحہ محفوظ نہیں ہے (ٹوٹا ہوا HTTPS)۔"
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "یہ صفحہ محفوظ ہے (درست HTTPS)۔"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "اوپر دی گئی سیکیورٹی کی تفصیلات پہلے معائنہ کردہ جواب کی ہیں۔"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "اس صفحہ کی سیکیورٹی نامعلوم ہے۔"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "سرور کا دستخط SHA-1 کا استعمال کرتا ہے، جو ناقابل استعمال ہے۔ اس کے بجائے SHA-2 دستخط کے الگورتھم کو فعال کریں۔ (نوٹ کریں کہ یہ سرٹیفیکیٹ میں موجود دستخط سے مختلف ہے۔)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "یہ صفحہ غیر محفوظ ہے (غیر انکرپٹ کردہ HTTP)۔"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "یہ صفحہ محفوظ نہیں ہے۔"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "یہ صفحہ محفوظ نہیں ہے (ٹوٹا ہوا HTTPS)"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "یہ صفحہ محفوظ ہے (درست HTTPS)۔"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "یہ صفحہ مشتبہ ہے"
@@ -8316,7 +8325,7 @@
     "message": "نظر انداز کرنے کی فہرست میں مواد کی اسکرپٹس شامل کریں (صفحہ میں ایکسٹینشن اسکرپٹس)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "ان اسکرپٹس کو نظر انداز کریں جن کے نام '{PH1}' سے مماثل ہیں"
+    "message": "ان اسکرپٹس کو نظر انداز کریں جن کے نام ''{PH1}'' سے مماثل ہیں"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "نظر انداز کی فہرست کا کوئی پیٹرن نہیں ہے"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "آلہ"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "آلہ {PH1} کامیابی کے ساتھ شامل/اپ ڈیٹ کر دیا گیا۔"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "آلہ کا نام"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "برانڈ شامل کریں"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "برانڈ کی قطار کو شامل کر دیا گیا"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "فن تعمیر"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف کریں"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "حذف کردہ برانڈ کی قطار"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "آلے کا ماڈل"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "ناہم وقت ٹاسک"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "کیش ماڈیول کوڈ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "کیش اسکرپٹ کوڈ"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "کیش کردہ Wasm ماڈیول"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "دورانیہ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "سبھی فنکشنز کو بغور مرتب کیا جا رہا ہے"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "متاثرہ عناصر"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "اسکرپٹ اہل نہیں ہے"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "اسکرپٹ cache میں محفوظ ہو گئی"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "اسکرپٹ سازی"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (تصدیق کے لیے 'Enter' یا منسوخ کرنے کے لیے 'Escape' دبائیں۔)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "دستیاب کمانڈز کو دیکھنے کے لیے سوالیہ نشان ٹائپ کریں"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "دستیاب کمانڈز دیکھنے کے لیے '؟' ٹائپ کریں"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "کمانڈز پر سوئچ کرنے کے لیے ٹیب کا استعمال کریں۔ دستیاب کمانڈز دیکھنے کے لیے '؟' ٹائپ کریں"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "فائل کھولیں"

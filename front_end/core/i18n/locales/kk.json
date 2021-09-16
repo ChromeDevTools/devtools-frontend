@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme мультимедиа функциясын іске қосады."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast мультимедиа функциясын іске қосады."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data мультимедиа функциясын іске қосады."
   },
@@ -1680,7 +1683,7 @@
     "message": "Нативті HTML протоколынан"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromPlaceholderAttribute": {
-    "message": "Толтырғыш белгі төлсипатынан"
+    "message": "Плейсхолдер төлсипатынан"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromRubyAnnotation": {
     "message": "ruby аннотациясынан"
@@ -1839,7 +1842,7 @@
     "message": "Нативті HTML протоколындағы мәндер (белгісіз көз)."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromPlaceholderAttribute": {
-    "message": "Толтырғыш белгі төлсипатындағы мән."
+    "message": "Плейсхолдер төлсипатындағы мән."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromRelatedElement": {
     "message": "Қатысты элементтегі мән"
@@ -1978,6 +1981,15 @@
   },
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} нақты ені ({PH1} пиксель) көрсетілген енге ({PH4} пиксель) сәйкес келмейді."
+  },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Қолданба идентификаторы"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Қолданба идентификаторы браузердің келесіні анықтауы үшін қолданылады: манифестің бұрыннан бар қолданбаны жаңартуы керек екені немесе орнатуға болатын жаңа веб-қолданбаға тиісті екені."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Ескертпе: манифесте \"id\" өрісі көрсетілмеген, оның орнына \"start_url\" пайдаланылған. Қазіргі идентификацияға сәйкес келетін қолданба идентификаторын көрсету үшін \"id\" өрісіне ''{PH1}'' мәнін енгізіңіз."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Қолданба манифесі"
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src орнатылмаған."
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL \"{PH2}\" талданбады."
+    "message": "{PH1} URL ({PH2}) талданбады."
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Скриншот"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Алға-артқа өту кэшінің күйі"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Түсіндірмелер"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Соңғы шарлау әрекеті кэштелмеді, себебі"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Соңғы негізгі жиек навигациясы"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Қалыпты навигация"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Функциялар алға-артқа өту кэшін бөгейді."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Алға-артқа өту кэшінен қалпына келтірілді."
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome-ның алдағы нұсқасында болады)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонды алу"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools-қа қатысты мәселені хабарлау"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Аудармаға қатысты мәселені хабарлау"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Жаңалықтарды көрсету"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Жасырылған ақаулар"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Барлық мәселені жабу"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Өзгерген ресурстар"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Интернеттегі сенімді әрекет"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Барлық жасырылған ақауды көрсету"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блокталды"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Сұрау жасаңыз немесе қайта жүктелгенді жазу үшін {PH1} түймесін басыңыз."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Желідегі әрекетті көрсету үшін оны{PH1} түймесі арқылы жазыңыз."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Желідегі әрекеттерді көрсету үшін желі журналын ({PH1}) толтырыңыз."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Желі әрекеті жазылуда…"
@@ -7215,7 +7236,7 @@
     "message": "Пайдаланушы нысанын терезеден ашуға болады."
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "\"{PH1}\" әдісін шақыру сұралып жатқанда, қате шықты"
+    "message": "\"{PH1}\" әдісін шақыру сұралып жатқанда, қате шықты."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Үлестіру хронологиясы аспаппен жабдықталған JavaScript жадының үлестірілгенін көрсетеді. Профиль жазылған соң, уақыт аралығын таңдап, сол аралықта үлестірілген және жазбаның соңында әлі де жұмыс істеп тұрған нысандарды көре аласыз. Жадтың азаюын оқшаулау үшін осы профиль түрін қолданыңыз."
@@ -7521,7 +7542,7 @@
     "message": "Файлды оқу мүмкін емес."
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "\"{PH1}\" файлын оқу қатесі: {PH2}"
+    "message": "\"{PH1}\" файлын оқу қатесі: {PH2}."
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Бағасы (>50 мс), атауы немесе файл бойынша табу"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Барлығын өшіру"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Бағыт"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Құжаттама"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Уақыт белгісі"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Түрі"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Протокол мониторы"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Жоғарыда көрсетілген қауіпсіздік деректері бірінші тексерілген жауаптан алынған."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Бұл беттің қауіпсіздігі белгісіз."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Бұл сервер ескірген SHA-1 қолтаңбасын пайдаланады. Оның орнына SHA-2 қолтаңба алгоритмін қосыңыз. (Бұл сертификаттағы қолтаңбадан өзгеше екенін ескеріңіз.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Бұл бет қауіпсіз емес (шифрсыздандырылған HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Бұл бет қорғалмаған."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Бұл бет қорғалмаған (HTTPS бұзылған)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Бұл бет қауіпсіз (жарамды HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Бұл бет күдікті."
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Құрылғы"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} құрылғысы қосылды/жаңартылды."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Құрылғы атауы"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Бренд қосу"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Бренд қатары қосылды."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Сәулет"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Жою"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Бренд қатарын жою"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Құрылғы үлгісі"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Асинхронды тапсырма"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Модуль кодын кэштеу"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Скрипт кодын кэштеу"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кэштелген Wasm модулі"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Ұзақтық"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Барлық функцияны жылдам компиляциялау"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Әсері тиген элементтер"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипт жарамды емес"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "скрипт кэшке сақталды"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Скрипт жазылуда"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Растау үшін Enter пернесін, ал бас тарту үшін Escape пернесін басыңыз.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Қолжетімді пәрмендерді көру үшін сұрақ белгісін теріңіз"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Қолжетімді пәрмендерді көру үшін \"?\" белгісін теріңіз."
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Пәрмендерді ауыстыру үшін Tab пернесін пайдаланыңыз. Қолжетімді пәрмендерді көру үшін \"?\" белгісін теріңіз."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файлды ашу"

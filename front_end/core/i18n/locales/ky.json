@@ -243,10 +243,10 @@
     "message": "Төмөнкүгө өттүңүз: {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "'{PH1}' профили аяктады."
+    "message": "\"{PH1}\" профили аяктады."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "'{PH1}' профили башталды."
+    "message": "\"{PH1}\" профили башталды."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Анимация"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme медиа функциясын иштетет"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast медиа функциясын иштетет"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data медиа функциясын иштетет"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Чыныгы кеңдиги ({PH1} пиксель) {PH2} {PH3} көрсөтүлгөн кеңдик менен дал келген жок ({PH4} пиксель)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Колдонмонун идентификатору"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Идентификатор манифест учурдагы колдонмону жаңыртышы керектигин, же болбосо, анын орнотула турган жаңы веб колдонмого тиешеси бар экенин аныктоо үчүн серепчи тарабынан колдонулат."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Эскертүү: \"идентификатор\" манифестте көрсөтүлгөн эмес, анын ордуна \"start_url\" колдонулат. Учурдагы идентификаторго дал келген колдонмонун идентификаторун кошуу үчүн ''{PH1}'' талаасына \"идентификаторду\" кошуңуз."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Колдонмонун манифести"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src жөндөлгөн эмес"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL \"{PH2}\" талданбай калды"
+    "message": "{PH1} \"{PH2}\" URL'и талданбай калды"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Скриншот"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Баракты кештөө абалы"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Түшүндүрмөлөрү"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Акыркы өтүү кештелген жок, анткени"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Акыркы негизги алкактын багытын аныктоо"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Демейки багыт алуу"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Баракты кештөөнү токтотуу функциялары"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Баракты кештөөдөн калыбына келтирилди"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome'дун жаңы версиясында колдоого алынат)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фондогу үлгү"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools көйгөйүн кабарлоо"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Которуу көйгөйүн кабарлоо"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Жаңы нерселерди көрсөтүү"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Жашырылган маселелер"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Бардык көйгөйлөрдү көрсөтүү"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Кедергиси тийген булактар"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Интернеттеги ишенимдүү аракеттер"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Бардык жашырылган маселелерди көрсөтүү"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "бөгөттөлдү"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Кайра жүктөлгөн баракты жаздырып алуу үчүн сурам жөнөтүп, {PH1} басыңыз."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Тармактагы аракетти көрсөтүү үчүн ({PH1}) жаздырыңыз."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Тармактагы иш-аракеттерди чагылдыруу үчүн тармактык журналды ({PH1}) жаздыруу."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Тармак аракеттери жаздырылууда…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Баарын тазалоо"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Багыт"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Документтер"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Убакыт белгиси"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Түрү"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Протоколду көзөмөлдөө куралы"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Жогоруда берилген коопсуздук маалыматы биринчи текшерилген жооптон алынды."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Бул барактын коопсуздугу белгисиз."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Сервер колтамгасы эскирип калган SHA-1 алгоритмин колдонот. Анын ордуна SHA-2 колтамга алгоритмин иштетиңиз. (Бул тастыктамадагы колтамгадан айырмаланат.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Бул кооптуу баракча (шифрленбеген HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Бул барак кооптуу."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Бул барак кооптуу (HTTPS бузулган)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Бул барак коопсуз (жарамдуу HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Бул шектүү баракча"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Түзмөк"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} ийгиликтүү кошулду/жаңыртылды."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Түзмөктүн аталышы"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Бренд кошуу"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Бренддин сабы кошулду"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Архитектура"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Өчүрүү"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Бренддин сабы өчүрүлдү"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Түзмөктүн үлгүсү"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Шайкештирилбеген тапшырма"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Модуль кодун кештөө"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Скрипт кодун кештөө"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кештелген Wasm модулу"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Узактыгы"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Бардык функцияларды топтоо"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Жапа чеккен элементтер"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипт жараксыз"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "скрипт кешке сакталды"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Скрипт жазуу"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Ырастоо үчүн \"Enter\" же жокко чыгаруу үчүн \"Escape\" баскычтарын басыңыз.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Жеткиликтүү буйруктарды көрүү үчүн суроо белгисин териңиз"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Жеткиликтүү буйруктарды көрүү үчүн \"?\" белгисин териңиз"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Буйруктарды которуу үчүн Өтмөктү колдонуңуз. Жеткиликтүү буйруктарды көрүү үчүн \"?\" белгисин териңиз"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файлды ачуу"

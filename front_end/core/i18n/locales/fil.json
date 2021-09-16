@@ -243,10 +243,10 @@
     "message": "Na-navigate sa {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Tapos na ang profile na '{PH1}.'"
+    "message": "Tapos na ang profile na ''{PH1}.''"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Sinimulan ang profile na '{PH1}.'"
+    "message": "Sinimulan ang profile na ''{PH1}.''"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animation"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Puwersahang ine-enable ang feature ng media ng CSS na prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Puwersahang ine-enable ang feature ng media ng CSS na prefers-contrast"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Puwersahang ine-enable ang feature ng media ng CSS na prefers-reduced-data"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Hindi tumutugma ang aktwal na lapad ({PH1}px) ng {PH2} {PH3} sa tinukoy na lapad ({PH4}px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "App Id"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Ginagamit ito ng browser para malaman kung may dapat i-update na kasalukuyang application ang manifest, o kung tumutukoy ito sa isang bagong web app na puwedeng i-install."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Tandaan: Hindi tinutukoy ang 'id' sa manifest, sa halip ay 'start_url' ang ginagamit. Para tukuyin ang App Id na tumutugma sa kasalukuyang pagkakakilanlan, itakda ang field na 'id' sa \"{PH1}.\""
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest ng App"
   },
@@ -2130,7 +2142,7 @@
     "message": "Hindi nakatakda ang {PH1} src"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "Hindi na-parse ang URL ng {PH1} '{PH2}'"
+    "message": "Hindi na-parse ang URL ng {PH1} ''{PH2}''"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Screenshot"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status ng Back-forward Cache"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Mga Paliwanag"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Hindi na-cache ang huling navigation dahil"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Huling Pag-navigate sa Pangunahing Frame"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal na navigation"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Mga feature na pumipigil sa back-forward cache"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Na-restore mula sa back-forward cache"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Susuportahan sa bersyon sa hinaharap ng Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Pag-fetch ng Background"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Mag-ulat ng isyu sa DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Mag-ulat ng isyu sa pagsasalin"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Ipakita kung Ano'ng Bago"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Mga nakatagong isyu"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "I-unhide ang lahat ng isyu"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Mga Apektadong Resource"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Pinagkakatiwalaang Aktibidad sa Web"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "I-unhide ang lahat ng nakatagong isyu"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "naka-block"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Magsagawa ng kahilingan o pindutin ang {PH1} para ma-record ang pag-reload."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "I-record ({PH1}) para ipakita ang aktibidad sa network."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "I-record ang log ng network ({PH1}) para maipakita ang aktibidad ng network."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Nire-record ang aktibidad sa network…"
@@ -7203,7 +7224,7 @@
     "message": "Ipakita sa view ng Buod"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Ipakita ang object na '{PH1}' na may id na @{PH2} sa view ng Buod"
+    "message": "Ipakita ang object na ''{PH1}'' na may id na @{PH2} sa view ng Buod"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "I-store bilang pangkalahatang variable"
@@ -7215,7 +7236,7 @@
     "message": "Naaabot ang object ng user mula sa window"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Nagka-error nang hiniling ang pagtawag sa method na '{PH1}'"
+    "message": "Nagka-error nang hiniling ang pagtawag sa method na ''{PH1}''"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Ipinapakita sa mga timeline ng pag-allocate ang mga na-instrument na pag-allocate ng memory ng JavaScript sa paglipas ng panahon. Kapag na-record na ang profile, puwede kang pumili ng agwat ng panahon para makita ang mga object na na-allocate sa loob nito at gumagana pa rin sa pagtatapos ng pag-record. Gamitin ang uri ng profile na ito para mag-isolate ng mga leak ng memory."
@@ -7521,7 +7542,7 @@
     "message": "Hindi nabasa ang file"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Nagka-error ang file na '{PH1}': {PH2}"
+    "message": "Nagka-error ang file na ''{PH1}'': {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Maghanap ayon sa gastos (>50ms), pangalan, o file"
@@ -7566,7 +7587,7 @@
     "message": "Tree (Top Down)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Hindi ma-load ang file. Mga sinusuportahang file extension: '{PH1}.'"
+    "message": "Hindi ma-load ang file. Mga sinusuportahang file extension: ''{PH1}.''"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Hindi makakapag-load ng profile habang may inire-record na ibang profile."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "I-clear lahat"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direksyon"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasyon"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Uri"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor ng protocol"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Mula sa unang siniyasat na sagot ang mga panseguridad na detalye sa itaas."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Hindi alam ang seguridad ng page na ito."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Gumagamit ang signature ng server ng lumang SHA-1. Mag-enable na lang ng SHA-2 signature algorithm. (Tandaang iba ito sa signature sa certificate.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Hindi secure ang page na ito (hindi naka-encrypt na HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Hindi secure ang page na ito."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Hindi secure ang page na ito (sirang HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Secure ang page na ito (valid na HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Kahina-hinala ang page na ito"
@@ -8316,7 +8325,7 @@
     "message": "Magdagdag ng mga script ng content sa listahan ng babalewalain (mga script ng extension sa page)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Balewalain ang mga script na may mga pangalang tumutugma sa '{PH1}'"
+    "message": "Balewalain ang mga script na may mga pangalang tumutugma sa ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Walang pattern ng listahan ng balewalain"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Device"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Matagumpay na naidagdag/na-update ang device na {PH1}."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Pangalan ng Device"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Magdagdag ng Brand"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Naidagdag ang row ng brand"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkitektura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "I-delete"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Na-delete ang row ng brand"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modelo ng device"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Async na Gawain"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "I-cache ang Module Code"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "I-cache ang Script Code"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Naka-cache na Wasm Module"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Tagal"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Masigasig na pag-compile sa lahat ng function"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Mga Element na Apektado"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "hindi kwalipikado ang script"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "na-save ang script sa cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Pag-script"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Pindutin ang 'Enter' para kumpirmahin o ang 'Escape' para kanselahin.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "I-type ang tandang pananong para makita ang mga available na command"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "I-type ang '?' para makita ang mga available na command"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Gamitin ang Tab para magpalit ng mga command. I-type ang '?' para makita ang mga available na command"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Buksan ang file"

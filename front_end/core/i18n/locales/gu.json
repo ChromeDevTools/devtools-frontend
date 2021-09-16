@@ -243,10 +243,10 @@
     "message": "{PH1} પર નૅવિગેટ કરવામાં આવ્યું"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "'{PH1}' પ્રોફાઇલ પૂર્ણ થઈ."
+    "message": "'{PH1}' પ્રોફાઇલને રોકવામાં આવી."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "પ્રોફાઇલ '{PH1}' શરૂ કર્યું."
+    "message": "પ્રોફાઇલ ''{PH1}'' શરૂ કરી."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "ઍનિમેશન"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme મીડિયાની સુવિધાને જરૂરી બનાવે છે"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast મીડિયાની સુવિધાને જરૂરી બનાવે છે"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data મીડિયાની સુવિધાને જરૂરી બનાવે છે"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}ની વાસ્તવિક પહોળાઈ ({PH1}px), જણાવેલી પહોળાઈ ({PH4}px) સાથે મેળ ખાતી નથી"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ઍપનું ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "બ્રાઉઝર દ્વારા તેનો ઉપયોગ એ જાણવા માટે થાય છે કે મેનિફેસ્ટ દ્વારા વર્તમાન ઍપ્લિકેશન અપડેટ થવી જોઈએ કે પછી તે ઇન્સ્ટૉલ કરી શકાય તેવી નવી વેબ ઍપનો સંદર્ભ આપે છે."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "નોંધ: મેનિફેસ્ટમાં 'ID'ની સ્પષ્ટતા કરવામાં આવી નથી, તેના બદલે 'start_url'નો ઉપયોગ કરવામાં આવ્યો છે. વર્તમાન ઓળખ સાથે મેળ ખાતા ઍપના IDનો ઉલ્લેખ કરવા માટે, 'ID'ના ફીલ્ડને ''{PH1}'' પર સેટ કરો."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ઍપ મેનિફેસ્ટ"
   },
@@ -2064,7 +2076,7 @@
     "message": "મેળ ખાતી હોય તેવી કોઈ service worker મળી નથી. તમારે પેજ ફરીથી લોડ કરવું જરૂરી હોઈ શકે છે અથવા ચેક કરો કે વર્તમાન પેજ માટે service workerનું કાર્યક્ષેત્ર, મેનિફેસ્ટના કાર્યક્ષેત્ર અને સ્ટાર્ટ URLના કાર્યક્ષેત્રને આવરી લેતું હોય."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "કોઈ Play સ્ટોર ID આપવામાં આવ્યું નથી"
+    "message": "કોઈ Play Store ID આપવામાં આવ્યું નથી"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "હેતુ માટે વિશેષતા સેટ ન કરી હોય અથવા \"any\" પર સેટ હોય, પરંતુ પ્રદાન કરવામાં આવેલું આઇકન એવા PNG, SVG કે WebP ફૉર્મેટમાં નથી, જે ઓછામાં ઓછા {PH1}pxનું ચોરસ ધરાવતું હોય."
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src સેટ કરેલું નથી"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}'નું વિશ્લેષણ કરવામાં નિષ્ફળ રહ્યાં"
+    "message": "{PH1} URL ''{PH2}''નું વિશ્લેષણ કરવામાં નિષ્ફળ રહ્યાં"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "સ્ક્રીનશૉટ"
@@ -2160,7 +2172,7 @@
     "message": "ઍપ પહેલેથી ઇન્સ્ટૉલ કરેલી છે"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play સ્ટોર ઍપનું URL અને Play સ્ટોરનું ID મેળ ખાતા નથી"
+    "message": "Play Store ઍપનું URL અને Play Storeનું ID મેળ ખાતા નથી"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "ઉલ્લેખિત ઍપ્લિકેશન પ્લૅટફૉર્મ Android પર કામ કરતું નથી"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "બૅક-ફૉરવર્ડ કૅશનું સ્ટેટસ"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "વિગતવાર ખુલાસા"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "The last navigation was not cached because"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "અંતિમ મુખ્ય ફ્રેમ નૅવિગેશન"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "સામાન્ય નૅવિગેશન"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Features preventing back-forward cache"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "બૅક-ફૉરવર્ડ કૅશમાંથી રિસ્ટોર કરી"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Supported in a future version of Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "બૅકગ્રાઉન્ડ ફેચ"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevToolsની સમસ્યાની જાણ કરો"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "અનુવાદની કોઈ સમસ્યાની જાણ કરો"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "'નવું શું છે' તે બતાવો"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "છુપાવેલી સમસ્યાઓ"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "બધી સમસ્યાઓ બતાવો"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "અસરગ્રસ્ત સંસાધનો"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "વિશ્વસનીય વેબ પ્રવૃત્તિ"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "તમામ છુપાયેલી સમસ્યાઓને બતાવો"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "બ્લૉક કરેલું"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ફરીથી લોડ કરવાની પ્રવૃત્તિને રેકોર્ડ કરવા માટે, વિનંતી કરો અથવા {PH1} દબાવો."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "નેટવર્કની પ્રવૃત્તિ બતાવવા માટે, ({PH1}) રેકોર્ડ કરો."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "નેટવર્કની પ્રવૃત્તિ બતાવવા માટે ({PH1}) નેટવર્ક લૉગ રેકોર્ડ કરો."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "નેટવર્કની પ્રવૃત્તિ રેકોર્ડ કરી રહ્યાં છીએ…"
@@ -7203,7 +7224,7 @@
     "message": "સારાંશ વ્યૂમાં બતાવો"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "સારાંશ વ્યૂમાં ID @{PH2} સાથે ઑબ્જેક્ટ '{PH1}' બતાવો"
+    "message": "સારાંશ વ્યૂમાં id @{PH2} સાથે ઑબ્જેક્ટ ''{PH1}'' બતાવો"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "ગ્લોબલ વેરિયેબલ તરીકે સ્ટોર કરો"
@@ -7215,7 +7236,7 @@
     "message": "વિન્ડોથી વપરાશકર્તા ઑબ્જેક્ટને ઍક્સેસ કરી શકાય છે"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' પદ્ધતિને કૉલ કરવાની વિનંતી કરતી વખતે ભૂલ આવી"
+    "message": "''{PH1}'' પદ્ધતિને કૉલ કરવાની વિનંતી કરતી વખતે કોઈ ભૂલ આવી"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "ફાળવણી માટેની સમયરેખાઓ સમયાંતરે ઇન્સ્ટ્રુમેન્ટ કરેલી JavaScriptની મેમરીની ફાળવણીઓ બતાવે છે. એક વાર પ્રોફાઇલ રેકોર્ડ થઈ જાય પછી તમે ઑબ્જેક્ટ જોવા માટે, જેની અંદર ફાળવણી કરવામાં આવી હોય અને રેકોર્ડિંગના અંત સુધી સક્રિય હોય એવા જ અંતરાલનો સમય પસંદ કરી શકો છો. મેમરી લીકને આઇસોલેટ કરવા માટે આ પ્રકારની પ્રોફાઇલનો ઉપયોગ કરો."
@@ -7521,7 +7542,7 @@
     "message": "ફાઇલ વાંચવામાં નિષ્ફળ રહ્યાં"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' ફાઇલ વાંચવામાં ભૂલ: {PH2}"
+    "message": "''{PH1}'' ફાઇલ વાંચવામાં ભૂલ: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "કિંમત (>50 મિ.સે.), નામ અથવા ફાઇલ અનુસાર શોધો"
@@ -7566,7 +7587,7 @@
     "message": "વૃક્ષ (ઉપરથી નીચે)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ફાઇલ લોડ કરી શકતા નથી. ફાઇલના આ એક્સ્ટેન્શનને સપોર્ટ કરવામાં આવે છે: '{PH1}.'"
+    "message": "ફાઇલ લોડ કરી શકાતી નથી. સપોર્ટેડ ફાઇલ એક્સ્ટેન્શન: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "એક પ્રોફાઇલનું રેકોર્ડિંગ ચાલી રહ્યું હોય ત્યારે બીજી પ્રોફાઇલ લોડ કરી શકતા નથી."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "બધું સાફ કરો"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "દિશાનિર્દેશ"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "દસ્તાવેજીકરણ"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "ટાઇમસ્ટેમ્પ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "પ્રકાર"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "પ્રોટોકૉલ મૉનિટર"
@@ -7749,16 +7770,16 @@
     "message": "{PH2} સાથે {PH1}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "આ પેજની સુરક્ષા વિશે કોઈ જાણકારી નથી."
+    "message": "The security of this page is unknown."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "આ પેજ સુરક્ષિત નથી."
+    "message": "This page is not secure."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "આ પેજ સુરક્ષિત નથી (વિભાજિત HTTPS)."
+    "message": "This page is not secure (broken HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "આ પેજ સુરક્ષિત છે (માન્ય HTTPS)."
+    "message": "This page is secure (valid HTTPS)."
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "પ્રમાણપત્રમાં ભૂલો ધરાવતું સક્રિય કન્ટેન્ટ"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "ઉપર આપેલી સુરક્ષાની વિગતો તપાસ કરેલા પહેલા પ્રતિસાદમાંથી મેળવેલી છે."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "આ પેજની સુરક્ષા વિશે કોઈ જાણકારી નથી."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "સર્વરની સહી SHA-1નો ઉપયોગ કરે છે, જે જૂની છે. તેના બદલે SHA-2 સહીનું ઍલ્ગોરિધમ ચાલુ કરો. (નોંધો કે પ્રમાણપત્રમાંની સહીથી આ અલગ છે.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "આ પેજ અસુરક્ષિત છે (એન્ક્રિપ્ટ કર્યા વિનાનું HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "આ પેજ સુરક્ષિત નથી."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "આ પેજ સુરક્ષિત નથી (વિભાજિત HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "આ પેજ સુરક્ષિત છે (માન્ય HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "આ પેજ શંકાસ્પદ છે"
@@ -8316,7 +8325,7 @@
     "message": "'અવગણવાની સૂચિ'માં કન્ટેન્ટની સ્ક્રિપ્ટ ઉમેરો (પેજમાંના એક્સ્ટેન્શનની સ્ક્રિપ્ટ)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' સાથે મેળ ખાતા હોય એવા નામવાળી સ્ક્રિપ્ટ અવગણો"
+    "message": "''{PH1}'' સાથે મેળ ખાતા હોય એવા નામવાળી સ્ક્રિપ્ટ અવગણો"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "અવગણવાની સૂચિવાળી કોઈ પૅટર્ન નથી"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "ડિવાઇસ"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "ડિવાઇસ {PH1}ને સફળતાપૂર્વક ઉમેરવામાં/અપડેટ કરવામાં આવ્યું છે."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "ડિવાઇસનું નામ"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "બ્રાંડ ઉમેરો"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "બ્રાન્ડની પંક્તિ ઉમેરી"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "આર્કિટેક્ચર"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ડિલીટ કરો"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "બ્રાન્ડની પંક્તિ ડિલીટ કરી"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "ડિવાઇસનું મૉડેલ"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "એસિંક્રોનસ ટાસ્ક"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "કૅશ મેમરી મૉડ્યૂલ કોડ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "કૅશ મેમરી સ્ક્રિપ્ટ કોડ"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "કૅશ મેમરીમાં સાચવેલું Wasm મૉડ્યૂલ"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "અવધિ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "બધા ફંક્શન હંમેશાં સંકલિત કરવામાં આવે છે"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "પ્રભાવિત થયેલા ઘટકો"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "સ્ક્રિપ્ટ યોગ્યતા ધરાવતી નથી"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "સ્ક્રિપ્ટને કૅશ મેમરીમાં સાચવવામાં આવી"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "સ્ક્રિપ્ટિંગ"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (કન્ફર્મ કરવા માટે 'Enter' કી અથવા રદ કરવા માટે 'Escape' કી દબાવો.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "ઉપલબ્ધ આદેશો જોવા માટે પ્રશ્નચિહ્ન ટાઇપ કરો"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "ઉપલબ્ધ આદેશો જોવા માટે '?' ટાઇપ કરો"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Use Tab to switch commands. Type '?' to see available commands"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ફાઇલ ખોલો"

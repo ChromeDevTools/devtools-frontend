@@ -243,10 +243,10 @@
     "message": "{PH1} වෙත සංචාලනය කරන ලදි."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "පැතිකඩ '{PH1}' අවසන් විය."
+    "message": "පැතිකඩ ''{PH1}'' අවසන් විය."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "පැතිකඩ '{PH1}' ආරම්භ කරන ලදි."
+    "message": "පැතිකඩ ''{PH1}'' ආරම්භ කරන ලදි."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "සජීවිකරණය"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme මාධ්‍ය විශේෂාංගය බල කරයි"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast මාධ්‍ය විශේෂාංගය බල කරයි"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data මාධ්‍ය විශේෂාංගය බල කරයි"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} හි සත්‍ය පළල ({PH1}px) නියම කළ පළලට ({PH4}px) නොගැළපෙයි"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "යෙදුම් ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "මැනිෆෙස්ටය දැනට පවතින යෙදුමක් යාවත්කාලීන කළ යුතුද යන්න හෝ එය ස්ථාපනය කළ හැකි නව වෙබ් යෙදුමක් ගැන සඳහන් කරන්නේද යන්න දැන ගැනීමට බ්‍රව්සරය මගින් මෙය භාවිත කෙරේ."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "සටහන: මැනිෆෙස්ටයෙහි 'id' සඳහන් කර නැත, ඒ වෙනුවට 'start_url' භාවිත කෙරේ. වත්මන් අනන්‍යතාවට ගැළපෙන යෙදුම් ID එකක් සඳහන් කිරීමට, 'id' ක්ෂේත්‍රය ''{PH1}'' ලෙස සකසන්න."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "යෙදුම් මැනිෆෙස්ට්"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src සකසා නැත"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' විග්‍රහ කිරීමට අසමත් විය"
+    "message": "{PH1} URL ''{PH2}'' විග්‍රහ කිරීමට අසමත් විය"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "තිර රුව"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "පසුපසට ඉදිරියට හැඹිලි තත්ත්වය"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "පැහැදිලි කිරීම්"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "මේ නිසා අවසාන සංචාලනය හැඹිලිගත නොකරන ලදි"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "අවසන් ප්‍රධාන රාමු සංචාලනය"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "සාමාන්‍ය සංචාලනය"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "පසුපසට ඉදිරියට හැඹිලිය වළක්වන විශේෂාංග"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "පසුපසට ඉදිරියට හැඹිලිය වෙතින් ප්‍රතිසාධනය කරන ලදි"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome හි අනාගත සංස්කරණයකට සහාය දක්වයි)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "පසුබිම යළි ලබා ගැනීම"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools ගැටලුවක් වාර්තා කරන්න"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "පරිවර්තන ගැටලුවක් වාර්තා කරන්න"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "අලුත් දේවල් පෙන්වන්න"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "සැඟවුණ ගැටලු"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "සියලු ගැටලු සැඟවීම ඉවත් කරන්න"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "බලපෑමට පත් වූ සම්පත්"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "විශ්වාසදායී වෙබ් ක්‍රියාකාරකම"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "සියලු සැඟවුණ ගැටලු සැඟවීම ඉවත් කරන්න"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "අවහිර කරන ලදි"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "නැවත පූරණය පටිගත කිරීමට ඉල්ලීමක් සිදු කරන්න හෝ {PH1} හට ගසන්න."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "ජාල ක්‍රියාකාරකම සංදර්ශනය කිරීමට ({PH1}) පටිගත කරන්න."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "ජාල ක්‍රියාකාරකම් සංදර්ශනය කිරීමට, ජාල ලොගය ({PH1}) වාර්තා කරන්න."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "ජාල ක්‍රියාකිරකම පටිගත කරමින්…"
@@ -7203,7 +7224,7 @@
     "message": "සාරාංශ දසුනෙහි හෙළි කරන්න"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "සාරාංශ දසුන තුළ @{PH2} සහිත '{PH1}' වස්තුව හෙළිදරව් කරන්න"
+    "message": "සාරාංශ දසුන තුළ @{PH2} සහිත ''{PH1}'' වස්තුව හෙළිදරව් කරන්න"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "ගෝලීය විචල්‍යය ලෙස ගබඩා කරන්න"
@@ -7215,7 +7236,7 @@
     "message": "කවුළුවෙන් ළඟා විය හැකි පරිශීලක වස්තුව"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' ක්‍රමයට ඇමතුමක් ඉල්ලන විට දෝෂයක් ඇති විය"
+    "message": "''{PH1}'' ක්‍රමයට ඇමතුමක් ඉල්ලන විට දෝෂයක් ඇති විය"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "වෙන් කිරීමේ කාලරේඛා මඟින් කාලයත් සමඟ උපකරණ ජාවාස්ක්‍රිප්ට් මතක වෙන් කිරීම් පෙන්වයි. පැතිකඩ පටිගත කළ පසු ඔබට එම වස්තු බැලීමට එය තුළ වෙන් කර ඇති පටිගත කිරීම අවසන් වන විටත් සජීවී කාල පරතරයක් තෝරා ගත හැකිය. මතක කාන්දුවීම් හුදකලා කිරීමට මෙම පැතිකඩ වර්ගය භාවිත කරන්න."
@@ -7521,7 +7542,7 @@
     "message": "ගොනුව කියවීම අසාර්ථක විය"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' ගොනුව කියවීමේ දෝෂයකි: {PH2}"
+    "message": "''{PH1}'' ගොනුව කියවීමේ දෝෂයකි: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "පිරිවැය අනුව සොයා ගන්න (> 50ms), නම හෝ ගොනුව"
@@ -7566,7 +7587,7 @@
     "message": "රුක (ඉහළ පහළට)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ගොනුව පූරණය කළ නොහැකිය. සහාය දක්වන ගොනු දිගු: '{PH1}.'"
+    "message": "ගොනුව පූරණය කළ නොහැකිය. සහාය දක්වන ගොනු දිගු: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "වෙනත් පැතිකඩක් පටිගත කරන අතරතුර පැතිකඩ පූරණය කළ නොහැකිය."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "සියල්ල හිස් කරන්න"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "දිශාව"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ලේඛනය"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "වේලා මුද්‍රාව"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "වර්ගය"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "ප්‍රොටොකෝල මොනිටරය"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "ඉහත සඳහන් ආරක්ෂක තොරතුරු පළමු පරීක්ෂා කළ ප්‍රතිචාරයෙනි."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "මෙම පිටුවෙහි ආරක්ෂාව නොදනී."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "සේවාදායක අත්සන යල්පැන ඇති, SHA-1 භාවිත කරයි. ඒ වෙනුවට SHA-2 අත්සන ඇල්ගොරිතමය සබල කරන්න. (මෙය සහතිකයේ ඇති අත්සනට වඩා වෙනස් බව සලකන්න.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "මෙම පිටුව අනාරක්ෂිත නැත (සංකේතනය නොකළ HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "මෙම පිටුව සුරක්ෂිත නැත."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "මෙම පිටුව සුරක්ෂිත නැත (බිඳුණ HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "මෙම පිටුව සුරක්ෂිතයි (වලංගු HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "මෙම පිටුව සැක සහිතයි"
@@ -8316,7 +8325,7 @@
     "message": "ලැයිස්තුව නොසලකා හැරීමට අන්තර්ගත ස්ක්‍රිප්ට එක් කරන්න (පිටුවේ දිගු ස්ක්‍රිප්ට)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' සමග නම් ගැළපෙන ස්ක්‍රිප්ට නොසලකා හරින්න"
+    "message": "''{PH1}'' සමග නම් ගැළපෙන ස්ක්‍රිප්ට නොසලකා හරින්න"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "නොසලකා හරින ලැයිස්තු රටා නැත"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "උපාංගය"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} උපාංගය සාර්ථකව එක් කරන ලදි/යාවත්කාලීන කරන ලදි."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "උපාංග නාමය"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "සන්නම එක් කරන්න"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "බ්‍රවුසර සන්නම් තීරුව එක් කරන ලදි"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "සැකසුම"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "මකන්න"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "බ්‍රවුසර සන්නම් තීරුව මකන ලදි"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "උපාංග මාදිලිය"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "කාර්යය අසමමුහුර්ත කරන්න"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "හැඹිලි මොඩියුල කේතය"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "හැඹිලි ස්ක්‍රිප්ට කේතය"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Wasm මොඩියුලය හැඹිලිගත කරන ලදි"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "කාල සීමාව"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "සියලු කාර්ය උනන්දුවෙන් සම්පාදනය කිරීම"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "මූලාංග බලපෑමට ලක් විය"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ස්ක්‍රිප්ටය සුදුසුකම් නොලබයි"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "ස්ක්‍රිප්ටය හැඹිලිය වෙත සුරකින ලදී"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "ස්ක්‍රිප්ට"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (තහවුරු කිරීමට 'Enter' හෝ අවලංගු කිරීමට 'Escape' ඔබන්න.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "ලබා ගත හැකි විධාන බැලීමට ප්‍රශ්නාර්ථ ලකුණ ටයිප් කරන්න"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "තිබෙන විධාන බැලීමට '?' තට්ටු කරන්න"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "විධාන මාරු කිරීමට ටැබය භාවිත කරන්න. තිබෙන විධාන බැලීමට '?' තට්ටු කරන්න"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ගොනුව විවෘත කරන්න"

@@ -243,10 +243,10 @@
     "message": "{PH1} वर नेव्हिगेट केले"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "प्रोफाइल '{PH1}' पूर्ण झाली."
+    "message": "''{PH1}'' ही प्रोफाइल पूर्ण झाली आहे."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "प्रोफाइल '{PH1}' सुरू केली गेली."
+    "message": "''{PH1}'' ही प्रोफाइल सुरू केली गेली."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "अ‍ॅनिमेशन"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme मीडिया वैशिष्ट्याची सक्ती करते"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast मीडिया वैशिष्ट्याची सक्ती करते"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data मीडिया वैशिष्ट्याची सक्ती करते"
@@ -1734,7 +1737,7 @@
     "message": "ध्वनित मूल्य."
   },
   "panels/accessibility/AccessibilityStrings.ts | indicatesThePurposeOfThisElement": {
-    "message": "या घटकाचा उद्देश दर्शवते जसे की, विजेटसाठी वापरकर्ता इंटरफेस इडियम किंवा दस्तऐवजामधील रचनात्मक भूमिका."
+    "message": "या घटकाचा उद्देश दर्शवते जसे की, विजेटसाठी यूझर इंटरफेस इडियम किंवा दस्तऐवजामधील रचनात्मक भूमिका."
   },
   "panels/accessibility/AccessibilityStrings.ts | invalidUserEntry": {
     "message": "वापरकर्त्याची चुकीची एंट्री"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} ची प्रत्यक्ष रुंदी ({PH1}px) नमूद केलेल्या रुंदीशी ({PH4}px) जुळत नाही"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ॲप आयडी"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "मॅनिफेस्टने सध्याचे ॲप्लिकेशन अपडेट केले पाहिजे किंवा त्याने इंस्टॉल केले जाऊ शकते अशा नवीन वेब अ‍ॅपचा संदर्भ दिला पाहिजे यासाठी ब्राउझरद्वारे तो वापरला जातो."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "टीप: मॅनिफेस्टमध्ये 'आयडी' दिलेला नाही, त्याऐवजी 'start_url' वापरली जाते. सध्याच्या ओळखीशी जुळणारा ॲप आयडी नमूद करण्यासाठी, 'आयडी' फील्ड ''{PH1}'' वर सेट करा."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "अ‍ॅप मॅनिफेस्ट"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src सेट केलेली नाही"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' पार्स होऊ शकली नाही"
+    "message": "{PH1} URL ''{PH2}'' पार्स करता आली नाही"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "स्क्रीनशॉट"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "बॅक-फॉरवर्ड कॅशेची स्थिती"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "स्पष्टीकरणे"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "मागील नेव्हिगेशन कॅशे केले नव्हते कारण"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "शेवटचे मुख्य फ्रेम नेव्हिगेशन"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "सामान्य नेव्हिगेशन"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "बॅक-फॉरवर्ड कॅशेला रोखणारी वैशिष्‍ट्ये"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "बॅक-फॉरवर्ड कॅशेमधून रिस्टोअर केले"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome च्या भविष्यातील आवृत्तीमध्ये सपोर्ट असेल)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "बॅकग्राउंड फेच"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools संबंधी समस्‍येची तक्रार करा"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "भाषांतराशी संबंधित समस्‍येची तक्रार करा"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "नवीन काय आहे ते दाखवा"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "लपवलेल्या समस्या"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "सर्व समस्या दाखवा"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "परिणाम झालेले स्रोत"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "विश्वसनीय वेब अ‍ॅक्टिव्हिटी"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "लपवलेल्या सर्व समस्या दाखवा"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ब्लॉक केलेले"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "रीलोड रेकॉर्ड करण्यासाठी विनंती करा किंवा {PH1} दाबा."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "नेटवर्क अ‍ॅक्टिव्हिटी दाखवण्यासाठी रेकॉर्ड करा ({PH1})."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "नेटवर्क अ‍ॅक्टिव्हिटी दाखवण्यासाठी ({PH1}) नेटवर्क लॉग रेकॉर्ड करा."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "नेटवर्क अ‍ॅक्टिव्हिटी रेकॉर्ड करत आहे…"
@@ -7203,7 +7224,7 @@
     "message": "सारांश दृश्यामध्ये दाखवा"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "सारांश दृश्यामध्ये @{PH2} हा आयडी असलेला '{PH1}' ऑब्जेक्ट दाखवा"
+    "message": "सारांश दृश्यामध्ये @{PH2} हा आयडी असलेला ''{PH1}'' ऑब्जेक्ट दाखवा"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "ग्लोबल व्हेरिएबल म्हणून स्टोअर करा"
@@ -7215,7 +7236,7 @@
     "message": "वापरकर्ता ऑब्जेक्ट विंडोमधून पोहोचण्यायोग्य आहे"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' या पद्धतीवर कॉलची विनंती केली तेव्हा एरर आली"
+    "message": "''{PH1}'' या पद्धतीवर कॉलची विनंती केली तेव्हा एरर आली"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "अ‍ॅलोकेशन टाइमलाइन काळानुसार इंस्ट्रुमेंटेड JavaScript मेमरी अ‍ॅलोकेशन दाखवतात. प्रोफाइल रेकॉर्ड केली गेल्यावर तुम्ही असे ऑब्जेक्ट पाहण्यासाठी वेळेचे मध्यांतर निवडू शकता, जे त्यामध्ये अ‍ॅलोकेट केले गेले आणि रेकॉर्डिंगच्या शेवटी अजून अलाइव्ह आहेत. मेमरी लीक वेगळ्या करण्यासाठी हा प्रोफाइल प्रकार वापरा."
@@ -7521,7 +7542,7 @@
     "message": "फाइल रीड करता आली नाही"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' या फाइलमध्ये रीड एरर: {PH2}"
+    "message": "''{PH1}'' या फाइलमध्ये रीड एरर आहे: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "शुल्क (>५०मिसे), नाव किंवा फाइलनुसार शोधा"
@@ -7566,7 +7587,7 @@
     "message": "ट्री (वरून खाली)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "फाइल लोड करू शकत नाही. सपोर्ट असलेली फाइल एक्स्टेंशन: '{PH1}.'"
+    "message": "फाइल लोड करू शकत नाही. सपोर्ट असलेली फाइल एक्स्टेंशन: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "दुसरी प्रोफाइल रेकॉर्ड केली जात असताना प्रोफाइल लोड करू शकत नाही."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "सर्व साफ करा"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "दिशानिर्देश"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "दस्तऐवजीकरण"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "टाइमस्टॅंप"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "प्रकार"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "प्रोटोकॉल मॉनिटर"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "वरील सुरक्षेचे तपशील हे तपासणी केलेल्या पहिल्या प्रतिसादामधील आहेत."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "या पेजची सुरक्षा अज्ञात आहे."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "सर्व्हर सिग्नेचर SHA-1 वापरते, जे अप्रचलित आहे. त्याऐवजी SHA-2 सिग्नेचर अल्गोरिदम वापरा. (हे सर्टिफिकेटमधील सिग्नेचरपेक्षा वेगळे आहे याची नोंद घ्या.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "हे पेज असुरक्षित आहे (एंक्रिप्ट न केलेला HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "हे पेज सुरक्षित नाही."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "हे पेज सुरक्षित नाही (खंडित HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "हे पेज सुरक्षित आहे (वैध HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "हे पेज संशयास्पद आहे"
@@ -8316,7 +8325,7 @@
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीमध्ये आशय स्क्रिप्ट जोडा (पेजमधील एक्स्टेंशन स्क्रिप्ट)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' शी जुळणारी नावे असलेल्या स्क्रिप्टकडे दुर्लक्ष करा"
+    "message": "''{PH1}'' शी जुळणारी नावे असलेल्या स्क्रिप्टकडे दुर्लक्ष करा"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीचे पॅटर्न नाहीत"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "डिव्हाइस"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} डिव्हाइस यशस्वीरीत्या जोडण्यात/अपडेट करण्यात आले आहे."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "डिव्हाइसचे नाव"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "ब्रँड जोडा"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ब्रँड पंक्ती जोडली"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "स्थापत्य"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "हटवा"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ब्रँड पंक्ती हटवली"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "डिव्हाइस मॉडेल"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "सिंक न केलेले टास्क"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "मॉड्युल कोड कॅशे करणे"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "स्क्रिप्ट कोड कॅशे करणे"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "कॅशे केलेले Wasm मॉड्युल"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "कालावधी"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "सर्व फंक्शन उत्सुकतेने संकलित करत आहे"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "परिणाम झालेले घटक"
@@ -10394,9 +10421,6 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "स्क्रिप्ट पात्र नाही"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "स्क्रिप्ट कॅशेवर सेव्ह केले"
-  },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "स्क्रिप्टिंग"
   },
@@ -10758,7 +10782,7 @@
     "message": "क्रेडेंशियल नाहीत. तुमच्या वेबसाइटवरून {PH1} ला कॉल करून पहा."
   },
   "panels/webauthn/WebauthnPane.ts | privateKeypem": {
-    "message": "खाजगी की.pem"
+    "message": "प्रायव्हेट की.pem"
   },
   "panels/webauthn/WebauthnPane.ts | protocol": {
     "message": "प्रोटोकॉल"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (कंफर्म करण्यासाठी 'एंटर ' किंवा रद्द करण्यासाठी 'एस्केप' दाबा.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "उपलब्ध कमांड पाहण्यासाठी प्रश्नचिन्ह टाइप करा"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "उपलब्ध कमांड पाहण्यासाठी '?' टाइप करा"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "कमांड स्विच करण्यासाठी टॅब वापरा. उपलब्ध कमांड पाहण्यासाठी '?' टाइप करा"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "फाइल उघडा"

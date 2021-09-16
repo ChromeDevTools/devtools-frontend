@@ -243,10 +243,10 @@
     "message": "បានចូល​ទៅកាន់ {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "បានបញ្ចប់​កម្រងព័ត៌មាន '{PH1}'។"
+    "message": "បានបញ្ចប់​កម្រងព័ត៌មាន ''{PH1}''។"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "បានចាប់ផ្ដើម​កម្រងព័ត៌មាន '{PH1}'។"
+    "message": "បានចាប់ផ្ដើម​កម្រងព័ត៌មាន ''{PH1}''។"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "រូបមានចលនា"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "បង្ខំ​មុខងារ​មេឌៀ prefers-color-scheme CSS"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "បង្ខំ​មុខងារ​មេឌៀ prefers-contrast CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "បង្ខំ​មុខងារ​មេឌៀ prefers-reduced-data CSS"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "ទទឹង​ជាក់ស្ដែង ({PH1}px) នៃ {PH2} {PH3} មិនត្រូវគ្នា​នឹងទទឹង​ដែលបានបញ្ជាក់ ({PH4}px) ទេ"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "លេខសម្គាល់កម្មវិធី"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "លេខសម្គាល់នេះត្រូវបានប្រើដោយកម្មវិធីរុករកតាមអ៊ីនធឺណិត ដើម្បីដឹងថាតើមេនីហ្វេសថ៍គួរដំឡើងកំណែកម្មវិធីដែលមានស្រាប់ ឬថាតើមេនីហ្វេសថ៍នេះសំដៅលើកម្មវិធីលើអ៊ីនធឺណិតថ្មីដែលអាចដំឡើងបាន។"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "ចំណាំ៖ 'id' មិនត្រូវបានបញ្ជាក់នៅក្នុងមេនីហ្វេសថ៍ទេ ហើយ 'start_url' ត្រូវបានប្រើជំនួសវិញ។ ដើម្បីបញ្ជាក់លេខសម្គាល់កម្មវិធីដែលត្រូវនឹងអត្តសញ្ញាណបច្ចុប្បន្ន សូមកំណត់កន្លែងបញ្ចូល 'id' ទៅ ''{PH1}''។"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "មេនីហ្វេសថ៍​កម្មវិធី"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src មិន​ត្រូវបាន​កំណត់"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "មិនអាចញែក URL {PH1} '{PH2}' បានទេ"
+    "message": "មិនអាចញែក URL {PH1} ''{PH2}'' បានទេ"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "រូបថតអេក្រង់"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "ស្ថានភាពឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "ការពន្យល់"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "ការរុករកចុងក្រោយមិនត្រូវបានទុកក្នុងឃ្លាំងបម្រុងទេដោយសារ"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "ការរុករកស៊ុមចម្បងចុងក្រោយ"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "ការរុករកធម្មតា"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "មុខងារដែលទប់ស្កាត់ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "បានស្ដារពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(អាចប្រើបានក្នុងកំណែ Chrome នាពេលអនាគត)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ការទាញយកនៅផ្ទៃខាងក្រោយ"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "រាយការណ៍អំពីបញ្ហា DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "រាយការណ៍អំពី​បញ្ហានៃការបកប្រែ"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "បង្ហាញ​អ្វីដែលថ្មី"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "បញ្ហាដែលបានលាក់"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "ឈប់លាក់​បញ្ហា​ទាំងអស់"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ធនធាន​ដែលរង​ការប៉ះពាល់"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "សកម្មភាព​បណ្ដាញ​ដែលទុកចិត្តបាន"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "ឈប់​លាក់បញ្ហាដែលបានលាក់ទាំងអស់"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "បាន​ទប់ស្កាត់"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ធ្វើការ​ស្នើ ឬចុច {PH1} ដើម្បី​ថតការផ្ទុកឡើងវិញ។"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "ថត ({PH1}) ដើម្បីបង្ហាញ​សកម្មភាពបណ្ដាញ។"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "ថតកំណត់​ហេតុបណ្ដាញ ({PH1}) ដើម្បីបង្ហាញ​សកម្មភាពបណ្ដាញ។"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "កំពុងថតសកម្មភាពបណ្ដាញ…"
@@ -7203,7 +7224,7 @@
     "message": "បង្ហាញនៅក្នុងទិដ្ឋភាពសង្ខេប"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "បង្ហាញវត្ថុ '{PH1}' ដែលមានលេខសម្គាល់ @{PH2} នៅក្នុងទិដ្ឋភាពសង្ខេប"
+    "message": "បង្ហាញវត្ថុ ''{PH1}'' ដែលមាន​លេខសម្គាល់ @{PH2} នៅក្នុង​ទិដ្ឋភាពសង្ខេប"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "រក្សាទុកជាអថេរ​សកល"
@@ -7215,7 +7236,7 @@
     "message": "អាច​ទាញយក​វត្ថុរបស់អ្នកប្រើប្រាស់​បានពីវិនដូ"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "មានបញ្ហាបាន​កើតឡើង នៅពេល​ការហៅទៅវិធី '{PH1}' ត្រូវបាន​ស្នើ"
+    "message": "មានបញ្ហាបាន​កើតឡើង នៅពេល​ការហៅទៅវិធី ''{PH1}'' ត្រូវបានស្នើ"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "បន្ទាត់ពេលវេលា​នៃការបែងចែកបង្ហាញពី​ការបែងចែក​អង្គចងចាំ JavaScript ដែលបានវាស់ស្ទង់​ជាបន្តបន្ទាប់។ បន្ទាប់ពី​ថតកម្រងព័ត៌មានរួច អ្នកអាច​ជ្រើសរើស​ចន្លោះពេល ដើម្បីមើល​វត្ថុដែល​ត្រូវបានបែងចែក​នៅក្នុងវា និងនៅតែមានភាពរស់រវើកដដែល​នៅពេលបញ្ចប់​ការថត។ ប្រើប្រភេទ​កម្រងព័ត៌មាននេះ ដើម្បីដាក់​ការបែកធ្លាយ​អង្គចងចាំ​ដាច់ដោយឡែក។"
@@ -7521,7 +7542,7 @@
     "message": "មិនអាចអានឯកសារបានទេ"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "មានបញ្ហាក្នុងការអានឯកសារ '{PH1}'៖ {PH2}"
+    "message": "មានបញ្ហាក្នុង​ការអានឯកសារ ''{PH1}''៖ {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "ស្វែងរកតាមតម្លៃ (>50ms), ឈ្មោះ ឬឯកសារ"
@@ -7566,7 +7587,7 @@
     "message": "មែកធាង (ពីលើចុះក្រោម)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "មិនអាចផ្ទុកឯកសារបានទេ។ កន្ទុយ​ឯកសារដែលអាចប្រើបាន៖ '{PH1}'។"
+    "message": "មិនអាចផ្ទុកឯកសារបានទេ។ កន្ទុយ​ឯកសារដែល​អាចប្រើបាន៖ ''{PH1}''។"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "មិនអាចផ្ទុក​កម្រងព័ត៌មាន នៅពេល​កំពុងថត​កម្រងព័ត៌មាន​ផ្សេងទៀត​បានទេ។"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "សម្អាត​ទាំងអស់"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "ទិសដៅ"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ឯកសារ"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "ពេលវេលា"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "ប្រភេទ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "កម្មវិធីតាមដាន​ប្រូតូកូល"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "ព័ត៌មានលម្អិតអំពីសុវត្ថិភាព​ខាងលើ​មានប្រភពមកពី​ការឆ្លើយតប​ដែលបានត្រួតពិនិត្យដំបូង។"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "មិនដឹងអំពី​សុវត្ថិភាព​របស់​ទំព័រនេះទេ។"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "ហត្ថលេខាម៉ាស៊ីនមេប្រើ SHA-1 ដែលប្រើលែងបាន។ សូមបើកក្បួនហត្ថលេខា SHA-2 ជំនួសវិញ។ (សូមចំណាំថា ហត្ថលេខានេះខុសពីហត្ថលេខានៅក្នុងវិញ្ញាបនបត្រ។)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "ទំព័រនេះ​គ្មានសុវត្ថិភាពទេ (HTTP ដែលមិនបាន​អ៊ីនគ្រីប)។"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "ទំព័រនេះមិនមានសុវត្ថិភាពទេ។"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ទំព័រនេះមិនមានសុវត្ថិភាពទេ (HTTPS ខូច)។"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "ទំព័រនេះ​មានសុវត្ថិភាព (HTTPS ដែលមាន​សុពលភាព)។"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "ទំព័រនេះគួរឱ្យសង្ស័យ"
@@ -8316,7 +8325,7 @@
     "message": "បញ្ចូលស្គ្រីបខ្លឹមសារទៅក្នុងបញ្ជីមិនអើពើ (ស្គ្រីបកម្មវិធីបន្ថែម​នៅក្នុងទំព័រ)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "មិនអើពើនឹងស្គ្រីបដែលមានឈ្មោះត្រូវនឹង '{PH1}'"
+    "message": "មិនអើពើនឹងស្គ្រីបដែលមានឈ្មោះត្រូវនឹង ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "គ្មានលំនាំបញ្ជីមិនអើពើទេ"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "ឧបករណ៍"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "បានបញ្ចូល/ធ្វើបច្ចុប្បន្នភាពឧបករណ៍ {PH1} ដោយជោគជ័យហើយ។"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "ឈ្មោះឧបករណ៍"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "បញ្ចូលម៉ាក"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "បានបញ្ចូលជួរដេកអំពីម៉ាកហើយ"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "ស្ថាបត្យកម្ម"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "លុប"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "បានលុបជួរដេកអំពីម៉ាកហើយ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "ម៉ូដែល​ឧបករណ៍"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "ធ្វើ​អសមកាលកម្ម​កិច្ចការ"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "កូដម៉ូឌុល​នៃឃ្លាំងបម្រុង"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "កូដស្គ្រីប​នៃឃ្លាំងបម្រុង"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "បានទុក​ម៉ូឌុល Wasm ក្នុងឃ្លាំង​បម្រុង"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "រយៈពេល"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "កំពុងចងក្រង​មុខងារទាំងអស់​យ៉ាងសកម្ម"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "ធាតុ​ដែលរង​ការប៉ះពាល់"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ស្គ្រីប​មិនមានសិទ្ធិ​ទេ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "បានរក្សាទុក​ស្គ្រីបនៅក្នុង​ឃ្លាំងបម្រុង"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "ការសរសេរ​ស្គ្រីប"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (ចុច 'Enter' ដើម្បី​បញ្ជាក់ ឬ​ចុច 'Escape' ដើម្បី​បោះបង់។)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "វាយបញ្ចូល​សញ្ញាសួរ ដើម្បីមើល​ការបញ្ជា​ដែលអាច​ប្រើបាន"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "វាយបញ្ចូល '?' ដើម្បីមើល​ការបញ្ជា​ដែលអាច​ប្រើបាន"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "ប្រើ Tab ដើម្បីប្ដូរឃ្លាបញ្ជា។ វាយបញ្ចូល '?' ដើម្បីមើល​ឃ្លាបញ្ជា​ដែលអាច​ប្រើបាន"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "បើក​ឯកសារ"

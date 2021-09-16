@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "يتيح هذا الإعداد فرض ميزة وسائط prefers-color-scheme لصفحات الأنماط المتتالية (CSS)."
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "يتيح هذا الإعداد فرض ميزة وسائط prefers-contrast لصفحات الأنماط المتتالية (CSS)."
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "يتيح هذا الإعداد فرض ميزة وسائط prefers-reduced-data لصفحات الأنماط المتتالية (CSS)."
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "لا يتطابق عرض {PH2} {PH3} الفعلي ({PH1} بكسل) مع العرض المحدَّد ({PH4} بكسل)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "رقم تعريف التطبيق"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "يستخدم المتصفّح رقم تعريف التطبيق لمعرفة ما إذا كان يجب على البيان تحديث أحد التطبيقات الحالية، أو ما إذا كان يشير إلى تطبيق ويب جديد يمكن تثبيته."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "ملاحظة: لم يتم تحديد الحقل \"id\" في البيان، ولذلك سيتم استخدام الحقل \"start_url\" بدلاً منه. ولتحديد \"رقم تعريف تطبيق\" يطابِق الهوية الحالية، اضبط الحقل \"id\" على ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "بيان التطبيق"
   },
@@ -2130,7 +2142,7 @@
     "message": "لم يتم ضبط {PH1} src."
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "تعذَّر تحليل عنوان URL {PH1} \"{PH2}\"."
+    "message": "تعذَّر تحليل عنوان URL الخاص بـ {PH1} \"{PH2}\"."
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "لقطة شاشة"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "حالة ميزة \"التخزين المؤقت للصفحات\""
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "التفسيرات"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "أسباب عدم التخزين المؤقت لآخر عملية تنقُّل"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "التنقُّل الخاص بالإطار الأساسي الأخير"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "التنقّل العادي"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "الميزات التي تمنع \"التخزين المؤقت للصفحات\""
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "تمت الاستعادة من \"التخزين المؤقت للصفحات\"."
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "عنوان URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(متوفّر في الإصدارات المستقبلية من متصفِّح Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "استرجاع في الخلفية"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "الإبلاغ عن مشكلة في \"أدوات مطوّري البرامج\""
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "الإبلاغ عن مشكلة في الترجمة"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "عرض الميزات الجديدة"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "المشاكل المخفيّة"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "إظهار جميع المشاكل"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "الموارد المتأثرة"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "نشاط موثوق به على الويب"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "إظهار جميع المشاكل المخفية"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "محظور"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "نفِّذ طلبًا أو انقر على {PH1} لتسجيل إعادة التحميل."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "تسجيل ({PH1}) لعرض نشاط الشبكة"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "عليك تسجيل سجلّ الشبكة ({PH1}) لعرض نشاط الشبكة."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "جارٍ تسجيل نشاط الشبكة…"
@@ -7215,7 +7236,7 @@
     "message": "يمكن الوصول لكائن المستخدم من النافذة."
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "حدث خطأ أثناء طلب \"استدعاء لإجراء\" {PH1}"
+    "message": "حدث خطأ أثناء طلب استدعاء الإجراء \"{PH1}\"."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "تعرض المخططات الزمنية للتخصيص عمليات تخصيص ذاكرة JavaScript التي تم قياسها على مدار الوقت. بعد تسجيل الملف التعريفي، يمكنك اختيار الفاصل الزمني للاطّلاع على الكائنات التي تم تخصيصها فيه وما زالت متوفرة بنهاية التسجيل. استخدِم هذا النوع من الملفات التعريفية لعزل عمليات تسرّب الذاكرة."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "محو الكل"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "الاتجاه"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "الوثائق"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "طابع زمني"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "النوع"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "أداة رصد البروتوكول"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "تنتمي تفاصيل الأمان أعلاه إلى أول استجابة تم فحصها."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "إنّ مستوى أمان هذه الصفحة غير معروف."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "يستخدم توقيع الخادم دالة تجزئة التشفير SHA-1 وهي قديمة. يُرجى تفعيل خوارزمية التوقيع SHA-2 بدلاً من تلك الدالة. (نود التنويه إلى أنّ هذا مختلف عن التوقيع في الشهادة)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "هذه الصفحة غير آمنة (بروتوكول HTTP غير مُشفّر)"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "هذه الصفحة غير آمنة."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "هذه الصفحة غير آمنة (التشفير ببروتوكول HTTPS متوقف)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "هذه الصفحة آمنة (بروتوكول HTTPS صالح)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "هذه الصفحة مريبة"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "جهاز"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "تمت إضافة/تحديث الجهاز {PH1}."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "اسم الجهاز"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "إضافة علامة تجارية"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "تمت إضافة صف العلامات التجارية."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "البنية"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "تم حذف صف العلامات التجارية."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "طراز الجهاز"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "مهمّة غير متزامنة"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "رمز وحدة ذاكرة التخزين المؤقت"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "رمز النص البرمجي الخاص بذاكرة التخزين المؤقت"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "وحدة Wasm المخزّنة مؤقتًا"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "المدة"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "تجميع كل الوظائف"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "العناصر المتأثرة"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "النص البرمجي غير صالح."
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "تم حفظ النص البرمجي في ذاكرة التخزين المؤقت."
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "برمجة نصية"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (اضغط على مفتاح \"Enter\" للتأكيد أو مفتاح \"Escape\" للإلغاء.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "أدخِل علامة استفهام للاطّلاع على الأوامر المتاحة."
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "أدخِل علامة \"؟\" للاطّلاع على الأوامر المتاحة."
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "استخدِم مفتاح التبويب (Tab) للتبديل بين الأوامر. أدخِل علامة \"؟\" للاطّلاع على الأوامر المتاحة."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "فتح ملف"

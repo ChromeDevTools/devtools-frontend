@@ -243,10 +243,10 @@
     "message": "已導向 {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "已完成設定檔「{PH1}」。"
+    "message": "「{PH1}」設定檔已停止運作。"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "已啟動設定檔「{PH1}」。"
+    "message": "「{PH1}」設定檔已啟動。"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "動畫"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "強制使用 CSS prefers-color-scheme 媒體功能"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "強制使用 CSS prefers-contrast 媒體功能"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "強制使用 CSS prefers-reduced-data 媒體功能"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} 的實際寬度 ({PH1} px) 與指定寬度 ({PH4} px) 不符"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "應用程式 ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "瀏覽器會使用這項資料來進行評估，瞭解資訊清單是否應更新現有應用程式，或者確認資訊清單是否對應了可安裝的新網頁應用程式。"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "注意：你未在資訊清單中指定「ID」，而是使用「start_url」。如要指定符合目前識別資訊的應用程式 ID，請將 [ID] 欄位設為「{PH1}」。"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "應用程式資訊清單"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src 未設定"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "無法剖析{PH1}網址「{PH2}」"
+    "message": "無法剖析{PH1}網址：{PH2}"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "螢幕截圖"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "往返快取狀態"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "說明"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "系統並未快取上次的導覽操作，原因如下："
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "上一個主頁框導覽"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "一般導覽"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "禁止往返快取的功能"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "已從往返快取還原"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "網址"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(日後的 Chrome 版本才會支援)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "背景擷取"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "回報開發人員工具的問題"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "回報翻譯問題"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "顯示「新功能」"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "隱藏的問題"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "取消隱藏所有問題"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "受影響的資源"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "受信任的網路活動"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "取消隱藏所有隱藏的問題"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "已封鎖"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "執行要求或按下 {PH1} 來記錄重新載入作業。"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "記錄 ({PH1}) 並顯示網路活動。"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "如要顯示網路活動，請製作網路記錄 ({PH1})。"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "正在記錄網路活動…"
@@ -7203,7 +7224,7 @@
     "message": "在「摘要」檢視畫面中顯示"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "在「摘要」檢視畫面中以 ID (@{PH2}) 顯示物件「{PH1}」"
+    "message": "在「摘要」檢視畫面中顯示物件「{PH1}」(ID：@{PH2})"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "儲存為全域變數"
@@ -7521,7 +7542,7 @@
     "message": "無法讀取檔案"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "檔案「{PH1}」讀取錯誤：{PH2}"
+    "message": "「{PH1}」檔案讀取錯誤：{PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "依費用 (>50 毫秒)、名稱或檔案尋找"
@@ -7566,7 +7587,7 @@
     "message": "樹狀結構 (由上往下)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "無法載入檔案。支援的副檔名：「{PH1}」"
+    "message": "無法載入檔案。支援的副檔名：「{PH1}」。"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "系統記錄設定檔時，無法載入其他設定檔。"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "全部清除"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "方向"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "說明文件"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "時間戳記"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "類型"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "通訊協定監測工具"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "以上安全性詳細資訊取自系統所檢查的第一則回應。"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "本頁面的安全性不明。"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "伺服器簽名使用的 SHA-1 已過時。請改為啟用 SHA-2 簽名演算法 (請注意，這個簽名和憑證中的簽名不同)。"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "本頁面不安全 (HTTP 未加密)。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "這個網頁不安全。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "這個網頁不安全 (HTTPS 無效)。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "這是安全頁面 (有效的 HTTPS)。"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "這個網頁含有可疑的內容"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "裝置"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "已成功新增/更新裝置「{PH1}」。"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "裝置名稱"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "新增品牌"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "已新增品牌列"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "架構"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "刪除"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "已刪除品牌列"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "裝置型號"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "非同步工作"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "快取模組程式碼"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "快取指令碼程式碼"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "快取 Wasm 模組"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "時間長度"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "積極編譯所有函式"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "受影響的元素"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "指令碼不符合資格"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "已將指令碼儲存至快取"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "正在編寫指令碼"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (按下「Enter 鍵」即可確認；或按下「Escape 鍵」取消)。"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "輸入問號就能查看可用的指令"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "輸入「?」就能查看可用的指令"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "你可以使用 Tab 鍵切換指令。只要輸入「?」就能查看可用的指令"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "開啟檔案"

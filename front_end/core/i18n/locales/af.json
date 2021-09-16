@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Verplig CSS prefers-color-scheme-mediakenmerk"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Verplig CSS prefers-contrast-mediakenmerk"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Verplig CSS prefers-reduced-data-mediakenmerk"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Werklike wydte ({PH1} px) van {PH2} {PH3} kom nie met die gespesifiseerde wydte ({PH4} px) ooreen nie"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Program-ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Dit word deur die blaaier gebruik om te bepaal of die manifes 'n bestaande program moet opdateer, en of dit na 'n nuwe webprogram wat geïnstalleer kan word, verwys."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Let wel: \"ID\" is nie in die manifes gespesifiseer nie; \"start_url\" word in plaas daarvan gebruik. Stel die \"ID\"-veld na ''{PH1}'' om 'n program-ID wat met die huidige identiteit ooreenstem, te spesifiseer."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Programmanifes"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Terug-vorentoe-kasgeheue"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Verduidelikings"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Die jongste navigasie is nie gekas nie omdat"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Laaste hoofraamnavigasie"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Gewone navigasie"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Kenmerke wat terug-vorentoe-kasgeheue verhinder"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Teruggestel vanaf terug-vorentoe-kasgeheue"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Gesteun in 'n toekomstige weergawe van Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Agtergrondophaling"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Gee 'n ontwikkelaarnutsgoedkwessie aan"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Gee 'n vertaalkwessie aan"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Wys wat nuut is"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Versteekte kwessies"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Wys alle kwessies"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Geraakte hulpbronne"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Vertroude webaktiwiteit"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Wys alle versteekte kwessies"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "geblokkeer"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Voer 'n versoek uit of druk {PH1} om die herlaai op te neem."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Neem op om ({PH1}) netwerkaktiwiteit te wys."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Teken netwerkloglêer ({PH1}) aan om netwerkaktiwiteit te wys."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Neem tans netwerkaktiwiteit op …"
@@ -7215,7 +7236,7 @@
     "message": "Gebruikervoorwerp bereikbaar van venster af"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Iets het verkeerd geloop toe 'n \"oproep na\"-metode \"{PH1}\" versoek is"
+    "message": "Iets het verkeerd geloop toe 'n oproep na metode \"{PH1}\" versoek is"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Toewysingtydlyne wys JavaScript-geheuetoewysings met instrumente oor 'n tydperk. Nadat profiel opgeneem is, kan jy 'n tydinterval kies om voowerpe te sien was daarbinne toegewys is en aan die einde van die opname steeds aktief was. Gebruik hierdie profieltipe om geheuelekkasies te isoleer."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Vee alles uit"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Rigting"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasie"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Tydstempel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipe"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokolmonitor"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Die sekuriteitbesonderhede hierbo kom uit die eerste gekontroleerde antwoord."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Onbekend hoe veilig hierdie bladsy is."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Die bedienerhandtekening gebruik SHA-1, wat verouderd is. Aktiveer pleks daarvan 'n SHA-2-handtekeningalgoritme. (Let wel: Dit verskil van die handtekening op die sertifikaat.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Hierdie bladsy is onveilig (ongeëkripteerde HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Hierdie bladsy is nie veilig nie."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Hierdie bladsy is nie veilig nie (stukkende HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Hierdie bladsy is veilig (geldige HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Hierdie bladsy is verdag"
@@ -8316,7 +8325,7 @@
     "message": "Voeg inhoudskripte by ignoreerlys (uitbreidingskripte op die bladsy)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignoreer skripte waarvan die name nie met \"{PH1}\" ooreenstem nie"
+    "message": "Ignoreer skripte waarvan die name met \"{PH1}\" ooreenstem"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Geen ignoreerlyspatrone nie"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Toestel"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Toestel {PH1} is suksesvol bygevoeg/opgedateer."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Toestelnaam"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Voeg handelsmerk by"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Handelsmerkry is bygevoeg"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Argitektuur"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Vee uit"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Handelsmerkry is uitgevee"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Toestelmodel"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asinkroniese taak"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kas modulekode"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kas skripkode"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Gekaste Wasm-module"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Tydsduur"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Stel tans alle funksies ywerig saam"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elemente geraak"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skrip is nie geskik nie"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skrip is na kasgeheue gestoor"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptaal"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (druk \"Enter\" om te bevestig of \"Escape\" om te kanselleer.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Tik vraagteken om beskikbare bevele te sien"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Tik \"?\" in om beskikbare bevele te sien"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Gebruik Tab om opdragte te wissel. Tik \"?\" in om beskikbare opdragte te sien"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Maak lêer oop"

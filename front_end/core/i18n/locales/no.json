@@ -243,10 +243,10 @@
     "message": "Navigerte til {PH1}."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Profil '{PH1}' avsluttet."
+    "message": "Profilen «{PH1}» er avsluttet."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Profil '{PH1}' startet."
+    "message": "Profilen «{PH1}» er startet."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animasjon"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Tvinger CSS prefers-color-scheme-mediafunksjon"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Tvinger CSS-mediefunksjonen prefers-contrast"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Tvinger CSS prefers-reduced-data-mediafunksjon"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Faktisk bredde ({PH1} px) av {PH2} {PH3} samsvarer ikke med oppgitt bredde ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "App-ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Nettleseren bruker dette for å vite om manifestet skal oppdatere et eksisterende program, eller om det refererer til et nytt nettprogram som kan installeres."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Merk: «id» er ikke angitt i manifestet. «start_url» brukes i stedet. For å angi en app-ID som samsvarer med den gjeldende identiteten, sett «id»-feltet til «{PH1}»."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Appmanifest"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status for frem-og-tilbake-bufferen"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Forklaringer"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Den siste navigeringen ble ikke bufret fordi"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Siste navigering i hovedramme"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal navigering"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funksjoner som forhindrer frem-og-tilbake-bufferen"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Gjenopprettet fra frem-og-tilbake-bufferen"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "Nettadresse"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(støttes i en fremtidig versjon av Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Bakgrunnshenting"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Rapportér problemer med Utviklerverktøy"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Rapportér et oversettelsesproblem"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Vis Hva er nytt?"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Skjulte problemer"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Opphev skjuling av alle problemer"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Berørte ressurser"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Klarert nettaktivitet"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Gjør alle skjulte problemer synlige"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokkert"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Utfør en forespørsel, eller trykk på {PH1} for å ta opp den nye innlastingen."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Ta opp ({PH1}) for å vise nettverksaktivitet."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Registrer nettverkslogg ({PH1}) for å vise nettverksaktivitet."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Tar opp nettverksaktivitet …"
@@ -7566,7 +7587,7 @@
     "message": "Tre (ovenfra og ned)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Kan ikke laste inn filen. Filetternavn som støttes: «{PH1}»."
+    "message": "Kan ikke laste inn filen. Disse filetternavnene støttes: «{PH1}»."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Kan ikke laste inn profilen mens en annen profil tas opp."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Fjern alt"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Retning"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasjon"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Tidsstempel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Type"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollmonitor"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Sikkerhetsdetaljene over er fra den første inspiserte responsen."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Sikkerheten på denne siden er ukjent."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Tjenersignaturen bruker SHA-1, som er foreldet. Slå på en SHA-2-signaturalgoritme i stedet. (Merk at denne er annerledes enn signaturen i sertifikatet.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Denne siden er usikker (ukryptert HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Denne siden er ikke sikker."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Denne siden er ikke sikker (HTTPS virker ikke)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Denne siden er sikker (gyldig HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Denne siden er mistenkelig"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Enhet"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Enheten {PH1} ble lagt til eller oppdatert."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Enhetsnavn"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Legg til merkevare"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "La til merkerad"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkitektur"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Slett"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Slettet merkerad"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Enhetsmodell"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynkroniser oppgave"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Bufre modulkode"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Bufre skriptkode"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Hurtigbufret Wasm-modul"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Varighet"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Kompilerer alle funksjoner umiddelbart"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Påvirkede elementer"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript er ikke kvalifisert"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript lagret til hurtigbuffer"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skripting"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Trykk på «Enter» for å bekrefte eller «Escape» for å avbryte.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Skriv inn spørsmålstegn for å se tilgjengelige kommandoer"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Skriv inn «?» for å se tilgjengelige kommandoer"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Bruk Tab for å bytte kommando. Skriv inn «?» for å se tilgjengelige kommandoer"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Åpne fil"

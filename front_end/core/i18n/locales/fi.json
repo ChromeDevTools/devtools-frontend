@@ -246,7 +246,7 @@
     "message": "Profiili \"{PH1}\" valmis."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Profiili '{PH1}' käynnistetty."
+    "message": "Profiili \"{PH1}\" käynnistetty."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animaatio"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Pakottaa käyttöön CSS:n mediaominaisuuden prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Pakottaa käyttöön CSS:n mediaominaisuuden prefers-contrast"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Pakottaa käyttöön CSS:n mediaominaisuuden prefers-reduced-data"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} ({PH3}): todellinen leveys ({PH1} px) ei vastaa määritettyä leveyttä ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Sovelluksen tunnus"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Näin selain saa tietää, pitääkö manifestin päivittää nykyinen sovellus vai viittaako se uuteen verkkosovellukseen, jonka voi asentaa."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Huom. \"id\" ei ole määritettynä manifestissa. Sen sijaan käytössä on \"start_url\". Voit määrittää sovelluksen tunnuksen, joka vastaa nykyistä identiteettiä, valitsemalla \"id\"-kenttään osoitteen \"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Sovelluksen manifesti"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1}, määritettä src ei ole määritetty"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}: URL-osoitetta {PH2} ei voitu jäsentää"
+    "message": "{PH1}: URL-osoitetta \"{PH2}\" ei voitu jäsentää"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Kuvakaappaus"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Siirtymisvälimuistin tila"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Selitykset"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Viimeistä navigointia ei tallennettu välimuistiin näistä syistä"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Viimeisin pääkehyksen siirtyminen"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normaali siirtyminen"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Siirtymisvälimuistin estävät ominaisuudet"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Palautettu siirtymisvälimuistista"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL-osoite"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Tuetaan Chromen tulevassa versiossa)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Haku taustalla"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Ilmoita DevToolsin ongelmasta"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Ilmoita käännösongelmasta"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Näytä uutuudet"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Piilotetut ongelmat"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Näytä kaikki ongelmat"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Resurssit, joihin tämä vaikuttaa"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Luotettu verkkotoiminta"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Näytä kaikki piilotetut ongelmat"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "estetty"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Tee pyyntö tai paina {PH1} tallentaaksesi päivityksen."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Nauhoita ({PH1}) näyttääksesi verkon toimintaa."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Tallenna verkkoloki ({PH1}) verkkotoiminnan näyttämiseksi."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Tallennetaan verkon toimintaa…"
@@ -7203,7 +7224,7 @@
     "message": "Näytä Yhteenveto-näkymässä"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Näytä objekti '{PH1}', jonka tunnus on @{PH2}, yhteenvetonäkymässä"
+    "message": "Näytä yhteenvetonäkymässä objekti \"{PH1}\", jonka tunnus on @{PH2}"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Tallenna globaalina muuttujana"
@@ -7566,7 +7587,7 @@
     "message": "Puu (ylhäältä alas)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Tiedostoa ei voi ladata. Tuetut tiedostotunnisteet: \"{PH1}.\""
+    "message": "Tiedostoa ei voi ladata. Tuetut tiedostotunnisteet: \"{PH1}\"."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Profiilia ei voi ladata, kun toista profiilia tallennetaan."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Poista kaikki"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Suunta"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentaatio"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Aikaleima"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tyyppi"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollan seuranta"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Yllä näkyvät suojaustiedot ovat peräisin ensimmäisestä tarkistetusta vastauksesta."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Tämän sivun turvallisuudesta ei ole tietoa."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Palvelimen allekirjoitus käyttää SHA-1:tä, joka on vanhentunut. Ota sen sijaan käyttöön SHA-2-allekirjoitusalgoritmi. (Huomaa, että tämä on eri kuin varmenteessa oleva allekirjoitus.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Tämä sivu on suojaamaton (salaamaton HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Tämä sivu ei ole turvallinen."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Tämä sivu ei ole turvallinen (HTTPS virheellinen)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Tämä sivu on suojattu (hyväksyttävä HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Tämä sivu on epäilyttävä"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Laite"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Laitteen ({PH1}) lisääminen/päivittäminen onnistui."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Laitteen nimi"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Lisää brändi"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Brändirivi lisättiin"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkkitehtuuri"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Poista"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Brändirivi poistettiin"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Laitteen malli"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynkroninen tehtävä"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Välimuistimoduulin koodi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Välimuistiskriptin koodi"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Välimuistiin tallennettu Wasm-moduuli"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Kesto"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Käännetään kaikkia toimintoja"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Vaikutuksen alaiset elementit"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "komentosarja ei kelpaa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "komentosarja tallennettu välimuistiin"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Komentosarjojen luominen"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (vahvista painamalla Enter tai peru painamalla Esc.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Kirjoita kysymysmerkki, niin näet käytettävissä olevat komennot"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Kirjoita ?, niin näet käytettävissä olevat komennot"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Vaihda komentoa sarkaimen avulla. Kirjoita ?, niin näet käytettävissä olevat komennot"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Avaa tiedosto"

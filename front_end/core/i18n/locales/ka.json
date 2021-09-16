@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "იძულებით გაააქტიურებს CSS მედიაფუნქციას prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "იძულებით გაააქტიურებს CSS მედიაფუნქციას prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "იძულებით გაააქტიურებს CSS მედიაფუნქციას prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}-ის ფაქტობრივი სიგანე ({PH1} პიქსელი) არ ემთხვევა მითითებულ სიგანეს ({PH4} პიქსელი)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "აპის ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "ამას იყენებს ბრაუზერი, რომ გაერკვეს, აღწერის ფაილმა არსებული აპლიკაცია უნდა განაახლოს, თუ ის ახალ ვებ-აპზე მიუთითებს, რომელიც შეიძლება დაინსტალირდეს."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "გაითვალისწინეთ: „id“ არ არის განსაზღვრული აღწერის ფაილში, სანაცვლოდ გამოიყენებ „start_url“. ამჟამინდელი აპის შესატყვისი ID რომ განსაზღვროთ, „id“-ს ველში მიუთითეთ „{PH1}“."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "აპის აღწერის ფაილი"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "უკან-წინ გადასვლის ქეშის სტატუსი"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "განმარტებები"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "ბოლო ნავიგაცია არ იყო ქეშირებული. მიზეზია:"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "ბოლო ძირითადი ფრეიმის ნავიგაცია"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "ნორმალური ნავიგაცია"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ფუნქციები, რომლებიც ხელს უშლის უკან-წინ გადასვლის ქეშს"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "აღდგენილია უკან-წინ გადასვლის ქეშიდან"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(მხარდაჭერილია Chrome-ის მომავალ ვერსიაში)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ფონური მოძიება"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools პრობლემის მოხსენება"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "თარგმანის პრობლემის შესახებ მოხსენება"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "სიახლეების ჩვენება"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "დამალული პრობლემები"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "ყველა პრობლემის გამოჩენა"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "რესურსები, რომლებსაც შეეხო"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "სანდო ვებ-აქტივობა"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "ყველა პრობლემის დამალვის გაუქმება"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "დაბლოკილი"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "შეასრულეთ მოთხოვნა ან დააწკაპუნეთ {PH1}-ზე გადატვირთული კონტენტის ჩასაწერად."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "ჩანაწერი ({PH1}) ქსელის აქტივობის საჩვენებლად."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "ქსელის ჟურნალის ჩაწერა ({PH1}) ქსელის აქტივობის საჩვენებლად."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "მიმდინარეობს ქსელის აქტივობის ჩაწერა…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ყველაფრის გასუფთავება"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "მიმართულება"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "დოკუმენტაცია"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "დროის ანაბეჭდი"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "ტიპი"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "პროტოკოლების მონიტორი"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "უსაფრთხოებასთან დაკავშირებული მონაცემები, რომლებიც მითითებულია ზემოთ, მომდინარეობს პირველად შემოწმებული პასუხიდან."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ამ გვერდის უსაფრთხოების დონე უცნობია."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "სერვერის ხელმოწერა იყენებს SHA-1-ს, რომელიც მოძველდა. სანაცვლოდ ჩართეთ ხელმოწერის SHA-2 ალგორითმი (გაითვალისწინეთ, რომ აღნიშნული განსხვავდება სერტიფიკატში არსებული ხელმოწერისგან)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "ეს გვერდი დაუცველია (HTTP დაუშიფრავია)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "ეს გვერდი დაუცველია."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ეს გვერდი დაუცველია (HTTPS არასათანადოა)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "ეს გვერდი დაცულია (HTTPS სათანადოა)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "ეს გვერდი საეჭვოა"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "მოწყობილობა"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "მოწყობილობა {PH1} წარმატებით დაემატა/განახლდა."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "მოწყობილობის სახელი"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "ბრენდის დამატება"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ბრენდების მწკრივი დაემატა"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "არქიტექტურა"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "წაშლა"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ბრენდების მწკრივი წაიშალა"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "მოწყობილობის მოდელი"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "ასინქრონული ამოცანა"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "მოდულის კოდის ქეშირება"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "სცენარის კოდის ქეშირება"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "ქეშირებული Wasm-მოდული"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ხანგრძლივობა"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "ყველა ფუნქციის საგულდაგულოდ კომპილაცია"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "ელემენტები, რომლებსაც ეხება"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "სცენარი არასათანადოა"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "ქეშში შენახული სცენარი"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "სკრიპტირება"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (დასადასტურებლად დააჭირეთ Enter-ს, ხოლო გასაუქმებლად — Escape-ს)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "ხელმისაწვდომი ბრძანებების სანახავად აკრიფეთ კითხვის ნიშანი"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "ხელმისაწვდომი ბრძანებების სანახავად აკრიფეთ „?“"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "ბრძანებების გადასართავად გამოიყენეთ კლავიში Tab. ხელმისაწვდომი ბრძანებების სანახავად აკრიფეთ „?“."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ფაილის გახსნა"

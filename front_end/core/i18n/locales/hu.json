@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "prefers-color-scheme CSS-médiafüggvény kényszerítése"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "prefers-contrast CSS-médiatulajdonságok kényszerítése"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "prefers-reduced-data CSS-médiafüggvény kényszerítése"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "A(z) {PH2} {PH3} tényleges szélessége ({PH1} képpont) nem egyezik a megadott szélességgel ({PH4} képpont)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Alkalmazásazonosító"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "A böngésző ez alapján tudja, hogy a manifestnek valamelyik meglévő alkalmazást kell frissítenie, vagy egy új, telepíthető internetes alkalmazásra utal."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Megjegyzés: Az „id” nincs megadva a manifestben, helyette a „start_url” szerepel. Ha olyan alkalmazásazonosítót szeretne megadni, amelyik megegyezik a jelenlegi azonosítóval, állítsa az „id” mezőt „{PH1}” értékre."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Alkalmazásmanifest"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Előre-vissza gyorsítótárazás állapota"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Magyarázatok"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "A legutóbbi navigáció nem volt gyorsítótárazva a következők miatt:"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Navigáció: utolsó fő keret"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normál navigáció"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Az előre-vissza gyorsítótárazást megakadályozó funkciók"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Előre-vissza gyorsítótárazásból visszaállítva"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(A Chrome egyik jövőbeli verziója támogatni fogja)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Lekérés a háttérben"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools-probléma bejelentése"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Fordítási probléma bejelentése"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Újdonságok megjelenítése"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Rejtett problémák"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Minden probléma felfedése"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Érintett források"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Megbízható internetes tevékenységek"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Az összes elrejtett probléma megjelenítése"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "letiltva"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Végezzen kérést, vagy nyomja le a(z) {PH1} billentyűparancsot az újratöltés rögzítéséhez."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Rekord ({PH1}) a hálózati tevékenység megjelenítéséhez."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Rögzítsen hálózati naplót ({PH1}) a hálózati tevékenységek megjelenítéséhez."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Hálózati tevékenység rögzítése…"
@@ -7203,7 +7224,7 @@
     "message": "Felfedés az Összegzés nézetben"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "@{PH2} azonosítójú {PH1} objektum felfedése az Összefoglaló nézetben"
+    "message": "@{PH2} azonosítójú „{PH1}” objektum felfedése az Összefoglaló nézetben"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Tárolás globális változóként"
@@ -7521,7 +7542,7 @@
     "message": "Nem sikerült beolvasni a fájlt"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "„{PH1}” olvasási hibája: {PH2}"
+    "message": "Olvasási hiba a(z) „{PH1}” fájlnál: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Keresés költség (>50 ms), név vagy fájl szerint"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Összes törlése"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Irány"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentáció"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Időbélyeg"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Típus"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollfigyelő"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "A fent látható biztonsággal kapcsolatos információk az első megvizsgált válaszból származnak."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Az oldal biztonságossága ismeretlen."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "A szerver aláírása SHA-1-et használ, amely elavult. Engedélyezze helyette az SHA-2 aláírási algoritmust. (Fontos: ez nem azonos a tanúsítványban lévő aláírással.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Ez az oldal nem biztonságos (titkosítatlan HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Ez az oldal nem biztonságos."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Ez az oldal nem biztonságos (hibás HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Ez az oldal biztonságos (érvényes HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Ez az oldal gyanús"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Eszköz"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "A(z) {PH1} eszköz sikeresen hozzáadva/frissítve."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Eszköz neve"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Márka hozzáadása"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Márkasor hozzáadva"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architektúra"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Törlés"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Márkasor törölve"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Az eszköz modellje"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Aszinkron feladat"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Cache Module Code"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Cache Script Code"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Gyorsítótárazott Wasm-modul"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Időtartam"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Minden funkció azonnali fordítása"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Érintett elemek"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "nem használható szkript"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "szkript mentve a gyorsítótárba"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Szkriptelés"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (A megerősítéshez nyomja meg az „Enter”, a megszakításhoz az „Escape” gombot.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Írjon be egy kérdőjelet a rendelkezésre álló parancsok megtekintéséhez"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "A rendelkezésre álló parancsok megtekintéséhez írja be a következőt: „?”"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "A Tab billentyűvel válthat a parancsok között. A rendelkezésre álló parancsok megtekintéséhez írja be a következőt: „?”."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Fájl megnyitása"

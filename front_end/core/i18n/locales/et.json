@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Jõustab CSS-i meediafunktsiooni prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Jõustab CSS-i meediafunktsiooni prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Jõustab CSS-i meediafunktsiooni prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Üksuse {PH2} {PH3} tegelik laius ({PH1} pikslit) ei kattu määratud laiusega ({PH4} pikslit)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Rakenduse ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Brauser kasutab seda selleks, et teada, kas manifest peaks värskendama olemasolevat rakendust või kas see viitab uuele veebirakendusele, mille saab installida."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Märkus. Atribuuti „id“ pole manifestis määratud, selle asemel kasutatakse atribuuti „start_url“. Selleks et määrata rakenduse ID, mis ühtiks praeguse identiteediga, määrake välja „id“ väärtuseks „{PH1}“."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Rakenduse manifest"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src on määramata"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "Üksuse {PH1} URL-i „{PH2}“ sõelumine nurjus"
+    "message": "Üksuse {PH1} URL-i „{PH2}“ sõelumine ebaõnnestus"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ekraanipilt"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Tagasi-edasiliikumiseks mõeldud vahemälu olek"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Selgitused"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Põhjused, miks eelmist navigeerimist vahemällu ei lisatud"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Viimane täisraamis navigeerimine"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Tavapärane navigeerimine"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funktsioonid, mis takistavad tagasi-edasiliikumiseks mõeldud vahemälu kasutamist"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Taastati tagasi-edasiliikumiseks mõeldud vahemälust"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Toetatakse Chrome'i tulevases versioonis)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Taustal toomine"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Teata DevToolsi probleemist"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Teavitage tõlkeprobleemist"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Näita, mis on uut"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Peidetud probleemid"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Kuva kõik probleemid"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Mõjutatud ressursid"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Usaldusväärne veebitegevus"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Tühista kõigi peidetud probleemide peitmine"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokeeritud"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Esitage taotlus või vajutage klahvikombinatsiooni {PH1}, et uuesti laadimine salvestada."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Salvestamine ({PH1}) võrgutegevuste kuvamiseks."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Salvestage võrgulogi ({PH1}), et kuvada võrgu tegevused."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Võrgu tegevuse salvestamine"
@@ -7566,7 +7587,7 @@
     "message": "Puu (ülaltvaade)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Faili ei saa laadida. Toetatud faililaiendid: „{PH1}“"
+    "message": "Faili ei saa laadida. Toetatud faililaiendid: „{PH1}“."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Profiili ei saa teise profiili salvestamise ajal laadida."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Kustuta kõik"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Suund"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentatsioon"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Ajatempel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tüüp"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollimonitor"
@@ -7752,7 +7773,7 @@
     "message": "Selle lehe turvalisus on teadmata."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "Leht ei ole turvaline"
+    "message": "See leht ei ole turvaline."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
     "message": "See leht ei ole turvaline (vigane HTTPS)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Ülalolevad turbeüksikasjad pärinevad esimesest uuritud vastusest."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Selle lehe turvalisus on teadmata."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Serveri allkiri kasutab SHA-1, mis on aegunud. Lubage selle asemel SHA-2 allkirjaalgoritm. (Pange tähele, et see erineb sertifikaadil olevast allkirjast.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "See leht on ebaturvaline (krüpteerimata HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Leht ei ole turvaline"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "See leht ei ole turvaline (vigane HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "See leht on turvaline (HTTPS kehtib)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "See leht on kahtlane"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Seade"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Seadme {PH1} lisamine/värskendamine õnnestus."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Seadme nimi"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Lisa bränd"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Brändi rida lisati"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arhitektuur"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Kustuta"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Brändi rida kustutati"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Seadme mudel"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asünkroonne ülesanne"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Vahemälu mooduli kood"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Vahemälu skripti kood"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Vahemällu talletatud WASM-i moodul"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Kestus"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Kõigi funktsioonide koondamine"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Mõjutatud elemendid"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript ei ole sobilik"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript salvestati vahemällu"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptimine"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Kinnitamiseks vajutage sisestusklahvi, tühistamiseks paoklahvi.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Saadaolevate käskude vaatamiseks sisestage küsimärk"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Saadaolevate käskude vaatamiseks sisestage „?“"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Käskude vahetamiseks kasutage tabulaatorit. Saadaolevate käskude vaatamiseks sisestage „?“"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Ava fail"

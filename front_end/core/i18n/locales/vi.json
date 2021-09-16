@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Buộc thực thi tính năng đa phương tiện prefers-color-scheme của CSS"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Buộc thực thi tính năng đa phương tiện prefers-contrast của CSS"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Buộc thực thi tính năng đa phương tiện prefers-reduced-data của CSS"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Chiều rộng thực tế ({PH1} px) của {PH2} {PH3} không khớp với chiều rộng đã chỉ định ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Mã ứng dụng"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Dựa vào đó, trình duyệt có thể biết liệu tệp kê khai nên cập nhật một ứng dụng hiện có hay nên tham chiếu đến một ứng dụng web mới được phép cài đặt."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Xin lưu ý: \"mã\" hiện không được chỉ định trong tệp kê khai, hệ thống sẽ dùng \"start_url\" thay thế. Để chỉ định Mã ứng dụng phù hợp với danh tính hiện tại, hãy đặt trường \"mã\" thành \"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Tệp kê khai ứng dụng"
   },
@@ -2130,7 +2142,7 @@
     "message": "Thuộc tính src của {PH1} chưa được đặt"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "Không phân tích được cú pháp của URL \"{PH2}\" của {PH1}"
+    "message": "Không phân tích được cú pháp URL \"{PH2}\" của {PH1}"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ảnh chụp màn hình"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Trạng thái của bộ nhớ đệm cho thao tác tiến/lùi"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Giải thích"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Thao tác di chuyển gần nhất không được lưu vào bộ nhớ đệm vì"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Hoạt động điều hướng gần đây nhất trên khung chính"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Hoạt động điều hướng thông thường"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Các tính năng ngăn chặn bộ nhớ đệm cho thao tác tiến/lùi"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Đã khôi phục từ bộ nhớ đệm cho thao tác tiến/lùi"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Được hỗ trợ trong phiên bản Chrome sắp tới)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Tìm nạp ở chế độ nền"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Báo cáo sự cố của Công cụ cho nhà phát triển"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Báo cáo vấn đề về dịch thuật"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Hiển thị tính năng mới"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Các vấn đề ẩn"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Hiện tất cả sự cố"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tài nguyên bị ảnh hưởng"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Hoạt động đáng tin cậy trên web"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Hiện tất cả sự cố ẩn"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bị chặn"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Thực hiện một yêu cầu hoặc nhấn {PH1} để ghi lại quá trình tải lại."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Ghi ({PH1}) để hiển thị hoạt động của mạng."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Ghi nhật ký mạng ({PH1}) để hiển thị hoạt động mạng."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Đang ghi lại hoạt động trên mạng…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Xóa tất cả"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Hướng"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Tài liệu"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Dấu thời gian"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Loại"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Giám sát giao thức"
@@ -7755,7 +7776,7 @@
     "message": "Trang này không an toàn."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Trang này không an toàn (HTTPS bị gãy)."
+    "message": "Trang này không an toàn (HTTPS bị hỏng)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "Trang này an toàn (HTTPS hợp lệ)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Các chi tiết bảo mật ở phía trên là từ phản hồi đầu tiên được kiểm tra."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Độ an toàn của trang này là không xác định."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Chữ ký máy chủ sử dụng SHA-1 đã lỗi thời. Hãy sử dụng thuật toán chữ ký SHA-2 để thay thế. (Lưu ý rằng chữ ký này khác với chữ ký trong chứng chỉ.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Đây là trang không an toàn (HTTP chưa được mã hóa)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Trang này không an toàn."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Trang này không an toàn (HTTPS bị gãy)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Trang này an toàn (HTTPS hợp lệ)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Đây là trang đáng ngờ"
@@ -8316,7 +8325,7 @@
     "message": "Thêm tập lệnh nội dung vào danh sách bỏ qua (tập lệnh tiện ích trong trang)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Bỏ qua những tập lệnh có tên trùng khớp với \"{PH1}\""
+    "message": "Bỏ qua những tập lệnh có tên khớp với \"{PH1}\""
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Không có mẫu nào trong danh sách bỏ qua"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Thiết bị"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Đã thêm/cập nhật thiết bị {PH1} thành công."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Tên thiết bị"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Thêm thương hiệu"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Đã thêm hàng tên thương hiệu"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Kiến trúc"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Xóa"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Đã xóa hàng tên thương hiệu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Kiểu thiết bị"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Nhiệm vụ không đồng bộ"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Lưu mã mô-đun vào bộ nhớ đệm"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Lưu mã tập lệnh vào bộ nhớ đệm"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Mô-đun Wasm được lưu vào bộ nhớ đệm"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Thời lượng"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Biên dịch nghiêm ngặt tất cả hàm"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Phần tử bị ảnh hưởng"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "tập lệnh không đủ điều kiện"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "đã lưu tập lệnh vào bộ nhớ đệm"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Đang viết tập lệnh"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Nhấn phím \"Enter\" để xác nhận hoặc phím \"Escape\" để hủy.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Nhập dấu hỏi chấm để xem các lệnh có sẵn"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Nhập \"?\" để xem các lệnh có sẵn"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Sử dụng phím Tab để chuyển đổi các lệnh. Nhập \"?\" để xem các lệnh có sẵn"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Mở tệp"

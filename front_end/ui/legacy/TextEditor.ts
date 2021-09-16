@@ -13,7 +13,7 @@ export interface TextEditorFactory {
   createEditor(options: Options): TextEditor;
 }
 
-export interface TextEditor extends Common.EventTarget.EventTarget {
+export interface TextEditor extends Common.EventTarget.EventTarget<EventTypes> {
   widget(): Widget;
   fullRange(): TextUtils.TextRange.TextRange;
   selection(): TextUtils.TextRange.TextRange;
@@ -45,6 +45,17 @@ export enum Events {
   TextChanged = 'TextChanged',
   SuggestionChanged = 'SuggestionChanged',
 }
+
+export interface TextChangedEvent {
+  newRange: TextUtils.TextRange.TextRange;
+  oldRange: TextUtils.TextRange.TextRange;
+}
+
+export type EventTypes = {
+  [Events.CursorChanged]: void,
+  [Events.TextChanged]: TextChangedEvent,
+  [Events.SuggestionChanged]: void,
+};
 
 export interface Options {
   bracketMatchingSetting?: Common.Settings.Setting<boolean>;

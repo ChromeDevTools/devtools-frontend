@@ -64,7 +64,9 @@ export interface Coordinates {
 // https://crbug.com/1151919 * = CodeMirror.Editor
 const editorToDevtoolsWrapper = new WeakMap<any, CodeMirrorTextEditor>();
 
-export class CodeMirrorTextEditor extends UI.Widget.VBox implements UI.TextEditor.TextEditor {
+export class CodeMirrorTextEditor extends
+    Common.ObjectWrapper.eventMixin<UI.TextEditor.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+        implements UI.TextEditor.TextEditor {
   private options: UI.TextEditor.Options;
   // https://crbug.com/1151919 * = CodeMirror.Editor
   private codeMirrorInternal: any;

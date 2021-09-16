@@ -313,7 +313,7 @@ export class CSSPlugin extends Plugin {
     }
   }
 
-  private onTextChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onTextChanged(event: Common.EventTarget.EventTargetEvent<UI.TextEditor.TextChangedEvent>): void {
     if (!this.muteSwatchProcessing) {
       this.updateSwatches(event.data.newRange.startLine, event.data.newRange.endLine);
     }

@@ -245,100 +245,49 @@ export enum Events {
   RequestActivated = 'RequestActivated',
 }
 
-export abstract class NetworkLogViewInterface {
-  async onLoadFromFile(file: File): Promise<void> {
-  }
+export interface RequestActivatedEvent {
+  showPanel: boolean;
+  takeFocus?: boolean;
+  tab?: NetworkForward.UIRequestLocation.UIRequestTabs;
+}
 
-  abstract nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null;
+export type EventTypes = {
+  [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest,
+  [Events.RequestActivated]: RequestActivatedEvent,
+};
 
-  abstract headerHeight(): number;
-
-  setRecording(recording: boolean): void {
-  }
-
-  setWindow(start: number, end: number): void {
-  }
-
-  resetFocus(): void {
-  }
-
-  columnExtensionResolved(): void {
-  }
-
-  hoveredNode(): NetworkNode|null {
-    throw new Error('not implemented');
-  }
-
-  scheduleRefresh(): void {
-  }
-
-  addFilmStripFrames(times: number[]): void {
-  }
-
-  selectFilmStripFrame(time: number): void {
-  }
-
-  clearFilmStripFrame(): void {
-  }
-  timeCalculator(): NetworkTimeCalculator {
-    throw new Error('not implemented');
-  }
-
-  calculator(): NetworkTimeCalculator {
-    throw new Error('not implemented');
-  }
-
-  setCalculator(x: NetworkTimeCalculator): void {
-  }
-
-  flatNodesList(): NetworkNode[] {
-    throw new Error('not implemented');
-  }
-
-  updateNodeBackground(): void {
-  }
-
-  updateNodeSelectedClass(isSelected: boolean): void {
-  }
-
-  stylesChanged(): void {
-  }
-
-  setTextFilterValue(filterString: string): void {
-  }
-
-  rowHeight(): number {
-    throw new Error('not implemented');
-  }
-
-  switchViewMode(gridMode: boolean): void {
-  }
-
+export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<EventTypes> {
+  onLoadFromFile(file: File): Promise<void>;
+  nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null;
+  headerHeight(): number;
+  setRecording(recording: boolean): void;
+  setWindow(start: number, end: number): void;
+  resetFocus(): void;
+  columnExtensionResolved(): void;
+  hoveredNode(): NetworkNode|null;
+  scheduleRefresh(): void;
+  addFilmStripFrames(times: number[]): void;
+  selectFilmStripFrame(time: number): void;
+  clearFilmStripFrame(): void;
+  timeCalculator(): NetworkTimeCalculator;
+  calculator(): NetworkTimeCalculator;
+  setCalculator(x: NetworkTimeCalculator): void;
+  flatNodesList(): NetworkNode[];
+  updateNodeBackground(): void;
+  updateNodeSelectedClass(isSelected: boolean): void;
+  stylesChanged(): void;
+  setTextFilterValue(filterString: string): void;
+  rowHeight(): number;
+  switchViewMode(gridMode: boolean): void;
   handleContextMenuForRequest(contextMenu: UI.ContextMenu.ContextMenu, request: SDK.NetworkRequest.NetworkRequest):
-      void {
-  }
-
-  async exportAll(): Promise<void> {
-  }
-
-  revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void {
-  }
-
-  selectRequest(request: SDK.NetworkRequest.NetworkRequest): void {
-  }
-
-  removeAllNodeHighlights(): void {
-  }
-
-  modelAdded(model: SDK.NetworkManager.NetworkManager): void {
-  }
-
-  modelRemoved(model: SDK.NetworkManager.NetworkManager): void {
-  }
-
-  linkifier(): Components.Linkifier.Linkifier {
-    throw new Error('not implemented');
-  }
+      void;
+  exportAll(): Promise<void>;
+  revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void;
+  selectRequest(request: SDK.NetworkRequest.NetworkRequest): void;
+  removeAllNodeHighlights(): void;
+  modelAdded(model: SDK.NetworkManager.NetworkManager): void;
+  modelRemoved(model: SDK.NetworkManager.NetworkManager): void;
+  linkifier(): Components.Linkifier.Linkifier;
 }
 
 export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode> {
@@ -1003,9 +952,7 @@ export class NetworkRequestNode extends NetworkNode {
 
   select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
+    this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
   }
 
   highlightMatchedSubstring(regexp: RegExp|null): Object[] {
@@ -1056,9 +1003,7 @@ export class NetworkRequestNode extends NetworkNode {
       this.nameCell = cell;
       cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
       cell.addEventListener('click', () => {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
+        this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;
       if (this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Image) {
@@ -1190,9 +1135,7 @@ export class NetworkRequestNode extends NetworkNode {
       if (displayShowHeadersLink) {
         this.setTextAndTitleAsLink(
             cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
-              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (this.parentView() as any).dispatchEventToListeners(Events.RequestActivated, {
+              this.parentView().dispatchEventToListeners(Events.RequestActivated, {
                 showPanel: true,
                 tab: NetworkForward.UIRequestLocation.UIRequestTabs.Headers,
               });
@@ -1398,10 +1341,9 @@ export class NetworkGroupNode extends NetworkNode {
   select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     const firstChildNode = (this.traverseNextNode(false, undefined, true) as NetworkNode);
-    if (firstChildNode && firstChildNode.request()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.parentView() as any).dispatchEventToListeners(Events.RequestSelected, firstChildNode.request());
+    const request = firstChildNode?.request();
+    if (request) {
+      this.parentView().dispatchEventToListeners(Events.RequestSelected, request);
     }
   }
 }

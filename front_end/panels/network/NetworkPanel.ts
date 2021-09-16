@@ -48,6 +48,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
+import type {RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {Events} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
@@ -650,18 +651,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.updateNetworkItemView();
   }
 
-  private onRequestActivated(event: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any,
-  }): void {
-    const eventData = (event.data as {
-      showPanel: boolean,
-      tab: NetworkForward.UIRequestLocation.UIRequestTabs,
-      takeFocus: (boolean | undefined),
-    });
-    if (eventData.showPanel) {
-      this.showRequestPanel(eventData.tab, /* takeFocus */ eventData.takeFocus);
+  private onRequestActivated(event: Common.EventTarget.EventTargetEvent<RequestActivatedEvent>): void {
+    const {showPanel, tab, takeFocus} = event.data;
+    if (showPanel) {
+      this.showRequestPanel(tab, takeFocus);
     } else {
       this.hideRequestPanel();
     }

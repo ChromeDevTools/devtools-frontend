@@ -52,7 +52,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import networkLogViewStyles from './networkLogView.css.js';
 
-import type {NetworkLogViewInterface, NetworkNode} from './NetworkDataGridNode.js';
+import type {NetworkLogViewInterface, NetworkNode, EventTypes} from './NetworkDataGridNode.js';
 import {Events, NetworkGroupNode, NetworkRequestNode} from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
@@ -351,8 +351,8 @@ const enum FetchStyle {
   NodeJs = 1,
 }
 
-export class NetworkLogView extends UI.Widget.VBox implements
-    SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
+export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+    implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
   private readonly networkInvertFilterSetting: Common.Settings.Setting<boolean>;
   private readonly networkHideDataURLSetting: Common.Settings.Setting<boolean>;
   private readonly networkShowIssuesOnlySetting: Common.Settings.Setting<boolean>;

@@ -17,7 +17,13 @@ export function init(): void {
   ];
 
   function toggleFonts(): void {
-    document.body.classList.toggle(loop[0]);
+    for (const className of loop) {
+      if (className === loop[0]) {
+        document.body.classList.add(className);
+      } else {
+        document.body.classList.remove(className);
+      }
+    }
     loop.push(loop.shift() as string);
     button.innerText = 'Turn on ' + loop[0] + ' fonts';
   }

@@ -18,7 +18,7 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {OverviewController} from './CSSOverviewController.js';
-import {Events} from './CSSOverviewController.js';
+import {Events as CSSOverViewControllerEvents} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
@@ -246,7 +246,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.elementContainer = new DetailsView();
 
     // If closing the last tab, collapse the sidebar.
-    this.elementContainer.addEventListener(UI.TabbedPane.Events.TabClosed, evt => {
+    this.elementContainer.addEventListener(Events.TabClosed, evt => {
       if (evt.data === 0) {
         this.mainContainer.setSidebarMinimized(true);
       }
@@ -285,8 +285,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     this.sideBar.addEventListener(SidebarEvents.ItemSelected, this.sideBarItemSelected, this);
     this.sideBar.addEventListener(SidebarEvents.Reset, this.sideBarReset, this);
-    this.controller.addEventListener(Events.Reset, this.reset, this);
-    this.controller.addEventListener(Events.PopulateNodes, this.createElementsView, this);
+    this.controller.addEventListener(CSSOverViewControllerEvents.Reset, this.reset, this);
+    this.controller.addEventListener(CSSOverViewControllerEvents.PopulateNodes, this.createElementsView, this);
     this.resultsContainer.element.addEventListener('click', this.onClick.bind(this));
 
     this.data = null;
@@ -311,7 +311,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   }
 
   private sideBarReset(): void {
-    this.controller.dispatchEventToListeners(Events.Reset);
+    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.Reset);
   }
 
   private reset(): void {
@@ -451,7 +451,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     }
 
     evt.consume();
-    this.controller.dispatchEventToListeners(Events.PopulateNodes, payload);
+    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.PopulateNodes, payload);
     this.mainContainer.setSidebarMinimized(false);
   }
 
@@ -464,7 +464,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     }
 
     const backendNodeId = Number(node.dataset.backendNodeId);
-    this.controller.dispatchEventToListeners(Events.RequestNodeHighlight, backendNodeId);
+    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.RequestNodeHighlight, backendNodeId);
   }
 
   private async render(data: OverviewData): Promise<void> {
@@ -832,7 +832,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
 }
-export class DetailsView extends UI.Widget.VBox {
+export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private tabbedPane: UI.TabbedPane.TabbedPane;
   constructor() {
     super();
@@ -840,7 +840,7 @@ export class DetailsView extends UI.Widget.VBox {
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.show(this.element);
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, () => {
-      this.dispatchEventToListeners(UI.TabbedPane.Events.TabClosed, this.tabbedPane.tabIds().length);
+      this.dispatchEventToListeners(Events.TabClosed, this.tabbedPane.tabIds().length);
     });
   }
 
@@ -856,6 +856,14 @@ export class DetailsView extends UI.Widget.VBox {
     this.tabbedPane.closeTabs(this.tabbedPane.tabIds());
   }
 }
+
+export const enum Events {
+  TabClosed = 'TabClosed',
+}
+
+export type EventTypes = {
+  [Events.TabClosed]: number,
+};
 
 export class ElementDetailsView extends UI.Widget.Widget {
   private readonly controller: OverviewController;
@@ -984,7 +992,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     }
 
     const backendNodeId = Number(node.dataset.backendNodeId);
-    this.controller.dispatchEventToListeners(Events.RequestNodeHighlight, backendNodeId);
+    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.RequestNodeHighlight, backendNodeId);
   }
 
   async populateNodes(data: {nodeId: Protocol.DOM.BackendNodeId, hasChildren: boolean, [x: string]: unknown}[]):

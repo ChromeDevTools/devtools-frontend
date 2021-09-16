@@ -517,7 +517,7 @@ export class RequestView extends UI.Widget.VBox {
     }
   }
 
-  private tabSelected(event: Common.EventTarget.EventTargetEvent): void {
+  private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
     if (!event.data.isUserGesture) {
       return;
     }

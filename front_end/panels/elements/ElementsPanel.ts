@@ -978,8 +978,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       this.metricsWidget.toggleVisibility(event.data.hasMatchedStyles);
     };
 
-    const tabSelected = (event: Common.EventTarget.EventTargetEvent): void => {
-      const tabId = (event.data.tabId as string);
+    const tabSelected = (event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void => {
+      const {tabId} = event.data;
       if (tabId === i18nString(UIStrings.computed)) {
         computedStylePanesWrapper.show(computedView.element);
         showMetricsWidgetInComputedPane();

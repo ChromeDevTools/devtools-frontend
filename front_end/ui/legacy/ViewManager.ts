@@ -9,6 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu} from './ContextMenu.js';
 import {Icon} from './Icon.js';
+import type {EventData} from './TabbedPane.js';
 import {Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import type {ToolbarItem} from './Toolbar.js';
 import {Toolbar, ToolbarMenuButton} from './Toolbar.js';
@@ -771,21 +772,21 @@ export class _TabbedLocation extends Location implements TabbedViewLocation {
     this.views.delete(view.viewId());
   }
 
-  private tabSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const tabId = (event.data.tabId as string);
+  private tabSelected(event: Common.EventTarget.EventTargetEvent<EventData>): void {
+    const {tabId} = event.data;
     if (this.lastSelectedTabSetting && event.data['isUserGesture']) {
       this.lastSelectedTabSetting.set(tabId);
     }
   }
 
-  private tabClosed(event: Common.EventTarget.EventTargetEvent): void {
-    const id = (event.data['tabId'] as string);
+  private tabClosed(event: Common.EventTarget.EventTargetEvent<EventData>): void {
+    const {tabId} = event.data;
     const tabs = this.closeableTabSetting.get();
-    if (tabs[id]) {
-      tabs[id] = false;
+    if (tabs[tabId]) {
+      tabs[tabId] = false;
       this.closeableTabSetting.set(tabs);
     }
-    const view = this.views.get(id);
+    const view = this.views.get(tabId);
     if (view) {
       view.disposeView();
     }

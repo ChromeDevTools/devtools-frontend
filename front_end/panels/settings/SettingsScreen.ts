@@ -193,8 +193,8 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     this.tabbedLocation.tabbedPane().selectTab(name, /* userGesture */ true);
   }
 
-  private tabInvoked(event: Common.EventTarget.EventTargetEvent): void {
-    const eventData = event.data as UI.TabbedPane.EventData;
+  private tabInvoked(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
+    const eventData = event.data;
     if (!eventData.isUserGesture) {
       return;
     }

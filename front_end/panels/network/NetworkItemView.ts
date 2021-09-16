@@ -274,15 +274,11 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  private tabSelected(event: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any,
-  }): void {
+  private tabSelected(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
     if (!event.data.isUserGesture) {
       return;
     }
-    this.resourceViewTabSetting.set(event.data.tabId);
+    this.resourceViewTabSetting.set(event.data.tabId as NetworkForward.UIRequestLocation.UIRequestTabs);
   }
 
   request(): SDK.NetworkRequest.NetworkRequest {

@@ -45,7 +45,7 @@ import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
 import {SplitWidget} from './SplitWidget.js';
 import {Events as TabbedPaneEvents} from './TabbedPane.js';
-import type {TabbedPane, TabbedPaneTabDelegate} from './TabbedPane.js';
+import type {EventData, TabbedPane, TabbedPaneTabDelegate} from './TabbedPane.js';
 import {ToolbarButton} from './Toolbar.js';
 import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
@@ -381,8 +381,8 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.tabbedPane.headerResized();
   }
 
-  private tabSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const tabId = (event.data['tabId'] as string);
+  private tabSelected(event: Common.EventTarget.EventTargetEvent<EventData>): void {
+    const {tabId} = event.data;
     Host.userMetrics.panelShown(tabId);
   }
 

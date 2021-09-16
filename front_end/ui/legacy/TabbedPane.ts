@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
@@ -72,7 +73,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TabbedPane extends VBox {
+export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof VBox>(VBox) {
   private readonly headerElementInternal: HTMLElement;
   private readonly headerContentsElement: HTMLElement;
   tabSlider: HTMLDivElement;
@@ -955,6 +956,13 @@ export enum Events {
   TabClosed = 'TabClosed',
   TabOrderChanged = 'TabOrderChanged',
 }
+
+export type EventTypes = {
+  [Events.TabInvoked]: EventData,
+  [Events.TabSelected]: EventData,
+  [Events.TabClosed]: EventData,
+  [Events.TabOrderChanged]: EventData,
+};
 
 export class TabbedPaneTab {
   closeable: boolean;

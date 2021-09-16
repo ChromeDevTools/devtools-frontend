@@ -106,8 +106,8 @@ export class LinearMemoryInspectorPaneImpl extends Common.ObjectWrapper.eventMix
     view.refreshData();
   }
 
-  private tabClosed(event: Common.EventTarget.EventTargetEvent): void {
-    const tabId = event.data.tabId;
+  private tabClosed(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
+    const {tabId} = event.data;
     this.tabIdToInspectorView.delete(tabId);
     this.dispatchEventToListeners('view-closed', tabId);
   }

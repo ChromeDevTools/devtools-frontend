@@ -9,7 +9,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../legacy/legacy.js';
 
 import type {Settings} from './LinearMemoryInspector.js';
-import {LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
+import {Events as LmiEvents, LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
 import type {ValueType, ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import {Endianness, getDefaultValueTypeMapping} from './ValueInterpreterDisplayUtils.js';
 
@@ -82,7 +82,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.onGlobalObjectClear, this);
-    this.paneInstance.addEventListener('view-closed', this.viewClosed.bind(this));
+    this.paneInstance.addEventListener(LmiEvents.ViewClosed, this.viewClosed.bind(this));
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
@@ -202,12 +202,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     this.modelRemoved(event.data.runtimeModel());
   }
 
-  private viewClosed(event: Common.EventTarget.EventTargetEvent): void {
-    const bufferId = event.data;
+  private viewClosed({data: bufferId}: Common.EventTarget.EventTargetEvent<string>): void {
     const remoteObj = this.bufferIdToRemoteObject.get(bufferId);
     if (remoteObj) {
       remoteObj.release();
     }
-    this.bufferIdToRemoteObject.delete(event.data);
+    this.bufferIdToRemoteObject.delete(bufferId);
   }
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../../core/common/common.js';
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../legacy/legacy.js';
 
@@ -48,7 +48,8 @@ export class Wrapper extends UI.Widget.VBox {
   }
 }
 
-export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
+export class LinearMemoryInspectorPaneImpl extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly tabIdToInspectorView: Map<string, LinearMemoryInspectorView>;
   constructor() {
@@ -111,6 +112,14 @@ export class LinearMemoryInspectorPaneImpl extends UI.Widget.VBox {
     this.dispatchEventToListeners('view-closed', tabId);
   }
 }
+
+export const enum Events {
+  ViewClosed = 'ViewClosed',
+}
+
+export type EventTypes = {
+  [Events.ViewClosed]: string,
+};
 
 class LinearMemoryInspectorView extends UI.Widget.VBox {
   private memoryWrapper: LazyUint8Array;

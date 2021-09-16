@@ -246,7 +246,7 @@
     "message": "El perfil {PH1} ha finalitzat."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "El perfil \"{PH1}\" s'ha iniciat."
+    "message": "El perfil {PH1} s'ha iniciat."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animació"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Força la funció multimèdia prefers-color-scheme de CSS"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Força la funció multimèdia prefers-contrast de CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Força la funció multimèdia prefers-reduced-data de CSS"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "L'amplada actual ({PH1} píxels) de {PH2} {PH3} no coincideix amb l'amplada especificada ({PH4} píxels)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Identificador d'aplicació"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "El navegador utilitza l'identificador d'aplicació per saber si el fitxer de manifest hauria d'actualitzar una aplicació existent o si fa referència a una aplicació web nova que es pot instal·lar."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Nota: \"id\" no està especificat al fitxer de manifest; en lloc seu, s'utilitza \"start_url\". Per especificar un identificador d'aplicació que correspongui a la identitat actual, estableix el camp '\"id\" en '\"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest de l'aplicació"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src no s'ha establert"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "No s'ha pogut analitzar l'URL de {PH1} (\"{PH2}\")"
+    "message": "No s'ha pogut analitzar l'URL de {PH1} ({PH2})"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Captura de pantalla"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Estat de la memòria cau back-forward"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explicacions"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "La navegació més recent no s'ha desat a la memòria cau perquè"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Darrera navegació del marc principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navegació normal"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Hi ha funcions que impedeixen l'ús de la memòria cau back-forward"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "S'ha restaurat de la memòria cau back-forward"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(S'admetrà en una versió futura de Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Recollida en segon pla"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Informa d'un problema amb DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Informa d'un problema amb la traducció"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Mostra les novetats"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemes amagats"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Deixa d'amagar tots els problemes"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afectats"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Activitat web de confiança"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Deixa d'amagar tots els problemes amagats"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloquejat"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Fes una sol·licitud o prem {PH1} per enregistrar quan es torni a carregar."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Grava ({PH1}) per mostrar l'activitat de la xarxa."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Desa un registre de xarxa ({PH1}) perquè es mostri l'activitat de la xarxa."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "S'està gravant l'activitat de la xarxa…"
@@ -7521,7 +7542,7 @@
     "message": "No s'ha pogut llegir el fitxer"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Error de lectura del fitxer \"{PH1}\": {PH2}"
+    "message": "Error de lectura del fitxer {PH1}: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Cerca per cost (> 50 ms), nom o fitxer"
@@ -7566,7 +7587,7 @@
     "message": "Arbre (de dalt a baix)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "No es pot carregar el fitxer. Extensions de fitxer admeses: \"{PH1}\"."
+    "message": "No es pot carregar el fitxer. Extensions de fitxer admeses: {PH1}."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "No es pot carregar el perfil mentre un altre perfil s'està enregistrant."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Esborra-ho tot"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direcció"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentació"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Marca de temps"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipus"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitoratge del protocol"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Els detalls de seguretat anteriors són de la primera resposta inspeccionada."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "La seguretat d'aquesta pàgina és desconeguda."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "La signatura del servidor fa servir SHA-1, que ha quedat obsolet. Activa un algoritme de signatura SHA-2. (Tingues en compte que és diferent de la signatura del certificat.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Aquesta pàgina no és segura (HTTP no encriptat)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Aquesta pàgina no és segura."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Aquesta pàgina no és segura (HTTPS trencat)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Aquesta pàgina és segura (HTTPS vàlid)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Aquesta pàgina és sospitosa"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Dispositiu"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "S'ha afegit o actualitzat correctament el dispositiu {PH1}."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nom del dispositiu"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Afegeix una marca"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "S'ha afegit la fila de la marca"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arquitectura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Suprimeix"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "S'ha suprimit la fila de la marca"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model del dispositiu"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tasca asíncrona"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Desa a la memòria cau el codi del mòdul"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Desa a la memòria cau el codi de l'script"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Mòdul de WebAssembly a la memòria cau"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durada"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "S'estan compilant totes les funcions de manera exhaustiva"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elements afectats"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script no apte"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script desat a la memòria cau"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "S'estan elaborant els scripts"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Prem Retorn per confirmar o Escapada per cancel·lar)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Escriu un símbol d'interrogació per veure les ordres disponibles"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Escriu \"?\" per veure les ordres disponibles"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Fes servir Tab per canviar d'ordre. Escriu \"?\" per veure les ordres disponibles."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Obre el fitxer"

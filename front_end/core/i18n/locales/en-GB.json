@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Forces CSS prefers-color-scheme media feature"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Forces CSS prefers-contrast media feature"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Forces CSS prefers-reduced-data media feature"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "App ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Note: 'id' is not specified in the manifest, 'start_url' is used instead. To specify an App ID that matches the current identity, set the 'id' field to ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "App manifest"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Back-forward cache status"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explanations"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "The last navigation was not cached because"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Last main frame navigation"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal navigation"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Features preventing back-forward cache"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restored from back-forward cache"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Supported in a future version of Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Background fetch"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Report a DevTools issue"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Report a translation issue"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Show what's new"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Hidden issues"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Unhide all issues"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Affected resources"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Trusted web activity"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Unhide all hidden issues"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blocked"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Perform a request or hit {PH1} to record the reload."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Record ({PH1}) to display network activity."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Record network log ({PH1}) to display network activity."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Recording network activity…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Clear all"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direction"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentation"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Timestamp"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Type"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protocol monitor"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "The security details above are from the first inspected response."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "The security of this page is unknown."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "The server signature uses SHA-1, which is obsolete. Enable a SHA-2 signature algorithm instead. (Note that this is different from the signature in the certificate.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "This page is insecure (unencrypted HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "This page is not secure."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "This page is not secure (broken HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "This page is secure (valid HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "This page is suspicious"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Device"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Device {PH1} successfully added/updated."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Device name"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Add brand"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Added brand row"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architecture"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Delete"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Deleted brand row"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Device model"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Async task"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Cache module code"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Cache script code"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cached wasm module"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duration"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Compiling all functions eagerly"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elements affected"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script not eligible"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script saved to cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scripting"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Press 'Enter' to confirm or 'Escape' to cancel.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Type question mark to see available commands"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Type '?' to see available commands"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Use Tab to switch commands. Type '?' to see available commands"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Open file"

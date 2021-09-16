@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Priverstinai pateikiama CSS kalbos „prefers-color-scheme“ medijos funkcija"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Priverstinai pateikiama CSS kalbos „prefers-contrast“ medijos funkcija"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Priverstinai pateikiama CSS kalbos „prefers-reduced-data“ medijos funkcija"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} faktinis plotis ({PH1} tšk.) neatitinka nurodyto pločio ({PH4} tšk.)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Programos ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Tai naudojama naršyklėje nustatant, ar pagal aprašą turėtų atnaujinama esama programa ar jis nurodo naują žiniatinklio programą, kurią galima įdiegti."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Pastaba: ID nėra nurodytas apraše, vietoje jo naudojama „start_url“. Jei norite nurodyti programos ID, atitinkantį dabartinę tapatybę, nustatykite ID lauką kaip „{PH1}“."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Programos aprašas"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Ilgalaikio viso puslapio saugojimo talpykloje būsena"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Paaiškinimai"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Paskutinis naršymo seansas nebuvo išsaugotas talpykloje, nes"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Paskutinio pagrindinio rėmelio naršymas"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Įprastas naršymas"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkcijos, neleidžiančios ilgalaikio viso puslapio saugojimo talpykloje"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Atkurta iš ilgalaikio viso puslapio saugojimo talpykloje"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Palaikoma būsimos versijos „Chrome“)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Fono gavimas"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Pranešimas apie kūrėjo įrankių problemą"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Pranešti apie vertimo problemą"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Rodyti naujienas"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Paslėptos problemos"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Nebeslėpti visų problemų"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Paveikti šaltiniai"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Patikima žiniatinklio veikla"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Nebeslėpti visų paslėptų problemų"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "užblokuota"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Įgyvendinkite užklausą arba paspaudę {PH1} įrašykite įkėlimą iš naujo."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Įrašykite ({PH1}), kad būtų pateikta tinklo veikla."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Įrašykite tinklo žurnalą ({PH1}), kad būtų pateikta tinklo veikla."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Įrašoma tinklo veikla…"
@@ -7566,7 +7587,7 @@
     "message": "Medis (nuo aukščiausio iki žemiausio)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Failo įkelti nepavyko. Palaikomi failų plėtiniai: {PH1}."
+    "message": "Nepavyko įkelti failo. Palaikomi failų plėtiniai: {PH1}."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nepavyko įkelti profilio, kol įrašomas kitas profilis."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Išvalyti viską"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Nurodymas"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentacija"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Laiko žymė"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipas"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokolo stebėjimo priemonė"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Anksčiau nurodyta išsami saugos informacija gauta iš pirmo patikrinto atsako."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Šio puslapio saugumas nežinomas."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Serverio parašui naudojamas SHA-1, kuris yra pasenęs. Vietoj to įgalinkite SHA-2 parašo algoritmą. (Atkreipkite dėmesį, kad jis skiriasi nuo parašo sertifikate.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Šis puslapis nesaugus (nešifruotas HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Šis puslapis nesaugus."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Šis puslapis nesaugus (sugadintas HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Šis puslapis saugus (tinkamas HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Šis puslapis įtartinas"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Įrenginys"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Įrenginys „{PH1}“ sėkmingai pridėtas ir (arba) atnaujintas."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Įrenginio pavadinimas"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Pridėti prekės ženklą"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Pridėta prekės ženklo eilutė"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architektūra"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Ištrinti"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Ištrinta prekės ženklo eilutė"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Įrenginio modelis"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asinchroniška užduotis"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Talpyklos modulio kodas"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Talpyklos scenarijaus kodas"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Talpykloje esantis „Wasm“ modulis"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Trukmė"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Atidžiai kompiliuojamos visos funkcijos"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Paveikti elementai"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "scenarijus netinkamas"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "scenarijus išsaugotas talpykloje"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scenarijaus kūrimas"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Paspauskite „Enter“, kad patvirtintumėte, arba „Escape“, kad atšauktumėte.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Įveskite klaustuką, kad peržiūrėtumėte pasiekiamas komandas"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Įveskite ?, kad peržiūrėtumėte pasiekiamas komandas"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Naudodami tabuliavimo klavišą perjungsite komandas. Įveskite ?, kad peržiūrėtumėte pasiekiamas komandas"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Atidaryti failą"

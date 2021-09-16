@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Прымусова задае медыяфункцыю CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Прымусова задае медыяфункцыю CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Прымусова задае медыяфункцыю CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Фактычная шырыня ({PH1} пікс.) відарыса \"{PH2}\" {PH3} не адпавядае ўказанай ({PH4} пікс.)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Ідэнтыфікатар праграмы"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Гэтыя даныя выкарыстоўваюцца браўзерам, каб выявіць, ці маніфест павінен абнавіць існуючую праграму, ці ён адносіцца да новай вэб-праграмы, якую можна ўсталяваць."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Заўвага. поле \"id\" не ўказана ў маніфесце, замест яго выкарыстоўваецца поле \"start_url\". Каб указаць ідэнтыфікатар праграмы, які ёй адпавядае, задайце ў полі \"id'\" значэнне ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Маніфест праграмы"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Стан кэша пераходу назад і наперад"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Тлумачэнні"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Апошняя навігацыя не была захавана ў кэшы, бо"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Апошняя навігацыя па асноўным фрэйме"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Звычайная навігацыя"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Функцыі, якія не даюць выкарыстоўваць кэш пераходу назад і наперад"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Адноўлена з кэша пераходу назад і наперад"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL-адрас"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Падтрымка будзе забяспечана ў будучай версіі Chrome.)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонавае атрыманне даных"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Паведаміць аб праблеме з DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Паведаміць аб памылцы перакладу"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Паказаць інструмент \"Што новага\""
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Схаваныя праблемы"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Паказаць усе праблемы"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Закранутыя рэсурсы"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надзейная вэб-актыўнасць"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Паказаць усе схаваныя праблемы"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "заблакіравана"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Каб запісаць перазагрузку старонкі, выканайце запыт або націсніце {PH1}."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Запісаць ({PH1}), каб адлюстраваць сеткавую актыўнасць."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Каб сеткавая актыўнасць паказвалася, пачніце запісваць сеткавы журнал ({PH1})."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Ідзе запіс сеткавай актыўнасці…"
@@ -7215,7 +7236,7 @@
     "message": "Аб'ект карыстальніка, які даступны з акна"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Падчас выкліку метаду {PH1} узнікла памылка"
+    "message": "Падчас выкліку метаду \"{PH1}\" узнікла памылка"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Храналогія размеркавання паказвае размеркаванне памяці для JavaScript за пэўны перыяд. Пасля запісу профілю вы можаце выбраць інтэрвал часу для прагляду аб'ектаў, якія былі размеркаваны ў дынамічнай памяці і знаходзіліся ў ёй да канца запісу. Выкарыстоўвайце гэты тып профілю, каб знайсці ўцечкі памяці."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Выдаліць усё"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Напрамак"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Дакументацыя"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Метка часу"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Тып"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Манітор пратакола"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Прыведзеныя вышэй звесткі пра бяспеку ўзяты з першага праверанага адказу."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Невядома, ці з'яўляецца гэта старонка бяспечнай."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Подпіс сервера выкарыстоўвае SHA-1 – алгарытм, які ўстарэў. Уключыце замест яго алгарытм подпісу SHA-2. (Заўвага: ён адрозніваецца ад подпісу ў сертыфікаце.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Гэта старонка небяспечная (незашыфраваны пратакол HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Гэта старонка не з'яўляецца бяспечнай."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Гэтая старонка не з'яўляецца бяспечнай (пашкоджаны HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Гэта старонка бяспечная (сапраўдны HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Гэта старонка падазроная"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Прылада"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Прылада \"{PH1}\" дададзена або абноўлена."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Назва прылады"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Дадаць брэнд браўзера"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Радок брэнда дададзены"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Архітэктура"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Выдаліць"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Радок брэнда выдалены"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Мадэль прылады"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Асінхронная задача"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Код модуля кэша"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Кэшаваць код сцэнарыя"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кэшаваны модуль Wasm"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Працягласць"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Ідзе папераджальная кампіляцыя ўсіх функцый"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Закранутыя элементы"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "сцэнарый непрыдатны"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "сцэнарый захаваны ў кэш"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Выкананне сцэнарыяў"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Націсніце Enter, каб пацвердзіць, або Escape, каб скасаваць.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Увядзіце пытальнік, каб пабачыць даступныя каманды"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Увядзіце \"?\", каб пабачыць даступныя каманды"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Пераключайце каманды з дапамогай клавішы Tab. Увядзіце \"?\", каб пабачыць даступныя каманды"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Адкрыць файл"

@@ -243,10 +243,10 @@
     "message": "Accedeu a {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Rematouse o perfil {PH1}."
+    "message": "Rematouse o perfil \"{PH1}\"."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Iniciouse o perfil {PH1}."
+    "message": "Iniciouse o perfil \"{PH1}\"."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animación"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Forza a función multimedia de CSS prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Forza a función multimedia de CSS prefers-contrast"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Forza a función multimedia de CSS prefers-reduced-data"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "O ancho real ({PH1} px) de {PH2} {PH3} non coincide co ancho especificado ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Código de aplicación"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Úsao o navegador para saber se o manifesto debe actualizar unha aplicación concreta ou se fai referencia a unha nova aplicación web que se pode instalar."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Nota: Non se especificou \"id\" no manifesto. No seu lugar, úsase \"start_url\". Para especificar un código de identificación de aplicación que coincida coa identidade actual, define o campo \"id\" co valor \"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifesto da aplicación"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Estado da memoria caché de páxinas anteriores e seguintes"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Información"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "A última sesión de navegación non se almacenou na memoria caché porque"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Última navegación no marco principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navegación normal"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funcións que impiden o uso da memoria caché de páxinas anteriores e seguintes"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restaurado cos datos da memoria caché de páxinas anteriores e seguintes"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Dispoñibles nunha futura versión de Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Recuperación en segundo plano"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Informar dun problema con DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Informar dun problema de tradución"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Mostrar Novidades"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemas ocultos"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Mostrar todos os problemas"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afectados"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Actividade de confianza na Web"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Mostrar todos os problemas ocultos"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloqueouse"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Realiza unha solicitude ou preme {PH1} para gravar o material que se volveu cargar."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Rexistrar ({PH1}) para mostrar a actividade da rede."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Garda o rexistro de rede ({PH1}) para mostrar a actividade da rede."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Gravando actividade de rede…"
@@ -7203,7 +7224,7 @@
     "message": "Mostrar na vista Resumo"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Mostrar obxecto {PH1} con código @{PH2} na vista de resumo"
+    "message": "Mostrar obxecto \"{PH1}\" con código @{PH2} na vista de resumo"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Almacenar como variable global"
@@ -7215,7 +7236,7 @@
     "message": "Pódese acceder ao obxecto do usuario desde a ventá"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Produciuse un erro cando se solicitou unha chamada ao método {PH1}"
+    "message": "Produciuse un erro cando se solicitou unha chamada ao método \"{PH1}\""
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Na cronoloxía das asignacións móstranse as asignacións instrumentadas da memoria de JavaScript ao longo do tempo. Unha vez se rexistra o perfil, podes seleccionar un intervalo de tempo para ver obxectos que se asignaron dentro del e que seguen activos ao remate da gravación. Utiliza este tipo de perfil para illar as perdas de memoria."
@@ -7521,7 +7542,7 @@
     "message": "Non se puido ler o ficheiro"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Produciuse un erro de lectura do ficheiro {PH1}: {PH2}"
+    "message": "Produciuse un erro de lectura do ficheiro \"{PH1}\": {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Buscar por custo (máis de 50 ms), nome ou ficheiro"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Borrar todo"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Dirección"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentación"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Marca de tempo"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipo"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Supervisión de protocolo"
@@ -7755,7 +7776,7 @@
     "message": "Esta páxina non é segura."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "A páxina non é segura (extensión de HTTPS danada)."
+    "message": "Esta páxina non é segura (extensión de HTTPS danada)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "Esta páxina é segura (HTTPS válido)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Os detalles de seguranza anteriores son da primeira resposta inspeccionada."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Descoñécese a seguranza desta páxina."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "A sinatura do servidor usa o algoritmo SHA-1, que está obsoleto. Mellor activa SHA-2. (Ten en conta que esta sinatura é diferente da do certificado)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Esta páxina non é segura (HTTP sen encriptar)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Esta páxina non é segura."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "A páxina non é segura (extensión de HTTPS danada)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Esta páxina é segura (HTTPS válido)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Esta páxina é sospeitosa"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Dispositivo"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "O dispositivo {PH1} engadiuse ou actualizouse correctamente."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nome do dispositivo"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Engadir marca"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Engadiuse a fila da marca"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arquitectura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Eliminar"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Eliminouse a fila da marca"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modelo do dispositivo"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tarefa asíncrona"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Almacenar na memoria caché o código do módulo"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Almacenar na memoria caché o código do script"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Módulo Wasm almacenado na memoria caché"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duración"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Compilando todas as funcións con afán"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elementos que se viron afectados"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script non apto"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "o script gardouse na memoria caché"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scripts"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} Preme Introducir para confirmar ou Escape para cancelar."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Escribe un signo de interrogación para ver os comandos dispoñibles"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Escribe \"?\" para ver os comandos dispoñibles"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Se queres cambiar de comando, usa Tabulador. Escribe \"?\" para ver os comandos dispoñibles"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Abrir ficheiro"

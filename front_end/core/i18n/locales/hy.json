@@ -243,10 +243,10 @@
     "message": "Անցում {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "«{PH1}» պորֆիլը դադարեցվել է։"
+    "message": "«{PH1}» պրոֆիլն ավարտվել է։"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "«{PH1}» պրոֆիլը սկսվել է։"
+    "message": "«{PH1}» պրոֆիլը գործարկվել է։"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Անիմացիա"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Գործարկում է CSS-ի prefers-color-scheme մեդիա գործառույթը"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Գործարկում է CSS-ի prefers-contrast մեդիա գործառույթը"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Գործարկում է CSS-ի prefers-reduced-data մեդիա գործառույթը"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}՝ փաստացի լայնությունը ({PH1} պքս) չի համընկնում նշված լայնության հետ ({PH4} պքս)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Հավելվածի ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Դրա միջոցով դիտարկիչը որոշում է՝ արդյոք մանիֆեստը պետք է թարմացնի առկա հավելվածը, կամ այն վերաբերում է նոր վեբ հավելվածին, որը հնարավոր է տեղադրել։"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Նշում. «id» դաշտը նշված չէ մանիֆեստում։ Փոխարենն օգտագործվում է «start_url» դաշտը։ Հավելվածի ID-ն նշելու համար «id» դաշտի համար սահմանեք «{PH1}» արժեքը։"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Հավելվածի մանիֆեստ"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Ամբողջ էջի քեշավորման կարգավիճակ"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Բացատրություններ"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Վերջին անցումը չի քեշավորվել, որովհետև"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Նավիգացիա վերջին հիմնական շրջանակում"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Սովորական նավիգացիա"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Գործառույթներ, որոնք կանխում են ամբողջ էջի քեշավորումը"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Վերականգնվել է ամբողջ էջի քեշավորումից"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(աջակցվում է Chrome֊ի հաջորդ տարբերակում)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ֆոնային առբերում"
@@ -2457,7 +2475,7 @@
     "message": "Տեսանելի սյունակներ"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
-    "message": "Մաքրել օբյեկտների պահեստը"
+    "message": "Մաքրել օբյեկտների պահոցը"
   },
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Ծալել"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Հաղորդել մշակողի գործիքների խնդրի մասին"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Հաղորդել թարգմանության խնդրի մասին"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Ցուցադրել, թե ինչ նորություններ կան"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Թաքցված խնդիրներ"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Ցույց տալ բոլոր խնդիրները"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Փոփոխված ռեսուրսներ"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Անվտանգ գործողություններ համացանցում"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Ցուցադրել բոլոր թաքցված խնդիրները"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "արգելափակված է"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Թարմացման տվյալները գրանցելու համար հարցում արեք և սեղմեք {PH1}։"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Սեղմեք {PH1}, որպեսզի դիտեք ցանցում կատարված գործողությունների մասին տվյալները։"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Գրանցեք ցանցի տվյալները ({PH1}), որպեսզի ցուցադրվեն ցանցի գործողությունները։"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Ցանցային ակտիվությունը գրանցվում են…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Ջնջել բոլորը"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Ուղղություն"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Փաստաթղթեր"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Ժամադրոշմ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Տեսակ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Հաղորդակարգի էկրան"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Անվտանգության վերը նշված մանրամասներն առաջին ստուգված պատասխանից են։"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Այս էջի անվտանգության կարգավիճակն անհայտ է։"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Սերվերի ստորագրությունն օգտագործում է SHA-1 ալգորիթմը, որը հնացած է։ Միացրեք SHA-2 ստորագրության ալգորիթմը։ Նկատի ունեցեք, որ այս ստորագրությունը տարբերվում է հավաստագրի ստորագրությունից։"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Այս էջը վտանգավոր է (չգաղտնագրված HTTP)։"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Այս էջն անվտանգ չէ։"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Այս էջը վտանգավոր է (կոտրված HTTPS)։"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Այս էջն անվտանգ է (վավեր HTTPS)։"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Այս էջը կասկածելի է"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Սարք"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} սարքն ավելացվեց/թարմացվեց։"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Սարքի անվանումը"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Ավելացնել ապրանքանիշ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Բրենդի տողն ավելացվեց"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Ճարտարապետություն"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Ջնջել"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Բրենդի տողը ջնջվեց"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Սարքի մոդելը"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Չհամաժամացման առաջադրանք"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Քեշի մոդուլի կոդը"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Քեշի սկրիպտի կոդը"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Քեշավորված Wasm մոդուլ"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Տևողություն"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Բոլոր գործառույթների անմիջական կոմպիլյացիա"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Խաթարված տարրեր"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "սկրիպտը չի աջակցվում"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "սկրիպտը պահվել է քեշում"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Սկրիպտներ"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Սեղմեք Enter՝ հաստատելու համար, կամ Escape՝ չեղարկելու համար)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Մուտքագրեք հարցական նշանը՝ հասանելի հրամանները տեսնելու համար"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Մուտքագրեք «?» նշանը՝ հասանելի հրահանգները տեսնելու համար"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Հրահանգներ փոխելու համար օգտագործեք Tab ստեղնը։ Մուտքագրեք «?» նշանը՝ հասանելի հրահանգները տեսնելու համար։"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Բացել ֆայլը"

@@ -243,7 +243,7 @@
     "message": "Novirzīta uz vietni {PH1}."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Profils “{PH1}” tika pabeigts."
+    "message": "Profila “{PH1}” darbība pabeigta."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "Profila “{PH1}” darbība sākta."
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Piespiedu kārtā lieto CSS datu nesēju funkciju prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Piespiedu kārtā tiek lietota CSS datu nesēju funkcija prefers-contrast."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Piespiedu kārtā lieto CSS datu nesēju funkciju prefers-reduced-data"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}: faktiskais platums ({PH1} px) neatbilst norādītajam platumam ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Lietotnes ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Šis identifikators tiek izmantots pārlūkā, lai noskaidrotu, vai manifestam ir jāatjaunina esoša lietojumprogramma, vai arī tas attiecas uz jaunu tīmekļa lietotni, ko var instalēt."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Piezīme. Manifestā nav norādīts lauks “id”; tā vietā ir izmantots lauks “start_url”. Lai norādītu lietotnes ID, kas atbilst pašreizējam identifikatoram, laukā “id” iestatiet vērtību “{PH1}”."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Lietotnes manifests"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} atribūts src nav iestatīts"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}: neizdevās parsēt vietrādi URL {PH2}"
+    "message": "{PH1}: neizdevās parsēt vietrādi URL ({PH2})."
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Ekrānuzņēmums"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Pilnīgas saglabāšanas kešatmiņā statuss"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Skaidrojumi"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Pēdējā navigācijas sesija netika saglabāta kešatmiņā, jo:"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Pēdējā navigācija uz galveno ietvaru"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normāla navigācija"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkcijas, kas kavē pilnīgu saglabāšanu kešatmiņā"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Atjaunots no pilnīgas saglabāšanas kešatmiņā"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Tiks atbalstīti Chrome nākotnes versijā)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ienešana fonā"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Ziņot par Izstrādātāja rīku problēmu"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Ziņot par tulkošanas problēmu"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Parādīt rīku Jaunumi"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Paslēptās problēmas"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Parādīt visas paslēptās problēmas"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Ietekmētie resursi"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Uzticama tīmekļa darbība"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Atcelt visu paslēpto problēmu slēpšanu"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloķēts"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Izpildiet pieprasījumu vai nospiediet {PH1}, lai ierakstītu pēc atkārtotās ielādes."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Lai parādītu darbības tīklā, sāciet ierakstīšanu ({PH1})."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Reģistrējiet tīkla žurnālu ({PH1}), lai attēlotu tīkla aktivitāti."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Notiek tīkla darbību ierakstīšana…"
@@ -7215,7 +7236,7 @@
     "message": "Lietotāja objekts, kas sasniedzams no loga"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Radās kļūda, kad tika pieprasīts metodes “{PH1}” izsaukums"
+    "message": "Radās kļūda, kad tika pieprasīts metodes “{PH1}” izsaukums."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Piešķiršanas laika grafikos ir parādīta instrumentētā JavaScript atmiņas piešķiršana laika gaitā. Kad profils būs ierakstīts, varēsiet atlasīt laika intervālu un skatīt objektus, kas tika piešķirti tajā un joprojām darbojās ieraksta beigās. Izmantojiet šo profila veidu, lai izolētu atmiņas noplūdes."
@@ -7521,7 +7542,7 @@
     "message": "Neizdevās nolasīt failu"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Mēģinot lasīt failu “{PH1}”, radās kļūda: {PH2}"
+    "message": "Mēģinot lasīt failu “{PH1}”, radās kļūda: {PH2}."
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Varat meklēt pēc patērētā laika (> 50 ms), nosaukuma vai faila"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Notīrīt visu"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Virziens"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentācija"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Laikspiedols"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Veids"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokola pārraugs"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Šī drošības informācija ir iegūta no pirmās pārbaudītās atbildes."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Nav informācijas par šīs lapas drošību."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Servera parakstā tiek izmantots SHA-1, un tas ir novecojis. Tā vietā iespējojiet SHA-2 paraksta algoritmu. (Ņemiet vērā, ka tas atšķiras no sertifikāta paraksta.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Šī lapa nav droša (nešifrēts HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Šī lapa nav droša."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Šī lapa nav droša (bojāts HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Šī lapa ir droša (derīgs HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Šī lapa ir aizdomīga"
@@ -8316,7 +8325,7 @@
     "message": "Pievienot satura skriptus ignorēto sarakstam (lapā esošie paplašinājuma skripti)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignorēt skriptus, kuru nosaukumi atbilst rakstam “{PH1}”"
+    "message": "Tādu skriptu ignorēšana, kuru nosaukumi atbilst rakstam “{PH1}”"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Ignorēšanas sarakstā nav neviena raksta"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Ierīce"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Ierīce “{PH1}” ir sekmīgi pievienota/atjaunināta."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Ierīces nosaukums"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Pievienot zīmolu"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Zīmola rinda ir pievienota."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arhitektūra"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Dzēst"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Zīmola rinda ir izdzēsta."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Ierīces modelis"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asinhrons uzdevums"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kešatmiņas moduļa kods"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kešatmiņas skripta kods"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Kešatmiņā ievietots WASM modulis"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Ilgums"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Visu funkciju tūlītēja kompilēšana"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Ietekmētie elementi"
@@ -10394,9 +10421,6 @@
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skripts nav piemērots"
   },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skripts tika saglabāts kešatmiņā"
-  },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptēšana"
   },
@@ -10722,7 +10746,7 @@
     "message": "Pievienot"
   },
   "panels/webauthn/WebauthnPane.ts | addAuthenticator": {
-    "message": "Pievienot autentificētāju"
+    "message": "Pievienot autentifikatoru"
   },
   "panels/webauthn/WebauthnPane.ts | authenticatorS": {
     "message": "Autentifikators {PH1}"
@@ -10734,7 +10758,7 @@
     "message": "Rediģēt nosaukumu"
   },
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
-    "message": "Iespējot virtuālā autentificētāja vidi"
+    "message": "Iespējot virtuālā autentifikatora vidi"
   },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksportēt"
@@ -10749,7 +10773,7 @@
     "message": "Uzzināt vairāk"
   },
   "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
-    "message": "Jauns autentificētājs"
+    "message": "Jauns autentifikators"
   },
   "panels/webauthn/WebauthnPane.ts | no": {
     "message": "Nē"
@@ -10773,7 +10797,7 @@
     "message": "Saglabāt nosaukumu"
   },
   "panels/webauthn/WebauthnPane.ts | setSAsTheActiveAuthenticator": {
-    "message": "Iestatīt “{PH1}” kā aktīvo autentificētāju"
+    "message": "Iestatīt “{PH1}” kā aktīvo autentifikatoru"
   },
   "panels/webauthn/WebauthnPane.ts | signCount": {
     "message": "Parakstu skaits"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Lai apstiprinātu, nospiediet ievadīšanas taustiņu. Lai atceltu, nospiediet atsoļa taustiņu.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Lai skatītu pieejamās komandas, ievadiet jautājuma zīmi"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Lai skatītu pieejamās komandas, ierakstiet simbolu “?”"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Izmantojiet tabulēšanas taustiņu, lai pārslēgtu komandas. Lai skatītu pieejamās komandas, ierakstiet jautājuma zīmi (“?”)."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Atvērt failu"

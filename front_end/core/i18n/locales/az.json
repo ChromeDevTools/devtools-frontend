@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme media xüsusiyyətini məcburi tətbiq edir"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast media funksiyasını məcburi tətbiq edir"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data media xüsusiyyətini məcburi tətbiq edir"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Faktiki ({PH1} piksel) {PH2} {PH3} eni göstərilən en ({PH4} piksel) ilə uyğun gəlmir"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Tətbiq Id-si"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Bu, brauzer tərəfindən manifestin mövcud bir tətbiqi güncəlləməli olub-olmadığını və ya quraşdırıla bilən yeni bir veb tətbiqinə aid olub-olmadığını bilmək üçün istifadə olunur."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Qeyd: manifestdə 'id' göstərilməyib, əvəzində 'start_url' istifadə olunur. Cari kimliyə uyğun gələn tətbiq Id-si təyin etmək üçün 'id' sahəsini ''{PH1}'' olaraq ayarlayın."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Tətbiq Manifesti"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Geri/irəli keş statusu"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "İzahatlar"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Son naviqasiya keşlənmədi, çünki"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Sonuncu Əsas Çərçivə Naviqasiyası"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal naviqasiya"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Geri/irəli keşin qarşısını alan funksiyalar"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Geri/irəli keşindən bərpa edildi"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome'un gələcək versiyasında dəstəklənir)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Arxa fon sorğusu"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools problemi barədə bildirin"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Tərcümə problemi barədə bildirin"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Yenilikləri Göstərin"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Gizli problemlər"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Bütün problemləri göstərin"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Təsirə Məruz Qalan Resurslar"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Etibar Edilən Veb Fəaliyyəti"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Bütün gizli problemləri göstərin"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloklanıb"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Sorğunu icra edin, yaxud yenidən yükləməni qeydə almaq üçün {PH1} düymələrinə basın."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Şəbəkə fəaliyyətini göstərmək üçün ({PH1}) yazın."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Şəbəkə fəaliyyətini göstərmək üçün ({PH1}) şəbəkə jurnalını qeydə alın."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Şəbəkə fəaliyyəti qeydə alınır…"
@@ -7521,7 +7542,7 @@
     "message": "Faylı oxumaq alınmadı"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Fayl \"{PH1}\" oxu xətası: {PH2}"
+    "message": "Fayl \"{PH1}\" oxuma xətası: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Dəyər (>50ms), ad və ya fayl əsasında tapın"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Hamısını silin"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "İstiqamət"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Sənədlər"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Vaxt qeydi"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Növ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokol monitoru"
@@ -7755,7 +7776,7 @@
     "message": "Bu səhifə təhlükəsiz deyil."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Bu səhifə təhlükəsiz deyil (sınmış HTTPS)."
+    "message": "Bu səhifə təhlükəsiz deyil (yanlış HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "Bu səhifə təhlükəsizdir (düzgün HTTPS)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Yuxarıdakı təhlükəsizlik detalları birinci müəyyən edilən cavabdan əldə edilir."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Bu səhifənin təhlükəsizliyi naməlumdur."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Server imzası köhnəlmiş olan SHA-1'dən istifadə edir. Əvəzində SHA-2 imza alqoritmini aktivləşdirin. (Nəzərə alın ki, bu, sertifikatdakı imzadan fərqlidir)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Bu səhifə təhlükəsiz deyil (şifrələnməmiş HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Bu səhifə təhlükəsiz deyil."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Bu səhifə təhlükəsiz deyil (sınmış HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Bu səhifə təhlükəsizdir (düzgün HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Bu səhifə şübhəlidir"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Cihaz"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} cihazı uğurla əlavə edilib/güncəllənib."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Cihaz adı"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Brend əlavə edin"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Əlavə edilmiş brend sırası"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Memarlıq"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Silin"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Silinmiş brend sırası"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Cihaz modeli"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asinxron Tapşırıq"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Keş Modul Kodu"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Keş Skript Kodu"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Keşlənmiş Wasm Modulu"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Müddət"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Bütün funksiyalar toplanır"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Təsirə məruz qalan elementlər"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript uyğun deyil"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript keşdə saxlanıldı"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skripti yazılır"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Təsdiq etmək üçün \"Enter\", yaxud ləğv etmək üçün \"Escape\" üzərinə basın)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Əlçatan şərhlərə baxmaq üçün sual işarəsi yazın"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Əlçatan əmrlərə baxmaq üçün \"?\" yazın"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Əmrləri dəyişdirmək üçün Tab istifadə edin. Əlçatan əmrlərə baxmaq üçün \"?\" yazın"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Faylı açın"

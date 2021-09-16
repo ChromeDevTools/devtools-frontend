@@ -243,10 +243,10 @@
     "message": "{PH1} руу шилжсэн"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "'{PH1}' профайл дууссан."
+    "message": "''{PH1}'' профайл дууссан."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "'{PH1}' профайлыг эхлүүлсэн."
+    "message": "''{PH1}'' профайлыг эхлүүлсэн."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Анимаци"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme медиа онцлогийг хүчилнэ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast медиа онцлогийг хүчилнэ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data медиа онцлогийг хүчилнэ"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}-н бодит өргөн ({PH1}пиксел) заасан өргөнтэй ({PH4}пиксел) таарахгүй байна"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Аппын ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Хөтөч үүнийг тодорхойлогч файл одоо байгаа аппликэйшныг шинэчлэх шаардлагатай эсвэл энэ нь суулгах боломжтой шинэ веб аппыг зааж байгаа эсэхийг мэдэхэд ашигладаг."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Санамж: 'id'-г тодорхойлогч файлд заагаагүй бөгөөд оронд нь 'start_url'-г ашигласан. Одоогийн таниулбартай таарах Аппын Id-г заахын тулд 'id' талбарыг ''{PH1}'' болгож тохируулна уу."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Аппын тодорхойлогч файл"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src-г тохируулаагүй байна"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}-н '{PH2}' URL-г шинжилж чадсангүй"
+    "message": "{PH1}-н ''{PH2}'' URL-г шинжилж чадсангүй"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Дэлгэцийн агшин"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Back-forward Cache-н төлөв"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Тайлбар"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Сүүлийн навигацыг завсрын санах ойд хадгалаагүй учир нь"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Сүүлийн үндсэн фреймийн навигац"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Энгийн навигац"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Back-forward cache-с сэргийлэх онцлогууд"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Back-forward cache-с сэргээсэн"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome-н ирээдүйн хувилбарт дэмжсэн)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Дэвсгэрийг дуудах"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools-н асуудлыг мэдээлэх"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Орчуулгын асуудлыг мэдээлэх"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Шинэ зүйл юу байгааг харуулах"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Нуусан асуудал"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Бүх асуудлыг ил болгох"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Нөлөөлсөн нөөц"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Итгэмжит вебийн үйл ажиллагаа"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Бүх нуусан асуудлыг ил болгох"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блоклосон"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Хүсэлтийг гүйцэтгэж эсвэл дахин ачааллыг бичихийн тулд {PH1} дээр хүрнэ үү."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Сүлжээний үйл ажиллагааг үзүүлэхийн тулд ({PH1}) бичнэ үү."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Сүлжээний үйл ажиллагааг үзүүлэхийн тулд сүлжээний логийг ({PH1}) бичнэ үү."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Сүлжээний үйл ажиллагааг бичиж байна…"
@@ -7203,7 +7224,7 @@
     "message": "Хураангуй харагдах байдалд харуулах"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Хураангуй харагдцад @{PH2} id-тай '{PH1}' обьектыг харуулах"
+    "message": "Хураангуй харагдах байдалд @{PH2} id-тай ''{PH1}'' объектыг харуулах"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Глобал хувьсагчаар хадгалах"
@@ -7215,7 +7236,7 @@
     "message": "Цонхноос хэрэглэгчийн объектод хүрэх боломжтой"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}'-г дуудах аргыг хүсэх үед алдаа гарлаа"
+    "message": "''{PH1}'' аргыг дуудахыг хүсэх үед алдаа гарлаа"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Хуваарилалтын он цагийн хэлхээс нь JavaScript-н хэмжсэн санах ойн цаг хугацааны явц дахь хуваарилалтыг харуулдаг. Профайлыг бичсэний дараа та үүний дотор хуваарилсан бөгөөд бичилтийн эцэст идэвхтэй хэвээр байгаа объектыг харахын тулд цаг хугацааны интервал сонгох боломжтой. Санах ойн алдагдлыг тусгаарлахын тулд энэ профайлын төрлийг ашиглана уу."
@@ -7521,7 +7542,7 @@
     "message": "Файлыг уншиж чадсангүй"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' файлыг уншихад алдаа гарлаа: {PH2}"
+    "message": "''{PH1}'' файлыг уншихад алдаа гарлаа: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Зардал (>50ms), нэр эсвэл файлаар олох"
@@ -7566,7 +7587,7 @@
     "message": "Мод (Дээрээс доош)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Файлыг ачаалах боломжгүй. Файлын дэмжигдсэн өргөтгөл: '{PH1}.'"
+    "message": "Файлыг ачаалах боломжгүй. Файлын дэмжигдсэн өргөтгөлүүд: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Өөр профайлыг бичиж байх үед профайлыг ачаалах боломжгүй."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Бүгдийг арилгах"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Чиглэл"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Баримтжуулалт"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Хугацаа тэмдэглэгч"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Төрөл"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Протоколын монитор"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Дээрх аюулгүй байдлын дэлгэрэнгүй мэдээлэл нь эхний хянасан хуудаснаас ирсэн."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Энэ хуудасны аюулгүй байдал тодорхойгүй байна."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Серверийн гарын үсэг SHA-1-ийг ашигладаг бөгөөд энэ нь хуучирсан байна. Оронд нь SHA-2 гарын үсгийн алгоритмыг идэвхжүүлнэ үү. (Энэ нь сертификатын гарын үсгээс ялгаатай болохыг анхаарна уу.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Энэ хуудас аюултай байна (шифрлээгүй HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Энэ хуудас аюултай байна."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Энэ хуудас аюултай (гэмтэлтэй HTTPS) байна."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Энэ хуудас аюулгүй байна (хүчинтэй HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Энэ хуудас сэжигтэй байна"
@@ -8316,7 +8325,7 @@
     "message": "Үл хэрэгсэх жагсаалтад (хуудасны өргөтгөлийн скрипт) контентын скрипт нэмэх"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Нэр нь '{PH1}'-тай таарч буй скриптийг үл хэрэгсэх"
+    "message": "Нэр нь ''{PH1}''-тай таарч буй скриптийг үл хэрэгсэх"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Үл хэрэгсэх жагсаалтын загвар байхгүй"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Төхөөрөмж"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} төхөөрөмжийг амжилттай нэмсэн/шинэчилсэн."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Төхөөрөмжийн нэр"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Брэнд нэмэх"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Брэндийн мөрийг нэмсэн"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Архитектур"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Устгах"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Брэндийн мөрийг устгасан"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Төхөөрөмжийн загвар"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Асинхрон ажил"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Завсрын санах ойн модулийн код"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Завсрын санах ойн скриптийн код"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Завсрын санах ойд хадгалсан Wasm модуль"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Бүх функцийг эрчимтэйгээр хөрвүүлж байна"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Нөлөөлсөн элементүүд"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипт ашиглах эрхгүй"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "скриптийг завсрын санах ойд хадгалсан"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Скрипт бичих"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Баталгаажуулахын тулд 'Enter' эсвэл цуцлахын тулд 'Escape'-г дарна уу.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Боломжтой тушаалуудыг харахын тулд асуултын тэмдэг бичнэ үү"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Боломжтой тушаалуудыг харахын тулд '?' гэж бичнэ үү"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Тушаалыг сэлгэхийн тулд Tab-г ашиглана уу. Боломжтой тушаалыг харахын тулд '?' гэж бичнэ үү"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Файл нээх"

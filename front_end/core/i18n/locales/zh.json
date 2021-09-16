@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "强制使用 CSS prefers-color-scheme 媒体功能"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "强制使用 CSS prefers-contrast 媒体功能"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "强制使用 CSS prefers-reduced-data 媒体功能"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} 的实际宽度（{PH1} 像素）与指定宽度（{PH4} 像素）不一致"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "应用 ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "浏览器会根据此 ID 判断清单是否应该更新现有应用，或者清单是否引用的是可安装的新 Web 应用。"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "注意：您未在清单中指定“id”，使用的是“start_url”。若要指定一个与当前标识符匹配的应用 ID，请将“id”字段设为“{PH1}”。"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "应用清单"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src 未设置"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "无法解析{PH1}网址“{PH2}”"
+    "message": "未能解析{PH1}网址“{PH2}”"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "屏幕截图"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "往返缓存状态"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "说明"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "未缓存上次导航的原因"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "最近一次主框架导航"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "正常导航"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "妨碍进行往返缓存的功能"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "已从往返缓存恢复"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "网址"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "（在 Chrome 的某个未来版本中提供）"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "后台提取"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "报告 DevTools 问题"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "举报翻译问题"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "显示“新变化”工具"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "已隐藏的问题"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "取消隐藏所有问题"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "受影响的资源"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "可信网络活动"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "取消隐藏所有已隐藏的问题"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "已被拦截"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "执行某项请求或按 {PH1} 即可记录重新加载。"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "记录（快捷键：{PH1}）是为了显示网络活动。"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "如果想让当前界面显示网络活动，请开始记录网络日志 ({PH1})。"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "正在录制网络活动…"
@@ -7566,7 +7587,7 @@
     "message": "树（自顶向下）"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "无法加载文件。支持的文件扩展名包括“{PH1}”。"
+    "message": "无法加载文件。支持的文件扩展名：{PH1}。"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "无法加载这项分析，因为系统正在记录另一项分析"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "全部清除"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "方向"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "文档"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "时间戳"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "类型"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "协议监视器"
@@ -7752,13 +7773,13 @@
     "message": "此网页的安全性不明。"
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "此网页不安全。"
+    "message": "这是一个不安全的网页。"
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "此网页不安全（HTTPS 遭破坏）。"
+    "message": "这是一个不安全的网页（HTTPS 已遭破坏）。"
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "这是一个安全的网页（有效的 HTTPS）。"
+    "message": "这是一个安全的网页（HTTPS 有效）。"
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "包含证书错误的有效内容"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "上方的安全详情来自首个已检查的响应。"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "此网页的安全性不明。"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "服务器签名使用的是过时的 SHA-1。请启用 SHA-2 签名算法。（请注意，这不同于证书中的签名。）"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "这是一个不安全的网页（未加密的 HTTP）。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "此网页不安全。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "此网页不安全（HTTPS 遭破坏）。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "这是一个安全的网页（有效的 HTTPS）。"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "此网页可疑"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "设备"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "已成功添加/更新设备“{PH1}”。"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "设备名称"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "添加品牌"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "已添加品牌行"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "架构"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "删除"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "已删除品牌行"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "设备型号"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "异步任务"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "缓存模块代码"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "缓存脚本代码"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "缓存的 Wasm 模块"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "时长"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "及早编译所有函数"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "受影响的元素"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "脚本不符合条件"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "已将脚本保存至缓存"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "正在执行脚本"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}（按 Enter 键即可确认，按 Escape 键即可取消。）"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "输入问号即可查看可用命令"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "输入“?”即可查看可用命令"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "使用“Tab”键可切换命令。输入“?”可查看可用命令"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "打开文件"

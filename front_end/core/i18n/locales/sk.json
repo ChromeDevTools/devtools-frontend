@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Vynúti funkciu médií prefers-color-scheme šablón CSS"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Vynúti funkciu médií prefers-contrast šablón CSS"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Vynúti funkciu médií prefers-reduced-data šablón CSS"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Skutočná šírka ({PH1} px) obrázka {PH2} {PH3} nezodpovedá špecifikovanej šírke ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Identifikátor aplikácie"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Túto položku používa prehliadač, aby zistil, či má manifest aktualizovať existujúcu aplikáciu alebo či sa vzťahuje na novú webovú aplikáciu, ktorá sa dá nainštalovať."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Poznámka: Položka id nie je v manifeste špecifikovaná, namiesto nej sa používa start_url. Ak chcete špecifikovať identifikátor aplikácie, ktorý bude zodpovedať aktuálnej identite, nastavte pole id na {PH1}."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest aplikácie"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Stav spätnej vyrovnávacej pamäte"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Vysvetlenia"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Posledná navigácia nebola uložená do vyrovnávacej pamäte, pretože"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Posledná navigácia hlavného rámu"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Bežná navigácia"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkcie zabraňujúce fungovaniu spätnej vyrovnávacej pamäte"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Obnovené zo spätnej vyrovnávacej pamäte"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "Webová adresa"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(podporované v budúcej verzii Chromu)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Načítanie na pozadí"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Nahlásiť problém s Nástrojmi pre vývojárov"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Nahlásenie problému s prekladom"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Zobraziť novinky"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Skryté problémy"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Zobraziť všetky skryté problémy"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Ovplyvnené zdroje"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Dôveryhodná webová aktivita"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Zobraziť všetky skryté problémy"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokované"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Vykonajte požiadavku alebo stlačte {PH1} a zaznamenajte tak opätovné načítanie."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Ak chcete zobraziť aktivitu siete, nahrajte ({PH1})."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Nahraním sieťového denníka ({PH1}) zobraziť aktivitu siete."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Zaznamenáva sa aktivita siete…"
@@ -7215,7 +7236,7 @@
     "message": "Objekt používateľa dosiahnuteľný z okna"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Pri požadovaní volania metódy {PH1} sa vyskytla chyba"
+    "message": "Pri žiadosti o volanie metódy {PH1} sa vyskytla chyba"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Časové osi pridelenia zobrazujú inštrumentované pridelenia pamäte JavaScript v priebehu času. Po zaznamenaní profilu môžete vybrať časový interval na zobrazenie objektov, ktoré boli v rámci neho pridelené a na konci záznamu boli stále aktívne. Izolujte pretekanie pamäte pomocou tohto typu profilu."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Vymazať všetko"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Smer"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentácia"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Časová pečiatka"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Typ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor protokolu"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Podrobnosti o zabezpečení vyššie pochádzajú z prvej skontrolovanej odpovede."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Zabezpečenie tejto stránky nie je známe."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Podpis servera používa algoritmus SHA-1, ktorý je zastaraný. Aktivujte namiesto toho podpisový algoritmus SHA-2. (Upozorňujeme, že je odlišný od podpisu v certifikáte.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Táto stránka nie je zabezpečená (nezašifrovaný protokol HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Táto stránka nie je zabezpečená."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Táto stránka nie je zabezpečená (nefunkčný protokol HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Táto stránka je zabezpečená (platný protokol HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Táto stránka je podozrivá"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Zariadenie"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Zariadenie {PH1} bolo úspešne pridané alebo aktualizované."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Názov zariadenia"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Pridať značku"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Riadok značky bol pridaný"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architektúra"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Odstrániť"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Riadok značky bol odstránený"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model zariadenia"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynchrónna úloha"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kód modulu vyrovnávacej pamäte"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kód skriptu vyrovnávacej pamäte"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm uložený do vyrovnávacej pamäte"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Trvanie"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Všetky funkcie sa dôsledne kompilujú"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Ovplyvnené prvky"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript nespĺňa podmienky"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript bol uložený do vyrovnávacej pamäte"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptovanie"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (potvrďte stlačením klávesa Enter alebo zrušte klávesom Escape.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Dostupné príkazy zobrazíte zadaním otáznika"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Dostupné príkazy zobrazíte zadaním otáznika (?)"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Medzi príkazmi prepínajte klávesom Tab. Dostupné príkazy zobrazíte zadaním otáznika (?)"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Otvoriť súbor"

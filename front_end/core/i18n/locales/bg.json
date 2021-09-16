@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Принудително активиране на медийната функция prefers-color-scheme на CSS"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Принудително активиране на медийната функция prefers-contrast на CSS"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Принудително активиране на медийната функция prefers-reduced-data на CSS"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Действителната ширина ({PH1} пкс) на елемента ({PH2} {PH3}) не съответства на посочената ({PH4} пкс)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Идентификатор на приложението"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Този идентификатор се използва от браузъра, за да се определи дали манифестът трябва да актуализира съществуващо приложение, или се отнася за ново уеб приложение, което може да бъде инсталирано."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Забележка: В манифеста не е посочен идентификатор, а вместо това се използва start_url. За да посочите идентификатор на приложението, който съответства на текущите идентификационни данни, задайте съответното поле на {PH1}."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Манифест на приложението"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Състояние на кеша за назад/напред"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Обяснения"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Последното навигиране не бе кеширано, защото"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Последен метод на навигиране в основната рамка"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Нормално навигиране"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Функции, предотвратяващи кеша за назад/напред"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Възстановено от кеша за назад/напред"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL адрес"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Поддържа се в бъдеща версия на Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Извличане на заден план"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Подаване на сигнал за проблем с DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Подаване на сигнал за проблем с превод"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Показване на новите неща"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Скрити проблеми"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Показване на всички проблеми"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Засегнати ресурси"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надеждна активност в мрежата"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Показване на всички скрити проблеми"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "блокиран"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Подайте заявка или натиснете {PH1}, за да запишете презареждането."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Направете запис ({PH1}), за да се покаже активността в мрежата."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Записвайте регистрационен файл за мрежата ({PH1}), за да се показва мрежовата активност."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Активността в мрежата се записва…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Изчистване на всички"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Посока"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Документация"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Дата и час"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Тип"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Инструмент за наблюдение на протокола"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Данните за сигурност по-горе са от първия проверен отговор."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Няма данни за сигурността на тази страница."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Подписът на сървъра е основан на алгоритъма SHA-1, който е остарял. Вместо него използвайте SHA-2. (Обърнете внимание, че това е различно от подписа в сертификата.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Тази страница не е защитена (HTTP без шифроване)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Тази страница не е защитена."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Тази страница не е защитена (HTTPS не работи)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Тази страница е защитена (валидна схема HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Тази страница е подозрителна"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Устройство"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Устройството {PH1} е успешно добавено/актуализирано."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Име на устройството"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Добавяне на марка"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Добавен е ред с марки"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Архитектура"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Изтриване"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Изтрит е ред с марки"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Модел на устройството"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Асинхронна задача"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Кеширане на код за модул"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Кеширане на код за скрипт"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кеширан Wasm модул"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Продължителност"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Всички функции се компилират незабавно"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Засегнати елементи"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скриптът не отговаря на условията"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "скриптът е запазен в кеша"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Изпълнение на скрипт"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Натиснете Enter, за да потвърдите, или Escape, за да анулирате.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Въведете въпросителен знак, за да видите наличните команди"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Въведете ?, за да видите наличните команди"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Използвайте Tab, за да превключвате командите. Въведете ?, за да видите наличните"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Отваряне на файл"

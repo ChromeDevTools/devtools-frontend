@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Força a funcionalidade de multimédia CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Força a funcionalidade de multimédia CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Força a funcionalidade de multimédia CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "A largura real ({PH1} px) de {PH2} {PH3} não corresponde à largura especificada ({PH4} px)."
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID da app"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Isto é utilizado pelo navegador para saber se o manifesto deve atualizar uma aplicação existente ou se se refere a uma nova app para a Web que pode ser instalada."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Nota: o \"id\" não está especificado no manifesto. Em alternativa, é utilizado \"start_url\". Para especificar um ID da app que corresponda à identidade atual, defina o campo \"id\" como ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifesto da app"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Estado da cache para a frente/para trás"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explicações"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "A última navegação não foi colocada em cache porque"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Última navegação por frames principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navegação normal"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funcionalidades que impedem a cache para a frente/para trás"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restaurado a partir da cache para a frente/para trás"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Suportado numa versão futura do Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Obtenção em segundo plano"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Comunicar um problema do DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Comunique um problema de tradução"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Mostrar novidades"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemas ocultos"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Mostrar todos os problemas"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afetados"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Atividade da Web fidedigna"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Mostre todos os problemas ocultos"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloqueado"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Faça um pedido ou prima {PH1} para gravar a atualização."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Grave ({PH1}) para apresentar a atividade da rede."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Efetue o Registo da rede ({PH1}) para apresentar a atividade da rede."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "A gravar atividade da rede…"
@@ -7215,7 +7236,7 @@
     "message": "Objeto do utilizador acessível na janela"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Ocorreu um erro quando foi solicitada uma chamada ao método \"{PH1}\"."
+    "message": "Ocorreu um erro quando foi solicitada uma chamada ao método \"{PH1}\""
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "As linhas cronológicas de atribuição mostram atribuições de memória JavaScript instrumentadas ao longo do tempo. Assim que o perfil for gravado, pode selecionar um intervalo de tempo para ver os objetos que foram atribuídos no mesmo e ainda estão ativos no fim da gravação. Utilize este tipo de perfil para isolar fugas de memória."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Limpar tudo"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direção"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentação"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Data/hora"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipo"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor de protocolo"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Os detalhes de segurança acima são da primeira resposta inspecionada."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "A segurança desta página é desconhecida."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "A assinatura do servidor utiliza SHA-1, que é obsoleto. Em alternativa, ative um algoritmo de assinatura SHA-2. (Note que isto é diferente da assinatura no certificado.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Esta página é insegura (HTTP não encriptado)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Esta página não é segura."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Esta página não é segura (HTTPS danificado)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Esta página é segura (HTTPS válido)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Esta página é suspeita"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Dispositivo"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Dispositivo {PH1} adicionado/atualizado com êxito."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nome do dispositivo"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Adicionar marca"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Linha da marca adicionada"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arquitetura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Eliminar"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Linha da marca eliminada"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modelo do dispositivo"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tarefa assíncrona"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Código do módulo de cache"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Código do script de cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Módulo Wasm em cache"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duração"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "A compilar prontamente todas as funções"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elementos afetados"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script não elegível"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script guardado na cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Processamento de scripts"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Prima \"Enter\" para confirmar ou \"Escape\" para cancelar.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Escreva um ponto de interrogação para ver os comandos disponíveis"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Escreva \"?\" para ver os comandos disponíveis"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Utilize a tecla Tab para alternar entre comandos. Escreva \"?\" para ver os comandos disponíveis"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Abrir ficheiro"

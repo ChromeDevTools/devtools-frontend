@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Vynucuje funkci média CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Vynucuje funkci média CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Vynucuje funkci média CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Aktuální šířka ({PH1} px) {PH2} {PH3} neodpovídá zadané šířce ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID aplikace"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Prohlížeč toto ID používá k určení, zda má manifest aktualizovat stávající aplikaci nebo zda odkazuje na novou webovou aplikaci, kterou lze nainstalovat."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Poznámka: ID není v manifestu uvedeno, používá se start_url. Pokud chcete nastavit ID aplikace odpovídající stávající identitě, nastavte pole ID na hodnotu {PH1}'."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest aplikace"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Stav mezipaměti pro přechod zpět nebo vpřed"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Vysvětlení"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Poslední navigace nebyla uložena do mezipaměti, protože"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Poslední navigace v hlavním rámci"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normální navigace"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkce blokující mezipaměť pro přechod zpět nebo vpřed"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Obnoveno z mezipaměti pro přechod zpět nebo vpřed"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Bude podporováno v budoucí verzi Chromu)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Načtení na pozadí"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Nahlásit problém DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Nahlásit problém s překladem"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Zobrazit novinky"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Skryté problémy"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Zrušit skrytí všech problémů"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Dotčené zdroje"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Důvěryhodná webová aktivita"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Znovu zobrazit všechny skryté problémy"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "zablokováno"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Odešlete žádost nebo stisknutím {PH1} zaznamenejte znovu nahraný filmový pás."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Nahrát ({PH1}) k zobrazení síťové aktivity."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Zaznamenat protokol sítě ({PH1}) k zobrazení aktivity na síti."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Zaznamenávání síťové aktivity…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Vymazat vše"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Trasa"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentace"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Časové razítko"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Typ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor protokolu"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Údaje o zabezpečení uvedené výše jsou z první kontrolované odpovědi."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Zabezpečení této stránky není známo."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Podpis serveru používá algoritmus SHA-1, který je zastaralý. Povolte míst něj algoritmus podpisu SHA-2. (Pozor, tento podpis je odlišný od podpisu v certifikátu.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Tato stránka není zabezpečena (nezašifrované HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Tato stránka není zabezpečená."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Tato stránka není zabezpečená (porušený HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Tato stránka je bezpečná (platné HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Tato stránka je podezřelá"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Zařízení"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Zařízení {PH1} bylo úspěšně přidáno/aktualizováno."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Název zařízení"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Přidat značku"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Řádek značky byl přidán"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architektura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Smazat"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Řádek značky byl smazán"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model zařízení"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynchronní úloha"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kód modulu mezipaměti"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kód skriptu mezipaměti"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm v mezipaměti"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Délka"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Kompilují se všechny funkce"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Dotčené prvky"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript není podporován"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript uložen do mezipaměti"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptování"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Klávesou Enter akci potvrdíte, klávesou Esc ji zrušíte.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Zadáním otazníku zobrazíte dostupné příkazy"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Pokud chcete zobrazit dostupné příkazy, zadejte „?“"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Mezi příkazy lze přepínat pomocí tabulátoru. Pokud chcete zobrazit dostupné příkazy, zadejte „?“"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Otevřít soubor"

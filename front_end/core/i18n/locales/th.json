@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "บังคับใช้ฟีเจอร์สื่อ CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "บังคับใช้ฟีเจอร์สื่อ CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "บังคับใช้ฟีเจอร์สื่อ CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "ความกว้างจริง ({PH1} พิกเซล) ของ {PH2} {PH3} ไม่ตรงกับความกว้างที่ระบุ ({PH4} พิกเซล)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "รหัสแอป"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "เบราว์เซอร์ใช้รหัสแอปเพื่อให้ทราบว่าไฟล์ Manifest ควรอัปเดตแอปพลิเคชันที่มีอยู่ หรือหมายถึงเว็บแอปใหม่ที่ติดตั้งได้"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "หมายเหตุ: ไม่ได้กำหนด \"รหัส\" ในไฟล์ Manifest ระบบจะใช้ \"start_url\" แทน หากต้องการกำหนดรหัสแอปที่ตรงกับข้อมูลระบุในปัจจุบัน ให้ตั้งค่าช่อง \"รหัส\" เป็น ''{PH1}''"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ไฟล์ Manifest ของแอป"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src ไม่ได้ตั้งค่าไว้"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "แยกวิเคราะห์ URL ของ{PH1} \"{PH2}\" ไม่สำเร็จ"
+    "message": "แยกวิเคราะห์ URL ของ {PH1} \"{PH2}\" ไม่สำเร็จ"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "ภาพหน้าจอ"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "สถานะแคชย้อนหลัง"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "คำอธิบาย"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "การนำทางล่าสุดไม่ถูกแคชไว้เนื่องจาก"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "การนำทางเฟรมหลักล่าสุด"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "การนำทางทั่วไป"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ฟีเจอร์ป้องกันการแคชย้อนหลัง"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "กู้คืนจากแคชย้อนหลัง"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(มีการสนับสนุนใน Chrome เวอร์ชันในอนาคต)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "การดึงข้อมูลในเบื้องหลัง"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "รายงานปัญหาเกี่ยวกับเครื่องมือสำหรับนักพัฒนาเว็บ"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "รายงานปัญหาในการแปล"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "แสดง \"มีอะไรใหม่\""
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "ปัญหาที่ซ่อนอยู่"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "เลิกซ่อนปัญหาทั้งหมด"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ทรัพยากรที่ได้รับผลกระทบ"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "กิจกรรมในเว็บซึ่งเชื่อถือได้"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "เลิกซ่อนปัญหาทั้งหมดที่ซ่อนอยู่"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ถูกบล็อก"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ดำเนินการขอหรือกด {PH1} เพื่อบันทึกการโหลดซ้ำ"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "บันทึก ({PH1}) เพื่อแสดงกิจกรรมในเครือข่าย"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "จัดเก็บบันทึกเครือข่าย ({PH1}) เพื่อแสดงกิจกรรมบนเครือข่าย"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "กำลังบันทึกกิจกรรมเครือข่าย…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ล้างทั้งหมด"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "เส้นทาง"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "เอกสารประกอบ"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "การประทับเวลา"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "ประเภท"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "การตรวจสอบโปรโตคอล"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "รายละเอียดความปลอดภัยข้างต้นมาจากการตอบกลับที่ได้รับการตรวจสอบรายการแรก"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ไม่ทราบระดับความปลอดภัยของหน้านี้"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "ลายเซ็นเซิร์ฟเวอร์ใช้ SHA-1 ซึ่งล้าสมัย เปิดใช้อัลกอริทึมลายเซ็น SHA-2 แทน (โปรดทราบว่าลายเซ็นนี้จะแตกต่างจากลายเซ็นในใบรับรอง)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "หน้านี้ไม่ปลอดภัย (HTTP ที่ไม่ได้เข้ารหัส)"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "หน้านี้ไม่ปลอดภัย"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "หน้านี้ไม่ปลอดภัย (HTTPS เสีย)"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "หน้านี้ปลอดภัย (HTTPS ถูกต้อง)"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "หน้านี้ดูน่าสงสัย"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "อุปกรณ์"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "เพิ่ม/อัปเดตอุปกรณ์ {PH1} เรียบร้อยแล้ว"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "ชื่ออุปกรณ์"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "เพิ่มแบรนด์"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "เพิ่มแถวแบรนด์แล้ว"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "สถาปัตยกรรม"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ลบ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ลบแถวแบรนด์แล้ว"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "รุ่นของอุปกรณ์"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "งานที่ไม่พร้อมกัน"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "แคชโค้ดโมดูล"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "แคชโค้ดสคริปต์"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "แคชโมดูล Wasm แล้ว"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ระยะเวลา"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "คอมไพล์ทุกฟังก์ชันอย่างตั้งใจ"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "องค์ประกอบที่ได้รับผลกระทบ"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "สคริปต์ไม่มีสิทธิ์"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "บันทึกสคริปต์ลงในแคชแล้ว"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "กำลังเขียนสคริปต์"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (กด \"Enter\" เพื่อยืนยันหรือกด \"Escape\" เพื่อยกเลิก)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "พิมพ์เครื่องหมายคำถามเพื่อดูคำสั่งที่ใช้ได้"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "พิมพ์ \"?\" เพื่อดูคำสั่งที่ใช้ได้"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "ใช้แท็บเพื่อสลับคำสั่ง พิมพ์ \"?\" เพื่อดูคำสั่งที่ใช้ได้"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "เปิดไฟล์"

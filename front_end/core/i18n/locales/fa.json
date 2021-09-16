@@ -243,7 +243,7 @@
     "message": "به {PH1} پیمایش کردید"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "نمایه «{PH1}» به پایان رسید."
+    "message": "نمایه «{PH1}» به‌پایان رسید."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "نمایه «{PH1}» شروع شد."
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "ویژگی رسانه prefers-color-scheme CSS را اجباری می‌کند"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "ویژگی رسانه prefers-contrast CSS را اجباری می‌کند"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "ویژگی رسانه prefers-reduced-data CSS را اجباری می‌کند"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "عرض واقعی {PH2} {PH3} ‏ ({PH1} پیکسل) با عرض مشخص‌شده ({PH4} پیکسل) مطابقت ندارد"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "شناسه برنامه"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "مرورگر بااستفاده از آن تشخیص می‌هد آیا مانیفست باید برنامه‌ای موجود را به‌روزرسانی کند یا اینکه به برنامه وب جدید و قابل‌نصب اشاره دارد."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "توجه: «id» در مانیفست مشخص نشده است، درعوض از «start_url» استفاده می‌شود. برای مشخص کردن «شناسه برنامه‌ای» که با هویت فعلی مطابقت داشته باشد، فیلد «id» را روی «{PH1}» تنظیم کنید."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "مانیفست برنامه"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "وضعیت حافظه پنهان عقب-جلو"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "توضیحات"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "آخرین پیمایش در حافظه پنهان ذخیره نشد، زیرا"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "پیمایش آخرین قاب اصلی"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "پیمایش معمول"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ویژگی‌هایی که از حافظه پنهان عقب-جلو جلوگیری می‌کنند"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "از حافظه پنهان عقب-جلو بازیابی شده است"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "نشانی وب"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(در نسخه‌های بعدی Chrome پشتیبانی می‌شود)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "واکشی پس‌زمینه"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "گزارش مشکل DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "گزارش مشکل ترجمه"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "نمایش چیزهای جدید"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "مشکلات پنهان"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "آشکار کردن همه مشکلات"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "منابع تأثیرگرفته"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "فعالیت وب معتمد"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "نمایش همه مشکلات پنهان"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "مسدودشده"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "برای ضبط تازه‌سازی، درخواستی را اجرا کنید یا {PH1} را فشار دهید."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "ضبط ({PH1}) برای نمایش فعالیت شبکه."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "برای نمایش فعالیت شبکه، گزارش شبکه ({PH1}) را ضبط کنید."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "درحال ضبط فعالیت شبکه…"
@@ -7215,7 +7236,7 @@
     "message": "شیء کاربر قابل‌دسترس از پنجره"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "هنگام درخواست فراخوانی به روش «{PH1}»، خطایی روی داد"
+    "message": "هنگام درخواست فراخوانی روش «{PH1}»، خطایی روی داد"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "خط زمان‌های تخصیص، تخصیص‌های حافظه ابزارشده جاوا اسکریپت را درطول زمان نشان می‌دهد. هروقت نمایه ضبط شد، می‌توانید با انتخاب فاصله زمانی، اشیائی را که در آن فاصله تخصیص یافته‌اند و تا پایان ضبط همچنان فعال بوده‌اند مشاهده کنید. از این نوع نمایه برای جدا کردن نشت‌های حافظه استفاده کنید."
@@ -7566,7 +7587,7 @@
     "message": "درخت (بالا به پایین)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "فایل بار نشد. پسوندهای فایل پشتیبانی‌شده: «{PH1}.»"
+    "message": "فایل بار نشد. پسوندهای فایل پشتیبانی‌شده: «{PH1}»."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "وقتی نمایه‌ای درحال ضبط شدن است نمی‌توان نمایه دیگری را بار کرد."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "پاک کردن همه"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "مسیر"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "اسناد"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "مُهر زمان"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "نوع"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "پایشگر پروتکل"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "جزئیات امنیتی نشان‌داده‌شده در بالا مربوط به پاسخ بازرسی‌شده ابتدایی است."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "امنیت این صفحه نامشخص است."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "امضای سرور از SHA-1 استفاده می‌کند که منسوخ شده است. به‌جای آن، الگوریتم امضای SHA-2 را فعال کنید. (توجه داشته باشید این امضا با امضای موجود در گواهینامه تفاوت دارد.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "این صفحه ناامن است (HTTP رمزگذاری‌نشده)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "این صفحه امن نیست."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "این صفحه امن نیست (HTTPS مشکل دارد)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "این صفحه امن است (HTTPS معتبر)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "این صفحه مشکوک است"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "دستگاه"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "دستگاه {PH1} باموفقیت اضافه/ به‌روزرسانی شد."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "نام دستگاه"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "افزودن نمانام"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ردیف نمانام اضافه شد"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "معماری"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "حذف"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ردیف نمانام حذف شد"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "مدل دستگاه"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "تکلیف غیرهمگام"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "ذخیره کد مدول در حافظه پنهان"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "ذخیره کد متنی در حافظه پنهان"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "مدول Wasm در حافظه پنهان"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "مدت"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "ترجمه فوری همه توابع"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "عناصر متأثر"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "متن واجدشرایط نیست"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "متن در حافظه پنهان ذخیره شد"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "نوشتن متن"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (برای تأیید کلید «Enter»، یا برای لغو کلید «گریز» را فشار دهید.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "برای دیدن فرمان‌های دردسترس، علامت سؤال را تایپ کنید"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "برای دیدن فرمان‌های موجود، «?» را تایپ کنید"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "از کلید جهش برای عوض کردن فرمان‌ها استفاده کنید. برای دیدن فرمان‌های موجود، «?» را تایپ کنید"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "باز کردن فایل"

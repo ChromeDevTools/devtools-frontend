@@ -243,10 +243,10 @@
     "message": "{PH1} தளத்திற்குச் சென்றது"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "'{PH1}' செயல்பாட்டுச் சுயவிவரம் நிறுத்தப்பட்டது."
+    "message": "“{PH1}” ப்ரொஃபைல் நிறுத்தப்பட்டது."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "'{PH1}' சுயவிவரம் தொடங்கப்பட்டது."
+    "message": "“{PH1}” ப்ரொஃபைல் தொடங்கியது."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "அனிமேஷன்"
@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme மீடியா அம்சத்தை இயக்கும்"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast மீடியா அம்சத்தை இயக்கும்"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data மீடியா அம்சத்தை இயக்கும்"
   },
@@ -1440,7 +1443,7 @@
     "message": "கோப்புகளை PlatformFileSystem ஆல் ஏற்ற முடியவில்லை."
   },
   "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "கோப்புறையைச் சேர்…"
+    "message": "ஃபோல்டரைச் சேர்…"
   },
   "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
     "message": "கோப்புறையை விலக்கும் பேர்ட்டன்"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} படத்தின் அசல் அகலம் ({PH1}பிக்சல்) குறிப்பிடப்பட்டுள்ள அகலத்துடன் ({PH4}பிக்சல்) பொருந்தவில்லை"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ஆப்ஸ் ஐடி"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "ஏற்கெனவே உள்ள ஆப்ஸை மெனிஃபெஸ்ட் புதுப்பிக்க வேண்டுமா அல்லது புதிய இணைய ஆப்ஸை நிறுவ வேண்டுமென அது குறிக்கிறதா என்பதை அறிய, ஆப்ஸ் ஐடியை உலாவி பயன்படுத்துகிறது."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "கவனத்திற்கு: மெனிஃபெஸ்ட்டில் 'ஐடி' குறிப்பிடப்படவில்லை எனில் 'start_url' பயன்படுத்தப்படும். தற்போதைய அடையாளத்துடன் பொருந்தும் ஓர் ஆப்ஸ் ஐடியைக் குறிப்பிட, ‘ஐடி’ புலத்தை ''{PH1}'' என அமைக்கவும்."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ஆப்ஸ் மெனிஃபெஸ்ட்"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src அமைக்கப்படவில்லை"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' ஐப் பகுப்பாய்வு செய்ய முடியவில்லை"
+    "message": "“{PH2}” {PH1} URLலைப் பாகுபடுத்த முடியவில்லை"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "ஸ்கிரீன்ஷாட்"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் அம்சத்தின் நிலை"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "விளக்கங்கள்"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "நீங்கள் கடைசியாக அணுகியது பின்வரும் காரணங்களால் தற்காலிக நினைவகத்தில் சேமிக்கப்படவில்லை:"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "கடைசி முதன்மை ஃபிரேம் வழிச்செலுத்தல்"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "இயல்பு வழிச்செலுத்தல்"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமிப்பதைச் சில அம்சங்கள் தடுக்கின்றன"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் அம்சத்தின் மூலம் மீட்டெடுக்கப்பட்டது"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(இனி வரும் Chrome பதிப்புகளில் ஆதரிக்கப்படும்)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "பின்னணியில் பெறுக"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "டெவெலப்பர் கருவிகள் குறித்த சிக்கலைப் புகாரளி"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "மொழிபெயர்ப்புச் சிக்கலைப் புகாரளி"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "புதியவற்றைக் காட்டு"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "மறைக்கப்பட்ட சிக்கல்கள்"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "சிக்கல்கள் அனைத்தையும் காட்டு"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "பாதிக்கப்பட்ட மூலங்கள்"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "நம்பகமான இணையச் செயல்பாடு"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "மறைக்கப்பட்ட சிக்கல்கள் அனைத்தையும் காட்டும்"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "தடுக்கப்பட்டுள்ளது"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ரெஃப்ரெஷ் செய்ததை ரெக்கார்டு செய்ய ஒரு கோரிக்கையை எழுப்பவும் அல்லது {PH1} ஐத் தட்டவும்."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "நெட்வொர்க் செயல்பாட்டைக் காட்சிப்படுத்த {PH1} விசைகளை அழுத்துவதைப் பதிவு செய்."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "நெட்வொர்க் செயல்பாட்டைப் பார்க்க நெட்வொர்க் பதிவை ரெக்கார்டு ({PH1}) செய்யவும்."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "நெட்வொர்க் செயல்பாட்டை ரெக்கார்டு செய்கிறது…"
@@ -7203,7 +7224,7 @@
     "message": "சுருக்கக் காட்சியில் காட்டு"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "@{PH2} ஐடி உடைய '{PH1}' எனும் ஆப்ஜெக்ட்டைச் சுருக்கக் காட்சியில் காட்டு"
+    "message": "@{PH2} என்ற ஐடியைக் கொண்ட “{PH1}” ஆப்ஜெக்ட்டைச் சுருக்கக் காட்சியில் காட்டு"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "பொது மாறிகளாகச் சேமி"
@@ -7215,7 +7236,7 @@
     "message": "சாளரத்தில் இருந்து பயனர் ஆப்ஜெக்ட்டை அணுகலாம்"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' கால் முறையைக் கோரியபோது பிழை ஏற்பட்டது"
+    "message": "“{PH1}” கால் முறையைக் கோரியபோது பிழை ஏற்பட்டது"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "குறிப்பிட்ட காலகட்டத்தில் ஒழுங்குபடுத்தப்பட்ட JavaScript நினைவக ஒதுக்கீடுகளை ஒதுக்கீட்டுக் காலப்பதிவுகள் காட்டும். ப்ரொஃபைலை ரெக்கார்டு செய்தவுடன் அதற்குள் ஒதுக்கப்பட்டு, ரெக்கார்டிங்கின் முடிவிலும் செயலில் உள்ள ஆப்ஜெக்ட்டுகளைப் பார்க்க கால இடைவெளியைத் தேர்ந்தெடுக்கலாம். நினைவகக் கசிவுகளைத் தனிமைப்படுத்த இந்த ப்ரொஃபைலைப் பயன்படுத்தவும்."
@@ -7521,7 +7542,7 @@
     "message": "ஃபைலைப் படிக்க முடியவில்லை"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' ஃபைலைப் படிப்பதில் பிழை: {PH2}"
+    "message": "“{PH1}” ஃபைலைப் படிப்பதில் பிழை: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "விலை (>50ms), பெயர், ஃபைல் ஆகியவற்றின்படி கண்டறி"
@@ -7566,7 +7587,7 @@
     "message": "வரிசை (மேல் கீழ்)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ஃபைலை ஏற்ற முடியவில்லை. ஆதரிக்கப்படும் ஃபைல் நீட்டிப்புகள்: '{PH1}.'"
+    "message": "ஃபைலை ஏற்ற முடியவில்லை. ஆதரிக்கப்படும் ஃபைல் நீட்டிப்புகள்: “{PH1}”."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "வேறொரு ப்ரொஃபைல் ரெக்கார்டு செய்யப்படும்போது இந்த ப்ரொஃபைலை ஏற்ற முடியாது."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "அனைத்தையும் அழி"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "திசை"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ஆவணமாக்கல்"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "நேரமுத்திரை"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "வகை"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "நெறிமுறை மானிட்டர்"
@@ -7749,13 +7770,13 @@
     "message": "{PH2} உடன் {PH1}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "இந்தப் பக்கத்தின் பாதுகாப்பு குறித்து எதுவும் தெரியவில்லை."
+    "message": "இந்தப் பக்கத்தின் பாதுகாப்பு குறித்த தகவல்கள் எதுவுமில்லை."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
     "message": "இந்தப் பக்கம் பாதுகாப்பற்றது."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "இந்தப் பக்கம் பாதுகாப்பற்றது (செயல்படாத HTTPS)."
+    "message": "இந்தப் பக்கம் பாதுகாப்பானது அல்ல (செயல்படாத HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "இந்தப் பக்கம் பாதுகாப்பானது (செல்லுபடியாகும் HTTPS)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "மேலே உள்ள பாதுகாப்பு விவரங்கள் ஆய்வு செய்யப்பட்ட முதல் பதிலில் இருந்து பெறப்பட்டவை."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "இந்தப் பக்கத்தின் பாதுகாப்பு குறித்து எதுவும் தெரியவில்லை."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "காலாவதியான SHA-1ஐச் சேவையகக் கையொப்பம் பயன்படுத்துகிறது. இதற்குப் பதிலாக SHA-2 கையொப்பத்தை இயக்கவும். (கவனத்திற்கு: சான்றிதழில் இருக்கும் கையொப்பம் இதிலிருந்து வேறுபட்டது.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "இந்தப் பக்கம் பாதுகாப்பற்றது (என்க்ரிப்ட் செய்யப்படாத HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "இந்தப் பக்கம் பாதுகாப்பற்றது."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "இந்தப் பக்கம் பாதுகாப்பற்றது (செயல்படாத HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "இந்தப் பக்கம் பாதுகாப்பானது (செல்லுபடியாகும் HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "இந்தப் பக்கம் சந்தேகத்திற்குரியதாக உள்ளது"
@@ -8316,7 +8325,7 @@
     "message": "புறக்கணிப்புப் பட்டியலில் உள்ளடக்க ஸ்கிரிப்ட்டுகளைச் சேர் (பக்கத்தில் இருக்கும் நீட்டிப்பு ஸ்க்ரிப்ட்டுகள்)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' உடன் பொருந்தும் ஸ்கிரிப்ட் பெயர்களைத் தவிர்"
+    "message": "“{PH1}” உடன் பொருந்தும் ஸ்கிரிப்ட் பெயர்களைத் தவிர்"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "புறக்கணிப்புப் பட்டியல் பேட்டர்ன்கள் இல்லை"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "சாதனம்"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} சாதனம் சேர்க்கப்பட்டது/மாற்றப்பட்டது."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "சாதனத்தின் பெயர்"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "பிராண்டைச் சேர்"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "பிராண்டு வரிசை சேர்க்கப்பட்டது"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "கட்டமைப்பு"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "நீக்கும்"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "பிராண்டு வரிசை நீக்கப்பட்டது"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "சாதன மாடல்"
@@ -8844,16 +8862,16 @@
     "message": "தேர்வுநீக்கப்பட்டது"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "இந்தக் கோப்புறையில் மீறிச் செயல்படும் அனைத்தையும் நீக்க விரும்புகிறீர்களா?"
+    "message": "இந்த ஃபோல்டரில் மீறிச் செயல்படும் அனைத்தையும் நீக்க விரும்புகிறீர்களா?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "இந்த ஃபைலை நீக்க விரும்புகிறீர்களா?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "இந்தக் கோப்புறையை நிச்சயமாக விலக்க விரும்புகிறீர்களா?"
+    "message": "இந்த ஃபோல்டரை நிச்சயமாக விலக்க விரும்புகிறீர்களா?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "இந்தக் கோப்புறையை நிச்சயமாக அகற்ற விரும்புகிறீர்களா?"
+    "message": "இந்த ஃபோல்டரை நிச்சயமாக அகற்ற விரும்புகிறீர்களா?"
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "நீக்கு"
@@ -8874,7 +8892,7 @@
     "message": "(டொமைன் எதுவுமில்லை)"
   },
   "panels/sources/NavigatorView.ts | openFolder": {
-    "message": "கோப்புறையைத் திற"
+    "message": "ஃபோல்டரைத் திற"
   },
   "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
     "message": "பணியிடத்தில் இருந்து கோப்புறையை அகற்று"
@@ -9102,7 +9120,7 @@
     "message": "செயலில் உள்ள பிரேக்பாயிண்ட்டுகள்"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
-    "message": "பணியிடத்தில் கோப்புறையைச் சேர்"
+    "message": "பணியிடத்தில் ஃபோல்டரைச் சேர்"
   },
   "panels/sources/sources-meta.ts | addSelectedTextToWatches": {
     "message": "தேர்ந்தெடுத்த உரையை வாட்ச்களில் சேர்"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "ஒத்திசையாத பணி"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "தற்காலிகச் சேமிப்பு மாடியூல் குறியீடு"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "தற்காலிகச் சேமிப்பு ஸ்கிரிப்ட் குறியீடு"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "தற்காலிக நினைவகத்தில் சேமிக்கப்பட்ட Wasm மாடியூல்"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "கால அளவு"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "அனைத்து ஃபங்ஷன்களும் எப்போதும் கம்பைல் செய்யப்படுகின்றன"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "பாதிக்கப்பட்ட உறுப்புகள்"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ஸ்கிரிப்ட் தகுதிபெறவில்லை"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "தற்காலிகச் சேமிப்பில் சேமிக்கப்பட்ட ஸ்கிரிப்ட்"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "ஸ்கிரிப்ட்டிங்"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (உறுதிசெய்ய 'Enter' விசையையோ ரத்துசெய்ய 'Esc' விசையையோ அழுத்தவும்.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "கட்டளைகளைப் பார்க்க, கேள்விக்குறியை உள்ளிடவும்"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "கட்டளைகளைப் பார்க்க, '?' ஐ உள்ளிடவும்"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "கட்டளைகளுக்கு இடையில் மாற, Tab பட்டனைப் பயன்படுத்தவும். கட்டளைகளைப் பார்க்க, '?' என டைப் செய்யவும்"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ஃபைலைத் திற"

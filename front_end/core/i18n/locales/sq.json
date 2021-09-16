@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Detyron veçorinë e medias CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Detyron veçorinë e medias CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Detyron veçorinë e medias CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Gjerësia aktuale ({PH1} pikselë) e {PH2} {PH3} nuk përputhet me gjerësinë e specifikuar ({PH4} pikselë)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Identifikuesi i aplikacionit"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Kjo përdoret nga shfletuesi për të ditur nëse manifesti duhet të përditësojë një aplikacion ekzistues apo nëse i referohet një aplikacioni të ri uebi që mund të instalohet."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Shënim: \"id\" nuk specifikohet në manifest, në vend të tij përdoret \"start_url\". Për të specifikuar një \"Identifikues aplikacioni\" që përputhet me identitetin aktual, caktoje fushën \"id\" në \"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifesti i aplikacionit"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Statusi i memories specifike të faqes së plotë"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Shpjegimet"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Navigimi i fundit nuk ishte ruajtur në memorien specifike sepse"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Navigimi në kuadrin kryesor të fundit"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navigimi normal"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Veçori që parandalojnë memorien specifike të faqes së plotë"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restauruar nga memoria specifike e faqes së plotë"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Mbështetet në një version të ardhshëm të Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Marrja në sfond"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Raporto një problem DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Raporto një problem përkthimi"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Shfaq \"Ç'të reja ka\""
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Probleme të fshehura"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Hapi të gjitha problemet"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Burimet e prekura"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Aktiviteti i besuar i uebit"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Hap të gjitha problemet e fshehura"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bllokuar"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Kryej një kërkesë ose shtyp {PH1} për të regjistruar ringarkimin."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Regjistro ({PH1}) për të shfaqur aktivitetin e rrjetit."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Regjistro evidencën e rrjetit ({PH1}) për të shfaqur aktivitetin e rrjetit."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Po regjistron aktivitetin e rrjetit…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Pastroji të gjitha"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Udhëzim"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentacioni"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Vula kohore"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Lloji"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitori i protokollit"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Detajet e sigurisë më lart janë nga përgjigjja e parë e inspektuar."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Siguria e kësaj faqeje është e panjohur."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Nënshkrimi i serverit përdor SHA-1, që është e vjetruar. Aktivizo më mirë një algoritëm nënshkrimi SHA-2. (Vë re se ky është i ndryshëm nga nënshkrimi në certifikatë.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Kjo faqe është e pasigurt (HTTP e paenkriptuar)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Kjo faqe nuk është e sigurt."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Kjo faqe nuk është e sigurt (HTTPS e thyer)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Kjo faqe është e sigurt (HTTPS e vlefshme)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Kjo faqe është e dyshimtë"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Pajisja"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Pajisja {PH1} u shtua/përditësua me sukses."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Emri i pajisjes"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Shto markë"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Rreshti i markës u shtua"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkitekturë"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Fshi"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Rreshti i markës u fshi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modeli i pajisjes"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Detyrë josinkrone"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kodi i modulit të memories specifike"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kodi i skriptit të memories specifike"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Moduli Wasm i ruajtur në memorien specifike"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Kohëzgjatja"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Po kompilohen të gjitha funksionet me zell"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elementet e prekura"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skripti nuk kualifikohet"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skripti u ruajt në memorien specifike"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Krijimi i skriptit"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Shtyp \"Enter\" për të konfirmuar ose \"Escape\" për të anuluar.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Shkruaj pikëpyetje për të parë komandat e ofruara"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Shkruaj \"?\" për të parë komandat e ofruara"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Përdor Tab për të ndërruar komandat. Shkruaj \"?\" për të parë komandat e ofruara"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Hap një skedar"

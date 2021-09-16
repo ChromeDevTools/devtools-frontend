@@ -243,10 +243,10 @@
     "message": "{PH1} 'ਤੇ ਨੈਵੀਗੇਟ ਕੀਤਾ ਗਿਆ"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "ਪ੍ਰੋਫਾਈਲ '{PH1}' ਪੂਰੀ ਕੀਤੀ ਗਈ।"
+    "message": "ਪ੍ਰੋਫਾਈਲ ''{PH1}'' ਨੂੰ ਪੂਰਾ ਕੀਤਾ ਗਿਆ।"
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "ਪ੍ਰੋਫਾਈਲ '{PH1}' ਸ਼ੁਰੂ ਕੀਤਾ ਗਿਆ।"
+    "message": "ਪ੍ਰੋਫਾਈਲ ''{PH1}'' ਨੂੰ ਸ਼ੁਰੂ ਕੀਤਾ ਗਿਆ।"
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "ਐਨੀਮੇਸ਼ਨ"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme ਮੀਡੀਆ ਵਿਸ਼ੇਸ਼ਤਾ ਲਈ ਜ਼ੋਰ ਪਾਉਂਦਾ ਹੈ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast ਮੀਡੀਆ ਵਿਸ਼ੇਸ਼ਤਾ ਲਈ ਜ਼ੋਰ ਪਾਉਂਦਾ ਹੈ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data ਮੀਡੀਆ ਵਿਸ਼ੇਸ਼ਤਾ ਲਈ ਜ਼ੋਰ ਪਾਉਂਦਾ ਹੈ"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} ਦੀ ਅਸਲ ਚੌੜਾਈ ({PH1} ਪਿਕਸਲ), ਨਿਰਧਾਰਿਤ ਕੀਤੀ ਚੌੜਾਈ ({PH4}ਪਿਕਸਲ) ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦੀ"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ਐਪ ਆਈਡੀ"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "ਇਸਦੀ ਵਰਤੋਂ ਬ੍ਰਾਊਜ਼ਰ ਵੱਲੋਂ ਇਹ ਜਾਣਨ ਲਈ ਕੀਤੀ ਜਾਂਦੀ ਹੈ ਕਿ ਮੈਨੀਫ਼ੈਸਟ ਨੂੰ ਮੌਜੂਦਾ ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ ਜਾਂ ਨਹੀਂ, ਜਾਂ ਇਹ ਸਥਾਪਤ ਕੀਤੀ ਜਾ ਸਕਣ ਵਾਲੀ ਨਵੀਂ ਵੈੱਬ ਐਪ ਦਾ ਹਵਾਲਾ ਦਿੰਦੀ ਹੈ ਜਾਂ ਨਹੀਂ।"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "ਨੋਟ ਕਰੋ: ਮੈਨੀਫ਼ੈਸਟ ਵਿੱਚ 'id' ਨਿਰਧਾਰਿਤ ਨਹੀਂ ਕੀਤੀ ਗਈ ਹੈ, ਇਸਦੀ ਬਜਾਏ 'start_url' ਵਰਤਿਆ ਗਿਆ ਹੈ। ਮੌਜੂਦਾ ਪਛਾਣ ਨਾਲ ਮੇਲ ਖਾਂਦੀ ਐਪ ਆਈਡੀ ਨਿਰਧਾਰਿਤ ਕਰਨ ਲਈ, 'id' ਖੇਤਰ ਨੂੰ ''{PH1}'' 'ਤੇ ਸੈੱਟ ਕਰੋ।"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ਐਪ ਮੈਨੀਫ਼ੈਸਟ"
   },
@@ -2064,7 +2076,7 @@
     "message": "ਕਿਸੇ ਮੇਲ ਖਾਂਦੇ service worker ਦਾ ਪਤਾ ਨਹੀਂ ਲੱਗਿਆ। ਤੁਹਾਨੂੰ ਪੰਨਾ ਰੀਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਪੈ ਸਕਦੀ ਹੈ, ਜਾਂ ਸਕੋਪ ਨਾਲ ਨੱਥੀ ਕੀਤੇ ਮੌਜੂਦਾ ਪੰਨੇ ਲਈ service worker ਦੇ ਸਕੋਪ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਮੈਨੀਫ਼ੈਸਟ ਤੋਂ URL ਸ਼ੁਰੂ ਕਰੋ।"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "ਕੋਈ Play ਸਟੋਰ ਆਈਡੀ ਮੁਹੱਈਆ ਨਹੀਂ ਕਰਵਾਈ ਗਈ"
+    "message": "ਕੋਈ Play Store ਆਈਡੀ ਮੁਹੱਈਆ ਨਹੀਂ ਕਰਵਾਈ ਗਈ"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "ਅਣਸੈੱਟ ਕਰੋ ਜਾਂ \"any\" 'ਤੇ ਸੈੱਟ ਕਰੋ ਵਿਸ਼ੇਸ਼ਤਾ ਦੇ ਉਦੇਸ਼ ਨਾਲ ਦਿੱਤਾ ਗਿਆ ਕੋਈ ਵੀ ਪ੍ਰਤੀਕ ਅਜਿਹੇ PNG, SVG ਜਾਂ WebP ਫਾਰਮੈਟ ਵਿੱਚ ਨਹੀਂ ਹੈ, ਜੋ ਘੱਟੋ ਘੱਟ {PH1} ਪਿਕਸਲ ਵਰਗ ਦਾ ਹੋਵੇ।"
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src ਸੈੱਟ ਨਹੀਂ ਹੈ"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' ਨੂੰ ਪਾਰਸ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ"
+    "message": "{PH1} URL ''{PH2}'' ਨੂੰ ਪਾਰਸ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "ਸਕ੍ਰੀਨਸ਼ਾਟ"
@@ -2160,7 +2172,7 @@
     "message": "ਐਪ ਪਹਿਲਾਂ ਤੋਂ ਹੀ ਸਥਾਪਤ ਕੀਤੀ ਹੋਈ ਹੈ"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play ਸਟੋਰ ਐਪ URL ਅਤੇ Play ਸਟੋਰ ਆਈਡੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ"
+    "message": "Play Store ਐਪ URL ਅਤੇ Play Store ਆਈਡੀ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "ਨਿਰਧਾਰਿਤ ਐਪਲੀਕੇਸ਼ਨ ਪਲੇਟਫਾਰਮ Android 'ਤੇ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਦੀ ਸਥਿਤੀ"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "ਵਿਆਖਿਆਵਾਂ"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "ਪਿਛਲਾ ਨੈਵੀਗੇਸ਼ਨ ਇਸ ਕਰਕੇ ਕੈਸ਼ੇ ਨਹੀਂ ਹੋਇਆ"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "ਪਿਛਲੀ ਮੁੱਖ ਫ੍ਰੇਮ ਨੈਵੀਗੇਸ਼ਨ"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "ਸਧਾਰਨ ਨੈਵੀਗੇਸ਼ਨ"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਨੂੰ ਰੋਕਣ ਵਾਲੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਤੋਂ ਮੁੜ-ਬਹਾਲ ਕੀਤਾ ਗਿਆ"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome ਦੇ ਭਵਿੱਖ ਦੇ ਵਰਜਨ ਵਿੱਚ ਸਮਰਥਿਤ)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "ਬੈਕਗ੍ਰਾਊਂਡ ਫ਼ੈੱਚ"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools ਸਮੱਸਿਆ ਦੀ ਰਿਪੋਰਟ ਕਰੋ"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "ਅਨੁਵਾਦ ਸੰਬੰਧੀ ਸਮੱਸਿਆ ਦੀ ਰਿਪੋਰਟ ਕਰੋ"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "ਦਿਖਾਓ ਕਿ ਨਵਾਂ ਕੀ ਹੈ"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "ਲੁਕੀਆਂ ਹੋਈਆਂ ਸਮੱਸਿਆਵਾਂ"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "ਸਾਰੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਦਿਖਾਓ"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ਪ੍ਰਭਾਵਿਤ ਸਰੋਤ"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "ਭਰੋਸੇਯੋਗ ਵੈੱਬ ਸਰਗਰਮੀ"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "ਲੁਕੀਆਂ ਹੋਈਆਂ ਸਾਰੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦਿਖਾਓ"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ਬਲਾਕ ਕੀਤਾ ਗਿਆ"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ਰੀਲੋਡ ਕਰਨ ਦੀ ਕਾਰਵਾਈ ਨੂੰ ਰਿਕਾਰਡ ਕਰਨ ਲਈ ਬੇਨਤੀ ਕਰੋ ਜਾਂ {PH1} ਨੂੰ ਦਬਾਓ।"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "ਨੈੱਟਵਰਕ ਸਰਗਰਮੀ ਦਿਖਾਉਣ ਲਈ ({PH1}) ਰਿਕਾਰਡ ਕਰੋ।"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "ਨੈੱਟਵਰਕ ਸਰਗਰਮੀ ਦਿਖਾਉਣ ਲਈ ਨੈੱਟਵਰਕ ਲੌਗ ({PH1}) ਨੂੰ ਰਿਕਾਰਡ ਕਰੋ।"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "ਨੈੱਟਵਰਕ ਸਰਗਰਮੀ ਰਿਕਾਰਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ…"
@@ -7203,7 +7224,7 @@
     "message": "ਸੰਖੇਪ ਦ੍ਰਿਸ਼ ਵਿੱਚ ਦਿਖਾਓ"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "ਸਾਰਾਂਸ਼ ਦ੍ਰਿਸ਼ ਵਿੱਚ ਆਈਡੀ @{PH2} ਨਾਲ ਵਸਤੂ {PH1} ਨੂੰ ਦਿਖਾਓ"
+    "message": "ਸਾਰਾਂਸ਼ ਦ੍ਰਿਸ਼ ਵਿੱਚ ਆਈਡੀ @{PH2} ਨਾਲ ਵਸਤੂ ''{PH1}'' ਨੂੰ ਦਿਖਾਓ"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "ਗਲੋਬਲ ਵੇਰੀਏਬਲ ਵਜੋਂ ਸਟੋਰ ਕਰੋ"
@@ -7215,7 +7236,7 @@
     "message": "ਵਰਤੋਂਕਾਰ ਵਸਤੂ ਵਿੰਡੋ ਤੋਂ ਪਹੁੰਚਯੋਗ ਹੈ"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "ਵਿਧੀ '{PH1}' ਨੂੰ ਕਾਲ ਕਰਨ ਦੀ ਬੇਨਤੀ ਕਰਨ ਦੌਰਾਨ ਕੋਈ ਗੜਬੜ ਹੋ ਗਈ"
+    "message": "ਵਿਧੀ ''{PH1}'' ਨੂੰ ਕਾਲ ਕਰਨ ਦੀ ਬੇਨਤੀ ਕਰਨ ਦੌਰਾਨ ਕੋਈ ਗੜਬੜ ਹੋ ਗਈ"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "ਵੰਡ ਸਮਾਂਰੇਖਾਵਾਂ, ਸਮੇਂ ਮੁਤਾਬਕ ਇੰਸਟਰੂਮੈਂਟਿਡ JavaScript ਮੈਮੋਰੀ ਦੀ ਵੰਡ ਨੂੰ ਦਿਖਾਉਂਦੀਆਂ ਹਨ। ਪ੍ਰੋਫਾਈਲ ਰਿਕਾਰਡ ਹੋ ਜਾਣ 'ਤੇ, ਤੁਸੀਂ ਉਹਨਾਂ ਵਸਤੂਆਂ ਨੂੰ ਦੇਖਣ ਲਈ ਇੱਕ ਸਮਾਂ ਅੰਤਰਾਲ ਚੁਣ ਸਕਦੇ ਹੋ ਜਿਨ੍ਹਾਂ ਨੂੰ ਇਸ ਦੇ ਅੰਦਰ ਹੀ ਵੰਡ ਦਿੱਤਾ ਗਿਆ ਸੀ ਅਤੇ ਜੋ ਰਿਕਾਰਡਿੰਗ ਦੇ ਅੰਤ ਤੱਕ ਵਰਤੋਂ ਵਿੱਚ ਸਨ। ਮੈਮੋਰੀ ਲੀਕਾਂ ਨੂੰ ਵੱਖ ਕਰਨ ਲਈ ਇਸ ਪ੍ਰੋਫਾਈਲ ਕਿਸਮ ਨੂੰ ਵਰਤੋ।"
@@ -7521,7 +7542,7 @@
     "message": "ਫ਼ਾਈਲ ਨਹੀਂ ਪੜ੍ਹੀ ਜਾ ਸਕੀ"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' ਫ਼ਾਈਲ ਪੜ੍ਹਨ ਵਿੱਚ ਗੜਬੜ: {PH2}"
+    "message": "''{PH1}'' ਫ਼ਾਈਲ ਪੜ੍ਹਨ ਵਿੱਚ ਗੜਬੜ: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "ਲਾਗਤ (>50ms), ਨਾਮ ਜਾਂ ਫ਼ਾਈਲ ਮੁਤਾਬਕ ਲੱਭੋ"
@@ -7566,7 +7587,7 @@
     "message": "ਟ੍ਰੀ (ਸਿਖਰ ਹੇਠਾਂ)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ਫ਼ਾਈਲ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ। ਸਮਰਥਿਤ ਫ਼ਾਈਲ ਐਕਸਟੈਂਸ਼ਨਾਂ: '{PH1}.'"
+    "message": "ਫ਼ਾਈਲ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ। ਸਮਰਥਿਤ ਫ਼ਾਈਲ ਐਕਸਟੈਂਸ਼ਨਾਂ: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ਕਿਸੇ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰਿਕਾਰਡ ਕੀਤੇ ਜਾਣ ਦੌਰਾਨ, ਦੂਜੇ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ਸਭ ਕਲੀਅਰ ਕਰੋ"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "ਨਿਰਦੇਸ਼"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ਦਸਤਾਵੇਜ਼ੀਕਰਨ"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "ਟਾਈਮਸਟੈਂਪ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "ਕਿਸਮ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "ਪ੍ਰੋਟੋਕੋਲ ਮਾਨੀਟਰ"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "ਉੱਪਰ ਦਿੱਤੇ ਹੋਏ ਸੁਰੱਖਿਆ ਵੇਰਵੇ ਪਹਿਲੇ ਜਾਂਚੇ ਹੋਏ ਜਵਾਬ ਤੋਂ ਹਨ।"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ਇਸ ਪੰਨੇ ਦੀ ਸੁਰੱਖਿਆ ਸੰਬੰਧੀ ਕੋਈ ਜਾਣਕਾਰੀ ਨਹੀਂ ਹੈ।"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "ਸਰਵਰ ਹਸਤਾਖਰ SHA-1 ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਜੋ ਕਿ ਅਪ੍ਰਚਲਿਤ ਹੈ। ਇਸ ਦੀ ਬਜਾਏ SHA-2 ਹਸਤਾਖਰ ਐਲਗੋਰਿਦਮ ਨੂੰ ਚਾਲੂ ਕਰੋ। (ਨੋਟ ਕਰੋ ਕਿ ਇਹ ਪ੍ਰਮਾਣ-ਪੱਤਰ ਦੇ ਹਸਤਾਖਰ ਤੋਂ ਵੱਖਰਾ ਹੈ।)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "ਇਹ ਪੰਨਾ ਅਸੁਰੱਖਿਅਤ ਹੈ (ਅਣ-ਇਨਕ੍ਰਿਪਟਡ HTTP)।"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "ਇਹ ਪੰਨਾ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਹੈ।"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ਇਹ ਪੰਨਾ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਹੈ (ਖਰਾਬ HTTPS)।"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "ਇਹ ਪੰਨਾ ਸੁਰੱਖਿਅਤ ਹੈ (ਵੈਧ HTTPS)।"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "ਇਹ ਪੰਨਾ ਸ਼ੱਕੀ ਹੈ"
@@ -8316,7 +8325,7 @@
     "message": "ਸੂਚੀ ਨੂੰ ਅਣਡਿੱਠ ਕਰਨ ਲਈ ਸਮੱਗਰੀ ਸਕ੍ਰਿਪਟਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ (ਪੰਨੇ ਵਿੱਚ ਐਕਸਟੈਂਸ਼ਨ ਸਕ੍ਰਿਪਟਾਂ)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' ਨਾਲ ਮੇਲ ਖਾਂਦੇ ਨਾਵਾਂ ਵਾਲੀਆਂ ਸਕ੍ਰਿਪਟਾਂ ਅਣਡਿੱਠ ਕਰੋ"
+    "message": "''{PH1}'' ਨਾਲ ਮੇਲ ਖਾਂਦੇ ਨਾਮਾਂ ਵਾਲੀਆਂ ਸਕ੍ਰਿਪਟਾਂ ਅਣਡਿੱਠ ਕਰੋ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "ਕੋਈ ਅਣਡਿਠ ਸੂਚੀ ਪੈਟਰਨ ਨਹੀਂ"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "ਡੀਵਾਈਸ"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "ਡੀਵਾਈਸ {PH1} ਸਫਲਤਾਪੂਰਵਕ ਸ਼ਾਮਲ/ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ।"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "ਡੀਵਾਈਸ ਦਾ ਨਾਮ"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "ਬ੍ਰਾਂਡ ਸ਼ਾਮਲ ਕਰੋ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ਬ੍ਰਾਂਡ ਕਤਾਰ ਸ਼ਾਮਲ ਕੀਤੀ ਗਈ"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "ਆਰਕੀਟੈਕਚਰ"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ਮਿਟਾਓ"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ਬ੍ਰਾਂਡ ਕਤਾਰ ਮਿਟਾ ਦਿੱਤੀ ਗਈ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "ਡੀਵਾਈਸ ਮਾਡਲ"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "ਬਿਖਮਕਾਲੀ ਕਾਰਜ"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "ਕੈਸ਼ੇ ਮਾਡਿਊਲ ਕੋਡ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "ਕੈਸ਼ੇ ਸਕ੍ਰਿਪਟ ਕੋਡ"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "ਕੈਸ਼ੇ ਕੀਤਾ ਗਿਆ Wasm ਮਾਡਿਊਲ"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ਮਿਆਦ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "ਸਾਰੇ ਫੰਕਸ਼ਨਾਂ ਦਾ ਸੰਕਲਨ ਮੰਗ ਕੀਤੇ ਬਿਨਾਂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "ਪ੍ਰਭਾਵਿਤ ਤੱਤ"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "ਸਕ੍ਰਿਪਟ ਯੋਗ ਨਹੀਂ ਹੈ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "ਸਕ੍ਰਿਪਟ ਨੂੰ ਕੈਸ਼ੇ 'ਤੇ ਰੱਖਿਅਤ ਕੀਤਾ ਗਿਆ"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "ਸਕ੍ਰਿਪਟਿੰਗ"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (ਤਸਦੀਕ ਕਰਨ ਲਈ 'Enter' ਜਾਂ ਰੱਦ ਕਰਨ ਲਈ 'Escape' ਦਬਾਓ।)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "ਉਪਲਬਧ ਆਦੇਸ਼ਾਂ ਨੂੰ ਦੇਖਣ ਲਈ ਪ੍ਰਸ਼ਨ ਚਿੰਨ੍ਹ ਟਾਈਪ ਕਰੋ"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "ਉਪਲਬਧ ਆਦੇਸ਼ਾਂ ਨੂੰ ਦੇਖਣ ਲਈ '?' ਟਾਈਪ ਕਰੋ"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "ਆਦੇਸ਼ਾਂ ਨੂੰ ਸਵਿੱਚ ਕਰਨ ਲਈ Tab ਵਰਤੋ। ਉਪਲਬਧ ਆਦੇਸ਼ਾਂ ਨੂੰ ਦੇਖਣ ਲਈ '?' ਟਾਈਪ ਕਰੋ"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ਫ਼ਾਈਲ ਖੋਲ੍ਹੋ"

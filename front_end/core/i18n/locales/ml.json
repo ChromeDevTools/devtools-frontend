@@ -243,10 +243,10 @@
     "message": "{PH1} എന്നതിലേക്ക് നാവിഗേറ്റ് ചെയ്തു"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "പ്രൊഫൈൽ '{PH1}' പൂർത്തിയായി."
+    "message": "പ്രൊഫൈൽ \"{PH1}\" പൂർത്തിയായി."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "പ്രൊഫൈൽ '{PH1}' ആരംഭിച്ചു."
+    "message": "പ്രൊഫൈൽ \"{PH1}\" ആരംഭിച്ചു."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "ആനിമേഷൻ"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme മീഡിയ ഫീച്ചർ നിർബന്ധമാക്കുന്നു"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast മീഡിയ ഫീച്ചർ നിർബന്ധമാക്കുന്നു"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data മീഡിയ ഫീച്ചർ നിർബന്ധമാക്കുന്നു"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} എന്നതിന്റെ യഥാർത്ഥ വീതി ({PH1}px) നിർദ്ദേശിച്ച വീതിയുമായി ({PH4}px) പൊരുത്തപ്പെടുന്നില്ല"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ആപ്പ് ഐഡി"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "മാനിഫെസ്റ്റ് നിലവിലുള്ള ആപ്പ് അപ്ഡേറ്റ് ചെയ്യണോ അതോ ഇൻസ്റ്റാൾ ചെയ്യാനാകുന്ന പുതിയൊരു വെബ് ആപ്പിനെക്കുറിച്ച് പരാമർശിക്കുകയാണോ എന്നറിയാൻ ബ്രൗസർ ഇത് ഉപയോഗിക്കുന്നു."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "ശ്രദ്ധിക്കുക: മാനിഫെസ്റ്റിൽ 'id' വ്യക്തമാക്കിയിട്ടില്ല, പകരം 'start_url' ഉപയോഗിച്ചിരിക്കുന്നു. നിലവിലെ ഐഡന്റിറ്റിയുമായി പൊരുത്തപ്പെടുന്ന ഒരു ആപ്പ് ഐഡി വ്യക്തമാക്കാൻ 'id' ഫീൽഡ് ''{PH1}'' എന്നതിലേക്ക് സജ്ജീകരിക്കുക."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ആപ്പ് മാനിഫെസ്റ്റ്"
   },
@@ -2064,7 +2076,7 @@
     "message": "പൊരുത്തമുള്ള service worker കണ്ടെത്തിയില്ല. നിങ്ങൾക്ക് പേജ് റീലോഡ് ചെയ്യേണ്ടി വന്നേക്കാം, അല്ലെങ്കിൽ നിലവിലെ പേജിനുള്ള service worker എന്നതിന്റെ പരിധി, പരിധിയെ ഉൾപ്പെടുത്തുന്നുണ്ടെന്ന് പരിശോധിച്ച് മാനിഫെസ്റ്റിൽ നിന്ന് URL ആരംഭിക്കേണ്ടി വന്നേക്കാം."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "Play സ്റ്റോർ ഐഡി നൽകിയിട്ടില്ല"
+    "message": "Play Store ഐഡി നൽകിയിട്ടില്ല"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "\"any\" എന്ന് സജ്ജീകരിക്കുകയോ സജ്ജീകരിച്ചത് മാറ്റുകയോ ചെയ്യാനുള്ള ഉദ്ദേശ്യ ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് PNG, SVG അല്ലെങ്കിൽ WebP ഫോർമാറ്റിൽ ഏറ്റവും കുറഞ്ഞത് {PH1} പിക്സൽ സ്ക്വയർ ഉള്ള സപ്ലൈ ചെയ്ത ഐക്കണുകൾ ഒന്നുമില്ല."
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src സജ്ജീകരിച്ചിട്ടില്ല"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}' വിശകലനം ചെയ്യാനായില്ല"
+    "message": "{PH1} URL \"{PH2}\" വിശകലനം ചെയ്യാനായില്ല"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "സ്ക്രീൻഷോട്ട്"
@@ -2160,7 +2172,7 @@
     "message": "ആപ്പ് ഇതിനകം ഇൻസ്റ്റാൾ ചെയ്‌തിട്ടുണ്ട്"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play സ്റ്റോർ ആപ്പ് URL-ഉം Play സ്റ്റോർ ഐഡിയും തമ്മിൽ പൊരുത്തപ്പെടുന്നില്ല"
+    "message": "Play Store ആപ്പ് URL-ഉം Play Store ഐഡിയും തമ്മിൽ പൊരുത്തപ്പെടുന്നില്ല"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "Android എന്നതിൽ നിശ്ചിത ആപ്പ് പ്ലാറ്റ്‍ഫോം പിന്തുണയ്‌ക്കുന്നില്ല"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "ബാക്ക്-ഫോർവേഡ് കാഷെ നില"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "വിശദീകരണങ്ങൾ"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "The last navigation was not cached because"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "അവസാനത്തെ പ്രധാന ഫ്രെയിം നാവിഗേഷൻ"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "സാധാരണ നാവിഗേഷൻ"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Features preventing back-forward cache"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ബാക്ക്-ഫോർവേഡ് കാഷെയിൽ നിന്ന് പുനഃസ്ഥാപിച്ചു"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Supported in a future version of Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "പശ്ചാത്തലം ലഭ്യമാക്കൽ"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "ഒരു DevTools പ്രശ്‌നം റിപ്പോർട്ട് ചെയ്യുക"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "ഒരു വിവർത്തന പ്രശ്‌നം റിപ്പോർട്ട് ചെയ്യുക"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "പുതിയതെന്താണ് എന്ന് കാണിക്കുക"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "മറച്ചിരിക്കുന്ന പ്രശ്നങ്ങൾ"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "മറച്ച എല്ലാ പ്രശ്‌നങ്ങളും പഴയപടിയാക്കുക"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ബാധിച്ച ഉറവിടങ്ങൾ"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "വിശ്വസ്‌ത വെബ് ആക്റ്റിവിറ്റി"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "മറച്ചിരിക്കുന്ന എല്ലാ പ്രശ്നങ്ങളും മറച്ചത് പഴയപടിയാക്കുക"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ബ്ലോക്ക് ചെയ്‌തു"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "വീണ്ടും ലോഡ് ചെയ്യുന്നത് റെക്കോർഡ് ചെയ്യാൻ അഭ്യർത്ഥന നടത്തുകയോ {PH1} അമർത്തുകയോ ചെയ്യുക."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി കാണിക്കാൻ ({PH1}) റെക്കോർഡ് ചെയ്യുക."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി പ്രദർശിപ്പിക്കാൻ നെറ്റ്‌വർക്ക് ലോഗ് ({PH1}) റെക്കോർഡ് ചെയ്യുക."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി റെക്കോർഡ് ചെയ്യുന്നു…"
@@ -7203,7 +7224,7 @@
     "message": "സംഗ്രഹ കാഴ്‌ചയിൽ വെളിപ്പെടുത്തുക"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "'{PH1}' ഒബ്‌ജക്റ്റ് @{PH2} ഐഡിയോടൊപ്പം സംഗ്രഹ കാഴ്‌ചയിൽ വെളിപ്പെടുത്തുക"
+    "message": "\"{PH1}\" ഒബ്‌ജക്റ്റ് @{PH2} ഐഡിയോടൊപ്പം സംഗ്രഹ കാഴ്‌ചയിൽ വെളിപ്പെടുത്തുക"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "ഗ്ലോബൽ വേരിയബിൾ ആയി സംഭരിക്കുക"
@@ -7215,7 +7236,7 @@
     "message": "വിൻഡോയിൽ നിന്ന് ഉപയോക്തൃ ഒബ്‌ജക്റ്റ് ആക്സസ് ചെയ്യാനാകും"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' എന്ന രീതിയിലേക്ക് കോൾ അഭ്യർത്ഥിച്ചപ്പോൾ ഒരു പിശക് സംഭവിച്ചു"
+    "message": "\"{PH1}\" എന്ന രീതിയിലേക്ക് കോൾ അഭ്യർത്ഥിച്ചപ്പോൾ ഒരു പിശക് സംഭവിച്ചു"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "അലോക്കേഷൻ ടൈംലൈനുകൾ വ്യത്യസ്ത സമയങ്ങളിൽ ഇൻസ്ട്രുമെന്റഡ് JavaScript മെമ്മറി അലോക്കേഷനുകൾ കാണിക്കുന്നു. പ്രൊഫൈൽ റെക്കോർഡ് ചെയ്‌തതിനുശേഷം, അതിനുള്ളിൽ തന്നെ അലോക്കേറ്റ് ചെയ്തിരിക്കുന്നതും റെക്കോർഡിംഗിന്റെ അവസാനം വരെ സജീവമായതുമായ ഒബ്‌ജക്റ്റുകൾ കാണുന്നതിന് നിങ്ങൾക്ക് സമയ ഇടവേള തിരഞ്ഞെടുക്കാനാകും. മെമ്മറി ലീക്കുകൾ ഐസൊലേറ്റ് ചെയ്യാൻ ഈ പ്രൊഫൈൽ തരം ഉപയോഗിക്കുക."
@@ -7521,7 +7542,7 @@
     "message": "ഫയൽ വായിക്കാനായില്ല"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "ഫയൽ '{PH1}' വായനാ പിശക്: {PH2}"
+    "message": "ഫയൽ \"{PH1}\" വായനാ പിശക്: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "ചെലവ് (>50ms), പേര് അല്ലെങ്കിൽ ഫയൽ അനുസരിച്ച് കണ്ടെത്തുക"
@@ -7566,7 +7587,7 @@
     "message": "ട്രീ (ടോപ്പ് ഡൗൺ)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ഫയൽ ലോഡ് ചെയ്യാനാകുന്നില്ല. പിന്തുണയ്ക്കുന്ന ഫയല്‍ എക്സ്റ്റന്‍ഷനുകൾ: '{PH1}.'"
+    "message": "ഫയൽ ലോഡ് ചെയ്യാനാകുന്നില്ല. പിന്തുണയ്ക്കുന്ന ഫയൽ എക്സ്റ്റൻഷനുകൾ: \"{PH1}\"."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ഒരു പ്രൊഫൈൽ റെക്കോർഡ് ചെയ്യുമ്പോൾ മറ്റൊരു പ്രൊഫൈൽ ലോഡ് ചെയ്യാനാകില്ല."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "എല്ലാം മായ്‌ക്കുക"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "ദിശ"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ഡോക്യുമെന്റേഷൻ"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "ടൈംസ്റ്റാമ്പ്"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "തരം"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "പ്രോട്ടോക്കോൾ മോണിറ്റർ"
@@ -7749,16 +7770,16 @@
     "message": "{PH2} ഉള്ള {PH1}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ഈ പേജിന്റെ സുരക്ഷ അജ്ഞാതമാണ്."
+    "message": "The security of this page is unknown."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "ഈ പേജ് സുരക്ഷിതമല്ല."
+    "message": "This page is not secure."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ഈ പേജ് സുരക്ഷിതമല്ല (HTTPS-ൽ തകരാറുണ്ട്)"
+    "message": "This page is not secure (broken HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "ഈ പേജ് സുരക്ഷിതമാണ് (സാധുതയുള്ള HTTPS)."
+    "message": "This page is secure (valid HTTPS)."
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "സർട്ടിഫിക്കറ്റ് പിശകുകളുള്ള സജീവ ഉള്ളടക്കം"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "ആദ്യം പരിശോധിച്ച പ്രതികരണത്തിൽ നിന്നുള്ള സുരക്ഷാ വിശദാംശങ്ങളാണ് മുകളിലുള്ളത്."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ഈ പേജിന്റെ സുരക്ഷ അജ്ഞാതമാണ്."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "സെര്‍വര്‍ സിഗ്‌നേച്ചര്‍ കാലഹരണപ്പെട്ട SHA-1 ഉപയോഗിക്കുന്നു. പകരം ഒരു SHA-2 സിഗ്‌നേച്ചര്‍ ആൽഗോരിതം പ്രവർത്തനക്ഷമമാക്കുക. (സർട്ടിഫിക്കറ്റിലെ സിഗ്‌നേച്ചറിൽ നിന്ന് ഇത് വ്യത്യസ്തമാണെന്ന കാര്യം ശ്രദ്ധിക്കുക.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "ഈ പേജ് സുരക്ഷിതമല്ല (എൻക്രിപ്റ്റ് ചെയ്യാത്ത HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "ഈ പേജ് സുരക്ഷിതമല്ല."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ഈ പേജ് സുരക്ഷിതമല്ല (HTTPS-ൽ തകരാറുണ്ട്)"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "ഈ പേജ് സുരക്ഷിതമാണ് (സാധുതയുള്ള HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "ഈ പേജ് സംശയാസ്‍പദമാണ്"
@@ -8316,7 +8325,7 @@
     "message": "ലിസ്റ്റ് അവഗണിക്കാൻ ഉള്ളടക്ക സ്ക്രിപ്റ്റുകൾ ചേർക്കുക (പേജിലെ വിപുലീകരണ സ്ക്രിപ്റ്റുകൾ)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}' എന്നതിനോട് പൊരുത്തപ്പെടുന്ന പേരുകളുള്ള സ്‌ക്രിപ്‌റ്റുകൾ അവഗണിക്കുക"
+    "message": "\"{PH1}\" എന്നതിനോട് പൊരുത്തപ്പെടുന്ന പേരുകളുള്ള സ്ക്രിപ്റ്റുകൾ അവഗണിക്കുക"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "അവഗണിക്കുക ലിസ്‌റ്റ് പാറ്റേണുകളൊന്നുമില്ല"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "ഉപകരണം"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} ഉപകരണം ചേർത്തു/അപ്ഡേറ്റ് ചെയ്‌തു."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "ഉപകരണത്തിന്റെ പേര്"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "ബ്രാൻഡ് ചേർക്കുക"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ബ്രാൻഡ് വരി ചേർത്തു"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "ആർക്കിടെക്ച്ചർ"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "ഇല്ലാതാക്കുക"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ബ്രാൻഡ് വരി ഇല്ലാതാക്കി"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "ഉപകരണ മോഡൽ"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "അസിങ്ക്രോണസ് ടാസ്‌ക്"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "കാഷെ മൊഡ്യൂൾ കോഡ്"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "കാഷെ സ്ക്രിപ്റ്റ് കോഡ്"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "കാഷെ ചെയ്ത Wasm മൊഡ്യൂൾ"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ദൈർഘ്യം"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "എല്ലാ ഫംഗ്ഷനുകളും ശ്രദ്ധാപൂർവ്വം കംപൈൽ ചെയ്യുന്നു"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "ബാധിച്ച എലമെന്റുകൾ"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "സ്ക്രിപ്റ്റിന് യോഗ്യതയില്ല"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "സ്ക്രിപ്റ്റ് കാഷെയിലേക്ക് സംരക്ഷിച്ചു"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "സ്‌ക്രിപ്‌റ്റിംഗ്"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (സ്ഥിരീകരിക്കാൻ 'Enter' അമർത്തുക, റദ്ദാക്കാൻ 'Escape' അമർത്തുക.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "ലഭ്യമായ കമാൻഡുകൾ കാണാൻ ചോദ്യ ചിഹ്നം ടൈപ്പ് ചെയ്യുക"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "ലഭ്യമായ കമാൻഡുകൾ കാണാൻ '?' ടൈപ്പ് ചെയ്യുക"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Use Tab to switch commands. Type '?' to see available commands"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ഫയൽ തുറക്കുക"

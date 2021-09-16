@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme メディア特性を強制します"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast メディア特性を強制します"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data メディア特性を強制します"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} の実際の幅（{PH1} ピクセル）が、指定された幅（{PH4} ピクセル）に一致しません。"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "アプリ ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "マニフェストで既存のアプリを更新するのか、またはインストール可能な新しいウェブアプリを参照するのかをブラウザに通知するために使用されます。"
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "注: マニフェストで「id」が指定されていない場合は、代わりに「start_url」が使用されます。現在のアプリを示すアプリ ID を指定するには、「id」フィールドを「{PH1}」に設定します。"
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "アプリ マニフェスト"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "バックフォワード キャッシュのステータス"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "説明"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "前のページは次の理由によりキャッシュされませんでした"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "前回のメインフレーム ナビゲーション"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "通常のナビゲーション"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "バックフォワード キャッシュを妨げている機能があります"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "バックフォワード キャッシュから復元"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "（Chrome の今後のバージョンでサポート予定）"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "バックグラウンド フェッチ"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools の問題を報告"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "翻訳に関する問題を報告"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "最新情報を表示"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "非表示にした問題"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "すべての問題を再表示"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "影響を受けるリソース"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Trusted Web Activity"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "非表示にした問題をすべて再表示"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "ブロック中"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "リクエストを行うか、{PH1} を押して再読み込みを記録します。"
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "録画（{PH1}）してネットワーク アクティビティを表示します。"
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "ネットワーク アクティビティを表示するには、ネットワーク ログを記録（{PH1}）してください。"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "ネットワーク アクティビティを記録しています…"
@@ -7566,7 +7587,7 @@
     "message": "ツリー（トップダウン）"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ファイルを読み込めません。サポートされているファイル拡張子: 「{PH1}」"
+    "message": "ファイルを読み込めません。サポートされているファイル拡張子は「{PH1}」です。"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "別のプロファイルの記録中であるため、プロファイルを読み込めません。"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "すべてクリア"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "送受信"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ドキュメント"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "タイムスタンプ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "タイプ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "プロトコル モニター"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "上記のセキュリティ詳細は、最初に検査したレスポンスからのものです。"
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "このページのセキュリティは不明です。"
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "廃止されている SHA-1 がサーバー署名に使用されています。代わりに SHA-2 署名アルゴリズムを有効にしてください。（これは証明書の署名とは異なりますのでご注意ください）"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "このページは安全ではありません（HTTP が暗号化されていない）。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "このページは安全ではありません。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "このページは安全ではありません（破損した HTTPS）。"
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "このページは安全です（有効な HTTPS）"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "不審なページです"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "デバイス"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "デバイス {PH1} を追加 / 更新しました。"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "デバイス名"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "ブランドを追加"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "ブランド行を追加しました"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "アーキテクチャ"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "削除"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "ブランド行を削除しました"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "デバイスのモデル"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "非同期タスク"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "キャッシュ モジュール コード"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "キャッシュ スクリプト コード"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "キャッシュに保存された Wasm モジュール"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "所要時間"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "すべての関数を先行コンパイルしています"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "影響を受ける要素"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "対象外のスクリプト"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "キャッシュに保存されたスクリプト"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "スクリプト"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}（確定するには Enter キー、キャンセルするには Esc キーを押します）。"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "疑問符を入力すると、使用可能なコマンドが表示されます"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "使用可能なコマンドを表示するには、「?」を入力してください"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "コマンドを切り替えるには、Tab キーを使用します。使用可能なコマンドを表示するには、「?」を入力してください"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ファイルを開く"

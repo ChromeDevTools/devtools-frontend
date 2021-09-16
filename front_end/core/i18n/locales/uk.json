@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Примусове застосування медіафункції CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Примусове застосування медіафункції CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Примусове застосування медіафункції CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} ({PH3}): фактична ширина ({PH1} пікс.) не відповідає вказаній ({PH4} пікс.)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Ідентифікатор додатка"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Використовується веб-переглядачем, щоб визначити, чи має маніфест оновлювати існуючий додаток або чи стосується він нового веб-додатка, який можна встановити."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Примітка: у маніфесті не заповнено поле id. Замість нього використовується поле start_url. Щоб указати ідентифікатор додатка, що відповідає поточному, введіть у полі id значення {PH1}."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Маніфест додатка"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1}: не вказано src"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1}: не вдалося виконати синтаксичний аналіз URL-адреси {PH2}."
+    "message": "{PH1}: не вдалося виконати синтаксичний аналіз URL-адреси {PH2}"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Знімок екрана"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Статус зворотного кешу"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Пояснення"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Останню навігацію не кешовано, бо"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Остання навігація основним фреймом"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Звичайна навігація"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Функції блокують зворотний кеш"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Відновлено зі зворотного кешу"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL-адреса"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Підтримуватиметься в майбутній версії Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонове отримання"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Поскаржитися на проблему з Інструментами розробника"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Повідомити про проблему з перекладом"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Показати інструмент \"Що нового\""
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Приховані проблеми"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Показати всі проблеми"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Уражені ресурси"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Надійна діяльність в Інтернеті"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Показати всі приховані проблеми"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "заблоковано"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Виконайте запит або натисніть {PH1}, щоб записати оновлення сторінки."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Натисніть ({PH1}), щоб показати активність у мережі."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Записати журнал мережі ({PH1}), щоб відобразити дії в ній."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Запис дій у мережі…"
@@ -7203,7 +7224,7 @@
     "message": "Показати в режимі \"Підсумок\""
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Показати об'єкт \"{PH1}\" з ідентифікатором @{PH2} у режимі \"Підсумок\""
+    "message": "Показати об’єкт \"{PH1}\" з ідентифікатором @{PH2} у режимі \"Підсумок\""
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Зберегти як глобальну змінну"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Очистити все"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Напрямок"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Документація"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Позначка часу"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Тип"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Монітор протоколу"
@@ -7755,7 +7776,7 @@
     "message": "Ця сторінка ненадійна."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Ця сторінка ненадійна (неактивний HTTPS)."
+    "message": "Ця сторінка ненадійна (неактивний протокол HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "Ця сторінка безпечна (дійсний протокол HTTPS)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Зазначені вище деталі безпеки взято з першої перевіреної відповіді."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Безпека цієї сторінки невідома."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Сервер використовує застарілий підпис SHA-1. Натомість увімкніть алгоритм SHA-2. (Зверніть увагу: він відрізняється від підпису в сертифікаті.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Ця сторінка незахищена (незашифрований HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Ця сторінка ненадійна."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Ця сторінка ненадійна (неактивний HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Ця сторінка безпечна (дійсний протокол HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Ця сторінка підозріла"
@@ -8316,7 +8325,7 @@
     "message": "Додати скрипти контенту в список ігнорування (скрипти розширень на сторінці)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ігнорувати скрипти, назви яких відповідають шаблону {PH1}"
+    "message": "Ігнорувати скрипти, назви яких відповідають шаблону \"{PH1}\""
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Немає шаблонів списку ігнорування"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Пристрій"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Пристрій \"{PH1}\" додано або оновлено."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Назва пристрою"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Додати бренд"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Рядок бренду додано"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Архітектура"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Видалити"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Рядок бренду видалено"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Модель пристрою"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Асинхронне завдання"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Код модуля кешу"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Код скрипту кешу"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Кешовано модуль Wasm"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Тривалість"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Швидка компіляція всіх функцій"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Кількість задіяних елементів"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "скрипт не відповідає вимогам"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "скрипт збережено в кеші"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Обробка скриптів"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Щоб підтвердити, натисніть Enter; щоб скасувати – Escape.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Введіть знак питання, щоб переглянути доступні команди"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Введіть \"?\", щоб переглянути доступні команди"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Перемикайте команди за допомогою клавіші Tab. Введіть \"?\", щоб переглянути доступні команди."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Відкрити файл"

@@ -243,7 +243,7 @@
     "message": "עברת אל {PH1}"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "הפרופיל '{PH1}' הסתיים."
+    "message": "הפרופיל {PH1} הסתיים."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "הפרופיל '{PH1}' התחיל."
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "התכונה של אילוץ מדיה prefers-color-scheme של CSS"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "התכונה של אילוץ מדיה prefers-contrast של CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "התכונה של אילוץ מדיה prefers-reduced-data של CSS"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "הרוחב בפועל ({PH1}px) של {PH2} {PH3} אינו תואם לרוחב שצוין ({PH4}px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "מזהה אפליקציה"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "המזהה מציין עבור הדפדפן אם המניפסט צריך לעדכן אפליקציה קיימת, או אם הוא מפנה לאפליקציית אינטרנט שאפשר להתקין."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "הערה: לא צוין 'מזהה' במניפסט, במקום זאת נעשה שימוש ב 'start_url'. כדי לציין מזהה אפליקציה שתואם לזיהוי הנוכחי, יש להגדיר את השדה 'מזהה' כ-\"{PH1}\"."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "קובץ מניפסט של אפליקציה"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src לא מוגדר"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "ניתוח כתובת ה-URL של {PH1} '{PH2}' נכשל"
+    "message": "ניתוח כתובת ה-URL של {PH1}‏ '{PH2}' נכשל"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "צילום מסך"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "הסטטוס של המטמון לדף הבא/הקודם"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "הסברים"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "הניווט האחרון שלך לא נשמר במטמון כי"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "ניווט למסגרת הראשית האחרונה"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "ניווט רגיל"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "תכונות למניעת שמירה של מטמון לדף הקודם/הבא"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "שוחזר מהמטמון לדף הקודם/הבא"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "כתובת URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(תהיה תמיכה באחת מהגרסאות הבאות של Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "אחזור רקע"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "דיווח על בעיה בכלי פיתוח"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "דיווח על בעיה בתרגום"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "הצגה של מה חדש"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "בעיות מוסתרות"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "ביטול ההסתרה של כל הבעיות"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "מקורות המידע שהושפעו"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "פעילות מהימנה באינטרנט"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "ביטול ההסתרה של כל הבעיות המוסתרות"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "נחסם"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "ביצוע בקשה או הקשה על {PH1} כדי להקליט את הטעינה מחדש."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "יש להקליט ({PH1}) כדי להציג את פעילות הרשת."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "צריך להקליט את יומן הרשת ({PH1}) כדי להציג את פעילות הרשת."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "מתבצעת הקלטה של פעילות רשת…"
@@ -7203,7 +7224,7 @@
     "message": "הצגה בתצוגת הסיכום"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "חשיפת אובייקט '{PH1}' עם מזהה @{PH2} בתצוגת הסיכום"
+    "message": "חשיפת האובייקט '{PH1}' עם המזהה @{PH2} בתצוגת הסיכום"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "אחסון כמשתנה גלובלי"
@@ -7521,7 +7542,7 @@
     "message": "קריאת הקובץ נכשלה"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "שגיאת קריאה של קובץ '{PH1}': {PH2}"
+    "message": "שגיאת קריאה של הקובץ '{PH1}':‏ {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "חיפוש לפי עלות (יותר מ-50 אלפיות שנייה), שם או קובץ"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ניקוי הכול"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "כיוון"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "תיעוד"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "חותמת זמן"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "סוג"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "מוניטור הפרוטוקול"
@@ -7752,7 +7773,7 @@
     "message": "לא ידוע אם הדף הזה מאובטח."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "דף זה אינו מאובטח."
+    "message": "הדף הזה לא מאובטח."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
     "message": "הדף הזה לא מאובטח (HTTPS מנותק)."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "פרטי האבטחה המופיעים למעלה שייכים לתגובה הנבדקת הראשונה."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "לא ידוע אם הדף הזה מאובטח."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "בחתימת השרת נעשה שימוש באלגוריתם המיושן SHA-1. יש להפעיל את אלגוריתם החתימה SHA-2 במקום זאת. (הערה: מדובר בחתימה השונה מהחתימה באישור)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "דף זה אינו מאובטח (HTTP לא מוצפן)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "דף זה אינו מאובטח."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "הדף הזה לא מאובטח (HTTPS מנותק)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "הדף הזה מאובטח (HTTPS חוקי)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "הדף הזה חשוד"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "מכשיר"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "המכשיר {PH1} נוסף/עודכן."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "שם המכשיר"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "הוספת מותג"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "שורת המותג נוספה"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "ארכיטקטורה"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "מחיקה"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "שורת המותג נמחקה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "דגם המכשיר"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "משימה אסינכרונית"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "קוד המודול שבמטמון"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "קוד סקריפט שבמטמון"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "מודול Wasm שנשמר במטמון"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "משך"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "מתבצע הידור של כל הפונקציות באופן יסודי"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "רכיבים שהושפעו"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "הסקריפט לא מתאים"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "הסקריפטים נשמרו במטמון"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "כתיבת סקריפטים"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (יש להקיש על מקש 'Enter' לאישור, או על מקש 'Escape' לביטול.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "יש להקליד סימן שאלה כדי להציג פקודות זמינות"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "יש להקיש על '?' כדי לראות את הפקודות הזמינות"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "משתמשים במקש Tab כדי לעבור בין פקודות. צריך להקיש על '?' כדי לראות את הפקודות הזמינות"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "פתיחת קובץ"

@@ -243,10 +243,10 @@
     "message": "Acessou {PH1}."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Perfil \"{PH1}\" concluído."
+    "message": "O perfil \"{PH1}\" foi encerrado."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Perfil \"{PH1}\" iniciado."
+    "message": "O perfil \"{PH1}\" foi iniciado."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animação"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Força o recurso de mídia CSS prefers-color-scheme"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Força o recurso de mídia CSS prefers-contrast"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Força o recurso de mídia CSS prefers-reduced-data"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "A largura real ({PH1} px) de {PH2} {PH3} não corresponde à especificada ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID do app"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Indicação usada para que o navegador saiba se a função do manifesto é atualizar um aplicativo já existente ou se ele se refere a um novo app da Web que pode ser instalado."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Observação: \"id\" não é especificado no manifesto. No lugar dele, usamos o \"start_url\". Para especificar um ID do app correspondente à identidade atual, defina o campo \"id\" como ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifesto do app"
   },
@@ -2130,7 +2142,7 @@
     "message": "O src da imagem {PH1} não foi definido"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} falha ao analisar o URL \"{PH2}\""
+    "message": "Falha na análise do URL {PH2} da {PH1}"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Captura de tela"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status do cache de avanço e retorno"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explicações"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "A última navegação não foi armazenada em cache porque"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Última navegação do frame principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navegação normal"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Recursos que estão impedindo o armazenamento de cache de avanço e retorno"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restaurado do cache de avanço e retorno"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "O suporte estará disponível em uma versão futura do Chrome"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Busca em segundo plano"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Relatar um problema do DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Denunciar um problema de tradução"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Mostrar a ferramenta \"O que há de novo\""
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Problemas ocultos"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Exibir todos os problemas"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afetados"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Atividade na Web confiável"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Reexibir todos os problemas ocultos"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "bloqueado"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Faça uma solicitação ou pressione {PH1} para gravar a atualização."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Grave ({PH1}) para exibir a atividade de rede."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Grave o registro de rede ({PH1}) para mostrar a atividade da rede."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Gravando atividade de rede…"
@@ -7203,7 +7224,7 @@
     "message": "Revelar na visualização de resumo"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Revelar o objeto \"{PH1}\" com o ID @{PH2} na visualização do resumo"
+    "message": "Revelar o objeto {PH1} com o ID @{PH2} na visualização do resumo"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Armazenar como variável global"
@@ -7215,7 +7236,7 @@
     "message": "Objeto do usuário acessível pela janela"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Ocorreu um erro quando uma chamada para o método {PH1} foi solicitada"
+    "message": "Ocorreu um erro na solicitação de uma chamada para o método {PH1}."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Os cronogramas de alocação mostram alocações de memória JavaScript instrumentadas ao longo do tempo. Depois que o perfil é gravado, é possível selecionar um intervalo de tempo para ver objetos que foram alocados dentro dele e continuam ativos ao final da gravação. Use esse tipo de perfil para isolar vazamentos de memória."
@@ -7521,7 +7542,7 @@
     "message": "Falha ao ler o arquivo"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Erro de leitura do arquivo \"{PH1}\": {PH2}"
+    "message": "Erro de leitura do arquivo {PH1}: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Encontrar por custo (>50 ms), nome ou arquivo"
@@ -7566,7 +7587,7 @@
     "message": "Árvore (de cima para baixo)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Não é possível carregar o arquivo. Extensões de arquivo compatíveis: \"{PH1}\"."
+    "message": "Não é possível carregar o arquivo. Extensões de arquivo compatíveis: {PH1}."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Não é possível carregar um perfil enquanto outro está sendo gravado."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Limpar tudo"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direção"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentação"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Carimbo de data/hora"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tipo"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor de protocolo"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Os detalhes de segurança acima são da primeira resposta inspecionada."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "A segurança desta página é desconhecida."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "A assinatura do servidor usa SHA-1, que está obsoleta. Ative um algoritmo de assinatura SHA-2. Observe que isso é diferente da assinatura no certificado."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Esta página não é segura (HTTP sem criptografia)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Esta página não é segura."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Esta página não é segura (HTTPS incorreto)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Esta página é segura (HTTPS válido)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Esta página é suspeita"
@@ -8316,7 +8325,7 @@
     "message": "Adicionar scripts de conteúdo à lista de ignorados (scripts de extensão na página)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignorar scripts cujos nomes correspondem a \"{PH1}\""
+    "message": "Ignorar scripts com nomes correspondentes a {PH1}"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Nenhum padrão da lista de ignorados"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Dispositivo"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "O dispositivo {PH1} foi adicionado/atualizado."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nome do dispositivo"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Adicionar marca"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "A linha de marcas foi adicionada"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arquitetura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Excluir"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "A linha de marcas foi excluída"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modelo do dispositivo"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tarefa assíncrona"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Código do módulo em cache"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Código do script em cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Módulo Wasm armazenado em cache"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Duração"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Compilando prontamente todas as funções"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elementos afetados"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "script não qualificado"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "script salvo em cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Processamento de scripts"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}. Pressione Enter para confirmar ou Esc para cancelar."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Digite um ponto de interrogação para ver os comandos disponíveis"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Digite \"?\" para ver os comandos disponíveis"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Use a tecla Tab para alternar entre os comandos. Pressione \"?\" para ver os comandos disponíveis"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Abrir arquivo"

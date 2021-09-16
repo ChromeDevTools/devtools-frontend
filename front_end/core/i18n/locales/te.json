@@ -243,10 +243,10 @@
     "message": "{PH1}కు నావిగేట్ చేయబడింది"
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "ప్రొఫైల్ '{PH1}' పూర్తయింది."
+    "message": "ప్రొఫైల్ \"{PH1}\" పూర్తయింది."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "ప్రొఫైల్ '{PH1}' మొదలైంది."
+    "message": "ప్రొఫైల్ \"{PH1}\" మొదలైంది."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "యానిమేషన్"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme మీడియా ఫీచర్‌ను ఫోర్స్ చేస్తుంది"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast మీడియా ఫీచర్‌ను ఫోర్స్ చేస్తుంది"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data మీడియా ఫీచర్‌ను ఫోర్స్ చేస్తుంది"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} అసలైన వెడల్పు ({PH1}px) పేర్కొన్న వెడల్పు ({PH4}px)కు మ్యాచ్ కాలేదు"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "యాప్ Id"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "మ్యానిఫెస్ట్ ఇప్పటికే ఉన్న యాప్‌ను అప్‌డేట్ చేయాలా లేదా ఇన్‌స్టాల్ చేయగల కొత్త వెబ్ యాప్‌ను సూచిస్తుందో లేదో తెలుసుకోవడానికి బ్రౌజర్ దీనిని ఉపయోగిస్తుంది."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "గమనిక: మ్యానిఫెస్ట్‌లో 'id' పేర్కొనబడలేదు, బదులుగా 'start_url' ఉపయోగించబడింది. ప్రస్తుతం ఉన్న గుర్తింపునకు మ్యాచ్ అయ్యే యాప్ Idని పేర్కొనడానికి, 'id' ఫీల్డ్‌ను \"{PH1}\"కు సెట్ చేయండి."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "యాప్ మ్యానిఫెస్ట్"
   },
@@ -2064,7 +2076,7 @@
     "message": "మ్యాచ్ అయ్యే service worker గుర్తించబడలేదు. మీరు పేజీని రీలోడ్ చేయాల్సి రావచ్చు లేదా ప్రస్తుత పేజీ కోసం service worker పరిధిలో మ్యానిఫెస్ట్ నుండి పరిధి, ప్రారంభ URL ఉన్నాయో లేదో చూసుకోండి."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
-    "message": "Play స్టోర్ IDని అందించలేదు"
+    "message": "Play Store IDని అందించలేదు"
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "దాని ప్రయోజన లక్షణం అన్‌సెట్ చేయబడి గానీ లేదా \"any\"కు సెట్ చేయబడి గానీ ఉన్న, కనీసం {PH1}px స్క్వేర్‌తో PNG, SVG లేదా WebP ఫార్మాట్‌లోని చిహ్నం ఏదీ అందించబడలేదు."
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src సెట్ చేయబడలేదు"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL '{PH2}'ను అన్వయించడంలో విఫలమైంది"
+    "message": "{PH1} URL \"{PH2}\"ను అన్వయించడంలో విఫలమైంది"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "స్క్రీన్‌షాట్"
@@ -2160,7 +2172,7 @@
     "message": "యాప్ ఇప్పటికే ఇన్‌స్టాల్ అయింది"
   },
   "panels/application/AppManifestView.ts | thePlayStoreAppUrlAndPlayStoreId": {
-    "message": "Play స్టోర్ యాప్ URL, Play స్టోర్ ID మ్యాచ్ కావడం లేదు"
+    "message": "Play Store యాప్ URL, Play Store ID మ్యాచ్ కావడం లేదు"
   },
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "పేర్కొన్న అప్లికేషన్ ప్లాట్‌ఫామ్‌కు Androidలో సపోర్ట్ లేదు"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "వెనుకకు-ముందుకు కాష్ స్టేటస్"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "వివరణలు"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "ఈ కారణంగా చివరి నావిగేషన్ కాష్ చేయబడలేదు"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "మునుపటి ప్రధాన ఫ్రేమ్ నావిగేషన్"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "సాధారణ నావిగేషన్"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "వెనుకకు-ముందుకు కాష్‌ను నివారించే ఫీచర్‌లు"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "వెనుకకు-ముందుకు కాష్ నుండి రీస్టోర్ చేయబడింది"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome భవిష్యత్తు వెర్షన్‌లో పని చేస్తుంది)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "బ్యాక్‌గ్రౌండ్‌లో పొందు"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools సమస్యను రిపోర్ట్ చేయండి"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "అనువాదానికి సంబంధించిన సమస్యను రిపోర్ట్ చేయండి"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "కొత్తగా ఏమి ఉన్నాయో చూపించు"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "దాచబడిన సమస్యలు"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "అన్ని సమస్యలను చూపండి"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ప్రభావిత రిసోర్స్‌లు"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "విశ్వసనీయ వెబ్ యాక్టివిటీ"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "దాచబడిన అన్ని సమస్యలను చూపండి"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "బ్లాక్ చేయబడింది"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "రీలోడ్‌ను రికార్డ్ చేయడానికి రిక్వెస్ట్‌ను అమలు చేయండి లేదా {PH1}ను నొక్కండి."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "నెట్‌వర్క్ యాక్టివిటీని ప్రదర్శించడానికి రికార్డ్ ({PH1})."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "నెట్‌వర్క్ యాక్టివిటీని ప్రదర్శించడానికి ({PH1}) నెట్‌వర్క్ లాగ్‌ను రికార్డ్ చేయండి."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "నెట్‌వర్క్ యాక్టివిటీని రికార్డ్ చేస్తోంది…"
@@ -7203,7 +7224,7 @@
     "message": "సారాంశ వీక్షణలో చూపించు"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "సారాంశ వీక్షణలో ID @{PH2}తో ఆబ్జెక్ట్‌ {PH1}ను బహిరంగపరచండి"
+    "message": "సారాంశ వీక్షణలో ID @{PH2}తో ఆబ్జెక్ట్ \"{PH1}\"ను చూపండి"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "గ్లోబల్ వేరియబుల్‌గా స్టోర్ చేయండి"
@@ -7215,7 +7236,7 @@
     "message": "విండో నుండి చేరుకోగల యూజర్ ఆబ్జెక్ట్"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "'{PH1}' పద్దతికి కాల్‌ను రిక్వెస్ట్ చేసినప్పుడు ఎర్రర్ ఏర్పడింది"
+    "message": "\"{PH1}\" పద్దతికి కాల్‌ను రిక్వెస్ట్ చేసినప్పుడు ఎర్రర్ ఏర్పడింది"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "కేటాయింపు టైమ్‌లైన్‌లు అనేవి కాలానుగతంగా ఉపయోగించిన JavaScript మెమరీ కేటాయింపులను చూపుతుంది. ఒకసారి ప్రొఫైల్ రికార్డ్ అయిన తర్వాత, మీరు దాని లోపలే కేటాయించబడి, అలాగే రికార్డింగ్ ముగిసే సమయానికి కూడా యాక్టివ్‌గా ఉండే ఆబ్జెక్ట్‌లను చూడటానికి సమయ విరామాన్ని ఎంచుకోవచ్చు. మెమరీ లీక్‌లను వేరు చేయడానికి ఈ ప్రొఫైల్ రకాన్ని ఉపయోగించండి."
@@ -7521,7 +7542,7 @@
     "message": "ఫైల్‌ను చదవడంలో విఫలమైంది"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "'{PH1}' ఫైల్ రీడ్ ఎర్రర్: {PH2}"
+    "message": "ఫైల్ ''{PH1}'' రీడ్ ఎర్రర్: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "ధర ఆధారంగా కనుగొనండి (>50ms), పేరు లేదా ఫైల్"
@@ -7566,7 +7587,7 @@
     "message": "ట్రీ (పై నుండి కిందికి)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "ఫైల్‌ను లోడ్ చేయడం సాధ్యం కాదు. సపోర్ట్ కలిగిన ఫైల్ ఎక్స్‌టెన్షన్‌లు: '{PH1}.'"
+    "message": "ఫైల్‌ను లోడ్ చేయడం సాధ్యం కాదు. సపోర్ట్ కలిగిన ఫైల్ ఎక్స్‌టెన్షన్‌లు: \"{PH1}\"."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ఒక ప్రొఫైల్‌ను రికార్డ్ చేస్తూ ఉండగా మరొక ప్రొఫైల్‌ను లోడ్ చేయడం సాధ్యపడదు."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "అన్నింటినీ క్లియర్ చేయి"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "దిశ"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "డాక్యుమెంటేషన్"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "టైమ్ స్టాంప్"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "రకం"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "ప్రోటోకాల్ మానిటర్"
@@ -7749,7 +7770,7 @@
     "message": "{PH2}తో {PH1}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ఈ పేజీ యొక్క భద్రత తెలియదు."
+    "message": "ఈ పేజీ భద్రతకు సంబంధించిన సమాచారం తెలియదు."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
     "message": "ఈ పేజీ సురక్షితమైనది కాదు."
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "పైన ఉన్న సెక్యూరిటీ వివరాలు మొదటి తనిఖీ ప్రతిస్పందనలోనివి."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "ఈ పేజీ యొక్క భద్రత తెలియదు."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "సర్వర్ సంతకం కాలం చెల్లిన SHA-1ను ఉపయోగిస్తోంది. బదులుగా SHA-2 సంతకం అల్గారిథమ్‌ను ఎనేబుల్ చేయండి. (సర్టిఫికెట్‌లో ఉన్న సంతకానికి ఇది భిన్నమైనదని గమనించండి)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "ఈ పేజీ సురక్షితంగా లేదు (ఎన్‌క్రిప్ట్ చేయని HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "ఈ పేజీ సురక్షితమైనది కాదు."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ఈ పేజీ సురక్షితమైనది కాదు (పనిచేయని HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "ఈ పేజీ సురక్షితం (చెల్లుబాటు అయ్యే HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "ఈ పేజీ అనుమానాస్పదంగా ఉంది"
@@ -8316,7 +8325,7 @@
     "message": "లిస్ట్‌ను విస్మరించడానికి కంటెంట్ స్క్రిప్ట్‌లను జోడించండి (పేజీలో ఎక్స్‌టెన్షన్ స్క్రిప్ట్‌లు)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "'{PH1}'కు మ్యాచ్ అయ్యే పేర్లున్న స్క్రిప్ట్‌లను విస్మరించు"
+    "message": "\"{PH1}\"కు మ్యాచ్ అయ్యే పేర్లు ఉన్న స్క్రిప్ట్‌లను విస్మరించండి"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "విస్మరించాల్సిన లిస్ట్ ఆకృతులు లేవు"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "పరికరం"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} పరికరం విజయవంతంగా జోడించబడింది/ అప్‌డేట్ చేయబడింది."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "పరికరం పేరు"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "బ్రాండ్‌ను జోడించండి"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "బ్రాండ్ అడ్డు వరుస జోడించబడింది"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "ఆర్కిటెక్చర్"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "తొలగించండి"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "బ్రాండ్ అడ్డు వరుస తొలగించబడింది"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "పరికరం మోడల్"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "అసమకాలిక టాస్క్"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "మాడ్యూల్ కోడ్‌ను కాష్ చేయండి"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "స్క్రిప్ట్ కోడ్‌ను కాష్ చేయండి"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "కాష్ చేయబడ్డ Wasm మాడ్యూల్"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "వ్యవధి"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "అన్ని ఫంక్షన్‌లను వెంటనే కంపైల్ చేస్తోంది"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "ఎలిమెంట్‌లు ప్రభావింతం అయ్యాయి"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "స్క్రిప్ట్‌కు అర్హత లేదు"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "స్క్రిప్ట్ కాష్‌లో సేవ్ చేయబడింది"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "స్క్రిప్టింగ్"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (నిర్ధారించడానికి 'ఎంటర్' కీని లేదా రద్దు చేయడానికి 'ఎస్కేప్' కీని నొక్కండి.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "అందుబాటులో ఉన్న కమాండ్‌లను చూడటానికి ప్రశ్న గుర్తును టైప్ చేయండి"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "అందుబాటులో ఉన్న కమాండ్‌లను చూడటానికి '?'ను టైప్ చేయండి"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "కమాండ్‌లను మార్చడానికి Tabను ఉపయోగించండి. అందుబాటులో ఉన్న కమాండ్‌లను చూడటానికి '?'ను టైప్ చేయండి"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ఫైల్‌ను తెరవండి"

@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Forțează funcția media CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Forțează funcția media CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Forțează funcția media CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Lățimea reală ({PH1} px) a {PH2} {PH3} nu corespunde lățimii specificate ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Cod de aplicație"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Browserul folosește acest cod ca să afle dacă manifestul trebuie să actualizeze o aplicație existentă sau dacă face referire la o nouă aplicație web care se poate instala."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Notă: „codul” nu este specificat în manifest; se folosește „start_url”. Ca să specifici un cod de aplicație care corespunde identității actuale, setează câmpul „cod” la „{PH1}”."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifestul aplicației"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Stare memorie cache înainte-înapoi"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Explicații"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Ultima navigare nu a fost memorată în cache deoarece"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Navigarea la ultimul cadru principal"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navigare normală"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funcții care împiedică memoria cache înainte-înapoi"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restabilit din memoria cache înainte-înapoi"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "Adresa URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Acceptat într-o versiune viitoare de Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Preluare în fundal"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Raportează o problemă DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Raportează o problemă legată de traducere"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Afișează noutățile"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Probleme ascunse"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Reafișează toate problemele"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Resursele afectate"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Activitate web de încredere"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Reafișează toate problemele ascunse"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blocat"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Fă o solicitare sau apasă {PH1} pentru a înregistra reîncărcarea."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Înregistrează ({PH1}) pentru a afișa activitatea din rețea."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Înregistrează un jurnal de rețea ({PH1}) pentru a afișa activitatea din rețea."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Se înregistrează activitatea din rețea…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Șterge tot"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Direcție"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentație"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Marcaj temporal"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Tip"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor protocol"
@@ -7758,7 +7779,7 @@
     "message": "Această pagină nu este securizată (HTTPS întrerupt)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "Această pagină este sigură (HTTPS valid)."
+    "message": "Această pagină este securizată (HTTPS valid)."
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "conținut activ cu erori privind certificatele"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Detaliile de securitate de mai sus sunt de la primul răspuns inspectat."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Securitatea acestei pagini este necunoscută."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Semnătura de server folosește funcția SHA-1, care este învechită. Activează un algoritm de semnare SHA-2. (Reține că acesta diferă de semnătura din certificat.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Această pagină este nesecurizată (HTTP necriptat)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Această pagină nu este securizată."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Această pagină nu este securizată (HTTPS întrerupt)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Această pagină este sigură (HTTPS valid)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Această pagină este suspectă"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Dispozitiv"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Dispozitivul {PH1} a fost adăugat / actualizat."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Numele dispozitivului"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Adaugă marca"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "S-a adăugat rândul pentru marcă"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arhitectură"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Șterge"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "S-a șters rândul pentru marcă"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Modelul dispozitivului"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Activitate asincronă"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Codul modulului din memoria cache"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Codul scriptului din memoria cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm stocat în memoria cache"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durată"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Se compilează rapid toate funcțiile"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elemente afectate"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "scriptul nu este eligibil"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "scriptul s-a salvat în memoria cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Scriptare"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Apasă pe Enter pentru a confirma sau pe Escape pentru a anula.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Introdu semnul întrebării pentru a vedea comenzile disponibile"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Introdu ? pentru a vedea comenzile disponibile"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Folosește tasta Tab pentru a schimba comanda. Introdu ? pentru a vedea comenzile disponibile"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Deschide fișierul"

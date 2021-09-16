@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Wymusza funkcję multimedialną CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Wymusza funkcję multimedialną CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Wymusza funkcję multimedialną CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Rzeczywista szerokość ({PH1} piks.) elementu {PH2} {PH3} jest inna niż wskazana szerokość ({PH4} piks.)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "Identyfikator aplikacji"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Na podstawie identyfikatora przeglądarka określa, czy plik manifestu powinien zaktualizować istniejącą aplikację czy wskazuje nową aplikację internetową, którą można zainstalować."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Uwaga: w pliku manifestu nie określono wartości „id”. Zamiast niej podano „start_url”. Aby określić identyfikator aplikacji pasujący do bieżącej tożsamości, ustaw w polu „id” wartość „{PH1}”'."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest aplikacji"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Stan pamięci podręcznej stanu strony internetowej (bfcache)"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Wyjaśnienia"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Ostatnia nawigacja nie została zapisana w pamięci podręcznej, ponieważ"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Ostatnia nawigacja w ramce głównej"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Nawigacja standardowa"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkcje blokujące pamięć podręczną stanu strony internetowej"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Przywrócono z pamięci podręcznej stanu strony internetowej"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Obsługiwane w przyszłej wersji Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Pobranie w tle"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Zgłoś problem z Narzędziami deweloperskimi"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Zgłoś problem z tłumaczeniem"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Pokaż Co nowego"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Ukryte problemy"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Odkryj wszystkie problemy"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Zasoby objęte wpływem"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Zaufana aktywność internetowa"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Odkryj wszystkie ukryte problemy"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "zablokowano"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Wykonaj żądanie lub wybierz {PH1}, aby zarejestrować ponowne ładowanie."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Rejestruj ({PH1}), aby wyświetlać aktywność sieci."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Zarejestruj dziennik sieci ({PH1}), aby pokazać jej aktywność."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Rejestruję aktywność sieciową…"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Wyczyść wszystko"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Kierunek"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentacja"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Sygnatura czasowa"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Typ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Monitor protokołów"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Powyższe dane zabezpieczeń pochodzą z pierwszej zbadanej odpowiedzi."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Bezpieczeństwo tej strony jest nieznane."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Podpis serwera wykorzystuje przestarzały algorytm SHA-1. Zamiast niego włącz algorytm podpisywania SHA-2. (Różni się to od podpisu w certyfikacie)."
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Ta strona jest niezabezpieczona (HTTP bez szyfrowania)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Ta strona nie jest zabezpieczona."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Ta strona nie jest zabezpieczona (uszkodzony HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Ta strona jest zabezpieczona (prawidłowe zabezpieczenie HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Ta strona jest podejrzana"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Urządzenie"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Urządzenie {PH1} zostało dodane/zaktualizowane."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nazwa urządzenia"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Dodaj markę"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Wiersz marki został dodany"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Architektura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Usuń"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Wiersz marki został usunięty"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model urządzenia"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Zadanie asynchroniczne"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kod modułu pamięci podręcznej"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kod skryptu pamięci podręcznej"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Moduł Wasm w pamięci podręcznej"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Długość snu"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Sprawne kompilowanie wszystkich funkcji"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Elementy, których to dotyczy"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skrypt jest nieodpowiedni"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "Zapisano skrypt w pamięci podręcznej"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skrypty"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Naciśnij klawisz Enter, aby potwierdzić, lub Escape, aby anulować)."
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Aby zobaczyć dostępne polecenia, wpisz znak zapytania"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Wpisz „?”, aby zobaczyć dostępne polecenia"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Aby przełączyć polecenia, naciśnij Tab. Wpisz „?”, aby zobaczyć dostępne polecenia"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Otwórz plik"

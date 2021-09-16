@@ -243,10 +243,10 @@
     "message": "{PH1} 주소로 이동했습니다."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "'{PH1}' 프로필이 완료되었습니다."
+    "message": "''{PH1}'' 프로필이 완료되었습니다."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "프로필 '{PH1}'이 시작되었습니다."
+    "message": "\"{PH1}'' 프로필이 시작되었습니다."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "애니메이션"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "CSS prefers-color-scheme 미디어 기능을 강제 실행합니다."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "CSS prefers-contrast 미디어 기능 강제 실행"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "CSS prefers-reduced-data 미디어 기능을 강제 실행합니다."
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3}의 실제 너비({PH1}px)가 지정된 너비({PH4}px)와 일치하지 않음"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "앱 ID"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "매니페스트가 기존 애플리케이션을 업데이트해야 하는지 또는 설치 가능한 새로운 웹 앱을 참조하는지 브라우저에서 파악해야 할 때 사용됩니다."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "참고: 매니페스트에 'id'가 지정되지 않았습니다. 'start_url'이 대신 사용되었습니다. 현재 ID에 대응하는 앱 ID를 지정하려면 'id' 필드를 ''{PH1}''(으)로 설정하세요."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "앱 매니페스트"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src 설정되지 않음"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "{PH1} URL('{PH2}')을 파싱할 수 없습니다."
+    "message": "{PH1} URL(''{PH2}'')을 파싱할 수 없음"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "스크린샷"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "뒤로-앞으로 캐시 상태"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "설명"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "최근 탐색이 다음 이유로 캐시되지 않았습니다."
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "최근 메인 프레임 탐색"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "일반 탐색"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "뒤로-앞으로 캐시를 방지하는 기능이 있음"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "뒤로-앞으로 캐시에서 복원됨"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Chrome의 이후 버전에서 지원 예정)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "배경화면 가져오기"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "DevTools 문제 신고"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "번역 문제 신고"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "새로운 소식 표시"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "숨겨진 문제"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "모든 문제 숨기기 해제"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "영향을 받는 리소스"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "신뢰할 수 있는 웹 활동"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "모든 숨겨진 문제 숨기기 취소"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "차단됨"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "요청을 실행하거나 {PH1}을 눌러 새로고침을 기록합니다."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "네트워크 활동을 표시하기 위한 기록({PH1})입니다."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "네트워크 활동을 표시하기 위해 네트워크 로그({PH1})를 기록합니다."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "네트워크 활동 기록 중…"
@@ -7203,7 +7224,7 @@
     "message": "요약 보기에 표시"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "요약 보기에서 ID가 @{PH2}인 객체 '{PH1}'을(를) 표시합니다."
+    "message": "요약 뷰에서 ID가 @{PH2}인 ''{PH1}'' 객체 표시"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "전역 변수로 저장"
@@ -7215,7 +7236,7 @@
     "message": "창에서 연결 가능한 사용자 객체"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "‘{PH1}’ 메서드 호출 요청 시 오류가 발생함"
+    "message": "''{PH1}'' 메서드 호출 요청 시 오류가 발생했습니다."
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "할당 타임라인은 시간에 따라 계측된 자바스크립트 메모리 할당을 보여줍니다. 프로필이 기록되면 프로필 내에서 할당되어 기록 종료 시점까지 활성 상태인 객체를 확인하는 시간 간격을 선택할 수 있습니다. 이 프로필 유형을 사용하여 메모리 누수를 격리합니다."
@@ -7521,7 +7542,7 @@
     "message": "파일을 읽지 못함"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "파일 '{PH1}' 읽기 오류: {PH2}"
+    "message": "''{PH1}'' 파일 읽기 오류: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "비용(>50ms), 이름 또는 파일로 찾기"
@@ -7566,7 +7587,7 @@
     "message": "트리(하향식)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "파일을 로드할 수 없습니다. 지원되는 파일 확장자: '{PH1}'"
+    "message": "파일을 로드할 수 없습니다. 지원되는 파일 확장자: \"{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "다른 프로필이 기록되고 있는 중에는 프로필을 로드할 수 없습니다."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "모두 지우기"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "방향"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "문서"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "타임스탬프"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "유형"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "프로토콜 모니터"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "위의 보안 세부정보는 처음에 검사한 응답을 기반으로 합니다."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "이 페이지의 보안 상태는 알 수 없습니다."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "서버 서명에 지원 중단된 SHA-1을 사용합니다. SHA-2 서명 알고리즘을 대신 사용 설정하세요. (인증서에 있는 서명과는 다릅니다.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "이 페이지는 안전하지 않습니다(암호화되지 않은 HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "이 페이지는 안전하지 않습니다."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "이 페이지는 안전하지 않습니다(손상된 HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "이 페이지는 안전합니다(유효한 HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "의심스러운 페이지"
@@ -8316,7 +8325,7 @@
     "message": "무시 목록에 콘텐츠 스크립트 추가(페이지의 확장 프로그램 스크립트)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "이름이 '{PH1}'인 스크립트 무시"
+    "message": "이름이 ''{PH1}''인 스크립트 무시"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "무시 목록 패턴 없음"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "기기"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "{PH1} 기기가 추가되거나 업데이트되었습니다."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "기기 이름"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "브랜드 추가"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "브랜드 행 추가됨"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "아키텍처"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "삭제"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "브랜드 행 삭제됨"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "기기 모델"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "비동기 작업"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "캐시 모듈 코드"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "캐시 스크립트 코드"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "캐시된 Wasm 모듈"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "기간"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "모든 함수를 컴파일하는 중"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "영향을 받는 요소"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "스크립트를 사용할 수 없음"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "캐시에 저장된 스크립트"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "스크립트"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1}('Enter' 키를 눌러 확인하거나 'Esc' 키를 눌러 취소)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "물음표를 입력하여 사용 가능한 명령 표시"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "'?'를 입력하여 사용 가능한 명령어 보기"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "명령어를 바꾸려면 Tab을 누르세요. 사용 가능한 명령을 확인하려면 물음표를 입력하세요."
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "파일 열기"

@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Vsili funkcijo predstavnosti CSS prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Vsili funkcijo predstavnosti CSS prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Vsili funkcijo predstavnosti CSS prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Dejanska širina ({PH1} slikovnih pik) slike {PH2} {PH3} se ne ujema z določeno širino ({PH4} slikovnih pik)."
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID aplikacije"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "To polje uporablja brskalnik za ugotavljanje, ali mora manifest posodobiti trenutno aplikacijo oziroma ali se nanaša na novo spletno aplikacijo, ki jo je mogoče namestiti."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Opomba: Ker polje »id« ni določeno v manifestu, je namesto njega uporabljeno polje »start_url«. Če želite določiti ID aplikacije, ki se ujema s trenutno identiteto, polje »id« nastavite na »{PH1}«."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifest aplikacije"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Stanje predpomnilnika za hitro obnovitev strani"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Razlage"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Zadnje premikanje ni bilo predpomnjeno, ker"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Zadnje krmarjenje v glavnem okviru"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Običajno krmarjenje"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funkcije, ki preprečujejo predpomnilnik za hitro obnovitev strani"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Obnovljeno iz predpomnilnika za hitro obnovitev strani"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Podprto v prihodnji različici Chroma)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Prenos v ozadju"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Prijava težave z orodji za razvijalce"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Prijava težave s prevajanjem"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Prikaži novosti"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Skrite težave"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Razkrij vse težave"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Prizadeta sredstva"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Zaupanja vredna spletna dejavnost"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Razkrij vse skrite težave"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blokirano"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Izvedite zahtevo ali pritisnite {PH1}, da zabeležite vnovično nalaganje."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Posnemite ({PH1}), če želite prikazati omrežno dejavnost."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Za prikaz omrežne dejavnosti zabeležite omrežni dnevnik ({PH1})."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Snemanje omrežne dejavnosti …"
@@ -7521,7 +7542,7 @@
     "message": "Datoteke ni bilo mogoče prebrati"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Napaka branja datoteke »{PH1}«: {PH2}"
+    "message": "Napaka pri branju datoteke »{PH1}«: {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Iskanje glede na strošek (> 50 ms), ime ali datoteko"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Počisti vse"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Smer"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentacija"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Časovni žig"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Vrsta"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Nadzornik protokolov"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Zgornji podatki o varnosti so iz prvega pregledanega odziva."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Zaščita te strani ni znana."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Podpis strežnika uporablja SHA-1, kar je zastarelo. Namesto tega omogočite algoritem podpisovanja SHA-2. (To se razlikuje od podpisa v potrdilu.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Ta stran ni varna (nešifriran HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Ta stran ni varna."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Ta stran ni varna (nedelujoč HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Ta stran je varna (veljaven HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Ta stran je sumljiva."
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Naprava"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Naprava {PH1} je bila uspešno dodana/posodobljena."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Ime naprave"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Dodaj blagovno znamko"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Vrstica blagovne znamke je bila dodana."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arhitektura"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Izbriši"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Vrstica blagovne znamke je bila izbrisana."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model naprave"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Opravilo asinhroniziranja"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Predpomnjenje kode modula"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Predpomnjenje kode skripta"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Predpomnjeni modul Wasm"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Trajanje"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Aktivno združevanje vseh funkcij"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Prizadeti elementi"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skript ni ustrezen"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skript shranjen v predpomnilnik"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skriptno izvajanje"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Pritisnite tipko »Enter« za potrditev ali »Escape« za preklic)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Vnesite vprašaj, če želite videti ukaze, ki so na voljo."
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Vnesite »?« za prikaz razpoložljivih ukazov"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Za preklop med ukazi uporabite tabulatorko. Vnesite »?« za prikaz razpoložljivih ukazov"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Odpri datoteko"

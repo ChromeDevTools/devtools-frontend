@@ -243,10 +243,10 @@
     "message": "Telah menavigasi ke {PH1}."
   },
   "core/sdk/ConsoleModel.ts | profileSFinished": {
-    "message": "Profil '{PH1}' selesai."
+    "message": "Profil ''{PH1}'' selesai."
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
-    "message": "Profil '{PH1}' dimulakan."
+    "message": "Profil ''{PH1}'' dimulakan."
   },
   "core/sdk/DOMDebuggerModel.ts | animation": {
     "message": "Animasi"
@@ -865,6 +865,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Memaksa ciri media prefers-color-scheme CSS"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Memaksa ciri media prefers-contrast CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Memaksa ciri media prefers-reduced-data CSS"
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Lebar sebenar ({PH1}px) {PH2} {PH3} tidak sepadan dengan lebar yang dinyatakan ({PH4}px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "ID Apl"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "ID ini digunakan oleh penyemak imbas untuk mengetahui sama ada manifes harus mengemas kini aplikasi yang sedia ada atau tidak, atau sama ada ID ini merujuk kepada apl web baharu yang boleh dipasang atau sebaliknya."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Nota: 'id' tidak dinyatakan dalam manifes, sebaliknya, 'start_url' digunakan. Untuk menyatakan ID Apl yang sepadan dengan identiti semasa, tetapkan medan 'id' kepada ''{PH1}''."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Manifes Apl"
   },
@@ -2130,7 +2142,7 @@
     "message": "{PH1} src tidak ditetapkan"
   },
   "panels/application/AppManifestView.ts | sUrlSFailedToParse": {
-    "message": "URL {PH1} '{PH2}' gagal dihuraikan"
+    "message": "URL {PH1} ''{PH2}'' gagal dihuraikan"
   },
   "panels/application/AppManifestView.ts | screenshot": {
     "message": "Tangkapan skrin"
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status Cache Kembali-maju"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Penjelasan"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Navigasi terakhir tidak dicache kerana"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Navigasi Bingkai Utama Terakhir"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Navigasi biasa"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Ciri menghalang cache kembali-maju"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Dipulihkan daripada cache kembali-maju"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Disokong dalam versi Chrome yang akan datang)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Pengambilan Latar Belakang"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Laporkan isu DevTools"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Laporkan isu terjemahan"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Paparkan Perkara Baharu"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Isu tersembunyi"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Nyahsembunyikan semua isu"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Sumber Terjejas"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Aktiviti Web yang Dipercayai"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Nyahsembunyikan semua isu yang disembunyikan"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "disekat"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Laksanakan permintaan atau tekan {PH1} untuk merakam muat semula."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Rakam ({PH1}) untuk memaparkan aktiviti rangkaian."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Rekodkan log rangkaian ({PH1}) untuk memaparkan aktiviti rangkaian."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Merakam aktiviti rangkaian…"
@@ -7203,7 +7224,7 @@
     "message": "Dedahkan dalam paparan Ringkasan"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Dedahkan objek '{PH1}' dengan id @{PH2} dalam paparan Ringkasan"
+    "message": "Dedahkan objek ''{PH1}'' dengan id @{PH2} dalam paparan Ringkasan"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Simpan sebagai pemboleh ubah sejagat"
@@ -7215,7 +7236,7 @@
     "message": "Objek pengguna boleh dicapai daripada tetingkap"
   },
   "panels/profiler/HeapSnapshotProxy.ts | anErrorOccurredWhenACallToMethod": {
-    "message": "Ralat berlaku semasa panggilan kepada kaedah '{PH1}' diminta"
+    "message": "Ralat berlaku semasa panggilan kepada kaedah ''{PH1}'' diminta"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
     "message": "Garis masa peruntukan menunjukkan peruntukan memori JavaScript yang diinstrumenkan dari dahulu hingga kini. Sebaik sahaja profil dirakam, anda boleh memilih selang waktu untuk melihat objek yang diperuntukkan di dalamnya dan masih langsung pada akhir rakaman. Gunakan jenis profil ini untuk mengasingkan kebocoran memori."
@@ -7521,7 +7542,7 @@
     "message": "Gagal membaca fail"
   },
   "panels/profiler/ProfileView.ts | fileSReadErrorS": {
-    "message": "Ralat baca fail '{PH1}': {PH2}"
+    "message": "Ralat baca fail ''{PH1}'': {PH2}"
   },
   "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
     "message": "Cari mengikut kos (>50ms), nama atau fail"
@@ -7566,7 +7587,7 @@
     "message": "Pepohon (Atas ke Bawah)"
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadFileSupportedFile": {
-    "message": "Tidak dapat memuatkan fail. Sambungan fail yang disokong: '{PH1}'."
+    "message": "Tidak dapat memuatkan fail. Sambungan fail yang disokong: ''{PH1}''."
   },
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Tidak dapat memuatkan profil semasa profil lain sedang dirakam."
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Kosongkan semua"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Arah"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasi"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Cap masa"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Jenis"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Pemantau protokol"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Butiran keselamatan di atas adalah daripada respons pertama yang diperiksa."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Keselamatan halaman ini tidak diketahui."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Tandatangan pelayan menggunakan SHA-1, yang sudah lapuk. Sebagai ganti, dayakan algoritma tandatangan SHA-2. (Sila ambil perhatian bahawa ini berbeza daripada tandatangan dalam sijil.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Halaman ini tidak selamat (HTTP tidak disulitkan)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Halaman ini tidak selamat."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Halaman ini tidak selamat (HTTPS rosak)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Halaman ini selamat (HTTPS sah)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Halaman ini mencurigakan"
@@ -8316,7 +8325,7 @@
     "message": "Tambahkan skrip kandungan pada senarai abaikan (skrip sambungan dalam halaman)"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Abaikan skrip yang namanya sepadan dengan '{PH1}'"
+    "message": "Abaikan skrip yang namanya sepadan dengan ''{PH1}''"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | noIgnoreListPatterns": {
     "message": "Tiada corak senarai abaikan"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Peranti"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Peranti {PH1} berjaya ditambah/dikemas kini."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Nama Peranti"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Tambah Jenama"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Baris jenama ditambah"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Seni bina"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Padam"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Baris jenama dipadamkan"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Model peranti"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Tugas Tak Segerak"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Kod Modul Cache"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Kod Skrip Cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Modul Wasm Dicache"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Tempoh"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Menyusun terus semua fungsi"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Unsur Terjejas"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skrip tidak layak"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skrip disimpan pada cache"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Penskripan"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Tekan 'Enter' untuk membuat pengesahan atau 'Esc' untuk membuat pembatalan.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Taip tanda soal untuk melihat perintah yang tersedia"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Taip '?' untuk melihat perintah yang tersedia"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Gunakan Tab untuk menukar perintah. Taip '?' untuk melihat perintah yang tersedia"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Buka fail"

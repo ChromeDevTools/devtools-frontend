@@ -866,6 +866,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Tvingar CSS-mediefunktionen för prefers-color-scheme"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscontrastMedia": {
+    "message": "Tvingar CSS-mediefunktionen för prefers-contrast"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreduceddataMedia": {
     "message": "Tvingar CSS-mediefunktionen för prefers-reduced-data"
   },
@@ -1979,6 +1982,15 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Faktisk bredd ({PH1} px) för {PH2} {PH3} stämmer inte överens med den angivna bredden ({PH4} px)"
   },
+  "panels/application/AppManifestView.ts | appId": {
+    "message": "App-id"
+  },
+  "panels/application/AppManifestView.ts | appIdExplainer": {
+    "message": "Detta används av webbläsare för att identifiera om manifestet ska uppdatera en befintlig app eller om det gäller en ny webbapp som kan installeras."
+  },
+  "panels/application/AppManifestView.ts | appIdNote": {
+    "message": "Obs! Fältet id är inte ifyllt i manifestet. I stället används start_url. Om du vill ange ett app-id som matchar det aktuella id:t anger du värdet {PH1} i fältet id."
+  },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Appmanifest"
   },
@@ -2288,8 +2300,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Status för vilocacheminne"
   },
-  "panels/application/BackForwardCacheView.ts | explanations": {
-    "message": "Förklaringar"
+  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
+    "message": "Den senaste navigeringen lagrades inte i cacheminnet eftersom"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Senaste navigering i huvudramen"
@@ -2299,6 +2311,9 @@
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
     "message": "Normal navigering"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
+    "message": "Funktioner hindrar vilocacheminnet"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Har återställts från vilocacheminnet"
@@ -2311,6 +2326,9 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "Webbadress"
+  },
+  "panels/application/BackForwardCacheView.ts | willBeSupported": {
+    "message": "(Stöds i framtida versioner av Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Hämtning i bakgrunden"
@@ -4577,6 +4595,9 @@
   "panels/help/help-meta.ts | reportADevtoolsIssue": {
     "message": "Rapportera ett fel i verktyget för programmerare"
   },
+  "panels/help/help-meta.ts | reportTranslationIssue": {
+    "message": "Rapportera ett översättningsproblem"
+  },
   "panels/help/help-meta.ts | showWhatsNew": {
     "message": "Visa Nyheter"
   },
@@ -4895,6 +4916,9 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Dolda problem"
   },
+  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
+    "message": "Visa alla problem"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Berörda resurser"
   },
@@ -4972,9 +4996,6 @@
   },
   "panels/issues/IssuesPane.ts | trustedWebActivity": {
     "message": "Betrodd webbaktivitet"
-  },
-  "panels/issues/IssuesPane.ts | unHideAllHiddenIssues": {
-    "message": "Visa alla dolda problem"
   },
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | blocked": {
     "message": "blockerades"
@@ -6146,8 +6167,8 @@
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
     "message": "Utför en begäran eller tryck på {PH1} om du vill spela in den nya inläsningen."
   },
-  "panels/network/NetworkLogView.ts | recordSToDisplayNetworkActivity": {
-    "message": "Spela in ({PH1}) för att visa nätverksaktivitet."
+  "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
+    "message": "Spela in nätverkslogg ({PH1}) för att visa nätverksaktivitet."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Spelar in nätverksaktivitet …"
@@ -7203,7 +7224,7 @@
     "message": "Visa i sammanfattningsvyn"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Visa objektet {PH1} med id vid {PH2} i sammanfattningsvyn"
+    "message": "Visa objektet {PH1} med id @{PH2} i sammanfattningsvyn"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Lagra som global variabel"
@@ -7616,9 +7637,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Rensa alla"
   },
-  "panels/protocol_monitor/ProtocolMonitor.ts | direction": {
-    "message": "Riktning"
-  },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentation"
   },
@@ -7657,6 +7675,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | timestamp": {
     "message": "Tidsstämpel"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | type": {
+    "message": "Typ"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollövervakare"
@@ -7970,9 +7991,6 @@
   "panels/security/SecurityPanel.ts | theSecurityDetailsAboveAreFrom": {
     "message": "Säkerhetsinformationen ovan kommer från det första inspekterade svaret."
   },
-  "panels/security/SecurityPanel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "Säkerheten på den här sidan är okänd."
-  },
   "panels/security/SecurityPanel.ts | theServerSignatureUsesShaWhichIs": {
     "message": "Serversignaturen använder SHA-1, vilket är föråldrat. Aktivera en algoritm för SHA-2-signatur i stället. (Observera att detta inte är samma som signaturen i certifikatet.)"
   },
@@ -7999,15 +8017,6 @@
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
     "message": "Den här sidan är inte säker (okrypterad HTTP)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecure": {
-    "message": "Den här sidan är inte säker."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "Den här sidan är inte säker (trasig HTTPS)."
-  },
-  "panels/security/SecurityPanel.ts | thisPageIsSecureValidHttps": {
-    "message": "Denna sida är säker (giltig HTTPS)."
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
     "message": "Sidan är misstänkt"
@@ -8420,6 +8429,9 @@
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Enhet"
   },
+  "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
+    "message": "Enheten {PH1} har lagts till/uppdaterats"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
     "message": "Enhetens namn"
   },
@@ -8450,6 +8462,9 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Lägg till varumärke"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
+    "message": "Varumärkesrad har lagts till"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecture": {
     "message": "Arkitektur"
   },
@@ -8476,6 +8491,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
     "message": "Radera"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
+    "message": "Varumärkesrad har raderats"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deviceModel": {
     "message": "Enhetsmodell"
@@ -9809,6 +9827,12 @@
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
     "message": "Asynkron uppgift"
   },
+  "panels/timeline/TimelineUIUtils.ts | cacheModule": {
+    "message": "Cachelagra modulkod"
+  },
+  "panels/timeline/TimelineUIUtils.ts | cacheScript": {
+    "message": "Cachelagra skriptkod"
+  },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
     "message": "Cachelagrad Wasm-modul"
   },
@@ -9940,6 +9964,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Längd"
+  },
+  "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
+    "message": "Alla funktioner kompileras"
   },
   "panels/timeline/TimelineUIUtils.ts | elementsAffected": {
     "message": "Berörda element"
@@ -10393,9 +10420,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | scriptNotEligible": {
     "message": "skriptet uppfyller inte kraven"
-  },
-  "panels/timeline/TimelineUIUtils.ts | scriptSavedToCache": {
-    "message": "skriptet har sparats i cacheminnet"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
     "message": "Skript"
@@ -11564,11 +11588,8 @@
   "ui/legacy/components/quick_open/QuickInput.ts | pressEnterToConfirmOrEscapeTo": {
     "message": "{PH1} (Tryck på Retur för att bekräfta eller Escape för att avbryta.)"
   },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailable": {
-    "message": "Skriv ett frågetecken för att visa tillgängliga kommandon"
-  },
-  "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
-    "message": "Skriv ? för att visa tillgängliga kommandon"
+  "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
+    "message": "Byt mellan kommandon med hjälp av tabb. Skriv ? för att visa tillgängliga kommandon"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "Öppna fil"

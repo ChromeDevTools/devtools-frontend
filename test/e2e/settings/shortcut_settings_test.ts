@@ -25,8 +25,7 @@ describe('Shortcuts Settings tab', async () => {
     assert.deepStrictEqual(pauseShortcuts, VS_CODE_PAUSE_SHORTCUTS);
   });
 
-  // Flaky on mac.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1250358] should apply new shortcuts when the preset is changed', async () => {
+  it('should apply new shortcuts when the preset is changed', async () => {
     const {frontend} = getBrowserAndPages();
     await openSettingsTab('Shortcuts');
     await selectKeyboardShortcutPreset('vsCode');

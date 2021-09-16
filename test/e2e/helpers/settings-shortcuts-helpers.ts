@@ -32,7 +32,7 @@ export let CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['Ctrl + Alt + C'];
 if (platform === 'mac') {
   VS_CODE_SHORTCUTS_SHORTCUTS = ['⌘ K⌘ S'];
   VS_CODE_SETTINGS_SHORTCUTS = ['⇧ ?', '⌘ ,'];
-  VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'SettingsShortcuts⌘ K ⌘ S';
+  VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'Shortcuts⌘ K ⌘ SSettings';
   VS_CODE_PAUSE_SHORTCUTS = ['F5', '⇧ F5', '⌘ \\'];
   CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl 1', 'Ctrl 2'];
   CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl 1 Ctrl 2'];

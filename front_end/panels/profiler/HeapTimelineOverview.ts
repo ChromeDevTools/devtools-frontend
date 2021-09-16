@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-export class HeapTimelineOverview extends UI.Widget.VBox {
+export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
   readonly overviewCalculator: OverviewCalculator;
   overviewContainer: HTMLElement;
   overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
@@ -246,11 +248,23 @@ export class HeapTimelineOverview extends UI.Widget.VBox {
     const minId = minIndex > 0 ? ids[minIndex - 1] : 0;
     const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 
-    this.dispatchEventToListeners(IdsRangeChanged, {minId, maxId, size});
+    this.dispatchEventToListeners(Events.IdsRangeChanged, {minId, maxId, size});
   }
 }
 
-export const IdsRangeChanged = Symbol('IdsRangeChanged');
+export const enum Events {
+  IdsRangeChanged = 'IdsRangeChanged',
+}
+
+export interface IdsRangeChangedEvent {
+  minId: number;
+  maxId: number;
+  size: number;
+}
+
+export type EventTypes = {
+  [Events.IdsRangeChanged]: IdsRangeChangedEvent,
+};
 
 export class SmoothScale {
   lastUpdate: number;

@@ -49,7 +49,8 @@ import type {AllocationGridNode, HeapSnapshotGridNode} from './HeapSnapshotGridN
 import {HeapSnapshotGenericObjectNode} from './HeapSnapshotGridNodes.js';
 import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import {HeapSnapshotWorkerProxy} from './HeapSnapshotProxy.js';
-import {HeapTimelineOverview, IdsRangeChanged, Samples} from './HeapTimelineOverview.js';
+import type {IdsRangeChangedEvent} from './HeapTimelineOverview.js';
+import {HeapTimelineOverview, Events, Samples} from './HeapTimelineOverview.js';
 import * as ModuleUIStrings from './ModuleUIStrings.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 import {Events as ProfileHeaderEvents, ProfileEvents as ProfileTypeEvents, ProfileHeader, ProfileType} from './ProfileHeader.js';
@@ -441,7 +442,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   createOverview(): void {
     const profileType = this.profile.profileType();
     this.trackingOverviewGrid = new HeapTimelineOverview();
-    this.trackingOverviewGrid.addEventListener(IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+    this.trackingOverviewGrid.addEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
     if (!this.profile.fromFile() && profileType.profileBeingRecorded() === this.profile) {
       profileType.addEventListener(TrackingHeapSnapshotProfileType.HeapStatsUpdate, this.onHeapStatsUpdate, this);
       profileType.addEventListener(TrackingHeapSnapshotProfileType.TrackingStopped, this.onStopTracking, this);
@@ -550,9 +551,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     return statistics;
   }
 
-  onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const minId = event.data.minId;
-    const maxId = event.data.maxId;
+  onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent<IdsRangeChangedEvent>): void {
+    const {minId, maxId} = event.data;
     this.selectedSizeText.setText(
         i18nString(UIStrings.selectedSizeS, {PH1: Platform.NumberUtilities.bytesToString(event.data.size)}));
     if (this.constructorsDataGrid.snapshot) {
@@ -988,7 +988,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     this.onStopTracking();
     if (this.trackingOverviewGrid) {
-      this.trackingOverviewGrid.removeEventListener(IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+      this.trackingOverviewGrid.removeEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
     }
   }
 }

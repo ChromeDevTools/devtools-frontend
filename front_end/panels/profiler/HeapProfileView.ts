@@ -14,8 +14,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
-import type {Samples} from './HeapTimelineOverview.js';
-import {HeapTimelineOverview, IdsRangeChanged} from './HeapTimelineOverview.js';
+import type {Samples, IdsRangeChangedEvent} from './HeapTimelineOverview.js';
+import {Events, HeapTimelineOverview} from './HeapTimelineOverview.js';
 import type {Formatter, ProfileDataGridNode} from './ProfileDataGrid.js';
 import type {ProfileHeader} from './ProfileHeader.js';
 import {ProfileType, ProfileEvents} from './ProfileHeader.js';
@@ -155,7 +155,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     this.timelineOverview = new HeapTimelineOverview();
 
     if (Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline')) {
-      this.timelineOverview.addEventListener(IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+      this.timelineOverview.addEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
       this.timelineOverview.show(this.element, this.element.firstChild);
       this.timelineOverview.start();
 
@@ -172,9 +172,8 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     return [...await super.toolbarItems(), this.selectedSizeText];
   }
 
-  onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const minId = (event.data.minId as number);
-    const maxId = (event.data.maxId as number);
+  onIdsRangeChanged(event: Common.EventTarget.EventTargetEvent<IdsRangeChangedEvent>): void {
+    const {minId, maxId} = event.data;
     this.selectedSizeText.setText(
         i18nString(UIStrings.selectedSizeS, {PH1: Platform.NumberUtilities.bytesToString(event.data.size)}));
     this.setSelectionRange(minId, maxId);

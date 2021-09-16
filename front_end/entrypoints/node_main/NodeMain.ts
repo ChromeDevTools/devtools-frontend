@@ -27,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('entrypoints/node_main/NodeMain.ts', UI
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let nodeMainImplInstance: NodeMainImpl;
 
-export class NodeMainImpl extends Common.ObjectWrapper.ObjectWrapper implements Common.Runnable.Runnable {
+export class NodeMainImpl implements Common.Runnable.Runnable {
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): NodeMainImpl {
     const {forceNew} = opts;
     if (!nodeMainImplInstance || forceNew) {

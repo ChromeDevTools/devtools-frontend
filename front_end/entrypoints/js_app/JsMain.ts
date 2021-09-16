@@ -20,7 +20,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let jsMainImplInstance: JsMainImpl;
 
-export class JsMainImpl extends Common.ObjectWrapper.ObjectWrapper implements Common.Runnable.Runnable {
+export class JsMainImpl implements Common.Runnable.Runnable {
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): JsMainImpl {
     const {forceNew} = opts;
     if (!jsMainImplInstance || forceNew) {

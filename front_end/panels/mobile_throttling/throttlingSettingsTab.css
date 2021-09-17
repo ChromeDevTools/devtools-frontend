@@ -53,6 +53,10 @@
   text-align: left;
 }
 
+.conditions-edit-row .conditions-list-text:last-child {
+  text-align: right;
+}
+
 .conditions-list-title {
   text-align: start;
   display: flex;

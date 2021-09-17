@@ -46,7 +46,7 @@ export class DeprecationIssue extends Issue<IssueCode> {
     return {
       file: 'deprecationNavigatorUserAgent.md',
       links: [{
-        link: 'https://blog.chromium.org/2021/05/update-on-user-agent-string-reduction.html',
+        link: 'https://blog.chromium.org/2021/09/user-agent-reduction-origin-trial-and-dates.html',
         linkTitle: i18nString(UIStrings.userAgentReduction),
       }],
     };

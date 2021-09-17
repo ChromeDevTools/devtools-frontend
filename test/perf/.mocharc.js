@@ -28,6 +28,8 @@ if (testRunnerCWDConfig && testRunnerTestSourceDirConfig) {
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
 /**
  * TODO(jacktfranklin): once we are migrated to the new test runner, we can remove the fallback to process.env['TESET_PATTERNS']
+ * alexrudenko: Note that if TEST_PATTERNS is removed, the docs for running stressor (deflake) bots should be updated
+ * and the bots should be able to consume custom config files provided via `git cl try`.
  */
 const customPattern = getTestRunnerConfigSetting('test-file-pattern', process.env['TEST_PATTERNS']);
 

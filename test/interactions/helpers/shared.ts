@@ -2,13 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {getBrowserAndPages, getTestServerPort} from '../../shared/helper.js';
+import {getBrowserAndPages, getTestServerPort, platform} from '../../shared/helper.js';
 
-export const loadComponentDocExample = async (url: string) => {
+const fontsByPlatform = {
+  'mac': 'Helvetica Neue',
+  'win32': 'Tahoma',
+  'linux': 'Arial',
+};
+
+export const loadComponentDocExample = async (urlComponent: string) => {
   const {frontend} = getBrowserAndPages();
-  await frontend.goto(`http://localhost:${getTestServerPort()}/front_end/ui/components/docs/${url}`, {
-    waitUntil: 'networkidle0',
-  });
+  await frontend.goto(
+      `http://localhost:${getTestServerPort()}/front_end/ui/components/docs/${urlComponent}?fontFamily=${
+          fontsByPlatform[platform]}`,
+      {
+        waitUntil: 'networkidle0',
+      });
 };
 
 const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1';

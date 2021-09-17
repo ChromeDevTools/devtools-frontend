@@ -6,7 +6,28 @@ const PLATFORM_MAC_CLASS = 'platform-mac';
 const PLATFORM_LINUX_CLASS = 'platform-linux';
 const PLATFORM_WINDOWS_CLASS = 'platform-windows';
 
+const urlParams = new URLSearchParams(window.location.search);
+
 export function init(): void {
+  // fontFamily is provided by the interaction tests.
+  // While platform-specific class names define multiple font-families,
+  // we want a single font-family to be used by the tests.
+  if (urlParams.has('fontFamily')) {
+    const div = document.createElement('div');
+    div.style.position = 'fixed';
+    div.style.bottom = '10px';
+    div.style.right = '230px';
+    div.style.width = '250px';
+    div.style.fontSize = '16px';
+    div.style.padding = '5px';
+    div.innerText = `Font Family is set to ${urlParams.get('fontFamily')} for testing`;
+    window.addEventListener('load', () => {
+      document.body.appendChild(div);
+    });
+    document.body.style.fontFamily = `${urlParams.get('fontFamily')}`;
+    return;
+  }
+
   document.body.classList.add(PLATFORM_LINUX_CLASS);
   const button = document.createElement('button');
 

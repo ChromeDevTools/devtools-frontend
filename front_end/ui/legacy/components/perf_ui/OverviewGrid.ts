@@ -417,11 +417,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
     this.windowLeft = windowLeft;
     this.windowRight = windowRight;
     this.updateCurtains();
-    let windowPosition;
     if (this.calculator) {
-      windowPosition = this.calculateWindowPosition();
+      this.dispatchEventToListeners(Events.WindowChangedWithPosition, this.calculateWindowPosition());
     }
-    this.dispatchEventToListeners(Events.WindowChanged, windowPosition);
+    this.dispatchEventToListeners(Events.WindowChanged);
   }
 
   private updateCurtains(): void {
@@ -523,7 +522,18 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   WindowChanged = 'WindowChanged',
+  WindowChangedWithPosition = 'WindowChangedWithPosition',
 }
+
+export interface WindowChangedWithPositionEvent {
+  rawStartValue: number;
+  rawEndValue: number;
+}
+
+export type EventTypes = {
+  [Events.WindowChanged]: void,
+  [Events.WindowChangedWithPosition]: WindowChangedWithPositionEvent,
+};
 
 export class WindowSelector {
   private startPosition: number;

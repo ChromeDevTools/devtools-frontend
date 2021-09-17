@@ -7,7 +7,7 @@ import {getBrowserAndPages, getTestServerPort, platform} from '../../shared/help
 const fontsByPlatform = {
   'mac': 'Helvetica Neue',
   'win32': 'Tahoma',
-  'linux': 'Arial',
+  'linux': '"Liberation Sans"',
 };
 
 export const loadComponentDocExample = async (urlComponent: string) => {

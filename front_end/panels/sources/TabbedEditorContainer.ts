@@ -236,11 +236,10 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
         SourceFrame.SourcesTextEditor.Events.SelectionChanged, this.selectionChanged, this);
   }
 
-  private scrollChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private scrollChanged({data: lineNumber}: Common.EventTarget.EventTargetEvent<number>): void {
     if (this.scrollTimer) {
       clearTimeout(this.scrollTimer);
     }
-    const lineNumber = (event.data as number);
     this.scrollTimer = window.setTimeout(saveHistory.bind(this), 100);
     if (this.currentFileInternal) {
       this.history.updateScrollLineNumber(this.currentFileInternal.url(), lineNumber);
@@ -251,8 +250,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
   }
 
-  private selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const range = (event.data as TextUtils.TextRange.TextRange);
+  private selectionChanged({data: range}: Common.EventTarget.EventTargetEvent<TextUtils.TextRange.TextRange>): void {
     if (this.currentFileInternal) {
       this.history.updateSelectionRange(this.currentFileInternal.url(), range);
     }

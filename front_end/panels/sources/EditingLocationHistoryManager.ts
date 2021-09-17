@@ -51,12 +51,14 @@ export class EditingLocationHistoryManager {
         SourceFrame.SourcesTextEditor.Events.JumpHappened, this.onJumpHappened.bind(this));
   }
 
-  private onJumpHappened(event: Common.EventTarget.EventTargetEvent): void {
-    if (event.data.from) {
-      this.updateActiveState(event.data.from);
+  private onJumpHappened(event: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.JumpHappenedEvent>):
+      void {
+    const {from, to} = event.data;
+    if (from) {
+      this.updateActiveState(from);
     }
-    if (event.data.to) {
-      this.pushActiveState(event.data.to);
+    if (to) {
+      this.pushActiveState(to);
     }
   }
 

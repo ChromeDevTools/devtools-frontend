@@ -614,10 +614,11 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
     }
   }
 
-  makeGutterClickHandler(url: string): (arg0: Common.EventTarget.EventTargetEvent) => void {
-    function handleGutterClick(event: Common.EventTarget.EventTargetEvent): void {
-      const eventData = event.data as SourceFrame.SourcesTextEditor.GutterClickEventData;
-      if (eventData.gutterType !== LineDecorator.GUTTER_TYPE) {
+  makeGutterClickHandler(url: string):
+      (arg0: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>) => void {
+    function handleGutterClick(
+        event: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>): void {
+      if (event.data.gutterType !== LineDecorator.GUTTER_TYPE) {
         return;
       }
       const coverageViewId = 'coverage';

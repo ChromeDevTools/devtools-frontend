@@ -9,7 +9,9 @@ import * as TextEditor from '../text_editor/text_editor.js';
 
 const whitespaceStyleInjectedSet = new WeakSet<Document>();
 
-export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor {
+export class SourcesTextEditor extends
+    Common.ObjectWrapper.eventMixin<EventTypes, typeof TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor>(
+        TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor) {
   private readonly delegate: SourcesTextEditorDelegate;
   private readonly gutterMouseMove: (event: Event) => void;
   private readonly gutterMouseOut: () => void;
@@ -486,7 +488,7 @@ export class SourcesTextEditor extends TextEditor.CodeMirrorTextEditor.CodeMirro
     if (from && to && from.equal(to)) {
       return;
     }
-    this.dispatchEventToListeners(Events.JumpHappened, {from: from, to: to});
+    this.dispatchEventToListeners(Events.JumpHappened, {from, to});
   }
 
   private scroll(): void {
@@ -695,6 +697,20 @@ export enum Events {
   EditorBlurred = 'EditorBlurred',
   JumpHappened = 'JumpHappened',
 }
+
+export interface JumpHappenedEvent {
+  from: TextUtils.TextRange.TextRange|null;
+  to: TextUtils.TextRange.TextRange|null;
+}
+
+export type EventTypes = {
+  [Events.GutterClick]: GutterClickEventData,
+  [Events.SelectionChanged]: TextUtils.TextRange.TextRange,
+  [Events.ScrollChanged]: number,
+  [Events.EditorFocused]: void,
+  [Events.EditorBlurred]: void,
+  [Events.JumpHappened]: JumpHappenedEvent,
+};
 
 export class SourcesTextEditorDelegate {
   populateLineGutterContextMenu(_contextMenu: UI.ContextMenu.ContextMenu, _lineNumber: number): Promise<void> {

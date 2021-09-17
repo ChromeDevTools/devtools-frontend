@@ -1812,17 +1812,16 @@ export class DebuggerPlugin extends Plugin {
     this.textEditor.attachInfobar(this.prettyPrintInfobar);
   }
 
-  private async handleGutterClick(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async handleGutterClick(
+      event: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>): Promise<void> {
     if (this.muted) {
       return;
     }
 
-    const eventData = (event.data as SourceFrame.SourcesTextEditor.GutterClickEventData);
-    if (eventData.gutterType !== SourceFrame.SourcesTextEditor.lineNumbersGutterType) {
+    const {gutterType, lineNumber: editorLineNumber, event: eventObject} = event.data;
+    if (gutterType !== SourceFrame.SourcesTextEditor.lineNumbersGutterType) {
       return;
     }
-    const editorLineNumber = eventData.lineNumber;
-    const eventObject = eventData.event;
 
     if (eventObject.button !== 0 || eventObject.altKey || eventObject.ctrlKey || eventObject.metaKey) {
       return;

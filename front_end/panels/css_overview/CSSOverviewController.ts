@@ -4,8 +4,12 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 
-export class OverviewController extends Common.ObjectWrapper.ObjectWrapper {
+import type {ContrastIssue} from './CSSOverviewCompletedView.js';
+import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+
+export class OverviewController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   currentUrl: string;
   constructor() {
     super();
@@ -25,11 +29,47 @@ export class OverviewController extends Common.ObjectWrapper.ObjectWrapper {
   }
 }
 
-export const Events = {
-  RequestOverviewStart: Symbol('RequestOverviewStart'),
-  RequestNodeHighlight: Symbol('RequestNodeHighlight'),
-  PopulateNodes: Symbol('PopulateNodes'),
-  RequestOverviewCancel: Symbol('RequestOverviewCancel'),
-  OverviewCompleted: Symbol('OverviewCompleted'),
-  Reset: Symbol('Reset'),
+export type PopulateNodesEvent = {
+  type: 'contrast',
+  key: string,
+  section: string|undefined,
+  nodes: ContrastIssue[],
+}|{
+  type: 'color',
+  color: string,
+  section: string | undefined,
+  nodes: {nodeId: number}[],
+}|{
+  type: 'unused-declarations',
+  declaration: string,
+  nodes: UnusedDeclaration[],
+}|{
+  type: 'media-queries',
+  text: string,
+  nodes: Protocol.CSS.CSSMedia[],
+}|{
+  type: 'font-info',
+  name: string,
+  nodes: {nodeId: number}[],
+};
+
+export type PopulateNodesEventNodes = PopulateNodesEvent['nodes'];
+export type PopulateNodesEventNodeTypes = PopulateNodesEventNodes[0];
+
+export const enum Events {
+  RequestOverviewStart = 'RequestOverviewStart',
+  RequestNodeHighlight = 'RequestNodeHighlight',
+  PopulateNodes = 'PopulateNodes',
+  RequestOverviewCancel = 'RequestOverviewCancel',
+  OverviewCompleted = 'OverviewCompleted',
+  Reset = 'Reset',
+}
+
+export type EventTypes = {
+  [Events.RequestOverviewStart]: void,
+  [Events.RequestNodeHighlight]: number,
+  [Events.PopulateNodes]: {payload: PopulateNodesEvent},
+  [Events.RequestOverviewCancel]: void,
+  [Events.OverviewCompleted]: void,
+  [Events.Reset]: void,
 };

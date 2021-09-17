@@ -100,7 +100,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this.renderInitialView();
   }
 
-  private requestNodeHighlight(evt: Common.EventTarget.EventTargetEvent): void {
+  private requestNodeHighlight(evt: Common.EventTarget.EventTargetEvent<number>): void {
     this.model.highlightNode((evt.data as Protocol.DOM.BackendNodeId));
   }
 

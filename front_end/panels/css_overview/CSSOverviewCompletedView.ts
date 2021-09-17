@@ -17,7 +17,7 @@ import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import type {OverviewController} from './CSSOverviewController.js';
+import type {OverviewController, PopulateNodesEvent, PopulateNodesEventNodes, PopulateNodesEventNodeTypes} from './CSSOverviewController.js';
 import {Events as CSSOverViewControllerEvents} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
@@ -335,7 +335,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       return;
     }
 
-    let payload;
+    let payload: PopulateNodesEvent;
     switch (type) {
       case 'contrast': {
         const section = dataset.section;
@@ -451,7 +451,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     }
 
     evt.consume();
-    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.PopulateNodes, payload);
+    this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.PopulateNodes, {payload});
     this.mainContainer.setSidebarMinimized(false);
   }
 
@@ -605,43 +605,43 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.resultsContainer.element.appendChild(this.fragment.element());
   }
 
-  private createElementsView(evt: Common.EventTarget.EventTargetEvent): void {
-    const {type, nodes} = evt.data;
+  private createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
+    const {payload} = evt.data;
 
     let id = '';
     let tabTitle = '';
 
-    switch (type) {
+    switch (payload.type) {
       case 'contrast': {
-        const {section, key} = evt.data;
+        const {section, key} = payload;
         id = `${section}-${key}`;
         tabTitle = i18nString(UIStrings.contrastIssues);
         break;
       }
 
       case 'color': {
-        const {section, color} = evt.data;
+        const {section, color} = payload;
         id = `${section}-${color}`;
         tabTitle = `${color.toUpperCase()} (${section})`;
         break;
       }
 
       case 'unused-declarations': {
-        const {declaration} = evt.data;
+        const {declaration} = payload;
         id = `${declaration}`;
         tabTitle = `${declaration}`;
         break;
       }
 
       case 'media-queries': {
-        const {text} = evt.data;
+        const {text} = payload;
         id = `${text}`;
         tabTitle = `${text}`;
         break;
       }
 
       case 'font-info': {
-        const {name} = evt.data;
+        const {name} = payload;
         id = `${name}`;
         tabTitle = `${name}`;
         break;
@@ -651,7 +651,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     let view = this.viewMap.get(id);
     if (!view) {
       view = new ElementDetailsView(this.controller, this.domModel, this.cssModel, this.linkifier);
-      view.populateNodes(nodes);
+      view.populateNodes(payload.nodes);
       this.viewMap.set(id, view);
     }
 
@@ -995,8 +995,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.controller.dispatchEventToListeners(CSSOverViewControllerEvents.RequestNodeHighlight, backendNodeId);
   }
 
-  async populateNodes(data: {nodeId: Protocol.DOM.BackendNodeId, hasChildren: boolean, [x: string]: unknown}[]):
-      Promise<void> {
+  async populateNodes(data: PopulateNodesEventNodes): Promise<void> {
     this.elementGrid.rootNode().removeChildren();
 
     if (!data.length) {
@@ -1005,39 +1004,39 @@ export class ElementDetailsView extends UI.Widget.Widget {
 
     const [firstItem] = data;
     const visibility = new Set<string>();
-    firstItem.nodeId && visibility.add('nodeId');
-    firstItem.declaration && visibility.add('declaration');
-    firstItem.sourceURL && visibility.add('sourceURL');
-    firstItem.contrastRatio && visibility.add('contrastRatio');
+    'nodeId' in firstItem && firstItem.nodeId && visibility.add('nodeId');
+    'declaration' in firstItem && firstItem.declaration && visibility.add('declaration');
+    'sourceURL' in firstItem && firstItem.sourceURL && visibility.add('sourceURL');
+    'contrastRatio' in firstItem && firstItem.contrastRatio && visibility.add('contrastRatio');
 
-    let relatedNodesMap;
-    if (visibility.has('nodeId')) {
+    let relatedNodesMap: Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null|undefined;
+    if ('nodeId' in firstItem && visibility.has('nodeId')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
-      const nodeIds = (data.reduce((prev, curr) => {
-        if (CSSOverviewCompletedView.pushedNodes.has(curr.nodeId)) {
+      const nodeIds = (data as {nodeId: number}[]).reduce((prev, curr) => {
+        const nodeId = curr.nodeId as Protocol.DOM.BackendNodeId;
+        if (CSSOverviewCompletedView.pushedNodes.has(nodeId)) {
           return prev;
         }
-        CSSOverviewCompletedView.pushedNodes.add(curr.nodeId);
-        return prev.add(curr.nodeId);
-      }, new Set<Protocol.DOM.BackendNodeId>()));
+        CSSOverviewCompletedView.pushedNodes.add(nodeId);
+        return prev.add(nodeId);
+      }, new Set<Protocol.DOM.BackendNodeId>());
       relatedNodesMap = await this.domModel.pushNodesByBackendIdsToFrontend(nodeIds);
     }
 
     for (const item of data) {
-      if (visibility.has('nodeId')) {
+      let frontendNode;
+      if ('nodeId' in item && visibility.has('nodeId')) {
         if (!relatedNodesMap) {
           continue;
         }
-        const frontendNode = relatedNodesMap.get(item.nodeId);
+        frontendNode = relatedNodesMap.get(item.nodeId as Protocol.DOM.BackendNodeId);
         if (!frontendNode) {
           continue;
         }
-
-        item.node = frontendNode;
       }
 
-      const node = new ElementNode(item, this.linkifier, this.cssModel);
+      const node = new ElementNode(item, frontendNode, this.linkifier, this.cssModel);
       node.selectable = false;
       this.elementGrid.insertChild(node);
     }
@@ -1051,28 +1050,32 @@ export class ElementDetailsView extends UI.Widget.Widget {
 export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
   private readonly linkifier: Components.Linkifier.Linkifier;
   private readonly cssModel: SDK.CSSModel.CSSModel;
+  private readonly frontendNode: SDK.DOMModel.DOMNode|null|undefined;
 
   constructor(
-      data: {
-        hasChildren: boolean,
-        [x: string]: unknown,
-      },
+      data: PopulateNodesEventNodeTypes, frontendNode: SDK.DOMModel.DOMNode|null|undefined,
       linkifier: Components.Linkifier.Linkifier, cssModel: SDK.CSSModel.CSSModel) {
-    super(data, data.hasChildren);
+    super(data);
 
+    this.frontendNode = frontendNode;
     this.linkifier = linkifier;
     this.cssModel = cssModel;
   }
 
   createCell(columnId: string): HTMLElement {
     // Nodes.
+    const {frontendNode} = this;
     if (columnId === 'nodeId') {
       const cell = this.createTD(columnId);
       cell.textContent = '...';
 
-      Common.Linkifier.Linkifier.linkify(this.data.node).then(link => {
+      if (!frontendNode) {
+        throw new Error('Node entry is missing a related frontend node.');
+      }
+
+      Common.Linkifier.Linkifier.linkify(frontendNode).then(link => {
         cell.textContent = '';
-        (link as HTMLElement).dataset.backendNodeId = this.data.node.backendNodeId();
+        (link as HTMLElement).dataset.backendNodeId = frontendNode.backendNodeId().toString();
         cell.appendChild(link);
         const button = document.createElement('button');
         button.classList.add('show-element');

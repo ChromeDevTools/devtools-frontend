@@ -20,7 +20,7 @@ export function init(): void {
     div.style.width = '250px';
     div.style.fontSize = '16px';
     div.style.padding = '5px';
-    div.innerText = `Font Family is set to ${urlParams.get('fontFamily')} for testing`;
+    div.innerText = `font-family: ${urlParams.get('fontFamily')}`;
     window.addEventListener('load', () => {
       document.body.appendChild(div);
     });

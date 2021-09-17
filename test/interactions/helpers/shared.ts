@@ -12,12 +12,11 @@ const fontsByPlatform = {
 
 export const loadComponentDocExample = async (urlComponent: string) => {
   const {frontend} = getBrowserAndPages();
-  await frontend.goto(
-      `http://localhost:${getTestServerPort()}/front_end/ui/components/docs/${urlComponent}?fontFamily=${
-          fontsByPlatform[platform]}`,
-      {
-        waitUntil: 'networkidle0',
-      });
+  const url = new URL(`http://localhost:${getTestServerPort()}/front_end/ui/components/docs/${urlComponent}`);
+  url.searchParams.set('fontFamily', fontsByPlatform[platform]);
+  await frontend.goto(url.toString(), {
+    waitUntil: 'networkidle0',
+  });
 };
 
 const SHOULD_GATHER_COVERAGE_INFORMATION = process.env.COVERAGE === '1';

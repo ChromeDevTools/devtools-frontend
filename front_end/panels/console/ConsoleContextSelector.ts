@@ -172,8 +172,9 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     this.executionContextDestroyed(executionContext);
   }
 
-  private executionContextChangedExternally(event: Common.EventTarget.EventTargetEvent): void {
-    const executionContext = (event.data as SDK.RuntimeModel.ExecutionContext | null);
+  private executionContextChangedExternally({
+    data: executionContext,
+  }: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext|null>): void {
     this.dropDown.selectItem(executionContext);
   }
 

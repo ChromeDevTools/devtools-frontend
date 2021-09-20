@@ -17,7 +17,7 @@ interface ConstructorFn<T> {
 
 export class Context {
   private readonly flavorsInternal: Map<ConstructorFn<unknown>, Object>;
-  private readonly eventDispatchers: Map<ConstructorFn<unknown>, Common.ObjectWrapper.ObjectWrapper>;
+  private readonly eventDispatchers: Map<ConstructorFn<unknown>, Common.ObjectWrapper.ObjectWrapper<EventTypes>>;
 
   private constructor() {
     this.flavorsInternal = new Map();
@@ -63,18 +63,18 @@ export class Context {
   }
 
   addFlavorChangeListener<T>(
-      flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
+      flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent<T>) => void,
       thisObject?: Object): void {
     let dispatcher = this.eventDispatchers.get(flavorType);
     if (!dispatcher) {
-      dispatcher = new Common.ObjectWrapper.ObjectWrapper();
+      dispatcher = new Common.ObjectWrapper.ObjectWrapper<EventTypes>();
       this.eventDispatchers.set(flavorType, dispatcher);
     }
     dispatcher.addEventListener(Events.FlavorChanged, listener, thisObject);
   }
 
   removeFlavorChangeListener<T>(
-      flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
+      flavorType: ConstructorFn<T>, listener: (arg0: Common.EventTarget.EventTargetEvent<T>) => void,
       thisObject?: Object): void {
     const dispatcher = this.eventDispatchers.get(flavorType);
     if (!dispatcher) {
@@ -100,6 +100,11 @@ export class Context {
 enum Events {
   FlavorChanged = 'FlavorChanged',
 }
+
+export type EventTypes = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [Events.FlavorChanged]: any,
+};
 
 const registeredListeners: ContextFlavorListenerRegistration[] = [];
 

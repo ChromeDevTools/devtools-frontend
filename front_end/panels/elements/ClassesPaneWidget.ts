@@ -140,12 +140,12 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     this.update();
   }
 
-  private onSelectedNodeChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onSelectedNodeChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
     if (this.previousTarget && this.prompt.text()) {
       this.input.textContent = '';
       this.installNodeClasses(this.previousTarget);
     }
-    this.previousTarget = (event.data as SDK.DOMModel.DOMNode | null);
+    this.previousTarget = event.data;
     this.update();
   }
 

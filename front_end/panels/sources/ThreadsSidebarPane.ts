@@ -134,9 +134,8 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     this.items.remove(this.items.indexOf(debuggerModel));
   }
 
-  private targetFlavorChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private targetFlavorChanged({data: target}: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
     const hadFocus = this.hasFocus();
-    const target = (event.data as SDK.Target.Target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     this.list.selectItem(debuggerModel);
     if (debuggerModel) {

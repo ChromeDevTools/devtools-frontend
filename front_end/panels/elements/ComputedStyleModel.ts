@@ -28,8 +28,8 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
     return this.cssModelInternal && this.cssModelInternal.isEnabled() ? this.cssModelInternal : null;
   }
 
-  private onNodeChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.nodeInternal = (event.data as SDK.DOMModel.DOMNode | null);
+  private onNodeChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
+    this.nodeInternal = event.data;
     this.updateModel(this.nodeInternal ? this.nodeInternal.domModel().cssModel() : null);
     this.onComputedStyleChanged(null);
   }

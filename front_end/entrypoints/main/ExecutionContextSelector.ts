@@ -55,8 +55,9 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
     }
   }
 
-  private executionContextChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const newContext = (event.data as SDK.RuntimeModel.ExecutionContext | null);
+  private executionContextChanged({
+    data: newContext,
+  }: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext|null>): void {
     if (newContext) {
       this.context.setFlavor(SDK.Target.Target, newContext.target());
       if (!this.ignoreContextChanged) {
@@ -69,8 +70,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
     return executionContext.isDefault ? executionContext.target().name() + ':' + executionContext.frameId : '';
   }
 
-  private targetChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const newTarget = (event.data as SDK.Target.Target | null);
+  private targetChanged({data: newTarget}: Common.EventTarget.EventTargetEvent<SDK.Target.Target|null>): void {
     const currentContext = this.context.flavor(SDK.RuntimeModel.ExecutionContext);
 
     if (!newTarget || (currentContext && currentContext.target() === newTarget)) {

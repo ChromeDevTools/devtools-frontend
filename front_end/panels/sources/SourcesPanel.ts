@@ -363,8 +363,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private onCurrentTargetChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const target = (event.data as SDK.Target.Target | null);
+  private onCurrentTargetChanged({data: target}: Common.EventTarget.EventTargetEvent<SDK.Target.Target|null>): void {
     this.setTarget(target);
   }
   paused(): boolean {

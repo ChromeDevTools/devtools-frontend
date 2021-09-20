@@ -7,7 +7,7 @@ import {reveal} from './Revealer.js';
 
 let consoleInstance: Console;
 
-export class Console extends ObjectWrapper {
+export class Console extends ObjectWrapper<EventTypes> {
   private readonly messagesInternal: Message[];
   /**
    * Instantiable via the instance() factory below.
@@ -63,6 +63,10 @@ export class Console extends ObjectWrapper {
 export enum Events {
   MessageAdded = 'messageAdded',
 }
+
+export type EventTypes = {
+  [Events.MessageAdded]: Message,
+};
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

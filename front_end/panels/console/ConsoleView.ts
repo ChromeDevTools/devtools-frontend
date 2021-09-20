@@ -620,11 +620,9 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
   private registerWithMessageSink(): void {
     Common.Console.Console.instance().messages().forEach(this.addSinkMessage, this);
-    Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded, this);
-
-    function messageAdded(this: ConsoleView, event: Common.EventTarget.EventTargetEvent): void {
-      this.addSinkMessage((event.data as Common.Console.Message));
-    }
+    Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, ({data: message}) => {
+      this.addSinkMessage(message);
+    }, this);
   }
 
   private addSinkMessage(message: Common.Console.Message): void {

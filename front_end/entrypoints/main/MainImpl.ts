@@ -576,8 +576,7 @@ export class MainImpl {
   private registerMessageSinkListener(): void {
     Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded);
 
-    function messageAdded(event: Common.EventTarget.EventTargetEvent): void {
-      const message = (event.data as Common.Console.Message);
+    function messageAdded({data: message}: Common.EventTarget.EventTargetEvent<Common.Console.Message>): void {
       if (message.show) {
         Common.Console.Console.instance().show();
       }

@@ -55,7 +55,7 @@ describe('Console', () => {
   });
 
   it('dispatches events to listeners', done => {
-    const callback = ({data}: {data: {text: string}}) => {
+    const callback = ({data}: Common.EventTarget.EventTargetEvent<Common.Console.Message>) => {
       consoleImpl.removeEventListener(Events.MessageAdded, callback);
       assert.strictEqual(data.text, 'Foo');
       done();

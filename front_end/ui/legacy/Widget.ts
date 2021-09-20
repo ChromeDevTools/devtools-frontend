@@ -28,7 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Helpers from '../components/helpers/helpers.js';
 
@@ -48,7 +47,7 @@ export class WidgetElement extends HTMLDivElement {
   }
 }
 
-export class Widget extends Common.ObjectWrapper.ObjectWrapper {
+export class Widget {
   element!: WidgetElement;
   contentElement: HTMLDivElement;
   private shadowRoot: ShadowRoot|undefined;
@@ -69,7 +68,6 @@ export class Widget extends Common.ObjectWrapper.ObjectWrapper {
   private invalidationsRequested?: boolean;
   private externallyManaged?: boolean;
   constructor(isWebComponent?: boolean, delegatesFocus?: boolean) {
-    super();
     this.contentElement = document.createElement('div');
     this.contentElement.classList.add('widget');
     if (isWebComponent) {

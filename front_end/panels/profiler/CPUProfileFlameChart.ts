@@ -145,7 +145,9 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 }
 
-export class CPUProfileFlameChart extends UI.Widget.VBox implements UI.SearchableView.Searchable {
+export class CPUProfileFlameChart extends
+    Common.ObjectWrapper.eventMixin<PerfUI.FlameChart.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+        implements UI.SearchableView.Searchable {
   readonly searchableView: UI.SearchableView.SearchableView;
   readonly overviewPane: OverviewPane;
   readonly mainPane: PerfUI.FlameChart.FlameChart;
@@ -307,7 +309,7 @@ export class OverviewCalculator implements PerfUI.TimelineGrid.Calculator {
   }
 }
 
-export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEvents, typeof UI.Widget.VBox>(
+export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) implements PerfUI.FlameChart.FlameChartDelegate {
   overviewContainer: HTMLElement;
   readonly overviewCalculator: OverviewCalculator;
@@ -457,6 +459,6 @@ export interface OverviewPaneWindowChangedEvent {
   windowTimeRight: number;
 }
 
-export type OVerviewPaneEventTypes = {
+export type OverviewPaneEventTypes = {
   [OverviewPaneEvents.WindowChanged]: OverviewPaneWindowChangedEvent,
 };

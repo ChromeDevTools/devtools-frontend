@@ -895,7 +895,7 @@ export enum Events {
 
 export type EventTypes = {
   [Events.PaintProfilerRequested]: Selection,
-  [Events.ScaleChanged]: void,
+  [Events.ScaleChanged]: number,
 };
 
 export const enum ChromeTexture {

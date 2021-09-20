@@ -158,7 +158,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
             i18nString(UIStrings.pageSupportNeeded)
           }</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName}>${
-            pageSupportNeeded.map(explanation => this.renderExplanation(explanation))
+            pageSupportNeeded.concat(supportPending).map(explanation => this.renderExplanation(explanation))
           }</${ReportView.ReportView.ReportValue.litTagName}>
         ` : LitHtml.nothing}
       ${circumstantial.length > 0 ?

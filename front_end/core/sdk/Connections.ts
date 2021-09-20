@@ -42,15 +42,15 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
     }
   }
 
-  private dispatchMessage(event: Common.EventTarget.EventTargetEvent): void {
+  private dispatchMessage(event: Common.EventTarget.EventTargetEvent<string>): void {
     if (this.onMessage) {
-      this.onMessage.call(null, (event.data as string));
+      this.onMessage.call(null, event.data);
     }
   }
 
-  private dispatchMessageChunk(event: Common.EventTarget.EventTargetEvent): void {
-    const messageChunk = (event.data['messageChunk'] as string);
-    const messageSize = (event.data['messageSize'] as number);
+  private dispatchMessageChunk(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.DispatchMessageChunkEvent>): void {
+    const {messageChunk, messageSize} = event.data;
     if (messageSize) {
       this.messageBuffer = '';
       this.messageSize = messageSize;

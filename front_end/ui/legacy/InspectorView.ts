@@ -188,8 +188,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
-    function showPanel(this: InspectorView, event: Common.EventTarget.EventTargetEvent): void {
-      const panelName = (event.data as string);
+    function showPanel(this: InspectorView, {data: panelName}: Common.EventTarget.EventTargetEvent<string>): void {
       this.showPanel(panelName);
     }
 

@@ -372,8 +372,8 @@ export class ContextMenu extends SubMenu {
   static initialize(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
-    function setUseSoftMenu(event: Common.EventTarget.EventTargetEvent): void {
-      ContextMenu.useSoftMenu = (event.data as boolean);
+    function setUseSoftMenu(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+      ContextMenu.useSoftMenu = event.data;
     }
   }
 
@@ -470,8 +470,8 @@ export class ContextMenu extends SubMenu {
                .subItems as (SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
   }
 
-  private onItemSelected(event: Common.EventTarget.EventTargetEvent): void {
-    this.itemSelected((event.data as number));
+  private onItemSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
+    this.itemSelected(event.data);
   }
 
   private itemSelected(id: number): void {

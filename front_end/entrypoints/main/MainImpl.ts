@@ -583,11 +583,9 @@ export class MainImpl {
     }
   }
 
-  private revealSourceLine(event: Common.EventTarget.EventTargetEvent): void {
-    const url = (event.data['url'] as string);
-    const lineNumber = (event.data['lineNumber'] as number);
-    const columnNumber = (event.data['columnNumber'] as number);
-
+  private revealSourceLine(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.RevealSourceLineEvent>): void {
+    const {url, lineNumber, columnNumber} = event.data;
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));

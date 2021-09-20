@@ -15,13 +15,9 @@ export class ForwardedInputEventHandler {
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
 
-  private onKeyEventUnhandled(event: Common.EventTarget.EventTargetEvent): void {
-    const data = event.data;
-    const type = (data.type as string);
-    const key = (data.key as string);
-    const keyCode = (data.keyCode as number);
-    const modifiers = (data.modifiers as number);
-
+  private onKeyEventUnhandled(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.KeyEventUnhandledEvent>): void {
+    const {type, key, keyCode, modifiers} = event.data;
     if (type !== 'keydown') {
       return;
     }

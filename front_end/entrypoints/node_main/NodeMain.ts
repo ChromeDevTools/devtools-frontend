@@ -70,8 +70,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements Pro
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(true);
   }
 
-  private devicesDiscoveryConfigChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const config = (event.data as Adb.Config);
+  private devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
     const locations = [];
     for (const address of config.networkDiscoveryConfig) {
       const parts = address.split(':');

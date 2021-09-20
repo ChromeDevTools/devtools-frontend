@@ -156,7 +156,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private readonly deleteIconToolbar: UI.Toolbar.Toolbar;
   private readonly deleteButton: UI.Toolbar.ToolbarButton;
   private readonly addColorToolbar: UI.Toolbar.Toolbar;
-  private readonly colorPickedBound: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly colorPickedBound:
+      (event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>) => void;
   private hsv!: number[];
   private hueAlphaWidth!: number;
   dragWidth!: number;
@@ -1185,13 +1186,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private colorPicked(event: Common.EventTarget.EventTargetEvent): void {
-    const rgbColor = event.data as {
-      r: number,
-      g: number,
-      b: number,
-      a: number,
-    };
+  private colorPicked({
+    data: rgbColor,
+  }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Color.fromRGBA(rgba);
     this.innerSetColor(color.hsva(), '', undefined /* colorName */, undefined, ChangeSource.Other);

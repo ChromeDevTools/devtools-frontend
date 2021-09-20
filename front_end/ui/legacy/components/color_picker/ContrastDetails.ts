@@ -88,7 +88,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private contrastPassFailAPCA: HTMLElement;
   private readonly chooseBgColor: HTMLElement;
   private bgColorPickerButton: UI.Toolbar.ToolbarToggle;
-  private readonly bgColorPickedBound: (event: Common.EventTarget.EventTargetEvent) => void;
+  private readonly bgColorPickedBound:
+      (event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>) => void;
   private readonly bgColorSwatch: Swatch;
   constructor(
       contrastInfo: ContrastInfo, contentElement: Element,
@@ -449,13 +450,9 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  private bgColorPicked(event: Common.EventTarget.EventTargetEvent): void {
-    const rgbColor = event.data as {
-      r: number,
-      g: number,
-      b: number,
-      a: number,
-    };
+  private bgColorPicked({
+    data: rgbColor,
+  }: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.EyeDropperPickedColorEvent>): void {
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.Color.fromRGBA(rgba);
     this.contrastInfo.setBgColor(color);

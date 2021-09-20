@@ -78,8 +78,8 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     return nodeConnectionsPanelInstance;
   }
 
-  private devicesDiscoveryConfigChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.config = (event.data as Adb.Config);
+  private devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
+    this.config = config;
     this.networkDiscoveryView.discoveryConfigChanged(this.config.networkDiscoveryConfig);
   }
   wasShown(): void {

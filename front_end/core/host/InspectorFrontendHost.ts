@@ -36,7 +36,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import type {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';
+import type {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventTypes, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';
 import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
@@ -54,8 +54,7 @@ const MAX_RECORDED_HISTOGRAMS_SIZE = 100;
 
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   private readonly urlsBeingSaved: Map<string, string[]>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  events!: Common.EventTarget.EventTarget<any>;
+  events!: Common.EventTarget.EventTarget<EventTypes>;
   private windowVisible?: boolean;
 
   recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
@@ -379,7 +378,8 @@ class InspectorFrontendAPIImpl {
       // Single argument methods get dispatched with the param.
       if (signature.length < 2) {
         try {
-          InspectorFrontendHostInstance.events.dispatchEventToListeners(name, params[0]);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          InspectorFrontendHostInstance.events.dispatchEventToListeners<any>(name, params[0]);
         } catch (error) {
           console.error(error + ' ' + error.stack);
         }
@@ -392,7 +392,8 @@ class InspectorFrontendAPIImpl {
         data[signature[i]] = params[i];
       }
       try {
-        InspectorFrontendHostInstance.events.dispatchEventToListeners(name, data);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        InspectorFrontendHostInstance.events.dispatchEventToListeners<any>(name, data);
       } catch (error) {
         console.error(error + ' ' + error.stack);
       }

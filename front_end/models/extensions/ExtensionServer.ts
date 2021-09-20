@@ -817,9 +817,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     });
   }
 
-  private setInspectedTabId(event: Common.EventTarget.EventTargetEvent): void {
+  private setInspectedTabId(event: Common.EventTarget.EventTargetEvent<string>): void {
     const oldId = this.inspectedTabId;
-    this.inspectedTabId = (event.data as string);
+    this.inspectedTabId = event.data;
     if (oldId === null) {
       // Run deferred init
       this.initializeExtensions();

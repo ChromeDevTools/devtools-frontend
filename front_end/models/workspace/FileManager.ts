@@ -66,17 +66,16 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return result;
   }
 
-  private savedURL(event: Common.EventTarget.EventTargetEvent): void {
-    const url = event.data.url as string;
+  private savedURL(event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.SavedURLEvent>): void {
+    const {url, fileSystemPath} = event.data;
     const callback = this.saveCallbacks.get(url);
     this.saveCallbacks.delete(url);
     if (callback) {
-      callback({fileSystemPath: event.data.fileSystemPath as string});
+      callback({fileSystemPath});
     }
   }
 
-  private canceledSavedURL(event: Common.EventTarget.EventTargetEvent): void {
-    const url = event.data as string;
+  private canceledSavedURL({data: url}: Common.EventTarget.EventTargetEvent<string>): void {
     const callback = this.saveCallbacks.get(url);
     this.saveCallbacks.delete(url);
     if (callback) {
@@ -92,8 +91,7 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.close(url);
   }
 
-  private appendedToURL(event: Common.EventTarget.EventTargetEvent): void {
-    const url = event.data as string;
+  private appendedToURL({data: url}: Common.EventTarget.EventTargetEvent<string>): void {
     this.dispatchEventToListeners(Events.AppendedToURL, url);
   }
 }

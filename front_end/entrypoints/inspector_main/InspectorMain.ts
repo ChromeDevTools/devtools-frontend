@@ -84,8 +84,7 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
-          const hard = (event.data as boolean);
+        Host.InspectorFrontendHostAPI.Events.ReloadInspectedPage, ({data: hard}) => {
           SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages(hard);
         });
   }

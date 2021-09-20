@@ -139,8 +139,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
     return promise;
 
-    function onFileSystemsLoaded(this: IsolatedFileSystemManager, event: Common.EventTarget.EventTargetEvent): void {
-      const fileSystems = event.data as FileSystem[];
+    function onFileSystemsLoaded(
+        this: IsolatedFileSystemManager,
+        event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.DevToolsFileSystem[]>): void {
+      const fileSystems = event.data;
       const promises = [];
       for (let i = 0; i < fileSystems.length; ++i) {
         promises.push(this.innerAddFileSystem(fileSystems[i], false));
@@ -168,7 +170,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.fileSystemsLoadedPromise;
   }
 
-  private innerAddFileSystem(fileSystem: FileSystem, dispatchEvent: boolean): Promise<IsolatedFileSystem|null> {
+  private innerAddFileSystem(fileSystem: Host.InspectorFrontendHostAPI.DevToolsFileSystem, dispatchEvent: boolean):
+      Promise<IsolatedFileSystem|null> {
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common.ParsedURL.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
@@ -193,9 +196,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
   }
 
-  private onFileSystemAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const errorMessage = event.data['errorMessage'] as string;
-    const fileSystem = event.data['fileSystem'] as FileSystem | null;
+  private onFileSystemAdded(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.FileSystemAddedEvent>): void {
+    const {errorMessage, fileSystem} = event.data;
     if (errorMessage) {
       if (errorMessage !== '<selection cancelled>') {
         Common.Console.Console.instance().error(i18nString(UIStrings.unableToAddFilesystemS, {PH1: errorMessage}));
@@ -215,8 +218,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const embedderPath = event.data as string;
+  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const embedderPath = event.data;
     const fileSystemPath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
     const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
     if (!isolatedFileSystem) {
@@ -227,7 +230,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
   }
 
-  private onFileSystemFilesChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private onFileSystemFilesChanged(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.FilesChangedEvent>): void {
     const urlPaths = {
       changed: groupFilePathsIntoFileSystemPaths.call(this, event.data.changed),
       added: groupFilePathsIntoFileSystemPaths.call(this, event.data.added),
@@ -281,10 +285,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return requestId;
   }
 
-  private onIndexingTotalWorkCalculated(event: Common.EventTarget.EventTargetEvent): void {
-    const requestId = event.data['requestId'] as number;
-    const totalWork = event.data['totalWork'] as number;
-
+  private onIndexingTotalWorkCalculated(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.IndexingTotalWorkCalculatedEvent>):
+      void {
+    const {requestId, totalWork} = event.data;
     const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
@@ -292,10 +296,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     progress.setTotalWork(totalWork);
   }
 
-  private onIndexingWorked(event: Common.EventTarget.EventTargetEvent): void {
-    const requestId = event.data['requestId'] as number;
-    const worked = event.data['worked'] as number;
-
+  private onIndexingWorked(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.IndexingWorkedEvent>): void {
+    const {requestId, worked} = event.data;
     const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
@@ -307,9 +310,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  private onIndexingDone(event: Common.EventTarget.EventTargetEvent): void {
-    const requestId = event.data['requestId'] as number;
-
+  private onIndexingDone(event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.IndexingEvent>):
+      void {
+    const {requestId} = event.data;
     const progress = this.progresses.get(requestId);
     if (!progress) {
       return;
@@ -318,10 +321,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.progresses.delete(requestId);
   }
 
-  private onSearchCompleted(event: Common.EventTarget.EventTargetEvent): void {
-    const requestId = event.data['requestId'] as number;
-    const files = event.data['files'] as string[];
-
+  private onSearchCompleted(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.SearchCompletedEvent>): void {
+    const {requestId, files} = event.data;
     const callback = this.callbacks.get(requestId);
     if (!callback) {
       return;
@@ -350,10 +352,3 @@ export type EventTypes = {
 };
 
 let lastRequestId = 0;
-
-export interface FileSystem {
-  type: string;
-  fileSystemName: string;
-  rootURL: string;
-  fileSystemPath: string;
-}

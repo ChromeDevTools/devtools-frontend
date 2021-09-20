@@ -729,7 +729,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
       if (targetFunction !== func) {
-        const note = result.createChild('span', 'object-info-state-note');
+        const note = result.createChild('span', 'object-state-note info-note');
         UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
       }
       result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, targetFunction), false);

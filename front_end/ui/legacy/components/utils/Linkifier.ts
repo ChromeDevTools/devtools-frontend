@@ -828,7 +828,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
   }
 }
 
-export interface LinkDecorator extends Common.EventTarget.EventTarget {
+export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecorator.EventTypes> {
   linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null;
 }
 
@@ -838,6 +838,10 @@ export namespace LinkDecorator {
   export enum Events {
     LinkIconChanged = 'LinkIconChanged',
   }
+
+  export type EventTypes = {
+    [Events.LinkIconChanged]: Workspace.UISourceCode.UISourceCode,
+  };
 }
 
 let linkContextMenuProviderInstance: LinkContextMenuProvider;

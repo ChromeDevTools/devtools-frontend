@@ -70,7 +70,8 @@ export class PersistenceUtils {
   }
 }
 
-export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper implements Components.Linkifier.LinkDecorator {
+export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components.Linkifier.LinkDecorator.EventTypes>
+    implements Components.Linkifier.LinkDecorator {
   constructor(persistence: PersistenceImpl) {
     super();
     persistence.addEventListener(Events.BindingCreated, this.bindingChanged, this);

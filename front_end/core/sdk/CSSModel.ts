@@ -707,9 +707,9 @@ export class CSSModel extends SDKModel<EventTypes> {
       }
 
       if (this.cssPropertyTracker) {
-        this.cssPropertyTracker.dispatchEventToListeners(CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, {
-          domNodes: result.nodeIds.map(nodeId => this.domModelInternal.nodeForId(nodeId)),
-        });
+        this.cssPropertyTracker.dispatchEventToListeners(
+            CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated,
+            result.nodeIds.map(nodeId => this.domModelInternal.nodeForId(nodeId)));
       }
     }
 
@@ -867,7 +867,7 @@ export class InlineStyleResult {
   }
 }
 
-export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper {
+export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper<CSSPropertyTrackerEventTypes> {
   private readonly cssModel: CSSModel;
   private readonly properties: Protocol.CSS.CSSComputedStyleProperty[];
   constructor(cssModel: CSSModel, propertiesToTrack: Protocol.CSS.CSSComputedStyleProperty[]) {
@@ -896,6 +896,10 @@ const StylePollingInterval = 1000;  // throttling interval for style polling, in
 export enum CSSPropertyTrackerEvents {
   TrackedCSSPropertiesUpdated = 'TrackedCSSPropertiesUpdated',
 }
+
+export type CSSPropertyTrackerEventTypes = {
+  [CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated]: (DOMNode|null)[],
+};
 
 SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});
 export interface ContrastInfo {

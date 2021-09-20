@@ -1099,9 +1099,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
         SDK.CSSModel.CSSPropertyTrackerEvents.TrackedCSSPropertiesUpdated, this.trackedCSSPropertiesUpdated, this);
   }
 
-  private trackedCSSPropertiesUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const domNodes = (event.data.domNodes as (SDK.DOMModel.DOMNode | null)[]);
-
+  private trackedCSSPropertiesUpdated({data: domNodes}:
+                                          Common.EventTarget.EventTargetEvent<(SDK.DOMModel.DOMNode | null)[]>): void {
     for (const domNode of domNodes) {
       if (!domNode) {
         continue;

@@ -2,24 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-
-import {Events as ViewEvents, GraphView} from './GraphView.js';
+import {GraphView} from './GraphView.js';
 
 // A class that maps each context to its corresponding graph.
 // It controls which graph to render when the context is switched or updated.
-export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
-  private graphMapByContextId: Map<string, GraphView>;
-  constructor() {
-    super();
-
-    this.graphMapByContextId = new Map();
-  }
+export class GraphManager {
+  private readonly graphMapByContextId = new Map<string, GraphView>();
 
   createContext(contextId: string): void {
     const graph = new GraphView(contextId);
-    // When a graph has any update, request redraw.
-    graph.addEventListener(ViewEvents.ShouldRedraw, this.notifyShouldRedraw, this);
     this.graphMapByContextId.set(contextId, graph);
   }
 
@@ -33,7 +24,6 @@ export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
       return;
     }
 
-    graph.removeEventListener(ViewEvents.ShouldRedraw, this.notifyShouldRedraw, this);
     this.graphMapByContextId.delete(contextId);
   }
 
@@ -52,9 +42,5 @@ export class GraphManager extends Common.ObjectWrapper.ObjectWrapper {
    */
   getGraph(contextId: string): GraphView|null {
     return this.graphMapByContextId.get(contextId) || null;
-  }
-
-  private notifyShouldRedraw(event: Common.EventTarget.EventTargetEvent<GraphView>): void {
-    this.dispatchEventToListeners(ViewEvents.ShouldRedraw, event.data);
   }
 }

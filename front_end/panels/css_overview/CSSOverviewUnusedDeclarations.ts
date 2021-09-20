@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -38,20 +39,22 @@ const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewUnusedD
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface UnusedDeclaration {
   declaration: string;
-  nodeId: number;
+  nodeId: Protocol.DOM.BackendNodeId;
 }
 
 export class CSSOverviewUnusedDeclarations {
-  private static add(
-      target: Map<string, UnusedDeclaration[]>, key: string, item: {declaration: string, nodeId: number}): void {
+  private static add(target: Map<string, UnusedDeclaration[]>, key: string, item: {
+    declaration: string,
+    nodeId: Protocol.DOM.BackendNodeId,
+  }): void {
     const values = target.get(key) || [];
     values.push(item);
     target.set(key, values);
   }
 
   static checkForUnusedPositionValues(
-      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], positionIdx: number,
-      topIdx: number, leftIdx: number, rightIdx: number, bottomIdx: number): void {
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: Protocol.DOM.BackendNodeId, strings: string[],
+      positionIdx: number, topIdx: number, leftIdx: number, rightIdx: number, bottomIdx: number): void {
     if (strings[positionIdx] !== 'static') {
       return;
     }
@@ -90,8 +93,8 @@ export class CSSOverviewUnusedDeclarations {
   }
 
   static checkForUnusedWidthAndHeightValues(
-      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], displayIdx: number,
-      widthIdx: number, heightIdx: number): void {
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: Protocol.DOM.BackendNodeId, strings: string[],
+      displayIdx: number, widthIdx: number, heightIdx: number): void {
     if (strings[displayIdx] !== 'inline') {
       return;
     }
@@ -114,8 +117,8 @@ export class CSSOverviewUnusedDeclarations {
   }
 
   static checkForInvalidVerticalAlignment(
-      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: number, strings: string[], displayIdx: number,
-      verticalAlignIdx: number): void {
+      unusedDeclarations: Map<string, UnusedDeclaration[]>, nodeId: Protocol.DOM.BackendNodeId, strings: string[],
+      displayIdx: number, verticalAlignIdx: number): void {
     if (!strings[displayIdx] || strings[displayIdx] === 'inline' || strings[displayIdx].startsWith('table')) {
       return;
     }

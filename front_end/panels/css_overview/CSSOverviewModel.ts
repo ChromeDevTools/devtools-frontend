@@ -15,12 +15,12 @@ import {CSSOverviewUnusedDeclarations} from './CSSOverviewUnusedDeclarations.js'
 
 interface NodeStyleStats {
   elementCount: number;
-  backgroundColors: Map<string, Set<number>>;
-  textColors: Map<string, Set<number>>;
+  backgroundColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  textColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   textColorContrastIssues: Map<string, ContrastIssue[]>;
-  fillColors: Map<string, Set<number>>;
-  borderColors: Map<string, Set<number>>;
-  fontInfo: Map<string, Map<string, Map<string, number[]>>>;
+  fillColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  borderColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  fontInfo: Map<string, Map<string, Map<string, Protocol.DOM.BackendNodeId[]>>>;
   unusedDeclarations: Map<string, UnusedDeclaration[]>;
 }
 

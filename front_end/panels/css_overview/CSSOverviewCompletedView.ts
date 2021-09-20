@@ -178,7 +178,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export type NodeStyleStats = Map<string, Set<number>>;
 
 export interface ContrastIssue {
-  nodeId: number;
+  nodeId: Protocol.DOM.BackendNodeId;
   contrastRatio: number;
   textColor: Common.Color.Color;
   backgroundColor: Common.Color.Color;
@@ -189,18 +189,18 @@ export interface ContrastIssue {
   };
 }
 export interface OverviewData {
-  backgroundColors: Map<string, Set<number>>;
-  textColors: Map<string, Set<number>>;
+  backgroundColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  textColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   textColorContrastIssues: Map<string, ContrastIssue[]>;
-  fillColors: Map<string, Set<number>>;
-  borderColors: Map<string, Set<number>>;
+  fillColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  borderColors: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   globalStyleStats: {
     styleRules: number,
     inlineStyles: number,
     externalSheets: number,
     stats: {type: number, class: number, id: number, universal: number, attribute: number, nonSimple: number},
   };
-  fontInfo: Map<string, Map<string, Map<string, number[]>>>;
+  fontInfo: Map<string, Map<string, Map<string, Protocol.DOM.BackendNodeId[]>>>;
   elementCount: number;
   mediaQueries: Map<string, Protocol.CSS.CSSMedia[]>;
   unusedDeclarations: Map<string, UnusedDeclaration[]>;
@@ -435,7 +435,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
           return;
         }
 
-        const nodesIds = (fontMetricInfo.get(value) as number[]);
+        const nodesIds = fontMetricInfo.get(value);
         if (!nodesIds) {
           return;
         }
@@ -1013,8 +1013,8 @@ export class ElementDetailsView extends UI.Widget.Widget {
     if ('nodeId' in firstItem && visibility.has('nodeId')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
-      const nodeIds = (data as {nodeId: number}[]).reduce((prev, curr) => {
-        const nodeId = curr.nodeId as Protocol.DOM.BackendNodeId;
+      const nodeIds = (data as {nodeId: Protocol.DOM.BackendNodeId}[]).reduce((prev, curr) => {
+        const nodeId = curr.nodeId;
         if (CSSOverviewCompletedView.pushedNodes.has(nodeId)) {
           return prev;
         }
@@ -1030,7 +1030,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
         if (!relatedNodesMap) {
           continue;
         }
-        frontendNode = relatedNodesMap.get(item.nodeId as Protocol.DOM.BackendNodeId);
+        frontendNode = relatedNodesMap.get(item.nodeId);
         if (!frontendNode) {
           continue;
         }

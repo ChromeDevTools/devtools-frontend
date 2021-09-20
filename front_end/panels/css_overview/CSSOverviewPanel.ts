@@ -27,17 +27,17 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
   private readonly startView: CSSOverviewStartView;
   private readonly processingView: CSSOverviewProcessingView;
   private readonly completedView: CSSOverviewCompletedView;
-  private backgroundColors?: Map<string, Set<number>>;
-  private textColors?: Map<string, Set<number>>;
-  private fillColors?: Map<string, Set<number>>;
-  private borderColors?: Map<string, Set<number>>;
-  private fontInfo?: Map<string, Map<string, Map<string, number[]>>>;
-  private mediaQueries?: Map<string, Protocol.CSS.CSSMedia[]>;
-  private unusedDeclarations?: Map<string, UnusedDeclaration[]>;
-  private elementCount?: number;
+  private backgroundColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  private textColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  private fillColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  private borderColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
+  private fontInfo!: Map<string, Map<string, Map<string, Protocol.DOM.BackendNodeId[]>>>;
+  private mediaQueries!: Map<string, Protocol.CSS.CSSMedia[]>;
+  private unusedDeclarations!: Map<string, UnusedDeclaration[]>;
+  private elementCount!: number;
   private cancelled?: boolean;
-  private globalStyleStats?: GlobalStyleStats;
-  private textColorContrastIssues?: Map<string, ContrastIssue[]>;
+  private globalStyleStats!: GlobalStyleStats;
+  private textColorContrastIssues!: Map<string, ContrastIssue[]>;
 
   private constructor() {
     super('css_overview');
@@ -97,6 +97,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
         nonSimple: 0,
       },
     };
+    this.textColorContrastIssues = new Map();
     this.renderInitialView();
   }
 
@@ -124,16 +125,16 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
 
     this.completedView.show(this.contentElement);
     this.completedView.setOverviewData({
-      backgroundColors: (this.backgroundColors as Map<string, Set<number>>),
-      textColors: (this.textColors as Map<string, Set<number>>),
-      textColorContrastIssues: (this.textColorContrastIssues as Map<string, ContrastIssue[]>),
-      fillColors: (this.fillColors as Map<string, Set<number>>),
-      borderColors: (this.borderColors as Map<string, Set<number>>),
-      globalStyleStats: this.globalStyleStats as GlobalStyleStats,
-      fontInfo: (this.fontInfo as Map<string, Map<string, Map<string, number[]>>>),
-      elementCount: (this.elementCount as number),
-      mediaQueries: (this.mediaQueries as Map<string, Protocol.CSS.CSSMedia[]>),
-      unusedDeclarations: (this.unusedDeclarations as Map<string, UnusedDeclaration[]>),
+      backgroundColors: this.backgroundColors,
+      textColors: this.textColors,
+      textColorContrastIssues: this.textColorContrastIssues,
+      fillColors: this.fillColors,
+      borderColors: this.borderColors,
+      globalStyleStats: this.globalStyleStats,
+      fontInfo: this.fontInfo,
+      elementCount: this.elementCount,
+      mediaQueries: this.mediaQueries,
+      unusedDeclarations: this.unusedDeclarations,
     });
   }
 

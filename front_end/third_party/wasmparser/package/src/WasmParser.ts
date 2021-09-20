@@ -434,10 +434,10 @@ export const enum OperatorCode {
   i8x16_bitmask = 0xfd64,
   i8x16_narrow_i16x8_s = 0xfd65,
   i8x16_narrow_i16x8_u = 0xfd66,
-  f32x4_ceil = 0x67,
-  f32x4_floor = 0x68,
-  f32x4_trunc = 0x69,
-  f32x4_nearest = 0x6a,
+  f32x4_ceil = 0xfd67,
+  f32x4_floor = 0xfd68,
+  f32x4_trunc = 0xfd69,
+  f32x4_nearest = 0xfd6a,
   i8x16_shl = 0xfd6b,
   i8x16_shr_s = 0xfd6c,
   i8x16_shr_u = 0xfd6d,
@@ -575,6 +575,8 @@ export const enum OperatorCode {
   struct_get_s = 0xfb04,
   struct_get_u = 0xfb05,
   struct_set = 0xfb06,
+  struct_new = 0xfb07,
+  struct_new_default = 0xfb08,
   array_new_with_rtt = 0xfb11,
   array_new_default_with_rtt = 0xfb12,
   array_get = 0xfb13,
@@ -583,6 +585,10 @@ export const enum OperatorCode {
   array_set = 0xfb16,
   array_len = 0xfb17,
   array_copy = 0xfb18, // Non-standard experiment in V8.
+  array_init = 0xfb19,
+  array_init_static = 0xfb1a,
+  array_new = 0xfb1b,
+  array_new_default = 0xfb1c,
   i31_new = 0xfb20,
   i31_get_s = 0xfb21,
   i31_get_u = 0xfb22,
@@ -590,9 +596,13 @@ export const enum OperatorCode {
   rtt_sub = 0xfb31,
   rtt_fresh_sub = 0xfb32, // Non-standard experiment in V8.
   ref_test = 0xfb40,
+  ref_test_static = 0xfb44,
   ref_cast = 0xfb41,
+  ref_cast_static = 0xfb45,
   br_on_cast = 0xfb42,
+  br_on_cast_static = 0xfb46,
   br_on_cast_fail = 0xfb43,
+  br_on_cast_static_fail = 0xfb47,
   ref_is_func = 0xfb50,
   ref_is_data = 0xfb51,
   ref_is_i31 = 0xfb52,
@@ -1240,6 +1250,8 @@ OperatorCodeNames[0xfb03] = "struct.get";
 OperatorCodeNames[0xfb04] = "struct.get_s";
 OperatorCodeNames[0xfb05] = "struct.get_u";
 OperatorCodeNames[0xfb06] = "struct.set";
+OperatorCodeNames[0xfb07] = "struct.new";
+OperatorCodeNames[0xfb08] = "struct.new_default";
 OperatorCodeNames[0xfb11] = "array.new_with_rtt";
 OperatorCodeNames[0xfb12] = "array.new_default_with_rtt";
 OperatorCodeNames[0xfb13] = "array.get";
@@ -1248,6 +1260,10 @@ OperatorCodeNames[0xfb15] = "array.get_u";
 OperatorCodeNames[0xfb16] = "array.set";
 OperatorCodeNames[0xfb17] = "array.len";
 OperatorCodeNames[0xfb18] = "array.copy";
+OperatorCodeNames[0xfb19] = "array.init";
+OperatorCodeNames[0xfb1a] = "array.init_static";
+OperatorCodeNames[0xfb1b] = "array.new";
+OperatorCodeNames[0xfb1c] = "array.new_default";
 OperatorCodeNames[0xfb20] = "i31.new";
 OperatorCodeNames[0xfb21] = "i31.get_s";
 OperatorCodeNames[0xfb22] = "i31.get_u";
@@ -1258,6 +1274,10 @@ OperatorCodeNames[0xfb40] = "ref.test";
 OperatorCodeNames[0xfb41] = "ref.cast";
 OperatorCodeNames[0xfb42] = "br_on_cast";
 OperatorCodeNames[0xfb43] = "br_on_cast_fail";
+OperatorCodeNames[0xfb44] = "ref.test_static";
+OperatorCodeNames[0xfb45] = "ref.cast_static";
+OperatorCodeNames[0xfb46] = "br_on_cast_static";
+OperatorCodeNames[0xfb47] = "br_on_cast_static_fail";
 OperatorCodeNames[0xfb50] = "ref.is_func";
 OperatorCodeNames[0xfb51] = "ref.is_data";
 OperatorCodeNames[0xfb52] = "ref.is_i31";
@@ -1300,6 +1320,9 @@ export const enum TypeKind {
   func = -0x20,
   struct = -0x21,
   array = -0x22,
+  func_subtype = -0x23,
+  struct_subtype = -0x24,
+  array_subtype = -0x25,
   empty_block_type = -0x40,
 }
 export class Type {
@@ -1610,13 +1633,15 @@ export interface IFunctionEntry {
   typeIndex: number;
 }
 export interface ITypeEntry {
-  form: number; // func | struct | array
+  // func | struct | array | func_subtype | struct_subtype | array_subtype
+  form: number;
   params?: Type[]; // For function types.
   returns?: Type[]; // For function types.
   fields?: Type[]; // For struct types.
   mutabilities?: boolean[]; // For struct types.
   elementType?: Type; // For array types.
   mutability?: boolean; // For array types.
+  supertype?: number; // For *_subtype types.
 }
 export interface ISectionInformation {
   id: SectionCode;
@@ -1961,6 +1986,12 @@ export class BinaryReader {
       returns: returnTypes,
     };
   }
+  private readFuncSubtype(): ITypeEntry {
+    var result = this.readFuncType();
+    result.form = TypeKind.func_subtype;
+    result.supertype = this.readHeapType();
+    return result;
+  }
   private readStructType(): ITypeEntry {
     var fieldCount = this.readVarUint32() >>> 0;
     var fieldTypes = new Array(fieldCount);
@@ -1975,6 +2006,12 @@ export class BinaryReader {
       mutabilities: fieldMutabilities,
     };
   }
+  private readStructSubtype(): ITypeEntry {
+    var result = this.readStructType();
+    result.form = TypeKind.struct_subtype;
+    result.supertype = this.readHeapType();
+    return result;
+  }
   private readArrayType(): ITypeEntry {
     var elementType = this.readType();
     var mutability = !!this.readVarUint1();
@@ -1983,6 +2020,12 @@ export class BinaryReader {
       elementType: elementType,
       mutability: mutability,
     };
+  }
+  private readArraySubtype(): ITypeEntry {
+    var result = this.readArrayType();
+    result.form = TypeKind.array_subtype;
+    result.supertype = this.readHeapType();
+    return result;
   }
   private readResizableLimits(maxPresent: boolean): IResizableLimits {
     var initial = this.readVarUint32() >>> 0;
@@ -2038,11 +2081,20 @@ export class BinaryReader {
       case TypeKind.func:
         this.result = this.readFuncType();
         break;
+      case TypeKind.func_subtype:
+        this.result = this.readFuncSubtype();
+        break;
       case TypeKind.struct:
         this.result = this.readStructType();
         break;
+      case TypeKind.struct_subtype:
+        this.result = this.readStructSubtype();
+        break;
       case TypeKind.array:
         this.result = this.readArrayType();
+        break;
+      case TypeKind.array_subtype:
+        this.result = this.readArraySubtype();
         break;
       default:
         throw new Error(`Unknown type kind: ${form}`);
@@ -2520,18 +2572,29 @@ export class BinaryReader {
       case OperatorCode.br_on_non_i31:
         brDepth = this.readVarUint32() >>> 0;
         break;
+      case OperatorCode.br_on_cast_static:
+      case OperatorCode.br_on_cast_static_fail:
+        brDepth = this.readVarUint32() >>> 0;
+        refType = this.readHeapType();
+        break;
       case OperatorCode.array_get:
       case OperatorCode.array_get_s:
       case OperatorCode.array_get_u:
       case OperatorCode.array_len:
       case OperatorCode.array_set:
+      case OperatorCode.array_new:
       case OperatorCode.array_new_with_rtt:
+      case OperatorCode.array_new_default:
       case OperatorCode.array_new_default_with_rtt:
+      case OperatorCode.struct_new:
       case OperatorCode.struct_new_with_rtt:
+      case OperatorCode.struct_new_default:
       case OperatorCode.struct_new_default_with_rtt:
       case OperatorCode.rtt_canon:
       case OperatorCode.rtt_sub:
       case OperatorCode.rtt_fresh_sub:
+      case OperatorCode.ref_test_static:
+      case OperatorCode.ref_cast_static:
         refType = this.readHeapType();
         break;
       case OperatorCode.array_copy:
@@ -2544,6 +2607,13 @@ export class BinaryReader {
       case OperatorCode.struct_set:
         refType = this.readHeapType();
         fieldIndex = this.readVarUint32();
+        break;
+      case OperatorCode.array_init:
+      case OperatorCode.array_init_static:
+        refType = this.readHeapType();
+        // This really is the "length" value. Overload "brDepth" to keep the
+        // IOperatorInformation interface a little leaner.
+        brDepth = this.readVarUint32() >>> 0;
         break;
       case OperatorCode.ref_is_func:
       case OperatorCode.ref_is_data:

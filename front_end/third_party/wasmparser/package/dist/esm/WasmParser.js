@@ -426,10 +426,10 @@ export var OperatorCode;
     OperatorCode[OperatorCode["i8x16_bitmask"] = 64868] = "i8x16_bitmask";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_s"] = 64869] = "i8x16_narrow_i16x8_s";
     OperatorCode[OperatorCode["i8x16_narrow_i16x8_u"] = 64870] = "i8x16_narrow_i16x8_u";
-    OperatorCode[OperatorCode["f32x4_ceil"] = 103] = "f32x4_ceil";
-    OperatorCode[OperatorCode["f32x4_floor"] = 104] = "f32x4_floor";
-    OperatorCode[OperatorCode["f32x4_trunc"] = 105] = "f32x4_trunc";
-    OperatorCode[OperatorCode["f32x4_nearest"] = 106] = "f32x4_nearest";
+    OperatorCode[OperatorCode["f32x4_ceil"] = 64871] = "f32x4_ceil";
+    OperatorCode[OperatorCode["f32x4_floor"] = 64872] = "f32x4_floor";
+    OperatorCode[OperatorCode["f32x4_trunc"] = 64873] = "f32x4_trunc";
+    OperatorCode[OperatorCode["f32x4_nearest"] = 64874] = "f32x4_nearest";
     OperatorCode[OperatorCode["i8x16_shl"] = 64875] = "i8x16_shl";
     OperatorCode[OperatorCode["i8x16_shr_s"] = 64876] = "i8x16_shr_s";
     OperatorCode[OperatorCode["i8x16_shr_u"] = 64877] = "i8x16_shr_u";
@@ -566,6 +566,8 @@ export var OperatorCode;
     OperatorCode[OperatorCode["struct_get_s"] = 64260] = "struct_get_s";
     OperatorCode[OperatorCode["struct_get_u"] = 64261] = "struct_get_u";
     OperatorCode[OperatorCode["struct_set"] = 64262] = "struct_set";
+    OperatorCode[OperatorCode["struct_new"] = 64263] = "struct_new";
+    OperatorCode[OperatorCode["struct_new_default"] = 64264] = "struct_new_default";
     OperatorCode[OperatorCode["array_new_with_rtt"] = 64273] = "array_new_with_rtt";
     OperatorCode[OperatorCode["array_new_default_with_rtt"] = 64274] = "array_new_default_with_rtt";
     OperatorCode[OperatorCode["array_get"] = 64275] = "array_get";
@@ -574,6 +576,10 @@ export var OperatorCode;
     OperatorCode[OperatorCode["array_set"] = 64278] = "array_set";
     OperatorCode[OperatorCode["array_len"] = 64279] = "array_len";
     OperatorCode[OperatorCode["array_copy"] = 64280] = "array_copy";
+    OperatorCode[OperatorCode["array_init"] = 64281] = "array_init";
+    OperatorCode[OperatorCode["array_init_static"] = 64282] = "array_init_static";
+    OperatorCode[OperatorCode["array_new"] = 64283] = "array_new";
+    OperatorCode[OperatorCode["array_new_default"] = 64284] = "array_new_default";
     OperatorCode[OperatorCode["i31_new"] = 64288] = "i31_new";
     OperatorCode[OperatorCode["i31_get_s"] = 64289] = "i31_get_s";
     OperatorCode[OperatorCode["i31_get_u"] = 64290] = "i31_get_u";
@@ -581,9 +587,13 @@ export var OperatorCode;
     OperatorCode[OperatorCode["rtt_sub"] = 64305] = "rtt_sub";
     OperatorCode[OperatorCode["rtt_fresh_sub"] = 64306] = "rtt_fresh_sub";
     OperatorCode[OperatorCode["ref_test"] = 64320] = "ref_test";
+    OperatorCode[OperatorCode["ref_test_static"] = 64324] = "ref_test_static";
     OperatorCode[OperatorCode["ref_cast"] = 64321] = "ref_cast";
+    OperatorCode[OperatorCode["ref_cast_static"] = 64325] = "ref_cast_static";
     OperatorCode[OperatorCode["br_on_cast"] = 64322] = "br_on_cast";
+    OperatorCode[OperatorCode["br_on_cast_static"] = 64326] = "br_on_cast_static";
     OperatorCode[OperatorCode["br_on_cast_fail"] = 64323] = "br_on_cast_fail";
+    OperatorCode[OperatorCode["br_on_cast_static_fail"] = 64327] = "br_on_cast_static_fail";
     OperatorCode[OperatorCode["ref_is_func"] = 64336] = "ref_is_func";
     OperatorCode[OperatorCode["ref_is_data"] = 64337] = "ref_is_data";
     OperatorCode[OperatorCode["ref_is_i31"] = 64338] = "ref_is_i31";
@@ -1226,6 +1236,8 @@ OperatorCodeNames[0xfb03] = "struct.get";
 OperatorCodeNames[0xfb04] = "struct.get_s";
 OperatorCodeNames[0xfb05] = "struct.get_u";
 OperatorCodeNames[0xfb06] = "struct.set";
+OperatorCodeNames[0xfb07] = "struct.new";
+OperatorCodeNames[0xfb08] = "struct.new_default";
 OperatorCodeNames[0xfb11] = "array.new_with_rtt";
 OperatorCodeNames[0xfb12] = "array.new_default_with_rtt";
 OperatorCodeNames[0xfb13] = "array.get";
@@ -1234,6 +1246,10 @@ OperatorCodeNames[0xfb15] = "array.get_u";
 OperatorCodeNames[0xfb16] = "array.set";
 OperatorCodeNames[0xfb17] = "array.len";
 OperatorCodeNames[0xfb18] = "array.copy";
+OperatorCodeNames[0xfb19] = "array.init";
+OperatorCodeNames[0xfb1a] = "array.init_static";
+OperatorCodeNames[0xfb1b] = "array.new";
+OperatorCodeNames[0xfb1c] = "array.new_default";
 OperatorCodeNames[0xfb20] = "i31.new";
 OperatorCodeNames[0xfb21] = "i31.get_s";
 OperatorCodeNames[0xfb22] = "i31.get_u";
@@ -1244,6 +1260,10 @@ OperatorCodeNames[0xfb40] = "ref.test";
 OperatorCodeNames[0xfb41] = "ref.cast";
 OperatorCodeNames[0xfb42] = "br_on_cast";
 OperatorCodeNames[0xfb43] = "br_on_cast_fail";
+OperatorCodeNames[0xfb44] = "ref.test_static";
+OperatorCodeNames[0xfb45] = "ref.cast_static";
+OperatorCodeNames[0xfb46] = "br_on_cast_static";
+OperatorCodeNames[0xfb47] = "br_on_cast_static_fail";
 OperatorCodeNames[0xfb50] = "ref.is_func";
 OperatorCodeNames[0xfb51] = "ref.is_data";
 OperatorCodeNames[0xfb52] = "ref.is_i31";
@@ -1287,6 +1307,9 @@ export var TypeKind;
     TypeKind[TypeKind["func"] = -32] = "func";
     TypeKind[TypeKind["struct"] = -33] = "struct";
     TypeKind[TypeKind["array"] = -34] = "array";
+    TypeKind[TypeKind["func_subtype"] = -35] = "func_subtype";
+    TypeKind[TypeKind["struct_subtype"] = -36] = "struct_subtype";
+    TypeKind[TypeKind["array_subtype"] = -37] = "array_subtype";
     TypeKind[TypeKind["empty_block_type"] = -64] = "empty_block_type";
 })(TypeKind || (TypeKind = {}));
 export class Type {
@@ -1741,6 +1764,12 @@ export class BinaryReader {
             returns: returnTypes,
         };
     }
+    readFuncSubtype() {
+        var result = this.readFuncType();
+        result.form = -35 /* func_subtype */;
+        result.supertype = this.readHeapType();
+        return result;
+    }
     readStructType() {
         var fieldCount = this.readVarUint32() >>> 0;
         var fieldTypes = new Array(fieldCount);
@@ -1755,6 +1784,12 @@ export class BinaryReader {
             mutabilities: fieldMutabilities,
         };
     }
+    readStructSubtype() {
+        var result = this.readStructType();
+        result.form = -36 /* struct_subtype */;
+        result.supertype = this.readHeapType();
+        return result;
+    }
     readArrayType() {
         var elementType = this.readType();
         var mutability = !!this.readVarUint1();
@@ -1763,6 +1798,12 @@ export class BinaryReader {
             elementType: elementType,
             mutability: mutability,
         };
+    }
+    readArraySubtype() {
+        var result = this.readArrayType();
+        result.form = -37 /* array_subtype */;
+        result.supertype = this.readHeapType();
+        return result;
     }
     readResizableLimits(maxPresent) {
         var initial = this.readVarUint32() >>> 0;
@@ -1818,11 +1859,20 @@ export class BinaryReader {
             case -32 /* func */:
                 this.result = this.readFuncType();
                 break;
+            case -35 /* func_subtype */:
+                this.result = this.readFuncSubtype();
+                break;
             case -33 /* struct */:
                 this.result = this.readStructType();
                 break;
+            case -36 /* struct_subtype */:
+                this.result = this.readStructSubtype();
+                break;
             case -34 /* array */:
                 this.result = this.readArrayType();
+                break;
+            case -37 /* array_subtype */:
+                this.result = this.readArraySubtype();
                 break;
             default:
                 throw new Error(`Unknown type kind: ${form}`);
@@ -2293,18 +2343,29 @@ export class BinaryReader {
             case 64357 /* br_on_non_i31 */:
                 brDepth = this.readVarUint32() >>> 0;
                 break;
+            case 64326 /* br_on_cast_static */:
+            case 64327 /* br_on_cast_static_fail */:
+                brDepth = this.readVarUint32() >>> 0;
+                refType = this.readHeapType();
+                break;
             case 64275 /* array_get */:
             case 64276 /* array_get_s */:
             case 64277 /* array_get_u */:
             case 64279 /* array_len */:
             case 64278 /* array_set */:
+            case 64283 /* array_new */:
             case 64273 /* array_new_with_rtt */:
+            case 64284 /* array_new_default */:
             case 64274 /* array_new_default_with_rtt */:
+            case 64263 /* struct_new */:
             case 64257 /* struct_new_with_rtt */:
+            case 64264 /* struct_new_default */:
             case 64258 /* struct_new_default_with_rtt */:
             case 64304 /* rtt_canon */:
             case 64305 /* rtt_sub */:
             case 64306 /* rtt_fresh_sub */:
+            case 64324 /* ref_test_static */:
+            case 64325 /* ref_cast_static */:
                 refType = this.readHeapType();
                 break;
             case 64280 /* array_copy */:
@@ -2317,6 +2378,13 @@ export class BinaryReader {
             case 64262 /* struct_set */:
                 refType = this.readHeapType();
                 fieldIndex = this.readVarUint32();
+                break;
+            case 64281 /* array_init */:
+            case 64282 /* array_init_static */:
+                refType = this.readHeapType();
+                // This really is the "length" value. Overload "brDepth" to keep the
+                // IOperatorInformation interface a little leaner.
+                brDepth = this.readVarUint32() >>> 0;
                 break;
             case 64336 /* ref_is_func */:
             case 64337 /* ref_is_data */:
@@ -2551,10 +2619,10 @@ export class BinaryReader {
             case 64868 /* i8x16_bitmask */:
             case 64869 /* i8x16_narrow_i16x8_s */:
             case 64870 /* i8x16_narrow_i16x8_u */:
-            case 103 /* f32x4_ceil */:
-            case 104 /* f32x4_floor */:
-            case 105 /* f32x4_trunc */:
-            case 106 /* f32x4_nearest */:
+            case 64871 /* f32x4_ceil */:
+            case 64872 /* f32x4_floor */:
+            case 64873 /* f32x4_trunc */:
+            case 64874 /* f32x4_nearest */:
             case 64875 /* i8x16_shl */:
             case 64876 /* i8x16_shr_s */:
             case 64877 /* i8x16_shr_u */:

@@ -1,3 +1,16 @@
+# [5.3.0](https://github.com/wasdk/wasmparser/compare/v5.2.0...v5.3.0) (2021-09-20)
+
+
+### Bug Fixes
+
+* escape export name strings §6.3.3 ([1c0d874](https://github.com/wasdk/wasmparser/commit/1c0d874bde1544c03661ccfa63575be321eb6f73))
+
+
+### Features
+
+* add tests for escaped export name strings ([8c27bdf](https://github.com/wasdk/wasmparser/commit/8c27bdf516ab91d63595d0b283e57a9e7762d4fc))
+* update GC proposal support to "milestone 4" ([5d63bb6](https://github.com/wasdk/wasmparser/commit/5d63bb6b441ff064abf13559ca308b16c222c18f))
+
 # [5.2.0](https://github.com/wasdk/wasmparser/compare/v5.1.1...v5.2.0) (2021-05-31)
 
 

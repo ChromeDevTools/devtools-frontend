@@ -406,10 +406,10 @@ export declare const enum OperatorCode {
     i8x16_bitmask = 64868,
     i8x16_narrow_i16x8_s = 64869,
     i8x16_narrow_i16x8_u = 64870,
-    f32x4_ceil = 103,
-    f32x4_floor = 104,
-    f32x4_trunc = 105,
-    f32x4_nearest = 106,
+    f32x4_ceil = 64871,
+    f32x4_floor = 64872,
+    f32x4_trunc = 64873,
+    f32x4_nearest = 64874,
     i8x16_shl = 64875,
     i8x16_shr_s = 64876,
     i8x16_shr_u = 64877,
@@ -545,6 +545,8 @@ export declare const enum OperatorCode {
     struct_get_s = 64260,
     struct_get_u = 64261,
     struct_set = 64262,
+    struct_new = 64263,
+    struct_new_default = 64264,
     array_new_with_rtt = 64273,
     array_new_default_with_rtt = 64274,
     array_get = 64275,
@@ -553,6 +555,10 @@ export declare const enum OperatorCode {
     array_set = 64278,
     array_len = 64279,
     array_copy = 64280,
+    array_init = 64281,
+    array_init_static = 64282,
+    array_new = 64283,
+    array_new_default = 64284,
     i31_new = 64288,
     i31_get_s = 64289,
     i31_get_u = 64290,
@@ -560,9 +566,13 @@ export declare const enum OperatorCode {
     rtt_sub = 64305,
     rtt_fresh_sub = 64306,
     ref_test = 64320,
+    ref_test_static = 64324,
     ref_cast = 64321,
+    ref_cast_static = 64325,
     br_on_cast = 64322,
+    br_on_cast_static = 64326,
     br_on_cast_fail = 64323,
+    br_on_cast_static_fail = 64327,
     ref_is_func = 64336,
     ref_is_data = 64337,
     ref_is_i31 = 64338,
@@ -606,6 +616,9 @@ export declare const enum TypeKind {
     func = -32,
     struct = -33,
     array = -34,
+    func_subtype = -35,
+    struct_subtype = -36,
+    array_subtype = -37,
     empty_block_type = -64
 }
 export declare class Type {
@@ -822,6 +835,7 @@ export interface ITypeEntry {
     mutabilities?: boolean[];
     elementType?: Type;
     mutability?: boolean;
+    supertype?: number;
 }
 export interface ISectionInformation {
     id: SectionCode;
@@ -911,8 +925,11 @@ export declare class BinaryReader {
     private hasStringBytes;
     private hasSectionPayload;
     private readFuncType;
+    private readFuncSubtype;
     private readStructType;
+    private readStructSubtype;
     private readArrayType;
+    private readArraySubtype;
     private readResizableLimits;
     private readTableType;
     private readMemoryType;

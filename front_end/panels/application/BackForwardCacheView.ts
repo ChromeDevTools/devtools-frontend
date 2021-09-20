@@ -60,8 +60,9 @@ const UIStrings = {
    */
   chromeSupportNeeded: 'The last navigation was not cached because',
   /**
-   * @description Explanation text for the reasons which will be supported in a future version
-   * of Chrome.
+   * @description Explanation text appended to a reason why the usage of the back-forward cache
+   * is not possible, if in a future version of Chrome this reason will not prevent the usage
+   * of the back-forward cache anymore.
    */
   willBeSupported: '(Supported in a future version of Chrome)',
 };

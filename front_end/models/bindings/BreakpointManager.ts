@@ -734,8 +734,9 @@ export class ModelBreakpoint {
     this.breakpointIds = [];
   }
 
-  private async breakpointResolved(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    await this.addResolvedLocation((event.data as SDK.DebuggerModel.Location));
+  private async breakpointResolved({data: location}: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.Location>):
+      Promise<void> {
+    await this.addResolvedLocation(location);
   }
 
   private async locationUpdated(liveLocation: LiveLocation): Promise<void> {

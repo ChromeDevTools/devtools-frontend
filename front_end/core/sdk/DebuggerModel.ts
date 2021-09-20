@@ -135,7 +135,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                           }>>)|null;
   private expandCallFramesCallback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null;
   evaluateOnCallFrameCallback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null;
-  private readonly breakpointResolvedEventTarget: Common.ObjectWrapper.ObjectWrapper;
+  // We need to be able to register listeners for individual breakpoints. As such, we dispatch
+  // on breakpoint ids, which are not statically known. The event payload will always be a `Location`.
+  private readonly breakpointResolvedEventTarget =
+      new Common.ObjectWrapper.ObjectWrapper<{[breakpointId: string]: Location}>();
   private autoStepOver: boolean;
   private isPausingInternal: boolean;
 
@@ -162,8 +165,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.computeAutoStepRangesCallback = null;
     this.expandCallFramesCallback = null;
     this.evaluateOnCallFrameCallback = null;
-
-    this.breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper();
 
     this.autoStepOver = false;
 
@@ -901,12 +902,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   addBreakpointListener(
-      breakpointId: string, listener: (arg0: Common.EventTarget.EventTargetEvent) => void, thisObject?: Object): void {
+      breakpointId: string, listener: (arg0: Common.EventTarget.EventTargetEvent<Location>) => void,
+      thisObject?: Object): void {
     this.breakpointResolvedEventTarget.addEventListener(breakpointId, listener, thisObject);
   }
 
   removeBreakpointListener(
-      breakpointId: string, listener: (arg0: Common.EventTarget.EventTargetEvent) => void, thisObject?: Object): void {
+      breakpointId: string, listener: (arg0: Common.EventTarget.EventTargetEvent<Location>) => void,
+      thisObject?: Object): void {
     this.breakpointResolvedEventTarget.removeEventListener(breakpointId, listener, thisObject);
   }
 

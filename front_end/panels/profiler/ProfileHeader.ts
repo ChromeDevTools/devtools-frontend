@@ -104,7 +104,7 @@ export type EventTypes = {
   [Events.ProfileTitleChanged]: ProfileHeader,
 };
 
-export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
+export class ProfileType extends Common.ObjectWrapper.ObjectWrapper<ProfileEventTypes> {
   readonly idInternal: string;
   readonly nameInternal: string;
   profiles: ProfileHeader[];
@@ -212,7 +212,9 @@ export abstract class ProfileType extends Common.ObjectWrapper.ObjectWrapper {
     return profile.loadFromFile(file);
   }
 
-  abstract createProfileLoadedFromFile(title: string): ProfileHeader;
+  createProfileLoadedFromFile(_title: string): ProfileHeader {
+    throw new Error('Not implemented');
+  }
 
   addProfile(profile: ProfileHeader): void {
     this.profiles.push(profile);
@@ -271,6 +273,13 @@ export enum ProfileEvents {
   RemoveProfileHeader = 'remove-profile-header',
   ViewUpdated = 'view-updated',
 }
+
+export type ProfileEventTypes = {
+  [ProfileEvents.AddProfileHeader]: ProfileHeader,
+  [ProfileEvents.ProfileComplete]: ProfileHeader,
+  [ProfileEvents.RemoveProfileHeader]: ProfileHeader,
+  [ProfileEvents.ViewUpdated]: void,
+};
 
 export interface DataDisplayDelegate {
   showProfile(profile: ProfileHeader|null): UI.Widget.Widget|null;

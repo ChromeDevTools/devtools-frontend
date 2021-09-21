@@ -327,16 +327,17 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     profileTypeSection.childrenListElement.addEventListener(
         'contextmenu', this.handleContextMenuEvent.bind(this), false);
 
-    function onAddProfileHeader(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
-      this.addProfileHeader((event.data as ProfileHeader));
+    function onAddProfileHeader(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
+      this.addProfileHeader(event.data);
     }
 
-    function onRemoveProfileHeader(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
-      this.removeProfileHeader((event.data as ProfileHeader));
+    function onRemoveProfileHeader(
+        this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
+      this.removeProfileHeader(event.data);
     }
 
-    function profileComplete(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent): void {
-      this.showProfile((event.data as ProfileHeader));
+    function profileComplete(this: ProfilesPanel, event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
+      this.showProfile(event.data);
     }
 
     profileType.addEventListener(ProfileTypeEvents.ViewUpdated, this.updateProfileTypeSpecificUI, this);

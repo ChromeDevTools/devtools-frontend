@@ -33,16 +33,14 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     return this.uiSourceCodeDiff(uiSourceCode).requestDiff();
   }
 
-  subscribeToDiffChange(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: (arg0: Common.EventTarget.EventTargetEvent) => void,
-      thisObj?: Object): void {
-    this.uiSourceCodeDiff(uiSourceCode).addEventListener(Events.DiffChanged, callback, thisObj);
+  subscribeToDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object):
+      void {
+    this.uiSourceCodeDiff(uiSourceCode).addEventListener(UISourceCodeDiffEvents.DiffChanged, callback, thisObj);
   }
 
-  unsubscribeFromDiffChange(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: (arg0: Common.EventTarget.EventTargetEvent) => void,
-      thisObj?: Object): void {
-    this.uiSourceCodeDiff(uiSourceCode).removeEventListener(Events.DiffChanged, callback, thisObj);
+  unsubscribeFromDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object):
+      void {
+    this.uiSourceCodeDiff(uiSourceCode).removeEventListener(UISourceCodeDiffEvents.DiffChanged, callback, thisObj);
   }
 
   modifiedUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {
@@ -166,7 +164,20 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 }
 
-export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
+export const enum Events {
+  ModifiedStatusChanged = 'ModifiedStatusChanged',
+}
+
+export interface ModifiedStatusChangedEvent {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode;
+  isModified: boolean;
+}
+
+export type EventTypes = {
+  [Events.ModifiedStatusChanged]: ModifiedStatusChangedEvent,
+};
+
+export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourceCodeDiffEventTypes> {
   private uiSourceCode: Workspace.UISourceCode.UISourceCode;
   private requestDiffPromise: Promise<Diff.Diff.DiffArray|null>|null;
   private pendingChanges: number|null;
@@ -196,7 +207,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
       if (this.dispose) {
         return;
       }
-      this.dispatchEventToListeners(Events.DiffChanged);
+      this.dispatchEventToListeners(UISourceCodeDiffEvents.DiffChanged);
       this.pendingChanges = null;
     }
   }
@@ -259,19 +270,12 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
-export enum Events {
+export enum UISourceCodeDiffEvents {
   DiffChanged = 'DiffChanged',
-  ModifiedStatusChanged = 'ModifiedStatusChanged',
 }
 
-export interface ModifiedStatusChangedEvent {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  isModified: boolean;
-}
-
-export type EventTypes = {
-  [Events.DiffChanged]: void,
-  [Events.ModifiedStatusChanged]: ModifiedStatusChangedEvent,
+export type UISourceCodeDiffEventTypes = {
+  [UISourceCodeDiffEvents.DiffChanged]: void,
 };
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

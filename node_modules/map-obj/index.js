@@ -1,6 +1,7 @@
 'use strict';
 
 const isObject = value => typeof value === 'object' && value !== null;
+const mapObjectSkip = Symbol('skip');
 
 // Customized for this use-case
 const isObjectCustom = value =>
@@ -31,7 +32,13 @@ const mapObject = (object, mapper, options, isSeen = new WeakMap()) => {
 	}
 
 	for (const [key, value] of Object.entries(object)) {
-		let [newKey, newValue, {shouldRecurse = true} = {}] = mapper(key, value, object);
+		const mapResult = mapper(key, value, object);
+
+		if (mapResult === mapObjectSkip) {
+			continue;
+		}
+
+		let [newKey, newValue, {shouldRecurse = true} = {}] = mapResult;
 
 		// Drop `__proto__` keys.
 		if (newKey === '__proto__') {
@@ -57,3 +64,5 @@ module.exports = (object, mapper, options) => {
 
 	return mapObject(object, mapper, options);
 };
+
+module.exports.mapObjectSkip = mapObjectSkip;

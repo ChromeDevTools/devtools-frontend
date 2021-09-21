@@ -21,8 +21,8 @@ Find the changelog in [CHANGELOG.md](https://github.com/terser/terser/blob/maste
 [npm-url]: https://npmjs.org/package/terser
 [downloads-image]: https://img.shields.io/npm/dm/terser.svg
 [downloads-url]: https://npmjs.org/package/terser
-[travis-image]: https://img.shields.io/travis/terser/terser/master.svg
-[travis-url]: https://travis-ci.org/terser/terser
+[travis-image]: https://app.travis-ci.com/terser/terser.svg?branch=master
+[travis-url]: https://app.travis-ci.com/github/terser/terser
 [opencollective-contributors]: https://opencollective.com/terser/tiers/badge.svg
 [opencollective-url]: https://opencollective.com/terser
 
@@ -416,7 +416,7 @@ Browser loading is also supported:
 
 There is a single async high level function, **`async minify(code, options)`**,
 which will perform all minification [phases](#minify-options) in a configurable
-manner. There is no synchronous function, but this functionality can be achieved with a package like [deasync](https://github.com/abbr/deasync). By default `minify()` will enable the options [`compress`](#compress-options)
+manner. By default `minify()` will enable [`compress`](#compress-options)
 and [`mangle`](#mangle-options). Example:
 ```javascript
 var code = "function add(first, second) { return first + second; }";
@@ -530,6 +530,11 @@ try {
 - `ecma` (default `undefined`) - pass `5`, `2015`, `2016`, etc to override
   `compress` and `format`'s `ecma` options.
 
+- `enclose` (default `false`) - pass `true`, or a string in the format
+  of `"args[:values]"`, where `args` and `values` are comma-separated
+  argument names and values, respectively, to embed the output in a big
+  function with the configurable arguments and values.
+
 - `parse` (default `{}`) — pass an object if you wish to specify some
   additional [parse options](#parse-options).
 
@@ -569,7 +574,7 @@ try {
   of class names. Pass a regular expression to only keep class names matching that regex.
 
 - `keep_fnames` (default: `false`) - pass `true` to prevent discarding or mangling
-  of function names. Pass a regular expression to only keep class names matching that regex.
+  of function names. Pass a regular expression to only keep function names matching that regex.
   Useful for code relying on `Function.prototype.name`. If the top level minify option
   `keep_classnames` is `undefined` it will be overridden with the value of the top level
   minify option `keep_fnames`.
@@ -602,13 +607,14 @@ try {
         // source map options
     },
     ecma: 5, // specify one of: 5, 2015, 2016, etc.
+    enclose: false, // or specify true, or "args:values"
     keep_classnames: false,
     keep_fnames: false,
     ie8: false,
     module: false,
     nameCache: null, // or specify a name cache object
     safari10: false,
-    toplevel: false,
+    toplevel: false
 }
 ```
 
@@ -668,6 +674,8 @@ If you happen to need the source map as a raw object, set `sourceMap.asObject` t
 - `html5_comments` (default `true`)
 
 - `shebang` (default `true`) -- support `#!command` as the first line
+
+- `spidermonkey` (default `false`) -- accept a Spidermonkey (Mozilla) AST
 
 ## Compress options
 
@@ -795,10 +803,12 @@ If you happen to need the source map as a raw object, set `sourceMap.asObject` t
   Specify `"strict"` to treat `foo.bar` as side-effect-free only when
   `foo` is certain to not throw, i.e. not `null` or `undefined`.
 
-- `reduce_funcs` (legacy option, safely ignored for backwards compatibility).
-
 - `reduce_vars` (default: `true`) -- Improve optimization on variables assigned with and
   used as constant values.
+
+- `reduce_funcs` (default: `true`) -- Inline single-use functions when
+  possible. Depends on `reduce_vars` being enabled.  Disabling this option
+  sometimes improves performance of the output code.
 
 - `sequences` (default: `true`) -- join consecutive simple statements using the
   comma operator.  May be set to a positive integer to specify the maximum number
@@ -848,7 +858,7 @@ If you happen to need the source map as a raw object, set `sourceMap.asObject` t
 - `unsafe_math` (default: `false`) -- optimize numerical expressions like
   `2 * x * 3` into `6 * x`, which may give imprecise floating point results.
 
-- `unsafe_symbols` (default: `false`) -- removes keys from native Symbol 
+- `unsafe_symbols` (default: `false`) -- removes keys from native Symbol
   declarations, e.g `Symbol("kDog")` becomes `Symbol()`.
 
 - `unsafe_methods` (default: false) -- Converts `{ m: function(){} }` to
@@ -881,12 +891,18 @@ If you happen to need the source map as a raw object, set `sourceMap.asObject` t
   See also: the `keep_classnames` [compress option](#compress-options).
 
 - `keep_fnames` (default `false`) -- Pass `true` to not mangle function names.
-  Pass a regular expression to only keep class names matching that regex.
+  Pass a regular expression to only keep function names matching that regex.
   Useful for code relying on `Function.prototype.name`. See also: the `keep_fnames`
   [compress option](#compress-options).
 
 - `module` (default `false`) -- Pass `true` an ES6 modules, where the toplevel
   scope is not the global scope. Implies `toplevel`.
+
+- `nth_identifier` (default: an internal mangler that weights based on character
+  frequency analysis) -- Pass an object with a `get(n)` function that converts an
+  ordinal into the nth most favored (usually shortest) identifier.
+  Optionally also provide `reset()`, `sort()`, and `consider(chars, delta)` to
+  use character frequency analysis of the source code.
 
 - `reserved` (default `[]`) -- Pass an array of identifiers that should be
   excluded from mangling. Example: `["foo", "bar"]`.
@@ -929,11 +945,16 @@ await minify(code, { mangle: { toplevel: true } }).code;
 - `debug` (default: `false`) — Mangle names with the original name still present.
   Pass an empty string `""` to enable, or a non-empty string to set the debug suffix.
 
-- `keep_quoted` (default: `false`) — Only mangle unquoted property names.
-  - `true` -- Quoted property names are automatically reserved and any unquoted
-    property names will not be mangled.
-  - `"strict"` -- Advanced, all unquoted property names are mangled unless
-    explicitly reserved.
+- `keep_quoted` (default: `false`) — How quoting properties (`{"prop": ...}` and `obj["prop"]`) controls what gets mangled.
+  - `"strict"` (recommended) -- `obj.prop` is mangled.
+  - `false` -- `obj["prop"]` is mangled.
+  - `true` -- `obj.prop` is mangled unless there is `obj["prop"]` elsewhere in the code.
+
+- `nth_identifer` (default: an internal mangler that weights based on character
+  frequency analysis) -- Pass an object with a `get(n)` function that converts an
+  ordinal into the nth most favored (usually shortest) identifier.
+  Optionally also provide `reset()`, `sort()`, and `consider(chars, delta)` to
+  use character frequency analysis of the source code.
 
 - `regex` (default: `null`) — Pass a [RegExp literal or pattern string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) to only mangle property matching the regular expression.
 
@@ -954,19 +975,17 @@ as "output options".
 - `ascii_only` (default `false`) -- escape Unicode characters in strings and
   regexps (affects directives with non-ascii characters becoming invalid)
 
-- `beautify` (default `false`) -- whether to actually beautify the output.
-  Passing `-b` will set this to true, but you might need to pass `-b` even
-  when you want to generate minified code, in order to specify additional
-  arguments, so you can use `-b beautify=false` to override it.
+- `beautify` (default `false`) -- (DEPRECATED) whether to beautify the output.
+  When using the legacy `-b` CLI flag, this is set to true by default.
 
 - `braces` (default `false`) -- always insert braces in `if`, `for`,
   `do`, `while` or `with` statements, even if their body is a single
   statement.
 
 - `comments` (default `"some"`) -- by default it keeps JSDoc-style comments
-  that contain "@license" or "@preserve", pass `true` or `"all"` to preserve all
-  comments, `false` to omit comments in the output, a regular expression string
-  (e.g. `/^!/`) or a function.
+  that contain "@license", "@preserve" or start with `!`, pass `true` or
+  `"all"` to preserve all comments, `false` to omit comments in the output,
+  a regular expression string (e.g. `/^!/`) or a function.
 
 - `ecma` (default `5`) -- set desired EcmaScript standard version for output.
   Set `ecma` to `2015` or greater to emit shorthand object properties - i.e.:
@@ -1019,6 +1038,8 @@ as "output options".
 
 - `shebang` (default `true`) -- preserve shebang `#!` in preamble (bash scripts)
 
+- `spidermonkey` (default `false`) -- produce a Spidermonkey (Mozilla) AST
+
 - `webkit` (default `false`) -- enable workarounds for WebKit bugs.
   PhantomJS users should set this option to `true`.
 
@@ -1069,6 +1090,7 @@ You might want to try it on your own code; it should reduce the minified size.
 Some examples of the optimizations made when this option is enabled:
 
 - `new Array(1, 2, 3)` or `Array(1, 2, 3)` → `[ 1, 2, 3 ]`
+- `Array.from([1, 2, 3])` → `[1, 2, 3]`
 - `new Object()` → `{}`
 - `String(exp)` or `exp.toString()` → `"" + exp`
 - `new Object/RegExp/Function/Error/Array (...)` → we discard the `new`
@@ -1189,6 +1211,9 @@ The `-p spidermonkey` option tells Terser that all input files are not
 JavaScript, but JS code described in SpiderMonkey AST in JSON.  Therefore we
 don't use our own parser in this case, but just transform that AST into our
 internal AST.
+
+`spidermonkey` is also available in `minify` as `parse` and `format` options to
+accept and/or produce a spidermonkey AST.
 
 ### Use Acorn for parsing
 

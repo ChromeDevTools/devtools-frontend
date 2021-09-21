@@ -851,6 +851,24 @@ function createFooterComponent(dom) {
 /**
  * @param {DOM} dom
  */
+function createFractionComponent(dom) {
+  const el0 = dom.document().createDocumentFragment();
+  const el1 = dom.createElement('a', 'lh-fraction__wrapper');
+  el1.setAttribute('href', '#');
+  const el2 = dom.createElement('div', 'lh-fraction__content-wrapper');
+  const el3 = dom.createElement('div', 'lh-fraction__content');
+  const el4 = dom.createElement('div', 'lh-fraction__background');
+  el3.append(' ', el4, ' ');
+  el2.append(' ', el3, ' ');
+  const el5 = dom.createElement('div', 'lh-fraction__label');
+  el1.append(' ', el2, ' ', el5, ' ');
+  el0.append(el1);
+  return el0;
+}
+
+/**
+ * @param {DOM} dom
+ */
 function createGaugeComponent(dom) {
   const el0 = dom.document().createDocumentFragment();
   const el1 = dom.createElement('a', 'lh-gauge__wrapper');
@@ -1000,10 +1018,11 @@ function createMetricComponent(dom) {
   const el0 = dom.document().createDocumentFragment();
   const el1 = dom.createElement('div', 'lh-metric');
   const el2 = dom.createElement('div', 'lh-metric__innerwrap');
-  const el3 = dom.createElement('span', 'lh-metric__title');
-  const el4 = dom.createElement('div', 'lh-metric__value');
-  const el5 = dom.createElement('div', 'lh-metric__description');
-  el2.append(' ', el3, ' ', el4, ' ', el5, ' ');
+  const el3 = dom.createElement('div', 'lh-metric__icon');
+  const el4 = dom.createElement('span', 'lh-metric__title');
+  const el5 = dom.createElement('div', 'lh-metric__value');
+  const el6 = dom.createElement('div', 'lh-metric__description');
+  el2.append(' ', el3, ' ', el4, ' ', el5, ' ', el6, ' ');
   el1.append(' ', el2, ' ');
   el0.append(el1);
   return el0;
@@ -1391,7 +1410,7 @@ function createWarningsToplevelComponent(dom) {
 }
 
 
-/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'envItem'|'footer'|'gauge'|'gaugePwa'|'heading'|'metric'|'metricsToggle'|'opportunity'|'opportunityHeader'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'topbar'|'warningsToplevel'} ComponentName */
+/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'envItem'|'footer'|'fraction'|'gauge'|'gaugePwa'|'heading'|'metric'|'metricsToggle'|'opportunity'|'opportunityHeader'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'topbar'|'warningsToplevel'} ComponentName */
 /**
  * @param {DOM} dom
  * @param {ComponentName} componentName
@@ -1409,6 +1428,7 @@ function createComponent(dom, componentName) {
     case 'elementScreenshot': return createElementScreenshotComponent(dom);
     case 'envItem': return createEnvItemComponent(dom);
     case 'footer': return createFooterComponent(dom);
+    case 'fraction': return createFractionComponent(dom);
     case 'gauge': return createGaugeComponent(dom);
     case 'gaugePwa': return createGaugePwaComponent(dom);
     case 'heading': return createHeadingComponent(dom);
@@ -1859,13 +1879,14 @@ class CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+   * @param {{gatherMode: LH.Result.GatherMode}=} options
    * @return {DocumentFragment}
    */
-  renderCategoryHeader(category, groupDefinitions) {
+  renderCategoryHeader(category, groupDefinitions, options) {
     const component = this.dom.createComponent('categoryHeader');
 
     const gaugeContainerEl = this.dom.find('.lh-score__gauge', component);
-    const gaugeEl = this.renderScoreGauge(category, groupDefinitions);
+    const gaugeEl = this.renderCategoryScore(category, groupDefinitions, options);
     gaugeContainerEl.appendChild(gaugeEl);
 
     if (category.description) {
@@ -2002,6 +2023,19 @@ class CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+   * @param {{gatherMode: LH.Result.GatherMode}=} options
+   * @return {DocumentFragment}
+   */
+  renderCategoryScore(category, groupDefinitions, options) {
+    if (options && (options.gatherMode === 'snapshot' || options.gatherMode === 'timespan')) {
+      return this.renderCategoryFraction(category);
+    }
+    return this.renderScoreGauge(category, groupDefinitions);
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
    */
   renderScoreGauge(category, groupDefinitions) { // eslint-disable-line no-unused-vars
@@ -2038,6 +2072,44 @@ class CategoryRenderer {
     }
 
     this.dom.find('.lh-gauge__label', tmpl).textContent = category.title;
+    return tmpl;
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   * @return {DocumentFragment}
+   */
+  renderCategoryFraction(category) {
+    const tmpl = this.dom.createComponent('fraction');
+    const wrapper = this.dom.find('a.lh-fraction__wrapper', tmpl);
+    this.dom.safelySetHref(wrapper, `#${category.id}`);
+
+    const numAudits = category.auditRefs.length;
+
+    let numPassed = 0;
+    let totalWeight = 0;
+    for (const auditRef of category.auditRefs) {
+      totalWeight += auditRef.weight;
+      if (Util.showAsPassed(auditRef.result)) numPassed++;
+    }
+
+    const fraction = numPassed / numAudits;
+    const content = this.dom.find('.lh-fraction__content', tmpl);
+    const text = this.dom.createElement('span');
+    text.textContent = `${numPassed}/${numAudits}`;
+    content.appendChild(text);
+
+    let rating = Util.calculateRating(fraction);
+
+    // If none of the available audits can affect the score, a rating isn't useful.
+    // The flow report should display the fraction with neutral icon and coloring in this case.
+    if (totalWeight === 0) {
+      rating = 'null';
+    }
+
+    wrapper.classList.add(`lh-fraction__wrapper--${rating}`);
+
+    this.dom.find('.lh-fraction__label', tmpl).textContent = category.title;
     return tmpl;
   }
 
@@ -2122,13 +2194,14 @@ class CategoryRenderer {
    *   ├── …
    *   ⋮
    * @param {LH.ReportResult.Category} category
-   * @param {Object<string, LH.Result.ReportGroup>} [groupDefinitions]
+   * @param {Object<string, LH.Result.ReportGroup>=} groupDefinitions
+   * @param {{environment?: 'PSI', gatherMode: LH.Result.GatherMode}=} options
    * @return {Element}
    */
-  render(category, groupDefinitions = {}) {
+  render(category, groupDefinitions = {}, options) {
     const element = this.dom.createElement('div', 'lh-category');
     this.createPermalinkSpan(element, category.id);
-    element.appendChild(this.renderCategoryHeader(category, groupDefinitions));
+    element.appendChild(this.renderCategoryHeader(category, groupDefinitions, options));
 
     // Top level clumps for audits, in order they will appear in the report.
     /** @type {Map<TopLevelClumpId, Array<LH.ReportResult.AuditRef>>} */
@@ -3924,20 +3997,20 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} groups
-   * @param {'PSI'=} environment 'PSI' and undefined are the only valid values
+   * @param {{gatherMode: LH.Result.GatherMode, environment?: 'PSI'}=} options
    * @return {Element}
    * @override
    */
-  render(category, groups, environment) {
+  render(category, groups, options) {
     const strings = Util.i18n.strings;
     const element = this.dom.createElement('div', 'lh-category');
-    if (environment === 'PSI') {
+    if (options && options.environment === 'PSI') {
       const gaugeEl = this.dom.createElement('div', 'lh-score__gauge');
-      gaugeEl.appendChild(this.renderScoreGauge(category, groups));
+      gaugeEl.appendChild(this.renderCategoryScore(category, groups, options));
       element.appendChild(gaugeEl);
     } else {
       this.createPermalinkSpan(element, category.id);
-      element.appendChild(this.renderCategoryHeader(category, groups));
+      element.appendChild(this.renderCategoryHeader(category, groups, options));
     }
 
     // Metrics.
@@ -4180,11 +4253,21 @@ class PwaCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * Alias for backcompat.
    * @param {LH.ReportResult.Category} category
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
    */
   renderScoreGauge(category, groupDefinitions) {
+    return this.renderCategoryScore(category, groupDefinitions);
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+   * @return {DocumentFragment}
+   */
+  renderCategoryScore(category, groupDefinitions) {
     // Defer to parent-gauge style if category error.
     if (category.score === null) {
       return super.renderScoreGauge(category, groupDefinitions);
@@ -4469,11 +4552,15 @@ class ReportRenderer {
 
     for (const category of Object.values(report.categories)) {
       const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
-      const categoryGauge = renderer.renderScoreGauge(category, report.categoryGroups || {});
+      const categoryGauge = renderer.renderCategoryScore(
+        category,
+        report.categoryGroups || {},
+        {gatherMode: report.gatherMode}
+      );
 
       if (Util.isPluginCategory(category.id)) {
         pluginGauges.push(categoryGauge);
-      } else if (renderer.renderScoreGauge === categoryRenderer.renderScoreGauge) {
+      } else if (renderer.renderCategoryScore === categoryRenderer.renderCategoryScore) {
         // The renderer for default categories is just the default CategoryRenderer.
         // If the functions are equal, then renderer is an instance of CategoryRenderer.
         // For example, the PWA category uses PwaCategoryRenderer, which overrides
@@ -4547,12 +4634,17 @@ class ReportRenderer {
     }
 
     const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
+    const categoryOptions = {gatherMode: report.gatherMode};
     for (const category of Object.values(report.categories)) {
       const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
       // .lh-category-wrapper is full-width and provides horizontal rules between categories.
       // .lh-category within has the max-width: var(--report-width);
       const wrapper = renderer.dom.createChildOf(categories, 'div', 'lh-category-wrapper');
-      wrapper.appendChild(renderer.render(category, report.categoryGroups));
+      wrapper.appendChild(renderer.render(
+        category,
+        report.categoryGroups,
+        categoryOptions
+      ));
     }
 
     const reportFragment = this._dom.createFragment();
@@ -5565,16 +5657,14 @@ class ReportUIFeatures {
         return !thirdPartyFilterAuditExclusions.includes(containingAudit.id);
       });
 
-    tablesWithUrls.forEach((tableEl, index) => {
+    tablesWithUrls.forEach((tableEl) => {
       const rowEls = getTableRows(tableEl);
       const thirdPartyRows = this._getThirdPartyRows(rowEls, this.json.finalUrl);
 
       // create input box
       const filterTemplate = this._dom.createComponent('3pFilter');
       const filterInput = this._dom.find('input', filterTemplate);
-      const id = `lh-3p-filter-label--${index}`;
 
-      filterInput.id = id;
       filterInput.addEventListener('change', e => {
         const shouldHideThirdParty = e.target instanceof HTMLInputElement && !e.target.checked;
         let even = true;
@@ -5596,7 +5686,6 @@ class ReportUIFeatures {
         }
       });
 
-      this._dom.find('label', filterTemplate).setAttribute('for', id);
       this._dom.find('.lh-3p-filter-count', filterTemplate).textContent =
           `${thirdPartyRows.length}`;
       this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =

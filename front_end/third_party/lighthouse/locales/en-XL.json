@@ -554,6 +554,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "D̂íŝṕl̂áŷéd̂ d́îḿêńŝíôńŝ"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Îḿâǵêś ŵér̂é l̂ár̂ǵêŕ t̂h́âń t̂h́êír̂ d́îśp̂ĺâýêd́ ŝíẑé"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Îḿâǵêś ŵér̂é âṕp̂ŕôṕr̂íât́ê f́ôŕ t̂h́êír̂ d́îśp̂ĺâýêd́ ŝíẑé"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Ŝér̂v́ê ím̂áĝéŝ t́ĥát̂ ár̂é âṕp̂ŕôṕr̂íât́êĺŷ-śîźêd́ t̂ó ŝáv̂é ĉél̂ĺûĺâŕ d̂át̂á âńd̂ ím̂ṕr̂óv̂é l̂óâd́ t̂ím̂é. [L̂éâŕn̂ ḿôŕê](https://web.dev/uses-responsive-images/)."
   },

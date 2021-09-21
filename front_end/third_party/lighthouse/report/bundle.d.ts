@@ -1,5 +1,5 @@
 
-export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'envItem' | 'footer' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'metricsToggle' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'topbar' | 'warningsToplevel';
+export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'envItem' | 'footer' | 'fraction' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'metricsToggle' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'topbar' | 'warningsToplevel';
 export type I18n<T> = any;
 export type CRCSegment = {
     node: any[string];
@@ -343,9 +343,12 @@ declare class CategoryRenderer {
     /**
      * @param {LH.ReportResult.Category} category
      * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+     * @param {{gatherMode: LH.Result.GatherMode}=} options
      * @return {DocumentFragment}
      */
-    renderCategoryHeader(category: any, groupDefinitions: Record<string, any>): DocumentFragment;
+    renderCategoryHeader(category: any, groupDefinitions: Record<string, any>, options?: {
+        gatherMode: any;
+    } | undefined): DocumentFragment;
     /**
      * Renders the group container for a group of audits. Individual audit elements can be added
      * directly to the returned element.
@@ -387,9 +390,23 @@ declare class CategoryRenderer {
     /**
      * @param {LH.ReportResult.Category} category
      * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+     * @param {{gatherMode: LH.Result.GatherMode}=} options
+     * @return {DocumentFragment}
+     */
+    renderCategoryScore(category: any, groupDefinitions: Record<string, any>, options?: {
+        gatherMode: any;
+    } | undefined): DocumentFragment;
+    /**
+     * @param {LH.ReportResult.Category} category
+     * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
      * @return {DocumentFragment}
      */
     renderScoreGauge(category: any, groupDefinitions: Record<string, any>): DocumentFragment;
+    /**
+     * @param {LH.ReportResult.Category} category
+     * @return {DocumentFragment}
+     */
+    renderCategoryFraction(category: any): DocumentFragment;
     /**
      * Returns true if an LH category has any non-"notApplicable" audits.
      * @param {LH.ReportResult.Category} category
@@ -433,12 +450,16 @@ declare class CategoryRenderer {
      *   ├── …
      *   ⋮
      * @param {LH.ReportResult.Category} category
-     * @param {Object<string, LH.Result.ReportGroup>} [groupDefinitions]
+     * @param {Object<string, LH.Result.ReportGroup>=} groupDefinitions
+     * @param {{environment?: 'PSI', gatherMode: LH.Result.GatherMode}=} options
      * @return {Element}
      */
     render(category: any, groupDefinitions?: {
         [x: string]: any;
-    }): Element;
+    } | undefined, options?: {
+        environment?: 'PSI';
+        gatherMode: any;
+    } | undefined): Element;
     /**
      * Create a non-semantic span used for hash navigation of categories
      * @param {Element} element

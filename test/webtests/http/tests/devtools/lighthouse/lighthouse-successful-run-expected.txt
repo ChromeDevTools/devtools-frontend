@@ -39,7 +39,6 @@ Gathering setup: MetaElements
 Gathering setup: ScriptElements
 Gathering setup: IFrameElements
 Gathering setup: MainDocumentContent
-Gathering setup: GatherContext
 Gathering setup: GlobalListeners
 Gathering setup: AppCacheManifest
 Gathering setup: Doctype
@@ -71,7 +70,6 @@ Gathering in-page: MetaElements
 Gathering in-page: ScriptElements
 Gathering in-page: IFrameElements
 Gathering in-page: MainDocumentContent
-Gathering in-page: GatherContext
 Gathering in-page: GlobalListeners
 Gathering in-page: AppCacheManifest
 Gathering in-page: Doctype
@@ -104,7 +102,6 @@ Gathering: MetaElements
 Gathering: ScriptElements
 Gathering: IFrameElements
 Gathering: MainDocumentContent
-Gathering: GatherContext
 Gathering: GlobalListeners
 Gathering: AppCacheManifest
 Gathering: Doctype
@@ -385,7 +382,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 8.4.0
+Version: 8.5.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,
@@ -482,7 +479,7 @@ interactive: flaky
 interactive-element-affordance: manual
 is-crawlable: pass
 is-on-https: pass
-js-libraries: pass
+js-libraries: notApplicable
 label: notApplicable
 largest-contentful-paint: numeric
 largest-contentful-paint-element: informative
@@ -558,7 +555,7 @@ unused-css-rules: flaky
 unused-javascript: numeric
 use-landmarks: manual
 user-timings: flaky
-uses-http2: pass
+uses-http2: numeric
 uses-long-cache-ttl: numeric
 uses-optimized-images: flaky
 uses-passive-event-listeners: pass

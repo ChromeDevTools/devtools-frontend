@@ -494,7 +494,7 @@ function locationCompare(a: string, b: string): number {
       Number.parseInt(aPos, 10) - Number.parseInt(bPos, 10);
 }
 
-export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
+export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCoverageInfo.EventTypes> {
   private readonly urlInternal: string;
   private coverageInfoByLocation: Map<string, CoverageInfo>;
   private sizeInternal: number;
@@ -673,8 +673,14 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper {
 }
 
 export namespace URLCoverageInfo {
-  export const Events = {
-    SizesChanged: Symbol('SizesChanged'),
+  // TODO(crbug.com/1167717): Make this a const enum again
+  // eslint-disable-next-line rulesdir/const_enum
+  export enum Events {
+    SizesChanged = 'SizesChanged',
+  }
+
+  export type EventTypes = {
+    [Events.SizesChanged]: void,
   };
 }
 

@@ -6,12 +6,12 @@ const {assert} = chai;
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 
-const ObjectWrapper = Common.ObjectWrapper.ObjectWrapper;
-
 describe('ObjectWrapper', () => {
-  let obj: Common.ObjectWrapper.ObjectWrapper;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let obj: Common.ObjectWrapper.ObjectWrapper<any>;
   beforeEach(() => {
-    obj = new ObjectWrapper();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    obj = new Common.ObjectWrapper.ObjectWrapper<any>();
   });
 
   describe('event listeners', () => {

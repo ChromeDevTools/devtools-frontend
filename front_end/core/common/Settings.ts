@@ -46,7 +46,7 @@ export class Settings {
   private readonly sessionStorage: SettingsStorage;
   settingNameSet: Set<string>;
   orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
-  private eventSupport: ObjectWrapper;
+  private eventSupport: ObjectWrapper<unknown>;
   private registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
 
@@ -59,7 +59,7 @@ export class Settings {
 
     this.orderValuesBySettingCategory = new Map();
 
-    this.eventSupport = new ObjectWrapper();
+    this.eventSupport = new ObjectWrapper<unknown>();
     this.registry = new Map();
     this.moduleSettings = new Map();
 
@@ -276,7 +276,7 @@ function removeSetting(setting: Setting<unknown>): void {
 export class Setting<V> {
   private nameInternal: string;
   private defaultValueInternal: V;
-  private readonly eventSupport: ObjectWrapper;
+  private readonly eventSupport: ObjectWrapper<unknown>;
   private storage: SettingsStorage;
   private titleFunction!: () => Platform.UIString.LocalizedString;
   private titleInternal!: string;
@@ -287,7 +287,7 @@ export class Setting<V> {
   private serializer: Serializer<unknown, V> = JSON;
   private hadUserAction?: boolean;
 
-  constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper, storage: SettingsStorage) {
+  constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<unknown>, storage: SettingsStorage) {
     this.nameInternal = name;
     this.defaultValueInternal = defaultValue;
     this.eventSupport = eventSupport;
@@ -299,12 +299,14 @@ export class Setting<V> {
     this.serializer = serializer;
   }
 
-  addChangeListener(listener: (arg0: EventTargetEvent) => void, thisObject?: Object): EventDescriptor {
-    return this.eventSupport.addEventListener(this.nameInternal, listener, thisObject);
+  addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor {
+    return this.eventSupport.addEventListener(
+        this.nameInternal, listener as (arg0: EventTargetEvent<unknown>) => void, thisObject);
   }
 
-  removeChangeListener(listener: (arg0: EventTargetEvent) => void, thisObject?: Object): void {
-    this.eventSupport.removeEventListener(this.nameInternal, listener, thisObject);
+  removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void {
+    this.eventSupport.removeEventListener(
+        this.nameInternal, listener as (arg0: EventTargetEvent<unknown>) => void, thisObject);
   }
 
   get name(): string {
@@ -449,7 +451,8 @@ export class RegExpSetting extends Setting<any> {
   private regex?: RegExp|null;
 
   constructor(
-      name: string, defaultValue: string, eventSupport: ObjectWrapper, storage: SettingsStorage, regexFlags?: string) {
+      name: string, defaultValue: string, eventSupport: ObjectWrapper<unknown>, storage: SettingsStorage,
+      regexFlags?: string) {
     super(name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage);
     this.regexFlags = regexFlags;
   }

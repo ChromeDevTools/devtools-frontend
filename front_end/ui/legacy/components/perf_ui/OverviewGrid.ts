@@ -101,8 +101,8 @@ export class OverviewGrid {
     this.window.setWindow(left, right);
   }
 
-  addEventListener(
-      eventType: string|symbol, listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
+  addEventListener<T extends keyof EventTypes>(
+      eventType: T, listener: Common.EventTarget.EventListener<EventTypes, T>,
       thisObject?: Object): Common.EventTarget.EventDescriptor {
     return this.window.addEventListener(eventType, listener, thisObject);
   }
@@ -125,7 +125,7 @@ export const WindowScrollSpeedFactor = .3;
 export const ResizerOffset = 3.5;  // half pixel because offset values are not rounded but ceiled
 export const OffsetFromWindowEnds = 10;
 
-export class Window extends Common.ObjectWrapper.ObjectWrapper {
+export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private parentElement: Element;
   private calculator: Calculator|undefined;
   private leftResizeElement: HTMLElement;

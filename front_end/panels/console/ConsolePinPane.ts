@@ -168,7 +168,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
 
 let consolePinNumber = 0;
 
-export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
+export class ConsolePin {
   private readonly pinElement: Element;
   private readonly pinPreview: HTMLElement;
   private lastResult: SDK.RuntimeModel.EvaluationResult|null;
@@ -181,7 +181,6 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
   private consolePinNumber: number;
 
   constructor(expression: string, pinPane: ConsolePinPane) {
-    super();
     this.consolePinNumber = ++consolePinNumber;
     const deletePinIcon = (document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton);
     deletePinIcon.gray = true;

@@ -91,7 +91,8 @@ class VoidTypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<void> {
 
 VoidTypedEventEmitter;
 
-class UntypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class UntypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<any> {
   testDispatch() {
     this.dispatchEventToListeners('foo');
     this.dispatchEventToListeners(Symbol('number payload'), 25);

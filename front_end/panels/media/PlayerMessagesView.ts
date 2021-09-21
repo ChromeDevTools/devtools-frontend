@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -70,8 +70,7 @@ interface SelectableLevel {
   overwrite?: boolean;
 }
 
-class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
-    UI.SoftDropDown.Delegate<SelectableLevel> {
+class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> {
   private readonly items: UI.ListModel.ListModel<SelectableLevel>;
   private readonly view: PlayerMessagesView;
   private readonly itemMap: Map<number, SelectableLevel>;
@@ -84,7 +83,6 @@ class MessageLevelSelector extends Common.ObjectWrapper.ObjectWrapper implements
   elementsForItems: WeakMap<SelectableLevel, HTMLElement>;
 
   constructor(items: UI.ListModel.ListModel<SelectableLevel>, view: PlayerMessagesView) {
-    super();
     this.items = items;
     this.view = view;
     this.itemMap = new Map();

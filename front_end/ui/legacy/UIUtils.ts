@@ -33,7 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -949,7 +949,7 @@ export function animateFunction(
   return (): void => window.cancelAnimationFrame(raf);
 }
 
-export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
+export class LongClickController {
   private readonly element: Element;
   private readonly callback: (arg0: Event) => void;
   private readonly editKey: (arg0: Event) => boolean;
@@ -963,7 +963,6 @@ export class LongClickController extends Common.ObjectWrapper.ObjectWrapper {
   constructor(
       element: Element, callback: (arg0: Event) => void,
       isEditKeyFunc: (arg0: Event) => boolean = (event): boolean => isEnterOrSpaceKey(event)) {
-    super();
     this.element = element;
     this.callback = callback;
     this.editKey = isEditKeyFunc;

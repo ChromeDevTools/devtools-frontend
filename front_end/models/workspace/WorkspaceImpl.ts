@@ -194,7 +194,7 @@ export class ProjectStore {
 
 let workspaceInstance: WorkspaceImpl|undefined;
 
-export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
+export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private projectsInternal: Map<string, Project>;
   private hasResourceContentTrackingExtensionsInternal: boolean;
 

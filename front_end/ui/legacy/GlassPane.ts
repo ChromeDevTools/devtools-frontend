@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Utils from './utils/utils.js';
 
@@ -12,7 +11,7 @@ import {deepElementFromEvent} from './UIUtils.js';
 import type {WidgetElement} from './Widget.js';
 import {Widget} from './Widget.js';
 
-export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
+export class GlassPane {
   private readonly widgetInternal: Widget;
   element: WidgetElement;
   contentElement: HTMLDivElement;
@@ -28,7 +27,6 @@ export class GlassPane extends Common.ObjectWrapper.ObjectWrapper {
   private marginBehavior: MarginBehavior;
 
   constructor() {
-    super();
     this.widgetInternal = new Widget(true);
     this.widgetInternal.markAsRoot();
     this.element = this.widgetInternal.element;

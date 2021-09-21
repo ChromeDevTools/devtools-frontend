@@ -3605,7 +3605,7 @@ export class EventDispatchTypeDescriptor {
   }
 }
 
-export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
+export class TimelineCategory {
   name: string;
   title: string;
   visible: boolean;
@@ -3614,7 +3614,6 @@ export class TimelineCategory extends Common.ObjectWrapper.ObjectWrapper {
   private hiddenInternal?: boolean;
 
   constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
-    super();
     this.name = name;
     this.title = title;
     this.visible = visible;

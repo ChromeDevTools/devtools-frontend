@@ -8,7 +8,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 
-class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper {
+class MockResourceTreeModel extends Common.ObjectWrapper.ObjectWrapper<SDK.ResourceTreeModel.EventTypes> {
   private targetId: Protocol.Target.TargetID|'main';
 
   constructor(id: Protocol.Target.TargetID|'main') {

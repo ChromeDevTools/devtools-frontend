@@ -36,10 +36,7 @@ export interface ListenerCallbackTuple {
   disposed?: boolean;
 }
 
-// TODO(crbug.com/1228674) Remove defaults for generic type parameters once
-//                         all event emitters and sinks have been migrated.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ObjectWrapper<Events = any> implements EventTarget<Events> {
+export class ObjectWrapper<Events> implements EventTarget<Events> {
   listeners?: Map<EventType<Events>, Set<ListenerCallbackTuple>>;
 
   addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):

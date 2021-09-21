@@ -913,25 +913,22 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.subscriptionStopHandlers.set(eventTopic, onUnsubscribeLast);
   }
 
-  private registerAutosubscriptionHandler(
-      eventTopic: string, eventTarget: Common.EventTarget.EventTarget, frontendEventType: string,
-      handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
+  private registerAutosubscriptionHandler<Events, T extends Common.EventTarget.EventType<Events>>(
+      eventTopic: string, eventTarget: Common.EventTarget.EventTarget<Events>, frontendEventType: T,
+      handler: Common.EventTarget.EventListener<Events, T>): void {
     this.registerSubscriptionHandler(
         eventTopic, () => eventTarget.addEventListener(frontendEventType, handler, this),
-        eventTarget.removeEventListener.bind(eventTarget, frontendEventType, handler, this));
+        () => eventTarget.removeEventListener(frontendEventType, handler, this));
   }
 
-  private registerAutosubscriptionTargetManagerHandler(
-      eventTopic: string, modelClass: new(arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel, frontendEventType: string,
-      handler: (arg0: Common.EventTarget.EventTargetEvent) => unknown): void {
+  private registerAutosubscriptionTargetManagerHandler<Events, T extends Common.EventTarget.EventType<Events>>(
+      eventTopic: string, modelClass: new(arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>,
+      frontendEventType: T, handler: Common.EventTarget.EventListener<Events, T>): void {
     this.registerSubscriptionHandler(
         eventTopic,
-
-        SDK.TargetManager.TargetManager.instance().addModelListener.bind(
-            SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this),
-
-        SDK.TargetManager.TargetManager.instance().removeModelListener.bind(
-            SDK.TargetManager.TargetManager.instance(), modelClass, frontendEventType, handler, this));
+        () => SDK.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this),
+        () => SDK.TargetManager.TargetManager.instance().removeModelListener(
+            modelClass, frontendEventType, handler, this));
   }
 
   private registerResourceContentCommittedHandler(

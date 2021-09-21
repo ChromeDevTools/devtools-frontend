@@ -487,7 +487,7 @@ export interface QueryObjectRequestedEvent {
 
 export type EventTypes = {
   [Events.BindingCalled]: Protocol.Runtime.BindingCalledEvent,
-  [Events.ExecutionContextCreated]: Protocol.Runtime.ExecutionContextDescription,
+  [Events.ExecutionContextCreated]: ExecutionContext,
   [Events.ExecutionContextDestroyed]: ExecutionContext,
   [Events.ExecutionContextChanged]: ExecutionContext,
   [Events.ExecutionContextOrderChanged]: RuntimeModel,

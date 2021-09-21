@@ -11,7 +11,7 @@ export interface EventDescriptor<Events = any, T extends EventType<Events> = any
   eventTarget: EventTarget<Events>;
   eventType: T;
   thisObject?: Object;
-  listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void;
+  listener: EventListener<Events, T>;
 }
 
 export function removeEventListeners(eventList: EventDescriptor[]): void {
@@ -30,16 +30,17 @@ export type EventType<Events> = Events extends Object ? keyof Events : Events ex
 export type EventPayload<Events, T> = T extends keyof Events ? Events[T] : unknown;
 export type EventPayloadToRestParameters<T> = T extends void ? [] : [T];
 
+export type EventListener<Events, T> = (arg0: EventTargetEvent<EventPayload<Events, T>>) => void;
+
 // TODO(crbug.com/1228674) Remove defaults for generic type parameters once
 //                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface EventTarget<Events = any> {
-  addEventListener<T extends EventType<Events>>(
-      eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void,
-      thisObject?: Object): EventDescriptor<Events, T>;
+  addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+      EventDescriptor<Events, T>;
   once<T extends EventType<Events>>(eventType: T): Promise<EventPayload<Events, T>>;
   removeEventListener<T extends EventType<Events>>(
-      eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void, thisObject?: Object): void;
+      eventType: T, listener: EventListener<Events, T>, thisObject?: Object): void;
   hasEventListeners(eventType: EventType<Events>): boolean;
   dispatchEventToListeners<T extends EventType<Events>>(
       eventType: Platform.TypeScriptUtilities.NoUnion<T>,

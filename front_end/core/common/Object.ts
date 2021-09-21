@@ -28,7 +28,7 @@
  */
 
 import type * as Platform from '../platform/platform.js';
-import type {EventDescriptor, EventTarget, EventTargetEvent, EventType, EventPayload, EventPayloadToRestParameters} from './EventTarget.js';
+import type {EventDescriptor, EventListener, EventTarget, EventTargetEvent, EventType, EventPayload, EventPayloadToRestParameters} from './EventTarget.js';
 
 export interface ListenerCallbackTuple {
   thisObject?: Object;
@@ -42,9 +42,8 @@ export interface ListenerCallbackTuple {
 export class ObjectWrapper<Events = any> implements EventTarget<Events> {
   listeners?: Map<EventType<Events>, Set<ListenerCallbackTuple>>;
 
-  addEventListener<T extends EventType<Events>>(
-      eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void,
-      thisObject?: Object): EventDescriptor<Events, T> {
+  addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+      EventDescriptor<Events, T> {
     if (!this.listeners) {
       this.listeners = new Map();
     }
@@ -68,7 +67,7 @@ export class ObjectWrapper<Events = any> implements EventTarget<Events> {
   }
 
   removeEventListener<T extends EventType<Events>>(
-      eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void, thisObject?: Object): void {
+      eventType: T, listener: EventListener<Events, T>, thisObject?: Object): void {
     const listeners = this.listeners?.get(eventType);
     if (!listeners) {
       return;

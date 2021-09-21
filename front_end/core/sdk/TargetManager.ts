@@ -17,7 +17,7 @@ let targetManagerInstance: TargetManager|undefined;
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private targetsInternal: Set<Target>;
   private readonly observers: Set<Observer>;
-  private modelListeners: Platform.MapUtilities.Multimap<string|symbol, {
+  private modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
     modelClass: new(arg1: Target) => SDKModel,
     thisObject: (Object|undefined),
     listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
@@ -124,18 +124,18 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  addModelListener(
-      modelClass: new(arg1: Target) => SDKModel, eventType: string|symbol,
-      listener: (arg0: Common.EventTarget.EventTargetEvent) => void, thisObject?: Object): void {
+  addModelListener<Events, T extends Common.EventTarget.EventType<Events>>(
+      modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
+      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
     for (const model of this.models(modelClass)) {
       model.addEventListener(eventType, listener, thisObject);
     }
     this.modelListeners.set(eventType, {modelClass: modelClass, thisObject: thisObject, listener: listener});
   }
 
-  removeModelListener(
-      modelClass: new(arg1: Target) => SDKModel, eventType: string|symbol,
-      listener: (arg0: Common.EventTarget.EventTargetEvent) => void, thisObject?: Object): void {
+  removeModelListener<Events, T extends Common.EventTarget.EventType<Events>>(
+      modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
+      listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
     if (!this.modelListeners.has(eventType)) {
       return;
     }

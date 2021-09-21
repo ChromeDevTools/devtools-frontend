@@ -85,6 +85,7 @@
   flex: auto;
   padding: 0 6px;
   white-space: pre;
+  user-select: text;
 }
 
 .report-field-value-is-flexed {

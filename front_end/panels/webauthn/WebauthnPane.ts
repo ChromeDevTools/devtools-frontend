@@ -143,8 +143,13 @@ const enum Events {
   RemoveCredential = 'RemoveCredential',
 }
 
+type EventTypes = {
+  [Events.ExportCredential]: Protocol.WebAuthn.Credential,
+  [Events.RemoveCredential]: Protocol.WebAuthn.Credential,
+};
+
 class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
-  constructor(credential: Protocol.WebAuthn.Credential) {
+  constructor(private readonly credential: Protocol.WebAuthn.Credential) {
     super(credential);
   }
 
@@ -162,7 +167,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 
     const exportButton = UI.UIUtils.createTextButton(i18nString(UIStrings.export), (): void => {
       if (this.dataGrid) {
-        this.dataGrid.dispatchEventToListeners(Events.ExportCredential, this.data);
+        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.ExportCredential, this.credential);
       }
     });
 
@@ -170,7 +175,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 
     const removeButton = UI.UIUtils.createTextButton(i18nString(UIStrings.remove), (): void => {
       if (this.dataGrid) {
-        this.dataGrid.dispatchEventToListeners(Events.RemoveCredential, this.data);
+        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.RemoveCredential, this.credential);
       }
     });
 
@@ -179,6 +184,10 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     return cell;
   }
 }
+
+class WebauthnDataGridBase extends DataGrid.DataGrid.DataGridImpl<DataGridNode> {}
+class WebauthnDataGrid extends Common.ObjectWrapper.eventMixin<EventTypes, typeof WebauthnDataGridBase>(
+    WebauthnDataGridBase) {}
 
 class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   createCells(element: Element): void {
@@ -352,7 +361,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
       deleteCallback: undefined,
       refreshCallback: undefined,
     };
-    const dataGrid = new DataGrid.DataGrid.DataGridImpl(dataGridConfig);
+    const dataGrid = new WebauthnDataGrid(dataGridConfig);
     dataGrid.renderInline();
     dataGrid.setStriped(true);
     dataGrid.addEventListener(Events.ExportCredential, this.handleExportCredential, this);
@@ -363,14 +372,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     return dataGrid;
   }
 
-  private handleExportCredential(e: {data: Protocol.WebAuthn.Credential}): void {
-    this.exportCredential(e.data);
+  private handleExportCredential({data: credential}: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.Credential>):
+      void {
+    this.exportCredential(credential);
   }
 
-  private handleRemoveCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, e: {
-    data: Protocol.WebAuthn.Credential,
-  }): void {
-    this.removeCredential(authenticatorId, e.data.credentialId);
+  private handleRemoveCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+    data: credential,
+  }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.Credential>): void {
+    this.removeCredential(authenticatorId, credential.credentialId);
   }
 
   private async updateCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
@@ -18,7 +19,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ViewportDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ViewportDataGrid<T> extends DataGridImpl<ViewportDataGridNode<T>> {
+export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTypes, typeof DataGridImpl>(
+    DataGridImpl)<ViewportDataGridNode<T>> {
   private readonly onScrollBound: (event: Event|null) => void;
   private visibleNodes: ViewportDataGridNode<T>[];
   stickToBottom: boolean;
@@ -262,6 +264,10 @@ export class ViewportDataGrid<T> extends DataGridImpl<ViewportDataGridNode<T>> {
 export enum Events {
   ViewportCalculated = 'ViewportCalculated',
 }
+
+export type EventTypes = {
+  [Events.ViewportCalculated]: void,
+};
 
 export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T>> {
   private stale: boolean;

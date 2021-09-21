@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -146,7 +147,11 @@ const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotDataGrids.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const adjacencyMap = new WeakMap<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, HeapSnapshotGridNode[]>();
 
-export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {
+class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {}
+
+export class HeapSnapshotSortableDataGrid extends
+    Common.ObjectWrapper.eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
+        HeapSnapshotSortableDataGridBase) {
   snapshot: HeapSnapshotProxy|null;
   selectedNode: HeapSnapshotGridNode|null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
@@ -402,7 +407,14 @@ export class HeapSnapshotSortableDataGrid extends DataGrid.DataGrid.DataGridImpl
 export enum HeapSnapshotSortableDataGridEvents {
   ContentShown = 'ContentShown',
   SortingComplete = 'SortingComplete',
+  ExpandRetainersComplete = 'ExpandRetainersComplete',
 }
+
+export type EventTypes = {
+  [HeapSnapshotSortableDataGridEvents.ContentShown]: HeapSnapshotSortableDataGrid,
+  [HeapSnapshotSortableDataGridEvents.SortingComplete]: void,
+  [HeapSnapshotSortableDataGridEvents.ExpandRetainersComplete]: void,
+};
 
 export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   topPaddingHeight: number;
@@ -734,6 +746,7 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again
+// TODO(crbug.com/1228674): Remove this enum, it is only used in web tests.
 // eslint-disable-next-line rulesdir/const_enum
 export enum HeapSnapshotRetainmentDataGridEvents {
   ExpandRetainersComplete = 'ExpandRetainersComplete',

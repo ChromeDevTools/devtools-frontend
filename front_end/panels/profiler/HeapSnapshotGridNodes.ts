@@ -39,7 +39,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ChildrenProvider} from './ChildrenProvider.js';
 import type {AllocationDataGrid, HeapSnapshotConstructorsDataGrid, HeapSnapshotDiffDataGrid, HeapSnapshotSortableDataGrid} from './HeapSnapshotDataGrids.js';
-import {HeapSnapshotRetainmentDataGridEvents} from './HeapSnapshotDataGrids.js';
+import {HeapSnapshotSortableDataGridEvents} from './HeapSnapshotDataGrids.js';
 import type {HeapSnapshotProviderProxy, HeapSnapshotProxy} from './HeapSnapshotProxy.js';
 import type {DataDisplayDelegate} from './ProfileHeader.js';
 
@@ -93,7 +93,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotGridNodes.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class HeapSnapshotGridNode extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {
+class HeapSnapshotGridNodeBase extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {}
+
+export class HeapSnapshotGridNode extends
+    Common.ObjectWrapper.eventMixin<HeapSnapshotGridNode.EventTypes, typeof HeapSnapshotGridNodeBase>(
+        HeapSnapshotGridNodeBase) {
   dataGridInternal: HeapSnapshotSortableDataGrid;
   instanceCount: number;
   readonly savedChildren: Map<number, HeapSnapshotGridNode>;
@@ -469,6 +473,10 @@ export namespace HeapSnapshotGridNode {
   export enum Events {
     PopulateComplete = 'PopulateComplete',
   }
+
+  export type EventTypes = {
+    [Events.PopulateComplete]: void,
+  };
 }
 
 export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {
@@ -847,7 +855,7 @@ export class HeapSnapshotRetainingObjectNode extends HeapSnapshotObjectNode {
         return;
       }
     }
-    this.dataGridInternal.dispatchEventToListeners(HeapSnapshotRetainmentDataGridEvents.ExpandRetainersComplete);
+    this.dataGridInternal.dispatchEventToListeners(HeapSnapshotSortableDataGridEvents.ExpandRetainersComplete);
   }
 }
 

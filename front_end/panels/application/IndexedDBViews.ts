@@ -343,7 +343,7 @@ export class IDBDataView extends UI.View.SimpleView {
       editCallback: undefined,
     });
     dataGrid.setStriped(true);
-    dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, _vent => this.updateToolbarEnablement(), this);
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, () => this.updateToolbarEnablement(), this);
     return dataGrid;
   }
 

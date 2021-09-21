@@ -216,7 +216,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
-      this.previewCachedResponse(event.data.data);
+      this.previewCachedResponse(event.data.data as SDK.NetworkRequest.NetworkRequest);
     }, this);
     dataGrid.setStriped(true);
     return dataGrid;

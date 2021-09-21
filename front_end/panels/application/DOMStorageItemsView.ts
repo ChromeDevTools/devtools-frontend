@@ -99,9 +99,9 @@ export class DOMStorageItemsView extends StorageItemsView {
       refreshCallback: this.refreshItems.bind(this),
     });
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, event => {
-      this.previewEntry((event.data as DataGrid.DataGrid.DataGridNode<unknown>));
+      this.previewEntry(event.data);
     });
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, _event => {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, () => {
       this.previewEntry(null);
     });
     this.dataGrid.setStriped(true);

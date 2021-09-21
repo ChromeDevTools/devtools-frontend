@@ -118,7 +118,7 @@ const elementToPositionMap = new WeakMap<Element, number>();
 
 const elementToIndexMap = new WeakMap<Element, number>();
 
-export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
+export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
   private displayName: string;
   private editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => any)|undefined;
@@ -224,7 +224,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
     this.topFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
     this.bottomFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
 
-    this.setVerticalPadding(0, 0);
+    this.setVerticalPadding(0, 0, true);
     this.refreshHeader();
 
     this.editing = false;
@@ -455,7 +455,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
     this.dataTableColumnGroup.createChild('col', 'corner');
   }
 
-  protected setVerticalPadding(top: number, bottom: number): void {
+  protected setVerticalPadding(top: number, bottom: number, isConstructorTime: boolean = false): void {
     const topPx = top + 'px';
     const bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
     if (this.topFillerRow.style.height === topPx && this.bottomFillerRow.style.height === bottomPx) {
@@ -463,7 +463,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper {
     }
     this.topFillerRow.style.height = topPx;
     this.bottomFillerRow.style.height = bottomPx;
-    this.dispatchEventToListeners(Events.PaddingChanged);
+    if (!isConstructorTime) {
+      this.dispatchEventToListeners(Events.PaddingChanged);
+    }
   }
 
   protected setRootNode(rootNode: DataGridNode<T>): void {
@@ -1516,6 +1518,14 @@ export enum Events {
   PaddingChanged = 'PaddingChanged',
 }
 
+export type EventTypes<T> = {
+  [Events.SelectedNode]: DataGridNode<T>,
+  [Events.DeselectedNode]: void,
+  [Events.OpenedNode]: DataGridNode<T>,
+  [Events.SortingChanged]: void,
+  [Events.PaddingChanged]: void,
+};
+
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Order {
@@ -1552,7 +1562,7 @@ export type DataGridData = {
   [key: string]: any,
 };
 
-export class DataGridNode<T> extends Common.ObjectWrapper.ObjectWrapper {
+export class DataGridNode<T> {
   elementInternal: Element|null;
   expandedInternal: boolean;
   private selectedInternal: boolean;
@@ -1582,7 +1592,6 @@ export class DataGridNode<T> extends Common.ObjectWrapper.ObjectWrapper {
   isCreationNode: boolean;
 
   constructor(data?: DataGridData|null, hasChildren?: boolean) {
-    super();
     this.elementInternal = null;
     this.expandedInternal = false;
     this.selectedInternal = false;

@@ -312,7 +312,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this.refresh();
   }
 
-  private async onFrameSelected(event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async onFrameSelected(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<unknown>>):
+      Promise<void> {
     this.currentSelectedNode = (event.data as ResourceWebSocketFrameNode);
     const content = this.currentSelectedNode.dataText();
 
@@ -333,7 +334,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
             this.request.url(), Common.ResourceType.resourceTypes.WebSocket, content)));
   }
 
-  private onFrameDeselected(_event: Common.EventTarget.EventTargetEvent): void {
+  private onFrameDeselected(): void {
     this.currentSelectedNode = null;
     this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
   }

@@ -429,7 +429,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.currentPerspectiveIndex = 0;
     this.currentPerspective = this.perspectives[0];
     this.currentPerspective.activate(this);
-    this.dataGrid = (this.currentPerspective.masterGrid(this) as HeapSnapshotSortableDataGrid | null);
+    this.dataGrid = this.currentPerspective.masterGrid(this);
 
     this.populate();
     this.searchThrottler = new Common.Throttler.Throttler(0);
@@ -726,19 +726,22 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     return this.profile.profileType().getProfiles();
   }
 
-  selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
+  selectionChanged(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>>):
+      void {
     const selectedNode = (event.data as HeapSnapshotGridNode);
     this.setSelectedNodeForDetailsView(selectedNode);
     this.inspectedObjectChanged(event);
   }
 
-  onSelectAllocationNode(event: Common.EventTarget.EventTargetEvent): void {
+  onSelectAllocationNode(
+      event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>>): void {
     const selectedNode = (event.data as AllocationGridNode);
     this.constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
     this.setSelectedNodeForDetailsView(null);
   }
 
-  inspectedObjectChanged(event: Common.EventTarget.EventTargetEvent): void {
+  inspectedObjectChanged(
+      event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>>): void {
     const selectedNode = (event.data as HeapSnapshotGridNode);
     const heapProfilerModel = this.profile.heapProfilerModel();
     if (heapProfilerModel && selectedNode instanceof HeapSnapshotGenericObjectNode) {
@@ -1020,7 +1023,7 @@ export class Perspective {
     heapSnapshotView.splitWidget.detachChildWidgets();
   }
 
-  masterGrid(_heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(_heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
     return null;
   }
 
@@ -1053,7 +1056,7 @@ export class SummaryPerspective extends Perspective {
     heapSnapshotView.trackingOverviewGrid.updateGrid();
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.constructorsDataGrid;
   }
 
@@ -1075,7 +1078,7 @@ export class ComparisonPerspective extends Perspective {
     heapSnapshotView.classNameFilter.setVisible(true);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.diffDataGrid;
   }
 
@@ -1095,7 +1098,7 @@ export class ContainmentPerspective extends Perspective {
     heapSnapshotView.splitWidget.show(heapSnapshotView.searchableViewInternal.element);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.containmentDataGrid;
   }
 }
@@ -1143,7 +1146,7 @@ export class AllocationPerspective extends Perspective {
     super.deactivate(heapSnapshotView);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
     return heapSnapshotView.allocationDataGrid;
   }
 }
@@ -1157,7 +1160,7 @@ export class StatisticsPerspective extends Perspective {
     heapSnapshotView.statisticsView.show(heapSnapshotView.searchableViewInternal.element);
   }
 
-  masterGrid(_heapSnapshotView: HeapSnapshotView): DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode>|null {
+  masterGrid(_heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
     return null;
   }
 }

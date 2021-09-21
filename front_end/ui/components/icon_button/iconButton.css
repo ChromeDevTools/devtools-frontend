@@ -30,6 +30,10 @@
   background-color: var(--legacy-toolbar-hover-bg-color);
 }
 
+.icon-button.icon-button.with-click-handler:active {
+  background-color: var(--color-background-elevation-1);
+}
+
 .icon-button:focus-visible {
   background-color: var(--legacy-toolbar-hover-bg-color);
   border: 1px solid var(--color-details-hairline);

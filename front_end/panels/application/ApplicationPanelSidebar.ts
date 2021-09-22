@@ -561,8 +561,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.addCookieDocument(frame);
   }
 
-  private databaseAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const database = (event.data as DatabaseModelDatabase);
+  private databaseAdded({data: database}: Common.EventTarget.EventTargetEvent<DatabaseModelDatabase>): void {
     const databaseTreeElement = new DatabaseTreeElement(this, database);
     this.databaseTreeElements.set(database, databaseTreeElement);
     this.databasesListTreeElement.appendChild(databaseTreeElement);

@@ -125,7 +125,7 @@ export class Database {
   }
 }
 
-export class DatabaseModel extends SDK.SDKModel.SDKModel {
+export class DatabaseModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private databasesInternal: Database[];
   readonly agent: ProtocolProxyApi.DatabaseApi;
   private enabled?: boolean;
@@ -177,6 +177,11 @@ export enum Events {
   DatabaseAdded = 'DatabaseAdded',
   DatabasesRemoved = 'DatabasesRemoved',
 }
+
+export type EventTypes = {
+  [Events.DatabaseAdded]: Database,
+  [Events.DatabasesRemoved]: void,
+};
 
 export class DatabaseDispatcher implements ProtocolProxyApi.DatabaseDispatcher {
   private readonly model: DatabaseModel;

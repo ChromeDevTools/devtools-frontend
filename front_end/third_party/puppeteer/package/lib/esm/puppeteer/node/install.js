@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 import https from 'https';
+import createHttpsProxyAgent from 'https-proxy-agent';
 import os from 'os';
 import ProgressBar from 'progress';
+import { getProxyForUrl } from 'proxy-from-env';
+import URL from 'url';
 
 import puppeteer from '../node.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
@@ -118,12 +121,23 @@ export async function downloadBrowser() {
         return `${Math.round(mb * 10) / 10} Mb`;
     }
     function getFirefoxNightlyVersion() {
-        const firefoxVersions = 'https://product-details.mozilla.org/1.0/firefox_versions.json';
+        const firefoxVersionsUrl = 'https://product-details.mozilla.org/1.0/firefox_versions.json';
+        const proxyURL = getProxyForUrl(firefoxVersionsUrl);
+        const requestOptions = {};
+        if (proxyURL) {
+            const parsedProxyURL = URL.parse(proxyURL);
+            const proxyOptions = {
+                ...parsedProxyURL,
+                secureProxy: parsedProxyURL.protocol === 'https:',
+            };
+            requestOptions.agent = createHttpsProxyAgent(proxyOptions);
+            requestOptions.rejectUnauthorized = false;
+        }
         const promise = new Promise((resolve, reject) => {
             let data = '';
-            logPolitely(`Requesting latest Firefox Nightly version from ${firefoxVersions}`);
+            logPolitely(`Requesting latest Firefox Nightly version from ${firefoxVersionsUrl}`);
             https
-                .get(firefoxVersions, (r) => {
+                .get(firefoxVersionsUrl, requestOptions, (r) => {
                 if (r.statusCode >= 400)
                     return reject(new Error(`Got status code ${r.statusCode}`));
                 r.on('data', (chunk) => {

@@ -36,6 +36,7 @@ const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
     ['clipboard-read', 'clipboardReadWrite'],
     ['clipboard-write', 'clipboardReadWrite'],
     ['payment-handler', 'paymentHandler'],
+    ['persistent-storage', 'durableStorage'],
     ['idle-detection', 'idleDetection'],
     // chrome-specific permissions we have.
     ['midi-sysex', 'midiSysex'],
@@ -139,8 +140,12 @@ export class Browser extends EventEmitter {
      * })();
      * ```
      */
-    async createIncognitoBrowserContext() {
-        const { browserContextId } = await this._connection.send('Target.createBrowserContext');
+    async createIncognitoBrowserContext(options = {}) {
+        const { proxyServer = '', proxyBypassList = [] } = options;
+        const { browserContextId } = await this._connection.send('Target.createBrowserContext', {
+            proxyServer,
+            proxyBypassList: proxyBypassList && proxyBypassList.join(','),
+        });
         const context = new BrowserContext(this._connection, this, browserContextId);
         this._contexts.set(browserContextId, context);
         return context;
@@ -247,7 +252,7 @@ export class Browser extends EventEmitter {
             url: 'about:blank',
             browserContextId: contextId || undefined,
         });
-        const target = await this._targets.get(targetId);
+        const target = this._targets.get(targetId);
         assert(await target._initializedPromise, 'Failed to create target for page');
         const page = await target.page();
         return page;

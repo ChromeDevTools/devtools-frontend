@@ -1,4 +1,19 @@
 "use strict";
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -20,21 +35,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.helper = exports.debugError = void 0;
-/**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 const Errors_js_1 = require("./Errors.js");
 const Debug_js_1 = require("./Debug.js");
 const assert_js_1 = require("./assert.js");
@@ -234,36 +234,54 @@ async function waitWithTimeout(promise, taskName, timeout) {
             clearTimeout(timeoutTimer);
     }
 }
-async function readProtocolStream(client, handle, path) {
+async function getReadableAsBuffer(readable, path) {
     if (!environment_js_1.isNode && path) {
         throw new Error('Cannot write to a path outside of Node.js environment.');
     }
     const fs = environment_js_1.isNode ? await importFSModule() : null;
-    let eof = false;
     let fileHandle;
     if (path && fs) {
         fileHandle = await fs.promises.open(path, 'w');
     }
-    const bufs = [];
-    while (!eof) {
-        const response = await client.send('IO.read', { handle });
-        eof = response.eof;
-        const buf = Buffer.from(response.data, response.base64Encoded ? 'base64' : undefined);
-        bufs.push(buf);
-        if (path && fs) {
-            await fs.promises.writeFile(fileHandle, buf);
+    const buffers = [];
+    for await (const chunk of readable) {
+        buffers.push(chunk);
+        if (fileHandle) {
+            await fs.promises.writeFile(fileHandle, chunk);
         }
     }
     if (path)
         await fileHandle.close();
-    await client.send('IO.close', { handle });
     let resultBuffer = null;
     try {
-        resultBuffer = Buffer.concat(bufs);
+        resultBuffer = Buffer.concat(buffers);
     }
     finally {
         return resultBuffer;
     }
+}
+async function getReadableFromProtocolStream(client, handle) {
+    // TODO:
+    // This restriction can be lifted once https://github.com/nodejs/node/pull/39062 has landed
+    if (!environment_js_1.isNode) {
+        throw new Error('Cannot create a stream outside of Node.js environment.');
+    }
+    const { Readable } = await Promise.resolve().then(() => __importStar(require('stream')));
+    let eof = false;
+    return new Readable({
+        async read(size) {
+            if (eof) {
+                return null;
+            }
+            const response = await client.send('IO.read', { handle, size });
+            this.push(response.data, response.base64Encoded ? 'base64' : undefined);
+            if (response.eof) {
+                this.push(null);
+                eof = true;
+                await client.send('IO.close', { handle });
+            }
+        },
+    });
 }
 /**
  * Loads the Node fs promises API. Needed because on Node 10.17 and below,
@@ -294,7 +312,8 @@ exports.helper = {
     pageBindingDeliverErrorString,
     pageBindingDeliverErrorValueString,
     makePredicateString,
-    readProtocolStream,
+    getReadableAsBuffer,
+    getReadableFromProtocolStream,
     waitWithTimeout,
     waitForEvent,
     isString,

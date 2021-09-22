@@ -18,6 +18,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { promisify } from 'util';
 
+import { assert } from '../common/assert.js';
 import { Browser } from '../common/Browser.js';
 
 import { BrowserFetcher } from './BrowserFetcher.js';
@@ -35,7 +36,7 @@ class ChromeLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel = null, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, } = options;
         const profilePath = path.join(os.tmpdir(), 'puppeteer_dev_chrome_profile-');
         const chromeArguments = [];
         if (!ignoreDefaultArgs)
@@ -52,7 +53,12 @@ class ChromeLauncher {
             chromeArguments.push(`--user-data-dir=${temporaryUserDataDir}`);
         }
         let chromeExecutable = executablePath;
-        if (!executablePath) {
+        if (channel) {
+            // executablePath is detected by channel, so it should not be specified by user.
+            assert(!executablePath, '`executablePath` must not be specified when `channel` is given.');
+            chromeExecutable = executablePathForChannel(channel);
+        }
+        else if (!executablePath) {
             // Use Intel x86 builds on Apple M1 until native macOS arm64
             // Chromium builds are available.
             if (os.platform() !== 'darwin' && os.arch() === 'arm64') {
@@ -134,8 +140,13 @@ class ChromeLauncher {
         chromeArguments.push(...args);
         return chromeArguments;
     }
-    executablePath() {
-        return resolveExecutablePath(this).executablePath;
+    executablePath(channel) {
+        if (channel) {
+            return executablePathForChannel(channel);
+        }
+        else {
+            return resolveExecutablePath(this).executablePath;
+        }
     }
     get product() {
         return 'chrome';
@@ -373,8 +384,8 @@ class FirefoxLauncher {
             // Disable Flash.
             'plugin.state.flash': 0,
             'privacy.trackingprotection.enabled': false,
-            // Enable Remote Agent
-            // https://bugzilla.mozilla.org/show_bug.cgi?id=1544393
+            // Can be removed once Firefox 89 is no longer supported
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1710839
             'remote.enabled': true,
             // Don't do network connections for mitm priming
             'security.certerrors.mitm.priming.enabled': false,
@@ -407,6 +418,72 @@ class FirefoxLauncher {
         await writeFileAsync(path.join(profilePath, 'prefs.js'), prefsJS.join('\n'));
         return profilePath;
     }
+}
+function executablePathForChannel(channel) {
+    const platform = os.platform();
+    let chromePath;
+    switch (platform) {
+        case 'win32':
+            switch (channel) {
+                case 'chrome':
+                    chromePath = `${process.env.PROGRAMFILES}\\Google\\Chrome\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-beta':
+                    chromePath = `${process.env.PROGRAMFILES}\\Google\\Chrome Beta\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-canary':
+                    chromePath = `${process.env.PROGRAMFILES}\\Google\\Chrome SxS\\Application\\chrome.exe`;
+                    break;
+                case 'chrome-dev':
+                    chromePath = `${process.env.PROGRAMFILES}\\Google\\Chrome Dev\\Application\\chrome.exe`;
+                    break;
+            }
+            break;
+        case 'darwin':
+            switch (channel) {
+                case 'chrome':
+                    chromePath =
+                        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+                    break;
+                case 'chrome-beta':
+                    chromePath =
+                        '/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta';
+                    break;
+                case 'chrome-canary':
+                    chromePath =
+                        '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary';
+                    break;
+                case 'chrome-dev':
+                    chromePath =
+                        '/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev';
+                    break;
+            }
+            break;
+        case 'linux':
+            switch (channel) {
+                case 'chrome':
+                    chromePath = '/opt/google/chrome/chrome';
+                    break;
+                case 'chrome-beta':
+                    chromePath = '/opt/google/chrome-beta/chrome';
+                    break;
+                case 'chrome-dev':
+                    chromePath = '/opt/google/chrome-unstable/chrome';
+                    break;
+            }
+            break;
+    }
+    if (!chromePath) {
+        throw new Error(`Unable to detect browser executable path for '${channel}' on ${platform}.`);
+    }
+    // Check if Chrome exists and is accessible.
+    try {
+        fs.accessSync(chromePath);
+    }
+    catch (error) {
+        throw new Error(`Could not find Google Chrome executable for channel '${channel}' at '${chromePath}'.`);
+    }
+    return chromePath;
 }
 function resolveExecutablePath(launcher) {
     let downloadPath;

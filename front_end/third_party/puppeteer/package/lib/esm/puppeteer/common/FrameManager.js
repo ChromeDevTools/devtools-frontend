@@ -24,6 +24,7 @@ import { LifecycleWatcher, } from './LifecycleWatcher.js';
 import { NetworkManager } from './NetworkManager.js';
 
 const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+const xPathPattern = /^\(\/\/[^\)]+\)|^\/\//;
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.
@@ -763,11 +764,10 @@ export class Frame {
      * {@link Frame.waitForTimeout}.
      */
     waitFor(selectorOrFunctionOrTimeout, options = {}, ...args) {
-        const xPathPattern = '//';
         console.warn('waitFor is deprecated and will be removed in a future release. See https://github.com/puppeteer/puppeteer/issues/6214 for details and how to migrate your code.');
         if (helper.isString(selectorOrFunctionOrTimeout)) {
             const string = selectorOrFunctionOrTimeout;
-            if (string.startsWith(xPathPattern))
+            if (xPathPattern.test(string))
                 return this.waitForXPath(string, options);
             return this.waitForSelector(string, options);
         }

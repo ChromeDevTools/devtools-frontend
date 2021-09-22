@@ -160,11 +160,11 @@ export class DOMWorld {
      * `url` or `content`.
      */
     async addScriptTag(options) {
-        const { url = null, path = null, content = null, type = '' } = options;
+        const { url = null, path = null, content = null, id = '', type = '', } = options;
         if (url !== null) {
             try {
                 const context = await this.executionContext();
-                return (await context.evaluateHandle(addScriptUrl, url, type)).asElement();
+                return (await context.evaluateHandle(addScriptUrl, url, id, type)).asElement();
             }
             catch (error) {
                 throw new Error(`Loading script from ${url} failed`);
@@ -178,16 +178,18 @@ export class DOMWorld {
             let contents = await fs.promises.readFile(path, 'utf8');
             contents += '//# sourceURL=' + path.replace(/\n/g, '');
             const context = await this.executionContext();
-            return (await context.evaluateHandle(addScriptContent, contents, type)).asElement();
+            return (await context.evaluateHandle(addScriptContent, contents, id, type)).asElement();
         }
         if (content !== null) {
             const context = await this.executionContext();
-            return (await context.evaluateHandle(addScriptContent, content, type)).asElement();
+            return (await context.evaluateHandle(addScriptContent, content, id, type)).asElement();
         }
         throw new Error('Provide an object with a `url`, `path` or `content` property');
-        async function addScriptUrl(url, type) {
+        async function addScriptUrl(url, id, type) {
             const script = document.createElement('script');
             script.src = url;
+            if (id)
+                script.id = id;
             if (type)
                 script.type = type;
             const promise = new Promise((res, rej) => {
@@ -198,10 +200,12 @@ export class DOMWorld {
             await promise;
             return script;
         }
-        function addScriptContent(content, type = 'text/javascript') {
+        function addScriptContent(content, id, type = 'text/javascript') {
             const script = document.createElement('script');
             script.type = type;
             script.text = content;
+            if (id)
+                script.id = id;
             let error = null;
             script.onerror = (e) => (error = e);
             document.head.appendChild(script);

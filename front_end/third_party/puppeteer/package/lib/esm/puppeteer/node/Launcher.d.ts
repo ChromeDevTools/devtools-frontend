@@ -8,7 +8,7 @@ import { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './Laun
  */
 export interface ProductLauncher {
     launch(object: PuppeteerNodeLaunchOptions): any;
-    executablePath: () => string;
+    executablePath: (string?: any) => string;
     defaultArgs(object: BrowserLaunchArgumentOptions): any;
     product: Product;
 }

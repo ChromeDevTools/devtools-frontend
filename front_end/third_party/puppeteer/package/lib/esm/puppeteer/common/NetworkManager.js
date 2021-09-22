@@ -119,6 +119,11 @@ export class NetworkManager extends EventEmitter {
     extraHTTPHeaders() {
         return Object.assign({}, this._extraHTTPHeaders);
     }
+    numRequestsInProgress() {
+        return [...this._requestIdToRequest].filter(([, request]) => {
+            return !request.response();
+        }).length;
+    }
     async setOfflineMode(value) {
         this._emulatedNetworkConditions.offline = value;
         await this._updateNetworkConditions();
@@ -143,8 +148,11 @@ export class NetworkManager extends EventEmitter {
             downloadThroughput: this._emulatedNetworkConditions.download,
         });
     }
-    async setUserAgent(userAgent) {
-        await this._client.send('Network.setUserAgentOverride', { userAgent });
+    async setUserAgent(userAgent, userAgentMetadata) {
+        await this._client.send('Network.setUserAgentOverride', {
+            userAgent: userAgent,
+            userAgentMetadata: userAgentMetadata,
+        });
     }
     async setCacheEnabled(enabled) {
         this._userCacheDisabled = !enabled;
@@ -266,6 +274,10 @@ export class NetworkManager extends EventEmitter {
         const request = new HTTPRequest(this._client, frame, interceptionId, this._userRequestInterceptionEnabled, event, redirectChain);
         this._requestIdToRequest.set(event.requestId, request);
         this.emit(NetworkManagerEmittedEvents.Request, request);
+        request.finalizeInterceptions().catch((error) => {
+            // This should never happen, but catch just in case.
+            debugError(error);
+        });
     }
     _onRequestServedFromCache(event) {
         const request = this._requestIdToRequest.get(event.requestId);

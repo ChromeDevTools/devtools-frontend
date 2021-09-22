@@ -1,9 +1,23 @@
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 /// <reference types="node" />
-import { Protocol } from 'devtools-protocol';
-
+import type { Readable } from 'stream';
 import { CDPSession } from './Connection.js';
+import { Protocol } from 'devtools-protocol';
 import { CommonEventEmitter } from './EventEmitter.js';
-
 export declare const debugError: (...args: unknown[]) => void;
 declare function getExceptionMessage(exceptionDetails: Protocol.Runtime.ExceptionDetails): string;
 declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.RemoteObject): any;
@@ -32,7 +46,8 @@ declare function pageBindingDeliverErrorString(name: string, seq: number, messag
 declare function pageBindingDeliverErrorValueString(name: string, seq: number, value: unknown): string;
 declare function makePredicateString(predicate: Function, predicateQueryHandler?: Function): string;
 declare function waitWithTimeout<T extends any>(promise: Promise<T>, taskName: string, timeout: number): Promise<T>;
-declare function readProtocolStream(client: CDPSession, handle: string, path?: string): Promise<Buffer>;
+declare function getReadableAsBuffer(readable: Readable, path?: string): Promise<Buffer>;
+declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
 /**
  * Loads the Node fs promises API. Needed because on Node 10.17 and below,
  * fs.promises is experimental, and therefore not marked as enumerable. That
@@ -53,7 +68,8 @@ export declare const helper: {
     pageBindingDeliverErrorString: typeof pageBindingDeliverErrorString;
     pageBindingDeliverErrorValueString: typeof pageBindingDeliverErrorValueString;
     makePredicateString: typeof makePredicateString;
-    readProtocolStream: typeof readProtocolStream;
+    getReadableAsBuffer: typeof getReadableAsBuffer;
+    getReadableFromProtocolStream: typeof getReadableFromProtocolStream;
     waitWithTimeout: typeof waitWithTimeout;
     waitForEvent: typeof waitForEvent;
     isString: typeof isString;

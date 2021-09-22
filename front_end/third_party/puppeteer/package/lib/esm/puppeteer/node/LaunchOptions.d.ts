@@ -28,7 +28,7 @@ export interface BrowserLaunchArgumentOptions {
     headless?: boolean;
     /**
      * Path to a user data directory.
-     * {@link https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md | see the Chromium docs}
+     * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
      * for more info.
      */
     userDataDir?: string;
@@ -44,10 +44,18 @@ export interface BrowserLaunchArgumentOptions {
     args?: string[];
 }
 /**
+ * @public
+ */
+export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
+/**
  * Generic launch options that can be passed when launching any browser.
  * @public
  */
 export interface LaunchOptions {
+    /**
+     * Chrome Release Channel
+     */
+    channel?: ChromeReleaseChannel;
     /**
      * Path to a browser executable to use instead of the bundled Chromium. Note
      * that Puppeteer is only guaranteed to work with the bundled Chromium, so use
@@ -104,7 +112,7 @@ export interface LaunchOptions {
      */
     product?: Product;
     /**
-     * {@link https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/Preference_reference | Additional preferences } that can be passed when launching with Firefox.
+     * {@link https://searchfox.org/mozilla-release/source/modules/libpref/init/all.js | Additional preferences } that can be passed when launching with Firefox.
      */
     extraPrefsFirefox?: Record<string, unknown>;
     /**

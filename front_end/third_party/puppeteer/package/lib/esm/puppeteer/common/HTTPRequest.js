@@ -64,6 +64,10 @@ export class HTTPRequest {
         this._postData = event.request.postData;
         this._frame = frame;
         this._redirectChain = redirectChain;
+        this._continueRequestOverrides = {};
+        this._currentStrategy = 'none';
+        this._currentPriority = undefined;
+        this._interceptActions = [];
         for (const key of Object.keys(event.request.headers))
             this._headers[key.toLowerCase()] = event.request.headers[key];
     }
@@ -72,6 +76,71 @@ export class HTTPRequest {
      */
     url() {
         return this._url;
+    }
+    /**
+     * @returns the `ContinueRequestOverrides` that will be used
+     * if the interception is allowed to continue (ie, `abort()` and
+     * `respond()` aren't called).
+     */
+    continueRequestOverrides() {
+        assert(this._allowInterception, 'Request Interception is not enabled!');
+        return this._continueRequestOverrides;
+    }
+    /**
+     * @returns The `ResponseForRequest` that gets used if the
+     * interception is allowed to respond (ie, `abort()` is not called).
+     */
+    responseForRequest() {
+        assert(this._allowInterception, 'Request Interception is not enabled!');
+        return this._responseForRequest;
+    }
+    /**
+     * @returns the most recent reason for aborting the request
+     */
+    abortErrorReason() {
+        assert(this._allowInterception, 'Request Interception is not enabled!');
+        return this._abortErrorReason;
+    }
+    /**
+     * @returns An array of the current intercept resolution strategy and priority
+     * `[strategy,priority]`. Strategy is one of: `abort`, `respond`, `continue`,
+     *  `disabled`, `none`, or `already-handled`.
+     */
+    interceptResolution() {
+        if (!this._allowInterception)
+            return ['disabled'];
+        if (this._interceptionHandled)
+            return ['alreay-handled'];
+        return [this._currentStrategy, this._currentPriority];
+    }
+    /**
+     * Adds an async request handler to the processing queue.
+     * Deferred handlers are not guaranteed to execute in any particular order,
+     * but they are guarnateed to resolve before the request interception
+     * is finalized.
+     */
+    enqueueInterceptAction(pendingHandler) {
+        this._interceptActions.push(pendingHandler);
+    }
+    /**
+     * Awaits pending interception handlers and then decides how to fulfill
+     * the request interception.
+     */
+    async finalizeInterceptions() {
+        await this._interceptActions.reduce((promiseChain, interceptAction) => promiseChain.then(interceptAction).catch((error) => {
+            // This is here so cooperative handlers that fail do not stop other handlers
+            // from running
+            debugError(error);
+        }), Promise.resolve());
+        const [resolution] = this.interceptResolution();
+        switch (resolution) {
+            case 'abort':
+                return this._abort(this._abortErrorReason);
+            case 'respond':
+                return this._respond(this._responseForRequest);
+            case 'continue':
+                return this._continue(this._continueRequestOverrides);
+        }
     }
     /**
      * Contains the request's resource type as it was perceived by the rendering
@@ -200,13 +269,36 @@ export class HTTPRequest {
      * ```
      *
      * @param overrides - optional overrides to apply to the request.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    async continue(overrides = {}) {
+    async continue(overrides = {}, priority) {
         // Request interception is not supported for data: urls.
         if (this._url.startsWith('data:'))
             return;
         assert(this._allowInterception, 'Request Interception is not enabled!');
         assert(!this._interceptionHandled, 'Request is already handled!');
+        if (priority === undefined) {
+            return this._continue(overrides);
+        }
+        this._continueRequestOverrides = overrides;
+        if (priority > this._currentPriority ||
+            this._currentPriority === undefined) {
+            this._currentStrategy = 'continue';
+            this._currentPriority = priority;
+            return;
+        }
+        if (priority === this._currentPriority) {
+            if (this._currentStrategy === 'abort' ||
+                this._currentStrategy === 'respond') {
+                return;
+            }
+            this._currentStrategy = 'continue';
+        }
+        return;
+    }
+    async _continue(overrides = {}) {
         const { url, method, postData, headers } = overrides;
         this._interceptionHandled = true;
         const postDataBinaryBase64 = postData
@@ -254,13 +346,34 @@ export class HTTPRequest {
      * Calling `request.respond` for a dataURL request is a noop.
      *
      * @param response - the response to fulfill the request with.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    async respond(response) {
+    async respond(response, priority) {
         // Mocking responses for dataURL requests is not currently supported.
         if (this._url.startsWith('data:'))
             return;
         assert(this._allowInterception, 'Request Interception is not enabled!');
         assert(!this._interceptionHandled, 'Request is already handled!');
+        if (priority === undefined) {
+            return this._respond(response);
+        }
+        this._responseForRequest = response;
+        if (priority > this._currentPriority ||
+            this._currentPriority === undefined) {
+            this._currentStrategy = 'respond';
+            this._currentPriority = priority;
+            return;
+        }
+        if (priority === this._currentPriority) {
+            if (this._currentStrategy === 'abort') {
+                return;
+            }
+            this._currentStrategy = 'respond';
+        }
+    }
+    async _respond(response) {
         this._interceptionHandled = true;
         const responseBody = response.body && helper.isString(response.body)
             ? Buffer.from(response.body)
@@ -298,8 +411,11 @@ export class HTTPRequest {
      * throw an exception immediately.
      *
      * @param errorCode - optional error code to provide.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    async abort(errorCode = 'failed') {
+    async abort(errorCode = 'failed', priority) {
         // Request interception is not supported for data: urls.
         if (this._url.startsWith('data:'))
             return;
@@ -307,6 +423,18 @@ export class HTTPRequest {
         assert(errorReason, 'Unknown error code: ' + errorCode);
         assert(this._allowInterception, 'Request Interception is not enabled!');
         assert(!this._interceptionHandled, 'Request is already handled!');
+        if (priority === undefined) {
+            return this._abort(errorReason);
+        }
+        this._abortErrorReason = errorReason;
+        if (priority >= this._currentPriority ||
+            this._currentPriority === undefined) {
+            this._currentStrategy = 'abort';
+            this._currentPriority = priority;
+            return;
+        }
+    }
+    async _abort(errorReason) {
         this._interceptionHandled = true;
         await this._client
             .send('Fetch.failRequest', {

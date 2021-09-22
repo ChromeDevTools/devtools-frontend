@@ -22,8 +22,11 @@ exports.logPolitely = exports.downloadBrowser = void 0;
 const os_1 = __importDefault(require("os"));
 const https_1 = __importDefault(require("https"));
 const progress_1 = __importDefault(require("progress"));
+const url_1 = __importDefault(require("url"));
 const node_js_1 = __importDefault(require("../node.js"));
 const revisions_js_1 = require("../revisions.js");
+const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
+const proxy_from_env_1 = require("proxy-from-env");
 const supportedProducts = {
     chrome: 'Chromium',
     firefox: 'Firefox Nightly',
@@ -122,12 +125,23 @@ async function downloadBrowser() {
         return `${Math.round(mb * 10) / 10} Mb`;
     }
     function getFirefoxNightlyVersion() {
-        const firefoxVersions = 'https://product-details.mozilla.org/1.0/firefox_versions.json';
+        const firefoxVersionsUrl = 'https://product-details.mozilla.org/1.0/firefox_versions.json';
+        const proxyURL = proxy_from_env_1.getProxyForUrl(firefoxVersionsUrl);
+        const requestOptions = {};
+        if (proxyURL) {
+            const parsedProxyURL = url_1.default.parse(proxyURL);
+            const proxyOptions = {
+                ...parsedProxyURL,
+                secureProxy: parsedProxyURL.protocol === 'https:',
+            };
+            requestOptions.agent = https_proxy_agent_1.default(proxyOptions);
+            requestOptions.rejectUnauthorized = false;
+        }
         const promise = new Promise((resolve, reject) => {
             let data = '';
-            logPolitely(`Requesting latest Firefox Nightly version from ${firefoxVersions}`);
+            logPolitely(`Requesting latest Firefox Nightly version from ${firefoxVersionsUrl}`);
             https_1.default
-                .get(firefoxVersions, (r) => {
+                .get(firefoxVersionsUrl, requestOptions, (r) => {
                 if (r.statusCode >= 400)
                     return reject(new Error(`Got status code ${r.statusCode}`));
                 r.on('data', (chunk) => {

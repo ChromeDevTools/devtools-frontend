@@ -119,6 +119,12 @@ export declare class HTTPRequest {
     private _postData?;
     private _headers;
     private _frame;
+    private _continueRequestOverrides;
+    private _responseForRequest;
+    private _abortErrorReason;
+    private _currentStrategy;
+    private _currentPriority;
+    private _interceptActions;
     /**
      * @internal
      */
@@ -127,6 +133,39 @@ export declare class HTTPRequest {
      * @returns the URL of the request
      */
     url(): string;
+    /**
+     * @returns the `ContinueRequestOverrides` that will be used
+     * if the interception is allowed to continue (ie, `abort()` and
+     * `respond()` aren't called).
+     */
+    continueRequestOverrides(): ContinueRequestOverrides;
+    /**
+     * @returns The `ResponseForRequest` that gets used if the
+     * interception is allowed to respond (ie, `abort()` is not called).
+     */
+    responseForRequest(): Partial<ResponseForRequest>;
+    /**
+     * @returns the most recent reason for aborting the request
+     */
+    abortErrorReason(): Protocol.Network.ErrorReason;
+    /**
+     * @returns An array of the current intercept resolution strategy and priority
+     * `[strategy,priority]`. Strategy is one of: `abort`, `respond`, `continue`,
+     *  `disabled`, `none`, or `already-handled`.
+     */
+    private interceptResolution;
+    /**
+     * Adds an async request handler to the processing queue.
+     * Deferred handlers are not guaranteed to execute in any particular order,
+     * but they are guarnateed to resolve before the request interception
+     * is finalized.
+     */
+    enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
+    /**
+     * Awaits pending interception handlers and then decides how to fulfill
+     * the request interception.
+     */
+    finalizeInterceptions(): Promise<void>;
     /**
      * Contains the request's resource type as it was perceived by the rendering
      * engine.
@@ -234,8 +273,12 @@ export declare class HTTPRequest {
      * ```
      *
      * @param overrides - optional overrides to apply to the request.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    continue(overrides?: ContinueRequestOverrides): Promise<void>;
+    continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
+    private _continue;
     /**
      * Fulfills a request with the given response.
      *
@@ -263,8 +306,12 @@ export declare class HTTPRequest {
      * Calling `request.respond` for a dataURL request is a noop.
      *
      * @param response - the response to fulfill the request with.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    respond(response: Partial<ResponseForRequest>): Promise<void>;
+    respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
+    private _respond;
     /**
      * Aborts a request.
      *
@@ -274,11 +321,23 @@ export declare class HTTPRequest {
      * throw an exception immediately.
      *
      * @param errorCode - optional error code to provide.
+     * @param priority - If provided, intercept is resolved using
+     * cooperative handling rules. Otherwise, intercept is resolved
+     * immediately.
      */
-    abort(errorCode?: ErrorCode): Promise<void>;
+    abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
+    private _abort;
 }
 /**
  * @public
  */
+export declare type InterceptResolutionStrategy = 'abort' | 'respond' | 'continue' | 'disabled' | 'none' | 'alreay-handled';
+/**
+ * @public
+ */
 export declare type ErrorCode = 'aborted' | 'accessdenied' | 'addressunreachable' | 'blockedbyclient' | 'blockedbyresponse' | 'connectionaborted' | 'connectionclosed' | 'connectionfailed' | 'connectionrefused' | 'connectionreset' | 'internetdisconnected' | 'namenotresolved' | 'timedout' | 'failed';
+/**
+ * @public
+ */
+export declare type ActionResult = 'continue' | 'abort' | 'respond';
 //# sourceMappingURL=HTTPRequest.d.ts.map

@@ -237,7 +237,10 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
      */
     contentFrame(): Promise<Frame | null>;
     private _scrollIntoViewIfNeeded;
-    private _clickablePoint;
+    /**
+     * Returns the middle point within an element unless a specific offset is provided.
+     */
+    clickablePoint(offset?: Offset): Promise<Point>;
     private _getBoxModel;
     private _fromProtocolQuad;
     private _intersectQuadWithViewport;
@@ -253,6 +256,28 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
      * If the element is detached from DOM, the method throws an error.
      */
     click(options?: ClickOptions): Promise<void>;
+    /**
+     * This method creates and captures a dragevent from the element.
+     */
+    drag(target: Point): Promise<Protocol.Input.DragData>;
+    /**
+     * This method creates a `dragenter` event on the element.
+     */
+    dragEnter(data?: Protocol.Input.DragData): Promise<void>;
+    /**
+     * This method creates a `dragover` event on the element.
+     */
+    dragOver(data?: Protocol.Input.DragData): Promise<void>;
+    /**
+     * This method triggers a drop on the element.
+     */
+    drop(data?: Protocol.Input.DragData): Promise<void>;
+    /**
+     * This method triggers a dragenter, dragover, and drop on the element.
+     */
+    dragAndDrop(target: ElementHandle, options?: {
+        delay: number;
+    }): Promise<void>;
     /**
      * Triggers a `change` and `input` event once all the provided options have been
      * selected. If there's no `<select>` element matching `selector`, the method
@@ -405,7 +430,22 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
     /**
      * Resolves to true if the element is visible in the current viewport.
      */
-    isIntersectingViewport(): Promise<boolean>;
+    isIntersectingViewport(options?: {
+        threshold?: number;
+    }): Promise<boolean>;
+}
+/**
+ * @public
+ */
+export interface Offset {
+    /**
+     * x-offset for the clickable point relative to the top-left corder of the border box.
+     */
+    x: number;
+    /**
+     * y-offset for the clickable point relative to the top-left corder of the border box.
+     */
+    y: number;
 }
 /**
  * @public
@@ -425,6 +465,10 @@ export interface ClickOptions {
      * @defaultValue 1
      */
     clickCount?: number;
+    /**
+     * Offset for the clickable point relative to the top-left corder of the border box.
+     */
+    offset?: Offset;
 }
 /**
  * @public
@@ -438,5 +482,12 @@ export interface PressOptions {
      * If specified, generates an input event with this text.
      */
     text?: string;
+}
+/**
+ * @public
+ */
+export interface Point {
+    x: number;
+    y: number;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

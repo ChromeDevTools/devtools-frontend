@@ -91,6 +91,7 @@ export declare class DOMWorld {
         url?: string;
         path?: string;
         content?: string;
+        id?: string;
         type?: string;
     }): Promise<ElementHandle>;
     /**

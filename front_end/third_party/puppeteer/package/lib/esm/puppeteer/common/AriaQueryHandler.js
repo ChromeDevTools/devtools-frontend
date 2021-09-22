@@ -22,20 +22,20 @@ async function queryAXTree(client, element, accessibleName, role) {
     const filteredNodes = nodes.filter((node) => node.role.value !== 'StaticText');
     return filteredNodes;
 }
+const normalizeValue = (value) => value.replace(/ +/g, ' ').trim();
+const knownAttributes = new Set(['name', 'role']);
+const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*"(?<value>\\.|[^"\\]*)"\s*\]/g;
 function parseAriaSelector(selector) {
-    const normalize = (value) => value.replace(/ +/g, ' ').trim();
-    const knownAttributes = new Set(['name', 'role']);
     const queryOptions = {};
-    const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*"(?<value>\\.|[^"\\]*)"\s*\]/g;
     const defaultName = selector.replace(attributeRegexp, (_, attribute, value) => {
         attribute = attribute.trim();
         if (!knownAttributes.has(attribute))
             throw new Error(`Unknown aria attribute "${attribute}" in selector`);
-        queryOptions[attribute] = normalize(value);
+        queryOptions[attribute] = normalizeValue(value);
         return '';
     });
     if (defaultName && !queryOptions.name)
-        queryOptions.name = normalize(defaultName);
+        queryOptions.name = normalizeValue(defaultName);
     return queryOptions;
 }
 const queryOne = async (element, selector) => {

@@ -76,10 +76,11 @@ export declare class NetworkManager extends EventEmitter {
     authenticate(credentials?: Credentials): Promise<void>;
     setExtraHTTPHeaders(extraHTTPHeaders: Record<string, string>): Promise<void>;
     extraHTTPHeaders(): Record<string, string>;
+    numRequestsInProgress(): number;
     setOfflineMode(value: boolean): Promise<void>;
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     _updateNetworkConditions(): Promise<void>;
-    setUserAgent(userAgent: string): Promise<void>;
+    setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
     setRequestInterception(value: boolean): Promise<void>;
     _updateProtocolRequestInterception(): Promise<void>;

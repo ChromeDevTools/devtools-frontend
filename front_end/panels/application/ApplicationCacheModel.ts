@@ -35,7 +35,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export class ApplicationCacheModel extends SDK.SDKModel.SDKModel {
+export class ApplicationCacheModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private readonly agent: ProtocolProxyApi.ApplicationCacheApi;
   private readonly statuses: Map<Protocol.Page.FrameId, number>;
   private manifestURLsByFrame: Map<Protocol.Page.FrameId, string>;
@@ -181,6 +181,14 @@ export enum Events {
   FrameManifestsReset = 'FrameManifestsReset',
   NetworkStateChanged = 'NetworkStateChanged',
 }
+
+export type EventTypes = {
+  [Events.FrameManifestStatusUpdated]: Protocol.Page.FrameId,
+  [Events.FrameManifestAdded]: Protocol.Page.FrameId,
+  [Events.FrameManifestRemoved]: Protocol.Page.FrameId,
+  [Events.FrameManifestsReset]: void,
+  [Events.NetworkStateChanged]: boolean,
+};
 
 export class ApplicationCacheDispatcher implements ProtocolProxyApi.ApplicationCacheDispatcher {
   private readonly applicationCacheModel: ApplicationCacheModel;

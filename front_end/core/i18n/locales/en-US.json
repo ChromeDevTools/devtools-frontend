@@ -2103,7 +2103,7 @@
     "message": "This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "Note: 'id' is not specified in the manifest, 'start_url' is used instead. To specify an App Id that matches the current identity, set the 'id' field to ''{PH1}''."
+    "message": "{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App Id that matches the current identity, set the {PH4} field to {PH5} {PH6}."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "App Manifest"
@@ -2116,6 +2116,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "Copy to clipboard"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "Could not check service worker without a 'start_url' field in the manifest"
@@ -2155,6 +2158,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "Installability"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
@@ -2197,6 +2203,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "No supplied icon is at least {PH1} pixels square in PNG, SVG or WebP format, with the purpose attribute unset or set to \"any\"."
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "Note:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Orientation"

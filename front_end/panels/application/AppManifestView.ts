@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 
 import appManifestViewStyles from './appManifestView.css.js';
@@ -62,11 +63,28 @@ const UIStrings = {
   appIdExplainer:
       'This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed.',
   /**
+  *@description Text which is a hyperlink to more documentation
+  */
+  learnMore: 'Learn more',
+  /**
   *@description Explanation why it is advisable to specify an 'id' field in the manifest.
-  *@example {https://example.com/} PH1
+  *@example {Note:} PH1
+  *@example {id} PH2
+  *@example {start_url} PH3
+  *@example {id} PH4
+  *@example {/index.html} PH5
+  *@example {(button for copying suggested value into clipboard)} PH6
   */
   appIdNote:
-      'Note: \'id\' is not specified in the manifest, \'start_url\' is used instead. To specify an App Id that matches the current identity, set the \'id\' field to \'\'{PH1}\'\'.',
+      '{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App Id that matches the current identity, set the {PH4} field to {PH5} {PH6}.',
+  /**
+  *@description Label for reminding the user of something important. Is shown in bold and followed by the actual note to show the user.
+  */
+  note: 'Note:',
+  /**
+  *@description Tooltip text that appears when hovering over a button which copies the previous text to the clipboard.
+  */
+  copyToClipboard: 'Copy to clipboard',
   /**
   *@description Text for the description of something
   */
@@ -552,24 +570,42 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       UI.ARIAUtils.setAccessibleName(appIdField, 'App Id');
       appIdField.textContent = appId;
 
-      if (!stringProperty('id')) {
-        const exclamationIcon = new IconButton.Icon.Icon();
-        exclamationIcon.data = {
-          iconName: 'exclamation_mark_circle_icon',
-          color: 'var(--color-text-secondary)',
-          width: '16px',
-          height: '16px',
-        };
-        exclamationIcon.classList.add('inline-icon');
-        exclamationIcon.title = i18nString(UIStrings.appIdNote, {PH1: startURL});
-        appIdField.appendChild(exclamationIcon);
-      }
-
       const helpIcon = new IconButton.Icon.Icon();
       helpIcon.data = {iconName: 'help_outline', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
       helpIcon.classList.add('inline-icon');
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
       appIdField.appendChild(helpIcon);
+
+      appIdField.appendChild(UI.XLink.XLink.create(
+          'https://developer.chrome.com/blog/pwa-manifest-id/', i18nString(UIStrings.learnMore), 'learn-more'));
+
+      if (!stringProperty('id')) {
+        const suggestedIdNote = appIdField.createChild('div', 'multiline-value');
+        const noteSpan = document.createElement('b');
+        noteSpan.textContent = i18nString(UIStrings.note);
+        const idSpan = document.createElement('code');
+        idSpan.textContent = 'id';
+        const idSpan2 = document.createElement('code');
+        idSpan2.textContent = 'id';
+        const startUrlSpan = document.createElement('code');
+        startUrlSpan.textContent = 'start_url';
+        const suggestedIdSpan = document.createElement('code');
+        suggestedIdSpan.textContent = startURL;
+
+        const copyButton = new IconButton.IconButton.IconButton();
+        copyButton.title = i18nString(UIStrings.copyToClipboard);
+        copyButton.data = {
+          groups: [{iconName: 'copy_icon', iconHeight: '12px', iconWidth: '12px', text: ''}],
+          clickHandler: (): void => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(startURL);
+          },
+          compact: true,
+        };
+
+        suggestedIdNote.appendChild(i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.appIdNote,
+            {PH1: noteSpan, PH2: idSpan, PH3: startUrlSpan, PH4: idSpan2, PH5: suggestedIdSpan, PH6: copyButton}));
+      }
     }
 
     this.startURLField.removeChildren();

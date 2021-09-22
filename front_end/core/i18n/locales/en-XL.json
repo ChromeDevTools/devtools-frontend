@@ -2103,7 +2103,7 @@
     "message": "T̂h́îś îś ûśêd́ b̂ý t̂h́ê b́r̂óŵśêŕ t̂ó k̂ńôẃ ŵh́êt́ĥér̂ t́ĥé m̂án̂íf̂éŝt́ ŝh́ôúl̂d́ b̂é ûṕd̂át̂ín̂ǵ âń êx́îśt̂ín̂ǵ âṕp̂ĺîćât́îón̂, ór̂ ẃĥét̂h́êŕ ît́ r̂éf̂ér̂ś t̂ó â ńêẃ ŵéb̂ áp̂ṕ t̂h́ât́ ĉán̂ b́ê ín̂śt̂ál̂ĺêd́."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "N̂ót̂é: 'îd́' îś n̂ót̂ śp̂éĉíf̂íêd́ îń t̂h́ê ḿâńîf́êśt̂, 'śt̂ár̂t́_ûŕl̂' íŝ úŝéd̂ ín̂śt̂éâd́. T̂ó ŝṕêćîf́ŷ án̂ Áp̂ṕ Îd́ t̂h́ât́ m̂át̂ćĥéŝ t́ĥé ĉúr̂ŕêńt̂ íd̂én̂t́ît́ŷ, śêt́ t̂h́ê 'íd̂' f́îél̂d́ t̂ó ''{PH1}''."
+    "message": "{PH1} {PH2} îś n̂ót̂ śp̂éĉíf̂íêd́ îń t̂h́ê ḿâńîf́êśt̂, {PH3} íŝ úŝéd̂ ín̂śt̂éâd́. T̂ó ŝṕêćîf́ŷ án̂ Áp̂ṕ Îd́ t̂h́ât́ m̂át̂ćĥéŝ t́ĥé ĉúr̂ŕêńt̂ íd̂én̂t́ît́ŷ, śêt́ t̂h́ê {PH4} f́îél̂d́ t̂ó {PH5} {PH6}."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Âṕp̂ Ḿâńîf́êśt̂"
@@ -2116,6 +2116,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "B̂áĉḱĝŕôún̂d́ ĉól̂ór̂"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "Ĉóp̂ý t̂ó ĉĺîṕb̂óâŕd̂"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "Ĉóûĺd̂ ńôt́ ĉh́êćk̂ service worker ẃît́ĥóût́ â 'start_url' f́îél̂d́ îń t̂h́ê ḿâńîf́êśt̂"
@@ -2155,6 +2158,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "Îńŝt́âĺl̂áb̂íl̂ít̂ý"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "L̂éâŕn̂ ḿôŕê"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "M̂án̂íf̂éŝt́ ĉón̂t́âín̂ś 'display_override' f̂íêĺd̂, án̂d́ t̂h́ê f́îŕŝt́ ŝúp̂ṕôŕt̂éd̂ d́îśp̂ĺâý m̂ód̂é m̂úŝt́ b̂é ôńê óf̂ 'standalone', 'fullscreen', ór̂ 'minimal-ui'"
@@ -2197,6 +2203,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "N̂ó ŝúp̂ṕl̂íêd́ îćôń îś ât́ l̂éâśt̂ {PH1} ṕîx́êĺŝ śq̂úâŕê ín̂ PNG, SVG ór̂ WebP f́ôŕm̂át̂, ẃît́ĥ t́ĥé p̂úr̂ṕôśê át̂t́r̂íb̂út̂é ûńŝét̂ ór̂ śêt́ t̂ó \"any\"."
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "N̂ót̂é:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Ôŕîén̂t́ât́îón̂"

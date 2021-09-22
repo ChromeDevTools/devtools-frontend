@@ -26,8 +26,6 @@ generate_css("css_files") {
 devtools_module("application") {
   sources = [
     "AppManifestView.ts",
-    "ApplicationCacheItemsView.ts",
-    "ApplicationCacheModel.ts",
     "ApplicationPanelCacheSection.ts",
     "ApplicationPanelSidebar.ts",
     "ApplicationPanelTreeElement.ts",

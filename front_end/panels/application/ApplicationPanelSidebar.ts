@@ -42,9 +42,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ApplicationCacheItemsView} from './ApplicationCacheItemsView.js';
-import {ApplicationCacheModel, Events as ApplicationCacheModelEvents} from './ApplicationCacheModel.js';
-import {ApplicationCacheFrameTreeElement, ApplicationCacheManifestTreeElement, BackForwardCacheTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
+import {BackForwardCacheTreeElement, ServiceWorkerCacheTreeElement} from './ApplicationPanelCacheSection.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {AppManifestView} from './AppManifestView.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
@@ -96,10 +94,6 @@ const UIStrings = {
   *@description Text in Application Panel Sidebar of the Application panel
   */
   cache: 'Cache',
-  /**
-  *@description Text in Application Panel Sidebar of the Application panel
-  */
-  applicationCache: 'Application Cache',
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
@@ -185,9 +179,6 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
 
 export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.TargetManager.Observer {
   panel: ResourcesPanel;
-  private readonly applicationCacheViews: Map<Protocol.Page.FrameId, ApplicationCacheItemsView>;
-  private readonly applicationCacheFrameElements: Map<Protocol.Page.FrameId, ApplicationCacheFrameTreeElement>;
-  private readonly applicationCacheManifestElements: Map<string, ApplicationCacheManifestTreeElement>;
   private readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
   private readonly applicationTreeElement: UI.TreeOutline.TreeElement;
   serviceWorkersTreeElement: ServiceWorkersTreeElement;
@@ -198,7 +189,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   cookieListTreeElement: ExpandableApplicationPanelTreeElement;
   trustTokensTreeElement: TrustTokensTreeElement;
   cacheStorageListTreeElement: ServiceWorkerCacheTreeElement;
-  applicationCacheListTreeElement: ExpandableApplicationPanelTreeElement;
   private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
   backgroundFetchTreeElement: BackgroundServiceTreeElement|undefined;
   backgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
@@ -218,17 +208,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   };
   private target?: SDK.Target.Target;
   private databaseModel?: DatabaseModel|null;
-  private applicationCacheModel?: ApplicationCacheModel|null;
   private previousHoveredElement?: FrameTreeElement;
 
   constructor(panel: ResourcesPanel) {
     super();
 
     this.panel = panel;
-
-    this.applicationCacheViews = new Map();
-    this.applicationCacheFrameElements = new Map();
-    this.applicationCacheManifestElements = new Map();
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
     this.sidebarTree.element.classList.add('resources-sidebar');
@@ -293,13 +278,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const cacheTreeElement = this.addSidebarSection(cacheSectionTitle);
     this.cacheStorageListTreeElement = new ServiceWorkerCacheTreeElement(panel);
     cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
-    this.applicationCacheListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.applicationCache), 'ApplicationCache');
-    this.applicationCacheListTreeElement.setLink(
-        'https://developer.chrome.com/docs/devtools/storage/applicationcache/?utm_source=devtools');
-    const applicationCacheIcon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
-    this.applicationCacheListTreeElement.setLeadingIcons([applicationCacheIcon]);
-    cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
 
     if (Root.Runtime.experiments.isEnabled('bfcacheDebugging')) {
       this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
@@ -445,10 +423,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     if (cacheStorageModel) {
       cacheStorageModel.enable();
     }
-    const resourceTreeModel = this.target && this.target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (resourceTreeModel) {
-      this.populateApplicationCacheTree(resourceTreeModel);
-    }
     const serviceWorkerCacheModel =
         this.target && this.target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel) || null;
     this.cacheStorageListTreeElement.initialize(serviceWorkerCacheModel);
@@ -501,13 +475,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.databasesListTreeElement.setExpandable(false);
   }
 
-  private resetAppCache(): void {
-    for (const frameId of this.applicationCacheFrameElements.keys()) {
-      this.applicationCacheFrameManifestRemoved({data: frameId});
-    }
-    this.applicationCacheListTreeElement.setExpandable(false);
-  }
-
   private treeElementAdded(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
     // On tree item selection its itemURL and those of its parents are persisted.
     // On reload/navigation we check for matches starting from the root on the
@@ -552,11 +519,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     if (frame.isTopFrame()) {
       this.reset();
-    }
-
-    const applicationCacheFrameTreeElement = this.applicationCacheFrameElements.get(frame.id);
-    if (applicationCacheFrameTreeElement) {
-      applicationCacheFrameTreeElement.frameNavigated(frame);
     }
     this.addCookieDocument(frame);
   }
@@ -672,18 +634,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.innerShowView(view);
   }
 
-  showApplicationCache(frameId: Protocol.Page.FrameId): void {
-    if (!this.applicationCacheModel) {
-      return;
-    }
-    let view = this.applicationCacheViews.get(frameId);
-    if (!view) {
-      view = new ApplicationCacheItemsView(this.applicationCacheModel, frameId);
-      this.applicationCacheViews.set(frameId, view);
-    }
-    this.innerShowView(view);
-  }
-
   showFileSystem(view: UI.Widget.Widget): void {
     this.innerShowView(view);
   }
@@ -729,92 +679,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     }
 
     await databasesTreeElement.updateChildren();
-  }
-
-  private populateApplicationCacheTree(_resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    if (!this.target) {
-      return;
-    }
-    this.applicationCacheModel = this.target.model(ApplicationCacheModel);
-    if (!this.applicationCacheModel) {
-      return;
-    }
-    this.applicationCacheModel.addEventListener(
-        ApplicationCacheModelEvents.FrameManifestAdded, this.applicationCacheFrameManifestAdded, this);
-    this.applicationCacheModel.addEventListener(
-        ApplicationCacheModelEvents.FrameManifestRemoved, this.applicationCacheFrameManifestRemoved, this);
-    this.applicationCacheModel.addEventListener(
-        ApplicationCacheModelEvents.FrameManifestsReset, this.resetAppCache, this);
-
-    this.applicationCacheModel.addEventListener(
-        ApplicationCacheModelEvents.FrameManifestStatusUpdated, this.applicationCacheFrameManifestStatusChanged, this);
-    this.applicationCacheModel.addEventListener(
-        ApplicationCacheModelEvents.NetworkStateChanged, this.applicationCacheNetworkStateChanged, this);
-  }
-
-  private applicationCacheFrameManifestAdded({data: frameId}:
-                                                 Common.EventTarget.EventTargetEvent<Protocol.Page.FrameId>): void {
-    if (!this.applicationCacheModel || !this.target || frameId !== 'string') {
-      return;
-    }
-    const manifestURL = this.applicationCacheModel.frameManifestURL(frameId);
-
-    let manifestTreeElement = this.applicationCacheManifestElements.get(manifestURL);
-    if (!manifestTreeElement) {
-      manifestTreeElement = new ApplicationCacheManifestTreeElement(this.panel, manifestURL);
-      this.applicationCacheListTreeElement.appendChild(manifestTreeElement);
-      this.applicationCacheManifestElements.set(manifestURL, manifestTreeElement);
-    }
-
-    const model = this.target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const frame = model && model.frameForId(frameId);
-    if (model && frame) {
-      const frameTreeElement = new ApplicationCacheFrameTreeElement(this, frame, manifestURL);
-      manifestTreeElement.appendChild(frameTreeElement);
-      manifestTreeElement.expand();
-      this.applicationCacheFrameElements.set(frameId, frameTreeElement);
-    }
-  }
-
-  private applicationCacheFrameManifestRemoved({data: frameId}:
-                                                   Common.EventTarget.EventTargetEvent<Protocol.Page.FrameId>): void {
-    const frameTreeElement = this.applicationCacheFrameElements.get(frameId);
-    if (!frameTreeElement) {
-      return;
-    }
-
-    const manifestURL = frameTreeElement.manifestURL;
-    this.applicationCacheFrameElements.delete(frameId);
-    this.applicationCacheViews.delete(frameId);
-    frameTreeElement.parent && frameTreeElement.parent.removeChild(frameTreeElement);
-
-    const manifestTreeElement = this.applicationCacheManifestElements.get(manifestURL);
-    if (!manifestTreeElement || manifestTreeElement.childCount()) {
-      return;
-    }
-
-    this.applicationCacheManifestElements.delete(manifestURL);
-    manifestTreeElement.parent && manifestTreeElement.parent.removeChild(manifestTreeElement);
-  }
-
-  private applicationCacheFrameManifestStatusChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Page.FrameId>):
-      void {
-    if (!this.applicationCacheModel) {
-      return;
-    }
-    const frameId = event.data;
-    const status = this.applicationCacheModel.frameManifestStatus(frameId);
-
-    const view = this.applicationCacheViews.get(frameId);
-    if (view) {
-      view.updateStatus(status);
-    }
-  }
-
-  private applicationCacheNetworkStateChanged({data: isNowOnline}: Common.EventTarget.EventTargetEvent<boolean>): void {
-    for (const view of this.applicationCacheViews.values()) {
-      view.updateNetworkState(isNowOnline);
-    }
   }
 
   private onmousemove(event: MouseEvent): void {

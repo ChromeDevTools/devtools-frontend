@@ -10,7 +10,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ApplicationCacheModel} from './ApplicationCacheModel.js';
 import {DatabaseModel} from './DatabaseModel.js';
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
@@ -86,10 +85,6 @@ const UIStrings = {
    * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   cacheStorage: 'Cache storage',
-  /**
-   * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
-   */
-  applicationCache: 'Application cache',
   /**
    * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
@@ -261,7 +256,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     const caches = this.reportView.appendSection(i18nString(UIStrings.cache));
     this.appendItem(caches, i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage);
-    this.appendItem(caches, i18nString(UIStrings.applicationCache), Protocol.Storage.StorageType.Appcache);
     caches.markFieldListAsGroup();
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
@@ -441,13 +435,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForOrigin(securityOrigin);
-      }
-    }
-
-    if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      const appcacheModel = target.model(ApplicationCacheModel);
-      if (appcacheModel) {
-        appcacheModel.reset();
       }
     }
   }

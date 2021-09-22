@@ -789,8 +789,6 @@ grd_files_debug_sources = [
   "front_end/panels/animation/animationScreenshotPopover.css.js",
   "front_end/panels/animation/animationTimeline.css.js",
   "front_end/panels/application/AppManifestView.js",
-  "front_end/panels/application/ApplicationCacheItemsView.js",
-  "front_end/panels/application/ApplicationCacheModel.js",
   "front_end/panels/application/ApplicationPanelCacheSection.js",
   "front_end/panels/application/ApplicationPanelSidebar.js",
   "front_end/panels/application/ApplicationPanelTreeElement.js",

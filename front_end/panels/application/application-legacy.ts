@@ -10,9 +10,6 @@ self.Resources = self.Resources || {};
 Resources = Resources || {};
 
 /** @constructor */
-Resources.ApplicationCacheModel = ResourcesModule.ApplicationCacheModel.ApplicationCacheModel;
-
-/** @constructor */
 Resources.ApplicationPanelSidebar = ResourcesModule.ApplicationPanelSidebar.ApplicationPanelSidebar;
 
 /** @constructor */

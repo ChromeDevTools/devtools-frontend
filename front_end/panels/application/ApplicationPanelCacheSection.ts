@@ -2,13 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type {ApplicationPanelSidebar} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {BackForwardCacheView} from './BackForwardCacheView.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -34,27 +32,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ApplicationPanelCacheSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ApplicationCacheManifestTreeElement extends ApplicationPanelTreeElement {
-  private readonly manifestURL: string;
-
-  constructor(resourcesPanel: ResourcesPanel, manifestURL: string) {
-    const title = new Common.ParsedURL.ParsedURL(manifestURL).displayName;
-    super(resourcesPanel, title, false);
-    this.tooltip = manifestURL;
-    this.manifestURL = manifestURL;
-  }
-
-  get itemURL(): string {
-    return 'appcache://' + this.manifestURL;
-  }
-
-  onselect(selectedByUser: boolean|undefined): boolean {
-    super.onselect(selectedByUser);
-    this.resourcesPanel.showCategoryView(this.manifestURL, null);
-    return false;
-  }
-}
-
 export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTreeElement {
   private swCacheModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel|null;
   private swCacheTreeElements: Set<SWCacheTreeElement>;
@@ -194,41 +171,6 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
   hasModelAndCache(
       model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache): boolean {
     return this.cache.equals(cache) && this.model === model;
-  }
-}
-
-export class ApplicationCacheFrameTreeElement extends ApplicationPanelTreeElement {
-  private readonly sidebar: ApplicationPanelSidebar;
-  readonly frameId: Protocol.Page.FrameId;
-  readonly manifestURL: string;
-
-  constructor(sidebar: ApplicationPanelSidebar, frame: SDK.ResourceTreeModel.ResourceTreeFrame, manifestURL: string) {
-    super(sidebar.panel, '', false);
-    this.sidebar = sidebar;
-    this.frameId = frame.id;
-    this.manifestURL = manifestURL;
-    this.refreshTitles(frame);
-
-    const icon = UI.Icon.Icon.create('mediumicon-frame-top', 'navigator-folder-tree-item');
-    this.setLeadingIcons([icon]);
-  }
-
-  get itemURL(): string {
-    return 'appcache://' + this.manifestURL + '/' + encodeURI(this.titleAsText());
-  }
-
-  private refreshTitles(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
-    this.title = frame.displayName();
-  }
-
-  frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
-    this.refreshTitles(frame);
-  }
-
-  onselect(selectedByUser: boolean|undefined): boolean {
-    super.onselect(selectedByUser);
-    this.sidebar.showApplicationCache(this.frameId);
-    return false;
   }
 }
 

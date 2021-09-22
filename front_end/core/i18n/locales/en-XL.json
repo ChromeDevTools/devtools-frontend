@@ -2003,33 +2003,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ év̂én̂t́ŝ"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "Âṕp̂Ćâćĥé"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "Âṕp̂ĺîćât́îón̂ Ćâćĥé"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "D̂él̂ét̂é"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "N̂ó Âṕp̂ĺîćât́îón̂ Ćâćĥé îńf̂ór̂ḿât́îón̂ áv̂áîĺâb́l̂é."
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "Ôf́f̂ĺîńê"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "Ôńl̂ín̂é"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "R̂éŝóûŕĉé"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "Ŝíẑé"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "T̂ýp̂é"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé"
   },
@@ -2044,9 +2017,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Âṕp̂ĺîćât́îón̂"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "Âṕp̂ĺîćât́îón̂ Ćâćĥé"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "B̂áĉḱĝŕôún̂d́ Ŝér̂v́îćêś"
@@ -3028,9 +2998,6 @@
   },
   "panels/application/StorageView.ts | application": {
     "message": "Âṕp̂ĺîćât́îón̂"
-  },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "Âṕp̂ĺîćât́îón̂ ćâćĥé"
   },
   "panels/application/StorageView.ts | cache": {
     "message": "Ĉáĉh́ê"

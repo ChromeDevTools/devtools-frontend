@@ -2003,33 +2003,6 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stop recording events"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "AppCache"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "Application Cache"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "Delete"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "No Application Cache information available."
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "Offline"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "Online"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "Resource"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "Size"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "Type"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "Back-forward Cache"
   },
@@ -2044,9 +2017,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "Application Cache"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Background Services"
@@ -3028,9 +2998,6 @@
   },
   "panels/application/StorageView.ts | application": {
     "message": "Application"
-  },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "Application cache"
   },
   "panels/application/StorageView.ts | cache": {
     "message": "Cache"

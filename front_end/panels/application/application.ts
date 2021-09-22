@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ApplicationCacheItemsView from './ApplicationCacheItemsView.js';
-import * as ApplicationCacheModel from './ApplicationCacheModel.js';
 import * as ApplicationPanelSidebar from './ApplicationPanelSidebar.js';
 import * as AppManifestView from './AppManifestView.js';
 import * as BackgroundServiceModel from './BackgroundServiceModel.js';
@@ -25,8 +23,6 @@ import * as StorageItemsView from './StorageItemsView.js';
 import * as StorageView from './StorageView.js';
 
 export {
-  ApplicationCacheItemsView,
-  ApplicationCacheModel,
   ApplicationPanelSidebar,
   AppManifestView,
   BackgroundServiceModel,

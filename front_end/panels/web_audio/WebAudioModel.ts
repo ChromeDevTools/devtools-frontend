@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export class WebAudioModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.WebAudioDispatcher {
+export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.WebAudioDispatcher {
   private enabled: boolean;
   private readonly agent: ProtocolProxyApi.WebAudioApi;
   constructor(target: SDK.Target.Target) {
@@ -138,3 +138,21 @@ export const enum Events {
   NodeParamConnected = 'NodeParamConnected',
   NodeParamDisconnected = 'NodeParamDisconnected',
 }
+
+export type EventTypes = {
+  [Events.ContextCreated]: Protocol.WebAudio.BaseAudioContext,
+  [Events.ContextDestroyed]: Protocol.WebAudio.GraphObjectId,
+  [Events.ContextChanged]: Protocol.WebAudio.BaseAudioContext,
+  [Events.ModelReset]: void,
+  [Events.ModelSuspend]: void,
+  [Events.AudioListenerCreated]: Protocol.WebAudio.AudioListener,
+  [Events.AudioListenerWillBeDestroyed]: Protocol.WebAudio.AudioListenerWillBeDestroyedEvent,
+  [Events.AudioNodeCreated]: Protocol.WebAudio.AudioNode,
+  [Events.AudioNodeWillBeDestroyed]: Protocol.WebAudio.AudioNodeWillBeDestroyedEvent,
+  [Events.AudioParamCreated]: Protocol.WebAudio.AudioParam,
+  [Events.AudioParamWillBeDestroyed]: Protocol.WebAudio.AudioParamWillBeDestroyedEvent,
+  [Events.NodesConnected]: Protocol.WebAudio.NodesConnectedEvent,
+  [Events.NodesDisconnected]: Protocol.WebAudio.NodesDisconnectedEvent,
+  [Events.NodeParamConnected]: Protocol.WebAudio.NodeParamConnectedEvent,
+  [Events.NodeParamDisconnected]: Protocol.WebAudio.NodeParamDisconnectedEvent,
+};

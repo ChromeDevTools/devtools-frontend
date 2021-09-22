@@ -1515,7 +1515,7 @@ export function addReferrerToURL(url: string): string {
  * 'web.dev' or 'developers.google.com'.
  */
 export function addReferrerToURLIfNecessary(url: string): string {
-  if (/(\/\/developers.google.com\/|\/\/web.dev\/)/.test(url)) {
+  if (/(\/\/developers.google.com\/|\/\/web.dev\/|\/\/developer.chrome.com\/)/.test(url)) {
     return addReferrerToURL(url);
   }
   return url;

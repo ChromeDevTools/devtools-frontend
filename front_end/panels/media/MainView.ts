@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {PlayerEvent} from './MediaModel.js';
-import {MediaModel, ProtocolTriggers} from './MediaModel.js';
+import {MediaModel, Events} from './MediaModel.js';
 import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
 
@@ -196,19 +196,19 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
 
   private addEventListeners(mediaModel: MediaModel): void {
     mediaModel.ensureEnabled();
-    mediaModel.addEventListener(ProtocolTriggers.PlayerPropertiesChanged, this.propertiesChanged, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerEventsAdded, this.eventsAdded, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerMessagesLogged, this.messagesLogged, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayerErrorsRaised, this.errorsRaised, this);
-    mediaModel.addEventListener(ProtocolTriggers.PlayersCreated, this.playersCreated, this);
+    mediaModel.addEventListener(Events.PlayerPropertiesChanged, this.propertiesChanged, this);
+    mediaModel.addEventListener(Events.PlayerEventsAdded, this.eventsAdded, this);
+    mediaModel.addEventListener(Events.PlayerMessagesLogged, this.messagesLogged, this);
+    mediaModel.addEventListener(Events.PlayerErrorsRaised, this.errorsRaised, this);
+    mediaModel.addEventListener(Events.PlayersCreated, this.playersCreated, this);
   }
 
   private removeEventListeners(mediaModel: MediaModel): void {
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerPropertiesChanged, this.propertiesChanged, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerEventsAdded, this.eventsAdded, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerMessagesLogged, this.messagesLogged, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayerErrorsRaised, this.errorsRaised, this);
-    mediaModel.removeEventListener(ProtocolTriggers.PlayersCreated, this.playersCreated, this);
+    mediaModel.removeEventListener(Events.PlayerPropertiesChanged, this.propertiesChanged, this);
+    mediaModel.removeEventListener(Events.PlayerEventsAdded, this.eventsAdded, this);
+    mediaModel.removeEventListener(Events.PlayerMessagesLogged, this.messagesLogged, this);
+    mediaModel.removeEventListener(Events.PlayerErrorsRaised, this.errorsRaised, this);
+    mediaModel.removeEventListener(Events.PlayersCreated, this.playersCreated, this);
   }
 
   private onPlayerCreated(playerID: string): void {
@@ -217,25 +217,29 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.downloadStore.addPlayer(playerID);
   }
 
-  private propertiesChanged(event: Common.EventTarget.EventTargetEvent): void {
+  private propertiesChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerPropertiesChangedEvent>):
+      void {
     for (const property of event.data.properties) {
       this.onProperty(event.data.playerId, property);
     }
   }
 
-  private eventsAdded(event: Common.EventTarget.EventTargetEvent): void {
+  private eventsAdded(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerEventsAddedEvent>): void {
     for (const ev of event.data.events) {
-      this.onEvent(event.data.playerId, ev);
+      // TODO(crbug.com/1228674): The conversion from Protocol.Media.PlayerEvent to PlayerEvent happens implicitly
+      // by augmenting the protocol type with some additional property in various places. This needs to be cleaned up
+      // in a conversion function that takes the protocol type and produces the PlayerEvent type.
+      this.onEvent(event.data.playerId, ev as PlayerEvent);
     }
   }
 
-  private messagesLogged(event: Common.EventTarget.EventTargetEvent): void {
+  private messagesLogged(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerMessagesLoggedEvent>): void {
     for (const message of event.data.messages) {
       this.onMessage(event.data.playerId, message);
     }
   }
 
-  private errorsRaised(event: Common.EventTarget.EventTargetEvent): void {
+  private errorsRaised(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerErrorsRaisedEvent>): void {
     for (const error of event.data.errors) {
       this.onError(event.data.playerId, error);
     }
@@ -281,9 +285,8 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.detailPanels.get(playerID)?.onEvent(event);
   }
 
-  private playersCreated(event: Common.EventTarget.EventTargetEvent): void {
-    const playerlist = event.data as Iterable<string>;
-    for (const playerID of playerlist) {
+  private playersCreated(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerId[]>): void {
+    for (const playerID of event.data) {
       this.onPlayerCreated(playerID);
     }
   }

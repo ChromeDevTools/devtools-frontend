@@ -12,7 +12,7 @@ export interface PlayerEvent extends Protocol.Media.PlayerEvent {
   event: string;
 }
 
-export const enum ProtocolTriggers {
+export const enum Events {
   PlayerPropertiesChanged = 'PlayerPropertiesChanged',
   PlayerEventsAdded = 'PlayerEventsAdded',
   PlayerMessagesLogged = 'PlayerMessagesLogged',
@@ -20,7 +20,15 @@ export const enum ProtocolTriggers {
   PlayersCreated = 'PlayersCreated',
 }
 
-export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.MediaDispatcher {
+export type EventTypes = {
+  [Events.PlayerPropertiesChanged]: Protocol.Media.PlayerPropertiesChangedEvent,
+  [Events.PlayerEventsAdded]: Protocol.Media.PlayerEventsAddedEvent,
+  [Events.PlayerMessagesLogged]: Protocol.Media.PlayerMessagesLoggedEvent,
+  [Events.PlayerErrorsRaised]: Protocol.Media.PlayerErrorsRaisedEvent,
+  [Events.PlayersCreated]: Protocol.Media.PlayerId[],
+};
+
+export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.MediaDispatcher {
   private enabled: boolean;
   private readonly agent: ProtocolProxyApi.MediaApi;
 
@@ -46,23 +54,23 @@ export class MediaModel extends SDK.SDKModel.SDKModel implements ProtocolProxyAp
   }
 
   playerPropertiesChanged(event: Protocol.Media.PlayerPropertiesChangedEvent): void {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerPropertiesChanged, event);
+    this.dispatchEventToListeners(Events.PlayerPropertiesChanged, event);
   }
 
   playerEventsAdded(event: Protocol.Media.PlayerEventsAddedEvent): void {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerEventsAdded, event);
+    this.dispatchEventToListeners(Events.PlayerEventsAdded, event);
   }
 
   playerMessagesLogged(event: Protocol.Media.PlayerMessagesLoggedEvent): void {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerMessagesLogged, event);
+    this.dispatchEventToListeners(Events.PlayerMessagesLogged, event);
   }
 
   playerErrorsRaised(event: Protocol.Media.PlayerErrorsRaisedEvent): void {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayerErrorsRaised, event);
+    this.dispatchEventToListeners(Events.PlayerErrorsRaised, event);
   }
 
   playersCreated({players}: Protocol.Media.PlayersCreatedEvent): void {
-    this.dispatchEventToListeners(ProtocolTriggers.PlayersCreated, players);
+    this.dispatchEventToListeners(Events.PlayersCreated, players);
   }
 }
 SDK.SDKModel.SDKModel.register(MediaModel, {capabilities: SDK.Target.Capability.Media, autostart: false});

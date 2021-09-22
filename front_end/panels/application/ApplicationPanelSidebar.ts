@@ -1113,9 +1113,9 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     }
   }
 
-  private indexedDBAdded(event: Common.EventTarget.EventTargetEvent): void {
-    const databaseId = (event.data.databaseId as DatabaseId);
-    const model = (event.data.model as IndexedDBModel);
+  private indexedDBAdded({
+    data: {databaseId, model},
+  }: Common.EventTarget.EventTargetEvent<{databaseId: DatabaseId, model: IndexedDBModel}>): void {
     this.addIndexedDB(model, databaseId);
   }
 
@@ -1126,10 +1126,9 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     model.refreshDatabase(databaseId);
   }
 
-  private indexedDBRemoved(event: Common.EventTarget.EventTargetEvent): void {
-    const databaseId = (event.data.databaseId as DatabaseId);
-    const model = (event.data.model as IndexedDBModel);
-
+  private indexedDBRemoved({
+    data: {databaseId, model},
+  }: Common.EventTarget.EventTargetEvent<{databaseId: DatabaseId, model: IndexedDBModel}>): void {
     const idbDatabaseTreeElement = this.idbDatabaseTreeElement(model, databaseId);
     if (!idbDatabaseTreeElement) {
       return;
@@ -1144,11 +1143,9 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     this.setExpandable(this.childCount() > 0);
   }
 
-  private indexedDBLoaded(event: Common.EventTarget.EventTargetEvent): void {
-    const database = (event.data.database as IndexedDBModelDatabase);
-    const model = (event.data.model as IndexedDBModel);
-    const entriesUpdated = (event.data.entriesUpdated as boolean);
-
+  private indexedDBLoaded(
+      {data: {database, model, entriesUpdated}}: Common.EventTarget
+          .EventTargetEvent<{database: IndexedDBModelDatabase, model: IndexedDBModel, entriesUpdated: boolean}>): void {
     const idbDatabaseTreeElement = this.idbDatabaseTreeElement(model, database.databaseId);
     if (!idbDatabaseTreeElement) {
       return;
@@ -1161,11 +1158,10 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     // For sniffing in tests.
   }
 
-  private indexedDBContentUpdated(event: Common.EventTarget.EventTargetEvent): void {
-    const databaseId = (event.data.databaseId as DatabaseId);
-    const objectStoreName = (event.data.objectStoreName as string);
-    const model = (event.data.model as IndexedDBModel);
-
+  private indexedDBContentUpdated({
+    data: {databaseId, objectStoreName, model},
+  }: Common.EventTarget.EventTargetEvent<{databaseId: DatabaseId, objectStoreName: string, model: IndexedDBModel}>):
+      void {
     const idbDatabaseTreeElement = this.idbDatabaseTreeElement(model, databaseId);
     if (!idbDatabaseTreeElement) {
       return;

@@ -33,7 +33,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-export class IndexedDBModel extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.StorageDispatcher {
+export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
   private readonly securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null;
   private readonly indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
   private readonly storageAgent: ProtocolProxyApi.StorageApi;
@@ -423,6 +423,14 @@ export enum Events {
   DatabaseNamesRefreshed = 'DatabaseNamesRefreshed',
   IndexedDBContentUpdated = 'IndexedDBContentUpdated',
 }
+
+export type EventTypes = {
+  [Events.DatabaseAdded]: {model: IndexedDBModel, databaseId: DatabaseId},
+  [Events.DatabaseRemoved]: {model: IndexedDBModel, databaseId: DatabaseId},
+  [Events.DatabaseLoaded]: {model: IndexedDBModel, database: Database, entriesUpdated: boolean},
+  [Events.DatabaseNamesRefreshed]: void,
+  [Events.IndexedDBContentUpdated]: {model: IndexedDBModel, databaseId: DatabaseId, objectStoreName: string},
+};
 
 export class Entry {
   key: SDK.RemoteObject.RemoteObject;

@@ -34,7 +34,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export class LayerTreeModel extends SDK.SDKModel.SDKModel {
+export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
   readonly paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel;
   private layerTreeInternal: SDK.LayerTreeBase.LayerTreeBase|null;
@@ -148,6 +148,11 @@ export enum Events {
   LayerTreeChanged = 'LayerTreeChanged',
   LayerPainted = 'LayerPainted',
 }
+
+export type EventTypes = {
+  [Events.LayerTreeChanged]: void,
+  [Events.LayerPainted]: AgentLayer,
+};
 
 export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   private layerTreeModel: LayerTreeModel;

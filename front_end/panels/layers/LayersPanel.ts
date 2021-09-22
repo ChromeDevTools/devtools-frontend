@@ -169,11 +169,10 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     return Promise.resolve();
   }
 
-  private onLayerPainted(event: Common.EventTarget.EventTargetEvent): void {
+  private onLayerPainted({data: layer}: Common.EventTarget.EventTargetEvent<SDK.LayerTreeBase.Layer>): void {
     if (!this.model) {
       return;
     }
-    const layer = event.data as SDK.LayerTreeBase.Layer;
     const selection = this.layerViewHost.selection();
     if (selection && selection.layer() === layer) {
       this.layerDetailsView.update();

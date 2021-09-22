@@ -540,8 +540,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     this.mainView.updateVisibleSecurityState(visibleSecurityState);
   }
 
-  private onVisibleSecurityStateChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const data = event.data as PageVisibleSecurityState;
+  private onVisibleSecurityStateChanged({data}: Common.EventTarget.EventTargetEvent<PageVisibleSecurityState>): void {
     this.updateVisibleSecurityState(data);
   }
 

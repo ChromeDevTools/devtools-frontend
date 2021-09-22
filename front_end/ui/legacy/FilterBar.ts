@@ -120,7 +120,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     this.stateSetting.set(true);
   }
 
-  private filterChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private filterChanged(): void {
     this.updateFilterButton();
     this.dispatchEventToListeners(FilterBarEvents.Changed);
   }

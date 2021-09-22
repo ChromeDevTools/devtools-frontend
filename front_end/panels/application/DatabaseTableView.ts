@@ -186,7 +186,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this.element.appendChild(errorMsgElement);
   }
 
-  private refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private refreshButtonClicked(): void {
     this.update();
   }
 }

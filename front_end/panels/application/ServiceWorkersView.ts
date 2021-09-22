@@ -720,7 +720,7 @@ export class Section {
     return button;
   }
 
-  private unregisterButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private unregisterButtonClicked(): void {
     this.manager.deleteRegistration(this.registration.id);
   }
 
@@ -729,11 +729,11 @@ export class Section {
     this.updateCycleField.appendChild(this.updateCycleView.tableElement);
   }
 
-  private updateButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private updateButtonClicked(): void {
     this.manager.updateRegistration(this.registration.id);
   }
 
-  private networkRequestsClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private networkRequestsClicked(): void {
     const applicationTabLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('resources');
     const networkTabLocation = applicationTabLocation === 'drawer-view' ? 'panel' : 'drawer-view';
     UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkTabLocation);

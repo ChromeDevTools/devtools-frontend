@@ -480,7 +480,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.excludeButton.setEnabled(selected);
   }
 
-  focusClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  focusClicked(): void {
     if (!this.dataGrid.selectedNode) {
       return;
     }
@@ -495,7 +495,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuProfileNodeFocused);
   }
 
-  excludeClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  excludeClicked(): void {
     const selectedNode = this.dataGrid.selectedNode;
 
     if (!selectedNode) {
@@ -515,7 +515,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuProfileNodeExcluded);
   }
 
-  resetClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  resetClicked(): void {
     this.viewSelectComboBox.selectElement().focus();
     this.resetButton.setEnabled(false);
     if (this.profileDataGridTree) {

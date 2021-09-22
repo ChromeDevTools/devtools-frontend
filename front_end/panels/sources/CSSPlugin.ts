@@ -261,7 +261,7 @@ export class CSSPlugin extends Plugin {
     this.swatchPopoverHelper.show(this.spectrum, swatch, this.swatchPopoverHidden.bind(this));
   }
 
-  private spectrumResized(_event: Common.EventTarget.EventTargetEvent<void>): void {
+  private spectrumResized(): void {
     this.swatchPopoverHelper.reposition();
   }
 

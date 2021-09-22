@@ -377,7 +377,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.networkLogView.setWindow(startTime, endTime);
   }
 
-  private async searchToggleClick(_event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async searchToggleClick(): Promise<void> {
     const action = UI.ActionRegistry.ActionRegistry.instance().action('network.search');
     if (action) {
       await action.execute();
@@ -403,8 +403,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
-    searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
-      this.searchToggleClick(event);
+    searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.searchToggleClick();
     });
     this.panelToolbar.appendToolbarItem(searchToggle);
     this.panelToolbar.appendSeparator();
@@ -640,7 +640,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.hideRequestPanel();
   }
 
-  private onRowSizeChanged(_event: Common.EventTarget.EventTargetEvent): void {
+  private onRowSizeChanged(): void {
     this.updateUI();
   }
 

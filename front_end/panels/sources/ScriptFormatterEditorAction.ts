@@ -126,7 +126,7 @@ export class ScriptFormatterEditorAction implements EditorAction {
     return this.isFormattableScript(uiSourceCode);
   }
 
-  private onFormatScriptButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private onFormatScriptButtonClicked(): void {
     this.toggleFormatScriptSource();
   }
 

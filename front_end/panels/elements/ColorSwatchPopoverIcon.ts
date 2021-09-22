@@ -206,7 +206,7 @@ export class ColorSwatchPopoverIcon {
     }
   }
 
-  private spectrumResized(_event: Common.EventTarget.EventTargetEvent<void>): void {
+  private spectrumResized(): void {
     this.swatchPopoverHelper.reposition();
   }
 

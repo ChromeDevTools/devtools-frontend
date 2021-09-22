@@ -376,7 +376,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.elementInternal;
   }
 
-  private expandButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private expandButtonClicked(): void {
     const selection = this.contrastValueBubble.getComponentSelection();
     if (selection) {
       selection.empty();

@@ -29,7 +29,6 @@
  */
 
 import indexedDBViewsStyles from './indexedDBViews.css.js';
-import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -273,8 +272,8 @@ export class IDBDataView extends UI.View.SimpleView {
     });
 
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'largeicon-clear');
-    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, event => {
-      this.clearButtonClicked(event);
+    this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.clearButtonClicked();
     }, this);
 
     this.needsRefresh = new UI.Toolbar.ToolbarItem(
@@ -409,12 +408,12 @@ export class IDBDataView extends UI.View.SimpleView {
     editorToolbar.appendToolbarItem(this.needsRefresh);
   }
 
-  private pageBackButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private pageBackButtonClicked(): void {
     this.skipCount = Math.max(0, this.skipCount - this.pageSize);
     this.updateData(false);
   }
 
-  private pageForwardButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private pageForwardButtonClicked(): void {
     this.skipCount = this.skipCount + this.pageSize;
     this.updateData(false);
   }
@@ -555,11 +554,11 @@ export class IDBDataView extends UI.View.SimpleView {
     // Sniffed in tests.
   }
 
-  private refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent|null): void {
+  private refreshButtonClicked(): void {
     this.updateData(true);
   }
 
-  private async clearButtonClicked(_event: Common.EventTarget.EventTargetEvent): Promise<void> {
+  private async clearButtonClicked(): Promise<void> {
     this.clearButton.setEnabled(false);
     this.clearingObjectStore = true;
     await this.model.clearObjectStore(this.databaseId, this.objectStore.name);

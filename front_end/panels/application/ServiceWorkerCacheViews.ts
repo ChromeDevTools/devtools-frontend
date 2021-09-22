@@ -353,7 +353,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     return;
   }
 
-  private refreshButtonClicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private refreshButtonClicked(): void {
     this.updateData(true);
   }
 

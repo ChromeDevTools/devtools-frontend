@@ -94,7 +94,7 @@ export class InplaceFormatterEditorAction implements EditorAction {
     return uiSourceCode.contentType().isStyleSheet();
   }
 
-  private formatSourceInPlace(_event: Common.EventTarget.EventTargetEvent): void {
+  private formatSourceInPlace(): void {
     const uiSourceCode = this.sourcesView.currentUISourceCode();
     if (!uiSourceCode || !this.isFormattable(uiSourceCode)) {
       return;

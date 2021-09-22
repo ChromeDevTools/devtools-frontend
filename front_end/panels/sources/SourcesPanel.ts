@@ -684,7 +684,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
   }
 
-  private longResume(_event: Common.EventTarget.EventTargetEvent): void {
+  private longResume(): void {
     const debuggerModel = this.prepareToResume();
     if (debuggerModel) {
       debuggerModel.skipAllPausesUntilReloadOrTimeout(500);
@@ -692,7 +692,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private terminateExecution(_event: Common.EventTarget.EventTargetEvent): void {
+  private terminateExecution(): void {
     const debuggerModel = this.prepareToResume();
     if (debuggerModel) {
       debuggerModel.runtimeModel().terminateExecution();

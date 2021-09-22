@@ -277,7 +277,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.updateGlasspane();
   }
 
-  private onSuspendStateChange(_event: Common.EventTarget.EventTargetEvent): void {
+  private onSuspendStateChange(): void {
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       this.stopCasting();
     } else {

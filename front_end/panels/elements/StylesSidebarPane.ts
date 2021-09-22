@@ -3125,7 +3125,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     return buttonProviderInstance;
   }
 
-  private clicked(_event: Common.EventTarget.EventTargetEvent): void {
+  private clicked(): void {
     StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
   }
 

@@ -823,7 +823,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.showHideSidebarButton.addEventListener(ToolbarButton.Events.Click, buttonClicked, this);
     this.updateShowHideSidebarButton();
 
-    function buttonClicked(this: SplitWidget, _event: Common.EventTarget.EventTargetEvent): void {
+    function buttonClicked(this: SplitWidget): void {
       if (this.showModeInternal !== ShowMode.Both) {
         this.showBoth(true);
       } else {

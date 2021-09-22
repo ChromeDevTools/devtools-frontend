@@ -41,7 +41,7 @@ export interface GlobalStyleStats {
   };
 }
 
-export class CSSOverviewModel extends SDK.SDKModel.SDKModel {
+export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
   private readonly runtimeAgent: ProtocolProxyApi.RuntimeApi;
   private readonly cssAgent: ProtocolProxyApi.CSSApi;
   private readonly domAgent: ProtocolProxyApi.DOMApi;

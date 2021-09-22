@@ -10,7 +10,7 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import type {ObjectSnapshot} from './TracingModel.js';
 
-export class TracingManager extends SDKModel {
+export class TracingManager extends SDKModel<void> {
   private readonly tracingAgent: ProtocolProxyApi.TracingApi;
   private activeClient: TracingManagerClient|null;
   private eventBufferSize: number|null;

@@ -47,7 +47,7 @@ export class NodeMainImpl implements Common.Runnable.Runnable {
 
 Common.Runnable.registerEarlyInitializationRunnable(NodeMainImpl.instance);
 
-export class NodeChildTargetManager extends SDK.SDKModel.SDKModel implements ProtocolProxyApi.TargetDispatcher {
+export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implements ProtocolProxyApi.TargetDispatcher {
   private readonly targetManager: SDK.TargetManager.TargetManager;
   private readonly parentTarget: SDK.Target.Target;
   private readonly targetAgent: ProtocolProxyApi.TargetApi;

@@ -243,6 +243,11 @@
   filter: brightness(0) invert(1);
 }
 
+.network-log-grid.data-grid:focus .data-grid-data-grid-node.selected [is=ui-icon].icon-mask {
+  --network-grid-selected-color: #dadce0;
+  --override-icon-mask-background-color: var(--network-grid-selected-color);
+}
+
 .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
 .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
   /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */

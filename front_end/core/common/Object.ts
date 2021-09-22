@@ -28,9 +28,9 @@
  */
 
 import type * as Platform from '../platform/platform.js';
-import type {EventDescriptor, EventListener, EventTarget, EventTargetEvent, EventType, EventPayload, EventPayloadToRestParameters} from './EventTarget.js';
+import type {EventDescriptor, EventListener, EventTarget, EventTargetEvent, EventPayloadToRestParameters} from './EventTarget.js';
 
-export interface ListenerCallbackTuple<Events, T> {
+export interface ListenerCallbackTuple<Events, T extends keyof Events> {
   thisObject?: Object;
   listener: EventListener<Events, T>;
   disposed?: boolean;
@@ -38,9 +38,9 @@ export interface ListenerCallbackTuple<Events, T> {
 
 export class ObjectWrapper<Events> implements EventTarget<Events> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  listeners?: Map<EventType<Events>, Set<ListenerCallbackTuple<Events, any>>>;
+  listeners?: Map<keyof Events, Set<ListenerCallbackTuple<Events, any>>>;
 
-  addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+  addEventListener<T extends keyof Events>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
       EventDescriptor<Events, T> {
     if (!this.listeners) {
       this.listeners = new Map();
@@ -55,7 +55,7 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
     return {eventTarget: this, eventType, thisObject, listener};
   }
 
-  once<T extends EventType<Events>>(eventType: T): Promise<EventPayload<Events, T>> {
+  once<T extends keyof Events>(eventType: T): Promise<Events[T]> {
     return new Promise(resolve => {
       const descriptor = this.addEventListener(eventType, event => {
         this.removeEventListener(eventType, descriptor.listener);
@@ -64,8 +64,8 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
     });
   }
 
-  removeEventListener<T extends EventType<Events>>(
-      eventType: T, listener: EventListener<Events, T>, thisObject?: Object): void {
+  removeEventListener<T extends keyof Events>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+      void {
     const listeners = this.listeners?.get(eventType);
     if (!listeners) {
       return;
@@ -82,13 +82,13 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
     }
   }
 
-  hasEventListeners(eventType: EventType<Events>): boolean {
+  hasEventListeners(eventType: keyof Events): boolean {
     return Boolean(this.listeners && this.listeners.has(eventType));
   }
 
-  dispatchEventToListeners<T extends EventType<Events>>(
+  dispatchEventToListeners<T extends keyof Events>(
       eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-      ...[eventData]: EventPayloadToRestParameters<EventPayload<Events, T>>): void {
+      ...[eventData]: EventPayloadToRestParameters<Events[T]>): void {
     const listeners = this.listeners?.get(eventType);
     if (!listeners) {
       return;
@@ -96,7 +96,7 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
     // TS doesn't know whether eventData is `void` or not so it types it as `unknown`.
     // We cast it to `EventPayload<Events, T>` which is the correct type in all instances except
     // for `void`. Otherwise eventData will be `undefined`, which is also correct w.r.t. to `void`.
-    const event = {data: eventData as EventPayload<Events, T>};
+    const event = {data: eventData as Events[T]};
     // Work on a snapshot of the current listeners, callbacks might remove/add
     // new listeners.
     for (const listener of [...listeners]) {
@@ -115,28 +115,28 @@ export function eventMixin<Events, Base extends Constructor>(base: Base) {
   return class EventHandling extends base implements EventTarget<Events> {
     #events = new ObjectWrapper<Events>();
 
-    addEventListener<T extends EventType<Events>>(
-        eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void,
+    addEventListener<T extends keyof Events>(
+        eventType: T, listener: (arg0: EventTargetEvent<Events[T]>) => void,
         thisObject?: Object): EventDescriptor<Events, T> {
       return this.#events.addEventListener(eventType, listener, thisObject);
     }
 
-    once<T extends EventType<Events>>(eventType: T): Promise<EventPayload<Events, T>> {
+    once<T extends keyof Events>(eventType: T): Promise<Events[T]> {
       return this.#events.once(eventType);
     }
 
-    removeEventListener<T extends EventType<Events>>(
-        eventType: T, listener: (arg0: EventTargetEvent<EventPayload<Events, T>>) => void, thisObject?: Object): void {
+    removeEventListener<T extends keyof Events>(
+        eventType: T, listener: (arg0: EventTargetEvent<Events[T]>) => void, thisObject?: Object): void {
       this.#events.removeEventListener(eventType, listener, thisObject);
     }
 
-    hasEventListeners(eventType: EventType<Events>): boolean {
+    hasEventListeners(eventType: keyof Events): boolean {
       return this.#events.hasEventListeners(eventType);
     }
 
-    dispatchEventToListeners<T extends EventType<Events>>(
+    dispatchEventToListeners<T extends keyof Events>(
         eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-        ...eventData: EventPayloadToRestParameters<EventPayload<Events, T>>): void {
+        ...eventData: EventPayloadToRestParameters<Events[T]>): void {
       this.#events.dispatchEventToListeners(eventType, ...eventData);
     }
   };

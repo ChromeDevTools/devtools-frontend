@@ -913,7 +913,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.subscriptionStopHandlers.set(eventTopic, onUnsubscribeLast);
   }
 
-  private registerAutosubscriptionHandler<Events, T extends Common.EventTarget.EventType<Events>>(
+  private registerAutosubscriptionHandler<Events, T extends keyof Events>(
       eventTopic: string, eventTarget: Common.EventTarget.EventTarget<Events>, frontendEventType: T,
       handler: Common.EventTarget.EventListener<Events, T>): void {
     this.registerSubscriptionHandler(
@@ -921,7 +921,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         () => eventTarget.removeEventListener(frontendEventType, handler, this));
   }
 
-  private registerAutosubscriptionTargetManagerHandler<Events, T extends Common.EventTarget.EventType<Events>>(
+  private registerAutosubscriptionTargetManagerHandler<Events, T extends keyof Events>(
       eventTopic: string, modelClass: new(arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>,
       frontendEventType: T, handler: Common.EventTarget.EventListener<Events, T>): void {
     this.registerSubscriptionHandler(

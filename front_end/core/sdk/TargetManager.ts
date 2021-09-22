@@ -125,7 +125,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  addModelListener<Events, T extends Common.EventTarget.EventType<Events>>(
+  addModelListener<Events, T extends keyof Events>(
       modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
       listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
     for (const model of this.models(modelClass)) {
@@ -134,7 +134,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.modelListeners.set(eventType, {modelClass: modelClass, thisObject: thisObject, listener: listener});
   }
 
-  removeModelListener<Events, T extends Common.EventTarget.EventType<Events>>(
+  removeModelListener<Events, T extends keyof Events>(
       modelClass: new(arg1: Target) => SDKModel<Events>, eventType: T,
       listener: Common.EventTarget.EventListener<Events, T>, thisObject?: Object): void {
     if (!this.modelListeners.has(eventType)) {

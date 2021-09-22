@@ -4,10 +4,8 @@
 
 import type * as Platform from '../platform/platform.js';
 
-// TODO(crbug.com/1228674) Remove defaults for generic type parameters once
-//                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface EventDescriptor<Events = any, T extends EventType<Events> = any> {
+export interface EventDescriptor<Events = any, T extends keyof Events = any> {
   eventTarget: EventTarget<Events>;
   eventType: T;
   thisObject?: Object;
@@ -22,22 +20,26 @@ export function removeEventListeners(eventList: EventDescriptor[]): void {
   eventList.splice(0);
 }
 
-export type EventType<Events> = Events extends Object ? keyof Events : Events extends void ? never : string|symbol;
-export type EventPayload<Events, T> = T extends keyof Events ? Events[T] : unknown;
-export type EventPayloadToRestParameters<T> = T extends void ? [] : [T];
+// This type can be used as the type parameter for `EventTarget`/`ObjectWrapper`
+// when the set of events is not known at compile time.
+export type GenericEvents = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [eventName: string]: any,
+};
 
-export type EventListener<Events, T> = (arg0: EventTargetEvent<EventPayload<Events, T>>) => void;
+export type EventPayloadToRestParameters<T> = T extends void ? [] : [T];
+export type EventListener<Events, T extends keyof Events> = (arg0: EventTargetEvent<Events[T]>) => void;
 
 export interface EventTarget<Events> {
-  addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+  addEventListener<T extends keyof Events>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
       EventDescriptor<Events, T>;
-  once<T extends EventType<Events>>(eventType: T): Promise<EventPayload<Events, T>>;
-  removeEventListener<T extends EventType<Events>>(
-      eventType: T, listener: EventListener<Events, T>, thisObject?: Object): void;
-  hasEventListeners(eventType: EventType<Events>): boolean;
-  dispatchEventToListeners<T extends EventType<Events>>(
+  once<T extends keyof Events>(eventType: T): Promise<Events[T]>;
+  removeEventListener<T extends keyof Events>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
+      void;
+  hasEventListeners(eventType: keyof Events): boolean;
+  dispatchEventToListeners<T extends keyof Events>(
       eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-      ...[eventData]: EventPayloadToRestParameters<EventPayload<Events, T>>): void;
+      ...[eventData]: EventPayloadToRestParameters<Events[T]>): void;
 }
 
 export function fireEvent(name: string, detail: unknown = {}, target: HTMLElement|Window = window): void {

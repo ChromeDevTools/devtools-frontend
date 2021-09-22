@@ -1802,10 +1802,6 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     const resourceTreeElement = new FrameResourceTreeElement(this.section.panel, resource);
     categoryElement.appendChild(resourceTreeElement, FrameTreeElement.presentationOrderCompare);
     this.treeElementForResource.set(resource.url, resourceTreeElement);
-
-    if (this.view) {
-      this.view.update();
-    }
   }
 
   windowOpened(targetInfo: Protocol.Target.TargetInfo): void {

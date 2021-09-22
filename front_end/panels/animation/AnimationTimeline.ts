@@ -491,8 +491,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.renderGrid();
   }
 
-  private animationGroupStarted(event: Common.EventTarget.EventTargetEvent): void {
-    this.addAnimationGroup((event.data as AnimationGroup));
+  private animationGroupStarted({data}: Common.EventTarget.EventTargetEvent<AnimationGroup>): void {
+    this.addAnimationGroup(data);
   }
 
   private addAnimationGroup(group: AnimationGroup): void {

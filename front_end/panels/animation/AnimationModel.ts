@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-export class AnimationModel extends SDK.SDKModel.SDKModel {
+export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly runtimeModel: SDK.RuntimeModel.RuntimeModel;
   readonly agent: ProtocolProxyApi.AnimationApi;
   private animationsById: Map<string, AnimationImpl>;
@@ -166,6 +166,11 @@ export enum Events {
   AnimationGroupStarted = 'AnimationGroupStarted',
   ModelReset = 'ModelReset',
 }
+
+export type EventTypes = {
+  [Events.AnimationGroupStarted]: AnimationGroup,
+  [Events.ModelReset]: void,
+};
 
 export class AnimationImpl {
   private readonly animationModel: AnimationModel;

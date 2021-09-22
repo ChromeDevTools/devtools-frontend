@@ -88,14 +88,16 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
 
   dispatchEventToListeners<T extends keyof Events>(
       eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-      ...[eventData]: EventPayloadToRestParameters<Events[T]>): void {
+      ...[eventData]: EventPayloadToRestParameters<Events, T>): void {
     const listeners = this.listeners?.get(eventType);
     if (!listeners) {
       return;
     }
-    // TS doesn't know whether eventData is `void` or not so it types it as `unknown`.
-    // We cast it to `EventPayload<Events, T>` which is the correct type in all instances except
-    // for `void`. Otherwise eventData will be `undefined`, which is also correct w.r.t. to `void`.
+    // `eventData` is typed as `Events[T] | undefined`:
+    //   - `undefined` when `Events[T]` is void.
+    //   - `Events[T]` otherwise.
+    // We cast it to `Events[T]` which is the correct type in all instances, as
+    // `void` will be cast and used as `undefined`.
     const event = {data: eventData as Events[T]};
     // Work on a snapshot of the current listeners, callbacks might remove/add
     // new listeners.
@@ -136,7 +138,7 @@ export function eventMixin<Events, Base extends Constructor>(base: Base) {
 
     dispatchEventToListeners<T extends keyof Events>(
         eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-        ...eventData: EventPayloadToRestParameters<Events[T]>): void {
+        ...eventData: EventPayloadToRestParameters<Events, T>): void {
       this.#events.dispatchEventToListeners(eventType, ...eventData);
     }
   };

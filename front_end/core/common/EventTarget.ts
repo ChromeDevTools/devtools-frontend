@@ -27,7 +27,7 @@ export type GenericEvents = {
   [eventName: string]: any,
 };
 
-export type EventPayloadToRestParameters<T> = T extends void ? [] : [T];
+export type EventPayloadToRestParameters<Events, T extends keyof Events> = Events[T] extends void ? [] : [Events[T]];
 export type EventListener<Events, T extends keyof Events> = (arg0: EventTargetEvent<Events[T]>) => void;
 
 export interface EventTarget<Events> {
@@ -39,7 +39,7 @@ export interface EventTarget<Events> {
   hasEventListeners(eventType: keyof Events): boolean;
   dispatchEventToListeners<T extends keyof Events>(
       eventType: Platform.TypeScriptUtilities.NoUnion<T>,
-      ...[eventData]: EventPayloadToRestParameters<Events[T]>): void;
+      ...[eventData]: EventPayloadToRestParameters<Events, T>): void;
 }
 
 export function fireEvent(name: string, detail: unknown = {}, target: HTMLElement|Window = window): void {

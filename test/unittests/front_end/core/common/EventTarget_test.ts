@@ -13,6 +13,7 @@ const enum Events {
   NumberEvent = 'NumberEvent',
   KeyValueEvent = 'KeyValueEvent',
   BooleanEvent = 'BooleanEvent',
+  UnionEvent = 'UnionEvent',
 }
 
 type TestEvents = {
@@ -20,6 +21,7 @@ type TestEvents = {
   [Events.NumberEvent]: number,
   [Events.KeyValueEvent]: {key: string, value: number},
   [Events.BooleanEvent]: boolean,
+  [Events.UnionEvent]: string|null,
 };
 
 class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
@@ -28,6 +30,8 @@ class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
     this.dispatchEventToListeners(Events.NumberEvent, 5.0);
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', value: 42});
     this.dispatchEventToListeners(Events.BooleanEvent, true);
+    this.dispatchEventToListeners(Events.UnionEvent, 'foo');
+    this.dispatchEventToListeners(Events.UnionEvent, null);
   }
 
   testInvalidArgumentTypes() {
@@ -46,8 +50,11 @@ class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
     // @ts-expect-error wrong object type provided as payload
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
 
-    // @ts-expect-error wrong object type provided as payload
+    // @ts-expect-error unknown event type used
     this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
+
+    // @ts-expect-error wrong payload not part of the union
+    this.dispatchEventToListeners(Events.UnionEvent, 25);
   }
 
   testStringAndSymbolDisallowed() {
@@ -76,8 +83,11 @@ class VoidTypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<void> {
     // @ts-expect-error wrong object type provided as payload
     this.dispatchEventToListeners(Events.KeyValueEvent, {key: 'key', foo: 'foo'});
 
-    // @ts-expect-error wrong object type provided as payload
+    // @ts-expect-error unknown event type used
     this.dispatchEventToListeners('fake', {key: 'key', foo: 'foo'});
+
+    // @ts-expect-error wrong payload not part of the union
+    this.dispatchEventToListeners(Events.UnionEvent, 25);
   }
 
   testStringAndSymbolDisallowed() {
@@ -97,6 +107,7 @@ class UntypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<any> {
     this.dispatchEventToListeners('foo');
     this.dispatchEventToListeners(Symbol('number payload'), 25);
     this.dispatchEventToListeners(Events.VoidEvent);
+    this.dispatchEventToListeners(Events.UnionEvent, 'foo');
   }
 }
 
@@ -111,6 +122,7 @@ const typedEmitter = new TypedEventEmitter();
   typedEmitter.addEventListener(Events.NumberEvent, genericListener<number>());
   typedEmitter.addEventListener(Events.KeyValueEvent, genericListener<{key: string, value: number}>());
   typedEmitter.addEventListener(Events.BooleanEvent, genericListener<boolean>());
+  typedEmitter.addEventListener(Events.UnionEvent, genericListener<string|null>());
 })();
 
 (function testInvalidListenerArguments() {
@@ -122,6 +134,9 @@ const typedEmitter = new TypedEventEmitter();
 
   // @ts-expect-error
   typedEmitter.addEventListener(Events.KeyValueEvent, genericListener<{foo: string}>());
+
+  // @ts-expect-error
+  typedEmitter.addEventListener(Events.UnionEvent, genericListener<string>());
 })();
 
 (function testInvalidListenerType() {

@@ -267,8 +267,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.clearView();
   }
 
-  private onRecordingStateChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const state = (event.data as RecordingState);
+  private onRecordingStateChanged({data: state}: Common.EventTarget.EventTargetEvent<RecordingState>): void {
     if (state.serviceName !== this.serviceName) {
       return;
     }
@@ -288,8 +287,9 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.recordButton.setTitle(buttonTooltip, 'background-service.toggle-recording');
   }
 
-  private onEventReceived(event: Common.EventTarget.EventTargetEvent): void {
-    const serviceEvent = (event.data as Protocol.BackgroundService.BackgroundServiceEvent);
+  private onEventReceived({
+    data: serviceEvent,
+  }: Common.EventTarget.EventTargetEvent<Protocol.BackgroundService.BackgroundServiceEvent>): void {
     if (!this.acceptEvent(serviceEvent)) {
       return;
     }

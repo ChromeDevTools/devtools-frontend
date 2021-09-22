@@ -20,7 +20,8 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   private modelListeners: Platform.MapUtilities.Multimap<string|symbol|number, {
     modelClass: new(arg1: Target) => SDKModel,
     thisObject: (Object|undefined),
-    listener: (arg0: Common.EventTarget.EventTargetEvent) => void,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    listener: Common.EventTarget.EventListener<any, any>,
   }>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

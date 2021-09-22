@@ -246,8 +246,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return this.dispatcher.requestForURL(url);
   }
 
-  private cacheDisabledSettingChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const enabled = (event.data as boolean);
+  private cacheDisabledSettingChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
     this.networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
   }
 

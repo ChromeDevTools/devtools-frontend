@@ -175,7 +175,8 @@ export class DebuggerPlugin extends Plugin {
   private readonly boundMouseDown: (arg0: Event) => void;
   private readonly boundBlur: (arg0: Event) => void;
   private readonly boundWheel: (arg0: Event) => void;
-  private readonly boundGutterClick: (arg0: Common.EventTarget.EventTargetEvent) => void;
+  private readonly boundGutterClick:
+      (arg0: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>) => void;
   private readonly breakpointDecorations: Set<BreakpointDecoration>;
   private readonly decorationByBreakpoint: Map<Bindings.BreakpointManager.Breakpoint, BreakpointDecoration>;
   private readonly possibleBreakpointsRequested: Set<number>;
@@ -270,9 +271,10 @@ export class DebuggerPlugin extends Plugin {
     this.textEditor.element.addEventListener('focusout', this.boundBlur, false);
     this.boundWheel = (this.onWheel.bind(this) as (arg0: Event) => void);
     this.textEditor.element.addEventListener('wheel', this.boundWheel, true);
-    this.boundGutterClick = (((e: Common.EventTarget.EventTargetEvent): void => {
-                               this.handleGutterClick(e);
-                             }) as (arg0: Common.EventTarget.EventTargetEvent) => void);
+    this.boundGutterClick =
+        (e: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>): void => {
+          this.handleGutterClick(e);
+        };
 
     this.textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.GutterClick, this.boundGutterClick, this);
 

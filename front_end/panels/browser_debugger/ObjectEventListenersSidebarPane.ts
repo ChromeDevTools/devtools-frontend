@@ -102,7 +102,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
         });
   }
 
-  private refreshClick(event: Common.EventTarget.EventTargetEvent): void {
+  private refreshClick(event: Common.EventTarget.EventTargetEvent<Event>): void {
     event.data.consume();
     this.update();
   }

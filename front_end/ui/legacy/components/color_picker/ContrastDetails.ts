@@ -66,7 +66,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private contrastInfo: ContrastInfo;
   private readonly elementInternal: HTMLElement;
   private readonly toggleMainColorPicker:
-      (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent|undefined) => void;
+      (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent<unknown>|undefined) => void;
   private readonly expandedChangedCallback: () => void;
   private readonly colorSelectedCallback: (arg0: Common.Color.Color) => void;
   private expandedInternal: boolean;
@@ -94,7 +94,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   constructor(
       contrastInfo: ContrastInfo, contentElement: Element,
       toggleMainColorPickerCallback:
-          (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent|undefined) => void,
+          (arg0?: boolean|undefined, arg1?: Common.EventTarget.EventTargetEvent<unknown>|undefined) => void,
       expandedChangedCallback: () => void, colorSelectedCallback: (arg0: Common.Color.Color) => void) {
     super();
     this.contrastInfo = contrastInfo;

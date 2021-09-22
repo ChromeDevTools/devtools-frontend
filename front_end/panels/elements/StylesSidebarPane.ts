@@ -1711,7 +1711,7 @@ export class StylePropertiesSection {
     return;
   }
 
-  private onNewRuleClick(event: Common.EventTarget.EventTargetEvent): void {
+  private onNewRuleClick(event: Common.EventTarget.EventTargetEvent<Event>): void {
     event.data.consume();
     const rule = this.styleInternal.parentRule;
     if (!rule || !rule.style.range || rule.styleSheetId === undefined) {

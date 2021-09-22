@@ -30,14 +30,15 @@
 import type * as Platform from '../platform/platform.js';
 import type {EventDescriptor, EventListener, EventTarget, EventTargetEvent, EventType, EventPayload, EventPayloadToRestParameters} from './EventTarget.js';
 
-export interface ListenerCallbackTuple {
+export interface ListenerCallbackTuple<Events, T> {
   thisObject?: Object;
-  listener: (arg0: EventTargetEvent) => void;
+  listener: EventListener<Events, T>;
   disposed?: boolean;
 }
 
 export class ObjectWrapper<Events> implements EventTarget<Events> {
-  listeners?: Map<EventType<Events>, Set<ListenerCallbackTuple>>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  listeners?: Map<EventType<Events>, Set<ListenerCallbackTuple<Events, any>>>;
 
   addEventListener<T extends EventType<Events>>(eventType: T, listener: EventListener<Events, T>, thisObject?: Object):
       EventDescriptor<Events, T> {
@@ -92,7 +93,10 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
     if (!listeners) {
       return;
     }
-    const event = {data: eventData};
+    // TS doesn't know whether eventData is `void` or not so it types it as `unknown`.
+    // We cast it to `EventPayload<Events, T>` which is the correct type in all instances except
+    // for `void`. Otherwise eventData will be `undefined`, which is also correct w.r.t. to `void`.
+    const event = {data: eventData as EventPayload<Events, T>};
     // Work on a snapshot of the current listeners, callbacks might remove/add
     // new listeners.
     for (const listener of [...listeners]) {

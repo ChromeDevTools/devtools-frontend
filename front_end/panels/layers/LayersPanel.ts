@@ -211,8 +211,8 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     }
   }
 
-  private onScaleChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.paintProfilerView.setScale(event.data as number);
+  private onScaleChanged(event: Common.EventTarget.EventTargetEvent<number>): void {
+    this.paintProfilerView.setScale(event.data);
   }
 }
 

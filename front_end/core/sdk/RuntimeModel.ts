@@ -192,8 +192,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     this.agent.invoke_runIfWaitingForDebugger();
   }
 
-  private customFormattersStateChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const enabled = (event.data as boolean);
+  private customFormattersStateChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
     this.agent.invoke_setCustomObjectFormatterEnabled({enabled});
   }
 

@@ -446,8 +446,8 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.filterGroupLists();
   }
 
-  private onTreeElementToggled(event: Common.EventTarget.EventTargetEvent): void {
-    const treeElement = (event.data as UI.TreeOutline.TreeElement);
+  private onTreeElementToggled(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
+    const treeElement = event.data;
     const property = this.propertyByTreeElement.get(treeElement);
     if (property) {
       treeElement.expanded ? this.expandedProperties.add(property.name) : this.expandedProperties.delete(property.name);

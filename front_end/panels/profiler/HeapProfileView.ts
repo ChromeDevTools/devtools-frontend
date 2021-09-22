@@ -186,7 +186,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     this.setProfile(profile);
   }
 
-  onStatsUpdate(event: Common.EventTarget.EventTargetEvent): void {
+  onStatsUpdate(event: Common.EventTarget.EventTargetEvent<Protocol.HeapProfiler.SamplingHeapProfile|null>): void {
     const profile = event.data;
 
     if (!this.totalTime) {
@@ -202,7 +202,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     this.sizes.push(0);
     this.timestamps.push(Date.now());
     this.ordinals.push(this.lastOrdinal + 1);
-    for (const sample of profile.samples) {
+    for (const sample of profile?.samples ?? []) {
       this.lastOrdinal = Math.max(this.lastOrdinal, sample.ordinal);
       const bucket = Platform.ArrayUtilities.upperBound(
                          this.ordinals, sample.ordinal, Platform.ArrayUtilities.DEFAULT_COMPARATOR) -

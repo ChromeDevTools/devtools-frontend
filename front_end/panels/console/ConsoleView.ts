@@ -267,7 +267,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private messagesCountElement: HTMLElement;
   private viewportThrottler: Common.Throttler.Throttler;
   private pendingBatchResize: boolean;
-  private readonly onMessageResizedBound: (e: Common.EventTarget.EventTargetEvent) => void;
+  private readonly onMessageResizedBound: (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
   private topGroup: ConsoleGroup;
   private currentGroup: ConsoleGroup;
   private readonly promptElement: HTMLElement;
@@ -475,7 +475,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     this.viewportThrottler = new Common.Throttler.Throttler(50);
     this.pendingBatchResize = false;
-    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent): void => {
+    this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void => {
       this.onMessageResized(e);
     };
 
@@ -928,8 +928,9 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     }
   }
 
-  private async onMessageResized(event: Common.EventTarget.EventTargetEvent): Promise<void> {
-    const treeElement = (event.data as UI.TreeOutline.TreeElement);
+  private async onMessageResized(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>):
+      Promise<void> {
+    const treeElement = event.data;
     if (this.pendingBatchResize || !treeElement.treeOutline) {
       return;
     }
@@ -1595,8 +1596,8 @@ export class ConsoleViewFilter {
     this.levelMenuButton.setTitle(i18nString(UIStrings.logLevelS, {PH1: text}));
   }
 
-  private showLevelContextMenu(event: Common.EventTarget.EventTargetEvent): void {
-    const mouseEvent = (event.data as Event);
+  private showLevelContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
+    const mouseEvent = event.data;
     const setting = this.messageLevelFiltersSetting;
     const levels = setting.get();
 

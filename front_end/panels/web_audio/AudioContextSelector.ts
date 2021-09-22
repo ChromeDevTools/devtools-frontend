@@ -59,8 +59,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
   }
 
-  contextCreated(event: Common.EventTarget.EventTargetEvent): void {
-    const context = (event.data as Protocol.WebAudio.BaseAudioContext);
+  contextCreated({data: context}: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {
     this.items.insert(this.items.length, context);
 
     // Select if this is the first item.
@@ -69,8 +68,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
   }
 
-  contextDestroyed(event: Common.EventTarget.EventTargetEvent): void {
-    const contextId = (event.data as string);
+  contextDestroyed({data: contextId}: Common.EventTarget.EventTargetEvent<string>): void {
     const contextIndex =
         this.items.findIndex((context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === contextId);
     if (contextIndex > -1) {
@@ -78,8 +76,8 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
   }
 
-  contextChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const changedContext = (event.data as Protocol.WebAudio.BaseAudioContext);
+  contextChanged({data: changedContext}: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>):
+      void {
     const contextIndex = this.items.findIndex(
         (context: Protocol.WebAudio.BaseAudioContext): boolean => context.contextId === changedContext.contextId);
     if (contextIndex > -1) {

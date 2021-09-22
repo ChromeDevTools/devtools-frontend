@@ -959,7 +959,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.updateFilterOptions();
   }
 
-  onReceiveSnapshot(event: Common.EventTarget.EventTargetEvent): void {
+  onReceiveSnapshot(event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
     this.updateControls();
     const profile = event.data;
     profile.addEventListener(ProfileHeaderEvents.ProfileTitleChanged, this.updateControls, this);
@@ -1506,7 +1506,7 @@ export class TrackingHeapSnapshotProfileType extends
     return i18nString(UIStrings.AllocationTimelinesShowInstrumented);
   }
 
-  resetProfiles(event: Common.EventTarget.EventTargetEvent): void {
+  resetProfiles(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapProfilerModel>): void {
     const wasRecording = this.recording;
     // Clear current profile to avoid stopping backend.
     this.setProfileBeingRecorded(null);

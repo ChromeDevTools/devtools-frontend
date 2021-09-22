@@ -190,12 +190,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     });
   }
 
-  private memoryRequested(event: Common.EventTarget.EventTargetEvent): void {
-    const {start, end, address} = (event.data as {
-      start: number,
-      end: number,
-      address: number,
-    });
+  private memoryRequested(event: MemoryRequestEvent): void {
+    const {start, end, address} = event.data;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');
     }

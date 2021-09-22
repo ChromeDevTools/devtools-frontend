@@ -150,8 +150,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly detailsView: TimelineDetailsView;
-  private readonly onMainEntrySelected: (event?: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly onNetworkEntrySelected: (event?: Common.EventTarget.EventTargetEvent<number>) => void;
+  private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private nextExtensionIndex: number;
   private readonly boundRefresh: () => void;
   private selectedTrack: TimelineModel.TimelineModel.Track|null;
@@ -232,11 +232,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.detailsSplitWidget.setSidebarWidget(this.detailsView);
     this.detailsSplitWidget.show(this.element);
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
     this.onMainEntrySelected = this.onEntrySelected.bind(this, this.mainDataProvider);
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
     this.onNetworkEntrySelected = this.onEntrySelected.bind(this, this.networkDataProvider);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this.onMainEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onMainEntrySelected, this);
@@ -428,8 +424,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   private onEntrySelected(
-      dataProvider: PerfUI.FlameChart.FlameChartDataProvider, event: Common.EventTarget.EventTargetEvent): void {
-    const entryIndex = (event.data as number);
+      dataProvider: PerfUI.FlameChart.FlameChartDataProvider,
+      event: Common.EventTarget.EventTargetEvent<number>): void {
+    const entryIndex = event.data;
     if (Root.Runtime.experiments.isEnabled('timelineEventInitiators') && dataProvider === this.mainDataProvider) {
       if (this.mainDataProvider.buildFlowForInitiator(entryIndex)) {
         this.mainFlameChart.scheduleUpdate();

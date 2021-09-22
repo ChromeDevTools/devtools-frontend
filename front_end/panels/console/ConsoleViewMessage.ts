@@ -1825,7 +1825,8 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      nestingLevel: number, onToggle: () => void,
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     this.collapsedInternal = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
@@ -1889,7 +1890,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     this.formattedCommand = null;
   }
@@ -1947,7 +1948,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent) => void) {
+      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
     this.dataGrid = null;

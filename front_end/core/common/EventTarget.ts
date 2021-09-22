@@ -44,8 +44,7 @@ export function fireEvent(name: string, detail: unknown = {}, target: HTMLElemen
   const evt = new CustomEvent(name, {bubbles: true, cancelable: true, detail});
   target.dispatchEvent(evt);
 }
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface EventTargetEvent<T = any> {
+
+export interface EventTargetEvent<T> {
   data: T;
 }

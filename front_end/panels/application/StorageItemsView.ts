@@ -78,15 +78,14 @@ export class StorageItemsView extends UI.Widget.VBox {
     this.mainToolbar.appendToolbarItem(item);
   }
 
-  private addButton(label: string, glyph: string, callback: (arg0: Common.EventTarget.EventTargetEvent) => void):
+  private addButton(label: string, glyph: string, callback: (arg0: Common.EventTarget.EventTargetEvent<Event>) => void):
       UI.Toolbar.ToolbarButton {
     const button = new UI.Toolbar.ToolbarButton(label, glyph);
     button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, callback, this);
     return button;
   }
 
-  private filterChanged(event: Common.EventTarget.EventTargetEvent): void {
-    const text = (event.data as string | null);
+  private filterChanged({data: text}: Common.EventTarget.EventTargetEvent<string|null>): void {
     this.filterRegex = text ? new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i') : null;
     this.refreshItems();
   }

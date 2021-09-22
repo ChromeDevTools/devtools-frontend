@@ -183,8 +183,8 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     this.setting.removeChangeListener(this.settingChanged, this);
   }
 
-  settingChanged(value: Common.EventTarget.EventTargetEvent): void {
-    this.toggleRecordButton.setToggled((value.data as boolean));
+  settingChanged(value: Common.EventTarget.EventTargetEvent<boolean>): void {
+    this.toggleRecordButton.setToggled(value.data);
   }
 
   async poll(): Promise<void> {

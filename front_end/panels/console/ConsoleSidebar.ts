@@ -131,8 +131,8 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return true;
   }
 
-  private selectionChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.selectedTreeElement = (event.data as UI.TreeOutline.TreeElement);
+  private selectionChanged(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
+    this.selectedTreeElement = event.data;
     this.dispatchEventToListeners(Events.FilterSelected);
   }
 

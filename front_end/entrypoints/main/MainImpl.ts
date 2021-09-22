@@ -555,7 +555,7 @@ export class MainImpl {
       if (Common.Settings.Settings.instance().moduleSetting(setting).get()) {
         promises.push(PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run());
       } else {
-        const changeListener = async(event: Common.EventTarget.EventTargetEvent): Promise<void> => {
+        const changeListener = async(event: Common.EventTarget.EventTargetEvent<unknown>): Promise<void> => {
           if (!event.data) {
             return;
           }

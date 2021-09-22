@@ -659,10 +659,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     });
   }
 
-  private domWordWrapSettingChanged(event: Common.EventTarget.EventTargetEvent): void {
-    this.contentElementInternal.classList.toggle('elements-wrap', (event.data as boolean));
+  private domWordWrapSettingChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
+    this.contentElementInternal.classList.toggle('elements-wrap', event.data);
     for (const treeOutline of this.treeOutlines) {
-      treeOutline.setWordWrap((event.data as boolean));
+      treeOutline.setWordWrap(event.data);
     }
   }
 

@@ -1164,7 +1164,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private toggleColorPicker(enabled?: boolean, _event?: Common.EventTarget.EventTargetEvent): void {
+  private toggleColorPicker(enabled?: boolean): void {
     if (enabled === undefined) {
       enabled = !this.colorPickerButton.toggled();
     }

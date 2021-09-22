@@ -574,8 +574,9 @@ export class LineDecorator implements SourceFrame.SourceFrame.LineDecorator {
     return lineDecoratorInstance;
   }
 
-  private readonly listeners:
-      WeakMap<SourceFrame.SourcesTextEditor.SourcesTextEditor, (arg0: Common.EventTarget.EventTargetEvent) => void>;
+  private readonly listeners: WeakMap<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      SourceFrame.SourcesTextEditor.SourcesTextEditor, (arg0: Common.EventTarget.EventTargetEvent<any>) => void>;
   constructor() {
     this.listeners = new WeakMap();
   }

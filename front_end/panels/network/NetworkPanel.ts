@@ -644,8 +644,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.updateUI();
   }
 
-  private onRequestSelected(event: Common.EventTarget.EventTargetEvent): void {
-    const request = (event.data as SDK.NetworkRequest.NetworkRequest | null);
+  private onRequestSelected(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest|null>): void {
+    const request = event.data;
     this.currentRequest = request;
     this.networkOverview.setHighlightedRequest(request);
     this.updateNetworkItemView();

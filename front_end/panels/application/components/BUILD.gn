@@ -26,6 +26,7 @@ devtools_module("components") {
     "FrameDetailsView.ts",
     "OriginTrialTreeView.ts",
     "PermissionsPolicySection.ts",
+    "ReportingApiView.ts",
     "StackTrace.ts",
     "TrustTokensView.ts",
   ]

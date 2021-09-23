@@ -328,6 +328,9 @@ export class MainImpl {
       'bfcacheDebugging',
     ]);
 
+    // Debugging of Reporting API
+    Root.Runtime.experiments.register('reportingApiDebugging', 'Enable Reporting API panel in the Application panel');
+
     Root.Runtime.experiments.cleanUpStaleExperiments();
     const enabledExperiments = Root.Runtime.Runtime.queryParam('enabledExperiments');
     if (enabledExperiments) {

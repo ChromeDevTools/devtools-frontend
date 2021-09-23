@@ -64,6 +64,7 @@ import type {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
+import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 
 const UIStrings = {
   /**
@@ -196,6 +197,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   paymentHandlerTreeElement: BackgroundServiceTreeElement|undefined;
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement|undefined;
   pushMessagingTreeElement: BackgroundServiceTreeElement|undefined;
+  reportingApiTreeElement: ReportingApiTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
   private readonly databaseTableViews: Map<DatabaseModelDatabase, {
     [x: string]: DatabaseTableView,
@@ -312,6 +314,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         this.pushMessagingTreeElement =
             new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
         backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
+      }
+      if (Root.Runtime.experiments.isEnabled('reportingApiDebugging')) {
+        this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
+        backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
       }
     }
     const resourcesSectionTitle = i18nString(UIStrings.frames);

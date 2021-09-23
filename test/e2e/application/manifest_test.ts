@@ -29,7 +29,7 @@ describe.skip('The Manifest Page', async () => {
 
     const fieldNames = await getTrimmedTextContent(FIELD_NAMES_SELECTOR);
     const fieldValues = await getTrimmedTextContent(FIELD_VALUES_SELECTOR);
-    assert.strictEqual(fieldNames[3], 'App Id');
+    assert.strictEqual(fieldNames[3], 'Computed App Id');
     assert.strictEqual(fieldValues[3], `https://localhost:${getTestServerPort()}/some_idLearn more`);
   });
 
@@ -41,12 +41,12 @@ describe.skip('The Manifest Page', async () => {
 
     const fieldNames = await getTrimmedTextContent(FIELD_NAMES_SELECTOR);
     const fieldValues = await getTrimmedTextContent(FIELD_VALUES_SELECTOR);
-    assert.strictEqual(fieldNames[3], 'App Id');
+    assert.strictEqual(fieldNames[3], 'Computed App Id');
     assert.strictEqual(
         fieldValues[3],
         `https://localhost:${getTestServerPort()}/test/e2e/resources/application/some_start_url` +
             'Learn moreNote: id is not specified in the manifest, start_url is used instead. To specify an ' +
-            'App Id that matches the current identity, set the id field to some_start_url .',
+            'App Id that matches the current identity, set the id field to /test/e2e/resources/application/some_start_url .',
     );
     await waitFor('icon-button[title="Copy to clipboard"]');
   });

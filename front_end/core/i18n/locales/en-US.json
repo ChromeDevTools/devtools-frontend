@@ -2096,9 +2096,6 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Actual width ({PH1}px) of {PH2} {PH3} does not match specified width ({PH4}px)"
   },
-  "panels/application/AppManifestView.ts | appId": {
-    "message": "App Id"
-  },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "This is used by the browser to know whether the manifest should be updating an existing application, or whether it refers to a new web app that can be installed."
   },
@@ -2116,6 +2113,9 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Background color"
+  },
+  "panels/application/AppManifestView.ts | computedAppId": {
+    "message": "Computed App Id"
   },
   "panels/application/AppManifestView.ts | copyToClipboard": {
     "message": "Copy to clipboard"

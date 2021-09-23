@@ -439,9 +439,8 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return {primaryIcon: response.primaryIcon || null};
   }
 
-  async getAppId(): Promise<string|undefined> {
-    const response = await this.agent.invoke_getAppId();
-    return response.appId;
+  async getAppId(): Promise<Protocol.Page.GetAppIdResponse> {
+    return this.agent.invoke_getAppId();
   }
 
   private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {

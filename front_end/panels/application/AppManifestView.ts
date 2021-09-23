@@ -54,9 +54,9 @@ const UIStrings = {
   */
   shortName: 'Short name',
   /**
-  *@description Label in the App Manifest View for the App Id
+  *@description Label in the App Manifest View for the Computed App Id
   */
-  appId: 'App Id',
+  computedAppId: 'Computed App Id',
   /**
   *@description Popup-text explaining what the App Id is used for.
   */
@@ -525,7 +525,9 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       installabilityErrors: Protocol.Page.InstallabilityError[], manifestIcons: {
         primaryIcon: string|null,
       },
-      appId?: string): Promise<void> {
+      appIdResponse: Protocol.Page.GetAppIdResponse): Promise<void> {
+    const appId = appIdResponse?.appId || null;
+    const recommendedId = appIdResponse?.recommendedId || null;
     if (!data && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
@@ -565,8 +567,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     }
 
     const startURL = stringProperty('start_url');
-    if (appId && startURL) {
-      const appIdField = this.identitySection.appendField(i18nString(UIStrings.appId));
+    if (appId && recommendedId) {
+      const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
       UI.ARIAUtils.setAccessibleName(appIdField, 'App Id');
       appIdField.textContent = appId;
 
@@ -590,14 +592,14 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         const startUrlSpan = document.createElement('code');
         startUrlSpan.textContent = 'start_url';
         const suggestedIdSpan = document.createElement('code');
-        suggestedIdSpan.textContent = startURL;
+        suggestedIdSpan.textContent = recommendedId;
 
         const copyButton = new IconButton.IconButton.IconButton();
         copyButton.title = i18nString(UIStrings.copyToClipboard);
         copyButton.data = {
           groups: [{iconName: 'copy_icon', iconHeight: '12px', iconWidth: '12px', text: ''}],
           clickHandler: (): void => {
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(startURL);
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
           },
           compact: true,
         };

@@ -19,7 +19,8 @@ describe('The Sources Tab', async () => {
     assert.deepEqual(scriptLocation, 'with-sourcemap.ll:5');
   });
 
-  it('hits two breakpoints that are set and activated separately', async function() {
+  // Flaky on linux bot
+  it.skip('[crbug.com/1252330] hits two breakpoints that are set and activated separately', async function() {
     const {target, frontend} = getBrowserAndPages();
     const fileName = 'with-sourcemap.ll';
 

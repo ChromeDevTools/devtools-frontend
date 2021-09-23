@@ -600,6 +600,9 @@ declare namespace Protocol {
     }
   }
 
+  /**
+   * The domain is deprecated as AppCache is being removed (see crbug.com/582750).
+   */
   export namespace ApplicationCache {
 
     /**
@@ -7528,6 +7531,7 @@ declare namespace Protocol {
       SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
       SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
       SamePartyConflictsWithOtherAttributes = 'SamePartyConflictsWithOtherAttributes',
+      NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
     }
 
     /**
@@ -7547,6 +7551,7 @@ declare namespace Protocol {
       SchemefulSameSiteLax = 'SchemefulSameSiteLax',
       SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
       SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
+      NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
     }
 
     /**
@@ -9841,7 +9846,6 @@ declare namespace Protocol {
       ChDeviceMemory = 'ch-device-memory',
       ChDownlink = 'ch-downlink',
       ChEct = 'ch-ect',
-      ChLang = 'ch-lang',
       ChPrefersColorScheme = 'ch-prefers-color-scheme',
       ChRtt = 'ch-rtt',
       ChUa = 'ch-ua',
@@ -9929,6 +9933,7 @@ declare namespace Protocol {
       FeatureDisabled = 'FeatureDisabled',
       TokenDisabled = 'TokenDisabled',
       FeatureDisabledForUser = 'FeatureDisabledForUser',
+      UnknownTrial = 'UnknownTrial',
     }
 
     /**
@@ -10552,6 +10557,8 @@ declare namespace Protocol {
       ContentWebBluetooth = 'ContentWebBluetooth',
       ContentWebUSB = 'ContentWebUSB',
       ContentMediaSession = 'ContentMediaSession',
+      ContentMediaSessionService = 'ContentMediaSessionService',
+      ContentMediaPlay = 'ContentMediaPlay',
       EmbedderPopupBlockerTabHelper = 'EmbedderPopupBlockerTabHelper',
       EmbedderSafeBrowsingTriggeredPopupBlocker = 'EmbedderSafeBrowsingTriggeredPopupBlocker',
       EmbedderSafeBrowsingThreatDetails = 'EmbedderSafeBrowsingThreatDetails',
@@ -10737,9 +10744,13 @@ declare namespace Protocol {
 
     export interface GetAppIdResponse extends ProtocolResponseWithError {
       /**
-       * Only returns a value if the feature flag 'WebAppEnableManifestId' is enabled
+       * App id, either from manifest's id attribute or computed from start_url
        */
       appId?: string;
+      /**
+       * Recommendation for manifest's id attribute to match current id computed from start_url
+       */
+      recommendedId?: string;
     }
 
     export interface GetCookiesResponse extends ProtocolResponseWithError {

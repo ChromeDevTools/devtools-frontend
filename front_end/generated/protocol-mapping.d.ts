@@ -2162,6 +2162,7 @@ export namespace ProtocolMapping {
     'Page.getManifestIcons': {paramsType: []; returnType: Protocol.Page.GetManifestIconsResponse;};
     /**
      * Returns the unique (PWA) app id.
+     * Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
      */
     'Page.getAppId': {paramsType: []; returnType: Protocol.Page.GetAppIdResponse;};
     /**

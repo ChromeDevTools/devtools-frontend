@@ -1568,7 +1568,8 @@ export function registerCommands(inspectorBackend) {
     SchemefulSameSiteLax: 'SchemefulSameSiteLax',
     SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax',
     SamePartyFromCrossPartyContext: 'SamePartyFromCrossPartyContext',
-    SamePartyConflictsWithOtherAttributes: 'SamePartyConflictsWithOtherAttributes'
+    SamePartyConflictsWithOtherAttributes: 'SamePartyConflictsWithOtherAttributes',
+    NameValuePairExceedsMaxSize: 'NameValuePairExceedsMaxSize'
   });
   inspectorBackend.registerEnum('Network.CookieBlockedReason', {
     SecureOnly: 'SecureOnly',
@@ -1583,7 +1584,8 @@ export function registerCommands(inspectorBackend) {
     SchemefulSameSiteStrict: 'SchemefulSameSiteStrict',
     SchemefulSameSiteLax: 'SchemefulSameSiteLax',
     SchemefulSameSiteUnspecifiedTreatedAsLax: 'SchemefulSameSiteUnspecifiedTreatedAsLax',
-    SamePartyFromCrossPartyContext: 'SamePartyFromCrossPartyContext'
+    SamePartyFromCrossPartyContext: 'SamePartyFromCrossPartyContext',
+    NameValuePairExceedsMaxSize: 'NameValuePairExceedsMaxSize'
   });
   inspectorBackend.registerEnum('Network.AuthChallengeSource', {Server: 'Server', Proxy: 'Proxy'});
   inspectorBackend.registerEnum(
@@ -1950,7 +1952,6 @@ export function registerCommands(inspectorBackend) {
     ChDeviceMemory: 'ch-device-memory',
     ChDownlink: 'ch-downlink',
     ChEct: 'ch-ect',
-    ChLang: 'ch-lang',
     ChPrefersColorScheme: 'ch-prefers-color-scheme',
     ChRtt: 'ch-rtt',
     ChUa: 'ch-ua',
@@ -2015,7 +2016,8 @@ export function registerCommands(inspectorBackend) {
     WrongVersion: 'WrongVersion',
     FeatureDisabled: 'FeatureDisabled',
     TokenDisabled: 'TokenDisabled',
-    FeatureDisabledForUser: 'FeatureDisabledForUser'
+    FeatureDisabledForUser: 'FeatureDisabledForUser',
+    UnknownTrial: 'UnknownTrial'
   });
   inspectorBackend.registerEnum('Page.OriginTrialStatus', {
     Enabled: 'Enabled',
@@ -2173,6 +2175,8 @@ export function registerCommands(inspectorBackend) {
     ContentWebBluetooth: 'ContentWebBluetooth',
     ContentWebUSB: 'ContentWebUSB',
     ContentMediaSession: 'ContentMediaSession',
+    ContentMediaSessionService: 'ContentMediaSessionService',
+    ContentMediaPlay: 'ContentMediaPlay',
     EmbedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',
     EmbedderSafeBrowsingTriggeredPopupBlocker: 'EmbedderSafeBrowsingTriggeredPopupBlocker',
     EmbedderSafeBrowsingThreatDetails: 'EmbedderSafeBrowsingThreatDetails',
@@ -2273,7 +2277,7 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Page.getAppManifest', [], ['url', 'errors', 'data', 'parsed']);
   inspectorBackend.registerCommand('Page.getInstallabilityErrors', [], ['installabilityErrors']);
   inspectorBackend.registerCommand('Page.getManifestIcons', [], ['primaryIcon']);
-  inspectorBackend.registerCommand('Page.getAppId', [], ['appId']);
+  inspectorBackend.registerCommand('Page.getAppId', [], ['appId', 'recommendedId']);
   inspectorBackend.registerCommand('Page.getCookies', [], ['cookies']);
   inspectorBackend.registerCommand('Page.getFrameTree', [], ['frameTree']);
   inspectorBackend.registerCommand(

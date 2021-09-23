@@ -408,7 +408,8 @@ experimental domain Animation
       # Animation that was started.
       Animation animation
 
-experimental domain ApplicationCache
+# The domain is deprecated as AppCache is being removed (see crbug.com/582750).
+experimental deprecated domain ApplicationCache
   depends on Page
 
   # Detailed application cache resource information.
@@ -5151,6 +5152,9 @@ domain Network
       # (which is required in order to use "SameParty"); or specified the "SameSite=Strict"
       # attribute (which is forbidden when using "SameParty").
       SamePartyConflictsWithOtherAttributes
+      # The cookie's name/value pair size exceeded the size limit defined in
+      # RFC6265bis.
+      NameValuePairExceedsMaxSize
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -5195,6 +5199,9 @@ domain Network
       SchemefulSameSiteUnspecifiedTreatedAsLax
       # The cookie had the "SameParty" attribute and the request was made from a cross-party context.
       SamePartyFromCrossPartyContext
+      # The cookie's name/value pair size exceeded the size limit defined in
+      # RFC6265bis.
+      NameValuePairExceedsMaxSize
 
   # A cookie which was not stored from a response with the corresponding reason.
   experimental type BlockedSetCookieWithReason extends object
@@ -6715,7 +6722,6 @@ domain Page
       ch-device-memory
       ch-downlink
       ch-ect
-      ch-lang
       ch-prefers-color-scheme
       ch-rtt
       ch-ua
@@ -6801,6 +6807,7 @@ domain Page
       FeatureDisabled
       TokenDisabled
       FeatureDisabledForUser
+      UnknownTrial
 
   # Status for an Origin Trial.
   experimental type OriginTrialStatus extends string
@@ -7234,10 +7241,13 @@ domain Page
       optional binary primaryIcon
 
   # Returns the unique (PWA) app id.
+  # Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
   experimental command getAppId
     returns
-      # Only returns a value if the feature flag 'WebAppEnableManifestId' is enabled
+      # App id, either from manifest's id attribute or computed from start_url
       optional string appId
+      # Recommendation for manifest's id attribute to match current id computed from start_url
+      optional string recommendedId
 
   # Returns all browser cookies. Depending on the backend support, will return detailed cookie
   # information in the `cookies` field.
@@ -7928,6 +7938,7 @@ domain Page
       InjectedStyleSheet
       Dummy
       # Disabled for render frame host reasons
+      # See content/browser/renderer_host/back_forward_cache_disable.h for explanations.
       ContentSecurityHandler
       ContentWebAuthenticationAPI
       ContentFileChooser
@@ -7937,6 +7948,10 @@ domain Page
       ContentWebBluetooth
       ContentWebUSB
       ContentMediaSession
+      ContentMediaSessionService
+      ContentMediaPlay
+
+      # See components/back_forward_cache/back_forward_cache_disable.h for explanations.
       EmbedderPopupBlockerTabHelper
       EmbedderSafeBrowsingTriggeredPopupBlocker
       EmbedderSafeBrowsingThreatDetails

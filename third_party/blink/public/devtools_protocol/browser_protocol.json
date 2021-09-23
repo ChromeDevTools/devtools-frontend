@@ -830,7 +830,9 @@
         },
         {
             "domain": "ApplicationCache",
+            "description": "The domain is deprecated as AppCache is being removed (see crbug.com/582750).",
             "experimental": true,
+            "deprecated": true,
             "dependencies": [
                 "Page"
             ],
@@ -11185,7 +11187,8 @@
                         "SchemefulSameSiteLax",
                         "SchemefulSameSiteUnspecifiedTreatedAsLax",
                         "SamePartyFromCrossPartyContext",
-                        "SamePartyConflictsWithOtherAttributes"
+                        "SamePartyConflictsWithOtherAttributes",
+                        "NameValuePairExceedsMaxSize"
                     ]
                 },
                 {
@@ -11206,7 +11209,8 @@
                         "SchemefulSameSiteStrict",
                         "SchemefulSameSiteLax",
                         "SchemefulSameSiteUnspecifiedTreatedAsLax",
-                        "SamePartyFromCrossPartyContext"
+                        "SamePartyFromCrossPartyContext",
+                        "NameValuePairExceedsMaxSize"
                     ]
                 },
                 {
@@ -14513,7 +14517,6 @@
                         "ch-device-memory",
                         "ch-downlink",
                         "ch-ect",
-                        "ch-lang",
                         "ch-prefers-color-scheme",
                         "ch-rtt",
                         "ch-ua",
@@ -14627,7 +14630,8 @@
                         "WrongVersion",
                         "FeatureDisabled",
                         "TokenDisabled",
-                        "FeatureDisabledForUser"
+                        "FeatureDisabledForUser",
+                        "UnknownTrial"
                     ]
                 },
                 {
@@ -15465,6 +15469,8 @@
                         "ContentWebBluetooth",
                         "ContentWebUSB",
                         "ContentMediaSession",
+                        "ContentMediaSessionService",
+                        "ContentMediaPlay",
                         "EmbedderPopupBlockerTabHelper",
                         "EmbedderSafeBrowsingTriggeredPopupBlocker",
                         "EmbedderSafeBrowsingThreatDetails",
@@ -15772,12 +15778,18 @@
                 },
                 {
                     "name": "getAppId",
-                    "description": "Returns the unique (PWA) app id.",
+                    "description": "Returns the unique (PWA) app id.\nOnly returns values if the feature flag 'WebAppEnableManifestId' is enabled",
                     "experimental": true,
                     "returns": [
                         {
                             "name": "appId",
-                            "description": "Only returns a value if the feature flag 'WebAppEnableManifestId' is enabled",
+                            "description": "App id, either from manifest's id attribute or computed from start_url",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "recommendedId",
+                            "description": "Recommendation for manifest's id attribute to match current id computed from start_url",
                             "optional": true,
                             "type": "string"
                         }

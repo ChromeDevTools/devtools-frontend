@@ -2,13 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './GraphStyle.js';
-import './GraphManager.js';
-import './NodeRendererUtility.js';
-import './NodeView.js';
-import './EdgeView.js';
-import './GraphView.js';
-
 import * as EdgeView from './EdgeView.js';
 import * as GraphManager from './GraphManager.js';
 import * as GraphStyle from './GraphStyle.js';

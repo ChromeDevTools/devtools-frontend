@@ -8,10 +8,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as GraphVisualizer from './graph_visualizer/graph_visualizer.js';
 
 import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
-import {GraphManager} from './graph_visualizer/GraphManager.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 const UIStrings = {
@@ -29,7 +29,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   private readonly contextSelector: AudioContextSelector;
   private readonly contentContainer: HTMLElement;
   private readonly detailViewContainer: HTMLElement;
-  private graphManager: GraphManager;
+  private graphManager: GraphVisualizer.GraphManager.GraphManager;
   private readonly landingPage: UI.Widget.VBox;
   private readonly summaryBarContainer: HTMLElement;
   constructor() {
@@ -50,7 +50,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     // Creates the detail view.
     this.detailViewContainer = this.contentContainer.createChild('div', 'web-audio-details-container vbox flex-auto');
 
-    this.graphManager = new GraphManager();
+    this.graphManager = new GraphVisualizer.GraphManager.GraphManager();
 
     // Creates the landing page.
     this.landingPage = new UI.Widget.VBox();

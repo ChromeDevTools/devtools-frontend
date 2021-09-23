@@ -3578,6 +3578,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<ŝóm̂é> êv́êńt̂"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "Ŝt́âćk̂ t́âb́l̂é ĉól̂ĺâṕŝéd̂"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "Ŝt́âćk̂ t́âb́l̂é êx́p̂án̂d́êd́"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "T̂h́îś v̂ál̂úê ẃâś êv́âĺûát̂éd̂ úp̂ón̂ f́îŕŝt́ êx́p̂án̂d́îńĝ. Ít̂ ḿâý ĥáv̂é ĉh́âńĝéd̂ śîńĉé t̂h́êń."
   },

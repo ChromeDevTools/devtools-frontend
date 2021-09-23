@@ -3578,6 +3578,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<some> event"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "Stack table collapsed"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "Stack table expanded"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "This value was evaluated upon first expanding. It may have changed since then."
   },

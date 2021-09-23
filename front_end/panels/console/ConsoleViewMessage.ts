@@ -162,6 +162,14 @@ const UIStrings = {
   *@description Title of the Console tool
   */
   console: 'Console',
+  /**
+  *@description Message to indicate a console message with a stack table is expanded
+  */
+  stackMessageExpanded: 'Stack table expanded',
+  /**
+  *@description Message to indicate a console message with a stack table is collapsed
+  */
+  stackMessageCollapsed: 'Stack table collapsed',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -474,12 +482,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     const toggleElement = document.createElement('div');
     toggleElement.classList.add('console-message-stack-trace-toggle');
     const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
-    UI.ARIAUtils.markAsTree(contentElement);
 
     const messageElement = this.buildMessage();
     const icon = UI.Icon.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
-    UI.ARIAUtils.markAsTreeitem(clickableElement);
     UI.ARIAUtils.setExpanded(clickableElement, false);
     clickableElement.appendChild(icon);
     // Intercept focus to avoid highlight on click.
@@ -493,10 +499,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.selectableChildren.push({element: linkElement, forceSelect: (): void => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
+    UI.ARIAUtils.setAccessibleName(
+        contentElement, `${messageElement.textContent} ${i18nString(UIStrings.stackMessageCollapsed)}`);
     UI.ARIAUtils.markAsGroup(stackTraceElement);
     this.expandTrace = (expand: boolean): void => {
       icon.setIconType(expand ? 'smallicon-triangle-down' : 'smallicon-triangle-right');
       stackTraceElement.classList.toggle('hidden', !expand);
+      const stackTableState =
+          expand ? i18nString(UIStrings.stackMessageExpanded) : i18nString(UIStrings.stackMessageCollapsed);
+      UI.ARIAUtils.setAccessibleName(contentElement, `${messageElement.textContent} ${stackTableState}`);
+      UI.ARIAUtils.alert(stackTableState);
       UI.ARIAUtils.setExpanded(clickableElement, expand);
       this.traceExpanded = expand;
     };

@@ -6596,6 +6596,9 @@
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(from signed-exchange)"
   },
+  "panels/network/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(from Web Bundle)"
+  },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "General"
   },

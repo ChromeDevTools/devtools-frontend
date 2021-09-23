@@ -120,6 +120,10 @@ const UIStrings = {
   */
   fromDiskCache: '(from disk cache)',
   /**
+  *@description Text in Request Headers View of the Network panel
+  */
+  fromWebBundle: '(from Web Bundle)',
+  /**
   *@description Message to explain lack of raw headers for a particular network request
   */
   provisionalHeadersAreShownS: 'Provisional headers are shown. Disable cache to see full headers.',
@@ -512,6 +516,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
         statusTextElement.classList.add('status-from-cache');
       } else if (this.request.redirectSourceSignedExchangeInfoHasNoErrors()) {
         statusText += ' ' + i18nString(UIStrings.fromSignedexchange);
+        statusTextElement.classList.add('status-from-cache');
+      } else if (this.request.webBundleInnerRequestInfo()) {
+        statusText += ' ' + i18nString(UIStrings.fromWebBundle);
         statusTextElement.classList.add('status-from-cache');
       } else if (this.request.fromPrefetchCache()) {
         statusText += ' ' + i18nString(UIStrings.fromPrefetchCache);

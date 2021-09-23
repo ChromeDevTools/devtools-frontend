@@ -771,5 +771,11 @@ describe('StringUtilities', () => {
       ];
       assert.strictEqual(expectedStrings.join(), inputStrings.map(Platform.StringUtilities.formatAsJSLiteral).join());
     });
+
+    it('escapes backslashes', () => {
+      const inputString = '\\';
+      const expectedString = String.raw`\\`;
+      assert.strictEqual('\'' + expectedString + '\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
+    });
   });
 });

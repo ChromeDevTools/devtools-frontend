@@ -239,15 +239,16 @@ const escapedReplacements = new Map([
   ['\t', '\\t'],
   ['\v', '\\v'],
   ['\'', '\\\''],
+  ['\\', '\\\\'],
   ['<!--', '<\\!--'],
   ['<script', '<\\script'],
   ['</script', '<\\/script'],
 ]);
 
 export const formatAsJSLiteral = (content: string): string => {
-  const patternsToEscape = /(\p{Control})|(\p{Surrogate})|(<(?:!--|\/?script))/gu;
-  const patternsToEscapePlusSingleQuote = /(\p{Control})|(\p{Surrogate})|(<(?:!--|\/?script)|')/gu;
-  const escapePattern = (match: string, controlChar: string, loneSurrogate: string, pattern: string): string => {
+  const patternsToEscape = /(\\|<(?:!--|\/?script))|(\p{Control})|(\p{Surrogate})/gu;
+  const patternsToEscapePlusSingleQuote = /(\\|'|<(?:!--|\/?script))|(\p{Control})|(\p{Surrogate})/gu;
+  const escapePattern = (match: string, pattern: string, controlChar: string, loneSurrogate: string): string => {
     if (controlChar) {
       if (escapedReplacements.has(controlChar)) {
         // @ts-ignore https://github.com/microsoft/TypeScript/issues/13086

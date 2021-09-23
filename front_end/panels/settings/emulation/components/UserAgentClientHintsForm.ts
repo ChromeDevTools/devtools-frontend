@@ -222,14 +222,17 @@ export class UserAgentClientHintsForm extends HTMLElement {
   }
 
   private handleTreeExpand = (event: KeyboardEvent): void => {
-    if (event.code === 'Space' || event.code === 'Enter') {
+    if (event.code === 'Space' || event.code === 'Enter' || event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
       event.stopPropagation();
-      this.handleTreeClick();
+      this.handleTreeClick(event.code);
     }
   };
 
-  private handleTreeClick = (): void => {
+  private handleTreeClick = (key: string): void => {
     if (this.isFormDisabled) {
+      return;
+    }
+    if ((key === 'ArrowLeft' && !this.isFormOpened) || (key === 'ArrowRight' && this.isFormOpened)) {
       return;
     }
     this.isFormOpened = !this.isFormOpened;

@@ -4928,8 +4928,8 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Ĥíd̂d́êń îśŝúêś"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "Ûńĥíd̂é âĺl̂ íŝśûéŝ"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "Ûńĥíd̂é âĺl̂"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ĈŚP̂ V́îól̂át̂íôńŝ"

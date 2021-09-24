@@ -4928,8 +4928,8 @@
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Hidden issues"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "Unhide all issues"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "Unhide all"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP Violations"

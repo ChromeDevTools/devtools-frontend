@@ -23,7 +23,7 @@ export const RESOURCES_LABEL = '.affected-resource-label';
 export const HIDE_ISSUES_MENU = '.hide-issues-menu';
 export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
-export const UNHIDE_ALL_ISSUES = '[aria-label="Unhide all issues"]';
+export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
 export async function getHideIssuesMenu() {
   const menu = await waitFor(HIDE_ISSUES_MENU);

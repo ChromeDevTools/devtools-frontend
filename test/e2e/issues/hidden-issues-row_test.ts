@@ -116,7 +116,7 @@ describe('Hide issues row', async () => {
     const menuItem = await getHideIssuesMenuItem();
     assertNotNullOrUndefined(menuItem);
     await menuItem.click();
-    const unhideAllIssuesbtn = await waitFor('[aria-label="Unhide all issues"]');
+    const unhideAllIssuesbtn = await waitFor('.unhide-all-issues-button');
     await unhideAllIssuesbtn.click();
     const hiddenIssuesRow = await getHiddenIssuesRow();
     const isHidden = await hiddenIssuesRow?.evaluate(node => node.classList.contains('hidden'));

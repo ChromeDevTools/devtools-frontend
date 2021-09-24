@@ -160,6 +160,7 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
     super(dom);
     this.beforePrint = null;
     this.afterPrint = null;
+    this._topbar._print = this._print.bind(this);
   }
 
   setBeforePrint(beforePrint: (() => void)|null): void {

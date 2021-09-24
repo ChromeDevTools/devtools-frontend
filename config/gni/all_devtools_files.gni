@@ -19,7 +19,6 @@ all_devtools_files = [
   "front_end/panels/accessibility/module.json",
   "front_end/legacy_test_runner/application_test_runner/application_test_runner.js",
   "front_end/legacy_test_runner/bindings_test_runner/bindings_test_runner.js",
-  "front_end/legacy_test_runner/application_test_runner/AppcacheTestRunner.js",
   "front_end/legacy_test_runner/application_test_runner/CacheStorageTestRunner.js",
   "front_end/legacy_test_runner/application_test_runner/IndexedDBTestRunner.js",
   "front_end/legacy_test_runner/application_test_runner/ResourcesTestRunner.js",

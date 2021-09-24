@@ -12,7 +12,6 @@ group("bundle") {
 
 copy_to_gen("gen") {
   sources = [
-    "./AppcacheTestRunner.js",
     "./CacheStorageTestRunner.js",
     "./IndexedDBTestRunner.js",
     "./ResourceTreeTestRunner.js",

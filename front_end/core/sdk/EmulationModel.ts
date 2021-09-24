@@ -535,7 +535,7 @@ export class DeviceOrientation {
     valid: boolean,
     errorMessage: (string|undefined),
   } {
-    return DeviceOrientation.angleRangeValidator(value, {minimum: 0, maximum: 360});
+    return DeviceOrientation.angleRangeValidator(value, {minimum: -180, maximum: 180});
   }
 
   static betaAngleValidator(value: string): {

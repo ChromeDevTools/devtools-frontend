@@ -8,6 +8,7 @@ node_ts_library("sensors") {
   sources = [
     "idle_test.ts",
     "location_test.ts",
+    "orientation_test.ts",
     "touch_test.ts",
   ]
 

@@ -451,7 +451,7 @@ export class SensorsView extends UI.Widget.VBox {
       title: i18nString(UIStrings.presets),
       value: [
         {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]'},
-        {title: i18nString(UIStrings.portraitUpsideDown), orientation: '[180, -90, 0]'},
+        {title: i18nString(UIStrings.portraitUpsideDown), orientation: '[-180, -90, 0]'},
         {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]'},
         {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]'},
         {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]'},
@@ -518,6 +518,7 @@ export class SensorsView extends UI.Widget.VBox {
       this.enableOrientationFields(true);
     } else if (value === NonPresetOptions.Custom) {
       this.deviceOrientationOverrideEnabled = true;
+      this.resetDeviceOrientation();
       this.alphaElement.focus();
     } else {
       const parsedValue = JSON.parse(value);
@@ -777,7 +778,7 @@ export class PresetOrientations {
       title: i18nString(UIStrings.presets),
       value: [
         {title: i18nString(UIStrings.portrait), orientation: '[0, 90, 0]'},
-        {title: i18nString(UIStrings.portraitUpsideDown), orientation: '[180, -90, 0]'},
+        {title: i18nString(UIStrings.portraitUpsideDown), orientation: '[-180, -90, 0]'},
         {title: i18nString(UIStrings.landscapeLeft), orientation: '[90, 0, -90]'},
         {title: i18nString(UIStrings.landscapeRight), orientation: '[90, -180, -90]'},
         {title: i18nString(UIStrings.displayUp), orientation: '[0, 0, 0]'},

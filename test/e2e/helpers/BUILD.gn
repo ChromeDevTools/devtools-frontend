@@ -30,6 +30,7 @@ node_ts_library("helpers") {
     "quick_open-helpers.ts",
     "search-helpers.ts",
     "security-helpers.ts",
+    "sensors-helpers.ts",
     "settings-helpers.ts",
     "settings-shortcuts-helpers.ts",
     "sources-helpers.ts",

@@ -1,0 +1,18 @@
+Name: CodeMirror.next
+Short Name: CodeMirror.next
+URL: https://github.com/codemirror/CodeMirror.next/
+Version: 0.19.0
+License: MIT
+License File: LICENSE
+Security Critical: no
+
+Description:
+CodeMirror is a code editor for the browser.
+
+To update this package, adjust the version ranges in package.json if necessary, and run the following command:
+
+```bash
+./rebuild.sh
+```
+
+It will use npm to locally install the necessary packages and their dependencies, and bundle them into a single file (codemirror.js and codemirror.d.ts) with rollup.

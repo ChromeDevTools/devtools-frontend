@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../scripts/build/ninja/vars.gni")
 import("../third_party/typescript/typescript.gni")
 
 resources_out_dir = "$root_out_dir/resources/inspector_overlay"
@@ -31,6 +32,8 @@ action("build_inspector_overlay") {
     "$target_gen_dir/tool_source_order.css",
     "$target_gen_dir/tool_viewport_size.js",
     "$target_gen_dir/main.js",
+    devtools_location_prepend + "inspector_overlay/loadCSS.rollup.js",
+    devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
   ]
 
   outputs = [ "$resources_out_dir/main.js" ]

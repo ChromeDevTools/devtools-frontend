@@ -608,6 +608,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
             str_, UIStrings.appIdNote,
             {PH1: noteSpan, PH2: idSpan, PH3: startUrlSpan, PH4: idSpan2, PH5: suggestedIdSpan, PH6: copyButton}));
       }
+    } else {
+      this.identitySection.removeField(i18nString(UIStrings.computedAppId));
     }
 
     this.startURLField.removeChildren();

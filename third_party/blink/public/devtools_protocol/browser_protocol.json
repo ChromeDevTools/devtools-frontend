@@ -1627,6 +1627,30 @@
                     ]
                 },
                 {
+                    "id": "GenericIssueErrorType",
+                    "type": "string",
+                    "enum": [
+                        "CrossOriginPortalPostMessageError"
+                    ]
+                },
+                {
+                    "id": "GenericIssueDetails",
+                    "description": "Depending on the concrete errorType, different properties are set.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "errorType",
+                            "description": "Issues with the same errorType are aggregated in the frontend.",
+                            "$ref": "GenericIssueErrorType"
+                        },
+                        {
+                            "name": "frameId",
+                            "optional": true,
+                            "$ref": "Page.FrameId"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1643,7 +1667,8 @@
                         "AttributionReportingIssue",
                         "QuirksModeIssue",
                         "NavigatorUserAgentIssue",
-                        "WasmCrossOriginModuleSharingIssue"
+                        "WasmCrossOriginModuleSharingIssue",
+                        "GenericIssue"
                     ]
                 },
                 {
@@ -1715,6 +1740,11 @@
                             "name": "wasmCrossOriginModuleSharingIssue",
                             "optional": true,
                             "$ref": "WasmCrossOriginModuleSharingIssueDetails"
+                        },
+                        {
+                            "name": "genericIssueDetails",
+                            "optional": true,
+                            "$ref": "GenericIssueDetails"
                         }
                     ]
                 },
@@ -10725,6 +10755,7 @@
                         "HeaderDisallowedByPreflightResponse",
                         "RedirectContainsCredentials",
                         "InsecurePrivateNetwork",
+                        "InvalidPrivateNetworkAccess",
                         "NoCorsRedirectModeNotFollow"
                     ]
                 },
@@ -22887,47 +22918,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "id": "CounterInfo",
-                    "description": "Collected counter information.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "name",
-                            "description": "Counter name.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "value",
-                            "description": "Counter value.",
-                            "type": "integer"
-                        }
-                    ]
-                },
-                {
-                    "id": "RuntimeCallCounterInfo",
-                    "description": "Runtime call counter information.",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "name",
-                            "description": "Counter name.",
-                            "type": "string"
-                        },
-                        {
-                            "name": "value",
-                            "description": "Counter value.",
-                            "type": "number"
-                        },
-                        {
-                            "name": "time",
-                            "description": "Counter time in seconds.",
-                            "type": "number"
-                        }
-                    ]
                 }
             ],
             "commands": [
@@ -23050,56 +23040,6 @@
                             "type": "array",
                             "items": {
                                 "$ref": "ScriptTypeProfile"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "enableCounters",
-                    "description": "Enable counters collection.",
-                    "experimental": true
-                },
-                {
-                    "name": "disableCounters",
-                    "description": "Disable counters collection.",
-                    "experimental": true
-                },
-                {
-                    "name": "getCounters",
-                    "description": "Retrieve counters.",
-                    "experimental": true,
-                    "returns": [
-                        {
-                            "name": "result",
-                            "description": "Collected counters information.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "CounterInfo"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "enableRuntimeCallStats",
-                    "description": "Enable run time call stats collection.",
-                    "experimental": true
-                },
-                {
-                    "name": "disableRuntimeCallStats",
-                    "description": "Disable run time call stats collection.",
-                    "experimental": true
-                },
-                {
-                    "name": "getRuntimeCallStats",
-                    "description": "Retrieve run time call stats.",
-                    "experimental": true,
-                    "returns": [
-                        {
-                            "name": "result",
-                            "description": "Collected runtime call counter information.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "RuntimeCallCounterInfo"
                             }
                         }
                     ]

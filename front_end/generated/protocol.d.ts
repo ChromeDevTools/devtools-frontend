@@ -1070,6 +1070,21 @@ declare namespace Protocol {
       isWarning: boolean;
     }
 
+    export const enum GenericIssueErrorType {
+      CrossOriginPortalPostMessageError = 'CrossOriginPortalPostMessageError',
+    }
+
+    /**
+     * Depending on the concrete errorType, different properties are set.
+     */
+    export interface GenericIssueDetails {
+      /**
+       * Issues with the same errorType are aggregated in the frontend.
+       */
+      errorType: GenericIssueErrorType;
+      frameId?: Page.FrameId;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1089,6 +1104,7 @@ declare namespace Protocol {
       QuirksModeIssue = 'QuirksModeIssue',
       NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
       WasmCrossOriginModuleSharingIssue = 'WasmCrossOriginModuleSharingIssue',
+      GenericIssue = 'GenericIssue',
     }
 
     /**
@@ -1110,6 +1126,7 @@ declare namespace Protocol {
       quirksModeIssueDetails?: QuirksModeIssueDetails;
       navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
       wasmCrossOriginModuleSharingIssue?: WasmCrossOriginModuleSharingIssueDetails;
+      genericIssueDetails?: GenericIssueDetails;
     }
 
     /**
@@ -7177,6 +7194,7 @@ declare namespace Protocol {
       HeaderDisallowedByPreflightResponse = 'HeaderDisallowedByPreflightResponse',
       RedirectContainsCredentials = 'RedirectContainsCredentials',
       InsecurePrivateNetwork = 'InsecurePrivateNetwork',
+      InvalidPrivateNetworkAccess = 'InvalidPrivateNetworkAccess',
       NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
     }
 
@@ -15343,38 +15361,6 @@ declare namespace Protocol {
       entries: TypeProfileEntry[];
     }
 
-    /**
-     * Collected counter information.
-     */
-    export interface CounterInfo {
-      /**
-       * Counter name.
-       */
-      name: string;
-      /**
-       * Counter value.
-       */
-      value: integer;
-    }
-
-    /**
-     * Runtime call counter information.
-     */
-    export interface RuntimeCallCounterInfo {
-      /**
-       * Counter name.
-       */
-      name: string;
-      /**
-       * Counter value.
-       */
-      value: number;
-      /**
-       * Counter time in seconds.
-       */
-      time: number;
-    }
-
     export interface GetBestEffortCoverageResponse extends ProtocolResponseWithError {
       /**
        * Coverage data for the current isolate.
@@ -15434,20 +15420,6 @@ declare namespace Protocol {
        * Type profile for all scripts since startTypeProfile() was turned on.
        */
       result: ScriptTypeProfile[];
-    }
-
-    export interface GetCountersResponse extends ProtocolResponseWithError {
-      /**
-       * Collected counters information.
-       */
-      result: CounterInfo[];
-    }
-
-    export interface GetRuntimeCallStatsResponse extends ProtocolResponseWithError {
-      /**
-       * Collected runtime call counter information.
-       */
-      result: RuntimeCallCounterInfo[];
     }
 
     export interface ConsoleProfileFinishedEvent {

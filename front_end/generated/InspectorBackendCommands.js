@@ -271,6 +271,8 @@ export function registerCommands(inspectorBackend) {
     AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge',
     AttributionEventSourceTriggerDataTooLarge: 'AttributionEventSourceTriggerDataTooLarge'
   });
+  inspectorBackend.registerEnum(
+      'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
@@ -284,7 +286,8 @@ export function registerCommands(inspectorBackend) {
     AttributionReportingIssue: 'AttributionReportingIssue',
     QuirksModeIssue: 'QuirksModeIssue',
     NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
-    WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue'
+    WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue',
+    GenericIssue: 'GenericIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -1535,6 +1538,7 @@ export function registerCommands(inspectorBackend) {
     HeaderDisallowedByPreflightResponse: 'HeaderDisallowedByPreflightResponse',
     RedirectContainsCredentials: 'RedirectContainsCredentials',
     InsecurePrivateNetwork: 'InsecurePrivateNetwork',
+    InvalidPrivateNetworkAccess: 'InvalidPrivateNetworkAccess',
     NoCorsRedirectModeNotFollow: 'NoCorsRedirectModeNotFollow'
   });
   inspectorBackend.registerEnum(
@@ -3182,12 +3186,6 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Profiler.stopTypeProfile', [], []);
   inspectorBackend.registerCommand('Profiler.takePreciseCoverage', [], ['result', 'timestamp']);
   inspectorBackend.registerCommand('Profiler.takeTypeProfile', [], ['result']);
-  inspectorBackend.registerCommand('Profiler.enableCounters', [], []);
-  inspectorBackend.registerCommand('Profiler.disableCounters', [], []);
-  inspectorBackend.registerCommand('Profiler.getCounters', [], ['result']);
-  inspectorBackend.registerCommand('Profiler.enableRuntimeCallStats', [], []);
-  inspectorBackend.registerCommand('Profiler.disableRuntimeCallStats', [], []);
-  inspectorBackend.registerCommand('Profiler.getRuntimeCallStats', [], ['result']);
 
   // Runtime.
   inspectorBackend.registerEnum('Runtime.RemoteObjectType', {

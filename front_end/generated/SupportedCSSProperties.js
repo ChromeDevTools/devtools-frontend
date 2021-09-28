@@ -445,6 +445,12 @@ export const generatedProperties = [
     ]
   },
   {'name': 'font-style', 'inherited': true, 'keywords': ['normal', 'italic', 'oblique']},
+  {
+    'longhands': ['font-synthesis-weight', 'font-synthesis-style', 'font-synthesis-small-caps'],
+    'name': 'font-synthesis',
+    'inherited': true
+  },
+  {'name': 'font-synthesis-small-caps', 'inherited': true, 'keywords': ['auto', 'none']},
   {'name': 'font-synthesis-style', 'inherited': true, 'keywords': ['auto', 'none']},
   {'name': 'font-synthesis-weight', 'inherited': true, 'keywords': ['auto', 'none']},
   {
@@ -780,7 +786,6 @@ export const generatedProperties = [
   },
   {'name': 'text-underline-offset', 'inherited': true, 'keywords': ['auto']},
   {'name': 'text-underline-position', 'inherited': true, 'keywords': ['auto', 'from-font', 'under', 'left', 'right']},
-  {'name': 'time-range'},
   {'name': 'top', 'keywords': ['auto']},
   {
     'name': 'touch-action',
@@ -1010,6 +1015,7 @@ export const generatedPropertyValues = {
     ]
   },
   'font-style': {'values': ['normal', 'italic', 'oblique']},
+  'font-synthesis-small-caps': {'values': ['auto', 'none']},
   'font-synthesis-style': {'values': ['auto', 'none']},
   'font-synthesis-weight': {'values': ['auto', 'none']},
   'font-variant-caps': {

@@ -3873,35 +3873,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_takeTypeProfile(): Promise<Protocol.Profiler.TakeTypeProfileResponse>;
 
-    /**
-     * Enable counters collection.
-     */
-    invoke_enableCounters(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Disable counters collection.
-     */
-    invoke_disableCounters(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Retrieve counters.
-     */
-    invoke_getCounters(): Promise<Protocol.Profiler.GetCountersResponse>;
-
-    /**
-     * Enable run time call stats collection.
-     */
-    invoke_enableRuntimeCallStats(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Disable run time call stats collection.
-     */
-    invoke_disableRuntimeCallStats(): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Retrieve run time call stats.
-     */
-    invoke_getRuntimeCallStats(): Promise<Protocol.Profiler.GetRuntimeCallStatsResponse>;
   }
   export interface ProfilerDispatcher {
     consoleProfileFinished(params: Protocol.Profiler.ConsoleProfileFinishedEvent): void;

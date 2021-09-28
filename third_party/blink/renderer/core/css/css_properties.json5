@@ -518,6 +518,16 @@
       valid_type: "bool",
     },
 
+    // - is_highlight_colors
+    // The property participates in paired cascade, such that when encountered
+    // in highlight styles, we make all other highlight color properties default
+    // to initial, rather than the UA default.
+    // https://drafts.csswg.org/css-pseudo-4/#highlight-cascade
+    is_highlight_colors: {
+      default: false,
+      valid_type: "bool",
+    },
+
     // - is_animation_property
     // The property is a longhand of the 'animation' or 'transition' shorthands.
     is_animation_property: {
@@ -758,6 +768,7 @@
       valid_for_cue: true,
       valid_for_marker: true,
       valid_for_highlight: true,
+      is_highlight_colors: true,
     },
     {
       name: "direction",
@@ -987,7 +998,10 @@
       type_name: "FontDescription::FontSynthesisWeight",
       priority: "High",
       keywords: ["auto", "none"],
-      typedom_types: ["Keyword"]
+      typedom_types: ["Keyword"],
+      valid_for_first_letter: true,
+      valid_for_first_line: true,
+      valid_for_marker: true,
     },
     {
       name: "font-synthesis-style",
@@ -999,7 +1013,25 @@
       type_name: "FontDescription::FontSynthesisStyle",
       priority: "High",
       keywords: ["auto", "none"],
-      typedom_types: ["Keyword"]
+      typedom_types: ["Keyword"],
+      valid_for_first_letter: true,
+      valid_for_first_line: true,
+      valid_for_marker: true,
+    },
+    {
+      name: "font-synthesis-small-caps",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      runtime_flag: "FontSynthesis",
+      font: true,
+      name_for_methods: "FontSynthesisSmallCaps",
+      type_name: "FontDescription::FontSynthesisSmallCaps",
+      priority: "High",
+      keywords: ["auto", "none"],
+      typedom_types: ["Keyword"],
+      valid_for_first_letter: true,
+      valid_for_first_line: true,
+      valid_for_marker: true,
     },
     {
       name: "font-feature-settings",
@@ -1314,6 +1346,7 @@
       valid_for_cue: true,
       valid_for_highlight: true,
       is_background: true,
+      is_highlight_colors: true,
     },
     {
       name: "background-image",
@@ -5706,12 +5739,6 @@
       runtime_flag: "CSSScrollTimeline",
     },
     {
-      name: "time-range",
-      is_descriptor: true,
-      is_property: false,
-      runtime_flag: "CSSScrollTimeline",
-    },
-    {
       name: "ascent-override",
       is_descriptor: true,
       is_property: false,
@@ -6074,6 +6101,12 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       is_descriptor: true,
       computable: true,
+    },
+    {
+      name: "font-synthesis",
+      longhands: ["font-synthesis-weight", "font-synthesis-style", "font-synthesis-small-caps"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "FontSynthesis"
     },
     {
       name: "grid",

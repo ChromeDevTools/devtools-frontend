@@ -108,15 +108,6 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_off",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-    properties = {"is_official_build": True},
-)
-
-builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
     builder_name_pattern = "e2e_stressor_%s",
@@ -154,7 +145,6 @@ cq_retry_config = cq.retry_config(
 cq_main = struct(
     builders = [
         "devtools_frontend_linux_blink_light_rel",
-        "devtools_frontend_linux_off",
         "devtools_frontend_linux_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
@@ -165,7 +155,6 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
-        "devtools_frontend_linux_off",
     ],
     includable_only_builders = [
         "devtools_frontend_mac_rel",

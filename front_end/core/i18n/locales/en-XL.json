@@ -8831,6 +8831,9 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "N̂ó f̂íl̂é ŝél̂éĉt́êd́."
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "N̂ó r̂éŝúl̂t́ŝ f́ôún̂d́"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "T̂ýp̂é â ńûḿb̂ér̂ t́ô ǵô t́ô t́ĥát̂ ĺîńê."
   },

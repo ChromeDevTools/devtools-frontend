@@ -57,7 +57,7 @@ export class QuickOpenImpl {
     this.providers.set(prefix, extension.provider);
   }
 
-  private queryChanged(query: string): void {
+  private async queryChanged(query: string): Promise<void> {
     const prefix = this.prefixes.find(prefix => query.startsWith(prefix));
     if (typeof prefix !== 'string' || this.prefix === prefix) {
       return;
@@ -73,13 +73,13 @@ export class QuickOpenImpl {
     if (!providerFunction) {
       return;
     }
-    providerFunction().then(provider => {
-      if (this.prefix !== prefix || !this.filteredListWidget) {
-        return;
-      }
-      this.filteredListWidget.setProvider(provider);
-      this.providerLoadedForTest(provider);
-    });
+
+    const provider = await providerFunction();
+    if (this.prefix !== prefix || !this.filteredListWidget) {
+      return;
+    }
+    this.filteredListWidget.setProvider(provider);
+    this.providerLoadedForTest(provider);
   }
 
   private providerLoadedForTest(_provider: Provider): void {

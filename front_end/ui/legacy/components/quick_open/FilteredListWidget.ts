@@ -473,9 +473,9 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.scheduleFilter();
   }
 
-  private queryChanged(): void {
+  private async queryChanged(): Promise<void> {
     if (this.queryChangedCallback) {
-      this.queryChangedCallback(this.value());
+      await this.queryChangedCallback(this.value());
     }
     if (this.provider) {
       this.provider.queryChanged(this.cleanValue());

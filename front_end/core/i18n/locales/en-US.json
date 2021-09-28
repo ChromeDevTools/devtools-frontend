@@ -8831,6 +8831,9 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "No file selected."
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "No results found"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "Type a number to go to that line."
   },

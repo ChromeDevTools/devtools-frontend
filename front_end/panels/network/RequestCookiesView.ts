@@ -189,8 +189,10 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
       for (const blockedCookie of this.request.blockedResponseCookies()) {
         const parsedCookies = SDK.CookieParser.CookieParser.parseSetCookie(blockedCookie.cookieLine);
-        if (parsedCookies && !parsedCookies.length ||
-            blockedCookie.blockedReasons.includes(Protocol.Network.SetCookieBlockedReason.SyntaxError)) {
+        if ((parsedCookies && !parsedCookies.length) ||
+            blockedCookie.blockedReasons.includes(Protocol.Network.SetCookieBlockedReason.SyntaxError) ||
+            blockedCookie.blockedReasons.includes(
+                Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize)) {
           malformedResponseCookies.push(blockedCookie);
           continue;
         }
@@ -265,8 +267,15 @@ export class RequestCookiesView extends UI.Widget.Widget {
         const icon = UI.Icon.Icon.create('smallicon-error', 'cookie-warning-icon');
         listItem.appendChild(icon);
         UI.UIUtils.createTextChild(listItem, malformedCookie.cookieLine);
-        listItem.title =
-            SDK.NetworkRequest.setCookieBlockedReasonToUiString(Protocol.Network.SetCookieBlockedReason.SyntaxError);
+
+        if (malformedCookie.blockedReasons.includes(
+                Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize)) {
+          listItem.title = SDK.NetworkRequest.setCookieBlockedReasonToUiString(
+              Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize);
+        } else {
+          listItem.title =
+              SDK.NetworkRequest.setCookieBlockedReasonToUiString(Protocol.Network.SetCookieBlockedReason.SyntaxError);
+        }
       }
     } else {
       this.malformedResponseCookiesTitle.classList.add('hidden');

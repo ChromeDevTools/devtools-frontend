@@ -461,6 +461,9 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ńêít̂h́êŕ d̂íd̂ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ éx̂áĉt́l̂ý m̂át̂ćĥ t́ĥé ĉóôḱîé'ŝ d́ôḿâín̂, ńôŕ ŵáŝ t́ĥé r̂éq̂úêśt̂ ÚR̂Ĺ'ŝ d́ôḿâín̂ á ŝúb̂d́ôḿâín̂ óf̂ t́ĥé ĉóôḱîé'ŝ D́ôḿâín̂ át̂t́r̂íb̂út̂é v̂ál̂úê."
   },
+  "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
+    "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ ẃâś t̂óô ĺâŕĝé. T̂h́ê ćôḿb̂ín̂éd̂ śîźê óf̂ t́ĥé n̂ám̂é âńd̂ v́âĺûé m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô 4096 ćĥár̂áĉt́êŕŝ."
+  },
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ś p̂át̂h́ ŵáŝ ńôt́ âń êx́âćt̂ ḿât́ĉh́ f̂ór̂ ór̂ á ŝúp̂ér̂d́îŕêćt̂ór̂ý ôf́ t̂h́ê ŕêq́ûéŝt́ ûŕl̂'ś p̂át̂h́."
   },
@@ -492,7 +495,7 @@
     "message": "T̂h́îś ĉóôḱîé ŵáŝ b́l̂óĉḱêd́ b̂éĉáûśê ít̂ h́âd́ t̂h́ê \"Secure\" át̂t́r̂íb̂út̂é âńd̂ t́ĥé ĉón̂ńêćt̂íôń ŵáŝ ńôt́ ŝéĉúr̂é."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. Ćôók̂íê ĺêńĝt́ĥ śĥóûĺd̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
+    "message": "Ŝét̂-Ćôók̂íê h́êád̂ér̂ íŝ íĝńôŕêd́ îń r̂éŝṕôńŝé f̂ŕôḿ ûŕl̂: {PH1}. T́ĥé ĉóm̂b́îńêd́ ŝíẑé ôf́ t̂h́ê ńâḿê án̂d́ v̂ál̂úê ḿûśt̂ b́ê ĺêśŝ t́ĥán̂ ór̂ éq̂úâĺ t̂ó 4096 ĉh́âŕâćt̂ér̂ś."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "T̂h́ê śĉh́êḿê óf̂ t́ĥíŝ ćôńn̂éĉt́îón̂ íŝ ńôt́ âĺl̂óŵéd̂ t́ô śt̂ór̂é ĉóôḱîéŝ."
@@ -511,6 +514,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé ît́ ĥád̂ t́ĥé \"{PH1}\" ât́t̂ŕîb́ût́ê b́ût́ ĉám̂é f̂ŕôḿ â ćr̂óŝś-ŝít̂é r̂éŝṕôńŝé ŵh́îćĥ ẃâś n̂ót̂ t́ĥé r̂éŝṕôńŝé t̂ó â t́ôṕ-l̂év̂él̂ ńâv́îǵât́îón̂. T́ĥíŝ ŕêśp̂ón̂śê íŝ ćôńŝíd̂ér̂éd̂ ćr̂óŝś-ŝít̂é b̂éĉáûśê t́ĥé ÛŔL̂ h́âś â d́îf́f̂ér̂én̂t́ ŝćĥém̂é t̂h́âń t̂h́ê ćûŕr̂én̂t́ ŝít̂é."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
+    "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ b́êćâúŝé t̂h́ê ćôók̂íê ẃâś t̂óô ĺâŕĝé. T̂h́ê ćôḿb̂ín̂éd̂ śîźê óf̂ t́ĥé n̂ám̂é âńd̂ v́âĺûé m̂úŝt́ b̂é l̂éŝś t̂h́âń ôŕ êq́ûál̂ t́ô 4096 ćĥár̂áĉt́êŕŝ."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "T̂h́îś ât́t̂ém̂ṕt̂ t́ô śêt́ â ćôók̂íê v́îá â Set-Cookie h́êád̂ér̂ ẃâś b̂ĺôćk̂éd̂ d́ûé t̂ó ûśêŕ p̂ŕêf́êŕêńĉéŝ."

@@ -4,18 +4,18 @@
  * found in the LICENSE file.
  */
 
-header {
+.workspace-settings-tab header {
   padding: 0 0 6px;
 }
 
-header > h1 {
+.workspace-settings-tab header > h1 {
   font-size: 18px;
   font-weight: normal;
   margin: 0;
   padding-bottom: 3px;
 }
 
-.settings-content {
+.workspace-settings-tab .settings-content {
   overflow-y: auto;
   overflow-x: hidden;
   margin: 8px 8px 8px 0;
@@ -23,21 +23,21 @@ header > h1 {
   flex: auto;
 }
 
-.settings-container {
+.workspace-settings-tab .settings-container {
   width: 100%;
   column-width: 288px;
 }
 
-.settings-tab.settings-container {
+.workspace-settings-tab .settings-tab.settings-container {
   column-width: 308px;
 }
 
-.settings-tab label {
+.workspace-settings-tab .settings-tab label {
   padding-right: 4px;
   display: inline-flex;
 }
 
-.settings-container-wrapper {
+.workspace-settings-tab .settings-container-wrapper {
   position: absolute;
   top: 31px;
   left: 0;
@@ -47,37 +47,37 @@ header > h1 {
   padding-top: 9px;
 }
 
-.settings-tab.settings-content {
+.workspace-settings-tab .settings-tab.settings-content {
   margin: 0;
   padding: 0;
 }
 
-.settings-tab p {
+.workspace-settings-tab .settings-tab p {
   margin: 12px 0;
 }
 
-p.folder-exclude-pattern {
+.workspace-settings-tab p.folder-exclude-pattern {
   display: flex;
   align-items: center;
 }
 
-p.folder-exclude-pattern > input {
+.workspace-settings-tab p.folder-exclude-pattern > input {
   flex: auto;
 }
 
-.settings-tab .file-system-container {
+.workspace-settings-tab .settings-tab .file-system-container {
   border-top: 1px solid var(--color-background-elevation-2);
   padding: 19px 0 10px;
   margin: 20px 0;
 }
 
-.settings-tab .file-system-header {
+.workspace-settings-tab .settings-tab .file-system-header {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.settings-tab .file-system-name {
+.workspace-settings-tab .settings-tab .file-system-name {
   font-weight: bold;
   flex: none;
   margin-right: 10px;
@@ -87,20 +87,20 @@ p.folder-exclude-pattern > input {
   max-width: 70%;
 }
 
-.settings-tab .file-system-path {
+.workspace-settings-tab .settings-tab .file-system-path {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   flex: auto;
 }
 
-.settings-info-message {
+.workspace-settings-tab .settings-info-message {
   background-color: var(--color-background-elevation-1);
   padding: 10px;
   margin: 20px 0;
 }
 
-.settings-tab.settings-content.settings-container {
+.workspace-settings-tab .settings-tab.settings-content.settings-container {
   column-width: initial;
   overflow: hidden;
   padding-right: 10px;
@@ -109,6 +109,6 @@ p.folder-exclude-pattern > input {
  * Always show an outline. Needed because we have a white background here.
  */
 
-.harmony-input[type=text]:not(.error-input):not(:invalid) {
+.workspace-settings-tab .harmony-input[type=text]:not(.error-input):not(:invalid) {
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }

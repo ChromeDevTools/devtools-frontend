@@ -49,6 +49,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   private constructor() {
     super();
 
+    this.element.classList.add('workspace-settings-tab');
     const header = this.element.createChild('header');
     UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));
 
@@ -91,6 +92,11 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     }
 
     return workspaceSettingsTabInstance;
+  }
+
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([workspaceSettingsTabStyles]);
   }
 
   private createFolderExcludePatternInput(): Element {
@@ -190,9 +196,5 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
       this.elementByPath.delete(fileSystem.path());
       element.remove();
     }
-  }
-  wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([workspaceSettingsTabStyles]);
   }
 }

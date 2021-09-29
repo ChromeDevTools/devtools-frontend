@@ -549,7 +549,6 @@ export const DevtoolsExperiments: {
   'recordCoverageWithPerformanceTracing': 16,
   'samplingHeapProfilerTimeline': 17,
   'showOptionToNotTreatGlobalObjectsAsRoots': 18,
-  'sourceDiff': 19,
   'sourceOrderViewer': 20,
   'webauthnPane': 22,
   'timelineEventInitiators': 24,

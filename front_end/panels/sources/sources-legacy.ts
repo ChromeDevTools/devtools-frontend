@@ -74,17 +74,6 @@ Sources.FilteredUISourceCodeListProvider =
 Sources.GoToLineQuickOpen = SourcesModule.GoToLineQuickOpen.GoToLineQuickOpen;
 
 /** @constructor */
-Sources.GutterDiffPlugin = SourcesModule.GutterDiffPlugin.GutterDiffPlugin;
-
-/** @constructor */
-Sources.GutterDiffPlugin.GutterDecoration = SourcesModule.GutterDiffPlugin.GutterDecoration;
-
-Sources.GutterDiffPlugin.DiffGutterType = SourcesModule.GutterDiffPlugin.DiffGutterType;
-
-/** @constructor */
-Sources.GutterDiffPlugin.ContextMenuProvider = SourcesModule.GutterDiffPlugin.ContextMenuProvider;
-
-/** @constructor */
 Sources.InplaceFormatterEditorAction = SourcesModule.InplaceFormatterEditorAction.InplaceFormatterEditorAction;
 
 /** @constructor */

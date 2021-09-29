@@ -14,7 +14,6 @@ devtools_module("source_frame") {
     "JSONView.ts",
     "PreviewFactory.ts",
     "ResourceSourceFrame.ts",
-    "SourceCodeDiff.ts",
     "SourceFrame.ts",
     "SourcesTextEditor.ts",
     "XMLView.ts",

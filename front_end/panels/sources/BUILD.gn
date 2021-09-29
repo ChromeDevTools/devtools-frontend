@@ -37,7 +37,6 @@ devtools_module("sources") {
     "FilePathScoreFunction.ts",
     "FilteredUISourceCodeListProvider.ts",
     "GoToLineQuickOpen.ts",
-    "GutterDiffPlugin.ts",
     "InplaceFormatterEditorAction.ts",
     "JavaScriptBreakpointsSidebarPane.ts",
     "JavaScriptCompilerPlugin.ts",

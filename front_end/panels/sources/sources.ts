@@ -13,7 +13,6 @@ import * as EditingLocationHistoryManager from './EditingLocationHistoryManager.
 import * as FilePathScoreFunction from './FilePathScoreFunction.js';
 import * as FilteredUISourceCodeListProvider from './FilteredUISourceCodeListProvider.js';
 import * as GoToLineQuickOpen from './GoToLineQuickOpen.js';
-import * as GutterDiffPlugin from './GutterDiffPlugin.js';
 import * as InplaceFormatterEditorAction from './InplaceFormatterEditorAction.js';
 import * as JavaScriptBreakpointsSidebarPane from './JavaScriptBreakpointsSidebarPane.js';
 import * as JavaScriptCompilerPlugin from './JavaScriptCompilerPlugin.js';
@@ -48,7 +47,6 @@ export {
   FilePathScoreFunction,
   FilteredUISourceCodeListProvider,
   GoToLineQuickOpen,
-  GutterDiffPlugin,
   InplaceFormatterEditorAction,
   JavaScriptBreakpointsSidebarPane,
   JavaScriptCompilerPlugin,

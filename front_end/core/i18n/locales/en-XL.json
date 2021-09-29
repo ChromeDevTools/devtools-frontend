@@ -8867,9 +8867,6 @@
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "T̂ýp̂é â ńûḿb̂ér̂ t́ô ǵô t́ô t́ĥát̂ ĺîńê."
   },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "L̂óĉál̂ Ḿôd́îf́îćât́îón̂ś..."
-  },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "F̂ór̂ḿât́"
   },

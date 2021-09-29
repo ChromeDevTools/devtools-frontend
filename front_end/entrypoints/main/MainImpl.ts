@@ -259,7 +259,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'showOptionToNotTreatGlobalObjectsAsRoots',
         'Show option to take heap snapshot where globals are not treated as root');
-    Root.Runtime.experiments.register('sourceDiff', 'Source diff');
     Root.Runtime.experiments.register(
         'sourceOrderViewer', 'Source order viewer', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');

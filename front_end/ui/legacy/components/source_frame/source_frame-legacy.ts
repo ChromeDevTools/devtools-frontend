@@ -34,12 +34,6 @@ SourceFrame.ResourceSourceFrame = SourceFrameModule.ResourceSourceFrame.Resource
 SourceFrame.ResourceSourceFrame.SearchableContainer = SourceFrameModule.ResourceSourceFrame.SearchableContainer;
 
 /** @constructor */
-SourceFrame.SourceCodeDiff = SourceFrameModule.SourceCodeDiff.SourceCodeDiff;
-
-/** @enum {symbol} */
-SourceFrame.SourceCodeDiff.EditType = SourceFrameModule.SourceCodeDiff.EditType;
-
-/** @constructor */
 SourceFrame.SourceFrame = SourceFrameModule.SourceFrame.SourceFrameImpl;
 
 /** @interface */

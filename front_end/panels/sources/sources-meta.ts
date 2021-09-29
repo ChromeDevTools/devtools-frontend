@@ -1559,19 +1559,6 @@ UI.ContextMenu.registerProvider({
 });
 
 UI.ContextMenu.registerProvider({
-  contextTypes() {
-    return [
-      Workspace.UISourceCode.UISourceCode,
-    ];
-  },
-  async loadProvider() {
-    const Sources = await loadSourcesModule();
-    return Sources.GutterDiffPlugin.ContextMenuProvider.instance();
-  },
-  experiment: undefined,
-});
-
-UI.ContextMenu.registerProvider({
   async loadProvider() {
     const Sources = await loadSourcesModule();
     return Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector.instance();

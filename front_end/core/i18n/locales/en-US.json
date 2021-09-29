@@ -8867,9 +8867,6 @@
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "Type a number to go to that line."
   },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "Local Modifications..."
-  },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "Format"
   },

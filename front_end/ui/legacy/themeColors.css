@@ -129,6 +129,37 @@
   --color-ic-file-stylesheet: rgb(174 82 255);
   --color-ic-file-webbundle: rgb(128 134 139);
   --color-ic-file-default: rgb(128 134 139);
+
+  /* Code highlighting colors */
+  --color-token-variable: inherit;
+  --color-token-property: inherit;
+  --color-token-type: rgb(0 136 119);
+  --color-token-definition: var(--color-token-attribute-value);
+  --color-token-variable-special: rgb(0 85 170);
+  --color-token-builtin: rgb(50 0 170);
+  --color-token-keyword: rgb(171 13 144);
+  --color-token-number: rgb(50 0 255);
+  --color-token-string: rgb(170 17 17);
+  --color-token-string-special: rgb(200 0 0);
+  --color-token-atom: rgb(34 17 153);
+  --color-token-tag: rgb(136 18 128);
+  --color-token-attribute: rgb(153 69 0);
+  --color-token-attribute-value: rgb(26 26 168);
+  --color-token-comment: rgb(0 117 0);
+  --color-token-meta: rgb(85 85 85);
+  --color-token-deleted: rgb(221 68 68);
+  --color-token-inserted: rgb(34 153 34);
+
+  /* Colors used by the code editor */
+  --color-secondary-cursor: #c0c0c0;
+  --color-line-number: hsl(0deg 0% 46%);
+  --color-matching-bracket-underline: rgb(0 0 0 / 50%);
+  --color-matching-bracket-background: rgb(0 0 0 / 7%);
+  --color-nonmatching-bracket-underline: rgb(255 0 0 / 50%);
+  --color-nonmatching-bracket-background: rgb(255 0 0 / 7%);
+  --color-editor-selection: #cfe8fc;
+  --color-editor-selection-blurred: #e0e0e0;
+  --color-highlighted-line: rgb(255 255 0 / 50%);
 }
 
 .-theme-with-dark-background {
@@ -215,4 +246,33 @@
   --color-ic-file-stylesheet: rgb(161 66 244);
   --color-ic-file-webbundle: rgb(128 134 139);
   --color-ic-file-default: rgb(128 134 139);
+
+  /* Code highlighting colors */
+  --color-token-variable: rgb(217 217 217);
+  --color-token-property: rgb(210 192 87);
+  --color-token-type: var(--color-token-tag);
+  --color-token-definition: var(--color-token-tag);
+  --color-token-builtin: rgb(159 180 214);
+  --color-token-variable-special: rgb(0 85 170);
+  --color-token-keyword: rgb(154 127 213);
+  --color-token-number: var(--color-token-number);
+  --color-token-string: rgb(242 139 84);
+  --color-token-string-special: var(--color-token-string);
+  --color-token-atom: rgb(161 247 181);
+  --color-token-comment: rgb(137 137 137);
+  --color-token-tag: rgb(93 176 215);
+  --color-token-attribute: rgb(155 187 220);
+  --color-token-attribute-value: rgb(1 200 1);
+  --color-token-meta: rgb(221 251 85);
+
+  /* Colors used by the code editor */
+  --color-secondary-cursor: rgb(63 63 63);
+  --color-line-number: rgb(138 138 138);
+  --color-matching-bracket-underline: rgb(217 217 217);
+  --color-matching-bracket-background: initial;
+  --color-nonmatching-bracket-underline: rgb(255 26 26);
+  --color-nonmatching-bracket-background: initial;
+  --color-editor-selection: hsl(207deg 88% 22%);
+  --color-editor-selection-blurred: #454545;
+  --color-highlighted-line: hsl(133deg 100% 30% / 50%);
 }

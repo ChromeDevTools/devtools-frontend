@@ -7,11 +7,11 @@
 /* See: https://crbug.com/1227651 for details on changing these to --override pattern. */
 
 .node-label-name {
-  color: var(--override-node-text-label-color, --override-dom-tag-name-color);
+  color: var(--override-node-text-label-color, --color-token-tag);
 }
 
 .node-label-class {
-  color: var(--override-node-text-class-color, --override-dom-attribute-name-color);
+  color: var(--override-node-text-class-color, --color-token-attribute);
 }
 
 .node-label-id {
@@ -19,9 +19,9 @@
 }
 
 .node-label-class.node-multiple-descriptors {
-  color: var(--override-node-text-multiple-descriptors-class, var(--override-node-text-class-color, --override-dom-attribute-name-color));
+  color: var(--override-node-text-multiple-descriptors-class, var(--override-node-text-class-color, --color-token-attribute));
 }
 
 .node-label-id.node-multiple-descriptors {
-  color: var(--override-node-text-multiple-descriptors-id, var(--override-node-text-id-color, --override-dom-attribute-name-color));
+  color: var(--override-node-text-multiple-descriptors-id, var(--override-node-text-id-color, --color-token-attribute));
 }

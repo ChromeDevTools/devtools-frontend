@@ -96,7 +96,7 @@
 
 .elements {
   margin-top: 12px;
-  color: var(--override-dom-tag-name-color);
+  color: var(--color-token-tag);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 8px;

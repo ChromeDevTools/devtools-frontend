@@ -137,15 +137,11 @@
 }
 
 .screencast-tag-name {
-  --override-tag-name-color: rgb(163 18 128);
-  /* Keep this in sync with inspectorSyntaxHighlight.css (--override-dom-tag-name-color) */
-  color: var(--override-tag-name-color);
+  color: var(--color-token-tag);
 }
 
 .screencast-attribute {
-  --override-attribute-color: rgb(26 26 166);
-  /* Keep this in sync with inspectorSyntaxHighlight.css (.webkit-html-attribute-value) */
-  color: var(--override-attribute-color);
+  color: var(--color-token-attribute);
 }
 
 .screencast-dimension {

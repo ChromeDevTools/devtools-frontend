@@ -19,7 +19,7 @@ export const enum Variant {
   SECONDARY = 'secondary',
 }
 
-export interface ButtonData {
+interface ButtonData {
   iconUrl?: string;
   variant?: Variant;
 }
@@ -33,6 +33,7 @@ export class Button extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   private readonly boundRender = this.render.bind(this);
   private readonly props: ButtonData = {};
+  private isEmpty = true;
 
   constructor() {
     super();
@@ -68,6 +69,13 @@ export class Button extends HTMLElement {
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
 
+  private onSlotChange(event: Event): void {
+    const slot = event.target as HTMLSlotElement | undefined;
+    const nodes = slot?.assignedNodes();
+    this.isEmpty = !nodes || !Boolean(nodes.length);
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+  }
+
   private render(): void {
     if (!this.props.variant) {
       throw new Error('Button requires a variant to be defined');
@@ -75,7 +83,8 @@ export class Button extends HTMLElement {
     const classes = {
       primary: this.props.variant === Variant.PRIMARY,
       secondary: this.props.variant === Variant.SECONDARY,
-      'with-icon': Boolean(this.props.iconUrl),
+      'text-with-icon': Boolean(this.props.iconUrl) && !this.isEmpty,
+      'only-icon': Boolean(this.props.iconUrl) && this.isEmpty,
     };
     // clang-format off
     LitHtml.render(
@@ -88,7 +97,7 @@ export class Button extends HTMLElement {
             } as IconButton.Icon.IconData}
           >
           </${IconButton.Icon.Icon.litTagName}>` : ''}
-          <slot></slot>
+          <slot @slotchange=${this.onSlotChange}></slot>
         </button>
       `, this.shadow, {host: this});
     // clang-format on

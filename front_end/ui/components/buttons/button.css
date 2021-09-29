@@ -24,6 +24,8 @@ button {
   height: 25px;
   line-height: 14px;
   padding: 5px 12px;
+  justify-content: center;
+  width: 100%;
 }
 
 button:focus-visible {
@@ -69,8 +71,12 @@ button.secondary:focus-visible {
   border: 1px solid var(--color-background);
 }
 
-button.with-icon {
+button.text-with-icon {
   padding: 0 12px 0 4px;
+}
+
+button.only-icon {
+  padding: 0;
 }
 
 button devtools-icon {

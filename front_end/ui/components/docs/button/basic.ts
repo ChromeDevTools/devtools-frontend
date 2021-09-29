@@ -9,8 +9,7 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const testIcon =
-    'data:text/plain;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0xMyA1SDEyVjExSDZWMTJIMTJWMThIMTNWMTJIMTlWMTFIMTNWNVoiIGZpbGw9ImJsYWNrIi8+DQo8L3N2Zz4=';
+const testIcon = '/front_end/Images/ic_file_image.svg';
 
 function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);
@@ -55,3 +54,23 @@ secondaryIconButton.data = {
   iconUrl: testIcon,
 };
 appendButton(secondaryIconButton);
+
+// Primary Icon
+const primaryIconOnlyButton = new Buttons.Button.Button();
+primaryIconOnlyButton.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  iconUrl: testIcon,
+};
+primaryIconOnlyButton.onclick = () => alert('clicked');
+primaryIconOnlyButton.style.width = '25px';
+appendButton(primaryIconOnlyButton);
+
+// Secondary Icon
+const secondaryIconOnlyButton = new Buttons.Button.Button();
+secondaryIconOnlyButton.onclick = () => alert('clicked');
+secondaryIconOnlyButton.style.width = '25px';
+secondaryIconOnlyButton.data = {
+  variant: Buttons.Button.Variant.SECONDARY,
+  iconUrl: testIcon,
+};
+appendButton(secondaryIconOnlyButton);

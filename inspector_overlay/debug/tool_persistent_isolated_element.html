@@ -1,0 +1,75 @@
+<!--
+Copyright 2021 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script type="module" src="/out/Default/resources/inspector_overlay/main.js"></script>
+</head>
+<body>
+  <script type="module">
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    dispatch(["setPlatform", "other"]);
+    dispatch(["setOverlay", "persistent"]);
+    dispatch(["reset", {
+      viewportSize: {
+        width: viewportWidth,
+        height: viewportHeight,
+      },
+      deviceScaleFactor: 1,
+      pageScaleFactor: 1,
+      pageZoomFactor: 1,
+      emulationScaleFactor: 1,
+      scrollX: 0,
+      scrollY: 0,
+    }]);
+    dispatch(["drawIsolatedElementHighlight", {
+      "draggableWidthBorder": [
+        "M",
+        300,
+        100,
+        "L",
+        350,
+        100,
+        "L",
+        350,
+        300,
+        "L",
+        300,
+        300,
+        "Z"
+      ],
+      "draggableHeightBorder": [
+        "M",
+        100,
+        300,
+        "L",
+        300,
+        300,
+        "L",
+        300,
+        350,
+        "L",
+        100,
+        350,
+        "Z"
+      ],
+      "currentWidth": 200,
+      "currentHeight": 200,
+      "currentX": 100,
+      "currentY": 100,
+      "highlightIndex": 1,
+    }]);
+  </script>
+</body>
+</html>
+
+
+
+

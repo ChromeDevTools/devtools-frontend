@@ -14,6 +14,7 @@ node_ts_library("elements") {
     "element-breadcrumbs_test.ts",
     "flexbox-editor_test.ts",
     "grid-editor_test.ts",
+    "isolation-mode_test.ts",
     "layout-pane_test.ts",
     "pseudo-states_test.ts",
     "reveal-correct-node_test.ts",

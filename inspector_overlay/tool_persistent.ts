@@ -30,19 +30,74 @@
 
 import type {ResetData} from './common.js';
 import {Overlay} from './common.js';
+import type {Delegate} from './drag_resize_handler.js';
+import {DragResizeHandler, ResizerType} from './drag_resize_handler.js';
 import type {ContainerQueryHighlight} from './highlight_container_query.js';
 import {drawContainerQueryHighlight} from './highlight_container_query.js';
 import type {FlexContainerHighlight} from './highlight_flex_common.js';
 import {drawLayoutFlexContainerHighlight} from './highlight_flex_common.js';
 import type {GridHighlight} from './highlight_grid_common.js';
 import {drawLayoutGridHighlight} from './highlight_grid_common.js';
+import type {IsolatedElementHighlight} from './highlight_isolated_element.js';
+import {drawIsolatedElementHighlight} from './highlight_isolated_element.js';
 import type {ScrollSnapHighlight} from './highlight_scroll_snap.js';
 import {drawScrollSnapHighlight} from './highlight_scroll_snap.js';
+
+export type PersistentToolMessage = {
+  highlightType: string,
+  highlightIndex: number,
+  newWidth: string,
+  newHeight: string,
+  resizerType: ResizerType,
+};
+
+interface DraggableMetadata {
+  type: ResizerType;
+  highlightIndex: number;
+  initialWidth?: number;
+  initialHeight?: number;
+}
+
+function makeDraggableDelegate(overlay: PersistentOverlay): Delegate {
+  return {
+    getDraggable: (x, y) => {
+      const result = overlay.isPointInDraggablePath(x, y);
+      if (!result) {
+        return;
+      }
+
+      return {
+        type: result.type,
+        initialWidth: result.initialWidth,
+        initialHeight: result.initialHeight,
+        id: result.highlightIndex,
+        update: ({width, height}: {width?: number, height?: number}) => {
+          window.InspectorOverlayHost.send({
+            highlightType: 'isolatedElement',
+            highlightIndex: result.highlightIndex,
+            newWidth: `${width}px`,
+            newHeight: `${height}px`,
+            resizerType: result.type,
+          });
+        },
+      };
+    },
+  };
+}
 
 export class PersistentOverlay extends Overlay {
   private gridLabelState = {gridLayerCounter: 0};
 
   private gridLabels!: HTMLElement;
+  private draggableBorders: Map<number, {
+    widthPath: Path2D,
+    heightPath: Path2D,
+    bidirectionPath: Path2D,
+    highlightIndex: number,
+    initialWidth: number,
+    initialHeight: number,
+  }> = new Map();
+  private dragHandler?: DragResizeHandler;
 
   reset(data: ResetData) {
     super.reset(data);
@@ -70,12 +125,15 @@ export class PersistentOverlay extends Overlay {
     this.setCanvas(canvas);
 
     super.install();
+    this.dragHandler?.install();
   }
 
   uninstall() {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
+    this.draggableBorders = new Map();
     super.uninstall();
+    this.dragHandler?.uninstall();
   }
 
   drawGridHighlight(highlight: GridHighlight) {
@@ -104,5 +162,57 @@ export class PersistentOverlay extends Overlay {
     this.context.save();
     drawContainerQueryHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
+  }
+
+  drawIsolatedElementHighlight(highlight: IsolatedElementHighlight) {
+    if (!this.dragHandler) {
+      this.dragHandler = new DragResizeHandler(this.document, makeDraggableDelegate(this));
+      this.dragHandler.install();
+    }
+
+    this.context.save();
+    const {widthPath, heightPath, bidirectionPath, currentWidth, currentHeight, highlightIndex} =
+        drawIsolatedElementHighlight(
+            highlight, this.context, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor);
+
+    this.draggableBorders.set(highlightIndex, {
+      widthPath,
+      heightPath,
+      bidirectionPath,
+      highlightIndex,
+      initialWidth: currentWidth,
+      initialHeight: currentHeight,
+    });
+    this.context.restore();
+  }
+
+  isPointInDraggablePath(x: number, y: number): DraggableMetadata|undefined {
+    for (const {widthPath, heightPath, bidirectionPath, highlightIndex, initialWidth, initialHeight} of this
+             .draggableBorders.values()) {
+      if (this.context.isPointInPath(widthPath, x, y)) {
+        return {
+          type: ResizerType.WIDTH,
+          highlightIndex,
+          initialWidth,
+        };
+      }
+      if (this.context.isPointInPath(heightPath, x, y)) {
+        return {
+          type: ResizerType.HEIGHT,
+          highlightIndex,
+          initialHeight,
+        };
+      }
+      if (this.context.isPointInPath(bidirectionPath, x, y)) {
+        return {
+          type: ResizerType.BIDIRECTION,
+          highlightIndex,
+          initialWidth,
+          initialHeight,
+        };
+      }
+    }
+
+    return;
   }
 }

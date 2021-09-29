@@ -14,10 +14,12 @@ action("build_inspector_overlay") {
     "$target_gen_dir/common.css",
     "$target_gen_dir/common.js",
     "$target_gen_dir/css_grid_label_helpers.js",
+    "$target_gen_dir/drag_resize_handler.js",
     "$target_gen_dir/highlight_common.js",
     "$target_gen_dir/highlight_container_query.js",
     "$target_gen_dir/highlight_flex_common.js",
     "$target_gen_dir/highlight_grid_common.js",
+    "$target_gen_dir/highlight_isolated_element.js",
     "$target_gen_dir/highlight_scroll_snap.js",
     "$target_gen_dir/tool_distances.js",
     "$target_gen_dir/tool_persistent.js",
@@ -40,7 +42,7 @@ action("build_inspector_overlay") {
 
   args = [
     "main.js",
-    "65000",  # max_size in bytes
+    "70000",  # max_size in bytes
     "--input_path",
     rebase_path(target_gen_dir, root_build_dir),
     "--output_path",
@@ -77,10 +79,12 @@ ts_library("inspector_overlay") {
   sources = [
     "common.ts",
     "css_grid_label_helpers.ts",
+    "drag_resize_handler.ts",
     "highlight_common.ts",
     "highlight_container_query.ts",
     "highlight_flex_common.ts",
     "highlight_grid_common.ts",
+    "highlight_isolated_element.ts",
     "highlight_scroll_snap.ts",
     "main.ts",
     "tool_distances.ts",

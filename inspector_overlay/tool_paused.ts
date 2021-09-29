@@ -4,6 +4,8 @@
 
 import {Overlay} from './common.js';
 
+export type PausedToolMessage = 'resume'|'stepOver';
+
 export class PausedOverlay extends Overlay {
   private container!: HTMLElement;
 

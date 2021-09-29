@@ -875,6 +875,12 @@ export const SourceOrderHighlight = {
   ChildOutline: Color.fromRGBA([0, 120, 212, 1]),
 };
 
+export const IsolationModeHighlight = {
+  Resizer: Color.fromRGBA([222, 225, 230, 1]),  // --color-background-elevation-2
+  ResizerHandle: Color.fromRGBA([166, 166, 166, 1]),
+  Mask: Color.fromRGBA([248, 249, 249, 1]),
+};
+
 export class Generator {
   private readonly hueSpace: number|{
     min: number,

@@ -31,6 +31,7 @@ describeWithEnvironment('OverlayColorGenerator', () => {
             invoke_setShowFlexOverlays() {},
             invoke_setShowScrollSnapOverlays() {},
             invoke_setShowContainerQueryOverlays() {},
+            invoke_setShowIsolatedElements() {},
           };
         },
       };
@@ -79,5 +80,17 @@ describeWithEnvironment('OverlayColorGenerator', () => {
     assert(!highlighter.isScrollSnapHighlighted(nodeId));
     highlighter.hideContainerQueryInOverlay(nodeId);
     assert(!highlighter.isContainerQueryHighlighted(nodeId));
+  });
+
+  it('is able to highlight isolated elements', () => {
+    const highlighter = new SDK.OverlayPersistentHighlighter.OverlayPersistentHighlighter(mockModel);
+    highlighter.highlightIsolatedElementInOverlay(nodeId);
+    assert(highlighter.isIsolatedElementHighlighted(nodeId));
+    assert(!highlighter.isFlexHighlighted(nodeId));
+    assert(!highlighter.isGridHighlighted(nodeId));
+    assert(!highlighter.isScrollSnapHighlighted(nodeId));
+    assert(!highlighter.isContainerQueryHighlighted(nodeId));
+    highlighter.hideIsolatedElementInOverlay(nodeId);
+    assert(!highlighter.isIsolatedElementHighlighted(nodeId));
   });
 });

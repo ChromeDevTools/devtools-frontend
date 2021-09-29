@@ -7,12 +7,16 @@ import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/
 import {assert} from 'chai';
 
 export async function getDataGridRows(
-    expectedNumberOfRows: number, root?: ElementHandle<Element>): Promise<ElementHandle<Element>[][]> {
+    expectedNumberOfRows: number, root?: ElementHandle<Element>,
+    matchExactNumberOfRows: boolean = true): Promise<ElementHandle<Element>[][]> {
   const dataGrid = await waitFor('devtools-data-grid', root);
   const rowsSelector = 'tbody > tr:not(.padding-row):not(.hidden)';
   const rowsHandler = await waitForFunction(async () => {
     const rows = (await $$(rowsSelector, dataGrid));
-    return (rows.length === expectedNumberOfRows) ? rows : undefined;
+    if (matchExactNumberOfRows) {
+      return (rows.length === expectedNumberOfRows) ? rows : undefined;
+    }
+    return (rows.length >= expectedNumberOfRows) ? rows : undefined;
   });
 
   const tableElements = [];
@@ -40,8 +44,9 @@ export async function getDataGridController() {
 }
 
 export async function getInnerTextOfDataGridCells(
-    dataGridElement: ElementHandle<Element>, expectedNumberOfRows: number): Promise<string[][]> {
-  const gridRows = await getDataGridRows(expectedNumberOfRows, dataGridElement);
+    dataGridElement: ElementHandle<Element>, expectedNumberOfRows: number,
+    matchExactNumberOfRows: boolean = true): Promise<string[][]> {
+  const gridRows = await getDataGridRows(expectedNumberOfRows, dataGridElement, matchExactNumberOfRows);
   const table: Array<Array<string>> = [];
   for (const row of gridRows) {
     const textRow = [];

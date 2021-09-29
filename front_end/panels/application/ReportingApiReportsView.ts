@@ -55,11 +55,13 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
 
   private onReportAdded(report: Protocol.Network.ReportingApiReport): void {
     this.reports.push(report);
+    this.reportsGrid.data = {reports: this.reports};
   }
 
   private onReportUpdated(report: Protocol.Network.ReportingApiReport): void {
     const index = this.reports.findIndex(oldReport => oldReport.id === report.id);
     this.reports[index] = report;
+    this.reportsGrid.data = {reports: this.reports};
   }
 
   getReports(): Protocol.Network.ReportingApiReport[] {

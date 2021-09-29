@@ -8,7 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as ApplicationComponents from './components/components.js';
 
-import reportingApiViewStyles from './reportingApiView.css.js';
+import reportingApiReportsViewStyles from './reportingApiReportsView.css.js';
 
 const UIStrings = {
   /**
@@ -49,7 +49,7 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
     super.wasShown();
     const sbw = this.sidebarWidget();
     if (sbw) {
-      sbw.registerCSSFiles([reportingApiViewStyles]);
+      sbw.registerCSSFiles([reportingApiReportsViewStyles]);
     }
   }
 

@@ -14,7 +14,7 @@ generate_css("css_files") {
     "cookieItemsView.css",
     "frameDetailsReportView.css",
     "indexedDBViews.css",
-    "reportingApiView.css",
+    "reportingApiReportsView.css",
     "resourcesPanel.css",
     "resourcesSidebar.css",
     "serviceWorkerCacheViews.css",

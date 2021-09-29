@@ -2321,6 +2321,12 @@ declare namespace ProtocolProxyApi {
      * Add a dual screen device hinge
      */
     invoke_setShowHinge(params: Protocol.Overlay.SetShowHingeRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Show elements in isolation mode with overlays.
+     */
+    invoke_setShowIsolatedElements(params: Protocol.Overlay.SetShowIsolatedElementsRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface OverlayDispatcher {
     /**

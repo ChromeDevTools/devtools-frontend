@@ -2099,6 +2099,11 @@ export namespace ProtocolMapping {
      */
     'Overlay.setShowHinge': {paramsType: [Protocol.Overlay.SetShowHingeRequest?]; returnType: void;};
     /**
+     * Show elements in isolation mode with overlays.
+     */
+    'Overlay.setShowIsolatedElements':
+        {paramsType: [Protocol.Overlay.SetShowIsolatedElementsRequest]; returnType: void;};
+    /**
      * Deprecated, please use addScriptToEvaluateOnNewDocument instead.
      */
     'Page.addScriptToEvaluateOnLoad': {

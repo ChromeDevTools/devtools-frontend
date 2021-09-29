@@ -1925,6 +1925,9 @@ export function registerCommands(inspectorBackend) {
       'Overlay.setShowViewportSizeOnResize', [{'name': 'show', 'type': 'boolean', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Overlay.setShowHinge', [{'name': 'hingeConfig', 'type': 'object', 'optional': true}], []);
+  inspectorBackend.registerCommand(
+      'Overlay.setShowIsolatedElements',
+      [{'name': 'isolatedElementHighlightConfigs', 'type': 'object', 'optional': false}], []);
 
   // Page.
   inspectorBackend.registerEnum('Page.AdFrameType', {None: 'none', Child: 'child', Root: 'root'});

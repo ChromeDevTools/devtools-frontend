@@ -42,6 +42,7 @@ devtools_module("application") {
     "IndexedDBViews.ts",
     "OpenedWindowDetailsView.ts",
     "ReportingApiTreeElement.ts",
+    "ReportingApiView.ts",
     "ResourcesPanel.ts",
     "ServiceWorkerCacheViews.ts",
     "ServiceWorkerUpdateCycleView.ts",

@@ -2426,6 +2426,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "T̂ím̂éŝt́âḿp̂"
   },
+  "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
+    "message": "N̂ó êńd̂ṕôín̂t́ŝ t́ô d́îśp̂ĺâý"
+  },
   "panels/application/components/FrameDetailsView.ts | additionalInformation": {
     "message": "Âd́d̂ít̂íôńâĺ Îńf̂ór̂ḿât́îón̂"
   },
@@ -2623,9 +2626,6 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
-  },
-  "panels/application/components/ReportingApiView.ts | noReportsToDisplay": {
-    "message": "N̂ó r̂ép̂ór̂t́ŝ t́ô d́îśp̂ĺâý"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"
@@ -2851,6 +2851,9 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "R̂ép̂ór̂t́îńĝ ÁP̂Í"
+  },
+  "panels/application/ReportingApiView.ts | noReportsToDisplay": {
+    "message": "N̂ó r̂ép̂ór̂t́ŝ t́ô d́îśp̂ĺâý"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Ĉáĉh́ê"

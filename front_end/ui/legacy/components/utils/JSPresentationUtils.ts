@@ -102,11 +102,13 @@ export function buildStackTraceRows(
         () => throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows)));
   }
 
-  function buildStackTraceRowsHelper(stackTrace: Protocol.Runtime.StackTrace, asyncFlag: boolean): void {
+  function buildStackTraceRowsHelper(
+      stackTrace: Protocol.Runtime.StackTrace,
+      previousCallFrames: Protocol.Runtime.CallFrame[]|undefined = undefined): void {
     let asyncRow: StackTraceAsyncRow|null = null;
-    if (asyncFlag) {
+    if (previousCallFrames) {
       asyncRow = {
-        asyncDescription: UI.UIUtils.asyncStackTraceLabel(stackTrace.description),
+        asyncDescription: UI.UIUtils.asyncStackTraceLabel(stackTrace.description, previousCallFrames),
         ignoreListHide: false,
         rowCountHide: false,
       };
@@ -141,18 +143,18 @@ export function buildStackTraceRows(
       }
       stackTraceRows.push({functionName, link, ignoreListHide, rowCountHide});
     }
-    if (asyncFlag && asyncRow && hiddenCallFrames > 0 && hiddenCallFrames === stackTrace.callFrames.length) {
+    if (asyncRow && hiddenCallFrames > 0 && hiddenCallFrames === stackTrace.callFrames.length) {
       stackTraceRows[1].rowCountHide ? asyncRow.rowCountHide = true : asyncRow.ignoreListHide = true;
     }
   }
 
-  buildStackTraceRowsHelper(stackTrace, false);
-  let asyncStackTrace = stackTrace.parent;
-  while (asyncStackTrace) {
+  buildStackTraceRowsHelper(stackTrace);
+  let previousCallFrames = stackTrace.callFrames;
+  for (let asyncStackTrace = stackTrace.parent; asyncStackTrace; asyncStackTrace = asyncStackTrace.parent) {
     if (asyncStackTrace.callFrames.length) {
-      buildStackTraceRowsHelper(asyncStackTrace, true);
+      buildStackTraceRowsHelper(asyncStackTrace, previousCallFrames);
     }
-    asyncStackTrace = asyncStackTrace.parent;
+    previousCallFrames = asyncStackTrace.callFrames;
   }
   return stackTraceRows;
 }

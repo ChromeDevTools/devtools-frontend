@@ -198,16 +198,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     let previousStackTrace: Protocol.Runtime.CallFrame[]|SDK.DebuggerModel.CallFrame[] = details.callFrames;
     let maxAsyncStackChainDepth = this.maxAsyncStackChainDepth;
     while (asyncStackTrace && maxAsyncStackChainDepth > 0) {
-      let title = '';
-      const isAwait = asyncStackTrace.description === 'async function';
-      if (isAwait && previousStackTrace.length && asyncStackTrace.callFrames.length) {
-        const lastPreviousFrame = previousStackTrace[previousStackTrace.length - 1];
-        const lastPreviousFrameName = UI.UIUtils.beautifyFunctionName(lastPreviousFrame.functionName);
-        title = UI.UIUtils.asyncStackTraceLabel('await in ' + lastPreviousFrameName);
-      } else {
-        title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description);
-      }
-
+      const title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description, previousStackTrace);
       items.push(...await Item.createItemsForAsyncStack(
           title, debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
 

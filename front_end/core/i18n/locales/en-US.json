@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Sources"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "Sync"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -1042,6 +1045,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Enable ⌘ + 1-9 shortcut to switch panels"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "Enable settings sync"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Find next result"

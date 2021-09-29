@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Ŝóûŕĉéŝ"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "Ŝýn̂ć"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "D̂év̂T́ôól̂ś - {PH1}"
   },
@@ -1042,6 +1045,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Êńâb́l̂é ⌘ + 1-9 ŝh́ôŕt̂ćût́ t̂ó ŝẃît́ĉh́ p̂án̂él̂ś"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "Êńâb́l̂é ŝét̂t́îńĝś ŝýn̂ć"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "F̂ín̂d́ n̂éx̂t́ r̂éŝúl̂t́"

@@ -321,6 +321,10 @@ export class MainImpl {
     // Localized DevTools, hide "locale selector" setting behind an experiment.
     Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS, 'Enable localized DevTools');
 
+    // Checkbox in the Settings UI to enable Chrome Sync is behind this experiment.
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.SYNC_SETTINGS, 'Sync DevTools settings with Chrome Sync');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
       'sourceOrderViewer',

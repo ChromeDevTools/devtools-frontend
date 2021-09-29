@@ -572,7 +572,8 @@ export const DevtoolsExperiments: {
   'bfcacheDebugging': 47,
   'hideIssuesFeature': 48,
   'reportingApiDebugging': 49,
-  '__lastValidEnumPosition': 49,
+  'syncSettings': 50,
+  '__lastValidEnumPosition': 50,
 };
 
 export const IssueExpanded: {

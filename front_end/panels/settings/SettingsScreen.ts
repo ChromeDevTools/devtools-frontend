@@ -279,6 +279,9 @@ export class GenericSettingsTab extends SettingsTab {
       Common.Settings.SettingCategory.DEBUGGER,
       Common.Settings.SettingCategory.GLOBAL,
     ];
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SYNC_SETTINGS)) {
+      explicitSectionOrder.push(Common.Settings.SettingCategory.SYNC);
+    }
 
     // Some settings define their initial ordering.
     const preRegisteredSettings = Common.Settings.getRegisteredSettings().sort(

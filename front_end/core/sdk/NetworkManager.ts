@@ -269,6 +269,10 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return result.status;
   }
 
+  async enableReportingApi(enable: boolean = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+    return this.networkAgent.invoke_enableReportingApi({enable});
+  }
+
   async loadNetworkResource(
       frameId: Protocol.Page.FrameId|null, url: string,
       options: Protocol.Network.LoadNetworkResourceOptions): Promise<Protocol.Network.LoadNetworkResourcePageResult> {
@@ -295,6 +299,8 @@ export enum Events {
   MessageGenerated = 'MessageGenerated',
   RequestRedirected = 'RequestRedirected',
   LoadingFinished = 'LoadingFinished',
+  ReportingApiReportAdded = 'ReportingApiReportAdded',
+  ReportingApiReportUpdated = 'ReportingApiReportUpdated',
 }
 
 export interface RequestStartedEvent {
@@ -322,6 +328,8 @@ export type EventTypes = {
   [Events.MessageGenerated]: MessageGeneratedEvent,
   [Events.RequestRedirected]: NetworkRequest,
   [Events.LoadingFinished]: NetworkRequest,
+  [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport,
+  [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport,
 };
 
 export const NoThrottlingConditions: Conditions = {
@@ -1019,10 +1027,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
   }
 
-  reportingApiReportAdded(_params: Protocol.Network.ReportingApiReportAddedEvent): void {
+  reportingApiReportAdded(data: Protocol.Network.ReportingApiReportAddedEvent): void {
+    this.manager.dispatchEventToListeners(Events.ReportingApiReportAdded, data.report);
   }
 
-  reportingApiReportUpdated(_params: Protocol.Network.ReportingApiReportAddedEvent): void {
+  reportingApiReportUpdated(data: Protocol.Network.ReportingApiReportUpdatedEvent): void {
+    this.manager.dispatchEventToListeners(Events.ReportingApiReportUpdated, data.report);
   }
 
   /**

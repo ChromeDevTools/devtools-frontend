@@ -30,7 +30,7 @@ export interface ButtonDataWithVariant extends ButtonData {
 
 export class Button extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-button`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  private readonly shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   private readonly boundRender = this.render.bind(this);
   private readonly props: ButtonData = {};
 
@@ -57,6 +57,10 @@ export class Button extends HTMLElement {
   set variant(variant: Variant) {
     this.props.variant = variant;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+  }
+
+  focus(): void {
+    this.shadow.querySelector('button')?.focus();
   }
 
   connectedCallback(): void {

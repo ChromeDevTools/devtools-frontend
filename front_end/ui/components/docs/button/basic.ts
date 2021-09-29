@@ -46,8 +46,10 @@ appendButton(primaryIconButton);
 
 // Secondary Icon
 const secondaryIconButton = new Buttons.Button.Button();
-secondaryIconButton.innerText = 'Click me';
-secondaryIconButton.onclick = () => alert('clicked');
+secondaryIconButton.innerText = 'Focus the first button';
+secondaryIconButton.onclick = () => {
+  primaryButton.focus();
+};
 secondaryIconButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
   iconUrl: testIcon,

@@ -48,6 +48,7 @@ import * as PropertiesWidget from './PropertiesWidget.js';
 import * as StyleEditorWidget from './StyleEditorWidget.js';
 import * as StylePropertyHighlighter from './StylePropertyHighlighter.js';
 import * as StylePropertyTreeElement from './StylePropertyTreeElement.js';
+import * as StylePropertyUtils from './StylePropertyUtils.js';
 import * as StylesSidebarPane from './StylesSidebarPane.js';
 
 export {
@@ -74,5 +75,6 @@ export {
   StyleEditorWidget,
   StylePropertyHighlighter,
   StylePropertyTreeElement,
+  StylePropertyUtils,
   StylesSidebarPane,
 };

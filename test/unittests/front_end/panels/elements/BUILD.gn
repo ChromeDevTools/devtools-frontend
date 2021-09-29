@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("elements") {
   testonly = true
-  sources = [ "StylesSidebarPane_test.ts" ]
+  sources = [
+    "StylePropertyUtils_test.ts",
+    "StylesSidebarPane_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/panels/elements:bundle",

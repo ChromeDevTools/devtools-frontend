@@ -8,6 +8,7 @@ import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
@@ -225,7 +226,6 @@ describe('IssueAggregator', async () => {
 });
 
 describe('IssueAggregator', () => {
-  enableFeatureForTest('hideIssuesFeature');
   let hideIssueByCodeSetting: Common.Settings.Setting<IssuesManager.IssuesManager.HideIssueMenuSetting>;
   let showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
@@ -233,6 +233,7 @@ describe('IssueAggregator', () => {
   let aggregator: Issues.IssueAggregator.IssueAggregator;
 
   beforeEach(() => {
+    enableFeatureForTest('hideIssuesFeature');
     hideIssueByCodeSetting =
         createFakeSetting('hide by code', ({} as IssuesManager.IssuesManager.HideIssueMenuSetting));
     showThirdPartyIssuesSetting = createFakeSetting('third party flag', false);
@@ -240,6 +241,10 @@ describe('IssueAggregator', () => {
     mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     issuesManager.modelAdded(mockModel);
     aggregator = new Issues.IssueAggregator.IssueAggregator(issuesManager);
+  });
+
+  afterEach(() => {
+    Root.Runtime.experiments.clearForTest();
   });
 
   it('aggregates hidden issues correctly', () => {

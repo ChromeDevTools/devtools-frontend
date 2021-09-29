@@ -2627,6 +2627,9 @@
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Ŝh́ôẃ d̂ét̂áîĺŝ"
   },
+  "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
+    "message": "N̂ó r̂ép̂ór̂t́ŝ t́ô d́îśp̂ĺâý"
+  },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Ĉán̂ńôt́ r̂én̂d́êŕ ŝt́âćk̂ t́r̂áĉé"
   },
@@ -2849,11 +2852,11 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ŷéŝ"
   },
+  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
+    "message": "Ĉĺîćk̂ ón̂ án̂ý r̂ép̂ór̂t́ t̂ó d̂íŝṕl̂áŷ ít̂ś b̂ód̂ý"
+  },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "R̂ép̂ór̂t́îńĝ ÁP̂Í"
-  },
-  "panels/application/ReportingApiView.ts | noReportsToDisplay": {
-    "message": "N̂ó r̂ép̂ór̂t́ŝ t́ô d́îśp̂ĺâý"
   },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Ĉáĉh́ê"

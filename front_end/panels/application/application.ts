@@ -15,6 +15,7 @@ import * as DOMStorageModel from './DOMStorageModel.js';
 import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
+import * as ReportingApiReportsView from './ReportingApiReportsView.js';
 import * as ResourcesPanel from './ResourcesPanel.js';
 import * as ServiceWorkerCacheViews from './ServiceWorkerCacheViews.js';
 import * as ServiceWorkersView from './ServiceWorkersView.js';
@@ -36,6 +37,7 @@ export {
   IndexedDBModel,
   IndexedDBViews,
   OpenedWindowDetailsView,
+  ReportingApiReportsView,
   ResourcesPanel,
   ServiceWorkerCacheViews,
   ServiceWorkersView,

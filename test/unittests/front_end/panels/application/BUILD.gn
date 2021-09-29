@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("application") {
   testonly = true
-  sources = [ "ServiceWorkerUpdateCycleView_test.ts" ]
+  sources = [
+    "ReportingApiReportsView_test.ts",
+    "ServiceWorkerUpdateCycleView_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/core/sdk:bundle",

@@ -107,8 +107,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     }
 
     await ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populate(
-        this.treeOutline.rootElement(), object, true, true, undefined, undefined,
-        ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.All);
+        this.treeOutline.rootElement(), object, true, true, undefined, undefined);
   }
 
   private onNodeChange(event: Common.EventTarget

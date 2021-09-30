@@ -240,6 +240,11 @@ export class UserMetrics {
     }
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.Language, languageCode, size);
   }
+
+  showCorsErrorsSettingChanged(show: boolean): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ConsoleShowsCorsErrors, Number(show), 2);
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.

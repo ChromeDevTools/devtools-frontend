@@ -245,6 +245,7 @@ export async function toggleShowCorsErrors() {
   await click(CONSOLE_SETTINGS_SELECTOR);
   await waitFor(SHOW_CORS_ERRORS_SELECTOR);
   await click(SHOW_CORS_ERRORS_SELECTOR);
+  await click(CONSOLE_SETTINGS_SELECTOR);
 }
 
 async function getIssueButtonLabel(): Promise<string|null> {

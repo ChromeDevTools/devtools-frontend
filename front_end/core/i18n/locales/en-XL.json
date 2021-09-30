@@ -3329,6 +3329,9 @@
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "D̂ó n̂ót̂ ǵr̂óûṕ ŝím̂íl̂ár̂ ḿêśŝáĝéŝ ín̂ ćôńŝól̂é"
   },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "D̂ó n̂ót̂ śĥóŵ CORS ér̂ŕôŕŝ ín̂ ćôńŝól̂é"
+  },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "D̂ó n̂ót̂ t́r̂éât́ êv́âĺûát̂íôń âś ûśêŕ âćt̂ív̂át̂íôń"
   },
@@ -3361,6 +3364,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Ŝh́ôẃ Ĉón̂śôĺê"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "Ŝh́ôẃ CORS êŕr̂ór̂ś îń ĉón̂śôĺê"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "Ŝh́ôẃ m̂éŝśâǵêś f̂ŕôḿ âĺl̂ ćôńt̂éx̂t́ŝ"
@@ -3535,6 +3541,9 @@
   },
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Ŝh́ôẃ ĉón̂śôĺê śîd́êb́âŕ"
+  },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "Ŝh́ôẃ CORS êŕr̂ór̂ś îń ĉón̂śôĺê"
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} ôńl̂ý"

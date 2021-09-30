@@ -3329,6 +3329,9 @@
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "Do not group similar messages in console"
   },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "Do not show CORS errors in console"
+  },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "Do not treat evaluation as user activation"
   },
@@ -3361,6 +3364,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Show Console"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "Show CORS errors in console"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "Show messages from all contexts"
@@ -3535,6 +3541,9 @@
   },
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Show console sidebar"
+  },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "Show CORS errors in console"
   },
   "panels/console/ConsoleView.ts | sOnly": {
     "message": "{PH1} only"

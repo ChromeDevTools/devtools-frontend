@@ -1,0 +1,23 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!-- Intentionally trigger quirks mode -->
+<meta charset="utf-8">
+<script>
+  const url1 = new URL('./does-not-matter', document.location.toString())
+    .toString()
+    .replace('localhost', 'devtools.oopif.test');
+  fetch(url1, {
+    headers: { 'X-Foo': 'bar' },
+  });
+</script>
+<script>
+  const url2 = new URL('./method-disallowed.rawresponse', document.location.toString())
+    .toString()
+    .replace('localhost', 'devtools.oopif.test');
+  fetch(url2, {
+    headers: { 'X-Foo': 'bar' },
+  });
+</script>

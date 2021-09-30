@@ -80,6 +80,14 @@ const UIStrings = {
   */
   doNotGroupSimilarMessagesIn: 'Do not group similar messages in console',
   /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  showCorsErrorsInConsole: 'Show `CORS` errors in console',
+  /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  doNotShowCorsErrorsIn: 'Do not show `CORS` errors in console',
+  /**
   *@description Title of a setting under the Console category in Settings
   */
   eagerEvaluation: 'Eager evaluation',
@@ -306,6 +314,24 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotGroupSimilarMessagesIn),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  title: i18nLazyString(UIStrings.showCorsErrorsInConsole),
+  settingName: 'consoleShowsCorsErrors',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showCorsErrorsInConsole),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotShowCorsErrorsIn),
     },
   ],
 });

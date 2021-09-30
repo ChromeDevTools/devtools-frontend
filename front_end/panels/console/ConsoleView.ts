@@ -93,6 +93,10 @@ const UIStrings = {
   */
   groupSimilarMessagesInConsole: 'Group similar messages in console',
   /**
+  *@description Title of a setting under the Console category that can be invoked through the Command Menu
+  */
+  showCorsErrorsInConsole: 'Show `CORS` errors in console',
+  /**
   * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
   * open/show the sidebar.
   */
@@ -257,6 +261,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private readonly showSettingsPaneButton: UI.Toolbar.ToolbarSettingToggle;
   private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
   private readonly groupSimilarSetting: Common.Settings.Setting<boolean>;
+  private readonly showCorsErrorsSetting: Common.Settings.Setting<boolean>;
   private readonly preserveLogCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   private readonly hideNetworkMessagesCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   private readonly timestampsSetting: Common.Settings.Setting<unknown>;
@@ -366,6 +371,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
     const groupSimilarToggle = new UI.Toolbar.ToolbarSettingCheckbox(
         this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole));
+    this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('consoleShowsCorsErrors');
+    this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
+    const showCorsErrorsToggle = new UI.Toolbar.ToolbarSettingCheckbox(
+        this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
 
     const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
     toolbar.makeWrappable(true);
@@ -428,6 +437,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     settingsToolbarLeft.appendToolbarItem(this.preserveLogCheckbox);
     settingsToolbarLeft.appendToolbarItem(filterByExecutionContextCheckbox);
     settingsToolbarLeft.appendToolbarItem(groupSimilarToggle);
+    settingsToolbarLeft.appendToolbarItem(showCorsErrorsToggle);
 
     const settingsToolbarRight = new UI.Toolbar.Toolbar('', settingsPane.element);
     settingsToolbarRight.makeVertical();
@@ -862,6 +872,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   private appendMessageToEnd(viewMessage: ConsoleViewMessage, preventCollapse?: boolean): void {
+    if (viewMessage.consoleMessage().category === Protocol.Log.LogEntryCategory.Cors &&
+        !this.showCorsErrorsSetting.get()) {
+      return;
+    }
     if (!this.shouldMessageBeVisible(viewMessage)) {
       this.hiddenByFilterCount++;
       return;

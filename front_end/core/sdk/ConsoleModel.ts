@@ -520,6 +520,7 @@ export interface ConsoleMessageDetails {
   affectedResources?: AffectedResources;
   groupParent?: ConsoleMessage;
   groupChildren?: ConsoleMessage[];
+  category?: Protocol.Log.LogEntryCategory;
 }
 
 export class ConsoleMessage {
@@ -544,6 +545,7 @@ export class ConsoleMessage {
   private affectedResources?: AffectedResources;
   groupParent?: ConsoleMessage;
   groupChildren?: Array<ConsoleMessage>;
+  category?: Protocol.Log.LogEntryCategory;
 
   constructor(
       runtimeModel: RuntimeModel|null, source: MessageSource, level: Protocol.Log.LogEntryLevel|null,
@@ -565,6 +567,7 @@ export class ConsoleMessage {
     this.affectedResources = details?.affectedResources;
     this.groupParent = details?.groupParent;
     this.groupChildren = details?.groupChildren;
+    this.category = details?.category;
 
     if (!this.executionContextId && this.runtimeModelInternal) {
       if (this.scriptId) {

@@ -164,6 +164,7 @@
     forced-color-adjust: none;
     background: ButtonFace;
     box-shadow: var(--legacy-focus-ring-inactive-shadow);
+    color: fieldtext;
   }
 
   .filter-input-container:hover,

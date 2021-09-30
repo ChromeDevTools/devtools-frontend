@@ -226,6 +226,8 @@ export interface InspectorFrontendHostAPI {
   loadNetworkResource(
       url: string, headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void;
 
+  registerPreference(name: string, options: {synced?: boolean}): void;
+
   getPreferences(callback: (arg0: {
                    [x: string]: string,
                  }) => void): void;

@@ -522,6 +522,15 @@
 
     /**
      * @override
+     * @param {string} name
+     * @param {!{synced: (boolean|undefined)}} options
+     */
+    registerPreference(name, options) {
+      DevToolsAPI.sendMessageToEmbedder('registerPreference', [name, options], null);
+    }
+
+    /**
+     * @override
      * @param {function(!Object<string, string>)} callback
      */
     getPreferences(callback) {

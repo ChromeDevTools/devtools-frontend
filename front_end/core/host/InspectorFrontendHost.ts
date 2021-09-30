@@ -247,6 +247,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         });
   }
 
+  registerPreference(name: string, options: {synced?: boolean}): void {
+  }
+
   getPreferences(callback: (arg0: {
                    [x: string]: string,
                  }) => void): void {

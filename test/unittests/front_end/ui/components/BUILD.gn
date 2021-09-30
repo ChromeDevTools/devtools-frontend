@@ -35,5 +35,6 @@ ts_library("components") {
     "../../../../../front_end/ui/lit-html:bundle",
     "../../helpers",
     "./buttons",
+    "./text_editor",
   ]
 }

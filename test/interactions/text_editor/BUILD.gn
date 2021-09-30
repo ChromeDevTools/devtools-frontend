@@ -1,0 +1,16 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../third_party/typescript/typescript.gni")
+
+node_ts_library("text_editor") {
+  sources = [ "text_editor_test.ts" ]
+
+  deps = [
+    "../../../front_end/ui/components/text_editor:bundle",
+    "../../e2e/helpers",
+    "../../shared",
+    "../helpers",
+  ]
+}

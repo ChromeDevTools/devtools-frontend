@@ -11000,9 +11000,6 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "Thank you for your feedback"
   },
-  "ui/components/text_editor/config.ts | codeEditor": {
-    "message": "Code editor"
-  },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },

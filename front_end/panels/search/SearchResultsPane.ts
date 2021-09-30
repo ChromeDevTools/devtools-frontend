@@ -75,7 +75,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
   }
 }
 
-export const matchesExpandedByDefault = 20;
+export const matchesExpandedByDefault = 200;
 export const matchesShownAtOnce = 20;
 
 export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {

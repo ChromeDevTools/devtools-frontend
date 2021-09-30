@@ -9,6 +9,8 @@ import * as Resources from '../../../../../front_end/panels/application/applicat
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
+import {raf} from '../../helpers/DOMHelpers.js';
 
 import View = Resources.ReportingApiReportsView;
 
@@ -97,5 +99,32 @@ describeWithMockConnection('ReportingApiReportsView', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[0]);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportUpdated, successReport);
     assert.deepEqual(view.getReports(), [successReport]);
+  });
+
+  it('updates sidebarWidget upon receiving cellFocusedEvent', async () => {
+    if (!networkManager) {
+      throw new Error('No networkManager');
+    }
+    const view = new View.ReportingApiReportsView(networkManager);
+
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[0]);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[1]);
+    const grid = view.getReportsGrid();
+    const cells = [
+      {
+        columnId: 'id',
+        value: 'some_id',
+      },
+      {
+        columnId: 'status',
+        value: 'Queued',
+      },
+    ];
+    const stub = sinon.stub(view, 'setSidebarWidget');
+    assert.isTrue(stub.notCalled);
+    grid.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'status', value: 'Queued'}, {cells}));
+    await raf();
+    assert.isTrue(stub.calledOnce);
   });
 });

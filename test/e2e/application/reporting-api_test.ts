@@ -4,10 +4,10 @@
 
 import {assert} from 'chai';
 
-import {click, enableExperiment, getBrowserAndPages, getTestServerPort} from '../../shared/helper.js';
+import {click, enableExperiment, getBrowserAndPages, getTestServerPort, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
-import {getDataGrid, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
+import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
@@ -33,5 +33,12 @@ describe('The Reporting API Page', async () => {
     assert.strictEqual(innerText[0][2], 'Queued');
     assert.strictEqual(innerText[0][3], 'default');
     assert.strictEqual(innerText[0][5], reportBody);
+
+    const rows = await getDataGridRows(1, dataGrid, false);
+    await click(rows[rows.length - 1][0]);
+
+    const jsonView = await waitFor('.json-view');
+    const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);
+    assert.strictEqual(jsonViewText, '{columnNumber: 10, id: "PrefixedStorageInfo", lineNumber: 9,…}');
   });
 });

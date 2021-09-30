@@ -11,6 +11,8 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
 describe('Button', async () => {
+  const iconUrl = new URL('../../../../../../front_end/Images/ic_file_image.svg', import.meta.url).toString();
+
   async function renderButton(
       data: Buttons.Button.ButtonDataWithVariant = {
         variant: Buttons.Button.Variant.PRIMARY,
@@ -52,7 +54,7 @@ describe('Button', async () => {
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconUrl: 'icon.svg',
+          iconUrl,
         },
         'text');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -64,11 +66,33 @@ describe('Button', async () => {
     const button = await renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconUrl: 'icon.svg',
+          iconUrl,
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
     assert.isTrue(!innerButton.classList.contains('text-with-icon'));
     assert.isTrue(innerButton.classList.contains('only-icon'));
+  });
+
+  it('gets the `small` class set for the inner button if size === SMALL', async () => {
+    const button = await renderButton(
+        {
+          variant: Buttons.Button.Variant.PRIMARY,
+          size: Buttons.Button.Size.SMALL,
+        },
+        '');
+    const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
+    assert.isTrue(innerButton.classList.contains('small'));
+  });
+
+  it('does not get the `small` class set for the inner button if size === MEDIUM', async () => {
+    const button = await renderButton(
+        {
+          variant: Buttons.Button.Variant.PRIMARY,
+          iconUrl,
+        },
+        '');
+    const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
+    assert.isFalse(innerButton.classList.contains('small'));
   });
 });

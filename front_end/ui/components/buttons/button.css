@@ -34,6 +34,11 @@ button {
   width: 100%;
 }
 
+button.small {
+  height: 18px;
+  border-radius: 2px;
+}
+
 button:focus-visible {
   box-shadow: 0 0 0 2px var(--color-button-outline-focus);
 }
@@ -85,6 +90,10 @@ button.text-with-icon {
   padding: 0 12px 0 4px;
 }
 
+button.small.text-with-icon {
+  padding: 0 9px 0 3px;
+}
+
 button.only-icon {
   padding: 0;
 }
@@ -92,6 +101,11 @@ button.only-icon {
 button devtools-icon {
   width: 19px;
   height: 19px;
+}
+
+button.small devtools-icon {
+  width: 14px;
+  height: 14px;
 }
 
 button.primary devtools-icon {

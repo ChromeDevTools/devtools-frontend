@@ -55,7 +55,7 @@ secondaryIconButton.data = {
 };
 appendButton(secondaryIconButton);
 
-// Primary Icon
+// Primary Icon Only
 const primaryIconOnlyButton = new Buttons.Button.Button();
 primaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.PRIMARY,
@@ -65,7 +65,7 @@ primaryIconOnlyButton.onclick = () => alert('clicked');
 primaryIconOnlyButton.style.width = '25px';
 appendButton(primaryIconOnlyButton);
 
-// Secondary Icon
+// Secondary Icon Only
 const secondaryIconOnlyButton = new Buttons.Button.Button();
 secondaryIconOnlyButton.onclick = () => alert('clicked');
 secondaryIconOnlyButton.style.width = '25px';
@@ -74,3 +74,25 @@ secondaryIconOnlyButton.data = {
   iconUrl: testIcon,
 };
 appendButton(secondaryIconOnlyButton);
+
+// Small Primary Icon
+const smallPrimaryIconButton = new Buttons.Button.Button();
+smallPrimaryIconButton.innerText = 'Click me';
+smallPrimaryIconButton.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  iconUrl: testIcon,
+  size: Buttons.Button.Size.SMALL,
+};
+smallPrimaryIconButton.onclick = () => alert('clicked');
+appendButton(smallPrimaryIconButton);
+
+// Small Secondary Icon Only
+const smallSecondaryIconOnlyButton = new Buttons.Button.Button();
+smallSecondaryIconOnlyButton.onclick = () => alert('clicked');
+smallSecondaryIconOnlyButton.style.width = '18px';
+smallSecondaryIconOnlyButton.data = {
+  variant: Buttons.Button.Variant.SECONDARY,
+  iconUrl: testIcon,
+  size: Buttons.Button.Size.SMALL,
+};
+appendButton(smallSecondaryIconOnlyButton);

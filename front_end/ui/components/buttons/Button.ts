@@ -19,9 +19,15 @@ export const enum Variant {
   SECONDARY = 'secondary',
 }
 
+export const enum Size {
+  SMALL = 'SMALL',
+  MEDIUM = 'MEDIUM',
+}
+
 interface ButtonData {
   iconUrl?: string;
   variant?: Variant;
+  size?: Size;
 }
 
 export interface ButtonDataWithVariant extends ButtonData {
@@ -32,7 +38,9 @@ export class Button extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-button`;
   private readonly shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   private readonly boundRender = this.render.bind(this);
-  private readonly props: ButtonData = {};
+  private readonly props: ButtonData = {
+    size: Size.MEDIUM,
+  };
   private isEmpty = true;
 
   constructor() {
@@ -47,6 +55,7 @@ export class Button extends HTMLElement {
   set data(data: ButtonDataWithVariant) {
     this.props.variant = data.variant;
     this.props.iconUrl = data.iconUrl;
+    this.props.size = data.size || Size.MEDIUM;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
 
@@ -57,6 +66,11 @@ export class Button extends HTMLElement {
 
   set variant(variant: Variant) {
     this.props.variant = variant;
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+  }
+
+  set size(size: Size) {
+    this.props.size = size;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
 
@@ -85,6 +99,7 @@ export class Button extends HTMLElement {
       secondary: this.props.variant === Variant.SECONDARY,
       'text-with-icon': Boolean(this.props.iconUrl) && !this.isEmpty,
       'only-icon': Boolean(this.props.iconUrl) && this.isEmpty,
+      small: Boolean(this.props.size === Size.SMALL),
     };
     // clang-format off
     LitHtml.render(

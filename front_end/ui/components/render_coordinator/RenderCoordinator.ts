@@ -59,6 +59,11 @@ const UNNAMED_WRITE = 'Unnamed write';
 const UNNAMED_SCROLL = 'Unnamed scroll';
 const DEADLOCK_TIMEOUT = 1500;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).__getRenderCoordinatorPendingFrames = function(): number {
+  return RenderCoordinator.pendingFramesCount();
+};
+
 export class RenderCoordinator extends EventTarget {
   static instance({forceNew = false} = {}): RenderCoordinator {
     if (!renderCoordinatorInstance || forceNew) {
@@ -66,6 +71,14 @@ export class RenderCoordinator extends EventTarget {
     }
 
     return renderCoordinatorInstance;
+  }
+
+  static pendingFramesCount(): number {
+    if (!renderCoordinatorInstance) {
+      throw new Error('No render coordinator instance found.');
+    }
+
+    return renderCoordinatorInstance.pendingFramesCount();
   }
 
   // Toggle on to start tracking. You must call takeRecords() to
@@ -84,6 +97,10 @@ export class RenderCoordinator extends EventTarget {
   private readonly rejectors = new WeakMap<CoordinatorCallback, RenderCoordinatorRejectorCallback>();
   private readonly labels = new WeakMap<CoordinatorCallback, string>();
   private scheduledWorkId = 0;
+
+  pendingFramesCount(): number {
+    return this.pendingWorkFrames.length;
+  }
 
   done(): Promise<void> {
     if (this.pendingWorkFrames.length === 0) {

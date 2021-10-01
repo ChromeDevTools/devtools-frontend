@@ -16,6 +16,9 @@ declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __pendingEvents: Map<string, Event[]>;
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __getRenderCoordinatorPendingFrames(): number;
   }
 }
 
@@ -648,9 +651,14 @@ export const matchStringTable = (actual: string[][], expected: (string|RegExp)[]
     matchTable(actual, expected, matchString);
 
 export async function renderCoordinatorQueueEmpty(): Promise<void> {
-  const {frontend} = await getBrowserAndPages();
+  const {frontend} = getBrowserAndPages();
   await frontend.evaluate(() => {
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
+      const pendingFrames = globalThis.__getRenderCoordinatorPendingFrames();
+      if (pendingFrames < 1) {
+        resolve();
+        return;
+      }
       globalThis.addEventListener('renderqueueempty', resolve, {once: true});
     });
   });

@@ -140,6 +140,22 @@ describe('Render Coordinator', () => {
     }
   });
 
+  it('exposes the count of pending work', async () => {
+    const readDonePromise = coordinator.read('Named Read', () => {});
+    assert.strictEqual(coordinator.pendingFramesCount(), 1);
+    await readDonePromise;
+    assert.strictEqual(coordinator.pendingFramesCount(), 0);
+  });
+
+  it('exposes the pending work count globally for interaction/e2e tests', async () => {
+    const readDonePromise = coordinator.read('Named Read', () => {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    assert.strictEqual((globalThis as any).__getRenderCoordinatorPendingFrames(), 1);
+    await readDonePromise;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    assert.strictEqual((globalThis as any).__getRenderCoordinatorPendingFrames(), 0);
+  });
+
   describe('Logger', () => {
     it('only logs by default when provided with names', async () => {
       const expected = [

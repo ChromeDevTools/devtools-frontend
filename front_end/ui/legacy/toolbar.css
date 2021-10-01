@@ -417,11 +417,16 @@ devtools-icon.leading-issue-icon {
 @media (forced-colors: active) {
   .toolbar-button:disabled {
     opacity: 100%;
+    color: Graytext;
   }
 
   .toolbar-item,
   .toolbar-text {
     color: ButtonText;
+  }
+
+  .toolbar-button:disabled .toolbar-text {
+    color: Graytext;
   }
 
   select.toolbar-item:disabled,

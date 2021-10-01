@@ -21,15 +21,18 @@ export const history: string[] = [];
 
 export class QuickOpenImpl {
   private prefix: string|null;
-  private readonly query: string;
-  private readonly providers: Map<string, () => Promise<Provider>>;
   private readonly prefixes: string[];
+  private providers: Map<string, {
+    provider: () => Promise<Provider>,
+    titlePrefix: (() => string),
+    titleSuggestion?: (() => string),
+  }>;
   private filteredListWidget: FilteredListWidget|null;
+
   constructor() {
     this.prefix = null;
-    this.query = '';
-    this.providers = new Map();
     this.prefixes = [];
+    this.providers = new Map();
     this.filteredListWidget = null;
 
     getRegisteredProviders().forEach(this.addProvider.bind(this));
@@ -48,18 +51,27 @@ export class QuickOpenImpl {
   private addProvider(extension: {
     prefix: string,
     provider: () => Promise<Provider>,
+    titlePrefix: () => string,
+    titleSuggestion?: (() => string),
   }): void {
     const prefix = extension.prefix;
     if (prefix === null) {
       return;
     }
     this.prefixes.push(prefix);
-    this.providers.set(prefix, extension.provider);
+    this.providers.set(prefix, {
+      provider: extension.provider,
+      titlePrefix: extension.titlePrefix,
+      titleSuggestion: extension.titleSuggestion,
+    });
   }
 
   private async queryChanged(query: string): Promise<void> {
     const prefix = this.prefixes.find(prefix => query.startsWith(prefix));
     if (typeof prefix !== 'string' || this.prefix === prefix) {
+      if (query !== prefix && this.filteredListWidget) {
+        this.filteredListWidget.setCommandSuggestion('');
+      }
       return;
     }
 
@@ -68,8 +80,13 @@ export class QuickOpenImpl {
       return;
     }
     this.filteredListWidget.setPrefix(prefix);
+    const titlePrefixFunction = this.providers.get(prefix)?.titlePrefix;
+    this.filteredListWidget.setCommandPrefix(titlePrefixFunction ? titlePrefixFunction() : '');
+    const titleSuggestionFunction = this.providers.get(prefix)?.titleSuggestion;
+    this.filteredListWidget.setCommandSuggestion(titleSuggestionFunction ? titleSuggestionFunction() : '');
+
     this.filteredListWidget.setProvider(null);
-    const providerFunction = this.providers.get(prefix);
+    const providerFunction = this.providers.get(prefix)?.provider;
     if (!providerFunction) {
       return;
     }

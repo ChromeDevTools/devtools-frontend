@@ -27,13 +27,12 @@
   font-size: inherit;
 }
 
-.filtered-list-widget-input {
-  white-space: pre;
-  height: 18px;
-  margin-top: 12px;
-  overflow: hidden;
-  flex: auto;
-  border: 1px solid transparent;
+devtools-text-prompt {
+  flex: 0 0 40px;
+  font-size: 14px;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+  line-height: 16px;
+  padding: 12px;
 }
 
 .filtered-list-widget-hint {
@@ -246,7 +245,7 @@
     color: HighlightText;
   }
 
-  .filtered-list-widget-input {
+  devtools-text-prompt {
     border-color: ButtonText;
   }
 }

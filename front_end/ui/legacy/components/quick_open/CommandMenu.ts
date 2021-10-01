@@ -22,9 +22,13 @@ const UIStrings = {
   */
   noCommandsFound: 'No commands found',
   /**
-  * @description Text in Command Menu of the Command Menu
+  * @description Text for command prefix of run a command
   */
-  runCommand: 'Run Command',
+  run: 'Run',
+  /**
+  * @description Text for command suggestion of run a command
+  */
+  command: 'Command',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/CommandMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -388,6 +392,7 @@ export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate 
 registerProvider({
   prefix: '>',
   iconName: 'ic_command_run_command',
-  title: (): Common.UIString.LocalizedString => i18nString(UIStrings.runCommand),
   provider: () => Promise.resolve(CommandMenuProvider.instance()),
+  titlePrefix: (): Common.UIString.LocalizedString => i18nString(UIStrings.run),
+  titleSuggestion: (): Common.UIString.LocalizedString => i18nString(UIStrings.command),
 });

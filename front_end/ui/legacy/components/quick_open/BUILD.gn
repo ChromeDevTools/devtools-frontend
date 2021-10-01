@@ -23,6 +23,7 @@ devtools_module("quick_open") {
     "../../../../core/platform:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../third_party/diff:bundle",
+    "../../../../ui/components/text_prompt:bundle",
     "../../../../ui/legacy:bundle",
   ]
 }

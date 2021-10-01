@@ -9,6 +9,7 @@ export const enum ArrowKey {
   RIGHT = 'ArrowRight',
 }
 
+export const ENTER_KEY = 'Enter';
 export const ESCAPE_KEY = 'Escape';
 
 export const ARROW_KEYS = new Set<ArrowKey>([

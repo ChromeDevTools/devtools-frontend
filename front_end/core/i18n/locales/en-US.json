@@ -8651,8 +8651,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "No snippets found."
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "Run snippet"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "Run"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "Snippet"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Add"
@@ -9146,17 +9149,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluate selected text in console"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "File"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Filesystem"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "Go to"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "Go to a function declaration/rule set"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "Go to line"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "Go to symbol"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Increment CSS unit by {PH1}"
@@ -9167,14 +9173,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "Jump to previous editing location"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "Line"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Next call frame"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "None"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "Open file"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "Open"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "Pause script execution"
@@ -9265,6 +9274,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Switch file"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "Symbol"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Threads"
@@ -11417,14 +11429,17 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "Total"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "Command"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "No commands found"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "One or more settings have changed which requires a reload to take effect."
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "Run Command"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "Run"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "No results found"

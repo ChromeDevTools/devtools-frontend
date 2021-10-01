@@ -18,6 +18,7 @@ ts_library("components") {
     "MarkdownView_test.ts",
     "ReportView_test.ts",
     "SurveyLink_test.ts",
+    "TextPrompt_test.ts",
     "TreeOutline_test.ts",
   ]
 
@@ -31,6 +32,7 @@ ts_library("components") {
     "../../../../../front_end/ui/components/render_coordinator:bundle",
     "../../../../../front_end/ui/components/report_view:bundle",
     "../../../../../front_end/ui/components/survey_link:bundle",
+    "../../../../../front_end/ui/components/text_prompt:bundle",
     "../../../../../front_end/ui/components/tree_outline:bundle",
     "../../../../../front_end/ui/lit-html:bundle",
     "../../helpers",

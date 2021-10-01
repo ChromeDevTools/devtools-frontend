@@ -36,10 +36,15 @@ export class HelpQuickOpen extends Provider {
   private addProvider(extension: {
     prefix: string,
     iconName: string,
-    title?: () => string,
+    titlePrefix: () => string,
+    titleSuggestion?: () => string,
   }): void {
-    if (extension.title) {
-      this.providers.push({prefix: extension.prefix || '', iconName: extension.iconName, title: extension.title()});
+    if (extension.titleSuggestion) {
+      this.providers.push({
+        prefix: extension.prefix || '',
+        iconName: extension.iconName,
+        title: extension.titlePrefix() + ' ' + extension.titleSuggestion(),
+      });
     }
   }
 
@@ -84,6 +89,7 @@ export class HelpQuickOpen extends Provider {
 registerProvider({
   prefix: '?',
   iconName: 'ic_command_help',
-  title: undefined,
   provider: () => Promise.resolve(HelpQuickOpen.instance()),
+  titlePrefix: () => 'Help',
+  titleSuggestion: undefined,
 });

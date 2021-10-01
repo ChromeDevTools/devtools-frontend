@@ -8651,8 +8651,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "N̂ó ŝńîṕp̂ét̂ś f̂óûńd̂."
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "R̂ún̂ śn̂íp̂ṕêt́"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "R̂ún̂"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "Ŝńîṕp̂ét̂"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Âd́d̂"
@@ -9146,17 +9149,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Êv́âĺûát̂é ŝél̂éĉt́êd́ t̂éx̂t́ îń ĉón̂śôĺê"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "F̂íl̂é"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "F̂íl̂éŝýŝt́êḿ"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "Ĝó t̂ó"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "Ĝó t̂ó â f́ûńĉt́îón̂ d́êćl̂ár̂át̂íôń/r̂úl̂é ŝét̂"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "Ĝó t̂ó l̂ín̂é"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "Ĝó t̂ó ŝým̂b́ôĺ"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Îńĉŕêḿêńt̂ ĆŜŚ ûńît́ b̂ý {PH1}"
@@ -9167,14 +9173,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "Ĵúm̂ṕ t̂ó p̂ŕêv́îóûś êd́ît́îńĝ ĺôćât́îón̂"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "L̂ín̂é"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "N̂éx̂t́ ĉál̂ĺ f̂ŕâḿê"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "N̂ón̂é"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "Ôṕêń f̂íl̂é"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "Ôṕêń"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "P̂áûśê śĉŕîṕt̂ éx̂éĉút̂íôń"
@@ -9265,6 +9274,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Ŝẃît́ĉh́ f̂íl̂é"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "Ŝým̂b́ôĺ"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "T̂h́r̂éâd́ŝ"
@@ -11417,14 +11429,17 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "T̂ót̂ál̂"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "Ĉóm̂ḿâńd̂"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "N̂ó ĉóm̂ḿâńd̂ś f̂óûńd̂"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Ôńê ór̂ ḿôŕê śêt́t̂ín̂ǵŝ h́âv́ê ćĥán̂ǵêd́ ŵh́îćĥ ŕêq́ûír̂éŝ á r̂él̂óâd́ t̂ó t̂ák̂é êf́f̂éĉt́."
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "R̂ún̂ Ćôḿm̂án̂d́"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "R̂ún̂"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "N̂ó r̂éŝúl̂t́ŝ f́ôún̂d́"

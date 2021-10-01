@@ -348,13 +348,25 @@ const UIStrings = {
   */
   disallowScrollingPastEndOfFile: 'Disallow scrolling past end of file',
   /**
-  *@description Title of the Filtered List WidgetProvider of Quick Open
+  *@description Text for command prefix of go to a given line or symbol
   */
-  goToSymbol: 'Go to symbol',
+  goTo: 'Go to',
   /**
-  *@description Text to open a file
+  *@description Text for command suggestion of go to a given line
   */
-  openFile: 'Open file',
+  line: 'Line',
+  /**
+  *@description Text for command suggestion of go to a given symbol
+  */
+  symbol: 'Symbol',
+  /**
+  *@description Text for command prefix of open a file
+  */
+  open: 'Open',
+  /**
+  *@description Text for command suggestion of open a file
+  */
+  file: 'File',
   /**
   * @description  Title of a setting under the Sources category in Settings. If this option is off,
   * the sources panel will not be automatically be focsed whenever the application hits a breakpoint
@@ -1688,29 +1700,32 @@ UI.ContextMenu.registerItem({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '@',
   iconName: 'ic_command_go_to_symbol',
-  title: i18nLazyString(UIStrings.goToSymbol),
   async provider() {
     const Sources = await loadSourcesModule();
     return Sources.OutlineQuickOpen.OutlineQuickOpen.instance();
   },
+  titlePrefix: i18nLazyString(UIStrings.goTo),
+  titleSuggestion: i18nLazyString(UIStrings.symbol),
 });
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: ':',
   iconName: 'ic_command_go_to_line',
-  title: i18nLazyString(UIStrings.goToLine),
   async provider() {
     const Sources = await loadSourcesModule();
     return Sources.GoToLineQuickOpen.GoToLineQuickOpen.instance();
   },
+  titlePrefix: i18nLazyString(UIStrings.goTo),
+  titleSuggestion: i18nLazyString(UIStrings.line),
 });
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '',
   iconName: 'ic_command_open_file',
-  title: i18nLazyString(UIStrings.openFile),
   async provider() {
     const Sources = await loadSourcesModule();
     return Sources.OpenFileQuickOpen.OpenFileQuickOpen.instance();
   },
+  titlePrefix: i18nLazyString(UIStrings.open),
+  titleSuggestion: i18nLazyString(UIStrings.file),
 });

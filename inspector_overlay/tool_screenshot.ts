@@ -4,6 +4,13 @@
 
 import {Overlay} from './common.js';
 
+export type ScreenshotToolMessage = {
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+};
+
 let anchor: {x: number, y: number}|null = null;
 let position: {x: number, y: number}|null = null;
 
@@ -56,7 +63,7 @@ export class ScreenshotOverlay extends Overlay {
     if (anchor && position) {
       const rect = currentRect();
       if (rect.width >= 5 && rect.height >= 5) {
-        this.window.InspectorOverlayHost.send(JSON.stringify(rect));
+        this.window.InspectorOverlayHost.send(rect);
       }
     }
     cancel();

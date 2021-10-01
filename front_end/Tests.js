@@ -888,9 +888,8 @@
 
     this.addSniffer(SDK.NetworkDispatcher.prototype, 'finishNetworkRequest', finishRequest);
 
-    // Allow more time for this test as it needs to reload the inspected page.
-    test.takeControl({slownessFactor: 10});
-    test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
+    test.takeControl();
+    test.evaluateInConsole_('await fetch("/");', function(resultText) {});
   };
 
   TestSuite.prototype.testEmulateNetworkConditions = function() {

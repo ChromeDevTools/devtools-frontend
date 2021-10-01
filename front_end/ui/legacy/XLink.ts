@@ -29,7 +29,7 @@ export class XLink extends XElement {
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
     const element = html `
-  <x-link href='${url}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
+  <x-link href='${url}' tabindex="0" class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
   >${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
     return /** @type {!HTMLElement} */ element as HTMLElement;

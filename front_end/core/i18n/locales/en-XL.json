@@ -11012,6 +11012,9 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "T̂h́âńk̂ ýôú f̂ór̂ ýôúr̂ f́êéd̂b́âćk̂"
   },
+  "ui/components/text_editor/config.ts | codeEditor": {
+    "message": "Ĉód̂é êd́ît́ôŕ"
+  },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "ÂÁ"
   },

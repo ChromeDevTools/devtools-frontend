@@ -107,9 +107,18 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'showWebVitals', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webpFormatDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'jpegXlFormatDisabled', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allowScrollPastEof', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'cssSourceMapsEnabled', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'inlineVariableValues', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'jsSourceMapsEnabled', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'showWhitespacesInEditor', 'none'),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorAutocompletion', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorAutoDetectIndent', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorBracketMatching', true),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorCodeFolding', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorIndent', '    '),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'textEditorTabMovesFocus', false),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'domWordWrap', true),
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
@@ -127,6 +136,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.CONSOLE, 'monitoringXHREnabled', false),
     createSettingValue(
         Common.Settings.SettingCategory.NONE, 'customNetworkConditions', [], Common.Settings.SettingType.ARRAY),
+    createSettingValue(
+        Common.Settings.SettingCategory.APPEARANCE, 'uiTheme', 'systemPreferred', Common.Settings.SettingType.ENUM),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

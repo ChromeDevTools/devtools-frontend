@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, enableExperiment, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent, waitForFunctionWithTries} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
@@ -43,8 +43,6 @@ describe('The Sources Tab', async () => {
   }
 
   it('steps over a source line mapping to a range with several statements', async () => {
-    await enableExperiment('emptySourceMapAutoStepping');
-
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-stepping.html');
@@ -78,8 +76,6 @@ describe('The Sources Tab', async () => {
   });
 
   it('steps over a source line with mappings to several adjacent target lines', async () => {
-    await enableExperiment('emptySourceMapAutoStepping');
-
     const {target, frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-stepping.html');
 

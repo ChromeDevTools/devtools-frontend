@@ -546,7 +546,6 @@ export const DevtoolsExperiments: {
   'backgroundServicesPushMessaging': 6,
   'blackboxJSFramesOnTimeline': 7,
   'cssOverview': 8,
-  'emptySourceMapAutoStepping': 9,
   'inputEventsOnTimelineOverview': 10,
   'liveHeapProfile': 11,
   'protocolMonitor': 13,

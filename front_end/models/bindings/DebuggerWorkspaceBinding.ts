@@ -90,8 +90,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       return true;
     }
 
-    // TODO(crbug.com/1018234): Also take into account source maps here and remove the auto-stepping
-    // logic in the front-end (which is currently still an experiment) completely.
     const rawLocation = callFrame.location();
     if (!rawLocation) {
       return [];
@@ -116,10 +114,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
         }
         return ranges;
       }
-    }
-
-    if (!Root.Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
-      return [];
     }
 
     const compilerMapping = this.debuggerModelToData.get(rawLocation.debuggerModel)?.compilerMapping;

@@ -462,23 +462,26 @@ function hideFromLayout(element: HTMLElement): void {
 
 let alertElement: HTMLElement|undefined;
 
-function createAriaAlertElement(): HTMLElement {
-  const element = document.body.createChild('div') as HTMLElement;
-  hideFromLayout(element);
-  element.setAttribute('role', 'alert');
-  element.setAttribute('aria-atomic', 'true');
-  return element;
+export function alertElementInstance(): HTMLElement {
+  if (!alertElement) {
+    const element = document.body.createChild('div') as HTMLElement;
+    hideFromLayout(element);
+    element.setAttribute('role', 'alert');
+    element.setAttribute('aria-atomic', 'true');
+    alertElement = element;
+  }
+  return alertElement;
 }
+
 /**
  * This function is used to announce a message with the screen reader.
  * Setting the textContent would allow the SR to access the offscreen element via browse mode
  */
 export function alert(message: string): void {
-  if (!alertElement) {
-    alertElement = createAriaAlertElement();
-  }
+  const element = alertElementInstance();
+
   // We first set the textContent to blank so that the string will announce even if it is replaced
   // with the same string.
-  alertElement.textContent = '';
-  alertElement.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
+  element.textContent = '';
+  element.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
 }

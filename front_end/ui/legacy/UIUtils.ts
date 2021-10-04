@@ -344,7 +344,9 @@ export function isEditing(): boolean {
   if (!focused) {
     return false;
   }
-  return focused.classList.contains('text-prompt') || focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA';
+  return focused.classList.contains('text-prompt') || focused.nodeName === 'INPUT' || focused.nodeName === 'TEXTAREA' ||
+      ((focused as HTMLElement).contentEditable === 'true' ||
+       (focused as HTMLElement).contentEditable === 'plaintext-only');
 }
 
 export function markBeingEdited(element: Element, value: boolean): boolean {

@@ -60,7 +60,10 @@ devtools_module("common") {
 devtools_entrypoint("bundle") {
   entrypoint = "common.ts"
 
-  deps = [ ":common" ]
+  deps = [
+    ":ColorUtils",
+    ":common",
+  ]
 
   visibility = [ "*" ]
 }

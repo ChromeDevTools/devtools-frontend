@@ -21,6 +21,7 @@ config.gypi
 /interactions-coverage
 /perf-data
 npm-debug.log
+/scripts/javascript_natives/node_modules
 /scripts/protocol_typescript/*.js
 
 /build

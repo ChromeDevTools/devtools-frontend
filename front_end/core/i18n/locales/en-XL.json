@@ -3299,12 +3299,6 @@
   "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
     "message": "{n, plural, =1 {# ŵár̂ńîńĝ} other {# ẃâŕn̂ín̂ǵŝ}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "T̂h́îś ŝíd̂éb̂ár̂ ẃîĺl̂ b́ê ŕêḿôv́êd́ îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é. Îf́ ŷóû h́âv́ê f́êéd̂b́âćk̂, ṕl̂éâśê ĺêt́ ûś k̂ńôẃ v̂íâ t́ĥé"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "îśŝúê t́r̂áĉḱêŕ"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Âút̂óĉóm̂ṕl̂ét̂é f̂ŕôḿ ĥíŝt́ôŕŷ"
   },

@@ -3299,12 +3299,6 @@
   "panels/console_counters/WarningErrorCounter.ts | sWarnings": {
     "message": "{n, plural, =1 {# warning} other {# warnings}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "This sidebar will be removed in a future version of Chrome. If you have feedback, please let us know via the"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "issue tracker"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autocomplete from history"
   },

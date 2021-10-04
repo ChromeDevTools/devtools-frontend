@@ -9,13 +9,13 @@ import type {CSSModel} from './CSSModel.js';
 import {CSSQuery} from './CSSQuery.js';
 
 export class CSSMediaQuery {
-  private readonly activeInternal: boolean;
-  private readonly expressionsInternal: CSSMediaQueryExpression[]|null;
+  readonly #activeInternal: boolean;
+  readonly #expressionsInternal: CSSMediaQueryExpression[]|null;
   constructor(payload: Protocol.CSS.MediaQuery) {
-    this.activeInternal = payload.active;
-    this.expressionsInternal = [];
+    this.#activeInternal = payload.active;
+    this.#expressionsInternal = [];
     for (let j = 0; j < payload.expressions.length; ++j) {
-      this.expressionsInternal.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+      this.#expressionsInternal.push(CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
     }
   }
 
@@ -24,26 +24,26 @@ export class CSSMediaQuery {
   }
 
   active(): boolean {
-    return this.activeInternal;
+    return this.#activeInternal;
   }
 
   expressions(): CSSMediaQueryExpression[]|null {
-    return this.expressionsInternal;
+    return this.#expressionsInternal;
   }
 }
 
 export class CSSMediaQueryExpression {
-  private readonly valueInternal: number;
-  private readonly unitInternal: string;
-  private readonly featureInternal: string;
-  private readonly valueRangeInternal: TextUtils.TextRange.TextRange|null;
-  private readonly computedLengthInternal: number|null;
+  readonly #valueInternal: number;
+  readonly #unitInternal: string;
+  readonly #featureInternal: string;
+  readonly #valueRangeInternal: TextUtils.TextRange.TextRange|null;
+  readonly #computedLengthInternal: number|null;
   constructor(payload: Protocol.CSS.MediaQueryExpression) {
-    this.valueInternal = payload.value;
-    this.unitInternal = payload.unit;
-    this.featureInternal = payload.feature;
-    this.valueRangeInternal = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
-    this.computedLengthInternal = payload.computedLength || null;
+    this.#valueInternal = payload.value;
+    this.#unitInternal = payload.unit;
+    this.#featureInternal = payload.feature;
+    this.#valueRangeInternal = payload.valueRange ? TextUtils.TextRange.TextRange.fromObject(payload.valueRange) : null;
+    this.#computedLengthInternal = payload.computedLength || null;
   }
 
   static parsePayload(payload: Protocol.CSS.MediaQueryExpression): CSSMediaQueryExpression {
@@ -51,23 +51,23 @@ export class CSSMediaQueryExpression {
   }
 
   value(): number {
-    return this.valueInternal;
+    return this.#valueInternal;
   }
 
   unit(): string {
-    return this.unitInternal;
+    return this.#unitInternal;
   }
 
   feature(): string {
-    return this.featureInternal;
+    return this.#featureInternal;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
-    return this.valueRangeInternal;
+    return this.#valueRangeInternal;
   }
 
   computedLength(): number|null {
-    return this.computedLengthInternal;
+    return this.#computedLengthInternal;
   }
 }
 

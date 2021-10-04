@@ -725,11 +725,11 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
     return element.innerText.replace(/\u200b/g, '').replace(/\n/g, '\\n').trim();
   }
 
-  function dumpMap(name, map) {
+  function dumpMap(name, node) {
     const result = [];
 
-    for (const id of map.keys()) {
-      result.push(id + '=' + map.get(id));
+    for (const id of node.getMarkerKeysForTest()) {
+      result.push(id + '=' + node.marker(id));
     }
 
     if (!result.length) {
@@ -748,7 +748,7 @@ ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
     const node = treeItem.node && treeItem.node();
 
     if (node) {
-      markers += dumpMap('markers', node.markers);
+      markers += dumpMap('markers', node);
       const dump = (node.subtreeMarkerCount ? 'subtreeMarkerCount:' + node.subtreeMarkerCount : '');
 
       if (dump) {

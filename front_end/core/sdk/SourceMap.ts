@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2012 Google Inc. All rights reserved.
  *
@@ -11,7 +15,7 @@
  * copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the
  * distribution.
- *     * Neither the name of Google Inc. nor the names of its
+ *     * Neither the #name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  *
@@ -133,13 +137,13 @@ for (let i = 0; i < base64Digits.length; ++i) {
 const sourceMapToSourceList = new WeakMap<SourceMapV3, string[]>();
 
 export class TextSourceMap implements SourceMap {
-  private readonly initiator: PageResourceLoadInitiator;
-  private json: SourceMapV3|null;
-  private readonly compiledURLInternal: string;
-  private readonly sourceMappingURL: string;
-  private readonly baseURL: string;
-  private mappingsInternal: SourceMapEntry[]|null;
-  private readonly sourceInfos: Map<string, TextSourceMap.SourceInfo>;
+  readonly #initiator: PageResourceLoadInitiator;
+  #json: SourceMapV3|null;
+  readonly #compiledURLInternal: string;
+  readonly #sourceMappingURL: string;
+  readonly #baseURL: string;
+  #mappingsInternal: SourceMapEntry[]|null;
+  readonly #sourceInfos: Map<string, TextSourceMap.SourceInfo>;
 
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
@@ -147,16 +151,16 @@ export class TextSourceMap implements SourceMap {
    */
   constructor(
       compiledURL: string, sourceMappingURL: string, payload: SourceMapV3, initiator: PageResourceLoadInitiator) {
-    this.initiator = initiator;
-    this.json = payload;
-    this.compiledURLInternal = compiledURL;
-    this.sourceMappingURL = sourceMappingURL;
-    this.baseURL = sourceMappingURL.startsWith('data:') ? compiledURL : sourceMappingURL;
+    this.#initiator = initiator;
+    this.#json = payload;
+    this.#compiledURLInternal = compiledURL;
+    this.#sourceMappingURL = sourceMappingURL;
+    this.#baseURL = sourceMappingURL.startsWith('data:') ? compiledURL : sourceMappingURL;
 
-    this.mappingsInternal = null;
-    this.sourceInfos = new Map();
-    if (this.json.sections) {
-      const sectionWithURL = Boolean(this.json.sections.find(section => Boolean(section.url)));
+    this.#mappingsInternal = null;
+    this.#sourceInfos = new Map();
+    if (this.#json.sections) {
+      const sectionWithURL = Boolean(this.#json.sections.find(section => Boolean(section.url)));
       if (sectionWithURL) {
         Common.Console.Console.instance().warn(
             `SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
@@ -190,28 +194,28 @@ export class TextSourceMap implements SourceMap {
   }
 
   compiledURL(): string {
-    return this.compiledURLInternal;
+    return this.#compiledURLInternal;
   }
 
   url(): string {
-    return this.sourceMappingURL;
+    return this.#sourceMappingURL;
   }
 
   sourceURLs(): string[] {
-    return [...this.sourceInfos.keys()];
+    return [...this.#sourceInfos.keys()];
   }
 
   sourceContentProvider(sourceURL: string, contentType: Common.ResourceType.ResourceType):
       TextUtils.ContentProvider.ContentProvider {
-    const info = this.sourceInfos.get(sourceURL);
+    const info = this.#sourceInfos.get(sourceURL);
     if (info && info.content) {
       return TextUtils.StaticContentProvider.StaticContentProvider.fromString(sourceURL, contentType, info.content);
     }
-    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this.initiator);
+    return new CompilerSourceMappingContentProvider(sourceURL, contentType, this.#initiator);
   }
 
   embeddedContentByURL(sourceURL: string): string|null {
-    const entry = this.sourceInfos.get(sourceURL);
+    const entry = this.#sourceInfos.get(sourceURL);
     if (!entry) {
       return null;
     }
@@ -294,16 +298,16 @@ export class TextSourceMap implements SourceMap {
   }
 
   mappings(): SourceMapEntry[] {
-    if (this.mappingsInternal === null) {
-      this.mappingsInternal = [];
+    if (this.#mappingsInternal === null) {
+      this.#mappingsInternal = [];
       this.eachSection(this.parseMap.bind(this));
-      this.json = null;
+      this.#json = null;
     }
-    return /** @type {!Array<!SourceMapEntry>} */ this.mappingsInternal as SourceMapEntry[];
+    return /** @type {!Array<!SourceMapEntry>} */ this.#mappingsInternal as SourceMapEntry[];
   }
 
   private reversedMappings(sourceURL: string): number[] {
-    const info = this.sourceInfos.get(sourceURL);
+    const info = this.#sourceInfos.get(sourceURL);
     if (!info) {
       return [];
     }
@@ -334,14 +338,14 @@ export class TextSourceMap implements SourceMap {
   }
 
   private eachSection(callback: (arg0: SourceMapV3, arg1: number, arg2: number) => void): void {
-    if (!this.json) {
+    if (!this.#json) {
       return;
     }
-    if (!this.json.sections) {
-      callback(this.json, 0, 0);
+    if (!this.#json.sections) {
+      callback(this.#json, 0, 0);
       return;
     }
-    for (const section of this.json.sections) {
+    for (const section of this.#json.sections) {
       callback(section.map, section.offset.line, section.offset.column);
     }
   }
@@ -354,12 +358,12 @@ export class TextSourceMap implements SourceMap {
     }
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       const href = sourceRoot + sourceMap.sources[i];
-      let url = Common.ParsedURL.ParsedURL.completeURL(this.baseURL, href) || href;
+      let url = Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
       const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
-      if (url === this.compiledURLInternal && source) {
+      if (url === this.#compiledURLInternal && source) {
         url += '? [sm]';
       }
-      this.sourceInfos.set(url, new TextSourceMap.SourceInfo(source || null, null));
+      this.#sourceInfos.set(url, new TextSourceMap.SourceInfo(source || null, null));
       sourcesList.push(url);
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);

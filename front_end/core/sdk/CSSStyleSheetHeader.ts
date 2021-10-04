@@ -27,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentProvider, FrameAssociated {
-  private cssModelInternal: CSSModel;
+  #cssModelInternal: CSSModel;
   id: Protocol.CSS.StyleSheetId;
   frameId: Protocol.Page.FrameId;
   sourceURL: string;
@@ -45,10 +45,10 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   contentLength: number;
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: string|undefined;
-  private originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
+  #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
-    this.cssModelInternal = cssModel;
+    this.#cssModelInternal = cssModel;
     this.id = payload.styleSheetId;
     this.frameId = payload.frameId;
     this.sourceURL = payload.sourceURL;
@@ -68,22 +68,22 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
       this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
     this.sourceMapURL = payload.sourceMapURL;
-    this.originalContentProviderInternal = null;
+    this.#originalContentProviderInternal = null;
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
-    if (!this.originalContentProviderInternal) {
+    if (!this.#originalContentProviderInternal) {
       const lazyContent = (async(): Promise<TextUtils.ContentProvider.DeferredContent> => {
-        const originalText = await this.cssModelInternal.originalStyleSheetText(this);
+        const originalText = await this.#cssModelInternal.originalStyleSheetText(this);
         if (originalText === null) {
           return {content: null, error: i18nString(UIStrings.couldNotFindTheOriginalStyle), isEncoded: false};
         }
         return {content: originalText, isEncoded: false};
       });
-      this.originalContentProviderInternal =
+      this.#originalContentProviderInternal =
           new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
-    return this.originalContentProviderInternal;
+    return this.#originalContentProviderInternal;
   }
 
   setSourceMapURL(sourceMapURL?: string): void {
@@ -91,11 +91,11 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   cssModel(): CSSModel {
-    return this.cssModelInternal;
+    return this.#cssModelInternal;
   }
 
   isAnonymousInlineStyleSheet(): boolean {
-    return !this.resourceURL() && !this.cssModelInternal.sourceMapManager().sourceMapForClient(this);
+    return !this.resourceURL() && !this.#cssModelInternal.sourceMapManager().sourceMapForClient(this);
   }
 
   isConstructedByNew(): boolean {
@@ -107,7 +107,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   private viaInspectorResourceURL(): string {
-    const model = this.cssModelInternal.target().model(ResourceTreeModel);
+    const model = this.#cssModelInternal.target().model(ResourceTreeModel);
     console.assert(Boolean(model));
     if (!model) {
       return '';
@@ -159,7 +159,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
 
   async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
     try {
-      const cssText = await this.cssModelInternal.getStyleSheetText(this.id);
+      const cssText = await this.#cssModelInternal.getStyleSheetText(this.id);
       return {content: (cssText as string), isEncoded: false};
     } catch (err) {
       return {

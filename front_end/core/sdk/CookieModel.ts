@@ -15,31 +15,31 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class CookieModel extends SDKModel<void> {
-  private readonly blockedCookies: Map<string, Cookie>;
-  private readonly cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
+  readonly #blockedCookies: Map<string, Cookie>;
+  readonly #cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
   constructor(target: Target) {
     super(target);
 
-    this.blockedCookies = new Map();
-    this.cookieToBlockedReasons = new Map();
+    this.#blockedCookies = new Map();
+    this.#cookieToBlockedReasons = new Map();
   }
 
   addBlockedCookie(cookie: Cookie, blockedReasons: BlockedReason[]|null): void {
     const key = cookie.key();
-    const previousCookie = this.blockedCookies.get(key);
-    this.blockedCookies.set(key, cookie);
+    const previousCookie = this.#blockedCookies.get(key);
+    this.#blockedCookies.set(key, cookie);
     if (blockedReasons) {
-      this.cookieToBlockedReasons.set(cookie, blockedReasons);
+      this.#cookieToBlockedReasons.set(cookie, blockedReasons);
     } else {
-      this.cookieToBlockedReasons.delete(cookie);
+      this.#cookieToBlockedReasons.delete(cookie);
     }
     if (previousCookie) {
-      this.cookieToBlockedReasons.delete(previousCookie);
+      this.#cookieToBlockedReasons.delete(previousCookie);
     }
   }
 
   getCookieToBlockedReasonsMap(): ReadonlyMap<Cookie, BlockedReason[]> {
-    return this.cookieToBlockedReasons;
+    return this.#cookieToBlockedReasons;
   }
 
   async getCookies(urls: string[]): Promise<Cookie[]> {
@@ -48,7 +48,7 @@ export class CookieModel extends SDKModel<void> {
       return [];
     }
     const normalCookies = response.cookies.map(Cookie.fromProtocolCookie);
-    return normalCookies.concat(Array.from(this.blockedCookies.values()));
+    return normalCookies.concat(Array.from(this.#blockedCookies.values()));
   }
 
   async deleteCookie(cookie: Cookie): Promise<void> {
@@ -129,8 +129,8 @@ export class CookieModel extends SDKModel<void> {
 
   async deleteCookies(cookies: Cookie[]): Promise<void> {
     const networkAgent = this.target().networkAgent();
-    this.blockedCookies.clear();
-    this.cookieToBlockedReasons.clear();
+    this.#blockedCookies.clear();
+    this.#cookieToBlockedReasons.clear();
     await Promise.all(cookies.map(
         cookie => networkAgent.invoke_deleteCookies(
             {name: cookie.name(), url: undefined, domain: cookie.domain(), path: cookie.path()})));

@@ -49,12 +49,12 @@ export class ProfileNode {
 }
 
 export class ProfileTreeModel {
-  private readonly targetInternal: Target|null;
+  readonly #targetInternal: Target|null;
   root!: ProfileNode;
   total!: number;
   maxDepth!: number;
   constructor(target?: Target|null) {
-    this.targetInternal = target || null;
+    this.#targetInternal = target || null;
   }
 
   initialize(root: ProfileNode): void {
@@ -105,6 +105,6 @@ export class ProfileTreeModel {
   }
 
   target(): Target|null {
-    return this.targetInternal;
+    return this.#targetInternal;
   }
 }

@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2012 Google Inc. All rights reserved.
  *
@@ -11,7 +15,7 @@
  * copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the
  * distribution.
- *     * Neither the name of Google Inc. nor the names of its
+ *     * Neither the #name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  *
@@ -166,7 +170,7 @@ const UIStrings = {
   */
   blockedReasonInvalidPrefix: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because it used the "`__Secure-`" or "`__Host-`" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in `https://tools.ietf.org/html/draft-west-cookie-prefixes-05`.',
   /**
-   *@description Tooltip to explain why a cookie was blocked when the size of the name plus the size of the value exceeds the max size.
+   *@description Tooltip to explain why a cookie was blocked when the size of the #name plus the size of the value exceeds the max size.
   */
   thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because the cookie was too large. The combined size of the name and value must be less than or equal to 4096 characters.',
   /**
@@ -198,94 +202,94 @@ export enum MIME_TYPE {
 
 export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     TextUtils.ContentProvider.ContentProvider {
-  private requestIdInternal: string;
-  private backendRequestIdInternal?: Protocol.Network.RequestId;
-  private readonly documentURLInternal: string;
-  private readonly frameIdInternal: Protocol.Page.FrameId|null;
-  private readonly loaderIdInternal: Protocol.Network.LoaderId|null;
-  private readonly initiatorInternal: Protocol.Network.Initiator|null|undefined;
-  private redirectSourceInternal: NetworkRequest|null;
-  private preflightRequestInternal: NetworkRequest|null;
-  private preflightInitiatorRequestInternal: NetworkRequest|null;
-  private isRedirectInternal: boolean;
-  private redirectDestinationInternal: NetworkRequest|null;
-  private issueTimeInternal: number;
-  private startTimeInternal: number;
-  private endTimeInternal: number;
-  private blockedReasonInternal: Protocol.Network.BlockedReason|undefined;
-  private corsErrorStatusInternal: Protocol.Network.CorsErrorStatus|undefined;
+  #requestIdInternal: string;
+  #backendRequestIdInternal?: Protocol.Network.RequestId;
+  readonly #documentURLInternal: string;
+  readonly #frameIdInternal: Protocol.Page.FrameId|null;
+  readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
+  readonly #initiatorInternal: Protocol.Network.Initiator|null|undefined;
+  #redirectSourceInternal: NetworkRequest|null;
+  #preflightRequestInternal: NetworkRequest|null;
+  #preflightInitiatorRequestInternal: NetworkRequest|null;
+  #isRedirectInternal: boolean;
+  #redirectDestinationInternal: NetworkRequest|null;
+  #issueTimeInternal: number;
+  #startTimeInternal: number;
+  #endTimeInternal: number;
+  #blockedReasonInternal: Protocol.Network.BlockedReason|undefined;
+  #corsErrorStatusInternal: Protocol.Network.CorsErrorStatus|undefined;
   statusCode: number;
   statusText: string;
   requestMethod: string;
   requestTime: number;
   protocol: string;
   mixedContentType: Protocol.Security.MixedContentType;
-  private initialPriorityInternal: Protocol.Network.ResourcePriority|null;
-  private currentPriority: Protocol.Network.ResourcePriority|null;
-  private signedExchangeInfoInternal: Protocol.Network.SignedExchangeInfo|null;
-  private webBundleInfoInternal: WebBundleInfo|null;
-  private webBundleInnerRequestInfoInternal: WebBundleInnerRequestInfo|null;
-  private resourceTypeInternal: Common.ResourceType.ResourceType;
-  private contentDataInternal: Promise<ContentData>|null;
-  private readonly framesInternal: WebSocketFrame[];
-  private readonly eventSourceMessagesInternal: EventSourceMessage[];
-  private responseHeaderValues: {
+  #initialPriorityInternal: Protocol.Network.ResourcePriority|null;
+  #currentPriority: Protocol.Network.ResourcePriority|null;
+  #signedExchangeInfoInternal: Protocol.Network.SignedExchangeInfo|null;
+  #webBundleInfoInternal: WebBundleInfo|null;
+  #webBundleInnerRequestInfoInternal: WebBundleInnerRequestInfo|null;
+  #resourceTypeInternal: Common.ResourceType.ResourceType;
+  #contentDataInternal: Promise<ContentData>|null;
+  readonly #framesInternal: WebSocketFrame[];
+  readonly #eventSourceMessagesInternal: EventSourceMessage[];
+  #responseHeaderValues: {
     [x: string]: string|undefined,
   };
-  private responseHeadersTextInternal: string;
-  private requestHeadersInternal: NameValue[];
-  private requestHeaderValues: {
+  #responseHeadersTextInternal: string;
+  #requestHeadersInternal: NameValue[];
+  #requestHeaderValues: {
     [x: string]: string|undefined,
   };
-  private remoteAddressInternal: string;
-  private remoteAddressSpaceInternal: Protocol.Network.IPAddressSpace;
-  private referrerPolicyInternal: Protocol.Network.RequestReferrerPolicy|null;
-  private securityStateInternal: Protocol.Security.SecurityState;
-  private securityDetailsInternal: Protocol.Network.SecurityDetails|null;
+  #remoteAddressInternal: string;
+  #remoteAddressSpaceInternal: Protocol.Network.IPAddressSpace;
+  #referrerPolicyInternal: Protocol.Network.RequestReferrerPolicy|null;
+  #securityStateInternal: Protocol.Security.SecurityState;
+  #securityDetailsInternal: Protocol.Network.SecurityDetails|null;
   connectionId: string;
   connectionReused: boolean;
   hasNetworkData: boolean;
-  private formParametersPromise: Promise<NameValue[]|null>|null;
-  private requestFormDataPromise: Promise<string|null>|null;
-  private hasExtraRequestInfoInternal: boolean;
-  private hasExtraResponseInfoInternal: boolean;
-  private blockedRequestCookiesInternal: BlockedCookieWithReason[];
-  private includedRequestCookiesInternal: Cookie[];
-  private blockedResponseCookiesInternal: BlockedSetCookieWithReason[];
+  #formParametersPromise: Promise<NameValue[]|null>|null;
+  #requestFormDataPromise: Promise<string|null>|null;
+  #hasExtraRequestInfoInternal: boolean;
+  #hasExtraResponseInfoInternal: boolean;
+  #blockedRequestCookiesInternal: BlockedCookieWithReason[];
+  #includedRequestCookiesInternal: Cookie[];
+  #blockedResponseCookiesInternal: BlockedSetCookieWithReason[];
   localizedFailDescription: string|null;
-  private urlInternal!: string;
-  private responseReceivedTimeInternal!: number;
-  private transferSizeInternal!: number;
-  private finishedInternal!: boolean;
-  private failedInternal!: boolean;
-  private canceledInternal!: boolean;
-  private preservedInternal!: boolean;
-  private mimeTypeInternal!: MIME_TYPE;
-  private parsedURLInternal!: Common.ParsedURL.ParsedURL;
-  private nameInternal!: string|undefined;
-  private pathInternal!: string|undefined;
-  private clientSecurityStateInternal!: Protocol.Network.ClientSecurityState|undefined;
-  private trustTokenParamsInternal!: Protocol.Network.TrustTokenParams|undefined;
-  private trustTokenOperationDoneEventInternal!: Protocol.Network.TrustTokenOperationDoneEvent|undefined;
-  private responseCacheStorageCacheName?: string;
-  private serviceWorkerResponseSourceInternal?: Protocol.Network.ServiceWorkerResponseSource;
-  private wallIssueTime?: number;
-  private responseRetrievalTime?: Date;
-  private resourceSizeInternal?: number;
-  private fromMemoryCache?: boolean;
-  private fromDiskCache?: boolean;
-  private fromPrefetchCacheInternal?: boolean;
-  private fetchedViaServiceWorkerInternal?: boolean;
-  private timingInternal?: Protocol.Network.ResourceTiming;
-  private requestHeadersTextInternal?: string;
-  private responseHeadersInternal?: NameValue[];
-  private sortedResponseHeadersInternal?: NameValue[];
-  private responseCookiesInternal?: Cookie[];
-  private serverTimingsInternal?: ServerTiming[]|null;
-  private queryStringInternal?: string|null;
-  private parsedQueryParameters?: NameValue[];
-  private contentDataProvider?: (() => Promise<ContentData>);
-  private isSameSiteInternal: boolean|null;
+  #urlInternal!: string;
+  #responseReceivedTimeInternal!: number;
+  #transferSizeInternal!: number;
+  #finishedInternal!: boolean;
+  #failedInternal!: boolean;
+  #canceledInternal!: boolean;
+  #preservedInternal!: boolean;
+  #mimeTypeInternal!: MIME_TYPE;
+  #parsedURLInternal!: Common.ParsedURL.ParsedURL;
+  #nameInternal!: string|undefined;
+  #pathInternal!: string|undefined;
+  #clientSecurityStateInternal!: Protocol.Network.ClientSecurityState|undefined;
+  #trustTokenParamsInternal!: Protocol.Network.TrustTokenParams|undefined;
+  #trustTokenOperationDoneEventInternal!: Protocol.Network.TrustTokenOperationDoneEvent|undefined;
+  #responseCacheStorageCacheName?: string;
+  #serviceWorkerResponseSourceInternal?: Protocol.Network.ServiceWorkerResponseSource;
+  #wallIssueTime?: number;
+  #responseRetrievalTime?: Date;
+  #resourceSizeInternal?: number;
+  #fromMemoryCache?: boolean;
+  #fromDiskCache?: boolean;
+  #fromPrefetchCacheInternal?: boolean;
+  #fetchedViaServiceWorkerInternal?: boolean;
+  #timingInternal?: Protocol.Network.ResourceTiming;
+  #requestHeadersTextInternal?: string;
+  #responseHeadersInternal?: NameValue[];
+  #sortedResponseHeadersInternal?: NameValue[];
+  #responseCookiesInternal?: Cookie[];
+  #serverTimingsInternal?: ServerTiming[]|null;
+  #queryStringInternal?: string|null;
+  #parsedQueryParameters?: NameValue[];
+  #contentDataProvider?: (() => Promise<ContentData>);
+  #isSameSiteInternal: boolean|null;
 
   private constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: string, documentURL: string,
@@ -293,23 +297,23 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       initiator: Protocol.Network.Initiator|null) {
     super();
 
-    this.requestIdInternal = requestId;
-    this.backendRequestIdInternal = backendRequestId;
+    this.#requestIdInternal = requestId;
+    this.#backendRequestIdInternal = backendRequestId;
     this.setUrl(url);
-    this.documentURLInternal = documentURL;
-    this.frameIdInternal = frameId;
-    this.loaderIdInternal = loaderId;
-    this.initiatorInternal = initiator;
-    this.redirectSourceInternal = null;
-    this.preflightRequestInternal = null;
-    this.preflightInitiatorRequestInternal = null;
-    this.isRedirectInternal = false;
-    this.redirectDestinationInternal = null;
-    this.issueTimeInternal = -1;
-    this.startTimeInternal = -1;
-    this.endTimeInternal = -1;
-    this.blockedReasonInternal = undefined;
-    this.corsErrorStatusInternal = undefined;
+    this.#documentURLInternal = documentURL;
+    this.#frameIdInternal = frameId;
+    this.#loaderIdInternal = loaderId;
+    this.#initiatorInternal = initiator;
+    this.#redirectSourceInternal = null;
+    this.#preflightRequestInternal = null;
+    this.#preflightInitiatorRequestInternal = null;
+    this.#isRedirectInternal = false;
+    this.#redirectDestinationInternal = null;
+    this.#issueTimeInternal = -1;
+    this.#startTimeInternal = -1;
+    this.#endTimeInternal = -1;
+    this.#blockedReasonInternal = undefined;
+    this.#corsErrorStatusInternal = undefined;
 
     this.statusCode = 0;
     this.statusText = '';
@@ -318,47 +322,47 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.protocol = '';
     this.mixedContentType = Protocol.Security.MixedContentType.None;
 
-    this.initialPriorityInternal = null;
-    this.currentPriority = null;
+    this.#initialPriorityInternal = null;
+    this.#currentPriority = null;
 
-    this.signedExchangeInfoInternal = null;
-    this.webBundleInfoInternal = null;
-    this.webBundleInnerRequestInfoInternal = null;
+    this.#signedExchangeInfoInternal = null;
+    this.#webBundleInfoInternal = null;
+    this.#webBundleInnerRequestInfoInternal = null;
 
-    this.resourceTypeInternal = Common.ResourceType.resourceTypes.Other;
-    this.contentDataInternal = null;
-    this.framesInternal = [];
-    this.eventSourceMessagesInternal = [];
+    this.#resourceTypeInternal = Common.ResourceType.resourceTypes.Other;
+    this.#contentDataInternal = null;
+    this.#framesInternal = [];
+    this.#eventSourceMessagesInternal = [];
 
-    this.responseHeaderValues = {};
-    this.responseHeadersTextInternal = '';
+    this.#responseHeaderValues = {};
+    this.#responseHeadersTextInternal = '';
 
-    this.requestHeadersInternal = [];
-    this.requestHeaderValues = {};
+    this.#requestHeadersInternal = [];
+    this.#requestHeaderValues = {};
 
-    this.remoteAddressInternal = '';
-    this.remoteAddressSpaceInternal = Protocol.Network.IPAddressSpace.Unknown;
+    this.#remoteAddressInternal = '';
+    this.#remoteAddressSpaceInternal = Protocol.Network.IPAddressSpace.Unknown;
 
-    this.referrerPolicyInternal = null;
+    this.#referrerPolicyInternal = null;
 
-    this.securityStateInternal = Protocol.Security.SecurityState.Unknown;
-    this.securityDetailsInternal = null;
+    this.#securityStateInternal = Protocol.Security.SecurityState.Unknown;
+    this.#securityDetailsInternal = null;
 
     this.connectionId = '0';
     this.connectionReused = false;
     this.hasNetworkData = false;
-    this.formParametersPromise = null;
-    this.requestFormDataPromise = (Promise.resolve(null) as Promise<string|null>| null);
+    this.#formParametersPromise = null;
+    this.#requestFormDataPromise = (Promise.resolve(null) as Promise<string|null>| null);
 
-    this.hasExtraRequestInfoInternal = false;
-    this.hasExtraResponseInfoInternal = false;
+    this.#hasExtraRequestInfoInternal = false;
+    this.#hasExtraResponseInfoInternal = false;
 
-    this.blockedRequestCookiesInternal = [];
-    this.includedRequestCookiesInternal = [];
-    this.blockedResponseCookiesInternal = [];
+    this.#blockedRequestCookiesInternal = [];
+    this.#includedRequestCookiesInternal = [];
+    this.#blockedResponseCookiesInternal = [];
 
     this.localizedFailDescription = null;
-    this.isSameSiteInternal = null;
+    this.#isSameSiteInternal = null;
   }
 
   static create(
@@ -392,135 +396,135 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   requestId(): string {
-    return this.requestIdInternal;
+    return this.#requestIdInternal;
   }
 
   backendRequestId(): Protocol.Network.RequestId|undefined {
-    return this.backendRequestIdInternal;
+    return this.#backendRequestIdInternal;
   }
 
   url(): string {
-    return this.urlInternal;
+    return this.#urlInternal;
   }
 
   isBlobRequest(): boolean {
-    return this.urlInternal.startsWith('blob:');
+    return this.#urlInternal.startsWith('blob:');
   }
 
   setUrl(x: string): void {
-    if (this.urlInternal === x) {
+    if (this.#urlInternal === x) {
       return;
     }
 
-    this.urlInternal = x;
-    this.parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
-    delete this.queryStringInternal;
-    delete this.parsedQueryParameters;
-    delete this.nameInternal;
-    delete this.pathInternal;
+    this.#urlInternal = x;
+    this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
+    this.#queryStringInternal = undefined;
+    this.#parsedQueryParameters = undefined;
+    this.#nameInternal = undefined;
+    this.#pathInternal = undefined;
   }
 
   get documentURL(): string {
-    return this.documentURLInternal;
+    return this.#documentURLInternal;
   }
 
   get parsedURL(): Common.ParsedURL.ParsedURL {
-    return this.parsedURLInternal;
+    return this.#parsedURLInternal;
   }
 
   get frameId(): Protocol.Page.FrameId|null {
-    return this.frameIdInternal;
+    return this.#frameIdInternal;
   }
 
   get loaderId(): Protocol.Network.LoaderId|null {
-    return this.loaderIdInternal;
+    return this.#loaderIdInternal;
   }
 
   setRemoteAddress(ip: string, port: number): void {
-    this.remoteAddressInternal = ip + ':' + port;
+    this.#remoteAddressInternal = ip + ':' + port;
     this.dispatchEventToListeners(Events.RemoteAddressChanged, this);
   }
 
   remoteAddress(): string {
-    return this.remoteAddressInternal;
+    return this.#remoteAddressInternal;
   }
 
   remoteAddressSpace(): Protocol.Network.IPAddressSpace {
-    return this.remoteAddressSpaceInternal;
+    return this.#remoteAddressSpaceInternal;
   }
 
   /**
-   * The cache name of the CacheStorage from where the response is served via
+   * The cache #name of the CacheStorage from where the response is served via
    * the ServiceWorker.
    */
   getResponseCacheStorageCacheName(): string|undefined {
-    return this.responseCacheStorageCacheName;
+    return this.#responseCacheStorageCacheName;
   }
 
   setResponseCacheStorageCacheName(x: string): void {
-    this.responseCacheStorageCacheName = x;
+    this.#responseCacheStorageCacheName = x;
   }
 
   serviceWorkerResponseSource(): Protocol.Network.ServiceWorkerResponseSource|undefined {
-    return this.serviceWorkerResponseSourceInternal;
+    return this.#serviceWorkerResponseSourceInternal;
   }
 
   setServiceWorkerResponseSource(serviceWorkerResponseSource: Protocol.Network.ServiceWorkerResponseSource): void {
-    this.serviceWorkerResponseSourceInternal = serviceWorkerResponseSource;
+    this.#serviceWorkerResponseSourceInternal = serviceWorkerResponseSource;
   }
 
   setReferrerPolicy(referrerPolicy: Protocol.Network.RequestReferrerPolicy): void {
-    this.referrerPolicyInternal = referrerPolicy;
+    this.#referrerPolicyInternal = referrerPolicy;
   }
 
   referrerPolicy(): Protocol.Network.RequestReferrerPolicy|null {
-    return this.referrerPolicyInternal;
+    return this.#referrerPolicyInternal;
   }
 
   securityState(): Protocol.Security.SecurityState {
-    return this.securityStateInternal;
+    return this.#securityStateInternal;
   }
 
   setSecurityState(securityState: Protocol.Security.SecurityState): void {
-    this.securityStateInternal = securityState;
+    this.#securityStateInternal = securityState;
   }
 
   securityDetails(): Protocol.Network.SecurityDetails|null {
-    return this.securityDetailsInternal;
+    return this.#securityDetailsInternal;
   }
 
   securityOrigin(): string {
-    return this.parsedURLInternal.securityOrigin();
+    return this.#parsedURLInternal.securityOrigin();
   }
 
   setSecurityDetails(securityDetails: Protocol.Network.SecurityDetails): void {
-    this.securityDetailsInternal = securityDetails;
+    this.#securityDetailsInternal = securityDetails;
   }
 
   get startTime(): number {
-    return this.startTimeInternal || -1;
+    return this.#startTimeInternal || -1;
   }
 
   setIssueTime(monotonicTime: number, wallTime: number): void {
-    this.issueTimeInternal = monotonicTime;
-    this.wallIssueTime = wallTime;
-    this.startTimeInternal = monotonicTime;
+    this.#issueTimeInternal = monotonicTime;
+    this.#wallIssueTime = wallTime;
+    this.#startTimeInternal = monotonicTime;
   }
 
   issueTime(): number {
-    return this.issueTimeInternal;
+    return this.#issueTimeInternal;
   }
 
   pseudoWallTime(monotonicTime: number): number {
-    return this.wallIssueTime ? this.wallIssueTime - this.issueTimeInternal + monotonicTime : monotonicTime;
+    return this.#wallIssueTime ? this.#wallIssueTime - this.#issueTimeInternal + monotonicTime : monotonicTime;
   }
 
   get responseReceivedTime(): number {
-    return this.responseReceivedTimeInternal || -1;
+    return this.#responseReceivedTimeInternal || -1;
   }
 
   set responseReceivedTime(x: number) {
-    this.responseReceivedTimeInternal = x;
+    this.#responseReceivedTimeInternal = x;
   }
 
   /**
@@ -528,75 +532,75 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
    * responses, this is the last time the cache entry was validated.
    */
   getResponseRetrievalTime(): Date|undefined {
-    return this.responseRetrievalTime;
+    return this.#responseRetrievalTime;
   }
 
   setResponseRetrievalTime(x: Date): void {
-    this.responseRetrievalTime = x;
+    this.#responseRetrievalTime = x;
   }
 
   get endTime(): number {
-    return this.endTimeInternal || -1;
+    return this.#endTimeInternal || -1;
   }
 
   set endTime(x: number) {
     if (this.timing && this.timing.requestTime) {
       // Check against accurate responseReceivedTime.
-      this.endTimeInternal = Math.max(x, this.responseReceivedTime);
+      this.#endTimeInternal = Math.max(x, this.responseReceivedTime);
     } else {
       // Prefer endTime since it might be from the network stack.
-      this.endTimeInternal = x;
-      if (this.responseReceivedTimeInternal > x) {
-        this.responseReceivedTimeInternal = x;
+      this.#endTimeInternal = x;
+      if (this.#responseReceivedTimeInternal > x) {
+        this.#responseReceivedTimeInternal = x;
       }
     }
     this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
   get duration(): number {
-    if (this.endTimeInternal === -1 || this.startTimeInternal === -1) {
+    if (this.#endTimeInternal === -1 || this.#startTimeInternal === -1) {
       return -1;
     }
-    return this.endTimeInternal - this.startTimeInternal;
+    return this.#endTimeInternal - this.#startTimeInternal;
   }
 
   get latency(): number {
-    if (this.responseReceivedTimeInternal === -1 || this.startTimeInternal === -1) {
+    if (this.#responseReceivedTimeInternal === -1 || this.#startTimeInternal === -1) {
       return -1;
     }
-    return this.responseReceivedTimeInternal - this.startTimeInternal;
+    return this.#responseReceivedTimeInternal - this.#startTimeInternal;
   }
 
   get resourceSize(): number {
-    return this.resourceSizeInternal || 0;
+    return this.#resourceSizeInternal || 0;
   }
 
   set resourceSize(x: number) {
-    this.resourceSizeInternal = x;
+    this.#resourceSizeInternal = x;
   }
 
   get transferSize(): number {
-    return this.transferSizeInternal || 0;
+    return this.#transferSizeInternal || 0;
   }
 
   increaseTransferSize(x: number): void {
-    this.transferSizeInternal = (this.transferSizeInternal || 0) + x;
+    this.#transferSizeInternal = (this.#transferSizeInternal || 0) + x;
   }
 
   setTransferSize(x: number): void {
-    this.transferSizeInternal = x;
+    this.#transferSizeInternal = x;
   }
 
   get finished(): boolean {
-    return this.finishedInternal;
+    return this.#finishedInternal;
   }
 
   set finished(x: boolean) {
-    if (this.finishedInternal === x) {
+    if (this.#finishedInternal === x) {
       return;
     }
 
-    this.finishedInternal = x;
+    this.#finishedInternal = x;
 
     if (x) {
       this.dispatchEventToListeners(Events.FinishedLoading, this);
@@ -604,72 +608,76 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   get failed(): boolean {
-    return this.failedInternal;
+    return this.#failedInternal;
   }
 
   set failed(x: boolean) {
-    this.failedInternal = x;
+    this.#failedInternal = x;
   }
 
   get canceled(): boolean {
-    return this.canceledInternal;
+    return this.#canceledInternal;
   }
 
   set canceled(x: boolean) {
-    this.canceledInternal = x;
+    this.#canceledInternal = x;
   }
 
   get preserved(): boolean {
-    return this.preservedInternal;
+    return this.#preservedInternal;
   }
 
   set preserved(x: boolean) {
-    this.preservedInternal = x;
+    this.#preservedInternal = x;
   }
 
   blockedReason(): Protocol.Network.BlockedReason|undefined {
-    return this.blockedReasonInternal;
+    return this.#blockedReasonInternal;
   }
 
   setBlockedReason(reason: Protocol.Network.BlockedReason): void {
-    this.blockedReasonInternal = reason;
+    this.#blockedReasonInternal = reason;
   }
 
   corsErrorStatus(): Protocol.Network.CorsErrorStatus|undefined {
-    return this.corsErrorStatusInternal;
+    return this.#corsErrorStatusInternal;
   }
 
   setCorsErrorStatus(corsErrorStatus: Protocol.Network.CorsErrorStatus): void {
-    this.corsErrorStatusInternal = corsErrorStatus;
+    this.#corsErrorStatusInternal = corsErrorStatus;
   }
 
   wasBlocked(): boolean {
-    return Boolean(this.blockedReasonInternal);
+    return Boolean(this.#blockedReasonInternal);
   }
 
   cached(): boolean {
-    return (Boolean(this.fromMemoryCache) || Boolean(this.fromDiskCache)) && !this.transferSizeInternal;
+    return (Boolean(this.#fromMemoryCache) || Boolean(this.#fromDiskCache)) && !this.#transferSizeInternal;
   }
 
   cachedInMemory(): boolean {
-    return Boolean(this.fromMemoryCache) && !this.transferSizeInternal;
+    return Boolean(this.#fromMemoryCache) && !this.#transferSizeInternal;
   }
 
   fromPrefetchCache(): boolean {
-    return Boolean(this.fromPrefetchCacheInternal);
+    return Boolean(this.#fromPrefetchCacheInternal);
   }
 
   setFromMemoryCache(): void {
-    this.fromMemoryCache = true;
-    delete this.timingInternal;
+    this.#fromMemoryCache = true;
+    this.#timingInternal = undefined;
+  }
+
+  get fromDiskCache(): boolean|undefined {
+    return this.#fromDiskCache;
   }
 
   setFromDiskCache(): void {
-    this.fromDiskCache = true;
+    this.#fromDiskCache = true;
   }
 
   setFromPrefetchCache(): void {
-    this.fromPrefetchCacheInternal = true;
+    this.#fromPrefetchCacheInternal = true;
   }
 
   /**
@@ -677,11 +685,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
    * provided its own response.
    */
   get fetchedViaServiceWorker(): boolean {
-    return Boolean(this.fetchedViaServiceWorkerInternal);
+    return Boolean(this.#fetchedViaServiceWorkerInternal);
   }
 
   set fetchedViaServiceWorker(x: boolean) {
-    this.fetchedViaServiceWorkerInternal = x;
+    this.#fetchedViaServiceWorkerInternal = x;
   }
 
   /**
@@ -696,95 +704,95 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   get timing(): Protocol.Network.ResourceTiming|undefined {
-    return this.timingInternal;
+    return this.#timingInternal;
   }
 
   set timing(timingInfo: Protocol.Network.ResourceTiming|undefined) {
-    if (!timingInfo || this.fromMemoryCache) {
+    if (!timingInfo || this.#fromMemoryCache) {
       return;
     }
     // Take startTime and responseReceivedTime from timing data for better accuracy.
     // Timing's requestTime is a baseline in seconds, rest of the numbers there are ticks in millis.
-    this.startTimeInternal = timingInfo.requestTime;
+    this.#startTimeInternal = timingInfo.requestTime;
     const headersReceivedTime = timingInfo.requestTime + timingInfo.receiveHeadersEnd / 1000.0;
-    if ((this.responseReceivedTimeInternal || -1) < 0 || this.responseReceivedTimeInternal > headersReceivedTime) {
-      this.responseReceivedTimeInternal = headersReceivedTime;
+    if ((this.#responseReceivedTimeInternal || -1) < 0 || this.#responseReceivedTimeInternal > headersReceivedTime) {
+      this.#responseReceivedTimeInternal = headersReceivedTime;
     }
-    if (this.startTimeInternal > this.responseReceivedTimeInternal) {
-      this.responseReceivedTimeInternal = this.startTimeInternal;
+    if (this.#startTimeInternal > this.#responseReceivedTimeInternal) {
+      this.#responseReceivedTimeInternal = this.#startTimeInternal;
     }
 
-    this.timingInternal = timingInfo;
+    this.#timingInternal = timingInfo;
     this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
   private setConnectTimingFromExtraInfo(connectTiming: Protocol.Network.ConnectTiming): void {
-    this.startTimeInternal = connectTiming.requestTime;
+    this.#startTimeInternal = connectTiming.requestTime;
     this.dispatchEventToListeners(Events.TimingChanged, this);
   }
 
   get mimeType(): MIME_TYPE {
-    return this.mimeTypeInternal;
+    return this.#mimeTypeInternal;
   }
 
   set mimeType(x: MIME_TYPE) {
-    this.mimeTypeInternal = x;
+    this.#mimeTypeInternal = x;
   }
 
   get displayName(): string {
-    return this.parsedURLInternal.displayName;
+    return this.#parsedURLInternal.displayName;
   }
 
   name(): string {
-    if (this.nameInternal) {
-      return this.nameInternal;
+    if (this.#nameInternal) {
+      return this.#nameInternal;
     }
     this.parseNameAndPathFromURL();
-    return this.nameInternal as string;
+    return this.#nameInternal as string;
   }
 
   path(): string {
-    if (this.pathInternal) {
-      return this.pathInternal;
+    if (this.#pathInternal) {
+      return this.#pathInternal;
     }
     this.parseNameAndPathFromURL();
-    return this.pathInternal as string;
+    return this.#pathInternal as string;
   }
 
   private parseNameAndPathFromURL(): void {
-    if (this.parsedURLInternal.isDataURL()) {
-      this.nameInternal = this.parsedURLInternal.dataURLDisplayName();
-      this.pathInternal = '';
-    } else if (this.parsedURLInternal.isBlobURL()) {
-      this.nameInternal = this.parsedURLInternal.url;
-      this.pathInternal = '';
-    } else if (this.parsedURLInternal.isAboutBlank()) {
-      this.nameInternal = this.parsedURLInternal.url;
-      this.pathInternal = '';
+    if (this.#parsedURLInternal.isDataURL()) {
+      this.#nameInternal = this.#parsedURLInternal.dataURLDisplayName();
+      this.#pathInternal = '';
+    } else if (this.#parsedURLInternal.isBlobURL()) {
+      this.#nameInternal = this.#parsedURLInternal.url;
+      this.#pathInternal = '';
+    } else if (this.#parsedURLInternal.isAboutBlank()) {
+      this.#nameInternal = this.#parsedURLInternal.url;
+      this.#pathInternal = '';
     } else {
-      this.pathInternal = this.parsedURLInternal.host + this.parsedURLInternal.folderPathComponents;
+      this.#pathInternal = this.#parsedURLInternal.host + this.#parsedURLInternal.folderPathComponents;
 
       const networkManager = NetworkManager.forRequest(this);
       const inspectedURL =
           networkManager ? Common.ParsedURL.ParsedURL.fromString(networkManager.target().inspectedURL()) : null;
-      this.pathInternal = Platform.StringUtilities.trimURL(this.pathInternal, inspectedURL ? inspectedURL.host : '');
-      if (this.parsedURLInternal.lastPathComponent || this.parsedURLInternal.queryParams) {
-        this.nameInternal = this.parsedURLInternal.lastPathComponent +
-            (this.parsedURLInternal.queryParams ? '?' + this.parsedURLInternal.queryParams : '');
-      } else if (this.parsedURLInternal.folderPathComponents) {
-        this.nameInternal = this.parsedURLInternal.folderPathComponents.substring(
-                                this.parsedURLInternal.folderPathComponents.lastIndexOf('/') + 1) +
+      this.#pathInternal = Platform.StringUtilities.trimURL(this.#pathInternal, inspectedURL ? inspectedURL.host : '');
+      if (this.#parsedURLInternal.lastPathComponent || this.#parsedURLInternal.queryParams) {
+        this.#nameInternal = this.#parsedURLInternal.lastPathComponent +
+            (this.#parsedURLInternal.queryParams ? '?' + this.#parsedURLInternal.queryParams : '');
+      } else if (this.#parsedURLInternal.folderPathComponents) {
+        this.#nameInternal = this.#parsedURLInternal.folderPathComponents.substring(
+                                 this.#parsedURLInternal.folderPathComponents.lastIndexOf('/') + 1) +
             '/';
-        this.pathInternal = this.pathInternal.substring(0, this.pathInternal.lastIndexOf('/'));
+        this.#pathInternal = this.#pathInternal.substring(0, this.#pathInternal.lastIndexOf('/'));
       } else {
-        this.nameInternal = this.parsedURLInternal.host;
-        this.pathInternal = '';
+        this.#nameInternal = this.#parsedURLInternal.host;
+        this.#pathInternal = '';
       }
     }
   }
 
   get folder(): string {
-    let path: string = this.parsedURLInternal.path;
+    let path: string = this.#parsedURLInternal.path;
     const indexOfQuery = path.indexOf('?');
     if (indexOfQuery !== -1) {
       path = path.substring(0, indexOfQuery);
@@ -794,100 +802,100 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   get pathname(): string {
-    return this.parsedURLInternal.path;
+    return this.#parsedURLInternal.path;
   }
 
   resourceType(): Common.ResourceType.ResourceType {
-    return this.resourceTypeInternal;
+    return this.#resourceTypeInternal;
   }
 
   setResourceType(resourceType: Common.ResourceType.ResourceType): void {
-    this.resourceTypeInternal = resourceType;
+    this.#resourceTypeInternal = resourceType;
   }
 
   get domain(): string {
-    return this.parsedURLInternal.host;
+    return this.#parsedURLInternal.host;
   }
 
   get scheme(): string {
-    return this.parsedURLInternal.scheme;
+    return this.#parsedURLInternal.scheme;
   }
 
   redirectSource(): NetworkRequest|null {
-    return this.redirectSourceInternal;
+    return this.#redirectSourceInternal;
   }
 
   setRedirectSource(originatingRequest: NetworkRequest|null): void {
-    this.redirectSourceInternal = originatingRequest;
+    this.#redirectSourceInternal = originatingRequest;
   }
 
   preflightRequest(): NetworkRequest|null {
-    return this.preflightRequestInternal;
+    return this.#preflightRequestInternal;
   }
 
   setPreflightRequest(preflightRequest: NetworkRequest|null): void {
-    this.preflightRequestInternal = preflightRequest;
+    this.#preflightRequestInternal = preflightRequest;
   }
 
   preflightInitiatorRequest(): NetworkRequest|null {
-    return this.preflightInitiatorRequestInternal;
+    return this.#preflightInitiatorRequestInternal;
   }
 
   setPreflightInitiatorRequest(preflightInitiatorRequest: NetworkRequest|null): void {
-    this.preflightInitiatorRequestInternal = preflightInitiatorRequest;
+    this.#preflightInitiatorRequestInternal = preflightInitiatorRequest;
   }
 
   isPreflightRequest(): boolean {
-    return this.initiatorInternal !== null && this.initiatorInternal !== undefined &&
-        this.initiatorInternal.type === Protocol.Network.InitiatorType.Preflight;
+    return this.#initiatorInternal !== null && this.#initiatorInternal !== undefined &&
+        this.#initiatorInternal.type === Protocol.Network.InitiatorType.Preflight;
   }
 
   redirectDestination(): NetworkRequest|null {
-    return this.redirectDestinationInternal;
+    return this.#redirectDestinationInternal;
   }
 
   setRedirectDestination(redirectDestination: NetworkRequest|null): void {
-    this.redirectDestinationInternal = redirectDestination;
+    this.#redirectDestinationInternal = redirectDestination;
   }
 
   requestHeaders(): NameValue[] {
-    return this.requestHeadersInternal;
+    return this.#requestHeadersInternal;
   }
 
   setRequestHeaders(headers: NameValue[]): void {
-    this.requestHeadersInternal = headers;
+    this.#requestHeadersInternal = headers;
 
     this.dispatchEventToListeners(Events.RequestHeadersChanged);
   }
 
   requestHeadersText(): string|undefined {
-    return this.requestHeadersTextInternal;
+    return this.#requestHeadersTextInternal;
   }
 
   setRequestHeadersText(text: string): void {
-    this.requestHeadersTextInternal = text;
+    this.#requestHeadersTextInternal = text;
 
     this.dispatchEventToListeners(Events.RequestHeadersChanged);
   }
 
   requestHeaderValue(headerName: string): string|undefined {
-    if (this.requestHeaderValues[headerName]) {
-      return this.requestHeaderValues[headerName];
+    if (this.#requestHeaderValues[headerName]) {
+      return this.#requestHeaderValues[headerName];
     }
-    this.requestHeaderValues[headerName] = this.computeHeaderValue(this.requestHeaders(), headerName);
-    return this.requestHeaderValues[headerName];
+    this.#requestHeaderValues[headerName] = this.computeHeaderValue(this.requestHeaders(), headerName);
+    return this.#requestHeaderValues[headerName];
   }
 
   requestFormData(): Promise<string|null> {
-    if (!this.requestFormDataPromise) {
-      this.requestFormDataPromise = NetworkManager.requestPostData(this);
+    if (!this.#requestFormDataPromise) {
+      this.#requestFormDataPromise = NetworkManager.requestPostData(this);
     }
-    return this.requestFormDataPromise;
+    return this.#requestFormDataPromise;
   }
 
   setRequestFormData(hasData: boolean, data: string|null): void {
-    this.requestFormDataPromise = (hasData && data === null) ? null : Promise.resolve(data);
-    this.formParametersPromise = null;
+    this.#requestFormDataPromise = (hasData && data === null) ? null : Promise.resolve(data);
+    this.#formParametersPromise = null;
   }
 
   private filteredProtocolName(): string {
@@ -913,55 +921,55 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   get responseHeaders(): NameValue[] {
-    return this.responseHeadersInternal || [];
+    return this.#responseHeadersInternal || [];
   }
 
   set responseHeaders(x: NameValue[]) {
-    this.responseHeadersInternal = x;
-    delete this.sortedResponseHeadersInternal;
-    delete this.serverTimingsInternal;
-    delete this.responseCookiesInternal;
-    this.responseHeaderValues = {};
+    this.#responseHeadersInternal = x;
+    this.#sortedResponseHeadersInternal = undefined;
+    this.#serverTimingsInternal = undefined;
+    this.#responseCookiesInternal = undefined;
+    this.#responseHeaderValues = {};
 
     this.dispatchEventToListeners(Events.ResponseHeadersChanged);
   }
 
   get responseHeadersText(): string {
-    return this.responseHeadersTextInternal;
+    return this.#responseHeadersTextInternal;
   }
 
   set responseHeadersText(x: string) {
-    this.responseHeadersTextInternal = x;
+    this.#responseHeadersTextInternal = x;
 
     this.dispatchEventToListeners(Events.ResponseHeadersChanged);
   }
 
   get sortedResponseHeaders(): NameValue[] {
-    if (this.sortedResponseHeadersInternal !== undefined) {
-      return this.sortedResponseHeadersInternal;
+    if (this.#sortedResponseHeadersInternal !== undefined) {
+      return this.#sortedResponseHeadersInternal;
     }
 
-    this.sortedResponseHeadersInternal = this.responseHeaders.slice();
-    this.sortedResponseHeadersInternal.sort(function(a, b) {
+    this.#sortedResponseHeadersInternal = this.responseHeaders.slice();
+    this.#sortedResponseHeadersInternal.sort(function(a, b) {
       return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
-    return this.sortedResponseHeadersInternal;
+    return this.#sortedResponseHeadersInternal;
   }
 
   responseHeaderValue(headerName: string): string|undefined {
-    if (headerName in this.responseHeaderValues) {
-      return this.responseHeaderValues[headerName];
+    if (headerName in this.#responseHeaderValues) {
+      return this.#responseHeaderValues[headerName];
     }
-    this.responseHeaderValues[headerName] = this.computeHeaderValue(this.responseHeaders, headerName);
-    return this.responseHeaderValues[headerName];
+    this.#responseHeaderValues[headerName] = this.computeHeaderValue(this.responseHeaders, headerName);
+    return this.#responseHeaderValues[headerName];
   }
 
   get responseCookies(): Cookie[] {
-    if (!this.responseCookiesInternal) {
-      this.responseCookiesInternal =
+    if (!this.#responseCookiesInternal) {
+      this.#responseCookiesInternal =
           CookieParser.parseSetCookie(this.responseHeaderValue('Set-Cookie'), this.domain) || [];
     }
-    return this.responseCookiesInternal;
+    return this.#responseCookiesInternal;
   }
 
   responseLastModified(): string|undefined {
@@ -978,15 +986,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   get serverTimings(): ServerTiming[]|null {
-    if (typeof this.serverTimingsInternal === 'undefined') {
-      this.serverTimingsInternal = ServerTiming.parseHeaders(this.responseHeaders);
+    if (typeof this.#serverTimingsInternal === 'undefined') {
+      this.#serverTimingsInternal = ServerTiming.parseHeaders(this.responseHeaders);
     }
-    return this.serverTimingsInternal;
+    return this.#serverTimingsInternal;
   }
 
   queryString(): string|null {
-    if (this.queryStringInternal !== undefined) {
-      return this.queryStringInternal;
+    if (this.#queryStringInternal !== undefined) {
+      return this.#queryStringInternal;
     }
 
     let queryString: string|null = null;
@@ -999,20 +1007,20 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         queryString = queryString.substring(0, hashSignPosition);
       }
     }
-    this.queryStringInternal = queryString;
-    return this.queryStringInternal;
+    this.#queryStringInternal = queryString;
+    return this.#queryStringInternal;
   }
 
   get queryParameters(): NameValue[]|null {
-    if (this.parsedQueryParameters) {
-      return this.parsedQueryParameters;
+    if (this.#parsedQueryParameters) {
+      return this.#parsedQueryParameters;
     }
     const queryString = this.queryString();
     if (!queryString) {
       return null;
     }
-    this.parsedQueryParameters = this.parseParameters(queryString);
-    return this.parsedQueryParameters;
+    this.#parsedQueryParameters = this.parseParameters(queryString);
+    return this.#parsedQueryParameters;
   }
 
   private async parseFormParameters(): Promise<NameValue[]|null> {
@@ -1022,7 +1030,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       return null;
     }
 
-    // Handling application/x-www-form-urlencoded request bodies.
+    // Handling application/#x-www-form-urlencoded request bodies.
     if (requestContentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i)) {
       const formData = await this.requestFormData();
       if (!formData) {
@@ -1053,14 +1061,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   formParameters(): Promise<NameValue[]|null> {
-    if (!this.formParametersPromise) {
-      this.formParametersPromise = this.parseFormParameters();
+    if (!this.#formParametersPromise) {
+      this.#formParametersPromise = this.parseFormParameters();
     }
-    return this.formParametersPromise;
+    return this.#formParametersPromise;
   }
 
   responseHttpVersion(): string {
-    const headersText = this.responseHeadersTextInternal;
+    const headersText = this.#responseHeadersTextInternal;
     if (!headersText) {
       const version = this.responseHeaderValue('version') || this.responseHeaderValue(':version');
       if (version) {
@@ -1090,12 +1098,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   /**
    * Parses multipart/form-data; boundary=boundaryString request bodies -
    * --boundaryString
-   * Content-Disposition: form-data; name="field-name"; filename="r.gif"
+   * Content-Disposition: form-data; #name="field-#name"; filename="r.gif"
    * Content-Type: application/octet-stream
    *
    * optionalValue
    * --boundaryString
-   * Content-Disposition: form-data; name="field-name-2"
+   * Content-Disposition: form-data; #name="field-#name-2"
    *
    * optionalValue2
    * --boundaryString--
@@ -1103,7 +1111,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   private parseMultipartFormDataParameters(data: string, boundary: string): NameValue[] {
     const sanitizedBoundary = Platform.StringUtilities.escapeForRegExp(boundary);
     const keyValuePattern = new RegExp(
-        // Header with an optional file name.
+        // Header with an optional file #name.
         '^\\r\\ncontent-disposition\\s*:\\s*form-data\\s*;\\s*name="([^"]*)"(?:\\s*;\\s*filename="([^"]*)")?' +
             // Optional secondary header with the content type.
             '(?:\\r\\ncontent-type\\s*:\\s*([^\\r\\n]*))?' +
@@ -1143,7 +1151,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (!values.length) {
       return undefined;
     }
-    // Set-Cookie values should be separated by '\n', not comma, otherwise cookies could not be parsed.
+    // Set-Cookie #values should be separated by '\n', not comma, otherwise cookies could not be parsed.
     if (headerName === 'set-cookie') {
       return values.join('\n');
     }
@@ -1151,28 +1159,28 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   contentData(): Promise<ContentData> {
-    if (this.contentDataInternal) {
-      return this.contentDataInternal;
+    if (this.#contentDataInternal) {
+      return this.#contentDataInternal;
     }
-    if (this.contentDataProvider) {
-      this.contentDataInternal = this.contentDataProvider();
+    if (this.#contentDataProvider) {
+      this.#contentDataInternal = this.#contentDataProvider();
     } else {
-      this.contentDataInternal = NetworkManager.requestContentData(this);
+      this.#contentDataInternal = NetworkManager.requestContentData(this);
     }
-    return this.contentDataInternal;
+    return this.#contentDataInternal;
   }
 
   setContentDataProvider(dataProvider: () => Promise<ContentData>): void {
-    console.assert(!this.contentDataInternal, 'contentData can only be set once.');
-    this.contentDataProvider = dataProvider;
+    console.assert(!this.#contentDataInternal, 'contentData can only be set once.');
+    this.#contentDataProvider = dataProvider;
   }
 
   contentURL(): string {
-    return this.urlInternal;
+    return this.#urlInternal;
   }
 
   contentType(): Common.ResourceType.ResourceType {
-    return this.resourceTypeInternal;
+    return this.#resourceTypeInternal;
   }
 
   async contentEncoded(): Promise<boolean> {
@@ -1190,7 +1198,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    if (!this.contentDataProvider) {
+    if (!this.#contentDataProvider) {
       return NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
 
@@ -1218,52 +1226,52 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   setInitialPriority(priority: Protocol.Network.ResourcePriority): void {
-    this.initialPriorityInternal = priority;
+    this.#initialPriorityInternal = priority;
   }
 
   initialPriority(): Protocol.Network.ResourcePriority|null {
-    return this.initialPriorityInternal;
+    return this.#initialPriorityInternal;
   }
 
   setPriority(priority: Protocol.Network.ResourcePriority): void {
-    this.currentPriority = priority;
+    this.#currentPriority = priority;
   }
 
   priority(): Protocol.Network.ResourcePriority|null {
-    return this.currentPriority || this.initialPriorityInternal || null;
+    return this.#currentPriority || this.#initialPriorityInternal || null;
   }
 
   setSignedExchangeInfo(info: Protocol.Network.SignedExchangeInfo): void {
-    this.signedExchangeInfoInternal = info;
+    this.#signedExchangeInfoInternal = info;
   }
 
   signedExchangeInfo(): Protocol.Network.SignedExchangeInfo|null {
-    return this.signedExchangeInfoInternal;
+    return this.#signedExchangeInfoInternal;
   }
 
   setWebBundleInfo(info: WebBundleInfo|null): void {
-    this.webBundleInfoInternal = info;
+    this.#webBundleInfoInternal = info;
   }
 
   webBundleInfo(): WebBundleInfo|null {
-    return this.webBundleInfoInternal;
+    return this.#webBundleInfoInternal;
   }
 
   setWebBundleInnerRequestInfo(info: WebBundleInnerRequestInfo|null): void {
-    this.webBundleInnerRequestInfoInternal = info;
+    this.#webBundleInnerRequestInfoInternal = info;
   }
 
   webBundleInnerRequestInfo(): WebBundleInnerRequestInfo|null {
-    return this.webBundleInnerRequestInfoInternal;
+    return this.#webBundleInnerRequestInfoInternal;
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
     const {content, encoded} = await this.contentData();
-    let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this.mimeTypeInternal, encoded);
-    if (imageSrc === null && !this.failedInternal) {
+    let imageSrc = TextUtils.ContentProvider.contentAsDataURL(content, this.#mimeTypeInternal, encoded);
+    if (imageSrc === null && !this.#failedInternal) {
       const cacheControl = this.responseHeaderValue('cache-control') || '';
       if (!cacheControl.includes('no-cache')) {
-        imageSrc = this.urlInternal;
+        imageSrc = this.#urlInternal;
       }
     }
     if (imageSrc !== null) {
@@ -1272,11 +1280,11 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   initiator(): Protocol.Network.Initiator|null {
-    return this.initiatorInternal || null;
+    return this.#initiatorInternal || null;
   }
 
   frames(): WebSocketFrame[] {
-    return this.framesInternal;
+    return this.#framesInternal;
   }
 
   addProtocolFrameError(errorMessage: string, time: number): void {
@@ -1296,32 +1304,32 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   addFrame(frame: WebSocketFrame): void {
-    this.framesInternal.push(frame);
+    this.#framesInternal.push(frame);
     this.dispatchEventToListeners(Events.WebsocketFrameAdded, frame);
   }
 
   eventSourceMessages(): EventSourceMessage[] {
-    return this.eventSourceMessagesInternal;
+    return this.#eventSourceMessagesInternal;
   }
 
   addEventSourceMessage(time: number, eventName: string, eventId: string, data: string): void {
     const message = {time: this.pseudoWallTime(time), eventName: eventName, eventId: eventId, data: data};
-    this.eventSourceMessagesInternal.push(message);
+    this.#eventSourceMessagesInternal.push(message);
     this.dispatchEventToListeners(Events.EventSourceMessageAdded, message);
   }
 
   markAsRedirect(redirectCount: number): void {
-    this.isRedirectInternal = true;
-    this.requestIdInternal = `${this.backendRequestIdInternal}:redirected.${redirectCount}`;
+    this.#isRedirectInternal = true;
+    this.#requestIdInternal = `${this.#backendRequestIdInternal}:redirected.${redirectCount}`;
   }
 
   isRedirect(): boolean {
-    return this.isRedirectInternal;
+    return this.#isRedirectInternal;
   }
 
   setRequestIdForTest(requestId: Protocol.Network.RequestId): void {
-    this.backendRequestIdInternal = requestId;
-    this.requestIdInternal = requestId;
+    this.#backendRequestIdInternal = requestId;
+    this.#requestIdInternal = requestId;
   }
 
   charset(): string|null {
@@ -1342,33 +1350,33 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   addExtraRequestInfo(extraRequestInfo: ExtraRequestInfo): void {
-    this.blockedRequestCookiesInternal = extraRequestInfo.blockedRequestCookies;
-    this.includedRequestCookiesInternal = extraRequestInfo.includedRequestCookies;
+    this.#blockedRequestCookiesInternal = extraRequestInfo.blockedRequestCookies;
+    this.#includedRequestCookiesInternal = extraRequestInfo.includedRequestCookies;
     this.setRequestHeaders(extraRequestInfo.requestHeaders);
-    this.hasExtraRequestInfoInternal = true;
+    this.#hasExtraRequestInfoInternal = true;
     this.setRequestHeadersText('');  // Mark request headers as non-provisional
-    this.clientSecurityStateInternal = extraRequestInfo.clientSecurityState;
+    this.#clientSecurityStateInternal = extraRequestInfo.clientSecurityState;
     this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
   }
 
   hasExtraRequestInfo(): boolean {
-    return this.hasExtraRequestInfoInternal;
+    return this.#hasExtraRequestInfoInternal;
   }
 
   blockedRequestCookies(): BlockedCookieWithReason[] {
-    return this.blockedRequestCookiesInternal;
+    return this.#blockedRequestCookiesInternal;
   }
 
   includedRequestCookies(): Cookie[] {
-    return this.includedRequestCookiesInternal;
+    return this.#includedRequestCookiesInternal;
   }
 
   hasRequestCookies(): boolean {
-    return this.includedRequestCookiesInternal.length > 0 || this.blockedRequestCookiesInternal.length > 0;
+    return this.#includedRequestCookiesInternal.length > 0 || this.#blockedRequestCookiesInternal.length > 0;
   }
 
   addExtraResponseInfo(extraResponseInfo: ExtraResponseInfo): void {
-    this.blockedResponseCookiesInternal = extraResponseInfo.blockedResponseCookies;
+    this.#blockedResponseCookiesInternal = extraResponseInfo.blockedResponseCookies;
     this.responseHeaders = extraResponseInfo.responseHeaders;
 
     if (extraResponseInfo.responseHeadersText) {
@@ -1389,70 +1397,70 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         this.setRequestHeadersText(requestHeadersText);
       }
     }
-    this.remoteAddressSpaceInternal = extraResponseInfo.resourceIPAddressSpace;
+    this.#remoteAddressSpaceInternal = extraResponseInfo.resourceIPAddressSpace;
 
     if (extraResponseInfo.statusCode) {
       this.statusCode = extraResponseInfo.statusCode;
     }
 
-    this.hasExtraResponseInfoInternal = true;
+    this.#hasExtraResponseInfoInternal = true;
 
     // TODO(crbug.com/1252463) Explore replacing this with a DevTools Issue.
     const networkManager = NetworkManager.forRequest(this);
     if (networkManager) {
-      for (const blockedCookie of this.blockedResponseCookiesInternal) {
+      for (const blockedCookie of this.#blockedResponseCookiesInternal) {
         if (blockedCookie.blockedReasons.includes(
                 Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize)) {
           const message = i18nString(UIStrings.setcookieHeaderIsIgnoredIn, {PH1: this.url()});
           networkManager.dispatchEventToListeners(
               NetworkManagerEvents.MessageGenerated,
-              {message: message, requestId: this.requestIdInternal, warning: true});
+              {message: message, requestId: this.#requestIdInternal, warning: true});
         }
       }
     }
   }
 
   hasExtraResponseInfo(): boolean {
-    return this.hasExtraResponseInfoInternal;
+    return this.#hasExtraResponseInfoInternal;
   }
 
   blockedResponseCookies(): BlockedSetCookieWithReason[] {
-    return this.blockedResponseCookiesInternal;
+    return this.#blockedResponseCookiesInternal;
   }
 
   redirectSourceSignedExchangeInfoHasNoErrors(): boolean {
-    return this.redirectSourceInternal !== null && this.redirectSourceInternal.signedExchangeInfoInternal !== null &&
-        !this.redirectSourceInternal.signedExchangeInfoInternal.errors;
+    return this.#redirectSourceInternal !== null && this.#redirectSourceInternal.#signedExchangeInfoInternal !== null &&
+        !this.#redirectSourceInternal.#signedExchangeInfoInternal.errors;
   }
 
   clientSecurityState(): Protocol.Network.ClientSecurityState|undefined {
-    return this.clientSecurityStateInternal;
+    return this.#clientSecurityStateInternal;
   }
 
   setTrustTokenParams(trustTokenParams: Protocol.Network.TrustTokenParams): void {
-    this.trustTokenParamsInternal = trustTokenParams;
+    this.#trustTokenParamsInternal = trustTokenParams;
   }
 
   trustTokenParams(): Protocol.Network.TrustTokenParams|undefined {
-    return this.trustTokenParamsInternal;
+    return this.#trustTokenParamsInternal;
   }
 
   setTrustTokenOperationDoneEvent(doneEvent: Protocol.Network.TrustTokenOperationDoneEvent): void {
-    this.trustTokenOperationDoneEventInternal = doneEvent;
+    this.#trustTokenOperationDoneEventInternal = doneEvent;
 
     this.dispatchEventToListeners(Events.TrustTokenResultAdded);
   }
 
   trustTokenOperationDoneEvent(): Protocol.Network.TrustTokenOperationDoneEvent|undefined {
-    return this.trustTokenOperationDoneEventInternal;
+    return this.#trustTokenOperationDoneEventInternal;
   }
 
   setIsSameSite(isSameSite: boolean): void {
-    this.isSameSiteInternal = isSameSite;
+    this.#isSameSiteInternal = isSameSite;
   }
 
   isSameSite(): boolean|null {
-    return this.isSameSiteInternal;
+    return this.#isSameSiteInternal;
   }
 }
 

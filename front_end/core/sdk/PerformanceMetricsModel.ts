@@ -10,18 +10,18 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 
 export class PerformanceMetricsModel extends SDKModel<void> {
-  private readonly agent: ProtocolProxyApi.PerformanceApi;
-  private readonly metricModes: Map<string, MetricMode>;
-  private readonly metricData: Map<string, {
+  readonly #agent: ProtocolProxyApi.PerformanceApi;
+  readonly #metricModes: Map<string, MetricMode>;
+  readonly #metricData: Map<string, {
     lastValue: (number | undefined),
     lastTimestamp: (number|undefined),
   }>;
 
   constructor(target: Target) {
     super(target);
-    this.agent = target.performanceAgent();
+    this.#agent = target.performanceAgent();
 
-    this.metricModes = new Map([
+    this.#metricModes = new Map([
       ['TaskDuration', MetricMode.CumulativeTime],
       ['ScriptDuration', MetricMode.CumulativeTime],
       ['LayoutDuration', MetricMode.CumulativeTime],
@@ -30,32 +30,32 @@ export class PerformanceMetricsModel extends SDKModel<void> {
       ['RecalcStyleCount', MetricMode.CumulativeCount],
     ]);
 
-    this.metricData = new Map();
+    this.#metricData = new Map();
   }
 
   enable(): Promise<Object> {
-    return this.agent.invoke_enable({});
+    return this.#agent.invoke_enable({});
   }
 
   disable(): Promise<Object> {
-    return this.agent.invoke_disable();
+    return this.#agent.invoke_disable();
   }
 
   async requestMetrics(): Promise<{
     metrics: Map<string, number>,
     timestamp: number,
   }> {
-    const rawMetrics = await this.agent.invoke_getMetrics() || [];
+    const rawMetrics = await this.#agent.invoke_getMetrics() || [];
     const metrics = new Map<string, number>();
     const timestamp = performance.now();
     for (const metric of rawMetrics.metrics) {
-      let data = this.metricData.get(metric.name);
+      let data = this.#metricData.get(metric.name);
       if (!data) {
         data = {lastValue: undefined, lastTimestamp: undefined};
-        this.metricData.set(metric.name, data);
+        this.#metricData.set(metric.name, data);
       }
       let value;
-      switch (this.metricModes.get(metric.name)) {
+      switch (this.#metricModes.get(metric.name)) {
         case MetricMode.CumulativeTime:
           value = (data.lastTimestamp && data.lastValue) ?
               Platform.NumberUtilities.clamp(

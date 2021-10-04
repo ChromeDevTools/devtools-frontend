@@ -38,23 +38,23 @@
 import {Cookie, Type} from './Cookie.js';
 
 export class CookieParser {
-  private readonly domain: string|undefined;
-  private cookiesInternal: Cookie[];
-  private input!: string|undefined;
-  private originalInputLength: number;
-  private lastCookie?: Cookie|null;
-  private lastCookieLine?: string;
-  private lastCookiePosition?: number;
+  readonly #domain: string|undefined;
+  #cookiesInternal: Cookie[];
+  #input!: string|undefined;
+  #originalInputLength: number;
+  #lastCookie?: Cookie|null;
+  #lastCookieLine?: string;
+  #lastCookiePosition?: number;
   constructor(domain?: string) {
     if (domain) {
-      // Handle domain according to
+      // Handle #domain according to
       // https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-5.3.3
-      this.domain = domain.toLowerCase().replace(/^\./, '');
+      this.#domain = domain.toLowerCase().replace(/^\./, '');
     }
 
-    this.cookiesInternal = [];
+    this.#cookiesInternal = [];
 
-    this.originalInputLength = 0;
+    this.#originalInputLength = 0;
   }
 
   static parseSetCookie(header: string|undefined, domain?: string): Cookie[]|null {
@@ -62,7 +62,7 @@ export class CookieParser {
   }
 
   cookies(): Cookie[] {
-    return this.cookiesInternal;
+    return this.#cookiesInternal;
   }
 
   parseSetCookie(setCookieHeader: string|undefined): Cookie[]|null {
@@ -70,8 +70,8 @@ export class CookieParser {
       return null;
     }
     for (let kv = this.extractKeyValue(); kv; kv = this.extractKeyValue()) {
-      if (this.lastCookie) {
-        this.lastCookie.addAttribute(kv.key, kv.value);
+      if (this.#lastCookie) {
+        this.#lastCookie.addAttribute(kv.key, kv.value);
       } else {
         this.addCookie(kv, Type.Response);
       }
@@ -80,36 +80,36 @@ export class CookieParser {
       }
     }
     this.flushCookie();
-    return this.cookiesInternal;
+    return this.#cookiesInternal;
   }
 
   private initialize(headerValue: string|undefined): boolean {
-    this.input = headerValue;
+    this.#input = headerValue;
 
     if (typeof headerValue !== 'string') {
       return false;
     }
 
-    this.cookiesInternal = [];
-    this.lastCookie = null;
-    this.lastCookieLine = '';
-    this.originalInputLength = (this.input as string).length;
+    this.#cookiesInternal = [];
+    this.#lastCookie = null;
+    this.#lastCookieLine = '';
+    this.#originalInputLength = (this.#input as string).length;
     return true;
   }
 
   private flushCookie(): void {
-    if (this.lastCookie) {
+    if (this.#lastCookie) {
       // if we have a last cookie we know that these valeus all exist, hence the typecasts
-      this.lastCookie.setSize(
-          this.originalInputLength - (this.input as string).length - (this.lastCookiePosition as number));
-      this.lastCookie.setCookieLine((this.lastCookieLine as string).replace('\n', ''));
+      this.#lastCookie.setSize(
+          this.#originalInputLength - (this.#input as string).length - (this.#lastCookiePosition as number));
+      this.#lastCookie.setCookieLine((this.#lastCookieLine as string).replace('\n', ''));
     }
-    this.lastCookie = null;
-    this.lastCookieLine = '';
+    this.#lastCookie = null;
+    this.#lastCookieLine = '';
   }
 
   private extractKeyValue(): KeyValue|null {
-    if (!this.input || !this.input.length) {
+    if (!this.#input || !this.#input.length) {
       return null;
     }
     // Note: RFCs offer an option for quoted values that may contain commas and semicolons.
@@ -117,48 +117,48 @@ export class CookieParser {
     // and http://crbug.com/12361). The logic below matches latest versions of IE, Firefox,
     // Chrome and Safari on some old platforms. The latest version of Safari supports quoted
     // cookie values, though.
-    const keyValueMatch = /^[ \t]*([^\s=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this.input);
+    const keyValueMatch = /^[ \t]*([^\s=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this.#input);
     if (!keyValueMatch) {
-      console.error('Failed parsing cookie header before: ' + this.input);
+      console.error('Failed parsing cookie header before: ' + this.#input);
       return null;
     }
 
     const result = new KeyValue(
         keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(),
-        (this.originalInputLength as number) - this.input.length);
-    this.lastCookieLine += keyValueMatch[0];
-    this.input = this.input.slice(keyValueMatch[0].length);
+        (this.#originalInputLength as number) - this.#input.length);
+    this.#lastCookieLine += keyValueMatch[0];
+    this.#input = this.#input.slice(keyValueMatch[0].length);
     return result;
   }
 
   private advanceAndCheckCookieDelimiter(): boolean {
-    if (!this.input) {
+    if (!this.#input) {
       return false;
     }
 
-    const match = /^\s*[\n;]\s*/.exec(this.input);
+    const match = /^\s*[\n;]\s*/.exec(this.#input);
     if (!match) {
       return false;
     }
-    this.lastCookieLine += match[0];
-    this.input = this.input.slice(match[0].length);
+    this.#lastCookieLine += match[0];
+    this.#input = this.#input.slice(match[0].length);
     return match[0].match('\n') !== null;
   }
 
   private addCookie(keyValue: KeyValue, type: Type): void {
-    if (this.lastCookie) {
-      this.lastCookie.setSize(keyValue.position - (this.lastCookiePosition as number));
+    if (this.#lastCookie) {
+      this.#lastCookie.setSize(keyValue.position - (this.#lastCookiePosition as number));
     }
 
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as
     // specifying a value for a cookie with empty name.
-    this.lastCookie = typeof keyValue.value === 'string' ? new Cookie(keyValue.key, keyValue.value, type) :
-                                                           new Cookie('', keyValue.key, type);
-    if (this.domain) {
-      this.lastCookie.addAttribute('domain', this.domain);
+    this.#lastCookie = typeof keyValue.value === 'string' ? new Cookie(keyValue.key, keyValue.value, type) :
+                                                            new Cookie('', keyValue.key, type);
+    if (this.#domain) {
+      this.#lastCookie.addAttribute('domain', this.#domain);
     }
-    this.lastCookiePosition = keyValue.position;
-    this.cookiesInternal.push(this.lastCookie);
+    this.#lastCookiePosition = keyValue.position;
+    this.#cookiesInternal.push(this.#lastCookie);
   }
 }
 

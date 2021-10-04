@@ -63,18 +63,18 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   endColumn: number;
   executionContextId: number;
   hash: string;
-  private readonly isContentScriptInternal: boolean;
-  private readonly isLiveEditInternal: boolean;
+  readonly #isContentScriptInternal: boolean;
+  readonly #isLiveEditInternal: boolean;
   sourceMapURL: string|undefined;
   debugSymbols: Protocol.Debugger.DebugSymbols|null;
   hasSourceURL: boolean;
   contentLength: number;
-  private originalContentProviderInternal: TextUtils.ContentProvider.ContentProvider|null;
+  #originalContentProviderInternal: TextUtils.ContentProvider.ContentProvider|null;
   originStackTrace: Protocol.Runtime.StackTrace|null;
-  private readonly codeOffsetInternal: number|null;
-  private readonly language: string|null;
-  private contentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  private readonly embedderNameInternal: string|null;
+  readonly #codeOffsetInternal: number|null;
+  readonly #language: string|null;
+  #contentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
+  readonly #embedderNameInternal: string|null;
   readonly isModule: boolean|null;
   constructor(
       debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: string, startLine: number,
@@ -94,22 +94,22 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
     this.executionContextId = executionContextId;
     this.hash = hash;
-    this.isContentScriptInternal = isContentScript;
-    this.isLiveEditInternal = isLiveEdit;
+    this.#isContentScriptInternal = isContentScript;
+    this.#isLiveEditInternal = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.debugSymbols = debugSymbols;
     this.hasSourceURL = hasSourceURL;
     this.contentLength = length;
-    this.originalContentProviderInternal = null;
+    this.#originalContentProviderInternal = null;
     this.originStackTrace = originStackTrace;
-    this.codeOffsetInternal = codeOffset;
-    this.language = scriptLanguage;
-    this.contentPromise = null;
-    this.embedderNameInternal = embedderName;
+    this.#codeOffsetInternal = codeOffset;
+    this.#language = scriptLanguage;
+    this.#contentPromise = null;
+    this.#embedderNameInternal = embedderName;
   }
 
   embedderName(): string|null {
-    return this.embedderNameInternal;
+    return this.#embedderNameInternal;
   }
 
   target(): Target {
@@ -136,23 +136,23 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   }
 
   isContentScript(): boolean {
-    return this.isContentScriptInternal;
+    return this.#isContentScriptInternal;
   }
 
   codeOffset(): number|null {
-    return this.codeOffsetInternal;
+    return this.#codeOffsetInternal;
   }
 
   isJavaScript(): boolean {
-    return this.language === Protocol.Debugger.ScriptLanguage.JavaScript;
+    return this.#language === Protocol.Debugger.ScriptLanguage.JavaScript;
   }
 
   isWasm(): boolean {
-    return this.language === Protocol.Debugger.ScriptLanguage.WebAssembly;
+    return this.#language === Protocol.Debugger.ScriptLanguage.WebAssembly;
   }
 
   scriptLanguage(): string|null {
-    return this.language;
+    return this.#language;
   }
 
   executionContext(): ExecutionContext|null {
@@ -160,7 +160,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   }
 
   isLiveEdit(): boolean {
-    return this.isLiveEditInternal;
+    return this.#isLiveEditInternal;
   }
 
   contentURL(): string {
@@ -176,10 +176,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   }
 
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    if (!this.contentPromise) {
-      this.contentPromise = this.originalContentProvider().requestContent();
+    if (!this.#contentPromise) {
+      this.#contentPromise = this.originalContentProvider().requestContent();
     }
-    return this.contentPromise;
+    return this.#contentPromise;
   }
 
   async getWasmBytecode(): Promise<ArrayBuffer> {
@@ -189,10 +189,10 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
-    if (!this.originalContentProviderInternal) {
+    if (!this.#originalContentProviderInternal) {
       /* } */
       let lazyContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-      this.originalContentProviderInternal =
+      this.#originalContentProviderInternal =
           new TextUtils.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => {
             if (!lazyContentPromise) {
               lazyContentPromise = (async(): Promise<{
@@ -232,7 +232,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
             return lazyContentPromise;
           });
     }
-    return this.originalContentProviderInternal;
+    return this.#originalContentProviderInternal;
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
@@ -261,7 +261,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
            arg2?: Array<Protocol.Debugger.CallFrame>|undefined, arg3?: Protocol.Runtime.StackTrace|undefined,
            arg4?: Protocol.Runtime.StackTraceId|undefined, arg5?: boolean|undefined) => void): Promise<void> {
     newSource = Script.trimSourceURLComment(newSource);
-    // We append correct sourceURL to script for consistency only. It's not actually needed for things to work correctly.
+    // We append correct #sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this.appendSourceURLCommentIfNeeded(newSource);
 
     if (!this.scriptId) {
@@ -278,7 +278,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
         {scriptId: this.scriptId, scriptSource: newSource});
 
     if (!response.getError() && !response.exceptionDetails) {
-      this.contentPromise = Promise.resolve({content: newSource, isEncoded: false});
+      this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
     const needsStepIn = Boolean(response.stackChanged);

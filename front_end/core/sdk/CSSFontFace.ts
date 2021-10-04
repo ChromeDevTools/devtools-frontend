@@ -5,23 +5,23 @@
 import type * as Protocol from '../../generated/protocol.js';
 
 export class CSSFontFace {
-  private readonly fontFamily: string;
-  private readonly fontVariationAxes: Protocol.CSS.FontVariationAxis[];
-  private readonly fontVariationAxesByTag: Map<string, Protocol.CSS.FontVariationAxis>;
+  readonly #fontFamily: string;
+  readonly #fontVariationAxes: Protocol.CSS.FontVariationAxis[];
+  readonly #fontVariationAxesByTag: Map<string, Protocol.CSS.FontVariationAxis>;
   constructor(payload: Protocol.CSS.FontFace) {
-    this.fontFamily = payload.fontFamily;
-    this.fontVariationAxes = payload.fontVariationAxes || [];
-    this.fontVariationAxesByTag = new Map();
-    for (const axis of this.fontVariationAxes) {
-      this.fontVariationAxesByTag.set(axis.tag, axis);
+    this.#fontFamily = payload.fontFamily;
+    this.#fontVariationAxes = payload.fontVariationAxes || [];
+    this.#fontVariationAxesByTag = new Map();
+    for (const axis of this.#fontVariationAxes) {
+      this.#fontVariationAxesByTag.set(axis.tag, axis);
     }
   }
 
   getFontFamily(): string {
-    return this.fontFamily;
+    return this.#fontFamily;
   }
 
   getVariationAxisByTag(tag: string): Protocol.CSS.FontVariationAxis|undefined {
-    return this.fontVariationAxesByTag.get(tag);
+    return this.#fontVariationAxesByTag.get(tag);
   }
 }

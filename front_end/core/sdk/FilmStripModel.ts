@@ -8,22 +8,22 @@ import type {Event, ObjectSnapshot} from './TracingModel.js';
 import {TracingModel} from './TracingModel.js';
 
 export class FilmStripModel {
-  private framesInternal: Frame[];
-  private zeroTimeInternal: number;
-  private spanTimeInternal: number;
+  #framesInternal: Frame[];
+  #zeroTimeInternal: number;
+  #spanTimeInternal: number;
   constructor(tracingModel: TracingModel, zeroTime?: number) {
-    this.framesInternal = [];
-    this.zeroTimeInternal = 0;
-    this.spanTimeInternal = 0;
+    this.#framesInternal = [];
+    this.#zeroTimeInternal = 0;
+    this.#spanTimeInternal = 0;
 
     this.reset(tracingModel, zeroTime);
   }
 
   reset(tracingModel: TracingModel, zeroTime?: number): void {
-    this.zeroTimeInternal = zeroTime || tracingModel.minimumRecordTime();
-    this.spanTimeInternal = tracingModel.maximumRecordTime() - this.zeroTimeInternal;
+    this.#zeroTimeInternal = zeroTime || tracingModel.minimumRecordTime();
+    this.#spanTimeInternal = tracingModel.maximumRecordTime() - this.#zeroTimeInternal;
 
-    this.framesInternal = [];
+    this.#framesInternal = [];
     const browserMain = TracingModel.browserMainThread(tracingModel);
     if (!browserMain) {
       return;
@@ -32,7 +32,7 @@ export class FilmStripModel {
     const events = browserMain.events();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      if (event.startTime < this.zeroTimeInternal) {
+      if (event.startTime < this.#zeroTimeInternal) {
         continue;
       }
       if (!event.hasCategory(category)) {
@@ -41,31 +41,31 @@ export class FilmStripModel {
       if (event.name === TraceEvents.CaptureFrame) {
         const data = event.args['data'];
         if (data) {
-          this.framesInternal.push(Frame.fromEvent(this, event, this.framesInternal.length));
+          this.#framesInternal.push(Frame.fromEvent(this, event, this.#framesInternal.length));
         }
       } else if (event.name === TraceEvents.Screenshot) {
-        this.framesInternal.push(Frame.fromSnapshot(this, (event as ObjectSnapshot), this.framesInternal.length));
+        this.#framesInternal.push(Frame.fromSnapshot(this, (event as ObjectSnapshot), this.#framesInternal.length));
       }
     }
   }
 
   frames(): Frame[] {
-    return this.framesInternal;
+    return this.#framesInternal;
   }
 
   zeroTime(): number {
-    return this.zeroTimeInternal;
+    return this.#zeroTimeInternal;
   }
 
   spanTime(): number {
-    return this.spanTimeInternal;
+    return this.#spanTimeInternal;
   }
 
   frameByTimestamp(timestamp: number): Frame|null {
     const index = Platform.ArrayUtilities.upperBound(
-                      this.framesInternal, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
+                      this.#framesInternal, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
         1;
-    return index >= 0 ? this.framesInternal[index] : null;
+    return index >= 0 ? this.#framesInternal[index] : null;
   }
 }
 
@@ -77,40 +77,40 @@ const TraceEvents = {
 };
 
 export class Frame {
-  private readonly modelInternal: FilmStripModel;
+  readonly #modelInternal: FilmStripModel;
   timestamp: number;
   index: number;
-  private imageData: string|null;
-  private snapshot: ObjectSnapshot|null;
+  #imageData: string|null;
+  #snapshot: ObjectSnapshot|null;
   constructor(model: FilmStripModel, timestamp: number, index: number) {
-    this.modelInternal = model;
+    this.#modelInternal = model;
     this.timestamp = timestamp;
     this.index = index;
-    this.imageData = null;
-    this.snapshot = null;
+    this.#imageData = null;
+    this.#snapshot = null;
   }
 
   static fromEvent(model: FilmStripModel, event: Event, index: number): Frame {
     const frame = new Frame(model, event.startTime, index);
-    frame.imageData = event.args['data'];
+    frame.#imageData = event.args['data'];
     return frame;
   }
 
   static fromSnapshot(model: FilmStripModel, snapshot: ObjectSnapshot, index: number): Frame {
     const frame = new Frame(model, snapshot.startTime, index);
-    frame.snapshot = snapshot;
+    frame.#snapshot = snapshot;
     return frame;
   }
 
   model(): FilmStripModel {
-    return this.modelInternal;
+    return this.#modelInternal;
   }
 
   imageDataPromise(): Promise<string|null> {
-    if (this.imageData || !this.snapshot) {
-      return Promise.resolve(this.imageData);
+    if (this.#imageData || !this.#snapshot) {
+      return Promise.resolve(this.#imageData);
     }
 
-    return this.snapshot.objectPromise() as Promise<string|null>;
+    return this.#snapshot.objectPromise() as Promise<string|null>;
   }
 }

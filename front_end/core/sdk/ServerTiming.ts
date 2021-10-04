@@ -73,7 +73,7 @@ export class ServerTiming {
 
   /**
    * TODO(crbug.com/1011811): Instead of using !Object<string, *> we should have a proper type
-   *                          with name, desc and dur properties.
+   *                          with #name, desc and dur properties.
    */
   static createFromHeaderValue(valueString: string): {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -165,7 +165,7 @@ export class ServerTiming {
         const parseParameter = this.getParserForParameter(paramName);
         let paramValue: (string|null)|null = null;
         if (consumeDelimiter('=')) {
-          // always parse the value, even if we don't recognize the parameter name
+          // always parse the value, even if we don't recognize the parameter #name
           paramValue = consumeTokenOrQuotedString();
           consumeExtraneous();
         }

@@ -17,15 +17,15 @@ const registeredModels = new Map<new (arg1: Target) => SDKModel, RegistrationInf
 //                         all event emitters and sinks have been migrated.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class SDKModel<Events = any> extends Common.ObjectWrapper.ObjectWrapper<Events> {
-  private readonly targetInternal: Target;
+  readonly #targetInternal: Target;
 
   constructor(target: Target) {
     super();
-    this.targetInternal = target;
+    this.#targetInternal = target;
   }
 
   target(): Target {
-    return this.targetInternal;
+    return this.#targetInternal;
   }
 
   /**

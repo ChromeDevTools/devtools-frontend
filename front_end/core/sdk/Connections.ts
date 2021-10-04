@@ -11,16 +11,16 @@ import {TargetManager} from './TargetManager.js';
 
 export class MainConnection implements ProtocolClient.InspectorBackend.Connection {
   onMessage: ((arg0: (Object|string)) => void)|null;
-  private onDisconnect: ((arg0: string) => void)|null;
-  private messageBuffer: string;
-  private messageSize: number;
-  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
+  #onDisconnect: ((arg0: string) => void)|null;
+  #messageBuffer: string;
+  #messageSize: number;
+  readonly #eventListeners: Common.EventTarget.EventDescriptor[];
   constructor() {
     this.onMessage = null;
-    this.onDisconnect = null;
-    this.messageBuffer = '';
-    this.messageSize = 0;
-    this.eventListeners = [
+    this.#onDisconnect = null;
+    this.#messageBuffer = '';
+    this.#messageSize = 0;
+    this.#eventListeners = [
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -33,7 +33,7 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
-    this.onDisconnect = onDisconnect;
+    this.#onDisconnect = onDisconnect;
   }
 
   sendRawMessage(message: string): void {
@@ -52,21 +52,21 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
       event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.DispatchMessageChunkEvent>): void {
     const {messageChunk, messageSize} = event.data;
     if (messageSize) {
-      this.messageBuffer = '';
-      this.messageSize = messageSize;
+      this.#messageBuffer = '';
+      this.#messageSize = messageSize;
     }
-    this.messageBuffer += messageChunk;
-    if (this.messageBuffer.length === this.messageSize && this.onMessage) {
-      this.onMessage.call(null, this.messageBuffer);
-      this.messageBuffer = '';
-      this.messageSize = 0;
+    this.#messageBuffer += messageChunk;
+    if (this.#messageBuffer.length === this.#messageSize && this.onMessage) {
+      this.onMessage.call(null, this.#messageBuffer);
+      this.#messageBuffer = '';
+      this.#messageSize = 0;
     }
   }
 
   async disconnect(): Promise<void> {
-    const onDisconnect = this.onDisconnect;
-    Common.EventTarget.removeEventListeners(this.eventListeners);
-    this.onDisconnect = null;
+    const onDisconnect = this.#onDisconnect;
+    Common.EventTarget.removeEventListeners(this.#eventListeners);
+    this.#onDisconnect = null;
     this.onMessage = null;
 
     if (onDisconnect) {
@@ -76,28 +76,28 @@ export class MainConnection implements ProtocolClient.InspectorBackend.Connectio
 }
 
 export class WebSocketConnection implements ProtocolClient.InspectorBackend.Connection {
-  private socket: WebSocket|null;
+  #socket: WebSocket|null;
   onMessage: ((arg0: (Object|string)) => void)|null;
-  private onDisconnect: ((arg0: string) => void)|null;
-  private onWebSocketDisconnect: (() => void)|null;
-  private connected: boolean;
-  private messages: string[];
+  #onDisconnect: ((arg0: string) => void)|null;
+  #onWebSocketDisconnect: (() => void)|null;
+  #connected: boolean;
+  #messages: string[];
   constructor(url: string, onWebSocketDisconnect: () => void) {
-    this.socket = new WebSocket(url);
-    this.socket.onerror = this.onError.bind(this);
-    this.socket.onopen = this.onOpen.bind(this);
-    this.socket.onmessage = (messageEvent: MessageEvent<string>): void => {
+    this.#socket = new WebSocket(url);
+    this.#socket.onerror = this.onError.bind(this);
+    this.#socket.onopen = this.onOpen.bind(this);
+    this.#socket.onmessage = (messageEvent: MessageEvent<string>): void => {
       if (this.onMessage) {
         this.onMessage.call(null, messageEvent.data);
       }
     };
-    this.socket.onclose = this.onClose.bind(this);
+    this.#socket.onclose = this.onClose.bind(this);
 
     this.onMessage = null;
-    this.onDisconnect = null;
-    this.onWebSocketDisconnect = onWebSocketDisconnect;
-    this.connected = false;
-    this.messages = [];
+    this.#onDisconnect = null;
+    this.#onWebSocketDisconnect = onWebSocketDisconnect;
+    this.#connected = false;
+    this.#messages = [];
   }
 
   setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
@@ -105,66 +105,66 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
   }
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
-    this.onDisconnect = onDisconnect;
+    this.#onDisconnect = onDisconnect;
   }
 
   private onError(): void {
-    if (this.onWebSocketDisconnect) {
-      this.onWebSocketDisconnect.call(null);
+    if (this.#onWebSocketDisconnect) {
+      this.#onWebSocketDisconnect.call(null);
     }
-    if (this.onDisconnect) {
+    if (this.#onDisconnect) {
       // This is called if error occurred while connecting.
-      this.onDisconnect.call(null, 'connection failed');
+      this.#onDisconnect.call(null, 'connection failed');
     }
     this.close();
   }
 
   private onOpen(): void {
-    this.connected = true;
-    if (this.socket) {
-      this.socket.onerror = console.error;
-      for (const message of this.messages) {
-        this.socket.send(message);
+    this.#connected = true;
+    if (this.#socket) {
+      this.#socket.onerror = console.error;
+      for (const message of this.#messages) {
+        this.#socket.send(message);
       }
     }
-    this.messages = [];
+    this.#messages = [];
   }
 
   private onClose(): void {
-    if (this.onWebSocketDisconnect) {
-      this.onWebSocketDisconnect.call(null);
+    if (this.#onWebSocketDisconnect) {
+      this.#onWebSocketDisconnect.call(null);
     }
-    if (this.onDisconnect) {
-      this.onDisconnect.call(null, 'websocket closed');
+    if (this.#onDisconnect) {
+      this.#onDisconnect.call(null, 'websocket closed');
     }
     this.close();
   }
 
   private close(callback?: (() => void)): void {
-    if (this.socket) {
-      this.socket.onerror = null;
-      this.socket.onopen = null;
-      this.socket.onclose = callback || null;
-      this.socket.onmessage = null;
-      this.socket.close();
-      this.socket = null;
+    if (this.#socket) {
+      this.#socket.onerror = null;
+      this.#socket.onopen = null;
+      this.#socket.onclose = callback || null;
+      this.#socket.onmessage = null;
+      this.#socket.close();
+      this.#socket = null;
     }
-    this.onWebSocketDisconnect = null;
+    this.#onWebSocketDisconnect = null;
   }
 
   sendRawMessage(message: string): void {
-    if (this.connected && this.socket) {
-      this.socket.send(message);
+    if (this.#connected && this.#socket) {
+      this.#socket.send(message);
     } else {
-      this.messages.push(message);
+      this.#messages.push(message);
     }
   }
 
   disconnect(): Promise<void> {
     return new Promise(fulfill => {
       this.close(() => {
-        if (this.onDisconnect) {
-          this.onDisconnect.call(null, 'force disconnect');
+        if (this.#onDisconnect) {
+          this.#onDisconnect.call(null, 'force disconnect');
         }
         fulfill();
       });
@@ -174,10 +174,10 @@ export class WebSocketConnection implements ProtocolClient.InspectorBackend.Conn
 
 export class StubConnection implements ProtocolClient.InspectorBackend.Connection {
   onMessage: ((arg0: (Object|string)) => void)|null;
-  private onDisconnect: ((arg0: string) => void)|null;
+  #onDisconnect: ((arg0: string) => void)|null;
   constructor() {
     this.onMessage = null;
-    this.onDisconnect = null;
+    this.#onDisconnect = null;
   }
 
   setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
@@ -185,7 +185,7 @@ export class StubConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
-    this.onDisconnect = onDisconnect;
+    this.#onDisconnect = onDisconnect;
   }
 
   sendRawMessage(message: string): void {
@@ -205,24 +205,24 @@ export class StubConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 
   async disconnect(): Promise<void> {
-    if (this.onDisconnect) {
-      this.onDisconnect.call(null, 'force disconnect');
+    if (this.#onDisconnect) {
+      this.#onDisconnect.call(null, 'force disconnect');
     }
-    this.onDisconnect = null;
+    this.#onDisconnect = null;
     this.onMessage = null;
   }
 }
 
 export class ParallelConnection implements ProtocolClient.InspectorBackend.Connection {
-  private readonly connection: ProtocolClient.InspectorBackend.Connection;
-  private sessionId: string;
+  readonly #connection: ProtocolClient.InspectorBackend.Connection;
+  #sessionId: string;
   onMessage: ((arg0: Object) => void)|null;
-  private onDisconnect: ((arg0: string) => void)|null;
+  #onDisconnect: ((arg0: string) => void)|null;
   constructor(connection: ProtocolClient.InspectorBackend.Connection, sessionId: string) {
-    this.connection = connection;
-    this.sessionId = sessionId;
+    this.#connection = connection;
+    this.#sessionId = sessionId;
     this.onMessage = null;
-    this.onDisconnect = null;
+    this.#onDisconnect = null;
   }
 
   setOnMessage(onMessage: (arg0: Object) => void): void {
@@ -230,31 +230,31 @@ export class ParallelConnection implements ProtocolClient.InspectorBackend.Conne
   }
 
   setOnDisconnect(onDisconnect: (arg0: string) => void): void {
-    this.onDisconnect = onDisconnect;
+    this.#onDisconnect = onDisconnect;
   }
 
   getOnDisconnect(): ((arg0: string) => void)|null {
-    return this.onDisconnect;
+    return this.#onDisconnect;
   }
 
   sendRawMessage(message: string): void {
     const messageObject = JSON.parse(message);
     // If the message isn't for a specific session, it must be for the root session.
     if (!messageObject.sessionId) {
-      messageObject.sessionId = this.sessionId;
+      messageObject.sessionId = this.#sessionId;
     }
-    this.connection.sendRawMessage(JSON.stringify(messageObject));
+    this.#connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
   getSessionId(): string {
-    return this.sessionId;
+    return this.#sessionId;
   }
 
   async disconnect(): Promise<void> {
-    if (this.onDisconnect) {
-      this.onDisconnect.call(null, 'force disconnect');
+    if (this.#onDisconnect) {
+      this.#onDisconnect.call(null, 'force disconnect');
     }
-    this.onDisconnect = null;
+    this.#onDisconnect = null;
     this.onMessage = null;
   }
 }

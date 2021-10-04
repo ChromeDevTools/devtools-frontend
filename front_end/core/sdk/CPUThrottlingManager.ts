@@ -12,11 +12,11 @@ let throttlingManagerInstance: CPUThrottlingManager;
 
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
-  private cpuThrottlingRateInternal: number;
+  #cpuThrottlingRateInternal: number;
 
   private constructor() {
     super();
-    this.cpuThrottlingRateInternal = CPUThrottlingRates.NoThrottling;
+    this.#cpuThrottlingRateInternal = CPUThrottlingRates.NoThrottling;
     TargetManager.instance().observeModels(EmulationModel, this);
   }
 
@@ -30,20 +30,20 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   cpuThrottlingRate(): number {
-    return this.cpuThrottlingRateInternal;
+    return this.#cpuThrottlingRateInternal;
   }
 
   setCPUThrottlingRate(rate: number): void {
-    this.cpuThrottlingRateInternal = rate;
+    this.#cpuThrottlingRateInternal = rate;
     for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
-      emulationModel.setCPUThrottlingRate(this.cpuThrottlingRateInternal);
+      emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);
     }
-    this.dispatchEventToListeners(Events.RateChanged, this.cpuThrottlingRateInternal);
+    this.dispatchEventToListeners(Events.RateChanged, this.#cpuThrottlingRateInternal);
   }
 
   modelAdded(emulationModel: EmulationModel): void {
-    if (this.cpuThrottlingRateInternal !== CPUThrottlingRates.NoThrottling) {
-      emulationModel.setCPUThrottlingRate(this.cpuThrottlingRateInternal);
+    if (this.#cpuThrottlingRateInternal !== CPUThrottlingRates.NoThrottling) {
+      emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);
     }
   }
 

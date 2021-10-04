@@ -16,7 +16,7 @@
  * copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the
  * distribution.
- *     * Neither the name of Google Inc. nor the names of its
+ *     * Neither the #name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  *
@@ -52,31 +52,31 @@ import {TargetManager} from './TargetManager.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 export class DOMNode {
-  private domModelInternal: DOMModel;
-  private agent: ProtocolProxyApi.DOMApi;
+  #domModelInternal: DOMModel;
+  #agent: ProtocolProxyApi.DOMApi;
   ownerDocument!: DOMDocument|null;
-  private isInShadowTreeInternal!: boolean;
+  #isInShadowTreeInternal!: boolean;
   id!: Protocol.DOM.NodeId;
   index: number|undefined;
-  private backendNodeIdInternal!: Protocol.DOM.BackendNodeId;
-  private nodeTypeInternal!: number;
-  private nodeNameInternal!: string;
-  private localNameInternal!: string;
+  #backendNodeIdInternal!: Protocol.DOM.BackendNodeId;
+  #nodeTypeInternal!: number;
+  #nodeNameInternal!: string;
+  #localNameInternal!: string;
   nodeValueInternal!: string;
-  private pseudoTypeInternal!: Protocol.DOM.PseudoType|undefined;
-  private shadowRootTypeInternal!: Protocol.DOM.ShadowRootType|undefined;
-  private frameOwnerFrameIdInternal!: Protocol.Page.FrameId|null;
-  private xmlVersion!: string|undefined;
-  private isSVGNodeInternal!: boolean;
-  private creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null;
+  #pseudoTypeInternal!: Protocol.DOM.PseudoType|undefined;
+  #shadowRootTypeInternal!: Protocol.DOM.ShadowRootType|undefined;
+  #frameOwnerFrameIdInternal!: Protocol.Page.FrameId|null;
+  #xmlVersion!: string|undefined;
+  #isSVGNodeInternal!: boolean;
+  #creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null;
   pseudoElementsInternal: Map<string, DOMNode>;
-  private distributedNodesInternal: DOMNodeShortcut[];
+  #distributedNodesInternal: DOMNodeShortcut[];
   readonly shadowRootsInternal: DOMNode[];
-  private attributesInternal: Map<string, Attribute>;
+  #attributesInternal: Map<string, Attribute>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private markers: Map<string, any>;
-  private subtreeMarkerCount: number;
+  #markers: Map<string, any>;
+  #subtreeMarkerCount: number;
   childNodeCountInternal!: number;
   childrenInternal: DOMNode[]|null;
   nextSibling: DOMNode|null;
@@ -86,8 +86,8 @@ export class DOMNode {
   parentNode: DOMNode|null;
   templateContentInternal?: DOMNode;
   contentDocumentInternal?: DOMDocument;
-  private childDocumentPromiseForTesting?: Promise<DOMDocument|null>;
-  private importedDocumentInternal?: DOMNode;
+  childDocumentPromiseForTesting?: Promise<DOMDocument|null>;
+  #importedDocumentInternal?: DOMNode;
   publicId?: string;
   systemId?: string;
   internalSubset?: string;
@@ -95,16 +95,16 @@ export class DOMNode {
   value?: string;
 
   constructor(domModel: DOMModel) {
-    this.domModelInternal = domModel;
-    this.agent = this.domModelInternal.getAgent();
+    this.#domModelInternal = domModel;
+    this.#agent = this.#domModelInternal.getAgent();
     this.index = undefined;
-    this.creationStackTraceInternal = null;
+    this.#creationStackTraceInternal = null;
     this.pseudoElementsInternal = new Map();
-    this.distributedNodesInternal = [];
+    this.#distributedNodesInternal = [];
     this.shadowRootsInternal = [];
-    this.attributesInternal = new Map();
-    this.markers = new Map();
-    this.subtreeMarkerCount = 0;
+    this.#attributesInternal = new Map();
+    this.#markers = new Map();
+    this.#subtreeMarkerCount = 0;
     this.childrenInternal = null;
     this.nextSibling = null;
     this.previousSibling = null;
@@ -121,22 +121,22 @@ export class DOMNode {
   }
 
   init(doc: DOMDocument|null, isInShadowTree: boolean, payload: Protocol.DOM.Node): void {
-    this.agent = this.domModelInternal.getAgent();
+    this.#agent = this.#domModelInternal.getAgent();
     this.ownerDocument = doc;
-    this.isInShadowTreeInternal = isInShadowTree;
+    this.#isInShadowTreeInternal = isInShadowTree;
 
     this.id = payload.nodeId;
-    this.backendNodeIdInternal = payload.backendNodeId;
-    this.domModelInternal.registerNode(this);
-    this.nodeTypeInternal = payload.nodeType;
-    this.nodeNameInternal = payload.nodeName;
-    this.localNameInternal = payload.localName;
+    this.#backendNodeIdInternal = payload.backendNodeId;
+    this.#domModelInternal.registerNode(this);
+    this.#nodeTypeInternal = payload.nodeType;
+    this.#nodeNameInternal = payload.nodeName;
+    this.#localNameInternal = payload.localName;
     this.nodeValueInternal = payload.nodeValue;
-    this.pseudoTypeInternal = payload.pseudoType;
-    this.shadowRootTypeInternal = payload.shadowRootType;
-    this.frameOwnerFrameIdInternal = payload.frameId || null;
-    this.xmlVersion = payload.xmlVersion;
-    this.isSVGNodeInternal = Boolean(payload.isSVG);
+    this.#pseudoTypeInternal = payload.pseudoType;
+    this.#shadowRootTypeInternal = payload.shadowRootType;
+    this.#frameOwnerFrameIdInternal = payload.frameId || null;
+    this.#xmlVersion = payload.xmlVersion;
+    this.#isSVGNodeInternal = Boolean(payload.isSVG);
 
     if (payload.attributes) {
       this.setAttributesPayload(payload.attributes);
@@ -146,7 +146,7 @@ export class DOMNode {
     if (payload.shadowRoots) {
       for (let i = 0; i < payload.shadowRoots.length; ++i) {
         const root = payload.shadowRoots[i];
-        const node = DOMNode.create(this.domModelInternal, this.ownerDocument, true, root);
+        const node = DOMNode.create(this.#domModelInternal, this.ownerDocument, true, root);
         this.shadowRootsInternal.push(node);
         node.parentNode = this;
       }
@@ -154,26 +154,26 @@ export class DOMNode {
 
     if (payload.templateContent) {
       this.templateContentInternal =
-          DOMNode.create(this.domModelInternal, this.ownerDocument, true, payload.templateContent);
+          DOMNode.create(this.#domModelInternal, this.ownerDocument, true, payload.templateContent);
       this.templateContentInternal.parentNode = this;
       this.childrenInternal = [];
     }
 
     if (payload.contentDocument) {
-      this.contentDocumentInternal = new DOMDocument(this.domModelInternal, payload.contentDocument);
+      this.contentDocumentInternal = new DOMDocument(this.#domModelInternal, payload.contentDocument);
       this.contentDocumentInternal.parentNode = this;
       this.childrenInternal = [];
     } else if ((payload.nodeName === 'IFRAME' || payload.nodeName === 'PORTAL') && payload.frameId) {
-      // At this point we know we are in an OOPIF, otherwise payload.contentDocument would have been set.
+      // At this point we know we are in an OOPIF, otherwise #payload.contentDocument would have been set.
       this.childDocumentPromiseForTesting =
-          this.createChildDocumentPromiseForTesting(payload.frameId, this.domModelInternal.target());
+          this.createChildDocumentPromiseForTesting(payload.frameId, this.#domModelInternal.target());
       this.childrenInternal = [];
     }
 
     if (payload.importedDocument) {
-      this.importedDocumentInternal =
-          DOMNode.create(this.domModelInternal, this.ownerDocument, true, payload.importedDocument);
-      this.importedDocumentInternal.parentNode = this;
+      this.#importedDocumentInternal =
+          DOMNode.create(this.#domModelInternal, this.ownerDocument, true, payload.importedDocument);
+      this.#importedDocumentInternal.parentNode = this;
       this.childrenInternal = [];
     }
 
@@ -187,19 +187,19 @@ export class DOMNode {
 
     this.setPseudoElements(payload.pseudoElements);
 
-    if (this.nodeTypeInternal === Node.ELEMENT_NODE) {
+    if (this.#nodeTypeInternal === Node.ELEMENT_NODE) {
       // HTML and BODY from internal iframes should not overwrite top-level ones.
-      if (this.ownerDocument && !this.ownerDocument.documentElement && this.nodeNameInternal === 'HTML') {
+      if (this.ownerDocument && !this.ownerDocument.documentElement && this.#nodeNameInternal === 'HTML') {
         this.ownerDocument.documentElement = this;
       }
-      if (this.ownerDocument && !this.ownerDocument.body && this.nodeNameInternal === 'BODY') {
+      if (this.ownerDocument && !this.ownerDocument.body && this.#nodeNameInternal === 'BODY') {
         this.ownerDocument.body = this;
       }
-    } else if (this.nodeTypeInternal === Node.DOCUMENT_TYPE_NODE) {
+    } else if (this.#nodeTypeInternal === Node.DOCUMENT_TYPE_NODE) {
       this.publicId = payload.publicId;
       this.systemId = payload.systemId;
       this.internalSubset = payload.internalSubset;
-    } else if (this.nodeTypeInternal === Node.ATTRIBUTE_NODE) {
+    } else if (this.#nodeTypeInternal === Node.ATTRIBUTE_NODE) {
       this.name = payload.name;
       this.value = payload.value;
     }
@@ -216,8 +216,8 @@ export class DOMNode {
   }
 
   isAdFrameNode(): boolean {
-    if (this.isIframe() && this.frameOwnerFrameIdInternal) {
-      const frame = FrameManager.instance().getFrame(this.frameOwnerFrameIdInternal);
+    if (this.isIframe() && this.#frameOwnerFrameIdInternal) {
+      const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameIdInternal);
       if (!frame) {
         return false;
       }
@@ -227,25 +227,29 @@ export class DOMNode {
   }
 
   isSVGNode(): boolean {
-    return this.isSVGNodeInternal;
+    return this.#isSVGNodeInternal;
   }
 
   creationStackTrace(): Promise<Protocol.Runtime.StackTrace|null> {
-    if (this.creationStackTraceInternal) {
-      return this.creationStackTraceInternal;
+    if (this.#creationStackTraceInternal) {
+      return this.#creationStackTraceInternal;
     }
 
-    const stackTracesPromise = this.agent.invoke_getNodeStackTraces({nodeId: this.id});
-    this.creationStackTraceInternal = stackTracesPromise.then(res => res.creation || null);
-    return this.creationStackTraceInternal;
+    const stackTracesPromise = this.#agent.invoke_getNodeStackTraces({nodeId: this.id});
+    this.#creationStackTraceInternal = stackTracesPromise.then(res => res.creation || null);
+    return this.#creationStackTraceInternal;
+  }
+
+  get subtreeMarkerCount(): number {
+    return this.#subtreeMarkerCount;
   }
 
   domModel(): DOMModel {
-    return this.domModelInternal;
+    return this.#domModelInternal;
   }
 
   backendNodeId(): Protocol.DOM.BackendNodeId {
-    return this.backendNodeIdInternal;
+    return this.#backendNodeIdInternal;
   }
 
   children(): DOMNode[]|null {
@@ -257,7 +261,7 @@ export class DOMNode {
   }
 
   hasAttributes(): boolean {
-    return this.attributesInternal.size > 0;
+    return this.#attributesInternal.size > 0;
   }
 
   childNodeCount(): number {
@@ -289,27 +293,27 @@ export class DOMNode {
   }
 
   isIframe(): boolean {
-    return this.nodeNameInternal === 'IFRAME';
+    return this.#nodeNameInternal === 'IFRAME';
   }
 
   isPortal(): boolean {
-    return this.nodeNameInternal === 'PORTAL';
+    return this.#nodeNameInternal === 'PORTAL';
   }
 
   importedDocument(): DOMNode|null {
-    return this.importedDocumentInternal || null;
+    return this.#importedDocumentInternal || null;
   }
 
   nodeType(): number {
-    return this.nodeTypeInternal;
+    return this.#nodeTypeInternal;
   }
 
   nodeName(): string {
-    return this.nodeNameInternal;
+    return this.#nodeNameInternal;
   }
 
   pseudoType(): string|undefined {
-    return this.pseudoTypeInternal;
+    return this.#pseudoTypeInternal;
   }
 
   hasPseudoElements(): boolean {
@@ -343,15 +347,16 @@ export class DOMNode {
 
   isInsertionPoint(): boolean {
     return !this.isXMLNode() &&
-        (this.nodeNameInternal === 'SHADOW' || this.nodeNameInternal === 'CONTENT' || this.nodeNameInternal === 'SLOT');
+        (this.#nodeNameInternal === 'SHADOW' || this.#nodeNameInternal === 'CONTENT' ||
+         this.#nodeNameInternal === 'SLOT');
   }
 
   distributedNodes(): DOMNodeShortcut[] {
-    return this.distributedNodesInternal;
+    return this.#distributedNodesInternal;
   }
 
   isInShadowTree(): boolean {
-    return this.isInShadowTreeInternal;
+    return this.#isInShadowTreeInternal;
   }
 
   ancestorShadowHost(): DOMNode|null {
@@ -360,7 +365,7 @@ export class DOMNode {
   }
 
   ancestorShadowRoot(): DOMNode|null {
-    if (!this.isInShadowTreeInternal) {
+    if (!this.#isInShadowTreeInternal) {
       return null;
     }
 
@@ -380,11 +385,11 @@ export class DOMNode {
   }
 
   isShadowRoot(): boolean {
-    return Boolean(this.shadowRootTypeInternal);
+    return Boolean(this.#shadowRootTypeInternal);
   }
 
   shadowRootType(): string|null {
-    return this.shadowRootTypeInternal || null;
+    return this.#shadowRootTypeInternal || null;
   }
 
   nodeNameInCorrectCase(): string {
@@ -393,7 +398,7 @@ export class DOMNode {
       return '#shadow-root (' + shadowRootType + ')';
     }
 
-    // If there is no local name, it's case sensitive
+    // If there is no local #name, it's case sensitive
     if (!this.localName()) {
       return this.nodeName();
     }
@@ -412,18 +417,18 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
-    this.agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
+    this.#agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
-        callback(response.getError() || null, this.domModelInternal.nodeForId(response.nodeId));
+        callback(response.getError() || null, this.#domModelInternal.nodeForId(response.nodeId));
       }
     });
   }
 
   localName(): string {
-    return this.localNameInternal;
+    return this.#localNameInternal;
   }
 
   nodeValue(): string {
@@ -437,9 +442,9 @@ export class DOMNode {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setNodeValue(value: string, callback?: ((arg0: string|null) => any)): void {
-    this.agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
+    this.#agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
         callback(response.getError() || null);
@@ -448,7 +453,7 @@ export class DOMNode {
   }
 
   getAttribute(name: string): string|undefined {
-    const attr = this.attributesInternal.get(name);
+    const attr = this.#attributesInternal.get(name);
     return attr ? attr.value : undefined;
   }
 
@@ -457,9 +462,9 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback?: ((arg0: string|null) => any)): void {
-    this.agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
+    this.#agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
         callback(response.getError() || null);
@@ -472,9 +477,9 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback?: ((arg0: string|null) => any)): void {
-    this.agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
+    this.#agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
         callback(response.getError() || null);
@@ -487,16 +492,16 @@ export class DOMNode {
   }
 
   attributes(): Attribute[] {
-    return [...this.attributesInternal.values()];
+    return [...this.#attributesInternal.values()];
   }
 
   async removeAttribute(name: string): Promise<void> {
-    const response = await this.agent.invoke_removeAttribute({nodeId: this.id, name});
+    const response = await this.#agent.invoke_removeAttribute({nodeId: this.id, name});
     if (response.getError()) {
       return;
     }
-    this.attributesInternal.delete(name);
-    this.domModelInternal.markUndoableState();
+    this.#attributesInternal.delete(name);
+    this.#domModelInternal.markUndoableState();
   }
 
   getChildNodes(callback: (arg0: Array<DOMNode>|null) => void): void {
@@ -504,27 +509,27 @@ export class DOMNode {
       callback(this.children());
       return;
     }
-    this.agent.invoke_requestChildNodes({nodeId: this.id}).then(response => {
+    this.#agent.invoke_requestChildNodes({nodeId: this.id}).then(response => {
       callback(response.getError() ? null : this.children());
     });
   }
 
   async getSubtree(depth: number, pierce: boolean): Promise<DOMNode[]|null> {
-    const response = await this.agent.invoke_requestChildNodes({nodeId: this.id, depth: depth, pierce: pierce});
+    const response = await this.#agent.invoke_requestChildNodes({nodeId: this.id, depth: depth, pierce: pierce});
     return response.getError() ? null : this.childrenInternal;
   }
 
   async getOuterHTML(): Promise<string|null> {
-    const {outerHTML} = await this.agent.invoke_getOuterHTML({nodeId: this.id});
+    const {outerHTML} = await this.#agent.invoke_getOuterHTML({nodeId: this.id});
     return outerHTML;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setOuterHTML(html: string, callback?: ((arg0: string|null) => any)): void {
-    this.agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
+    this.#agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
         callback(response.getError() || null);
@@ -536,9 +541,9 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (arg0: string|null, arg1?: Protocol.DOM.NodeId|undefined) => any)): Promise<void> {
-    return this.agent.invoke_removeNode({nodeId: this.id}).then(response => {
+    return this.#agent.invoke_removeNode({nodeId: this.id}).then(response => {
       if (!response.getError()) {
-        this.domModelInternal.markUndoableState();
+        this.#domModelInternal.markUndoableState();
       }
       if (callback) {
         callback(response.getError() || null);
@@ -547,7 +552,7 @@ export class DOMNode {
   }
 
   async copyNode(): Promise<string|null> {
-    const {outerHTML} = await this.agent.invoke_getOuterHTML({nodeId: this.id});
+    const {outerHTML} = await this.#agent.invoke_getOuterHTML({nodeId: this.id});
     if (outerHTML !== null) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(outerHTML);
     }
@@ -556,7 +561,7 @@ export class DOMNode {
 
   path(): string {
     function canPush(node: DOMNode): number|false|null {
-      return (node.index !== undefined || (node.isShadowRoot() && node.parentNode)) && node.nodeNameInternal.length;
+      return (node.index !== undefined || (node.isShadowRoot() && node.parentNode)) && node.#nodeNameInternal.length;
     }
 
     const path = [];
@@ -565,7 +570,7 @@ export class DOMNode {
       const index = typeof node.index === 'number' ?
           node.index :
           (node.shadowRootType() === DOMNode.ShadowRootTypes.UserAgent ? 'u' : 'a');
-      path.push([index, node.nodeNameInternal]);
+      path.push([index, node.#nodeNameInternal]);
       node = node.parentNode;
     }
     path.reverse();
@@ -592,22 +597,23 @@ export class DOMNode {
   }
 
   frameOwnerFrameId(): Protocol.Page.FrameId|null {
-    return this.frameOwnerFrameIdInternal;
+    return this.#frameOwnerFrameIdInternal;
   }
 
   frameId(): Protocol.Page.FrameId|null {
     let node: DOMNode = this.parentNode || this;
-    while (!node.frameOwnerFrameIdInternal && node.parentNode) {
+    while (!node.#frameOwnerFrameIdInternal && node.parentNode) {
       node = node.parentNode;
     }
-    return node.frameOwnerFrameIdInternal;
+    return node.#frameOwnerFrameIdInternal;
   }
 
   setAttributesPayload(attrs: string[]): boolean {
-    let attributesChanged: true|boolean = !this.attributesInternal || attrs.length !== this.attributesInternal.size * 2;
-    const oldAttributesMap = this.attributesInternal || new Map();
+    let attributesChanged: true|boolean =
+        !this.#attributesInternal || attrs.length !== this.#attributesInternal.size * 2;
+    const oldAttributesMap = this.#attributesInternal || new Map();
 
-    this.attributesInternal = new Map();
+    this.#attributesInternal = new Map();
 
     for (let i = 0; i < attrs.length; i += 2) {
       const name = attrs[i];
@@ -630,7 +636,7 @@ export class DOMNode {
     if (!this.childrenInternal) {
       throw new Error('DOMNode._children is expected to not be null.');
     }
-    const node = DOMNode.create(this.domModelInternal, this.ownerDocument, this.isInShadowTreeInternal, payload);
+    const node = DOMNode.create(this.#domModelInternal, this.ownerDocument, this.#isInShadowTreeInternal, payload);
     this.childrenInternal.splice(prev ? this.childrenInternal.indexOf(prev) + 1 : 0, 0, node);
     this.renumber();
     return node;
@@ -655,9 +661,9 @@ export class DOMNode {
       }
     }
     node.parentNode = null;
-    this.subtreeMarkerCount -= node.subtreeMarkerCount;
-    if (node.subtreeMarkerCount) {
-      this.domModelInternal.dispatchEventToListeners(Events.MarkersChanged, this);
+    this.#subtreeMarkerCount -= node.#subtreeMarkerCount;
+    if (node.#subtreeMarkerCount) {
+      this.#domModelInternal.dispatchEventToListeners(Events.MarkersChanged, this);
     }
     this.renumber();
   }
@@ -666,7 +672,7 @@ export class DOMNode {
     this.childrenInternal = [];
     for (let i = 0; i < payloads.length; ++i) {
       const payload = payloads[i];
-      const node = DOMNode.create(this.domModelInternal, this.ownerDocument, this.isInShadowTreeInternal, payload);
+      const node = DOMNode.create(this.#domModelInternal, this.ownerDocument, this.#isInShadowTreeInternal, payload);
       this.childrenInternal.push(node);
     }
     this.renumber();
@@ -678,7 +684,8 @@ export class DOMNode {
     }
 
     for (let i = 0; i < payloads.length; ++i) {
-      const node = DOMNode.create(this.domModelInternal, this.ownerDocument, this.isInShadowTreeInternal, payloads[i]);
+      const node =
+          DOMNode.create(this.#domModelInternal, this.ownerDocument, this.#isInShadowTreeInternal, payloads[i]);
       node.parentNode = this;
       const pseudoType = node.pseudoType();
       if (!pseudoType) {
@@ -689,10 +696,10 @@ export class DOMNode {
   }
 
   setDistributedNodePayloads(payloads: Protocol.DOM.BackendNode[]): void {
-    this.distributedNodesInternal = [];
+    this.#distributedNodesInternal = [];
     for (const payload of payloads) {
-      this.distributedNodesInternal.push(new DOMNodeShortcut(
-          this.domModelInternal.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
+      this.#distributedNodesInternal.push(new DOMNodeShortcut(
+          this.#domModelInternal.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
     }
   }
 
@@ -719,11 +726,11 @@ export class DOMNode {
 
   private addAttribute(name: string, value: string): void {
     const attr = {name: name, value: value, _node: this};
-    this.attributesInternal.set(name, attr);
+    this.#attributesInternal.set(name, attr);
   }
 
   setAttributeInternal(name: string, value: string): void {
-    const attr = this.attributesInternal.get(name);
+    const attr = this.#attributesInternal.get(name);
     if (attr) {
       attr.value = value;
     } else {
@@ -732,7 +739,7 @@ export class DOMNode {
   }
 
   removeAttributeInternal(name: string): void {
-    this.attributesInternal.delete(name);
+    this.#attributesInternal.delete(name);
   }
 
   copyTo(
@@ -740,15 +747,15 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
-    this.agent
+    this.#agent
         .invoke_copyTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
         .then(response => {
           if (!response.getError()) {
-            this.domModelInternal.markUndoableState();
+            this.#domModelInternal.markUndoableState();
           }
           if (callback) {
-            callback(response.getError() || null, this.domModelInternal.nodeForId(response.nodeId));
+            callback(response.getError() || null, this.#domModelInternal.nodeForId(response.nodeId));
           }
         });
   }
@@ -758,62 +765,66 @@ export class DOMNode {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
-    this.agent
+    this.#agent
         .invoke_moveTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
         .then(response => {
           if (!response.getError()) {
-            this.domModelInternal.markUndoableState();
+            this.#domModelInternal.markUndoableState();
           }
           if (callback) {
-            callback(response.getError() || null, this.domModelInternal.nodeForId(response.nodeId));
+            callback(response.getError() || null, this.#domModelInternal.nodeForId(response.nodeId));
           }
         });
   }
 
   isXMLNode(): boolean {
-    return Boolean(this.xmlVersion);
+    return Boolean(this.#xmlVersion);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setMarker(name: string, value: any): void {
     if (value === null) {
-      if (!this.markers.has(name)) {
+      if (!this.#markers.has(name)) {
         return;
       }
 
-      this.markers.delete(name);
+      this.#markers.delete(name);
       for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
-        --node.subtreeMarkerCount;
+        --node.#subtreeMarkerCount;
       }
       for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
-        this.domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
+        this.#domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
       }
       return;
     }
 
-    if (this.parentNode && !this.markers.has(name)) {
+    if (this.parentNode && !this.#markers.has(name)) {
       for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
-        ++node.subtreeMarkerCount;
+        ++node.#subtreeMarkerCount;
       }
     }
-    this.markers.set(name, value);
+    this.#markers.set(name, value);
     for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
-      this.domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
+      this.#domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
     }
   }
 
   marker<T>(name: string): T|null {
-    return this.markers.get(name) || null;
+    return this.#markers.get(name) || null;
+  }
+
+  getMarkerKeysForTest(): string[] {
+    return [...this.#markers.keys()];
   }
 
   traverseMarkers(visitor: (arg0: DOMNode, arg1: string) => void): void {
     function traverse(node: DOMNode): void {
-      if (!node.subtreeMarkerCount) {
+      if (!node.#subtreeMarkerCount) {
         return;
       }
-      for (const marker of node.markers.keys()) {
+      for (const marker of node.#markers.keys()) {
         visitor(node, marker);
       }
       if (!node.childrenInternal) {
@@ -840,20 +851,20 @@ export class DOMNode {
   }
 
   highlight(mode?: string): void {
-    this.domModelInternal.overlayModel().highlightInOverlay({node: this, selectorList: undefined}, mode);
+    this.#domModelInternal.overlayModel().highlightInOverlay({node: this, selectorList: undefined}, mode);
   }
 
   highlightForTwoSeconds(): void {
-    this.domModelInternal.overlayModel().highlightInOverlayForTwoSeconds({node: this, selectorList: undefined});
+    this.#domModelInternal.overlayModel().highlightInOverlayForTwoSeconds({node: this, selectorList: undefined});
   }
 
   async resolveToObject(objectGroup?: string): Promise<RemoteObject|null> {
-    const {object} = await this.agent.invoke_resolveNode({nodeId: this.id, backendNodeId: undefined, objectGroup});
-    return object && this.domModelInternal.runtimeModelInternal.createRemoteObject(object) || null;
+    const {object} = await this.#agent.invoke_resolveNode({nodeId: this.id, backendNodeId: undefined, objectGroup});
+    return object && this.#domModelInternal.runtimeModelInternal.createRemoteObject(object) || null;
   }
 
   async boxModel(): Promise<Protocol.DOM.BoxModel|null> {
-    const {model} = await this.agent.invoke_getBoxModel({nodeId: this.id});
+    const {model} = await this.#agent.invoke_getBoxModel({nodeId: this.id});
     return model;
   }
 
@@ -871,13 +882,13 @@ export class DOMNode {
       if (!ancestor) {
         break;
       }
-      // User agent shadow root, keep climbing up.
+      // User #agent shadow root, keep climbing up.
       node = ancestor;
     }
     if (!node) {
       throw new Error('In DOMNode.setAsInspectedNode: node is expected to not be null.');
     }
-    await this.agent.invoke_setInspectedNode({nodeId: node.id});
+    await this.#agent.invoke_setInspectedNode({nodeId: node.id});
   }
 
   enclosingElementOrSelf(): DOMNode|null {
@@ -926,7 +937,7 @@ export class DOMNode {
     await object.callFunction(focusInPage);
     object.release();
     node.highlightForTwoSeconds();
-    await this.domModelInternal.target().pageAgent().invoke_bringToFront();
+    await this.#domModelInternal.target().pageAgent().invoke_bringToFront();
 
     function focusInPage(this: HTMLElement): void {
       this.focus();
@@ -975,12 +986,12 @@ export namespace DOMNode {
 }
 
 export class DeferredDOMNode {
-  private readonly domModelInternal: DOMModel;
-  private readonly backendNodeIdInternal: Protocol.DOM.BackendNodeId;
+  readonly #domModelInternal: DOMModel;
+  readonly #backendNodeIdInternal: Protocol.DOM.BackendNodeId;
 
   constructor(target: Target, backendNodeId: Protocol.DOM.BackendNodeId) {
-    this.domModelInternal = (target.model(DOMModel) as DOMModel);
-    this.backendNodeIdInternal = backendNodeId;
+    this.#domModelInternal = (target.model(DOMModel) as DOMModel);
+    this.#backendNodeIdInternal = backendNodeId;
   }
 
   resolve(callback: (arg0: DOMNode|null) => void): void {
@@ -988,20 +999,21 @@ export class DeferredDOMNode {
   }
 
   async resolvePromise(): Promise<DOMNode|null> {
-    const nodeIds = await this.domModelInternal.pushNodesByBackendIdsToFrontend(new Set([this.backendNodeIdInternal]));
-    return nodeIds && nodeIds.get(this.backendNodeIdInternal) || null;
+    const nodeIds =
+        await this.#domModelInternal.pushNodesByBackendIdsToFrontend(new Set([this.#backendNodeIdInternal]));
+    return nodeIds && nodeIds.get(this.#backendNodeIdInternal) || null;
   }
 
   backendNodeId(): Protocol.DOM.BackendNodeId {
-    return this.backendNodeIdInternal;
+    return this.#backendNodeIdInternal;
   }
 
   domModel(): DOMModel {
-    return this.domModelInternal;
+    return this.#domModelInternal;
   }
 
   highlight(): void {
-    this.domModelInternal.overlayModel().highlightInOverlay({deferredNode: this, selectorList: undefined});
+    this.#domModelInternal.overlayModel().highlightInOverlay({deferredNode: this, selectorList: undefined});
   }
 }
 
@@ -1034,25 +1046,25 @@ export class DOMDocument extends DOMNode {
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
   idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode> = new Map();
-  private document: DOMDocument|null;
-  private readonly attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
+  #document: DOMDocument|null;
+  readonly #attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
   readonly runtimeModelInternal: RuntimeModel;
-  private lastMutationId!: number;
-  private pendingDocumentRequestPromise: Promise<DOMDocument|null>|null;
-  private frameOwnerNode?: DOMNode|null;
-  private loadNodeAttributesTimeout?: number;
-  private searchId?: string;
+  #lastMutationId!: number;
+  #pendingDocumentRequestPromise: Promise<DOMDocument|null>|null;
+  #frameOwnerNode?: DOMNode|null;
+  #loadNodeAttributesTimeout?: number;
+  #searchId?: string;
   constructor(target: Target) {
     super(target);
 
     this.agent = target.domAgent();
 
-    this.document = null;
-    this.attributeLoadNodeIds = new Set();
+    this.#document = null;
+    this.#attributeLoadNodeIds = new Set();
     target.registerDOMDispatcher(new DOMDispatcher(this));
     this.runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
 
-    this.pendingDocumentRequestPromise = null;
+    this.#pendingDocumentRequestPromise = null;
 
     if (!target.suspended()) {
       this.agent.invoke_enable();
@@ -1086,11 +1098,11 @@ export class DOMModel extends SDKModel<EventTypes> {
       return;
     }
 
-    this.lastMutationId = (this.lastMutationId || 0) + 1;
-    Promise.resolve().then(callObserve.bind(this, node, this.lastMutationId));
+    this.#lastMutationId = (this.#lastMutationId || 0) + 1;
+    Promise.resolve().then(callObserve.bind(this, node, this.#lastMutationId));
 
     function callObserve(this: DOMModel, node: DOMNode, mutationId: number): void {
-      if (!this.hasEventListeners(Events.DOMMutated) || this.lastMutationId !== mutationId) {
+      if (!this.hasEventListeners(Events.DOMMutated) || this.#lastMutationId !== mutationId) {
         return;
       }
 
@@ -1099,13 +1111,13 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   requestDocument(): Promise<DOMDocument|null> {
-    if (this.document) {
-      return Promise.resolve(this.document);
+    if (this.#document) {
+      return Promise.resolve(this.#document);
     }
-    if (!this.pendingDocumentRequestPromise) {
-      this.pendingDocumentRequestPromise = this.requestDocumentInternal();
+    if (!this.#pendingDocumentRequestPromise) {
+      this.#pendingDocumentRequestPromise = this.requestDocumentInternal();
     }
-    return this.pendingDocumentRequestPromise;
+    return this.#pendingDocumentRequestPromise;
   }
 
   async getOwnerNodeForFrame(frameId: Protocol.Page.FrameId): Promise<DeferredDOMNode|null> {
@@ -1124,45 +1136,45 @@ export class DOMModel extends SDKModel<EventTypes> {
       return null;
     }
     const {root: documentPayload} = response;
-    this.pendingDocumentRequestPromise = null;
+    this.#pendingDocumentRequestPromise = null;
 
     if (documentPayload) {
       this.setDocument(documentPayload);
     }
-    if (!this.document) {
+    if (!this.#document) {
       console.error('No document');
       return null;
     }
 
     const parentModel = this.parentModel();
-    if (parentModel && !this.frameOwnerNode) {
+    if (parentModel && !this.#frameOwnerNode) {
       await parentModel.requestDocument();
       const mainFrame = this.target().model(ResourceTreeModel)?.mainFrame;
       if (mainFrame) {
         const response = await parentModel.agent.invoke_getFrameOwner({frameId: mainFrame.id});
         if (!response.getError() && response.nodeId) {
-          this.frameOwnerNode = parentModel.nodeForId(response.nodeId);
+          this.#frameOwnerNode = parentModel.nodeForId(response.nodeId);
         }
       }
     }
 
     // Document could have been cleared by now.
-    if (this.frameOwnerNode) {
-      const oldDocument = this.frameOwnerNode.contentDocument();
-      this.frameOwnerNode.setContentDocument(this.document);
-      this.frameOwnerNode.setChildren([]);
-      if (this.document) {
-        this.document.parentNode = this.frameOwnerNode;
-        this.dispatchEventToListeners(Events.NodeInserted, this.document);
+    if (this.#frameOwnerNode) {
+      const oldDocument = this.#frameOwnerNode.contentDocument();
+      this.#frameOwnerNode.setContentDocument(this.#document);
+      this.#frameOwnerNode.setChildren([]);
+      if (this.#document) {
+        this.#document.parentNode = this.#frameOwnerNode;
+        this.dispatchEventToListeners(Events.NodeInserted, this.#document);
       } else if (oldDocument) {
-        this.dispatchEventToListeners(Events.NodeRemoved, {node: oldDocument, parent: this.frameOwnerNode});
+        this.dispatchEventToListeners(Events.NodeRemoved, {node: oldDocument, parent: this.#frameOwnerNode});
       }
     }
-    return this.document;
+    return this.#document;
   }
 
   existingDocument(): DOMDocument|null {
-    return this.document;
+    return this.#document;
   }
 
   async pushNodeToFrontend(objectId: Protocol.Runtime.RemoteObjectId): Promise<DOMNode|null> {
@@ -1216,15 +1228,15 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   inlineStyleInvalidated(nodeIds: number[]): void {
-    Platform.SetUtilities.addAll(this.attributeLoadNodeIds, nodeIds);
-    if (!this.loadNodeAttributesTimeout) {
-      this.loadNodeAttributesTimeout = window.setTimeout(this.loadNodeAttributes.bind(this), 20);
+    Platform.SetUtilities.addAll(this.#attributeLoadNodeIds, nodeIds);
+    if (!this.#loadNodeAttributesTimeout) {
+      this.#loadNodeAttributesTimeout = window.setTimeout(this.loadNodeAttributes.bind(this), 20);
     }
   }
 
   private loadNodeAttributes(): void {
-    delete this.loadNodeAttributesTimeout;
-    for (const nodeId of this.attributeLoadNodeIds) {
+    this.#loadNodeAttributesTimeout = undefined;
+    for (const nodeId of this.#attributeLoadNodeIds) {
       this.agent.invoke_getAttributes({nodeId}).then(({attributes}) => {
         if (!attributes) {
           // We are calling loadNodeAttributes asynchronously, it is ok if node is not found.
@@ -1240,7 +1252,7 @@ export class DOMModel extends SDKModel<EventTypes> {
         }
       });
     }
-    this.attributeLoadNodeIds.clear();
+    this.#attributeLoadNodeIds.clear();
   }
 
   characterDataModified(nodeId: Protocol.DOM.NodeId, newValue: string): void {
@@ -1259,9 +1271,9 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   documentUpdated(): void {
-    // If we have this.pendingDocumentRequestPromise in flight,
-    // if it hits backend post document update, it will contain most recent result.
-    const documentWasRequested = this.document || this.pendingDocumentRequestPromise;
+    // If we have this.#pendingDocumentRequestPromise in flight,
+    // if it hits backend post #document update, it will contain most recent result.
+    const documentWasRequested = this.#document || this.#pendingDocumentRequestPromise;
     this.setDocument(null);
     if (this.parentModel() && documentWasRequested) {
       this.requestDocument();
@@ -1271,9 +1283,9 @@ export class DOMModel extends SDKModel<EventTypes> {
   private setDocument(payload: Protocol.DOM.Node|null): void {
     this.idToDOMNode = new Map();
     if (payload && 'nodeId' in payload) {
-      this.document = new DOMDocument(this, payload);
+      this.#document = new DOMDocument(this, payload);
     } else {
-      this.document = null;
+      this.#document = null;
     }
     DOMModelUndoStack.instance().dispose(this);
 
@@ -1437,11 +1449,11 @@ export class DOMModel extends SDKModel<EventTypes> {
       }[],
       pierce: boolean = false): Promise<Protocol.DOM.NodeId[]> {
     await this.requestDocument();
-    if (!this.document) {
+    if (!this.#document) {
       throw new Error('DOMModel.getNodesByStyle expects to have a document.');
     }
     const response =
-        await this.agent.invoke_getNodesForSubtreeByStyle({nodeId: this.document.id, computedStyles, pierce});
+        await this.agent.invoke_getNodesForSubtreeByStyle({nodeId: this.#document.id, computedStyles, pierce});
     if (response.getError()) {
       throw response.getError();
     }
@@ -1451,26 +1463,26 @@ export class DOMModel extends SDKModel<EventTypes> {
   async performSearch(query: string, includeUserAgentShadowDOM: boolean): Promise<number> {
     const response = await this.agent.invoke_performSearch({query, includeUserAgentShadowDOM});
     if (!response.getError()) {
-      this.searchId = response.searchId;
+      this.#searchId = response.searchId;
     }
     return response.getError() ? 0 : response.resultCount;
   }
 
   async searchResult(index: number): Promise<DOMNode|null> {
-    if (!this.searchId) {
+    if (!this.#searchId) {
       return null;
     }
     const {nodeIds} =
-        await this.agent.invoke_getSearchResults({searchId: this.searchId, fromIndex: index, toIndex: index + 1});
+        await this.agent.invoke_getSearchResults({searchId: this.#searchId, fromIndex: index, toIndex: index + 1});
     return nodeIds && nodeIds.length === 1 ? this.nodeForId(nodeIds[0]) : null;
   }
 
   private cancelSearch(): void {
-    if (!this.searchId) {
+    if (!this.#searchId) {
       return;
     }
-    this.agent.invoke_discardSearchResults({searchId: this.searchId});
-    delete this.searchId;
+    this.agent.invoke_discardSearchResults({searchId: this.#searchId});
+    this.#searchId = undefined;
   }
 
   classNamesPromise(nodeId: Protocol.DOM.NodeId): Promise<string[]> {
@@ -1564,65 +1576,65 @@ export type EventTypes = {
 };
 
 class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
-  private readonly domModel: DOMModel;
+  readonly #domModel: DOMModel;
   constructor(domModel: DOMModel) {
-    this.domModel = domModel;
+    this.#domModel = domModel;
   }
 
   documentUpdated(): void {
-    this.domModel.documentUpdated();
+    this.#domModel.documentUpdated();
   }
 
   attributeModified({nodeId, name, value}: Protocol.DOM.AttributeModifiedEvent): void {
-    this.domModel.attributeModified(nodeId, name, value);
+    this.#domModel.attributeModified(nodeId, name, value);
   }
 
   attributeRemoved({nodeId, name}: Protocol.DOM.AttributeRemovedEvent): void {
-    this.domModel.attributeRemoved(nodeId, name);
+    this.#domModel.attributeRemoved(nodeId, name);
   }
 
   inlineStyleInvalidated({nodeIds}: Protocol.DOM.InlineStyleInvalidatedEvent): void {
-    this.domModel.inlineStyleInvalidated(nodeIds);
+    this.#domModel.inlineStyleInvalidated(nodeIds);
   }
 
   characterDataModified({nodeId, characterData}: Protocol.DOM.CharacterDataModifiedEvent): void {
-    this.domModel.characterDataModified(nodeId, characterData);
+    this.#domModel.characterDataModified(nodeId, characterData);
   }
 
   setChildNodes({parentId, nodes}: Protocol.DOM.SetChildNodesEvent): void {
-    this.domModel.setChildNodes(parentId, nodes);
+    this.#domModel.setChildNodes(parentId, nodes);
   }
 
   childNodeCountUpdated({nodeId, childNodeCount}: Protocol.DOM.ChildNodeCountUpdatedEvent): void {
-    this.domModel.childNodeCountUpdated(nodeId, childNodeCount);
+    this.#domModel.childNodeCountUpdated(nodeId, childNodeCount);
   }
 
   childNodeInserted({parentNodeId, previousNodeId, node}: Protocol.DOM.ChildNodeInsertedEvent): void {
-    this.domModel.childNodeInserted(parentNodeId, previousNodeId, node);
+    this.#domModel.childNodeInserted(parentNodeId, previousNodeId, node);
   }
 
   childNodeRemoved({parentNodeId, nodeId}: Protocol.DOM.ChildNodeRemovedEvent): void {
-    this.domModel.childNodeRemoved(parentNodeId, nodeId);
+    this.#domModel.childNodeRemoved(parentNodeId, nodeId);
   }
 
   shadowRootPushed({hostId, root}: Protocol.DOM.ShadowRootPushedEvent): void {
-    this.domModel.shadowRootPushed(hostId, root);
+    this.#domModel.shadowRootPushed(hostId, root);
   }
 
   shadowRootPopped({hostId, rootId}: Protocol.DOM.ShadowRootPoppedEvent): void {
-    this.domModel.shadowRootPopped(hostId, rootId);
+    this.#domModel.shadowRootPopped(hostId, rootId);
   }
 
   pseudoElementAdded({parentId, pseudoElement}: Protocol.DOM.PseudoElementAddedEvent): void {
-    this.domModel.pseudoElementAdded(parentId, pseudoElement);
+    this.#domModel.pseudoElementAdded(parentId, pseudoElement);
   }
 
   pseudoElementRemoved({parentId, pseudoElementId}: Protocol.DOM.PseudoElementRemovedEvent): void {
-    this.domModel.pseudoElementRemoved(parentId, pseudoElementId);
+    this.#domModel.pseudoElementRemoved(parentId, pseudoElementId);
   }
 
   distributedNodesUpdated({insertionPointId, distributedNodes}: Protocol.DOM.DistributedNodesUpdatedEvent): void {
-    this.domModel.distributedNodesUpdated(insertionPointId, distributedNodes);
+    this.#domModel.distributedNodesUpdated(insertionPointId, distributedNodes);
   }
 }
 
@@ -1631,13 +1643,13 @@ class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
 let DOMModelUndoStackInstance: DOMModelUndoStack|null;
 
 export class DOMModelUndoStack {
-  private stack: DOMModel[];
-  private index: number;
-  private lastModelWithMinorChange: DOMModel|null;
+  #stack: DOMModel[];
+  #index: number;
+  #lastModelWithMinorChange: DOMModel|null;
   constructor() {
-    this.stack = [];
-    this.index = 0;
-    this.lastModelWithMinorChange = null;
+    this.#stack = [];
+    this.#index = 0;
+    this.#lastModelWithMinorChange = null;
   }
 
   static instance(opts: {
@@ -1652,61 +1664,61 @@ export class DOMModelUndoStack {
   }
 
   async markUndoableState(model: DOMModel, minorChange: boolean): Promise<void> {
-    // Both minor and major changes get into the stack, but minor updates are coalesced.
+    // Both minor and major changes get into the #stack, but minor updates are coalesced.
     // Commit major undoable state in the old model upon model switch.
-    if (this.lastModelWithMinorChange && model !== this.lastModelWithMinorChange) {
-      this.lastModelWithMinorChange.markUndoableState();
-      this.lastModelWithMinorChange = null;
+    if (this.#lastModelWithMinorChange && model !== this.#lastModelWithMinorChange) {
+      this.#lastModelWithMinorChange.markUndoableState();
+      this.#lastModelWithMinorChange = null;
     }
 
-    // Previous minor change is already in the stack.
-    if (minorChange && this.lastModelWithMinorChange === model) {
+    // Previous minor change is already in the #stack.
+    if (minorChange && this.#lastModelWithMinorChange === model) {
       return;
     }
 
-    this.stack = this.stack.slice(0, this.index);
-    this.stack.push(model);
-    this.index = this.stack.length;
+    this.#stack = this.#stack.slice(0, this.#index);
+    this.#stack.push(model);
+    this.#index = this.#stack.length;
 
     // Delay marking as major undoable states in case of minor operations until the
     // major or model switch.
     if (minorChange) {
-      this.lastModelWithMinorChange = model;
+      this.#lastModelWithMinorChange = model;
     } else {
       await model.getAgent().invoke_markUndoableState();
-      this.lastModelWithMinorChange = null;
+      this.#lastModelWithMinorChange = null;
     }
   }
 
   async undo(): Promise<void> {
-    if (this.index === 0) {
+    if (this.#index === 0) {
       return Promise.resolve();
     }
-    --this.index;
-    this.lastModelWithMinorChange = null;
-    await this.stack[this.index].getAgent().invoke_undo();
+    --this.#index;
+    this.#lastModelWithMinorChange = null;
+    await this.#stack[this.#index].getAgent().invoke_undo();
   }
 
   async redo(): Promise<void> {
-    if (this.index >= this.stack.length) {
+    if (this.#index >= this.#stack.length) {
       return Promise.resolve();
     }
-    ++this.index;
-    this.lastModelWithMinorChange = null;
-    await this.stack[this.index - 1].getAgent().invoke_redo();
+    ++this.#index;
+    this.#lastModelWithMinorChange = null;
+    await this.#stack[this.#index - 1].getAgent().invoke_redo();
   }
 
   dispose(model: DOMModel): void {
     let shift = 0;
-    for (let i = 0; i < this.index; ++i) {
-      if (this.stack[i] === model) {
+    for (let i = 0; i < this.#index; ++i) {
+      if (this.#stack[i] === model) {
         ++shift;
       }
     }
-    Platform.ArrayUtilities.removeElement(this.stack, model);
-    this.index -= shift;
-    if (this.lastModelWithMinorChange === model) {
-      this.lastModelWithMinorChange = null;
+    Platform.ArrayUtilities.removeElement(this.#stack, model);
+    this.#index -= shift;
+    if (this.#lastModelWithMinorChange === model) {
+      this.#lastModelWithMinorChange = null;
     }
   }
 }

@@ -24,11 +24,11 @@ export class CSSProperty {
   implicit: boolean;
   text: string|null|undefined;
   range: TextUtils.TextRange.TextRange|null;
-  private active: boolean;
-  private nameRangeInternal: TextUtils.TextRange.TextRange|null;
-  private valueRangeInternal: TextUtils.TextRange.TextRange|null;
-  private readonly invalidProperty: string|null;
-  private invalidString?: Common.UIString.LocalizedString;
+  #active: boolean;
+  #nameRangeInternal: TextUtils.TextRange.TextRange|null;
+  #valueRangeInternal: TextUtils.TextRange.TextRange|null;
+  readonly #invalidProperty: string|null;
+  #invalidString?: Common.UIString.LocalizedString;
 
   constructor(
       ownerStyle: CSSStyleDeclaration, index: number, name: string, value: string, important: boolean,
@@ -43,10 +43,10 @@ export class CSSProperty {
     this.implicit = implicit;  // A longhand, implicitly set by missing values of shorthand.
     this.text = text;
     this.range = range ? TextUtils.TextRange.TextRange.fromObject(range) : null;
-    this.active = true;
-    this.nameRangeInternal = null;
-    this.valueRangeInternal = null;
-    this.invalidProperty = null;
+    this.#active = true;
+    this.#nameRangeInternal = null;
+    this.#valueRangeInternal = null;
+    this.#invalidProperty = null;
   }
 
   static parsePayload(ownerStyle: CSSStyleDeclaration, index: number, payload: Protocol.CSS.CSSProperty): CSSProperty {
@@ -63,7 +63,7 @@ export class CSSProperty {
   }
 
   private ensureRanges(): void {
-    if (this.nameRangeInternal && this.valueRangeInternal) {
+    if (this.#nameRangeInternal && this.#valueRangeInternal) {
       return;
     }
     const range = this.range;
@@ -81,8 +81,8 @@ export class CSSProperty {
     const nameSourceRange = new TextUtils.TextRange.SourceRange(nameIndex, this.name.length);
     const valueSourceRange = new TextUtils.TextRange.SourceRange(valueIndex, this.value.length);
 
-    this.nameRangeInternal = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
-    this.valueRangeInternal = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
+    this.#nameRangeInternal = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
+    this.#valueRangeInternal = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
 
     function rebase(oneLineRange: TextUtils.TextRange.TextRange, lineOffset: number, columnOffset: number):
         TextUtils.TextRange.TextRange {
@@ -98,12 +98,12 @@ export class CSSProperty {
 
   nameRange(): TextUtils.TextRange.TextRange|null {
     this.ensureRanges();
-    return this.nameRangeInternal;
+    return this.#nameRangeInternal;
   }
 
   valueRange(): TextUtils.TextRange.TextRange|null {
     this.ensureRanges();
-    return this.valueRangeInternal;
+    return this.#valueRangeInternal;
   }
 
   rebase(edit: Edit): void {
@@ -116,7 +116,7 @@ export class CSSProperty {
   }
 
   setActive(active: boolean): void {
-    this.active = active;
+    this.#active = active;
   }
 
   get propertyText(): string|null {
@@ -131,7 +131,7 @@ export class CSSProperty {
   }
 
   activeInStyle(): boolean {
-    return this.active;
+    return this.#active;
   }
 
   trimmedValueWithoutImportant(): string {
@@ -291,13 +291,13 @@ export class CSSProperty {
    * This stores the warning string when a CSS Property is improperly parsed.
    */
   setDisplayedStringForInvalidProperty(invalidString: Common.UIString.LocalizedString): void {
-    this.invalidString = invalidString;
+    this.#invalidString = invalidString;
   }
 
   /**
    * Retrieve the warning string for a screen reader to announce when editing the property.
    */
   getInvalidStringForInvalidProperty(): Common.UIString.LocalizedString|undefined {
-    return this.invalidString;
+    return this.#invalidString;
   }
 }

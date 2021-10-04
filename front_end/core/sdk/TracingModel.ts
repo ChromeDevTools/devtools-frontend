@@ -11,35 +11,35 @@ type IgnoreListArgs = {
 };
 
 export class TracingModel {
-  private backingStorageInternal: BackingStorage;
-  private firstWritePending: boolean;
-  private readonly processById: Map<string|number, Process>;
-  private readonly processByName: Map<string, Process>;
-  private minimumRecordTimeInternal: number;
-  private maximumRecordTimeInternal: number;
-  private readonly devToolsMetadataEventsInternal: Event[];
-  private asyncEvents: AsyncEvent[];
-  private readonly openAsyncEvents: Map<string, AsyncEvent>;
-  private readonly openNestableAsyncEvents: Map<string, AsyncEvent[]>;
-  private readonly profileGroups: Map<string, ProfileEventsGroup>;
-  private readonly parsedCategories: Map<string, Set<string>>;
-  private readonly mainFrameNavStartTimes: Map<string, Event>;
+  #backingStorageInternal: BackingStorage;
+  #firstWritePending: boolean;
+  readonly #processById: Map<string|number, Process>;
+  readonly #processByName: Map<string, Process>;
+  #minimumRecordTimeInternal: number;
+  #maximumRecordTimeInternal: number;
+  readonly #devToolsMetadataEventsInternal: Event[];
+  #asyncEvents: AsyncEvent[];
+  readonly #openAsyncEvents: Map<string, AsyncEvent>;
+  readonly #openNestableAsyncEvents: Map<string, AsyncEvent[]>;
+  readonly #profileGroups: Map<string, ProfileEventsGroup>;
+  readonly #parsedCategories: Map<string, Set<string>>;
+  readonly #mainFrameNavStartTimes: Map<string, Event>;
 
   constructor(backingStorage: BackingStorage) {
-    this.backingStorageInternal = backingStorage;
+    this.#backingStorageInternal = backingStorage;
     // Avoid extra reset of the storage as it's expensive.
-    this.firstWritePending = true;
-    this.processById = new Map();
-    this.processByName = new Map();
-    this.minimumRecordTimeInternal = Number(Infinity);
-    this.maximumRecordTimeInternal = Number(-Infinity);
-    this.devToolsMetadataEventsInternal = [];
-    this.asyncEvents = [];
-    this.openAsyncEvents = new Map();
-    this.openNestableAsyncEvents = new Map();
-    this.profileGroups = new Map();
-    this.parsedCategories = new Map();
-    this.mainFrameNavStartTimes = new Map();
+    this.#firstWritePending = true;
+    this.#processById = new Map();
+    this.#processByName = new Map();
+    this.#minimumRecordTimeInternal = Number(Infinity);
+    this.#maximumRecordTimeInternal = Number(-Infinity);
+    this.#devToolsMetadataEventsInternal = [];
+    this.#asyncEvents = [];
+    this.#openAsyncEvents = new Map();
+    this.#openNestableAsyncEvents = new Map();
+    this.#profileGroups = new Map();
+    this.#parsedCategories = new Map();
+    this.#mainFrameNavStartTimes = new Map();
   }
 
   static isNestableAsyncPhase(phase: string): boolean {
@@ -86,7 +86,7 @@ export class TracingModel {
 
   static browserMainThread(tracingModel: TracingModel): Thread|null {
     const processes = tracingModel.sortedProcesses();
-    // Avoid warning for an empty model.
+    // Avoid warning for an empty #model.
     if (!processes.length) {
       return null;
     }
@@ -116,7 +116,7 @@ export class TracingModel {
   }
 
   devToolsMetadataEvents(): Event[] {
-    return this.devToolsMetadataEventsInternal;
+    return this.#devToolsMetadataEventsInternal;
   }
 
   addEvents(events: EventPayload[]): void {
@@ -127,10 +127,10 @@ export class TracingModel {
 
   tracingComplete(): void {
     this.processPendingAsyncEvents();
-    this.backingStorageInternal.appendString(this.firstWritePending ? '[]' : ']');
-    this.backingStorageInternal.finishWriting();
-    this.firstWritePending = false;
-    for (const process of this.processById.values()) {
+    this.#backingStorageInternal.appendString(this.#firstWritePending ? '[]' : ']');
+    this.#backingStorageInternal.finishWriting();
+    this.#firstWritePending = false;
+    for (const process of this.#processById.values()) {
       for (const thread of process.threads.values()) {
         thread.tracingComplete();
       }
@@ -138,15 +138,15 @@ export class TracingModel {
   }
 
   dispose(): void {
-    if (!this.firstWritePending) {
-      this.backingStorageInternal.reset();
+    if (!this.#firstWritePending) {
+      this.#backingStorageInternal.reset();
     }
   }
 
   adjustTime(offset: number): void {
-    this.minimumRecordTimeInternal += offset;
-    this.maximumRecordTimeInternal += offset;
-    for (const process of this.processById.values()) {
+    this.#minimumRecordTimeInternal += offset;
+    this.#maximumRecordTimeInternal += offset;
+    for (const process of this.#processById.values()) {
       for (const thread of process.threads.values()) {
         for (const event of thread.events()) {
           event.startTime += offset;
@@ -165,42 +165,42 @@ export class TracingModel {
   }
 
   private addEvent(payload: EventPayload): void {
-    let process = this.processById.get(payload.pid);
+    let process = this.#processById.get(payload.pid);
     if (!process) {
       process = new Process(this, payload.pid);
-      this.processById.set(payload.pid, process);
+      this.#processById.set(payload.pid, process);
     }
 
     const phase = Phase;
     const eventsDelimiter = ',\n';
-    this.backingStorageInternal.appendString(this.firstWritePending ? '[' : eventsDelimiter);
-    this.firstWritePending = false;
+    this.#backingStorageInternal.appendString(this.#firstWritePending ? '[' : eventsDelimiter);
+    this.#firstWritePending = false;
     const stringPayload = JSON.stringify(payload);
     const isAccessible = payload.ph === phase.SnapshotObject;
     let backingStorage: (() => Promise<string|null>)|null = null;
     const keepStringsLessThan = 10000;
     if (isAccessible && stringPayload.length > keepStringsLessThan) {
-      backingStorage = this.backingStorageInternal.appendAccessibleString(stringPayload);
+      backingStorage = this.#backingStorageInternal.appendAccessibleString(stringPayload);
     } else {
-      this.backingStorageInternal.appendString(stringPayload);
+      this.#backingStorageInternal.appendString(stringPayload);
     }
 
     const timestamp = payload.ts / 1000;
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
-    if (timestamp && timestamp < this.minimumRecordTimeInternal &&
+    if (timestamp && timestamp < this.#minimumRecordTimeInternal &&
         (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant) &&
         // UMA related events are ignored when calculating the minimumRecordTime because they might
         // be related to previous navigations that happened before the current trace started and
         // will currently not be displayed anyways.
         // See crbug.com/1201198
         (!payload.name.endsWith('::UMA'))) {
-      this.minimumRecordTimeInternal = timestamp;
+      this.#minimumRecordTimeInternal = timestamp;
     }
 
     if (payload.name === 'TracingStartedInBrowser') {
       // If we received a timestamp for tracing start, use that for minimumRecordTime.
-      this.minimumRecordTimeInternal = timestamp;
+      this.#minimumRecordTimeInternal = timestamp;
     }
 
     // Track only main thread navigation start items. This is done by tracking isLoadingMainFrame,
@@ -216,13 +216,13 @@ export class TracingModel {
         if (isLoadingMainFrame && documentLoaderURL !== '') {
           const thread = process.threadById(payload.tid);
           const navStartEvent = Event.fromPayload(payload, thread);
-          this.mainFrameNavStartTimes.set(navigationId, navStartEvent);
+          this.#mainFrameNavStartTimes.set(navigationId, navStartEvent);
         }
       }
     }
 
     const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
-    this.maximumRecordTimeInternal = Math.max(this.maximumRecordTimeInternal, endTimeStamp);
+    this.#maximumRecordTimeInternal = Math.max(this.#maximumRecordTimeInternal, endTimeStamp);
     const event = process.addEvent(payload);
     if (!event) {
       return;
@@ -235,11 +235,11 @@ export class TracingModel {
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
     if (TracingModel.isAsyncPhase(payload.ph)) {
-      this.asyncEvents.push((event as AsyncEvent));
+      this.#asyncEvents.push((event as AsyncEvent));
     }
     event.setBackingStorage(backingStorage);
     if (event.hasCategory(DevToolsMetadataEventCategory)) {
-      this.devToolsMetadataEventsInternal.push(event);
+      this.#devToolsMetadataEventsInternal.push(event);
     }
 
     if (payload.ph !== phase.Metadata) {
@@ -254,7 +254,7 @@ export class TracingModel {
       case MetadataEvent.ProcessName: {
         const processName = payload.args['name'];
         process.setName(processName);
-        this.processByName.set(processName, process);
+        this.#processByName.set(processName, process);
         break;
       }
       case MetadataEvent.ThreadSortIndex: {
@@ -270,40 +270,40 @@ export class TracingModel {
 
   private addSampleEvent(event: Event): void {
     const id = `${event.thread.process().id()}:${event.id}`;
-    const group = this.profileGroups.get(id);
+    const group = this.#profileGroups.get(id);
     if (group) {
       group.addChild(event);
     } else {
-      this.profileGroups.set(id, new ProfileEventsGroup(event));
+      this.#profileGroups.set(id, new ProfileEventsGroup(event));
     }
   }
 
   profileGroup(event: Event): ProfileEventsGroup|null {
-    return this.profileGroups.get(`${event.thread.process().id()}:${event.id}`) || null;
+    return this.#profileGroups.get(`${event.thread.process().id()}:${event.id}`) || null;
   }
 
   minimumRecordTime(): number {
-    return this.minimumRecordTimeInternal;
+    return this.#minimumRecordTimeInternal;
   }
 
   maximumRecordTime(): number {
-    return this.maximumRecordTimeInternal;
+    return this.#maximumRecordTimeInternal;
   }
 
   navStartTimes(): Map<string, Event> {
-    return this.mainFrameNavStartTimes;
+    return this.#mainFrameNavStartTimes;
   }
 
   sortedProcesses(): Process[] {
-    return Sorter.sort([...this.processById.values()]);
+    return Sorter.sort([...this.#processById.values()]);
   }
 
   getProcessByName(name: string): Process|null {
-    return this.processByName.get(name) ?? null;
+    return this.#processByName.get(name) ?? null;
   }
 
   getProcessById(pid: number): Process|null {
-    return this.processById.get(pid) || null;
+    return this.#processById.get(pid) || null;
   }
 
   getThreadByName(processName: string, threadName: string): Thread|null {
@@ -321,50 +321,50 @@ export class TracingModel {
   }
 
   private processPendingAsyncEvents(): void {
-    this.asyncEvents.sort(Event.compareStartTime);
-    for (let i = 0; i < this.asyncEvents.length; ++i) {
-      const event = this.asyncEvents[i];
+    this.#asyncEvents.sort(Event.compareStartTime);
+    for (let i = 0; i < this.#asyncEvents.length; ++i) {
+      const event = this.#asyncEvents[i];
       if (TracingModel.isNestableAsyncPhase(event.phase)) {
         this.addNestableAsyncEvent(event);
       } else {
         this.addAsyncEvent(event);
       }
     }
-    this.asyncEvents = [];
+    this.#asyncEvents = [];
     this.closeOpenAsyncEvents();
   }
 
   private closeOpenAsyncEvents(): void {
-    for (const event of this.openAsyncEvents.values()) {
-      event.setEndTime(this.maximumRecordTimeInternal);
+    for (const event of this.#openAsyncEvents.values()) {
+      event.setEndTime(this.#maximumRecordTimeInternal);
       // FIXME: remove this once we figure a better way to convert async console
       // events to sync [waterfall] timeline records.
-      event.steps[0].setEndTime(this.maximumRecordTimeInternal);
+      event.steps[0].setEndTime(this.#maximumRecordTimeInternal);
     }
-    this.openAsyncEvents.clear();
+    this.#openAsyncEvents.clear();
 
-    for (const eventStack of this.openNestableAsyncEvents.values()) {
+    for (const eventStack of this.#openNestableAsyncEvents.values()) {
       while (eventStack.length) {
         const event = eventStack.pop();
         if (!event) {
           continue;
         }
-        event.setEndTime(this.maximumRecordTimeInternal);
+        event.setEndTime(this.#maximumRecordTimeInternal);
       }
     }
-    this.openNestableAsyncEvents.clear();
+    this.#openNestableAsyncEvents.clear();
   }
 
   private addNestableAsyncEvent(event: Event): void {
     const phase = Phase;
     const key = event.categoriesString + '.' + event.id;
-    let openEventsStack = this.openNestableAsyncEvents.get(key);
+    let openEventsStack = this.#openNestableAsyncEvents.get(key);
 
     switch (event.phase) {
       case phase.NestableAsyncBegin: {
         if (!openEventsStack) {
           openEventsStack = [];
-          this.openNestableAsyncEvents.set(key, openEventsStack);
+          this.#openNestableAsyncEvents.set(key, openEventsStack);
         }
         const asyncEvent = new AsyncEvent(event);
         openEventsStack.push(asyncEvent);
@@ -403,7 +403,7 @@ export class TracingModel {
   private addAsyncEvent(event: Event): void {
     const phase = Phase;
     const key = event.categoriesString + '.' + event.name + '.' + event.id;
-    let asyncEvent = this.openAsyncEvents.get(key);
+    let asyncEvent = this.#openAsyncEvents.get(key);
 
     if (event.phase === phase.AsyncBegin) {
       if (asyncEvent) {
@@ -411,7 +411,7 @@ export class TracingModel {
         return;
       }
       asyncEvent = new AsyncEvent(event);
-      this.openAsyncEvents.set(key, asyncEvent);
+      this.#openAsyncEvents.set(key, asyncEvent);
       event.thread.addAsyncEvent(asyncEvent);
       return;
     }
@@ -421,7 +421,7 @@ export class TracingModel {
     }
     if (event.phase === phase.AsyncEnd) {
       asyncEvent.addStep(event);
-      this.openAsyncEvents.delete(key);
+      this.#openAsyncEvents.delete(key);
       return;
     }
     if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
@@ -440,14 +440,14 @@ export class TracingModel {
   }
 
   backingStorage(): BackingStorage {
-    return this.backingStorageInternal;
+    return this.#backingStorageInternal;
   }
 
   parsedCategoriesForString(str: string): Set<string> {
-    let parsedCategories = this.parsedCategories.get(str);
+    let parsedCategories = this.#parsedCategories.get(str);
     if (!parsedCategories) {
       parsedCategories = new Set(str ? str.split(',') : []);
-      this.parsedCategories.set(str, parsedCategories);
+      this.#parsedCategories.set(str, parsedCategories);
     }
     return parsedCategories;
   }
@@ -507,7 +507,7 @@ export abstract class BackingStorage {
 
 export class Event {
   categoriesString: string;
-  private readonly parsedCategories: Set<string>;
+  readonly #parsedCategories: Set<string>;
   name: string;
   phase: Phase;
   startTime: number;
@@ -526,7 +526,7 @@ export class Event {
 
   constructor(categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
     this.categoriesString = categories || '';
-    this.parsedCategories = thread.getModel().parsedCategoriesForString(this.categoriesString);
+    this.#parsedCategories = thread.getModel().parsedCategoriesForString(this.categoriesString);
     this.name = name;
     this.phase = phase;
     this.startTime = startTime;
@@ -572,7 +572,7 @@ export class Event {
   }
 
   hasCategory(categoryName: string): boolean {
-    return this.parsedCategories.has(categoryName);
+    return this.#parsedCategories.has(categoryName);
   }
 
   setEndTime(endTime: number): void {
@@ -587,7 +587,7 @@ export class Event {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addArgs(args: any): void {
-    // Shallow copy args to avoid modifying original payload which may be saved to file.
+    // Shallow copy args to avoid modifying original #payload which may be saved to file.
     for (const name in args) {
       if (name in this.args) {
         console.error('Same argument name (' + name + ') is used for begin and end phases of ' + this.name);
@@ -612,13 +612,13 @@ export class Event {
 
 // eslint-disable-next-line rulesdir/enforce_custom_event_names, rulesdir/static_custom_event_names
 export class ObjectSnapshot extends Event {
-  private backingStorage: (() => Promise<string|null>)|null;
-  private objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
+  #backingStorage: (() => Promise<string|null>)|null;
+  #objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
 
   constructor(category: string|undefined, name: string, startTime: number, thread: Thread) {
     super(category, name, Phase.SnapshotObject, startTime, thread);
-    this.backingStorage = null;
-    this.objectPromiseInternal = null;
+    this.#backingStorage = null;
+    this.#objectPromiseInternal = null;
   }
 
   static fromPayload(payload: EventPayload, thread: Thread): ObjectSnapshot {
@@ -643,7 +643,7 @@ export class ObjectSnapshot extends Event {
       callback((snapshot as ObjectSnapshot));
       return;
     }
-    const storage = this.backingStorage;
+    const storage = this.#backingStorage;
     if (storage) {
       storage().then(onRead, callback.bind(null, null));
     }
@@ -664,17 +664,17 @@ export class ObjectSnapshot extends Event {
   }
 
   objectPromise(): Promise<ObjectSnapshot|null> {
-    if (!this.objectPromiseInternal) {
-      this.objectPromiseInternal = new Promise(this.requestObject.bind(this));
+    if (!this.#objectPromiseInternal) {
+      this.#objectPromiseInternal = new Promise(this.requestObject.bind(this));
     }
-    return this.objectPromiseInternal;
+    return this.#objectPromiseInternal;
   }
 
   setBackingStorage(backingStorage: (() => Promise<string|null>)|null): void {
     if (!backingStorage) {
       return;
     }
-    this.backingStorage = backingStorage;
+    this.#backingStorage = backingStorage;
     this.args = {};
   }
 }
@@ -731,21 +731,21 @@ class Sorter {
 class NamedObject {
   model: TracingModel;
   readonly idInternal: number;
-  private nameInternal: string;
-  private sortIndex: number;
+  #nameInternal: string;
+  #sortIndex: number;
   constructor(model: TracingModel, id: number) {
     this.model = model;
     this.idInternal = id;
-    this.nameInternal = '';
-    this.sortIndex = 0;
+    this.#nameInternal = '';
+    this.#sortIndex = 0;
   }
 
   setName(name: string): void {
-    this.nameInternal = name;
+    this.#nameInternal = name;
   }
 
   name(): string {
-    return this.nameInternal;
+    return this.#nameInternal;
   }
 
   id(): number {
@@ -753,7 +753,7 @@ class NamedObject {
   }
 
   setSortIndex(sortIndex: number): void {
-    this.sortIndex = sortIndex;
+    this.#sortIndex = sortIndex;
   }
 
   getModel(): TracingModel {
@@ -763,11 +763,11 @@ class NamedObject {
 
 export class Process extends NamedObject {
   readonly threads: Map<number, Thread>;
-  private readonly threadByNameInternal: Map<string, Thread|null>;
+  readonly #threadByNameInternal: Map<string, Thread|null>;
   constructor(model: TracingModel, id: number) {
     super(model, id);
     this.threads = new Map();
-    this.threadByNameInternal = new Map();
+    this.#threadByNameInternal = new Map();
   }
 
   threadById(id: number): Thread {
@@ -780,11 +780,11 @@ export class Process extends NamedObject {
   }
 
   threadByName(name: string): Thread|null {
-    return this.threadByNameInternal.get(name) || null;
+    return this.#threadByNameInternal.get(name) || null;
   }
 
   setThreadByName(name: string, thread: Thread): void {
-    this.threadByNameInternal.set(name, thread);
+    this.#threadByNameInternal.set(name, thread);
   }
 
   addEvent(payload: EventPayload): Event|null {
@@ -797,27 +797,27 @@ export class Process extends NamedObject {
 }
 
 export class Thread extends NamedObject {
-  private readonly processInternal: Process;
-  private eventsInternal: Event[];
-  private readonly asyncEventsInternal: AsyncEvent[];
-  private lastTopLevelEvent: Event|null;
+  readonly #processInternal: Process;
+  #eventsInternal: Event[];
+  readonly #asyncEventsInternal: AsyncEvent[];
+  #lastTopLevelEvent: Event|null;
   constructor(process: Process, id: number) {
     super(process.getModel(), id);
-    this.processInternal = process;
+    this.#processInternal = process;
 
-    this.eventsInternal = [];
-    this.asyncEventsInternal = [];
-    this.lastTopLevelEvent = null;
+    this.#eventsInternal = [];
+    this.#asyncEventsInternal = [];
+    this.#lastTopLevelEvent = null;
   }
 
   tracingComplete(): void {
-    this.asyncEventsInternal.sort(Event.compareStartTime);
-    this.eventsInternal.sort(Event.compareStartTime);
+    this.#asyncEventsInternal.sort(Event.compareStartTime);
+    this.#eventsInternal.sort(Event.compareStartTime);
     const phases = Phase;
     const stack: Event[] = [];
     const toDelete = new Set<number>();
-    for (let i = 0; i < this.eventsInternal.length; ++i) {
-      const e = this.eventsInternal[i];
+    for (let i = 0; i < this.#eventsInternal.length; ++i) {
+      const e = this.#eventsInternal[i];
       e.ordinal = i;
       switch (e.phase) {
         case phases.End: {
@@ -856,7 +856,7 @@ export class Thread extends NamedObject {
         event.phase = phases.Instant;
       }
     }
-    this.eventsInternal = this.eventsInternal.filter((_, idx) => !toDelete.has(idx));
+    this.#eventsInternal = this.#eventsInternal.filter((_, idx) => !toDelete.has(idx));
   }
 
   addEvent(payload: EventPayload): Event|null {
@@ -864,40 +864,40 @@ export class Thread extends NamedObject {
                                                         Event.fromPayload(payload, this);
     if (TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
-      const lastTopLevelEvent = this.lastTopLevelEvent;
+      const lastTopLevelEvent = this.#lastTopLevelEvent;
       if (lastTopLevelEvent && (lastTopLevelEvent.endTime || 0) > event.startTime) {
         return null;
       }
-      this.lastTopLevelEvent = event;
+      this.#lastTopLevelEvent = event;
     }
-    this.eventsInternal.push(event);
+    this.#eventsInternal.push(event);
     return event;
   }
 
   addAsyncEvent(asyncEvent: AsyncEvent): void {
-    this.asyncEventsInternal.push(asyncEvent);
+    this.#asyncEventsInternal.push(asyncEvent);
   }
 
   setName(name: string): void {
     super.setName(name);
-    this.processInternal.setThreadByName(name, this);
+    this.#processInternal.setThreadByName(name, this);
   }
 
   process(): Process {
-    return this.processInternal;
+    return this.#processInternal;
   }
 
   events(): Event[] {
-    return this.eventsInternal;
+    return this.#eventsInternal;
   }
 
   asyncEvents(): AsyncEvent[] {
-    return this.asyncEventsInternal;
+    return this.#asyncEventsInternal;
   }
 
   removeEventsByName(name: string): Event[] {
     const extracted: Event[] = [];
-    this.eventsInternal = this.eventsInternal.filter(e => {
+    this.#eventsInternal = this.#eventsInternal.filter(e => {
       if (!e) {
         return false;
       }

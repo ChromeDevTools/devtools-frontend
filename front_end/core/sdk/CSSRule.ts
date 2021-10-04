@@ -203,26 +203,26 @@ export class CSSStyleRule extends CSSRule {
 }
 
 export class CSSKeyframesRule {
-  private readonly cssModel: CSSModel;
-  private readonly animationName: CSSValue;
-  private readonly keyframesInternal: CSSKeyframeRule[];
+  readonly #cssModel: CSSModel;
+  readonly #animationName: CSSValue;
+  readonly #keyframesInternal: CSSKeyframeRule[];
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframesRule) {
-    this.cssModel = cssModel;
-    this.animationName = new CSSValue(payload.animationName);
-    this.keyframesInternal = payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule));
+    this.#cssModel = cssModel;
+    this.#animationName = new CSSValue(payload.animationName);
+    this.#keyframesInternal = payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule));
   }
 
   name(): CSSValue {
-    return this.animationName;
+    return this.#animationName;
   }
 
   keyframes(): CSSKeyframeRule[] {
-    return this.keyframesInternal;
+    return this.#keyframesInternal;
   }
 }
 
 export class CSSKeyframeRule extends CSSRule {
-  private keyText!: CSSValue;
+  #keyText!: CSSValue;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframeRule) {
     // TODO(crbug.com/1011811): Replace with spread operator or better types once Closure is gone.
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
@@ -230,21 +230,21 @@ export class CSSKeyframeRule extends CSSRule {
   }
 
   key(): CSSValue {
-    return this.keyText;
+    return this.#keyText;
   }
 
   private reinitializeKey(payload: Protocol.CSS.Value): void {
-    this.keyText = new CSSValue(payload);
+    this.#keyText = new CSSValue(payload);
   }
 
   rebase(edit: Edit): void {
-    if (this.styleSheetId !== edit.styleSheetId || !this.keyText.range) {
+    if (this.styleSheetId !== edit.styleSheetId || !this.#keyText.range) {
       return;
     }
-    if (edit.oldRange.equal(this.keyText.range)) {
+    if (edit.oldRange.equal(this.#keyText.range)) {
       this.reinitializeKey((edit.payload as Protocol.CSS.Value));
     } else {
-      this.keyText.rebase(edit);
+      this.#keyText.rebase(edit);
     }
 
     super.rebase(edit);
@@ -255,7 +255,7 @@ export class CSSKeyframeRule extends CSSRule {
     if (!styleSheetId) {
       throw 'No rule stylesheet id';
     }
-    const range = this.keyText.range;
+    const range = this.#keyText.range;
     if (!range) {
       throw 'Keyframe key is not editable';
     }

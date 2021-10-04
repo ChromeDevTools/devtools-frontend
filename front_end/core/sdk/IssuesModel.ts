@@ -16,8 +16,8 @@ import {SDKModel} from './SDKModel.js';
  * wants to preserve issues for targets (e.g. iframes) that are already gone as well.
  */
 export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyApi.AuditsDispatcher {
-  private disposed = false;
-  private enabled = false;
+  #disposed = false;
+  #enabled = false;
 
   constructor(target: Target) {
     super(target);
@@ -25,11 +25,11 @@ export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyAp
   }
 
   private async ensureEnabled(): Promise<void> {
-    if (this.enabled) {
+    if (this.#enabled) {
       return;
     }
 
-    this.enabled = true;
+    this.#enabled = true;
     this.target().registerAuditsDispatcher(this);
     const auditsAgent = this.target().auditsAgent();
     await auditsAgent.invoke_enable();
@@ -41,11 +41,11 @@ export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyAp
 
   dispose(): void {
     super.dispose();
-    this.disposed = true;
+    this.#disposed = true;
   }
 
   getTargetIfNotDisposed(): Target|null {
-    if (!this.disposed) {
+    if (!this.#disposed) {
       return this.target();
     }
     return null;

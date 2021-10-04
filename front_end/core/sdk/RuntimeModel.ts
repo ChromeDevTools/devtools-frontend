@@ -1,3 +1,7 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 /*
  * Copyright (C) 2012 Google Inc. All rights reserved.
  *
@@ -11,7 +15,7 @@
  * copyright notice, this list of conditions and the following disclaimer
  * in the documentation and/or other materials provided with the
  * distribution.
- *     * Neither the name of Google Inc. nor the names of its
+ *     * Neither the #name of Google Inc. nor the names of its
  * contributors may be used to endorse or promote products derived from
  * this software without specific prior written permission.
  *
@@ -44,18 +48,18 @@ import {SDKModel} from './SDKModel.js';
 
 export class RuntimeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.RuntimeApi;
-  private readonly executionContextById: Map<number, ExecutionContext>;
-  private executionContextComparatorInternal: (arg0: ExecutionContext, arg1: ExecutionContext) => number;
-  private hasSideEffectSupportInternal: boolean|null;
+  readonly #executionContextById: Map<number, ExecutionContext>;
+  #executionContextComparatorInternal: (arg0: ExecutionContext, arg1: ExecutionContext) => number;
+  #hasSideEffectSupportInternal: boolean|null;
   constructor(target: Target) {
     super(target);
 
     this.agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
     this.agent.invoke_enable();
-    this.executionContextById = new Map();
-    this.executionContextComparatorInternal = ExecutionContext.comparator;
-    this.hasSideEffectSupportInternal = null;
+    this.#executionContextById = new Map();
+    this.#executionContextComparatorInternal = ExecutionContext.comparator;
+    this.#hasSideEffectSupportInternal = null;
 
     if (Common.Settings.Settings.instance().moduleSetting('customFormatters').get()) {
       this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
@@ -82,17 +86,17 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   executionContexts(): ExecutionContext[] {
-    return [...this.executionContextById.values()].sort(this.executionContextComparator());
+    return [...this.#executionContextById.values()].sort(this.executionContextComparator());
   }
 
   setExecutionContextComparator(comparator: (arg0: ExecutionContext, arg1: ExecutionContext) => number): void {
-    this.executionContextComparatorInternal = comparator;
+    this.#executionContextComparatorInternal = comparator;
   }
 
   /** comparator
      */
   executionContextComparator(): (arg0: ExecutionContext, arg1: ExecutionContext) => number {
-    return this.executionContextComparatorInternal;
+    return this.#executionContextComparatorInternal;
   }
 
   defaultExecutionContext(): ExecutionContext|null {
@@ -105,24 +109,24 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   executionContext(id: number): ExecutionContext|null {
-    return this.executionContextById.get(id) || null;
+    return this.#executionContextById.get(id) || null;
   }
 
   executionContextCreated(context: Protocol.Runtime.ExecutionContextDescription): void {
     const data = context.auxData || {isDefault: true};
     const executionContext = new ExecutionContext(
         this, context.id, context.uniqueId, context.name, context.origin, data['isDefault'], data['frameId']);
-    this.executionContextById.set(executionContext.id, executionContext);
+    this.#executionContextById.set(executionContext.id, executionContext);
     this.dispatchEventToListeners(Events.ExecutionContextCreated, executionContext);
   }
 
   executionContextDestroyed(executionContextId: number): void {
-    const executionContext = this.executionContextById.get(executionContextId);
+    const executionContext = this.#executionContextById.get(executionContextId);
     if (!executionContext) {
       return;
     }
     this.debuggerModel().executionContextDestroyed(executionContext);
-    this.executionContextById.delete(executionContextId);
+    this.#executionContextById.delete(executionContextId);
     this.dispatchEventToListeners(Events.ExecutionContextDestroyed, executionContext);
   }
 
@@ -133,7 +137,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   executionContextsCleared(): void {
     this.debuggerModel().globalObjectCleared();
     const contexts = this.executionContexts();
-    this.executionContextById.clear();
+    this.#executionContextById.clear();
     for (let i = 0; i < contexts.length; ++i) {
       this.dispatchEventToListeners(Events.ExecutionContextDestroyed, contexts[i]);
     }
@@ -412,7 +416,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   hasSideEffectSupport(): boolean|null {
-    return this.hasSideEffectSupportInternal;
+    return this.#hasSideEffectSupportInternal;
   }
 
   async checkSideEffectSupport(): Promise<boolean> {
@@ -428,9 +432,9 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       throwOnSideEffect: true,
     });
 
-    this.hasSideEffectSupportInternal = response.getError() ? false : RuntimeModel.isSideEffectFailure(response);
+    this.#hasSideEffectSupportInternal = response.getError() ? false : RuntimeModel.isSideEffectFailure(response);
 
-    return this.hasSideEffectSupportInternal;
+    return this.#hasSideEffectSupportInternal;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -497,42 +501,42 @@ export type EventTypes = {
 };
 
 class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
-  private readonly runtimeModel: RuntimeModel;
+  readonly #runtimeModel: RuntimeModel;
   constructor(runtimeModel: RuntimeModel) {
-    this.runtimeModel = runtimeModel;
+    this.#runtimeModel = runtimeModel;
   }
 
   executionContextCreated({context}: Protocol.Runtime.ExecutionContextCreatedEvent): void {
-    this.runtimeModel.executionContextCreated(context);
+    this.#runtimeModel.executionContextCreated(context);
   }
 
   executionContextDestroyed({executionContextId}: Protocol.Runtime.ExecutionContextDestroyedEvent): void {
-    this.runtimeModel.executionContextDestroyed(executionContextId);
+    this.#runtimeModel.executionContextDestroyed(executionContextId);
   }
 
   executionContextsCleared(): void {
-    this.runtimeModel.executionContextsCleared();
+    this.#runtimeModel.executionContextsCleared();
   }
 
   exceptionThrown({timestamp, exceptionDetails}: Protocol.Runtime.ExceptionThrownEvent): void {
-    this.runtimeModel.exceptionThrown(timestamp, exceptionDetails);
+    this.#runtimeModel.exceptionThrown(timestamp, exceptionDetails);
   }
 
   exceptionRevoked({exceptionId}: Protocol.Runtime.ExceptionRevokedEvent): void {
-    this.runtimeModel.exceptionRevoked(exceptionId);
+    this.#runtimeModel.exceptionRevoked(exceptionId);
   }
 
   consoleAPICalled({type, args, executionContextId, timestamp, stackTrace, context}:
                        Protocol.Runtime.ConsoleAPICalledEvent): void {
-    this.runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
+    this.#runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
   }
 
   inspectRequested({object, hints, executionContextId}: Protocol.Runtime.InspectRequestedEvent): void {
-    this.runtimeModel.inspectRequested(object, hints, executionContextId);
+    this.#runtimeModel.inspectRequested(object, hints, executionContextId);
   }
 
   bindingCalled(event: Protocol.Runtime.BindingCalledEvent): void {
-    this.runtimeModel.bindingCalled(event);
+    this.#runtimeModel.bindingCalled(event);
   }
 }
 
@@ -540,7 +544,7 @@ export class ExecutionContext {
   id: Protocol.Runtime.ExecutionContextId;
   uniqueId: string;
   name: string;
-  private labelInternal: string|null;
+  #labelInternal: string|null;
   origin: string;
   isDefault: boolean;
   runtimeModel: RuntimeModel;
@@ -552,7 +556,7 @@ export class ExecutionContext {
     this.id = id;
     this.uniqueId = uniqueId;
     this.name = name;
-    this.labelInternal = null;
+    this.#labelInternal = null;
     this.origin = origin;
     this.isDefault = isDefault;
     this.runtimeModel = runtimeModel;
@@ -702,7 +706,7 @@ export class ExecutionContext {
   }
 
   label(): string|null {
-    return this.labelInternal;
+    return this.#labelInternal;
   }
 
   setLabel(label: string): void {
@@ -712,15 +716,15 @@ export class ExecutionContext {
 
   private setLabelInternal(label: string): void {
     if (label) {
-      this.labelInternal = label;
+      this.#labelInternal = label;
       return;
     }
     if (this.name) {
-      this.labelInternal = this.name;
+      this.#labelInternal = this.name;
       return;
     }
     const parsedUrl = Common.ParsedURL.ParsedURL.fromString(this.origin);
-    this.labelInternal = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
+    this.#labelInternal = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 }
 

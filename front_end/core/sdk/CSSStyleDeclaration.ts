@@ -12,19 +12,19 @@ import type {CSSRule} from './CSSRule.js';
 import type {Target} from './Target.js';
 
 export class CSSStyleDeclaration {
-  private readonly cssModelInternal: CSSModel;
+  readonly #cssModelInternal: CSSModel;
   parentRule: CSSRule|null;
-  private allPropertiesInternal!: CSSProperty[];
+  #allPropertiesInternal!: CSSProperty[];
   styleSheetId!: Protocol.CSS.StyleSheetId|undefined;
   range!: TextUtils.TextRange.TextRange|null;
   cssText!: string|undefined;
-  private shorthandValues!: Map<string, string>;
-  private shorthandIsImportant!: Set<string>;
-  private activePropertyMap!: Map<string, CSSProperty>;
-  private leadingPropertiesInternal!: CSSProperty[]|null;
+  #shorthandValues!: Map<string, string>;
+  #shorthandIsImportant!: Set<string>;
+  #activePropertyMap!: Map<string, CSSProperty>;
+  #leadingPropertiesInternal!: CSSProperty[]|null;
   type: Type;
   constructor(cssModel: CSSModel, parentRule: CSSRule|null, payload: Protocol.CSS.CSSStyle, type: Type) {
-    this.cssModelInternal = cssModel;
+    this.#cssModelInternal = cssModel;
     this.parentRule = parentRule;
     this.reinitialize(payload);
     this.type = type;
@@ -38,8 +38,8 @@ export class CSSStyleDeclaration {
       this.reinitialize((edit.payload as Protocol.CSS.CSSStyle));
     } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
-      for (let i = 0; i < this.allPropertiesInternal.length; ++i) {
-        this.allPropertiesInternal[i].rebase(edit);
+      for (let i = 0; i < this.#allPropertiesInternal.length; ++i) {
+        this.#allPropertiesInternal[i].rebase(edit);
       }
     }
   }
@@ -49,16 +49,16 @@ export class CSSStyleDeclaration {
     this.range = payload.range ? TextUtils.TextRange.TextRange.fromObject(payload.range) : null;
 
     const shorthandEntries = payload.shorthandEntries;
-    this.shorthandValues = new Map();
-    this.shorthandIsImportant = new Set();
+    this.#shorthandValues = new Map();
+    this.#shorthandIsImportant = new Set();
     for (let i = 0; i < shorthandEntries.length; ++i) {
-      this.shorthandValues.set(shorthandEntries[i].name, shorthandEntries[i].value);
+      this.#shorthandValues.set(shorthandEntries[i].name, shorthandEntries[i].value);
       if (shorthandEntries[i].important) {
-        this.shorthandIsImportant.add(shorthandEntries[i].name);
+        this.#shorthandIsImportant.add(shorthandEntries[i].name);
       }
     }
 
-    this.allPropertiesInternal = [];
+    this.#allPropertiesInternal = [];
 
     if (payload.cssText && this.range) {
       const cssText = new TextUtils.Text.Text(payload.cssText);
@@ -75,28 +75,30 @@ export class CSSStyleDeclaration {
           parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
           start = {line: range.endLine, column: range.endColumn};
         }
-        this.allPropertiesInternal.push(CSSProperty.parsePayload(this, this.allPropertiesInternal.length, cssProperty));
+        this.#allPropertiesInternal.push(
+            CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty));
       }
       parseUnusedText.call(this, cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
     } else {
       for (const cssProperty of payload.cssProperties) {
-        this.allPropertiesInternal.push(CSSProperty.parsePayload(this, this.allPropertiesInternal.length, cssProperty));
+        this.#allPropertiesInternal.push(
+            CSSProperty.parsePayload(this, this.#allPropertiesInternal.length, cssProperty));
       }
     }
 
     this.generateSyntheticPropertiesIfNeeded();
     this.computeInactiveProperties();
 
-    this.activePropertyMap = new Map();
-    for (const property of this.allPropertiesInternal) {
+    this.#activePropertyMap = new Map();
+    for (const property of this.#allPropertiesInternal) {
       if (!property.activeInStyle()) {
         continue;
       }
-      this.activePropertyMap.set(property.name, property);
+      this.#activePropertyMap.set(property.name, property);
     }
 
     this.cssText = payload.cssText;
-    this.leadingPropertiesInternal = null;
+    this.#leadingPropertiesInternal = null;
 
     function parseUnusedText(
         this: CSSStyleDeclaration, cssText: TextUtils.Text.Text, startLine: number, startColumn: number,
@@ -130,8 +132,8 @@ export class CSSStyleDeclaration {
               value = trimmedProperty.substring(colonIndex + 1).trim();
             }
             const range = new TextUtils.TextRange.TextRange(lineNumber, column, lineNumber, column + property.length);
-            this.allPropertiesInternal.push(new CSSProperty(
-                this, this.allPropertiesInternal.length, name, value, false, false, false, false, property,
+            this.#allPropertiesInternal.push(new CSSProperty(
+                this, this.#allPropertiesInternal.length, name, value, false, false, false, false, property,
                 range.relativeFrom(startLine, startColumn)));
           }
           column += property.length + 1;
@@ -165,38 +167,38 @@ export class CSSStyleDeclaration {
       return;
     }
 
-    if (!this.shorthandValues.size) {
+    if (!this.#shorthandValues.size) {
       return;
     }
 
     const propertiesSet = new Set<string>();
-    for (const property of this.allPropertiesInternal) {
+    for (const property of this.#allPropertiesInternal) {
       propertiesSet.add(property.name);
     }
 
     const generatedProperties = [];
-    // For style-based properties, generate shorthands with values when possible.
-    for (const property of this.allPropertiesInternal) {
-      // For style-based properties, try generating shorthands.
+    // For style-based properties, generate #shorthands with values when possible.
+    for (const property of this.#allPropertiesInternal) {
+      // For style-based properties, try generating #shorthands.
       const shorthands = cssMetadata().getShorthands(property.name) || [];
       for (const shorthand of shorthands) {
         if (propertiesSet.has(shorthand)) {
           continue;
-        }  // There already is a shorthand this longhands falls under.
-        const shorthandValue = this.shorthandValues.get(shorthand);
+        }  // There already is a shorthand this #longhands falls under.
+        const shorthandValue = this.#shorthandValues.get(shorthand);
         if (!shorthandValue) {
           continue;
-        }  // Never generate synthetic shorthands when no value is available.
+        }  // Never generate synthetic #shorthands when no value is available.
 
         // Generate synthetic shorthand we have a value for.
-        const shorthandImportance = Boolean(this.shorthandIsImportant.has(shorthand));
+        const shorthandImportance = Boolean(this.#shorthandIsImportant.has(shorthand));
         const shorthandProperty = new CSSProperty(
             this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
         propertiesSet.add(shorthand);
       }
     }
-    this.allPropertiesInternal = this.allPropertiesInternal.concat(generatedProperties);
+    this.#allPropertiesInternal = this.#allPropertiesInternal.concat(generatedProperties);
   }
 
   private computeLeadingProperties(): CSSProperty[] {
@@ -205,15 +207,15 @@ export class CSSStyleDeclaration {
     }
 
     if (this.range) {
-      return this.allPropertiesInternal.filter(propertyHasRange);
+      return this.#allPropertiesInternal.filter(propertyHasRange);
     }
 
     const leadingProperties = [];
-    for (const property of this.allPropertiesInternal) {
+    for (const property of this.#allPropertiesInternal) {
       const shorthands = cssMetadata().getShorthands(property.name) || [];
       let belongToAnyShorthand = false;
       for (const shorthand of shorthands) {
-        if (this.shorthandValues.get(shorthand)) {
+        if (this.#shorthandValues.get(shorthand)) {
           belongToAnyShorthand = true;
           break;
         }
@@ -227,24 +229,24 @@ export class CSSStyleDeclaration {
   }
 
   leadingProperties(): CSSProperty[] {
-    if (!this.leadingPropertiesInternal) {
-      this.leadingPropertiesInternal = this.computeLeadingProperties();
+    if (!this.#leadingPropertiesInternal) {
+      this.#leadingPropertiesInternal = this.computeLeadingProperties();
     }
-    return this.leadingPropertiesInternal;
+    return this.#leadingPropertiesInternal;
   }
 
   target(): Target {
-    return this.cssModelInternal.target();
+    return this.#cssModelInternal.target();
   }
 
   cssModel(): CSSModel {
-    return this.cssModelInternal;
+    return this.#cssModelInternal;
   }
 
   private computeInactiveProperties(): void {
     const activeProperties = new Map<string, CSSProperty>();
-    for (let i = 0; i < this.allPropertiesInternal.length; ++i) {
-      const property = this.allPropertiesInternal[i];
+    for (let i = 0; i < this.#allPropertiesInternal.length; ++i) {
+      const property = this.#allPropertiesInternal[i];
       if (property.disabled || !property.parsedOk) {
         property.setActive(false);
         continue;
@@ -284,16 +286,16 @@ export class CSSStyleDeclaration {
   }
 
   allProperties(): CSSProperty[] {
-    return this.allPropertiesInternal;
+    return this.#allPropertiesInternal;
   }
 
   getPropertyValue(name: string): string {
-    const property = this.activePropertyMap.get(name);
+    const property = this.#activePropertyMap.get(name);
     return property ? property.value : '';
   }
 
   isPropertyImplicit(name: string): boolean {
-    const property = this.activePropertyMap.get(name);
+    const property = this.#activePropertyMap.get(name);
     return property ? property.implicit : false;
   }
 
@@ -301,7 +303,7 @@ export class CSSStyleDeclaration {
     const longhands = cssMetadata().getLonghands(name.toLowerCase());
     const result = [];
     for (let i = 0; longhands && i < longhands.length; ++i) {
-      const property = this.activePropertyMap.get(longhands[i]);
+      const property = this.#activePropertyMap.get(longhands[i]);
       if (property) {
         result.push(property);
       }
@@ -343,7 +345,7 @@ export class CSSStyleDeclaration {
     if (!this.range || !this.styleSheetId) {
       return Promise.resolve(false);
     }
-    return this.cssModelInternal.setStyleText(this.styleSheetId, this.range, text, majorChange);
+    return this.#cssModelInternal.setStyleText(this.styleSheetId, this.range, text, majorChange);
   }
 
   insertPropertyAt(index: number, name: string, value: string, userCallback?: ((arg0: boolean) => void)): void {

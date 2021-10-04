@@ -5,16 +5,16 @@
 import * as Common from '../common/common.js';
 
 /**
- * Used to cycle through a list of predetermined colors for the overlays.
+ * Used to cycle through a list of predetermined #colors for the overlays.
  * This helps users differentiate between overlays when several are shown at the
  * same time.
  */
 export class OverlayColorGenerator {
-  private readonly colors: Common.Color.Color[];
-  private index: number;
+  readonly #colors: Common.Color.Color[];
+  #index: number;
   constructor() {
     const {Color, Format} = Common.Color;
-    this.colors = [
+    this.#colors = [
       // F59794
       new Color([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], Format.RGBA),
       // F0BF4C
@@ -34,17 +34,17 @@ export class OverlayColorGenerator {
       // EB94CF
       new Color([0.9215686274509803, 0.5803921568627451, 0.8117647058823529, 1], Format.RGBA),
     ];
-    this.index = 0;
+    this.#index = 0;
   }
 
   /**
    * Generate the next color in the spectrum
    */
   next(): Common.Color.Color {
-    const color = this.colors[this.index];
-    this.index++;
-    if (this.index >= this.colors.length) {
-      this.index = 0;
+    const color = this.#colors[this.#index];
+    this.#index++;
+    if (this.#index >= this.#colors.length) {
+      this.#index = 0;
     }
 
     return color;

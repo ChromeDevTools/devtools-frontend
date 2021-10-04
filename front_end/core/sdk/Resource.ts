@@ -40,119 +40,119 @@ import {Events} from './NetworkRequest.js';
 import type {ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
 
 export class Resource implements TextUtils.ContentProvider.ContentProvider {
-  private readonly resourceTreeModel: ResourceTreeModel;
-  private requestInternal: NetworkRequest|null;
-  private urlInternal!: string;
-  private readonly documentURLInternal: string;
-  private readonly frameIdInternal: Protocol.Page.FrameId|null;
-  private readonly loaderIdInternal: Protocol.Network.LoaderId|null;
-  private readonly type: Common.ResourceType.ResourceType;
-  private mimeTypeInternal: string;
-  private isGeneratedInternal: boolean;
-  private lastModifiedInternal: Date|null;
-  private readonly contentSizeInternal: number|null;
-  private contentInternal!: string|null;
-  private contentLoadError!: string|null;
-  private contentEncodedInternal!: boolean;
-  private readonly pendingContentCallbacks: ((arg0: Object|null) => void)[];
-  private parsedURLInternal?: Common.ParsedURL.ParsedURL;
-  private contentRequested?: boolean;
+  readonly #resourceTreeModel: ResourceTreeModel;
+  #requestInternal: NetworkRequest|null;
+  #urlInternal!: string;
+  readonly #documentURLInternal: string;
+  readonly #frameIdInternal: Protocol.Page.FrameId|null;
+  readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
+  readonly #type: Common.ResourceType.ResourceType;
+  #mimeTypeInternal: string;
+  #isGeneratedInternal: boolean;
+  #lastModifiedInternal: Date|null;
+  readonly #contentSizeInternal: number|null;
+  #contentInternal!: string|null;
+  #contentLoadError!: string|null;
+  #contentEncodedInternal!: boolean;
+  readonly #pendingContentCallbacks: ((arg0: Object|null) => void)[];
+  #parsedURLInternal?: Common.ParsedURL.ParsedURL;
+  #contentRequested?: boolean;
 
   constructor(
       resourceTreeModel: ResourceTreeModel, request: NetworkRequest|null, url: string, documentURL: string,
       frameId: Protocol.Page.FrameId|null, loaderId: Protocol.Network.LoaderId|null,
       type: Common.ResourceType.ResourceType, mimeType: string, lastModified: Date|null, contentSize: number|null) {
-    this.resourceTreeModel = resourceTreeModel;
-    this.requestInternal = request;
+    this.#resourceTreeModel = resourceTreeModel;
+    this.#requestInternal = request;
     this.url = url;
 
-    this.documentURLInternal = documentURL;
-    this.frameIdInternal = frameId;
-    this.loaderIdInternal = loaderId;
-    this.type = type || Common.ResourceType.resourceTypes.Other;
-    this.mimeTypeInternal = mimeType;
-    this.isGeneratedInternal = false;
+    this.#documentURLInternal = documentURL;
+    this.#frameIdInternal = frameId;
+    this.#loaderIdInternal = loaderId;
+    this.#type = type || Common.ResourceType.resourceTypes.Other;
+    this.#mimeTypeInternal = mimeType;
+    this.#isGeneratedInternal = false;
 
-    this.lastModifiedInternal = lastModified && Platfrom.DateUtilities.isValid(lastModified) ? lastModified : null;
-    this.contentSizeInternal = contentSize;
-    this.pendingContentCallbacks = [];
-    if (this.requestInternal && !this.requestInternal.finished) {
-      this.requestInternal.addEventListener(Events.FinishedLoading, this.requestFinished, this);
+    this.#lastModifiedInternal = lastModified && Platfrom.DateUtilities.isValid(lastModified) ? lastModified : null;
+    this.#contentSizeInternal = contentSize;
+    this.#pendingContentCallbacks = [];
+    if (this.#requestInternal && !this.#requestInternal.finished) {
+      this.#requestInternal.addEventListener(Events.FinishedLoading, this.requestFinished, this);
     }
   }
 
   lastModified(): Date|null {
-    if (this.lastModifiedInternal || !this.requestInternal) {
-      return this.lastModifiedInternal;
+    if (this.#lastModifiedInternal || !this.#requestInternal) {
+      return this.#lastModifiedInternal;
     }
-    const lastModifiedHeader = this.requestInternal.responseLastModified();
+    const lastModifiedHeader = this.#requestInternal.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this.lastModifiedInternal = date && Platfrom.DateUtilities.isValid(date) ? date : null;
-    return this.lastModifiedInternal;
+    this.#lastModifiedInternal = date && Platfrom.DateUtilities.isValid(date) ? date : null;
+    return this.#lastModifiedInternal;
   }
 
   contentSize(): number|null {
-    if (typeof this.contentSizeInternal === 'number' || !this.requestInternal) {
-      return this.contentSizeInternal;
+    if (typeof this.#contentSizeInternal === 'number' || !this.#requestInternal) {
+      return this.#contentSizeInternal;
     }
-    return this.requestInternal.resourceSize;
+    return this.#requestInternal.resourceSize;
   }
 
   get request(): NetworkRequest|null {
-    return this.requestInternal;
+    return this.#requestInternal;
   }
 
   get url(): string {
-    return this.urlInternal;
+    return this.#urlInternal;
   }
 
   set url(x: string) {
-    this.urlInternal = x;
-    this.parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
+    this.#urlInternal = x;
+    this.#parsedURLInternal = new Common.ParsedURL.ParsedURL(x);
   }
 
   get parsedURL(): Common.ParsedURL.ParsedURL|undefined {
-    return this.parsedURLInternal;
+    return this.#parsedURLInternal;
   }
 
   get documentURL(): string {
-    return this.documentURLInternal;
+    return this.#documentURLInternal;
   }
 
   get frameId(): Protocol.Page.FrameId|null {
-    return this.frameIdInternal;
+    return this.#frameIdInternal;
   }
 
   get loaderId(): Protocol.Network.LoaderId|null {
-    return this.loaderIdInternal;
+    return this.#loaderIdInternal;
   }
 
   get displayName(): string {
-    return this.parsedURLInternal ? this.parsedURLInternal.displayName : '';
+    return this.#parsedURLInternal ? this.#parsedURLInternal.displayName : '';
   }
 
   resourceType(): Common.ResourceType.ResourceType {
-    return this.requestInternal ? this.requestInternal.resourceType() : this.type;
+    return this.#requestInternal ? this.#requestInternal.resourceType() : this.#type;
   }
 
   get mimeType(): string {
-    return this.requestInternal ? this.requestInternal.mimeType : this.mimeTypeInternal;
+    return this.#requestInternal ? this.#requestInternal.mimeType : this.#mimeTypeInternal;
   }
 
   get content(): string|null {
-    return this.contentInternal;
+    return this.#contentInternal;
   }
 
   get isGenerated(): boolean {
-    return this.isGeneratedInternal;
+    return this.#isGeneratedInternal;
   }
 
   set isGenerated(val: boolean) {
-    this.isGeneratedInternal = val;
+    this.#isGeneratedInternal = val;
   }
 
   contentURL(): string {
-    return this.urlInternal;
+    return this.#urlInternal;
   }
 
   contentType(): Common.ResourceType.ResourceType {
@@ -165,17 +165,17 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
 
   async contentEncoded(): Promise<boolean> {
     await this.requestContent();
-    return this.contentEncodedInternal;
+    return this.#contentEncodedInternal;
   }
 
   requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    if (typeof this.contentInternal !== 'undefined') {
-      return Promise.resolve({content: (this.contentInternal as string), isEncoded: this.contentEncodedInternal});
+    if (typeof this.#contentInternal !== 'undefined') {
+      return Promise.resolve({content: (this.#contentInternal as string), isEncoded: this.#contentEncodedInternal});
     }
 
     return new Promise(resolve => {
-      this.pendingContentCallbacks.push((resolve as (arg0: Object|null) => void));
-      if (!this.requestInternal || this.requestInternal.finished) {
+      this.#pendingContentCallbacks.push((resolve as (arg0: Object|null) => void));
+      if (!this.#requestInternal || this.#requestInternal.finished) {
         this.innerRequestContent();
       }
     });
@@ -193,31 +193,32 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     if (this.request) {
       return this.request.searchInContent(query, caseSensitive, isRegex);
     }
-    const result = await this.resourceTreeModel.target().pageAgent().invoke_searchInResource(
+    const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
         {frameId: this.frameId, url: this.url, query, caseSensitive, isRegex});
     return result.result || [];
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {
     const {content} = await this.requestContent();
-    const encoded = this.contentEncodedInternal;
-    image.src = TextUtils.ContentProvider.contentAsDataURL(content, this.mimeTypeInternal, encoded) || this.urlInternal;
+    const encoded = this.#contentEncodedInternal;
+    image.src =
+        TextUtils.ContentProvider.contentAsDataURL(content, this.#mimeTypeInternal, encoded) || this.#urlInternal;
   }
 
   private requestFinished(): void {
-    if (this.requestInternal) {
-      this.requestInternal.removeEventListener(Events.FinishedLoading, this.requestFinished, this);
+    if (this.#requestInternal) {
+      this.#requestInternal.removeEventListener(Events.FinishedLoading, this.requestFinished, this);
     }
-    if (this.pendingContentCallbacks.length) {
+    if (this.#pendingContentCallbacks.length) {
       this.innerRequestContent();
     }
   }
 
   private async innerRequestContent(): Promise<void> {
-    if (this.contentRequested) {
+    if (this.#contentRequested) {
       return;
     }
-    this.contentRequested = true;
+    this.#contentRequested = true;
 
     let loadResult: {
       content: string,
@@ -233,53 +234,53 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     if (this.request) {
       const contentData = await this.request.contentData();
       if (!contentData.error) {
-        this.contentInternal = contentData.content;
-        this.contentEncodedInternal = contentData.encoded;
+        this.#contentInternal = contentData.content;
+        this.#contentEncodedInternal = contentData.encoded;
         loadResult = {content: (contentData.content as string), isEncoded: contentData.encoded};
       }
     }
     if (!loadResult) {
-      const response = await this.resourceTreeModel.target().pageAgent().invoke_getResourceContent(
+      const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId as Protocol.Page.FrameId, url: this.url});
       const protocolError = response.getError();
       if (protocolError) {
-        this.contentLoadError = protocolError;
-        this.contentInternal = null;
+        this.#contentLoadError = protocolError;
+        this.#contentInternal = null;
         loadResult = {content: null, error: protocolError, isEncoded: false};
       } else {
-        this.contentInternal = response.content;
-        this.contentLoadError = null;
+        this.#contentInternal = response.content;
+        this.#contentLoadError = null;
         loadResult = {content: response.content, isEncoded: response.base64Encoded};
       }
-      this.contentEncodedInternal = response.base64Encoded;
+      this.#contentEncodedInternal = response.base64Encoded;
     }
 
-    if (this.contentInternal === null) {
-      this.contentEncodedInternal = false;
+    if (this.#contentInternal === null) {
+      this.#contentEncodedInternal = false;
     }
 
-    for (const callback of this.pendingContentCallbacks.splice(0)) {
+    for (const callback of this.#pendingContentCallbacks.splice(0)) {
       callback(loadResult);
     }
 
-    delete this.contentRequested;
+    this.#contentRequested = undefined;
   }
 
   hasTextContent(): boolean {
-    if (this.type.isTextType()) {
+    if (this.#type.isTextType()) {
       return true;
     }
-    if (this.type === Common.ResourceType.resourceTypes.Other) {
-      return Boolean(this.contentInternal) && !this.contentEncodedInternal;
+    if (this.#type === Common.ResourceType.resourceTypes.Other) {
+      return Boolean(this.#contentInternal) && !this.#contentEncodedInternal;
     }
     return false;
   }
 
   frame(): ResourceTreeFrame|null {
-    return this.frameIdInternal ? this.resourceTreeModel.frameForId(this.frameIdInternal) : null;
+    return this.#frameIdInternal ? this.#resourceTreeModel.frameForId(this.#frameIdInternal) : null;
   }
 
   statusCode(): number {
-    return this.requestInternal ? this.requestInternal.statusCode : 0;
+    return this.#requestInternal ? this.#requestInternal.statusCode : 0;
   }
 }

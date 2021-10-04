@@ -26,7 +26,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/application_test_runner/ServiceWorkersTestRunner.js",
   "front_end/legacy_test_runner/application_test_runner/StorageTestRunner.js",
   "front_end/legacy_test_runner/lighthouse_test_runner/lighthouse_test_runner.js",
-  "front_end/entrypoints/lighthouse_worker/LighthouseService.js",
   "front_end/panels/lighthouse/module.json",
   "front_end/legacy_test_runner/axe_core_test_runner/axe_core_test_runner.js",
   "front_end/third_party/axe-core/axe.js",

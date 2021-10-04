@@ -2,21 +2,24 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../scripts/build/ninja/copy.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 
-copy_to_gen("gen") {
-  sources = [
-    "LighthouseService.js",
-    "lighthouse_worker.js",
+devtools_module("lighthouse_worker") {
+  sources = [ "LighthouseService.ts" ]
+
+  deps = [
+    "../../core/root:bundle",
+    "../../third_party/lighthouse",
   ]
-
-  deps = [ "../../third_party/lighthouse" ]
 }
 
-group("bundle") {
-  public_deps = [ ":gen" ]
-  data_deps = public_deps
-  metadata = {
-    grd_files = get_target_outputs(":gen")
-  }
+devtools_entrypoint("bundle") {
+  entrypoint = "lighthouse_worker.ts"
+
+  is_web_worker = true
+
+  deps = [ ":lighthouse_worker" ]
+
+  visibility = [ "../..:front_end" ]
 }

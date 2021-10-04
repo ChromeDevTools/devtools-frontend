@@ -4,8 +4,8 @@
 
 import * as Root from '../../core/root/root.js';
 
-function disableLoggingForTest() {
-  console.log = () => undefined;  // eslint-disable-line no-console
+function disableLoggingForTest(): void {
+  console.log = (): void => undefined;  // eslint-disable-line no-console
 }
 
 /**
@@ -16,43 +16,25 @@ function disableLoggingForTest() {
  * via status updates defined below.
  */
 class LighthousePort {
-  constructor() {
-    /**
-     * @type {(function(string):void)|undefined}
-     */
-    this._onMessage;
-    /**
-     * @type {(function():void)|undefined}
-     */
-    this._onClose;
-  }
-  /**
-   * @param {string} eventName
-   * @param {function(string=):void} callback
-   */
-  on(eventName, callback) {
+  onMessage?: (message: string) => void;
+  onClose?: () => void;
+  on(eventName: string, callback: (arg?: string) => void): void {
     if (eventName === 'message') {
-      this._onMessage = callback;
+      this.onMessage = callback;
     } else if (eventName === 'close') {
-      this._onClose = callback;
+      this.onClose = callback;
     }
   }
 
-  /**
-   * @param {string} message
-   */
-  send(message) {
+  send(message: string): void {
     notifyFrontendViaWorkerMessage('sendProtocolMessage', {message});
   }
 }
 
 const port = new LighthousePort();
 
-/**
- * @param {*} params
- * @return {!Promise<*>}
- */
-async function start(params) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function start(params: any): Promise<unknown> {
   if (Root.Runtime.Runtime.queryParam('isUnderTest')) {
     disableLoggingForTest();
     params.flags.maxWaitForLoad = 2 * 1000;
@@ -91,10 +73,8 @@ async function start(params) {
  * Finds a locale supported by Lighthouse from the user's system locales.
  * If no matching locale is found, or if fetching locale data fails, this function returns nothing
  * and Lighthouse will use `en-US` by default.
- * @param {string[]} locales
- * @return {!Promise<(string|undefined)>}
  */
-async function fetchLocaleData(locales) {
+async function fetchLocaleData(locales: string[]): Promise<string|void> {
   // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
   const locale = self.lookupLocale(locales);
 
@@ -115,8 +95,8 @@ async function fetchLocaleData(locales) {
       localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl.toString());
     }
 
-    const timeoutPromise =
-        new Promise((resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
+    const timeoutPromise = new Promise<string>(
+        (resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
     const localeDataText = await Promise.race([timeoutPromise, localeDataTextPromise]);
     const localeData = JSON.parse(localeDataText);
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
@@ -129,25 +109,19 @@ async function fetchLocaleData(locales) {
   return;
 }
 
-/**
- * @param {string} method
- * @param {*} params
- */
-function notifyFrontendViaWorkerMessage(method, params) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function notifyFrontendViaWorkerMessage(method: string, params: any): void {
   self.postMessage(JSON.stringify({method, params}));
 }
 
-/**
- * @param {!MessageEvent} event
- */
-self.onmessage = async event => {
+self.onmessage = async(event: MessageEvent): Promise<void> => {
   const messageFromFrontend = JSON.parse(event.data);
   if (messageFromFrontend.method === 'start') {
     const result = await start(messageFromFrontend.params);
     self.postMessage(JSON.stringify({id: messageFromFrontend.id, result}));
   } else if (messageFromFrontend.method === 'dispatchProtocolMessage') {
-    if (port._onMessage) {
-      port._onMessage(messageFromFrontend.params.message);
+    if (port.onMessage) {
+      port.onMessage(messageFromFrontend.params.message);
     }
   } else {
     throw new Error(`Unknown event: ${event.data}`);
@@ -155,6 +129,7 @@ self.onmessage = async event => {
 };
 
 // Make lighthouse and traceviewer happy.
+// @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global = self;
 // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.isVinn = true;
@@ -164,5 +139,5 @@ globalThis.global.document = {};
 globalThis.global.document.documentElement = {};
 // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.document.documentElement.style = {
-  WebkitAppearance: 'WebkitAppearance'
+  WebkitAppearance: 'WebkitAppearance',
 };

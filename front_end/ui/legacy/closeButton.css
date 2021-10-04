@@ -43,3 +43,9 @@
 .close-button:active .active-icon {
   display: block;
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .close-button {
+    filter: brightness(100);
+  }
+}

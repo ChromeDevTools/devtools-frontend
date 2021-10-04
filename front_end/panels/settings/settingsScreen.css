@@ -187,3 +187,27 @@ fieldset {
 .settings-experiment-unstable {
   color: var(--color-text-secondary);
 }
+
+@media (forced-colors: active) {
+  .settings-window-title {
+    color: canvastext;
+  }
+
+  .tabbed-pane-header-tab {
+    background: ButtonFace;
+  }
+
+  .tabbed-pane-header-tab-title {
+    color: canvastext;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .tabbed-pane-header-tab.selected {
+    background: ButtonFace;
+  }
+
+  .tabbed-pane-header-tab.selected .tabbed-pane-header-tab-title {
+    color: HighlightText;
+  }
+}

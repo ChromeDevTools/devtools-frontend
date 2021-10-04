@@ -39,7 +39,10 @@ devtools-text-prompt {
   width: 100%;
   flex: 0 0 30px;
   font-size: 12px;
-  padding: 8px 12px;
+  line-height: 30px;
+  padding: 0 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--color-text-secondary);
   background: var(--color-background-elevation-1);
   border-top: 1px solid var(--color-details-hairline);
@@ -84,6 +87,7 @@ devtools-text-prompt {
 
 .filtered-list-widget-item-wrapper devtools-icon {
   align-self: center;
+  flex: none;
   padding-right: 8px;
 }
 
@@ -93,11 +97,11 @@ devtools-text-prompt {
 
 .filtered-list-widget-item {
   white-space: nowrap;
-  text-overflow: ellipsis;
   overflow: hidden;
+  text-overflow: ellipsis;
   align-self: center;
-  max-width: 446px;
   font-size: 12px;
+  flex: auto;
 }
 
 .filtered-list-widget-item.two-rows span.highlight {
@@ -186,15 +190,10 @@ devtools-text-prompt {
   padding-top: 8px;
   padding-bottom: 8px;
   display: flex;
-  flex: auto;
 }
 
 .filtered-list-widget-item.one-row .filtered-list-widget-title {
   flex: none;
-}
-
-.filtered-list-widget-item.one-row .filtered-list-widget-subtitle::before {
-  content: ' ';
 }
 
 .filtered-list-widget-item.two-rows {

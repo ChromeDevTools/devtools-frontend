@@ -18,6 +18,10 @@ import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
+  *@description Title of the input to select the overlay color for an element using the color picker
+  */
+  chooseElementOverlayColor: 'Choose the overlay color for this element',
+  /**
   *@description Title of the show element button in the Layout pane of the Elements panel
   */
   showElementInTheElementsPanel: 'Show element in the Elements panel',
@@ -257,7 +261,7 @@ export class LayoutPane extends HTMLElement {
           } as NodeTextData}></${NodeText.litTagName}>
         </span>
       </label>
-      <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} tabindex="0" class="color-picker-label" style="background: ${element.color};">
+      <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} tabindex="0" title=${i18nString(UIStrings.chooseElementOverlayColor)} class="color-picker-label" style="background: ${element.color};">
         <input @change=${onColorChange} @input=${onColorChange} class="color-picker" type="color" value=${element.color} />
       </label>
       <button tabindex="0" @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element"></button>

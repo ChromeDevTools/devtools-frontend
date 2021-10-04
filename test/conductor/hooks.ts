@@ -275,8 +275,10 @@ export async function resetPages() {
   // Reload the target page.
   await loadEmptyPageAndWaitForContent(target);
 
+  // Under stress conditions throttle the CPU down.
+  await throttleCPUIfRequired();
+
   if (TEST_SERVER_TYPE === 'hosted-mode') {
-    const {frontend} = getBrowserAndPages();
     // Clear any local storage settings.
     await frontend.evaluate(() => localStorage.clear());
 
@@ -292,6 +294,17 @@ type ReloadDevToolsOptions = {
   canDock?: boolean,
   queryParams?: {panel?: string},
 };
+
+async function throttleCPUIfRequired(): Promise<void> {
+  const {frontend} = getBrowserAndPages();
+  // Under stress conditions throttle the CPU down.
+  if (envThrottleRate !== 1) {
+    console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
+
+    const client = await frontend.target().createCDPSession();
+    await client.send('Emulation.setCPUThrottlingRate', {rate: envThrottleRate});
+  }
+}
 
 export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
   const {frontend} = getBrowserAndPages();
@@ -319,14 +332,6 @@ export async function reloadDevTools(options: ReloadDevToolsOptions = {}) {
 
   if (!queryParams.panel && selectedPanel.selector) {
     await frontend.waitForSelector(selectedPanel.selector);
-  }
-
-  // Under stress conditions throttle the CPU down.
-  if (envThrottleRate !== 1) {
-    console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
-
-    const client = await frontend.target().createCDPSession();
-    await client.send('Emulation.setCPUThrottlingRate', {rate: envThrottleRate});
   }
 }
 

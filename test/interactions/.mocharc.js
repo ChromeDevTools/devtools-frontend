@@ -11,4 +11,7 @@ const testServerConfig = getTestRunnerConfigSetting('test-server-type');
 if (!testServerConfig) {
   process.env.TEST_SERVER_TYPE = 'component-docs';
 }
-module.exports = createMochaConfig({suiteName: 'interactions'})
+module.exports = createMochaConfig({
+  suiteName: 'interactions',
+  extraMochaConfig: {timeout: 10_000},
+})

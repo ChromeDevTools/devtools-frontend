@@ -401,6 +401,11 @@
   .network-status-pane > .recording-hint {
     color: canvastext;
   }
+
+  .initiator-column .devtools-link {
+    color: linktext;
+  }
+
   /* This is part of the large color block declared above, but should not be
    extracted out. */
   /* stylelint-disable no-descending-specificity */

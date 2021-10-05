@@ -274,6 +274,14 @@ export class UserAgentClientHintsForm extends HTMLElement {
     this.dispatchEvent(new ClientHintsChangeEvent());
     this.brandsModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
     this.render();
+
+    // after deleting a brand row, focus on next Brand input if available,
+    // otherwise focus on the "Add Brand" button
+    let nextFocusElement = this.shadowRoot?.getElementById(`brand-${index + 1}-input`);
+    if (!nextFocusElement) {
+      nextFocusElement = this.shadowRoot?.getElementById('add-brand-button');
+    }
+    (nextFocusElement as HTMLElement)?.focus();
   };
 
   private handleAddBrandClick = (): void => {
@@ -455,6 +463,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
             type="text"
             @input="${handleBrandBrowserChange}"
             .value="${brand}"
+            id="brand-${index + 1}-input"
             placeholder="${i18nString(UIStrings.brandName)}"
             aria-label="${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
@@ -495,6 +504,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         class="add-container full-row"
         role="button"
         tabindex="0"
+        id="add-brand-button"
+        aria-label="${i18nString(UIStrings.addBrand)}"
         @click="${this.handleAddBrandClick}"
         @keypress="${this.handleAddBrandKeyPress}"
       >

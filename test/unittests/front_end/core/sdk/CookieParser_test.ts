@@ -207,6 +207,12 @@ describe('CookieParser', () => {
           [{name: 'cookie1', value: '', path: '/', domain: '.example.com', size: 38}]);
     });
 
+    it('handles cookies with whitespace in the name', () => {
+      parseAndExpectSetCookies(
+          '   cookie 1  =value1; Path=/; Domain=.example.com;',
+          [{name: 'cookie 1', value: 'value1', path: '/', domain: '.example.com', size: 50}]);
+    });
+
     describe('it handles the priority attribute', () => {
       it('with value Low', () => {
         parseAndExpectSetCookies('cookie1=; Path=/; Domain=.example.com; Priority=Low', [{

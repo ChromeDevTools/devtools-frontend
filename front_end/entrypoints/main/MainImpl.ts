@@ -215,7 +215,7 @@ export class MainImpl {
       clear: Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences,
     };
     const globalStorage = new Common.Settings.SettingsStorage(prefs, hostStorage, storagePrefix);
-    Common.Settings.Settings.instance({forceNew: true, globalStorage, localStorage});
+    Common.Settings.Settings.instance({forceNew: true, syncedStorage: globalStorage, globalStorage, localStorage});
 
     // @ts-ignore layout test global
     self.Common.settings = Common.Settings.Settings.instance();

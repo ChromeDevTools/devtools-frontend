@@ -144,7 +144,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
 
   // Instantiate the storage.
   const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
-  Common.Settings.Settings.instance({forceNew: reset, globalStorage: storage, localStorage: storage});
+  Common.Settings.Settings.instance(
+      {forceNew: reset, syncedStorage: storage, globalStorage: storage, localStorage: storage});
 
   // Dynamically import UI after the rest of the environment is set up, otherwise it will fail.
   UI = await import('../../../../front_end/ui/legacy/legacy.js');

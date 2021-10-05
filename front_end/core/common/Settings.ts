@@ -41,8 +41,6 @@ import {getLocalizedSettingsCategory, getRegisteredSettings, maybeRemoveSettingE
 let settingsInstance: Settings|undefined;
 
 export class Settings {
-  readonly globalStorage: SettingsStorage;
-  private readonly localStorage: SettingsStorage;
   private readonly sessionStorage: SettingsStorage;
   settingNameSet: Set<string>;
   orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
@@ -50,9 +48,9 @@ export class Settings {
   private registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
 
-  private constructor(globalStorage: SettingsStorage, localStorage: SettingsStorage) {
-    this.globalStorage = globalStorage;
-    this.localStorage = localStorage;
+  private constructor(
+      private readonly syncedStorage: SettingsStorage, readonly globalStorage: SettingsStorage,
+      private readonly localStorage: SettingsStorage) {
     this.sessionStorage = new SettingsStorage({});
 
     this.settingNameSet = new Set();
@@ -91,16 +89,17 @@ export class Settings {
 
   static instance(opts: {
     forceNew: boolean|null,
+    syncedStorage: SettingsStorage|null,
     globalStorage: SettingsStorage|null,
     localStorage: SettingsStorage|null,
-  } = {forceNew: null, globalStorage: null, localStorage: null}): Settings {
-    const {forceNew, globalStorage, localStorage} = opts;
+  } = {forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null}): Settings {
+    const {forceNew, syncedStorage, globalStorage, localStorage} = opts;
     if (!settingsInstance || forceNew) {
-      if (!globalStorage || !localStorage) {
+      if (!syncedStorage || !globalStorage || !localStorage) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
-      settingsInstance = new Settings(globalStorage, localStorage);
+      settingsInstance = new Settings(syncedStorage, globalStorage, localStorage);
     }
 
     return settingsInstance;

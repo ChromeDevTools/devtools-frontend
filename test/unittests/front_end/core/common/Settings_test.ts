@@ -42,3 +42,25 @@ describe('SettingsStorage class', () => {
     assert.isFalse(settingsStorage.has('Test Name 2'), 'the class should not have any names');
   });
 });
+
+describe('Settings instance', () => {
+  afterEach(() => {
+    Common.Settings.Settings.removeInstance();
+  });
+
+  it('can be instantiated in a test', () => {
+    const dummyStorage = new SettingsStorage({});
+
+    const settings = Common.Settings.Settings.instance(
+        {forceNew: true, syncedStorage: dummyStorage, globalStorage: dummyStorage, localStorage: dummyStorage});
+
+    assert.isOk(settings);
+  });
+
+  it('throws when constructed without storage', () => {
+    assert.throws(() => Common.Settings.Settings.instance());
+    assert.throws(
+        () => Common.Settings.Settings.instance(
+            {forceNew: true, syncedStorage: null, globalStorage: null, localStorage: null}));
+  });
+});

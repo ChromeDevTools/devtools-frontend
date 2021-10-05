@@ -197,6 +197,7 @@ export class RequestLinkIcon extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <span class=${LitHtml.Directives.classMap({'link': Boolean(this.request)})}
+            tabindex="0"
             @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} .data=${this.iconData() as IconButton.Icon.IconData}
           title=${this.getTooltip()}></${IconButton.Icon.Icon.litTagName}>

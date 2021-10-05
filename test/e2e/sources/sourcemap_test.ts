@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {click, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getBreakpointDecorators, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   // Flaky test
@@ -106,6 +106,16 @@ describe('The Sources Tab', async () => {
       await click(RESUME_BUTTON);
       await scriptEvaluation;
     });
+  });
+
+  it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
+    const {frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-disjoint.js', 'sourcemap-disjoint.html');
+    assert.deepEqual(await getBreakpointDecorators(frontend), []);
+    await addBreakpointForLine(frontend, 2);
+    assert.deepEqual(await getBreakpointDecorators(frontend), [2]);
+    await removeBreakpointForLine(frontend, 2);
+    assert.deepEqual(await getBreakpointDecorators(frontend), []);
   });
 });
 

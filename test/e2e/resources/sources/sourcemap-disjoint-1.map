@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "sourcemap-disjoint.js"
+  ],
+  "names": [],
+  "mappings": ";;IACI,OAAO",
+  "file": "sourcemap-disjoint-1.js",
+  "sourcesContent": [
+    "export function test() {\r\n    return console.log(window.location);\r\n}"
+  ]
+}

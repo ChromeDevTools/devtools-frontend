@@ -178,7 +178,8 @@ export class DebuggerPlugin extends Plugin {
   private readonly boundGutterClick:
       (arg0: Common.EventTarget.EventTargetEvent<SourceFrame.SourcesTextEditor.GutterClickEventData>) => void;
   private readonly breakpointDecorations: Set<BreakpointDecoration>;
-  private readonly decorationByBreakpoint: Map<Bindings.BreakpointManager.Breakpoint, BreakpointDecoration>;
+  private readonly decorationByBreakpoint:
+      Map<Bindings.BreakpointManager.Breakpoint, Map<string, BreakpointDecoration>>;
   private readonly possibleBreakpointsRequested: Set<number>;
   private scriptFileForDebuggerModel:
       Map<SDK.DebuggerModel.DebuggerModel, Bindings.ResourceScriptMapping.ResourceScriptFile>;
@@ -1585,7 +1586,14 @@ export class DebuggerPlugin extends Plugin {
       decoration.element.addEventListener('contextmenu', this.inlineBreakpointContextMenu.bind(this, decoration), true);
       this.breakpointDecorations.add(decoration);
     }
-    this.decorationByBreakpoint.set(breakpoint, decoration);
+
+    let uiLocationsForBreakpoint = this.decorationByBreakpoint.get(breakpoint);
+    if (!uiLocationsForBreakpoint) {
+      uiLocationsForBreakpoint = new Map();
+      this.decorationByBreakpoint.set(breakpoint, uiLocationsForBreakpoint);
+    }
+    uiLocationsForBreakpoint.set(uiLocation.id(), decoration);
+
     this.updateBreakpointDecoration(decoration);
     if (breakpoint.enabled() && !lineDecorations.length) {
       this.possibleBreakpointsRequested.add(editorLocation.lineNumber);
@@ -1645,11 +1653,22 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     const {breakpoint, uiLocation} = event.data;
-    const decoration = this.decorationByBreakpoint.get(breakpoint);
+
+    const uiLocationsForBreakpoint = this.decorationByBreakpoint.get(breakpoint);
+    if (!uiLocationsForBreakpoint) {
+      return;
+    }
+
+    const decoration = uiLocationsForBreakpoint.get(uiLocation.id());
+    uiLocationsForBreakpoint.delete(uiLocation.id());
+
+    if (uiLocationsForBreakpoint.size === 0) {
+      this.decorationByBreakpoint.delete(breakpoint);
+    }
+
     if (!decoration) {
       return;
     }
-    this.decorationByBreakpoint.delete(breakpoint);
 
     const editorLocation = this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
     decoration.breakpoint = null;

@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "sourcemap-disjoint.js"
+  ],
+  "names": [],
+  "mappings": ";;uBACuB,MAAM",
+  "file": "sourcemap-disjoint-2.js",
+  "sourcesContent": [
+    "export function test() {\r\n    return console.log(window.location);\r\n}"
+  ]
+}

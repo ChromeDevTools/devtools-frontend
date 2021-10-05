@@ -45,6 +45,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   private attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
   private wasmCrossOriginModuleSharingIssues =
       new Set<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue>();
+  private genericIssues = new Set<IssuesManager.GenericIssue.GenericIssue>();
   private representative?: IssuesManager.Issue.Issue;
   private aggregatedIssuesCount = 0;
   private key: AggregationKey;
@@ -128,6 +129,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   getWasmCrossOriginModuleSharingIssue():
       ReadonlySet<IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue> {
     return this.wasmCrossOriginModuleSharingIssues;
+  }
+
+  getGenericIssues(): ReadonlySet<IssuesManager.GenericIssue.GenericIssue> {
+    return this.genericIssues;
   }
 
   getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
@@ -220,6 +225,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.WasmCrossOriginModuleSharingIssue.WasmCrossOriginModuleSharingIssue) {
       this.wasmCrossOriginModuleSharingIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
+      this.genericIssues.add(issue);
     }
   }
 

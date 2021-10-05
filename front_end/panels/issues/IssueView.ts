@@ -29,6 +29,7 @@ import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBu
 import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
+import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
 import {WasmCrossOriginModuleSharingAffectedResourcesView} from './WasmCrossOriginModuleSharingAffectedResourcesView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
 
@@ -241,6 +242,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedElementsWithLowContrastView(this, this.issue),
       new AffectedTrustedWebActivityIssueDetailsView(this, this.issue),
       new CorsIssueDetailsView(this, this.issue),
+      new GenericIssueDetailsView(this, this.issue),
       new AffectedDocumentsInQuirksModeView(this, this.issue),
       new AttributionReportingIssueDetailsView(this, this.issue),
       new WasmCrossOriginModuleSharingAffectedResourcesView(this, this.issue),

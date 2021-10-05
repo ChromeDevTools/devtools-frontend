@@ -34,6 +34,7 @@ devtools_module("issues") {
     "CSPViolationsView.ts",
     "ComboBoxOfCheckBoxes.ts",
     "CorsIssueDetailsView.ts",
+    "GenericIssueDetailsView.ts",
     "HiddenIssuesRow.ts",
     "IssueAggregator.ts",
     "IssueRevealer.ts",

@@ -4973,6 +4973,12 @@
   "panels/issues/CSPViolationsView.ts | filter": {
     "message": "Filter"
   },
+  "panels/issues/GenericIssueDetailsView.ts | frameId": {
+    "message": "Frame"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | nResources": {
+    "message": "{n, plural, =1 {# resource} other {# resources}}"
+  },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Hidden issues"
   },

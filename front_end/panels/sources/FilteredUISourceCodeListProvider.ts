@@ -123,7 +123,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     const fileNameIndex = fullDisplayName.lastIndexOf('/');
 
     titleElement.textContent = uiSourceCode.displayName() + (this.queryLineNumberAndColumnNumber || '');
-    this.renderSubtitleElement(subtitleElement, fullDisplayName);
+    this.renderSubtitleElement(subtitleElement, fullDisplayName.substring(0, fileNameIndex + 1));
     /** @type {!HTMLElement} */ UI.Tooltip.Tooltip.install((subtitleElement as HTMLElement), fullDisplayName);
     const ranges = [];
     for (let i = 0; i < indexes.length; ++i) {

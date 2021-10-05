@@ -14,6 +14,8 @@ export interface View {
 
   isCloseable(): boolean;
 
+  isPreviewFeature(): boolean;
+
   isTransient(): boolean;
 
   toolbarItems(): Promise<ToolbarItem[]>;
@@ -59,6 +61,10 @@ export class SimpleView extends VBox implements View {
   }
 
   disposeView(): void {
+  }
+
+  isPreviewFeature(): boolean {
+    return false;
   }
 }
 

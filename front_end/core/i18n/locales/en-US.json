@@ -11789,6 +11789,9 @@
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "More tabs"
   },
+  "ui/legacy/TabbedPane.ts | previewFeature": {
+    "message": "Preview feature"
+  },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools was disconnected from the page."
   },

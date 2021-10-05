@@ -255,7 +255,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.Payload, i18nString(UIStrings.payload), this.payloadView,
           i18nString(UIStrings.payload), /* userGesture=*/ void 0,
-          /* isCloseable=*/ void 0, /* index=*/ 1);
+          /* isCloseable=*/ void 0, /* isPreviewFeature=*/ void 0, /* index=*/ 1);
     }
   }
 

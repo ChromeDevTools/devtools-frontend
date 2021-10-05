@@ -95,6 +95,7 @@ devtools_svg_sources = [
   "ic_memory_16x16.svg",
   "ic_page_next_16x16_icon.svg",
   "ic_page_prev_16x16_icon.svg",
+  "ic_preview_feature.svg",
   "ic_redo_16x16_icon.svg",
   "ic_request_response.svg",
   "ic_response.svg",

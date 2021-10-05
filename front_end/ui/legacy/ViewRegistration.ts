@@ -61,6 +61,11 @@ export interface ViewRegistration {
    * Whether the view is permanently visible or can be opened temporarily.
    */
   persistence?: ViewPersistence;
+
+  /**
+   * Whether the view is a preview feature (a corresponding icon is shown then).
+   */
+  isPreviewFeature?: boolean;
   /**
    * Unique identifier of the view.
    */

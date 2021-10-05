@@ -469,7 +469,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       this.restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
     }
 
-    this.tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, index);
+    this.tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, undefined, index);
 
     this.updateFileTitle(uiSourceCode);
     this.addUISourceCodeListeners(uiSourceCode);

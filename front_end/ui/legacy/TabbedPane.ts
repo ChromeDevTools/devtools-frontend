@@ -70,6 +70,10 @@ const UIStrings = {
   *@description Text on a menu option to close all the drawers except Console when right click on a drawer title
   */
   closeAll: 'Close all',
+  /**
+  *@description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
+  */
+  previewFeature: 'Preview feature',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -224,9 +228,9 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   appendTab(
       id: string, tabTitle: string, view: Widget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean,
-      index?: number): void {
+      isPreviewFeature?: boolean, index?: number): void {
     const closeable = typeof isCloseable === 'boolean' ? isCloseable : Boolean(this.closeableTabs);
-    const tab = new TabbedPaneTab(this, id, tabTitle, closeable, view, tabTooltip);
+    const tab = new TabbedPaneTab(this, id, tabTitle, closeable, Boolean(isPreviewFeature), view, tabTooltip);
     tab.setDelegate((this.delegate as TabbedPaneTabDelegate));
     console.assert(!this.tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);
     this.tabsById.set(id, tab);
@@ -966,6 +970,7 @@ export type EventTypes = {
 
 export class TabbedPaneTab {
   closeable: boolean;
+  previewFeature = false;
   private readonly tabbedPane: TabbedPane;
   idInternal: string;
   private titleInternal: string;
@@ -980,8 +985,11 @@ export class TabbedPaneTab {
   private delegate?: TabbedPaneTabDelegate;
   private titleElement?: HTMLElement;
   private dragStartX?: number;
-  constructor(tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, view: Widget, tooltip?: string) {
+  constructor(
+      tabbedPane: TabbedPane, id: string, title: string, closeable: boolean, previewFeature: boolean, view: Widget,
+      tooltip?: string) {
     this.closeable = closeable;
+    this.previewFeature = previewFeature;
     this.tabbedPane = tabbedPane;
     this.idInternal = id;
     this.titleInternal = title;
@@ -1107,6 +1115,12 @@ export class TabbedPaneTab {
       this.titleElement = titleElement;
     }
 
+    if (this.previewFeature) {
+      const previewIcon = this.createPreviewIcon();
+      tabElement.appendChild(previewIcon);
+      tabElement.classList.add('preview');
+    }
+
     if (this.closeable) {
       const closeIcon = this.createCloseIconButton();
       tabElement.appendChild(closeIcon);
@@ -1146,6 +1160,21 @@ export class TabbedPaneTab {
     closeIconContainer.setAttribute('title', i18nString(UIStrings.closeS, {PH1: this.title}));
     closeIconContainer.setAttribute('aria-label', i18nString(UIStrings.closeS, {PH1: this.title}));
     return closeIconContainer;
+  }
+
+  private createPreviewIcon(): HTMLDivElement {
+    const previewIcon = document.createElement('div');
+    previewIcon.classList.add('preview-icon');
+    const closeIcon = new IconButton.Icon.Icon();
+    closeIcon.data = {
+      iconName: 'ic_preview_feature',
+      color: 'var(--override-tabbed-pane-preview-icon-color)',
+      width: '14px',
+    };
+    previewIcon.appendChild(closeIcon);
+    previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));
+    previewIcon.setAttribute('aria-label', i18nString(UIStrings.previewFeature));
+    return previewIcon;
   }
 
   private isCloseIconClicked(element: HTMLElement): boolean {

@@ -48,6 +48,10 @@ export class PreRegisteredView implements View {
     return this.viewRegistration.persistence === ViewPersistence.CLOSEABLE;
   }
 
+  isPreviewFeature(): boolean {
+    return Boolean(this.viewRegistration.isPreviewFeature);
+  }
+
   isTransient(): boolean {
     return this.viewRegistration.persistence === ViewPersistence.TRANSIENT;
   }
@@ -701,7 +705,7 @@ export class _TabbedLocation extends Location implements TabbedViewLocation {
   private appendTab(view: View, index?: number): void {
     this.tabbedPaneInternal.appendTab(
         view.viewId(), view.title(), new ContainerWidget(view), undefined, false,
-        view.isCloseable() || view.isTransient(), index);
+        view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
   }
 
   appendView(view: View, insertBefore?: View|null): void {

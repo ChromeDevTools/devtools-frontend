@@ -288,7 +288,9 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
           },
           /* userGesture */ false, /* awaitPromise */ false);
       if ((!('exceptionDetails' in result) || !result.exceptionDetails) && 'object' in result && result.object) {
-        inspectedURL = result.object.value;
+        if (result.object.value) {
+          inspectedURL = result.object.value;
+        }
         result.object.release();
       }
     } catch (err) {

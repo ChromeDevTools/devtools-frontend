@@ -161,7 +161,8 @@ describe('The Memory Panel', async function() {
             ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window'));
   });
 
-  it('Correctly shows multiple retainer paths for an object', async () => {
+  // Fails on mac after Chromium roll
+  it.skipOnPlatforms(['mac'], '[crbug.com/1256710] Correctly shows multiple retainer paths for an object', async () => {
     await goToResource('memory/multiple-retainers.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

@@ -7,27 +7,38 @@
 :host {
   white-space: pre;
   overflow: hidden;
-  display: inline-flex;
+  display: flex;
 }
 
 .prefix {
+  flex: none;
   color: var(--color-primary);
 }
 
-input {
-  width: 0;
-  border: none;
-  outline: none;
-}
-
 .text-prompt-input {
-  border: none;
-  outline: none;
-  display: inline;
-  flex: 1 0 auto;
+  flex: auto;
+  position: relative;
 }
 
-.text-prompt-input::after {
+.text-prompt-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  position: absolute;
+  left: 0;
+  padding: 0;
+  z-index: 2;
+  background-color: transparent;
+}
+
+.text-prompt-input .suggestion {
+  color: transparent;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+
+.text-prompt-input .suggestion::after {
   content: attr(suggestion);
   color: var(--color-background-highlight);
 }

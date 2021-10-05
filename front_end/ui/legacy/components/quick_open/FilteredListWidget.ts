@@ -232,10 +232,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.refreshListWithCurrentResult = undefined;
   }
 
-  private onEnter(_event: Event): void {
+  private onEnter(event: Event): void {
     if (!this.provider) {
       return;
     }
+    event.preventDefault();
     const selectedIndexInProvider = this.provider.itemCount() ? this.list.selectedItem() : null;
 
     this.selectItem(selectedIndexInProvider);
@@ -488,22 +489,22 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   private onKeyDown(keyboardEvent: KeyboardEvent): void {
     let handled = false;
     switch (keyboardEvent.key) {
-      case 'Enter':
+      case Platform.KeyboardUtilities.ENTER_KEY:
         this.onEnter(keyboardEvent);
         return;
-      case 'Tab':
+      case Platform.KeyboardUtilities.TAB_KEY:
         handled = this.tabKeyPressed();
         break;
-      case 'ArrowUp':
+      case Platform.KeyboardUtilities.ArrowKey.UP:
         handled = this.list.selectPreviousItem(true, false);
         break;
-      case 'ArrowDown':
+      case Platform.KeyboardUtilities.ArrowKey.DOWN:
         handled = this.list.selectNextItem(true, false);
         break;
-      case 'PageUp':
+      case Platform.KeyboardUtilities.PageKey.UP:
         handled = this.list.selectItemPreviousPage(false);
         break;
-      case 'PageDown':
+      case Platform.KeyboardUtilities.PageKey.DOWN:
         handled = this.list.selectItemNextPage(false);
         break;
     }

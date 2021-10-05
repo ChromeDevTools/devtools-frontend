@@ -54,12 +54,12 @@ export class TextPrompt extends HTMLElement {
     this.input().focus();
   }
 
-  private input(): HTMLElement {
-    const inputElement = this.shadow.querySelector('.text-prompt-input');
+  private input(): HTMLInputElement {
+    const inputElement = this.shadow.querySelector('input');
     if (!inputElement) {
       throw new Error('Expected an input element!');
     }
-    return /** @type {!HTMLElement} */ inputElement as HTMLElement;
+    return /** @type {!HTMLInputElement} */ inputElement as HTMLInputElement;
   }
 
   moveCaretToEndOfInput(): void {
@@ -67,6 +67,11 @@ export class TextPrompt extends HTMLElement {
   }
 
   onInput(): void {
+    const suggestionElement = this.shadow.querySelector('.suggestion');
+    if (suggestionElement) {
+      suggestionElement.textContent = this.text();
+    }
+
     this.dispatchEvent(new PromptInputEvent(this.text().trim()));
   }
 
@@ -87,15 +92,7 @@ export class TextPrompt extends HTMLElement {
     if (endIndex < startIndex) {
       endIndex = startIndex;
     }
-    const inputBox = this.input();
-    const range = document.createRange();
-    range.setStart(inputBox, startIndex);
-    range.setEnd(inputBox, endIndex);
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
+    this.input().setSelectionRange(startIndex, endIndex);
   }
 
   setPrefix(prefix: string): void {
@@ -109,7 +106,7 @@ export class TextPrompt extends HTMLElement {
   }
 
   setText(text: string): void {
-    this.input().textContent = text;
+    this.input().value = text;
     if (this.input().hasFocus()) {
       this.moveCaretToEndOfInput();
       this.input().scrollIntoView();
@@ -117,16 +114,15 @@ export class TextPrompt extends HTMLElement {
   }
 
   private text(): string {
-    return this.input().textContent || '';
+    return this.input().value || '';
   }
 
   private render(): void {
     const output = LitHtml.html`
-      <span class="prefix">${this.prefixText}</span>
-      <input aria-label=${this.ariaLabelText}>
-        <div class="text-prompt-input" spellcheck="false" contenteditable="plaintext-only" @keydown=${
-        this.onKeyDown} @input=${this.onInput} suggestion=" ${this.suggestionText}"></div>
-      </input>`;
+      <span class="prefix">${this.prefixText} </span>
+      <span class="text-prompt-input"><input aria-label=${this.ariaLabelText} spellcheck="false" @input=${
+        this.onInput} @keydown=${this.onKeyDown}/><span class='suggestion' suggestion=" ${
+        this.suggestionText}"></span></span>`;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

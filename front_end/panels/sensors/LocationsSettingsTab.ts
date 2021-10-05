@@ -116,7 +116,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     this.customSetting =
         Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
     const list =
-        this.customSetting.get().map(location => replaceLocationTitles(location, this.customSetting.defaultValue()));
+        this.customSetting.get().map(location => replaceLocationTitles(location, this.customSetting.defaultValue));
 
     function replaceLocationTitles(
         location: LocationDescription, defaultValues: LocationDescription[]): LocationDescription {

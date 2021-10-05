@@ -270,29 +270,22 @@ function removeSetting(setting: Setting<unknown>): void {
   settings.getRegistry().delete(name);
   settings.moduleSettings.delete(name);
 
-  setting.getStorage().remove(name);
+  setting.storage.remove(name);
 }
 
 export class Setting<V> {
-  private nameInternal: string;
-  private defaultValueInternal: V;
-  private readonly eventSupport: ObjectWrapper<GenericEvents>;
-  private storage: SettingsStorage;
   private titleFunction!: () => Platform.UIString.LocalizedString;
   private titleInternal!: string;
-  private registration: SettingRegistration|null;
+  private registration: SettingRegistration|null = null;
   private requiresUserAction?: boolean;
   private value?: V;
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
   private serializer: Serializer<unknown, V> = JSON;
   private hadUserAction?: boolean;
 
-  constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage) {
-    this.nameInternal = name;
-    this.defaultValueInternal = defaultValue;
-    this.eventSupport = eventSupport;
-    this.storage = storage;
-    this.registration = null;
+  constructor(
+      readonly name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
+      readonly storage: SettingsStorage) {
   }
 
   setSerializer(serializer: Serializer<unknown, V>): void {
@@ -300,15 +293,11 @@ export class Setting<V> {
   }
 
   addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor {
-    return this.eventSupport.addEventListener(this.nameInternal, listener, thisObject);
+    return this.eventSupport.addEventListener(this.name, listener, thisObject);
   }
 
   removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void {
-    this.eventSupport.removeEventListener(this.nameInternal, listener, thisObject);
-  }
-
-  get name(): string {
-    return this.nameInternal;
+    this.eventSupport.removeEventListener(this.name, listener, thisObject);
   }
 
   title(): string {
@@ -337,19 +326,19 @@ export class Setting<V> {
 
   get(): V {
     if (this.requiresUserAction && !this.hadUserAction) {
-      return this.defaultValueInternal;
+      return this.defaultValue;
     }
 
     if (typeof this.value !== 'undefined') {
       return this.value;
     }
 
-    this.value = this.defaultValueInternal;
-    if (this.storage.has(this.nameInternal)) {
+    this.value = this.defaultValue;
+    if (this.storage.has(this.name)) {
       try {
-        this.value = this.serializer.parse(this.storage.get(this.nameInternal));
+        this.value = this.serializer.parse(this.storage.get(this.name));
       } catch (e) {
-        this.storage.remove(this.nameInternal);
+        this.storage.remove(this.name);
       }
     }
     return this.value;
@@ -361,14 +350,14 @@ export class Setting<V> {
     try {
       const settingString = this.serializer.stringify(value);
       try {
-        this.storage.set(this.nameInternal, settingString);
+        this.storage.set(this.name, settingString);
       } catch (e) {
-        this.printSettingsSavingError(e.message, this.nameInternal, settingString);
+        this.printSettingsSavingError(e.message, this.name, settingString);
       }
     } catch (e) {
-      Console.instance().error('Cannot stringify setting with name: ' + this.nameInternal + ', error: ' + e.message);
+      Console.instance().error('Cannot stringify setting with name: ' + this.name + ', error: ' + e.message);
     }
-    this.eventSupport.dispatchEventToListeners(this.nameInternal, value);
+    this.eventSupport.dispatchEventToListeners(this.name, value);
   }
 
   setRegistration(registration: SettingRegistration): void {
@@ -427,18 +416,11 @@ export class Setting<V> {
   }
 
   private printSettingsSavingError(message: string, name: string, value: string): void {
-    const errorMessage = 'Error saving setting with name: ' + this.nameInternal + ', value length: ' + value.length +
-        '. Error: ' + message;
+    const errorMessage =
+        'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;
     console.error(errorMessage);
     Console.instance().error(errorMessage);
     this.storage.dumpSizes();
-  }
-  defaultValue(): V {
-    return this.defaultValueInternal;
-  }
-
-  getStorage(): SettingsStorage {
-    return this.storage;
   }
 }
 

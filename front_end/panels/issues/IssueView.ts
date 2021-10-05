@@ -444,6 +444,10 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.throttle.schedule(async () => this.doUpdate());
   }
 
+  getIssueKind(): IssuesManager.Issue.IssueKind {
+    return this.issue.getKind();
+  }
+
   isForHiddenIssue(): boolean {
     return this.issue.isHidden();
   }

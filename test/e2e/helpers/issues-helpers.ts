@@ -9,8 +9,10 @@ import {$$, click, hasClass, matchStringTable, waitFor, waitForClass, waitForFun
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category:not(.hidden-issues)';
+export const KIND = '.issue-kind';
 export const CATEGORY_NAME = '.issue-category .title';
 export const CATEGORY_CHECKBOX = 'input[aria-label="Group by category"]';
+export const KIND_CHECKBOX = 'input[aria-label="Group by kind"]';
 export const ISSUE = '.issue:not(.hidden-issue)';
 export const ISSUE_TITLE = '.issue .title';
 export const AFFECTED_ELEMENT_ICON = '.affected-resource-csp-info-node';
@@ -119,6 +121,15 @@ export async function expandCategory() {
   await waitFor(ISSUE);
 }
 
+export async function expandKind(classSelector: string) {
+  const kindElement = await waitFor(`${KIND}${classSelector}`);
+  const isKindExpanded = await kindElement.evaluate(node => node.classList.contains('expanded'));
+  if (!isKindExpanded) {
+    await kindElement.click();
+  }
+  await waitFor(ISSUE);
+}
+
 export async function expandIssue() {
   if (await getGroupByCategoryChecked()) {
     await expandCategory();
@@ -209,6 +220,11 @@ export async function getGroupByCategoryChecked() {
   return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
 }
 
+export async function getGroupByKindChecked() {
+  const categoryCheckbox = await waitFor(KIND_CHECKBOX);
+  return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
+}
+
 export async function revealNodeInElementsPanel() {
   const revealIcon = await waitFor(ELEMENT_REVEAL_ICON);
   await revealIcon.click();
@@ -230,5 +246,19 @@ export async function toggleGroupByCategory() {
     await waitFor(ISSUE);
   } else {
     await waitFor(CATEGORY);
+  }
+}
+
+export async function toggleGroupByKind() {
+  const wasChecked = await getGroupByKindChecked();
+  const kindCheckbox = await waitFor(KIND_CHECKBOX);
+
+  // Invoke `click()` directly on the checkbox to toggle while hidden.
+  await kindCheckbox.evaluate(checkbox => (checkbox as HTMLInputElement).click());
+
+  if (wasChecked) {
+    await waitFor(ISSUE);
+  } else {
+    await waitFor(KIND);
   }
 }

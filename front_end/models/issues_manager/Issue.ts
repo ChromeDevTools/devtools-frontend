@@ -12,6 +12,18 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
+   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   */
+  improvements: 'Improvements',
+  /**
+   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   */
+  pageErrors: 'Page Errors',
+  /**
+   *@description The kind of an issue (plural) (Issues are categorized into kinds).
+   */
+  breakingChanges: 'Breaking Changes',
+  /**
    *@description A description for a kind of issue we display in the issues tab.
    */
   pageErrorIssue: 'A page error issue: the page is not working correctly',
@@ -62,6 +74,17 @@ export enum IssueKind {
    * impair functionality in a major way.
    */
   Improvement = 'Improvement',
+}
+
+export function getIssueKindName(issueKind: IssueKind): Common.UIString.LocalizedString {
+  switch (issueKind) {
+    case IssueKind.BreakingChange:
+      return i18nString(UIStrings.breakingChanges);
+    case IssueKind.Improvement:
+      return i18nString(UIStrings.improvements);
+    case IssueKind.PageError:
+      return i18nString(UIStrings.pageErrors);
+  }
 }
 
 export function getIssueKindDescription(issueKind: IssueKind): Common.UIString.LocalizedString {

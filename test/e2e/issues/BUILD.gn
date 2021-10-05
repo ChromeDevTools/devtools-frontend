@@ -11,6 +11,7 @@ node_ts_library("issues") {
     "csp-violations-tab_test.ts",
     "generic-issues_test.ts",
     "group-by-categories_test.ts",
+    "group-by-kind_test.ts",
     "heavy-ad-issues_test.ts",
     "hidden-issues-row_test.ts",
     "hide-issues-menu_test.ts",

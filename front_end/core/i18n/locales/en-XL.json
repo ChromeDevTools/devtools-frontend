@@ -1343,11 +1343,20 @@
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "Â b́r̂éâḱîńĝ ćĥán̂ǵê íŝśûé: t̂h́ê ṕâǵê ḿâý ŝt́ôṕ ŵór̂ḱîńĝ ín̂ án̂ úp̂ćôḿîńĝ v́êŕŝíôń ôf́ Ĉh́r̂óm̂é"
   },
+  "models/issues_manager/Issue.ts | breakingChanges": {
+    "message": "B̂ŕêák̂ín̂ǵ Ĉh́âńĝéŝ"
+  },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Âń îḿp̂ŕôv́êḿêńt̂ íŝśûé: t̂h́êŕê íŝ án̂ óp̂ṕôŕt̂ún̂ít̂ý t̂ó îḿp̂ŕôv́ê t́ĥé p̂áĝé"
   },
+  "models/issues_manager/Issue.ts | improvements": {
+    "message": "Îḿp̂ŕôv́êḿêńt̂ś"
+  },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Â ṕâǵê ér̂ŕôŕ îśŝúê: t́ĥé p̂áĝé îś n̂ót̂ ẃôŕk̂ín̂ǵ ĉór̂ŕêćt̂ĺŷ"
+  },
+  "models/issues_manager/Issue.ts | pageErrors": {
+    "message": "P̂áĝé Êŕr̂ór̂ś"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Ĉól̂ór̂ án̂d́ ĉón̂t́r̂áŝt́ âćĉéŝśîb́îĺît́ŷ"
@@ -5018,8 +5027,14 @@
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Ĝŕôúp̂ b́ŷ ćât́êǵôŕŷ"
   },
+  "panels/issues/IssuesPane.ts | groupByKind": {
+    "message": "Ĝŕôúp̂ b́ŷ ḱîńd̂"
+  },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Ĝŕôúp̂ d́îśp̂ĺâýêd́ îśŝúêś ûńd̂ér̂ áŝśôćîát̂éd̂ ćât́êǵôŕîéŝ"
+  },
+  "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
+    "message": "Ĝŕôúp̂ d́îśp̂ĺâýêd́ îśŝúêś âś P̂áĝé êŕr̂ór̂ś, B̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ án̂d́ Îḿp̂ŕôv́êḿêńt̂ś"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Ĥéâv́ŷ Ád̂ś"

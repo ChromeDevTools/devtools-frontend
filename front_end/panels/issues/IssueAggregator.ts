@@ -309,6 +309,14 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return result;
   }
 
+  aggregatedIssueKinds(): Set<IssuesManager.Issue.IssueKind> {
+    const result = new Set<IssuesManager.Issue.IssueKind>();
+    for (const issue of this.aggregatedIssuesByKey.values()) {
+      result.add(issue.getKind());
+    }
+    return result;
+  }
+
   numberOfAggregatedIssues(): number {
     return this.aggregatedIssuesByKey.size;
   }

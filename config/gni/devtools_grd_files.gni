@@ -1003,6 +1003,7 @@ grd_files_debug_sources = [
   "front_end/panels/issues/GenericIssueDetailsView.js",
   "front_end/panels/issues/HiddenIssuesRow.js",
   "front_end/panels/issues/IssueAggregator.js",
+  "front_end/panels/issues/IssueKindView.js",
   "front_end/panels/issues/IssueRevealer.js",
   "front_end/panels/issues/IssueView.js",
   "front_end/panels/issues/IssuesPane.js",

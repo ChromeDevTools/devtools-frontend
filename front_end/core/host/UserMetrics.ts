@@ -576,7 +576,8 @@ export const DevtoolsExperiments: {
   'hideIssuesFeature': 48,
   'reportingApiDebugging': 49,
   'syncSettings': 50,
-  '__lastValidEnumPosition': 50,
+  'groupAndHideIssuesByKind': 51,
+  '__lastValidEnumPosition': 51,
 };
 
 export const IssueExpanded: {

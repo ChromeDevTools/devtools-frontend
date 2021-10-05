@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("issues") {
   testonly = true
   sources = [
+    "GenericIssue_test.ts",
     "IssueAggregator_test.ts",
     "LowContrastIssuesAggregation_test.ts",
     "TrustedWebActivityIssuesAggregation_test.ts",

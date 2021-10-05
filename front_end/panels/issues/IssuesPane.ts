@@ -91,6 +91,10 @@ const UIStrings = {
    *              browser behaviors.
    */
   quirksMode: 'Quirks Mode',
+  /**
+   * @description Category title for the different 'Generic' issues.
+   */
+  generic: 'Generic',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -131,6 +135,8 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
         return i18nString(UIStrings.attributionReporting);
       case IssuesManager.Issue.IssueCategory.QuirksMode:
         return i18nString(UIStrings.quirksMode);
+      case IssuesManager.Issue.IssueCategory.Generic:
+        return i18nString(UIStrings.generic);
       case IssuesManager.Issue.IssueCategory.Other:
         return i18nString(UIStrings.other);
     }

@@ -30,6 +30,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // eslint-disable-next-line rulesdir/const_enum
 export enum IssueCategory {
   CrossOriginEmbedderPolicy = 'CrossOriginEmbedderPolicy',
+  Generic = 'Generic',
   MixedContent = 'MixedContent',
   SameSiteCookie = 'SameSiteCookie',
   HeavyAd = 'HeavyAd',

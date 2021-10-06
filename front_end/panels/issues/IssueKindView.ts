@@ -3,11 +3,24 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import * as Components from './components/components.js';
+
+const UIStrings = {
+  /**
+    * @description Menu entry for hiding all current issues belonging to a particular kind.
+    * @example {Page Errors} PH1
+    */
+  hideAllCurrent: 'Hide all current {PH1}',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getGroupIssuesByKindSetting(): Common.Settings.Setting<boolean> {
   return Common.Settings.Settings.instance().createSetting('groupIssuesByKind', false);
@@ -77,9 +90,32 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     title.classList.add('title');
     title.textContent = IssuesManager.Issue.getIssueKindName(this.kind);
 
+    const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
+    hideAvailableIssuesBtn.classList.add('hide-available-issues');
+    hideAvailableIssuesBtn.data = {
+      menuItemLabel: i18nString(UIStrings.hideAllCurrent, {PH1: IssuesManager.Issue.getIssueKindName(this.kind)}),
+      menuItemAction: (): void => {
+        const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
+        const values = setting.get();
+        for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
+          if (issue.getKind() === this.kind) {
+            values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.Hidden;
+          }
+        }
+        setting.set(values);
+      },
+    };
+
     header.appendChild(issueKindIcon);
     header.appendChild(countAdorner);
     header.appendChild(title);
+    header.appendChild(hideAvailableIssuesBtn);
+    header.addEventListener('mouseenter', () => {
+      hideAvailableIssuesBtn.setVisible(true);
+    });
+    header.addEventListener('mouseleave', () => {
+      hideAvailableIssuesBtn.setVisible(false);
+    });
 
     this.listItemElement.appendChild(header);
   }

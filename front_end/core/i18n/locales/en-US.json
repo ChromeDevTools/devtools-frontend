@@ -4895,14 +4895,8 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Untrustworthy origin"
   },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Hide issues like this"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Hide issues menu"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Unhide issues like this"
+    "message": "Hide issues"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Header Value"
@@ -4997,6 +4991,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Unhide all"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Hide all current {PH1}"
+  },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP Violations"
   },
@@ -5078,6 +5075,9 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "blocked"
   },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Hide issues like this"
+  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Learn more: {PH1}"
   },
@@ -5092,6 +5092,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Restriction Status"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Unhide issues like this"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Warned"

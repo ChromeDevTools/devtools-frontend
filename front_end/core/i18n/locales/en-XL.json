@@ -4895,14 +4895,8 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
     "message": "Ûńt̂ŕûśt̂ẃôŕt̂h́ŷ ór̂íĝín̂"
   },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Ĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Ĥíd̂é îśŝúêś m̂én̂ú"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Ûńĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
+    "message": "Ĥíd̂é îśŝúêś"
   },
   "panels/issues/CorsIssueDetailsView.ts | allowCredentialsValueFromHeader": {
     "message": "Access-Control-Allow-Credentials Ĥéâd́êŕ V̂ál̂úê"
@@ -4997,6 +4991,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Ûńĥíd̂é âĺl̂"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Ĥíd̂é âĺl̂ ćûŕr̂én̂t́ {PH1}"
+  },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ĈŚP̂ V́îól̂át̂íôńŝ"
   },
@@ -5078,6 +5075,9 @@
   "panels/issues/IssueView.ts | blocked": {
     "message": "b̂ĺôćk̂éd̂"
   },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Ĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
+  },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "L̂éâŕn̂ ḿôŕê: {PH1}"
   },
@@ -5092,6 +5092,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "R̂éŝt́r̂íĉt́îón̂ Śt̂át̂úŝ"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Ûńĥíd̂é îśŝúêś l̂ík̂é t̂h́îś"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ŵár̂ńêd́"

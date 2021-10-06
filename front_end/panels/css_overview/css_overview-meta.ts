@@ -40,9 +40,10 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showCssOverview),
   title: i18nLazyString(UIStrings.cssOverview),
   order: 95,
+  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const CSSOverview = await loadCSSOverviewModule();
     return CSSOverview.CSSOverviewPanel.CSSOverviewPanel.instance();
   },
-  experiment: Root.Runtime.ExperimentName.CSS_OVERVIEW,
+  isPreviewFeature: true,
 });

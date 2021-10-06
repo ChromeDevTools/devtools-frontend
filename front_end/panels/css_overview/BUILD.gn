@@ -12,7 +12,6 @@ generate_css("css_files") {
     "cssOverviewCompletedView.css",
     "cssOverviewProcessingView.css",
     "cssOverviewSidebarPanel.css",
-    "cssOverviewStartView.css",
   ]
 }
 
@@ -26,7 +25,6 @@ devtools_module("css_overview") {
     "CSSOverviewPanel.ts",
     "CSSOverviewProcessingView.ts",
     "CSSOverviewSidebarPanel.ts",
-    "CSSOverviewStartView.ts",
     "CSSOverviewUnusedDeclarations.ts",
   ]
 
@@ -43,6 +41,7 @@ devtools_module("css_overview") {
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "./components:bundle",
   ]
 }
 

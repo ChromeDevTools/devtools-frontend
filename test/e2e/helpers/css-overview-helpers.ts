@@ -2,13 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor} from '../../shared/helper.js';
+import {$, click, waitFor, waitForNone} from '../../shared/helper.js';
 
-const OVERVIEW_TAB_SELECTOR = '#tab-cssoverview';
+import {openPanelViaMoreTools} from './settings-helpers.js';
 
-export async function navigateToCssOverviewTab(testName: string) {
-  await goToResource(`css_overview/${testName}.html`);
-  await click(OVERVIEW_TAB_SELECTOR);
-  // Make sure the css overview start view is shown
-  await waitFor('.overview-start-view');
+const CSS_OVERVIEW_PANEL_CONTENT = '.view-container[aria-label="CSS Overview panel"]';
+const CSS_OVERVIEW_TAB_SELECTOR = '#tab-cssoverview';
+const CSS_OVERVIEW_PANEL_TITLE = 'CSS Overview';
+const CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR = '.start-capture';
+const CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR = '.overview-completed-view';
+
+export async function navigateToCssOverviewTab() {
+  const cssOverviewTab = await $(CSS_OVERVIEW_TAB_SELECTOR);
+  if (!cssOverviewTab) {
+    await openCSSOverviewPanelFromMoreTools();
+  } else {
+    await click(CSS_OVERVIEW_TAB_SELECTOR);
+    await cssOverviewPanelContentIsLoaded();
+  }
+}
+
+export async function cssOverviewTabExists() {
+  await waitFor(CSS_OVERVIEW_TAB_SELECTOR);
+}
+
+export async function cssOverviewTabDoesNotExist() {
+  await waitForNone(CSS_OVERVIEW_TAB_SELECTOR);
+}
+
+export async function cssOverviewPanelContentIsLoaded() {
+  await waitFor(CSS_OVERVIEW_PANEL_CONTENT);
+}
+
+export async function openCSSOverviewPanelFromMoreTools() {
+  await openPanelViaMoreTools(CSS_OVERVIEW_PANEL_TITLE);
+  await cssOverviewTabExists();
+  await cssOverviewPanelContentIsLoaded();
+}
+
+export async function startCaptureCSSOverview() {
+  const captureButton = await waitFor(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
+  await captureButton.click();
+  await waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
 }

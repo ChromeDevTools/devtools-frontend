@@ -124,6 +124,7 @@ devtools_svg_sources = [
   "network_conditions_icon.svg",
   "network_panel_icon.svg",
   "node_search_icon.svg",
+  "preview_feature_video_thumbnail.svg",
   "refresh_12x12_icon.svg",
   "resizeDiagonal.svg",
   "resizeHorizontal.svg",

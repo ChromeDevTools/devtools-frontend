@@ -144,7 +144,7 @@
 }
 
 .color-picker {
-  visibility: hidden;
+  opacity: 0%;
 }
 
 .color-picker-label {

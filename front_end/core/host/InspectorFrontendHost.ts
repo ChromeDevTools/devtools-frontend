@@ -53,9 +53,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_RECORDED_HISTOGRAMS_SIZE = 100;
 
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
-  private readonly urlsBeingSaved: Map<string, string[]>;
+  readonly #urlsBeingSaved: Map<string, string[]>;
   events!: Common.EventTarget.EventTarget<EventTypes>;
-  private windowVisible?: boolean;
+  #windowVisible?: boolean;
 
   recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
   recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
@@ -71,7 +71,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     document.addEventListener('keydown', event => {
       stopEventPropagation.call(this, (event as KeyboardEvent));
     }, true);
-    this.urlsBeingSaved = new Map();
+    this.#urlsBeingSaved = new Map();
   }
 
   platform(): string {
@@ -89,11 +89,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   bringToFront(): void {
-    this.windowVisible = true;
+    this.#windowVisible = true;
   }
 
   closeWindow(): void {
-    this.windowVisible = false;
+    this.#windowVisible = false;
   }
 
   setIsDocked(isDocked: boolean, callback: () => void): void {
@@ -146,17 +146,17 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   save(url: string, content: string, forceSaveAs: boolean): void {
-    let buffer = this.urlsBeingSaved.get(url);
+    let buffer = this.#urlsBeingSaved.get(url);
     if (!buffer) {
       buffer = [];
-      this.urlsBeingSaved.set(url, buffer);
+      this.#urlsBeingSaved.set(url, buffer);
     }
     buffer.push(content);
     this.events.dispatchEventToListeners(Events.SavedURL, {url, fileSystemPath: url});
   }
 
   append(url: string, content: string): void {
-    const buffer = this.urlsBeingSaved.get(url);
+    const buffer = this.#urlsBeingSaved.get(url);
     if (buffer) {
       buffer.push(content);
       this.events.dispatchEventToListeners(Events.AppendedToURL, url);
@@ -164,8 +164,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   close(url: string): void {
-    const buffer = this.urlsBeingSaved.get(url) || [];
-    this.urlsBeingSaved.delete(url);
+    const buffer = this.#urlsBeingSaved.get(url) || [];
+    this.#urlsBeingSaved.delete(url);
     let fileName = '';
 
     if (url) {
@@ -357,10 +357,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 export let InspectorFrontendHostInstance: InspectorFrontendHostStub = window.InspectorFrontendHost;
 
 class InspectorFrontendAPIImpl {
-  private readonly debugFrontend: boolean;
+  readonly #debugFrontend: boolean;
 
   constructor() {
-    this.debugFrontend = (Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'))) ||
+    this.#debugFrontend = (Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'))) ||
         // @ts-ignore Compatibility hacks
         (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
@@ -371,7 +371,7 @@ class InspectorFrontendAPIImpl {
   }
 
   private dispatch(name: symbol, signature: string[], runOnceLoaded: boolean, ...params: string[]): void {
-    if (this.debugFrontend) {
+    if (this.#debugFrontend) {
       setTimeout(() => innerDispatch(), 0);
     } else {
       innerDispatch();

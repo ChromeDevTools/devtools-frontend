@@ -405,8 +405,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   private updateIssueKindViewsCount(): void {
     for (const view of this.kindViews.values()) {
-      const count =
-          this.issuesManager.numberOfIssues(view.getKind()) - this.issuesManager.numberOfHiddenIssues(view.getKind());
+      const count = this.issuesManager.numberOfIssues(view.getKind());
       view.update(count);
     }
   }
@@ -421,7 +420,7 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   private showIssuesTreeOrNoIssuesDetectedMessage(issuesCount: number, hiddenIssueCount: number): void {
-    if (issuesCount > 0) {
+    if (issuesCount > 0 || hiddenIssueCount > 0) {
       this.hiddenIssuesRow.hidden = hiddenIssueCount === 0;
       this.hiddenIssuesRow.update(hiddenIssueCount);
       this.issuesTree.element.hidden = false;

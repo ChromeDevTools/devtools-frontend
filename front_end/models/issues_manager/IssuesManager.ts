@@ -293,9 +293,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   numberOfIssues(kind?: IssueKind): number {
     if (kind) {
-      return this.issueCounts.get(kind) ?? 0;
+      return (this.issueCounts.get(kind) ?? 0) - this.numberOfHiddenIssues(kind);
     }
-    return this.filteredIssues.size;
+    return this.filteredIssues.size - this.numberOfHiddenIssues();
   }
 
   numberOfHiddenIssues(kind?: IssueKind): number {

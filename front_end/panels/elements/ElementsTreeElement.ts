@@ -676,9 +676,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   populateNodeContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     // Add free-form node-related actions.
     const isEditable = this.hasEditableNode();
+    // clang-format off
     if (isEditable && !this.editing) {
+      // Eagerly load CodeMirror to avoid a delay when opening the "Edit as HTML" editor when the user actually clicks on it
+      import('../../ui/components/text_editor/text_editor.js');
       contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this));
     }
+    // clang-format on
     const isShadowRoot = this.nodeInternal.isShadowRoot();
 
     const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);

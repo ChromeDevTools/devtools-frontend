@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as CSSOverviewComponents from './components/components.js';
 import cssOverviewStyles from './cssOverview.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -15,7 +16,6 @@ import {Events, OverviewController} from './CSSOverviewController.js';
 import type {GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewModel} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
-import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -24,7 +24,7 @@ let CSSOverviewPanelInstance: CSSOverviewPanel;
 export class CSSOverviewPanel extends UI.Panel.Panel {
   private readonly model: CSSOverviewModel;
   private readonly controller: OverviewController;
-  private readonly startView: CSSOverviewStartView;
+  private readonly startView: CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView;
   private readonly processingView: CSSOverviewProcessingView;
   private readonly completedView: CSSOverviewCompletedView;
   private backgroundColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
@@ -48,7 +48,9 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this.model = (model as CSSOverviewModel);
 
     this.controller = new OverviewController();
-    this.startView = new CSSOverviewStartView(this.controller);
+    this.startView = new CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView();
+    this.startView.addEventListener(
+        'overviewstartrequested', () => this.controller.dispatchEventToListeners(Events.RequestOverviewStart));
     this.processingView = new CSSOverviewProcessingView(this.controller);
     this.completedView = new CSSOverviewCompletedView(this.controller, model.target());
 
@@ -109,18 +111,19 @@ export class CSSOverviewPanel extends UI.Panel.Panel {
     this.processingView.hideWidget();
     this.completedView.hideWidget();
 
-    this.startView.show(this.contentElement);
+    this.contentElement.append(this.startView);
+    this.startView.show();
   }
 
   private renderOverviewStartedView(): void {
-    this.startView.hideWidget();
+    this.startView.hide();
     this.completedView.hideWidget();
 
     this.processingView.show(this.contentElement);
   }
 
   private renderOverviewCompletedView(): void {
-    this.startView.hideWidget();
+    this.startView.hide();
     this.processingView.hideWidget();
 
     this.completedView.show(this.contentElement);

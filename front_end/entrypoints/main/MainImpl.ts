@@ -252,8 +252,6 @@ export class MainImpl {
         'blackboxJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
-    Root.Runtime.experiments.register(
-        'cssOverview', 'CSS Overview', undefined, 'https://developer.chrome.com/blog/new-in-devtools-87/#css-overview');
     Root.Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
     Root.Runtime.experiments.register(

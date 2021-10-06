@@ -4,24 +4,18 @@
 
 import {assert} from 'chai';
 
-import {$$, enableExperiment, goToResource, waitFor, waitForAria} from '../../shared/helper.js';
+import {$$, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
+import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 
-const CSS_OVERVIEW_TAB_SELECTOR = '#tab-cssoverview';
 const CONTRAST_BUTTON_SELECTOR = '[data-type="contrast"]';
 const CONTRAST_ISSUE_IN_GRID_SELECTOR = '.contrast-container-in-grid';
 
 describe('CSS Overview experiment', async () => {
-  beforeEach(async () => {
-    await enableExperiment('cssOverview');
-  });
-
   it('can display low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
-    const tab = await waitFor(CSS_OVERVIEW_TAB_SELECTOR);
-    await tab.click();
-    const captureButton = await waitForAria('Capture overview');
-    await captureButton.click();
+    await navigateToCssOverviewTab();
+    await startCaptureCSSOverview();
     await waitFor(CONTRAST_BUTTON_SELECTOR);
     const contrastButtons = await $$(CONTRAST_BUTTON_SELECTOR);
     assert.strictEqual(2, contrastButtons.length, 'Wrong number of contrast issues found in CSS Overview');

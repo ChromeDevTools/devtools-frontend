@@ -545,7 +545,6 @@ export const DevtoolsExperiments: {
   'backgroundServicesPaymentHandler': 5,
   'backgroundServicesPushMessaging': 6,
   'blackboxJSFramesOnTimeline': 7,
-  'cssOverview': 8,
   'inputEventsOnTimelineOverview': 10,
   'liveHeapProfile': 11,
   'protocolMonitor': 13,

@@ -178,12 +178,14 @@ export class Settings {
 
   private storageFromType(storageType?: SettingStorageType): SettingsStorage {
     switch (storageType) {
-      case (SettingStorageType.Local):
+      case SettingStorageType.Local:
         return this.localStorage;
-      case (SettingStorageType.Session):
+      case SettingStorageType.Session:
         return this.sessionStorage;
-      case (SettingStorageType.Global):
+      case SettingStorageType.Global:
         return this.globalStorage;
+      case SettingStorageType.Synced:
+        return this.syncedStorage;
     }
     return this.globalStorage;
   }
@@ -1029,8 +1031,16 @@ export class VersionController {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum SettingStorageType {
+  /**
+   * Synced storage persists settings with the active Chrome profile but also
+   * syncs the settings across devices via Chrome Sync.
+   */
+  Synced = 'Synced',
+  /** Global storage persists settings with the active Chrome profile */
   Global = 'Global',
+  /** Uses Window.localStorage */
   Local = 'Local',
+  /** Session storage dies when DevTools window closes */
   Session = 'Session',
 }
 

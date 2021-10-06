@@ -209,13 +209,24 @@ export class MainImpl {
       localStorage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, storagePrefix);
     }
 
-    const hostStorage: Common.Settings.SettingsBackingStore = {
+    const hostUnsyncedStorage: Common.Settings.SettingsBackingStore = {
+      register: (name: string) =>
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerPreference(name, {synced: false}),
       set: Host.InspectorFrontendHost.InspectorFrontendHostInstance.setPreference,
       remove: Host.InspectorFrontendHost.InspectorFrontendHostInstance.removePreference,
       clear: Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences,
     };
-    const globalStorage = new Common.Settings.SettingsStorage(prefs, hostStorage, storagePrefix);
-    Common.Settings.Settings.instance({forceNew: true, syncedStorage: globalStorage, globalStorage, localStorage});
+    const hostSyncedStorage: Common.Settings.SettingsBackingStore = {
+      ...hostUnsyncedStorage,
+      register: (name: string) =>
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerPreference(name, {synced: true}),
+    };
+    // `prefs` is retrieved via `getPreferences` host binding and contains both synced and unsynced settings.
+    // As such, we use `prefs` to initialize both the synced and the global storage. This is fine as an individual
+    // setting can't change storage buckets during a single DevTools session.
+    const syncedStorage = new Common.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
+    const globalStorage = new Common.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
+    Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage});
 
     // @ts-ignore layout test global
     self.Common.settings = Common.Settings.Settings.instance();

@@ -105,6 +105,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.showWhatsNewAfterEachUpdate),
   settingName: 'help.show-release-note',
   settingType: Common.Settings.SettingType.BOOLEAN,

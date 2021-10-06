@@ -588,6 +588,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.theme),
   settingName: 'uiTheme',
   settingType: Common.Settings.SettingType.ENUM,
@@ -618,6 +619,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.panelLayout),
   settingName: 'sidebarPosition',
   settingType: Common.Settings.SettingType.ENUM,
@@ -643,6 +645,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.colorFormat),
   settingName: 'colorFormat',
   settingType: Common.Settings.SettingType.ENUM,
@@ -676,6 +679,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.enableCtrlShortcutToSwitchPanels),
   titleMac: i18nLazyString(UIStrings.enableShortcutToSwitchPanels),
   settingName: 'shortcutPanelSwitch',

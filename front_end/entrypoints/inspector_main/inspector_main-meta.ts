@@ -235,6 +235,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.disablePaused),
   settingName: 'disablePausedStateOverlay',
   settingType: Common.Settings.SettingType.BOOLEAN,

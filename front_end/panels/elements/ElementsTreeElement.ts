@@ -1015,6 +1015,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     // Append editor.
     this.listItemElement.appendChild(this.htmlEditElement);
+    this.htmlEditElement.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        event.consume(true);
+      }
+    });
 
     const TextEditor = await import('../../ui/components/text_editor/text_editor.js');
     const CodeMirror = await import('../../third_party/codemirror.next/codemirror.next.js');

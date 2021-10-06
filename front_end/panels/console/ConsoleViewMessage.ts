@@ -42,11 +42,11 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -1925,8 +1925,8 @@ export class ConsoleCommand extends ConsoleViewMessage {
     newContentElement.appendChild(this.formattedCommand);
 
     if (this.formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
-      const javascriptSyntaxHighlighter = new TextEditor.SyntaxHighlighter.SyntaxHighlighter('text/javascript', true);
-      javascriptSyntaxHighlighter.syntaxHighlightNode(this.formattedCommand).then(this.updateSearch.bind(this));
+      CodeHighlighter.CodeHighlighter.highlightNode(this.formattedCommand, 'text/javascript')
+          .then(this.updateSearch.bind(this));
     } else {
       this.updateSearch();
     }

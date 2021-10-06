@@ -75,6 +75,7 @@ devtools_module("elements") {
     "../../panels/event_listeners:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/adorners:bundle",
+    "../../ui/components/code_highlighter:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",

@@ -1554,7 +1554,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/source_frame/SourcesTextEditor.js",
   "front_end/ui/legacy/components/source_frame/XMLView.js",
   "front_end/ui/legacy/components/text_editor/CodeMirrorTextEditor.js",
-  "front_end/ui/legacy/components/text_editor/SyntaxHighlighter.js",
   "front_end/ui/legacy/components/text_editor/TextEditorAutocompleteController.js",
   "front_end/ui/legacy/components/text_editor/cm_modes.js",
   "front_end/ui/legacy/components/utils/ImagePreview.js",

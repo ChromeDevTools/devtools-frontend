@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
+    "CodeHighlighter_test.ts",
     "DataGridController_test.ts",
     "DataGridHelpers.ts",
     "DataGrid_test.ts",
@@ -25,6 +26,7 @@ ts_library("components") {
   deps = [
     "../../../../../front_end/core/platform:bundle",
     "../../../../../front_end/third_party/marked:bundle",
+    "../../../../../front_end/ui/components/code_highlighter:bundle",
     "../../../../../front_end/ui/components/data_grid:bundle",
     "../../../../../front_end/ui/components/expandable_list:bundle",
     "../../../../../front_end/ui/components/linkifier:bundle",

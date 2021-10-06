@@ -9,7 +9,6 @@ import("../../visibility.gni")
 devtools_module("text_editor") {
   sources = [
     "CodeMirrorTextEditor.ts",
-    "SyntaxHighlighter.ts",
     "TextEditorAutocompleteController.ts",
     "cm_modes.ts",
   ]

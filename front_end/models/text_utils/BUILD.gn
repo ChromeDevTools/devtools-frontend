@@ -42,6 +42,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/models/text_utils/*",
     "../../../test/unittests/front_end/panels/coverage/*",
     "../../entrypoints/*",
+    "../../legacy_test_runner/test_runner/*",
     "../../panels/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

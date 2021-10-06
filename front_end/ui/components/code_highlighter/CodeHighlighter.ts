@@ -37,8 +37,8 @@ export function getHighlightStyle(modCM: typeof CodeMirror): CodeMirror.Highligh
 
       {tag: t.inserted, class: 'token-inserted'},
       {tag: t.deleted, class: 'token-deleted'},
-      {tag: t.heading, class: 'token-variable-special'},
-      {tag: t.link, class: 'token-variable-special'},
+      {tag: t.heading, class: 'token-heading'},
+      {tag: t.link, class: 'token-link'},
       {tag: t.strikethrough, class: 'token-strikethrough'},
       {tag: t.strong, class: 'token-strong'},
       {tag: t.emphasis, class: 'token-emphasis'},
@@ -52,6 +52,22 @@ export async function create(code: string, mimeType: string): Promise<CodeHighli
   const language = await languageFromMIME(mimeType);
   const tree = language ? language.language.parser.parse(code) : new CM.Tree(CM.NodeType.none, [], [], code.length);
   return new CodeHighlighter(code, tree, CM);
+}
+
+export async function highlightNode(node: Element, mimeType: string): Promise<void> {
+  const code = node.textContent || '';
+  const highlighter = await create(code, mimeType);
+  node.removeChildren();
+  highlighter.highlight((text, style) => {
+    let token: Node = document.createTextNode(text);
+    if (style) {
+      const span = document.createElement('span');
+      span.className = style;
+      span.appendChild(token);
+      token = span;
+    }
+    node.appendChild(token);
+  });
 }
 
 export async function languageFromMIME(mimeType: string): Promise<CodeMirror.LanguageSupport|null> {

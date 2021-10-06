@@ -4,8 +4,10 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
+
 import treeOutlineStyles from './treeOutline.css.js';
 
 import type {TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
@@ -119,7 +121,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   connectedCallback(): void {
     this.setTopLevelNodeBorderColorCSSVariable(this.getAttribute('toplevelbordercolor'));
     this.setNodeKeyNoWrapCSSVariable(this.getAttribute('nowrap'));
-    this.shadow.adoptedStyleSheets = [treeOutlineStyles];
+    this.shadow.adoptedStyleSheets = [treeOutlineStyles, CodeHighlighter.Style.default];
   }
 
   get data(): TreeOutlineData<TreeNodeDataType> {

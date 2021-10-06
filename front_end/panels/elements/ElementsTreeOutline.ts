@@ -35,6 +35,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
@@ -105,7 +106,8 @@ export class ElementsTreeOutline extends
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
     this.shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        shadowContainer, {cssFile: [elementsTreeOutlineStyles], delegatesFocus: undefined});
+        shadowContainer,
+        {cssFile: [elementsTreeOutlineStyles, CodeHighlighter.Style.default], delegatesFocus: undefined});
     const outlineDisclosureElement = this.shadowRoot.createChild('div', 'elements-disclosure');
 
     this.elementInternal = this.element;

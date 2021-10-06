@@ -29,8 +29,5 @@ TextEditor.TextEditorBookMark = TextEditorModule.CodeMirrorTextEditor.TextEditor
 TextEditor.CodeMirrorTextEditorFactory = TextEditorModule.CodeMirrorTextEditor.CodeMirrorTextEditorFactory;
 
 /** @constructor */
-TextEditor.SyntaxHighlighter = TextEditorModule.SyntaxHighlighter.SyntaxHighlighter;
-
-/** @constructor */
 TextEditor.TextEditorAutocompleteController =
     TextEditorModule.TextEditorAutocompleteController.TextEditorAutocompleteController;

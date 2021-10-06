@@ -25,5 +25,6 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = default_components_visibility
+  visibility = [ "../../../legacy_test_runner/*" ]
+  visibility += default_components_visibility
 }

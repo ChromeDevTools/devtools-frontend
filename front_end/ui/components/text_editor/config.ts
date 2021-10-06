@@ -57,7 +57,11 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.k
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
+export const autocompletion = DynamicSetting.bool('textEditorAutocompletion', CM.autocompletion());
+
 export const bracketMatching = DynamicSetting.bool('textEditorBracketMatching', CM.bracketMatching());
+
+export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [CM.foldGutter(), CM.keymap.of(CM.foldKeymap)]);
 
 export function guessIndent(doc: CM.Text): string {
   const values: {[indent: string]: number} = Object.create(null);
@@ -160,6 +164,7 @@ function detectLineSeparator(text: string): CM.Extension {
 }
 
 const baseKeymap = CM.keymap.of([
+  {key: 'Tab', run: CM.acceptCompletion},
   {key: 'Ctrl-m', run: CM.cursorMatchingBracket, shift: CM.selectMatchingBracket},
   {key: 'Mod-/', run: CM.toggleComment},
   {key: 'Mod-d', run: CM.selectNextOccurrence},
@@ -194,6 +199,7 @@ export function baseConfiguration(text: string): CM.Extension {
     indentUnit,
     CM.Prec.fallback(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     detectLineSeparator(text),
+    autocompletion,
     CM.tooltips({position: 'absolute'}),
   ];
 }

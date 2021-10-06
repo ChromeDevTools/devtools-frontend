@@ -98,6 +98,17 @@ export const editorTheme = CM.EditorView.theme({
     color: 'var(--color-text-secondary)',
   },
 
+  '.cm-argumentHints': {
+    pointerEvents: 'none',
+    padding: '0 4px',
+    whiteSpace: 'nowrap',
+    lineHeight: '20px',
+    marginBottom: '4px',
+    boxShadow: 'var(--drop-shadow)',
+    backgroundColor: 'var(--color-background)',
+    width: 'fit-content',
+  },
+
   '.cm-highlightedLine': {
     animation: 'cm-fading-highlight 2s 0s',
   },

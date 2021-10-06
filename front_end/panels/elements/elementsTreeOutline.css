@@ -314,10 +314,6 @@ select {
 }
 /** Guide line */
 
-li.selected {
-  z-index: 0;
-}
-
 li.hovered:not(.always-parent) + ol.children,
 .elements-tree-outline ol.shadow-root,
 li.selected:not(.always-parent) + ol.children {

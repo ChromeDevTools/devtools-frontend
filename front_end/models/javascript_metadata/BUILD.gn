@@ -24,6 +24,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/models/javascript_metadata/*",
+    "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
   ]
 

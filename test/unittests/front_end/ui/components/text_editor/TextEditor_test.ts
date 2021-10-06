@@ -74,4 +74,65 @@ describeWithEnvironment('TextEditor', () => {
       Common.Settings.Settings.instance().moduleSetting('textEditorIndent').set('    ');
     });
   });
+
+  describe('autocompletion', () => {
+    it('can complete builtins and keywords', async () => {
+      const state = makeState('c', (await CodeMirror.javascript()).javascriptLanguage);
+      const result =
+          await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
+      assert.isNotNull(result);
+      const completions = result ? result.options : [];
+      assert.isTrue(completions.some(o => o.label === 'clear'));
+      assert.isTrue(completions.some(o => o.label === 'continue'));
+    });
+
+    async function testQueryType(
+        code: string,
+        pos: number,
+        type?: TextEditor.JavaScript.QueryType,
+        range: string = '',
+        related?: string,
+        ): Promise<void> {
+      const state = makeState(code, (await CodeMirror.javascript()).javascriptLanguage);
+      const query = TextEditor.JavaScript.getQueryType(CodeMirror.syntaxTree(state), pos);
+      if (type === undefined) {
+        assert.isNull(query);
+      } else {
+        assert.isNotNull(query);
+        if (query) {
+          assert.strictEqual(query.type, type);
+          assert.strictEqual(code.slice(query.from ?? pos, pos), range);
+          assert.strictEqual(query.relatedNode && code.slice(query.relatedNode.from, query.relatedNode.to), related);
+        }
+      }
+    }
+
+    it('recognizes expression queries', async () => {
+      await testQueryType('foo', 3, TextEditor.JavaScript.QueryType.Expression, 'foo');
+      await testQueryType('foo ', 4, TextEditor.JavaScript.QueryType.Expression, '');
+    });
+
+    it('recognizes propery name queries', async () => {
+      await testQueryType('foo.bar', 7, TextEditor.JavaScript.QueryType.PropertyName, 'bar', 'foo.bar');
+      await testQueryType('foo.', 4, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
+      await testQueryType('if (foo.', 8, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
+      await testQueryType('foo.', 4, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
+      await testQueryType('foo.\n', 5, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo.');
+      await testQueryType('new foo.bar().', 14, TextEditor.JavaScript.QueryType.PropertyName, '', 'new foo.bar().');
+      await testQueryType('foo?.', 5, TextEditor.JavaScript.QueryType.PropertyName, '', 'foo?.');
+      await testQueryType('foo?.b', 6, TextEditor.JavaScript.QueryType.PropertyName, 'b', 'foo?.b');
+    });
+
+    it('recognizes property expression queries', async () => {
+      await testQueryType('foo[', 4, TextEditor.JavaScript.QueryType.PropertyExpression, '', 'foo[');
+      await testQueryType('foo[ ', 5, TextEditor.JavaScript.QueryType.PropertyExpression, '', 'foo[');
+      await testQueryType('foo["ba', 7, TextEditor.JavaScript.QueryType.PropertyExpression, '"ba', 'foo["ba');
+    });
+
+    it('does not complete in inappropriate places', async () => {
+      await testQueryType('"foo bar"', 4);
+      await testQueryType('x["foo" + "bar', 14);
+      await testQueryType('// comment', 10);
+    });
+  });
 });

@@ -1423,6 +1423,8 @@ grd_files_debug_sources = [
   "front_end/ui/components/survey_link/surveyLink.css.js",
   "front_end/ui/components/text_editor/TextEditor.js",
   "front_end/ui/components/text_editor/config.js",
+  "front_end/ui/components/text_editor/cursor_tooltip.js",
+  "front_end/ui/components/text_editor/javascript.js",
   "front_end/ui/components/text_editor/theme.js",
   "front_end/ui/components/text_prompt/TextPrompt.js",
   "front_end/ui/components/text_prompt/textPrompt.css.js",

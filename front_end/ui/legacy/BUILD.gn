@@ -151,6 +151,7 @@ devtools_entrypoint("bundle") {
     "../components/data_grid:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
+    "../components/text_editor/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

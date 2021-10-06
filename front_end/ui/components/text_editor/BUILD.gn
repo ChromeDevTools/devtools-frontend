@@ -10,6 +10,8 @@ devtools_module("text_editor") {
   sources = [
     "TextEditor.ts",
     "config.ts",
+    "cursor_tooltip.ts",
+    "javascript.ts",
     "theme.ts",
   ]
 
@@ -17,6 +19,10 @@ devtools_module("text_editor") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../../core/sdk:bundle",
+    "../../../models/formatter:bundle",
+    "../../../models/javascript_metadata:bundle",
+    "../../legacy:bundle",
     "../../lit-html:bundle",
     "../code_highlighter:bundle",
     "../helpers:bundle",

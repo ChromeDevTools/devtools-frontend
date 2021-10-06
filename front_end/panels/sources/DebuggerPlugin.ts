@@ -899,20 +899,21 @@ export class DebuggerPlugin extends Plugin {
       preferLogpoint?: boolean): Promise<void> {
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = document.createElement('div');
-    const dialog = new BreakpointEditDialog(editorLineNumber, oldCondition, Boolean(preferLogpoint), async result => {
-      dialog.detach();
-      this.textEditor.removeDecoration(decorationElement, editorLineNumber);
-      if (!result.committed) {
-        return;
-      }
-      if (breakpoint) {
-        breakpoint.setCondition(result.condition);
-      } else if (location) {
-        await this.setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
-      } else {
-        await this.createNewBreakpoint(editorLineNumber, result.condition, true);
-      }
-    });
+    const dialog =
+        await BreakpointEditDialog.create(editorLineNumber, oldCondition, Boolean(preferLogpoint), async result => {
+          dialog.detach();
+          this.textEditor.removeDecoration(decorationElement, editorLineNumber);
+          if (!result.committed) {
+            return;
+          }
+          if (breakpoint) {
+            breakpoint.setCondition(result.condition);
+          } else if (location) {
+            await this.setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
+          } else {
+            await this.createNewBreakpoint(editorLineNumber, result.condition, true);
+          }
+        });
     this.textEditor.addDecoration(decorationElement, editorLineNumber);
     dialog.markAsExternallyManaged();
     dialog.show(decorationElement);

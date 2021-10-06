@@ -23,6 +23,7 @@
 
 .CodeMirror-linewidget {
   overflow: visible !important; /* stylelint-disable-line declaration-no-important */
+  z-index: 100;
 }
 
 .CodeMirror-gutter-performance {

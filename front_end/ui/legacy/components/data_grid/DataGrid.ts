@@ -191,8 +191,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const headerContainer = this.element.createChild('div', 'header-container');
     this.headerTable = headerContainer.createChild('table', 'header');
-    // Hide the header table from screen readers since titles are also added to data table.
-    UI.ARIAUtils.markAsHidden(this.headerTable);
     this.headerTableHeaders = {};
     this.scrollContainerInternal = this.element.createChild('div', 'data-container');
     this.dataTable = this.scrollContainerInternal.createChild('table', 'data');

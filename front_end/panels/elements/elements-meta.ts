@@ -450,6 +450,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ADORNER,
+  storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'adornerSettings',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],

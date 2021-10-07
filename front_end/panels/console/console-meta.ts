@@ -222,6 +222,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.hideNetworkMessages),
   settingName: 'hideNetworkMessages',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -240,6 +241,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.selectedContextOnly),
   settingName: 'selectedContextFilterEnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -258,6 +260,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.logXmlhttprequests),
   settingName: 'monitoringXHREnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -266,6 +269,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.showTimestamps),
   settingName: 'consoleTimestampsEnabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -338,6 +342,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.eagerEvaluation),
   settingName: 'consoleEagerEval',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -356,6 +361,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.evaluateTriggersUserActivation),
   settingName: 'consoleUserActivationEval',
   settingType: Common.Settings.SettingType.BOOLEAN,

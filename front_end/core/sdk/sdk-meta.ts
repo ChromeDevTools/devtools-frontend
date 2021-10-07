@@ -344,6 +344,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.preserveLogUponNavigation),
   settingName: 'preserveConsoleLog',
   settingType: Common.Settings.SettingType.BOOLEAN,

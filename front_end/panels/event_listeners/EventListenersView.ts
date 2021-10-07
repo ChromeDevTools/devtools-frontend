@@ -389,4 +389,13 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
     return false;
   }
+
+  ondelete(): boolean {
+    if (this.eventListenerInternal.canRemove()) {
+      this.removeListener();
+      return true;
+    }
+
+    return false;
+  }
 }

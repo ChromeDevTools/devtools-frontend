@@ -19,6 +19,12 @@ const UIStrings = {
   */
   origin: 'Origin',
   /**
+   *@description Label for `trialName` field in a parsed Origin Trial Token.
+   * This field is only shown when token has unknown trial name as the token
+   * will be put into 'UNKNOWN' group.
+   */
+  trialName: 'Trial Name',
+  /**
    *@description Label for `expiryTime` field in a parsed Origin Trial Token.
    */
   expiryTime: 'Expiry Time',
@@ -257,6 +263,16 @@ export class OriginTrialTokenRows extends HTMLElement {
         value: this.renderTokenField(this.tokenWithStatus.parsedToken.matchSubDomains.toString()),
       },
     ];
+
+    if (this.tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.UnknownTrial) {
+      this.parsedTokenDetails = [
+        {
+          name: i18nString(UIStrings.trialName),
+          value: this.renderTokenField(this.tokenWithStatus.parsedToken.trialName),
+        },
+        ...this.parsedTokenDetails,
+      ];
+    }
   }
 
   private render(): void {

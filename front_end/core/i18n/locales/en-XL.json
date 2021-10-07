@@ -2612,6 +2612,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} t̂ók̂én̂ś"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "T̂ŕîál̂ Ńâḿê"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ûśâǵê Ŕêśt̂ŕîćt̂íôń"
   },

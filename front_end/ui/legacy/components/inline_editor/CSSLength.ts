@@ -54,6 +54,7 @@ export class CSSLength extends HTMLElement {
   private onUnitChange(event: Event): void {
     this.length.unit = (event.target as HTMLInputElement).value as LengthUnit;
     this.dispatchEvent(new ValueChangedEvent(`${this.length.value}${this.length.unit}`));
+    this.dispatchEvent(new DraggingFinishedEvent());
     this.render();
   }
 

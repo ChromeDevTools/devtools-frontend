@@ -55,11 +55,11 @@ export class TextPrompt extends HTMLElement {
   }
 
   private input(): HTMLInputElement {
-    const inputElement = this.shadow.querySelector('input');
+    const inputElement = this.shadow.querySelector<HTMLInputElement>('input');
     if (!inputElement) {
       throw new Error('Expected an input element!');
     }
-    return /** @type {!HTMLInputElement} */ inputElement as HTMLInputElement;
+    return inputElement;
   }
 
   moveCaretToEndOfInput(): void {
@@ -67,11 +67,7 @@ export class TextPrompt extends HTMLElement {
   }
 
   onInput(): void {
-    const suggestionElement = this.shadow.querySelector('.suggestion');
-    if (suggestionElement) {
-      suggestionElement.textContent = this.text();
-    }
-
+    this.suggestion().textContent = this.text();
     this.dispatchEvent(new PromptInputEvent(this.text().trim()));
   }
 
@@ -107,10 +103,20 @@ export class TextPrompt extends HTMLElement {
 
   setText(text: string): void {
     this.input().value = text;
+    this.suggestion().textContent = this.text();
+
     if (this.input().hasFocus()) {
       this.moveCaretToEndOfInput();
       this.input().scrollIntoView();
     }
+  }
+
+  private suggestion(): HTMLSpanElement {
+    const suggestionElement = this.shadow.querySelector<HTMLSpanElement>('.suggestion');
+    if (!suggestionElement) {
+      throw new Error('Expected an suggestion element!');
+    }
+    return suggestionElement;
   }
 
   private text(): string {

@@ -68,23 +68,23 @@ export class QuickOpenImpl {
 
   private async queryChanged(query: string): Promise<void> {
     const prefix = this.prefixes.find(prefix => query.startsWith(prefix));
-    if (typeof prefix !== 'string' || this.prefix === prefix) {
-      if (query !== prefix && this.filteredListWidget) {
-        this.filteredListWidget.setCommandSuggestion('');
-      }
+    if (typeof prefix !== 'string') {
       return;
     }
 
-    this.prefix = prefix;
     if (!this.filteredListWidget) {
       return;
     }
     this.filteredListWidget.setPrefix(prefix);
     const titlePrefixFunction = this.providers.get(prefix)?.titlePrefix;
     this.filteredListWidget.setCommandPrefix(titlePrefixFunction ? titlePrefixFunction() : '');
-    const titleSuggestionFunction = this.providers.get(prefix)?.titleSuggestion;
+    const titleSuggestionFunction = (query === prefix) && this.providers.get(prefix)?.titleSuggestion;
     this.filteredListWidget.setCommandSuggestion(titleSuggestionFunction ? titleSuggestionFunction() : '');
 
+    if (this.prefix === prefix) {
+      return;
+    }
+    this.prefix = prefix;
     this.filteredListWidget.setProvider(null);
     const providerFunction = this.providers.get(prefix)?.provider;
     if (!providerFunction) {

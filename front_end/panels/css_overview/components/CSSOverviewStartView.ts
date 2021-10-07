@@ -76,6 +76,15 @@ export class OverviewStartRequestedEvent extends Event {
 export class CSSOverviewStartView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-overview-start-view`;
   private readonly shadow = this.attachShadow({mode: 'open'});
+  #feedbackLink: HTMLAnchorElement;
+
+  constructor() {
+    super();
+    this.#feedbackLink = document.createElement('a');
+    this.#feedbackLink.href = FEEDBACK_LINK;
+    this.#feedbackLink.target = '_blank';
+    this.#feedbackLink.innerText = i18nString(UIStrings.feedbackInline);
+  }
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
@@ -97,11 +106,6 @@ export class CSSOverviewStartView extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    const feedbackLink = document.createElement('a');
-    feedbackLink.href = FEEDBACK_LINK;
-    feedbackLink.target ='_blank';
-    feedbackLink.innerText = i18nString(UIStrings.feedbackInline);
-
     render(html`
       <div class="css-overview-start-view">
         <h1 class="summary-header">${i18nString(UIStrings.identifyCSSImprovements)}</h1>
@@ -128,7 +132,7 @@ export class CSSOverviewStartView extends HTMLElement {
               } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
               ${i18nString(UIStrings.previewFeature)}
           </h1>
-          <div class="feedback-prompt">${i18n.i18n.getFormatLocalizedString(str_, UIStrings.activelyWorkingAndLookingForS, {PH1: feedbackLink})}</div>
+          <div class="feedback-prompt">${i18n.i18n.getFormatLocalizedString(str_, UIStrings.activelyWorkingAndLookingForS, {PH1: this.#feedbackLink})}</div>
           <div class="resources">
             <div class="thumbnail-wrapper">
               <${IconButton.Icon.Icon.litTagName} .data=${{

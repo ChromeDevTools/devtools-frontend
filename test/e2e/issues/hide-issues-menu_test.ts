@@ -176,7 +176,8 @@ describe('Hide issues menu', async () => {
 });
 
 describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
-  it('should be appended to the issue kinds group header', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1175722] should be appended to the issue kinds group header', async () => {
     await enableExperiment('groupAndHideIssuesByKind');
     await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
@@ -190,7 +191,8 @@ describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
     assert.isNotNull(hideIssuesMenu);
   });
 
-  it('should hide all available issues upon click menu entry', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1175722] should hide all available issues upon click menu entry', async () => {
     await enableExperiment('groupAndHideIssuesByKind');
     await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');

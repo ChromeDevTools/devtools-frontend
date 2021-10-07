@@ -10,7 +10,6 @@ import {getGroupByKindChecked, getHiddenIssuesRow, getHiddenIssuesRowBody, getHi
 
 describe('Hide issues menu', async () => {
   it('should be appended to the issue header', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
@@ -22,7 +21,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should become visible on hovering over the issue header', async () => {
-    await enableExperiment('hideIssuesFeature');
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {
       const issue = {
@@ -51,7 +49,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should open a context menu upon clicking', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('empty.html');
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {
@@ -78,7 +75,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should hide issue upon clicking the context menu entry', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 
@@ -96,7 +92,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should unhide all issues upon clicking unhide all issues button', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
@@ -115,7 +110,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should contain unhide issues like this entry while hovering over a hidden issue', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
@@ -144,7 +138,6 @@ describe('Hide issues menu', async () => {
   });
 
   it('should unhide issue after clicking the unhide issues like this entry', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
@@ -176,10 +169,11 @@ describe('Hide issues menu', async () => {
 });
 
 describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
-  // Flaky test
-  it.skip('[crbug.com/1175722] should be appended to the issue kinds group header', async () => {
+  beforeEach(async () => {
     await enableExperiment('groupAndHideIssuesByKind');
-    await enableExperiment('hideIssuesFeature');
+  });
+
+  it('should be appended to the issue kinds group header', async () => {
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     if (!await getGroupByKindChecked()) {
@@ -191,10 +185,7 @@ describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
     assert.isNotNull(hideIssuesMenu);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1175722] should hide all available issues upon click menu entry', async () => {
-    await enableExperiment('groupAndHideIssuesByKind');
-    await enableExperiment('hideIssuesFeature');
+  it('should hide all available issues upon click menu entry', async () => {
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
     if (!await getGroupByKindChecked()) {

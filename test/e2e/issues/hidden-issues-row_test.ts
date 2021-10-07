@@ -4,13 +4,12 @@
 
 import {assert} from 'chai';
 
-import {assertNotNullOrUndefined, enableExperiment, goToResource, waitFor} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getHiddenIssuesRow, getHiddenIssuesRowBody, getHideIssuesMenu, getHideIssuesMenuItem, getIssueHeaderByTitle, ISSUE, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
 describe('Hide issues row', async () => {
   it('should be visible after hiding an issue', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 
@@ -29,7 +28,6 @@ describe('Hide issues row', async () => {
     assert.isFalse(isHidden);
   });
   it('should expand after clicking', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 
@@ -54,7 +52,6 @@ describe('Hide issues row', async () => {
   });
 
   it('should contain issue after clicking', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 
@@ -81,7 +78,6 @@ describe('Hide issues row', async () => {
   });
 
   it('should contain Unhide all issues button', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 
@@ -103,7 +99,6 @@ describe('Hide issues row', async () => {
   });
 
   it('should get hidden and unhide all issues upon clicking unhide all issues button', async () => {
-    await enableExperiment('hideIssuesFeature');
     await goToResource('issues/sab-issue.rawresponse');
     await navigateToIssuesTab();
 

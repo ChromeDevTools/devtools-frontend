@@ -53,4 +53,8 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/legacy/suggestBox.css',
   'ui/legacy/treeoutline.css',
   'ui/legacy/softContextMenu.css',
+  'ui/legacy/splitWidget.css',
+  'ui/legacy/components/source_frame/jsonView.css',
+  'ui/legacy/searchableView.css',
+  'ui/legacy/toolbar.css',
 ];

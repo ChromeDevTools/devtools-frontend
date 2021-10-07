@@ -6,6 +6,9 @@ import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
+copy_to_gen("legacy_css") {
+  sources = [ "jsonView.css" ]
+}
 devtools_module("source_frame") {
   sources = [
     "BinaryResourceViewFactory.ts",

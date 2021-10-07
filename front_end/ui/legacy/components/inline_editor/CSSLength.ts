@@ -81,15 +81,16 @@ export class CSSLength extends HTMLElement {
     if (targetDocument) {
       targetDocument.addEventListener('mousemove', this.onDraggingValue, {capture: true});
       targetDocument.addEventListener('mouseup', (event: MouseEvent) => {
+        targetDocument.removeEventListener('mousemove', this.onDraggingValue, {capture: true});
+
         if (!this.isDraggingValue) {
           return;
         }
 
         event.preventDefault();
         event.stopPropagation();
-        targetDocument.removeEventListener('mousemove', this.onDraggingValue, {capture: true});
         this.isDraggingValue = false;
-        this.dispatchEvent(new ValueChangedEvent(`${this.length.value}${this.length.unit}`));
+        this.dispatchEvent(new DraggingFinishedEvent());
       }, {once: true, capture: true});
     }
   }

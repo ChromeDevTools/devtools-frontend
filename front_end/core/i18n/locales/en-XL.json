@@ -2336,8 +2336,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé Ŝt́ât́ûś"
   },
-  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
-    "message": "T̂h́ê ĺâśt̂ ńâv́îǵât́îón̂ ẃâś n̂ót̂ ćâćĥéd̂ b́êćâúŝé"
+  "panels/application/BackForwardCacheView.ts | circumstantial": {
+    "message": "N̂ót̂ Áĉt́îón̂áb̂ĺê"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "L̂áŝt́ M̂áîń F̂ŕâḿê Ńâv́îǵât́îón̂"
@@ -2346,13 +2346,16 @@
     "message": "M̂áîń F̂ŕâḿê"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "N̂ór̂ḿâĺ n̂áv̂íĝát̂íôń"
+    "message": "N̂ór̂ḿâĺ n̂áv̂íĝát̂íôń (N̂ót̂ ŕêśt̂ór̂éd̂ f́r̂óm̂ b́âćk̂-f́ôŕŵár̂d́ ĉáĉh́ê)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "F̂éât́ûŕêś p̂ŕêv́êńt̂ín̂ǵ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé"
+    "message": "Âćt̂íôńâb́l̂é"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "R̂éŝt́ôŕêd́ f̂ŕôḿ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPending": {
+    "message": "P̂én̂d́îńĝ Śûṕp̂ór̂t́"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"
@@ -2362,9 +2365,6 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "ÛŔL̂"
-  },
-  "panels/application/BackForwardCacheView.ts | willBeSupported": {
-    "message": "(Ŝúp̂ṕôŕt̂éd̂ ín̂ á f̂út̂úr̂é v̂ér̂śîón̂ óf̂ Ćĥŕôḿê)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "B̂áĉḱĝŕôún̂d́ F̂ét̂ćĥ"

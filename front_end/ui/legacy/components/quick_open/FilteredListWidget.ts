@@ -84,6 +84,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.itemElementsContainer.classList.add('container');
     this.bottomElementsContainer.appendChild(this.itemElementsContainer);
     this.itemElementsContainer.addEventListener('click', this.onClick.bind(this), false);
+    this.itemElementsContainer.addEventListener('mouseover', this.onMouseOver.bind(this), false);
     UI.ARIAUtils.markAsListBox(this.itemElementsContainer);
     UI.ARIAUtils.setControls(this.inputBoxElement, this.itemElementsContainer);
     UI.ARIAUtils.setAutocomplete(this.inputBoxElement, UI.ARIAUtils.AutocompleteInteractionModel.list);
@@ -304,6 +305,14 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     if (this.dialog) {
       this.dialog.hide();
     }
+  }
+
+  private onMouseOver(event: Event): void {
+    const item = this.list.itemForNode((event.target as Node | null));
+    if (item === null) {
+      return;
+    }
+    this.list.selectItem(item);
   }
 
   setQuery(query: string): void {

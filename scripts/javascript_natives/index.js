@@ -51,28 +51,33 @@ function parseTSFunction(func, node) {
   storeMethod(node.name.text, func.name.escapedText, args);
 }
 
-glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD}, function(er, files) {
-  for (const file of files) {
-    if (file.includes('testing')) {
-      continue;
-    }
-    const data = fs.readFileSync(path.join(process.env.PWD, file), 'utf8');
-    const lines = data.split('\n');
-    const newLines = [];
-    for (line of lines) {
-      if (!line.includes(' attribute ')) {
-        newLines.push(line);
-      }
-    }
+// Assume the DevTools front-end repository is at
+// `devtools/devtools-frontend`, where `devtools` is on the same level
+// as `chromium`. This matches `scripts/npm_test.js`.
+glob(
+    '../../../../chromium/src/third_party/blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PWD},
+    function(er, files) {
+      for (const file of files) {
+        if (file.includes('testing')) {
+          continue;
+        }
+        const data = fs.readFileSync(path.join(process.env.PWD, file), 'utf8');
+        const lines = data.split('\n');
+        const newLines = [];
+        for (const line of lines) {
+          if (!line.includes(' attribute ')) {
+            newLines.push(line);
+          }
+        }
 
-    try {
-      WebIDL2.parse(newLines.join('\n')).forEach(walk);
-    } catch (e) {
-      // console.error(file);
-    }
-  }
-  WebIDL2
-      .parse(`
+        try {
+          WebIDL2.parse(newLines.join('\n')).forEach(walk);
+        } catch (e) {
+          // console.error(file);
+        }
+      }
+      WebIDL2
+          .parse(`
   namespace console {
     void assert(optional boolean condition = false, any... data);
     void clear();
@@ -96,8 +101,8 @@ glob('../../../../blink/renderer/+(core|modules)/**/*.idl', {cwd: process.env.PW
     void warn(any... data);
   };
 `).forEach(walk);
-  postProcess();
-});
+      postProcess();
+    });
 
 function walk(thing, parent) {
   if (thing.type === 'interface') {
@@ -215,11 +220,12 @@ function postProcess() {
   }
 
   fs.writeFileSync(
-      path.join(__dirname, '..', '..', 'front_end', 'javascript_metadata', 'NativeFunctions.js'),
+      path.join(__dirname, '..', '..', 'front_end', 'models', 'javascript_metadata', 'NativeFunctions.js'),
       `// Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // Generated from ${path.relative(path.join(__dirname, '..', '..'), __filename)}
-export const NativeFunctions = ${JSON.stringify(functions)};
+
+export const NativeFunctions = ${JSON.stringify(functions, null, 2)};
 `);
 }

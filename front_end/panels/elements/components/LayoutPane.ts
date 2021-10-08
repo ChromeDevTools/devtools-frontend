@@ -251,7 +251,7 @@ export class LayoutPane extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`<div class="element">
-      <label data-element="true" class="checkbox-label" title=${element.name}>
+      <label data-element="true" class="checkbox-label">
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} />
         <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
           <${NodeText.litTagName} .data=${{

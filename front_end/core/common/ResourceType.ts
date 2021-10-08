@@ -170,17 +170,17 @@ const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIString
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ResourceType {
-  private readonly nameInternal: string;
-  private readonly titleInternal: () => Platform.UIString.LocalizedString;
-  private readonly categoryInternal: ResourceCategory;
-  private readonly isTextTypeInternal: boolean;
+  readonly #nameInternal: string;
+  readonly #titleInternal: () => Platform.UIString.LocalizedString;
+  readonly #categoryInternal: ResourceCategory;
+  readonly #isTextTypeInternal: boolean;
 
   constructor(
       name: string, title: () => Platform.UIString.LocalizedString, category: ResourceCategory, isTextType: boolean) {
-    this.nameInternal = name;
-    this.titleInternal = title;
-    this.categoryInternal = category;
-    this.isTextTypeInternal = isTextType;
+    this.#nameInternal = name;
+    this.#titleInternal = title;
+    this.#categoryInternal = category;
+    this.#isTextTypeInternal = isTextType;
   }
 
   static fromMimeType(mimeType: string|null): ResourceType {
@@ -258,23 +258,23 @@ export class ResourceType {
   }
 
   name(): string {
-    return this.nameInternal;
+    return this.#nameInternal;
   }
 
   title(): string {
-    return this.titleInternal();
+    return this.#titleInternal();
   }
 
   category(): ResourceCategory {
-    return this.categoryInternal;
+    return this.#categoryInternal;
   }
 
   isTextType(): boolean {
-    return this.isTextTypeInternal;
+    return this.#isTextTypeInternal;
   }
 
   isScript(): boolean {
-    return this.nameInternal === 'script' || this.nameInternal === 'sm-script';
+    return this.#nameInternal === 'script' || this.#nameInternal === 'sm-script';
   }
 
   hasScripts(): boolean {
@@ -282,11 +282,11 @@ export class ResourceType {
   }
 
   isStyleSheet(): boolean {
-    return this.nameInternal === 'stylesheet' || this.nameInternal === 'sm-stylesheet';
+    return this.#nameInternal === 'stylesheet' || this.#nameInternal === 'sm-stylesheet';
   }
 
   isDocument(): boolean {
-    return this.nameInternal === 'document';
+    return this.#nameInternal === 'document';
   }
 
   isDocumentOrScriptOrStyleSheet(): boolean {
@@ -294,23 +294,23 @@ export class ResourceType {
   }
 
   isFont(): boolean {
-    return this.nameInternal === 'font';
+    return this.#nameInternal === 'font';
   }
 
   isImage(): boolean {
-    return this.nameInternal === 'image';
+    return this.#nameInternal === 'image';
   }
 
   isFromSourceMap(): boolean {
-    return this.nameInternal.startsWith('sm-');
+    return this.#nameInternal.startsWith('sm-');
   }
 
   isWebbundle(): boolean {
-    return this.nameInternal === 'webbundle';
+    return this.#nameInternal === 'webbundle';
   }
 
   toString(): string {
-    return this.nameInternal;
+    return this.#nameInternal;
   }
 
   canonicalMimeType(): string {

@@ -8,19 +8,19 @@ export interface OutputStream {
 }
 
 export class StringOutputStream implements OutputStream {
-  private dataInternal: string;
+  #dataInternal: string;
   constructor() {
-    this.dataInternal = '';
+    this.#dataInternal = '';
   }
 
   async write(chunk: string): Promise<void> {
-    this.dataInternal += chunk;
+    this.#dataInternal += chunk;
   }
 
   async close(): Promise<void> {
   }
 
   data(): string {
-    return this.dataInternal;
+    return this.#dataInternal;
   }
 }

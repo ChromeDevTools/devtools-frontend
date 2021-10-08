@@ -41,24 +41,24 @@ import {getLocalizedSettingsCategory, getRegisteredSettings, maybeRemoveSettingE
 let settingsInstance: Settings|undefined;
 
 export class Settings {
-  private readonly sessionStorage: SettingsStorage;
+  readonly #sessionStorage: SettingsStorage;
   settingNameSet: Set<string>;
   orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
-  private eventSupport: ObjectWrapper<GenericEvents>;
-  private registry: Map<string, Setting<unknown>>;
+  #eventSupport: ObjectWrapper<GenericEvents>;
+  #registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
 
   private constructor(
       private readonly syncedStorage: SettingsStorage, readonly globalStorage: SettingsStorage,
       private readonly localStorage: SettingsStorage) {
-    this.sessionStorage = new SettingsStorage({});
+    this.#sessionStorage = new SettingsStorage({});
 
     this.settingNameSet = new Set();
 
     this.orderValuesBySettingCategory = new Map();
 
-    this.eventSupport = new ObjectWrapper<GenericEvents>();
-    this.registry = new Map();
+    this.#eventSupport = new ObjectWrapper<GenericEvents>();
+    this.#registry = new Map();
     this.moduleSettings = new Map();
 
     for (const registration of getRegisteredSettings()) {
@@ -139,7 +139,7 @@ export class Settings {
   }
 
   settingForTest(settingName: string): Setting<unknown> {
-    const setting = this.registry.get(settingName);
+    const setting = this.#registry.get(settingName);
     if (!setting) {
       throw new Error('No setting registered: ' + settingName);
     }
@@ -148,10 +148,10 @@ export class Settings {
 
   createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
     const storage = this.storageFromType(storageType);
-    let setting = (this.registry.get(key) as Setting<T>);
+    let setting = (this.#registry.get(key) as Setting<T>);
     if (!setting) {
-      setting = new Setting(key, defaultValue, this.eventSupport, storage);
-      this.registry.set(key, setting);
+      setting = new Setting(key, defaultValue, this.#eventSupport, storage);
+      this.#registry.set(key, setting);
     }
     return setting;
   }
@@ -162,11 +162,11 @@ export class Settings {
 
   createRegExpSetting(key: string, defaultValue: string, regexFlags?: string, storageType?: SettingStorageType):
       RegExpSetting {
-    if (!this.registry.get(key)) {
-      this.registry.set(
-          key, new RegExpSetting(key, defaultValue, this.eventSupport, this.storageFromType(storageType), regexFlags));
+    if (!this.#registry.get(key)) {
+      this.#registry.set(
+          key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), regexFlags));
     }
-    return this.registry.get(key) as RegExpSetting;
+    return this.#registry.get(key) as RegExpSetting;
   }
 
   clearAll(): void {
@@ -181,7 +181,7 @@ export class Settings {
       case SettingStorageType.Local:
         return this.localStorage;
       case SettingStorageType.Session:
-        return this.sessionStorage;
+        return this.#sessionStorage;
       case SettingStorageType.Global:
         return this.globalStorage;
       case SettingStorageType.Synced:
@@ -191,7 +191,7 @@ export class Settings {
   }
 
   getRegistry(): Map<string, Setting<unknown>> {
-    return this.registry;
+    return this.#registry;
   }
 }
 
@@ -282,14 +282,14 @@ function removeSetting(setting: Setting<unknown>): void {
 }
 
 export class Setting<V> {
-  private titleFunction!: () => Platform.UIString.LocalizedString;
-  private titleInternal!: string;
-  private registration: SettingRegistration|null = null;
-  private requiresUserAction?: boolean;
-  private value?: V;
+  #titleFunction?: () => Platform.UIString.LocalizedString;
+  #titleInternal!: string;
+  #registration: SettingRegistration|null = null;
+  #requiresUserAction?: boolean;
+  #value?: V;
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
-  private serializer: Serializer<unknown, V> = JSON;
-  private hadUserAction?: boolean;
+  #serializer: Serializer<unknown, V> = JSON;
+  #hadUserAction?: boolean;
 
   constructor(
       readonly name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
@@ -298,7 +298,7 @@ export class Setting<V> {
   }
 
   setSerializer(serializer: Serializer<unknown, V>): void {
-    this.serializer = serializer;
+    this.#serializer = serializer;
   }
 
   addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor {
@@ -310,54 +310,54 @@ export class Setting<V> {
   }
 
   title(): string {
-    if (this.titleInternal) {
-      return this.titleInternal;
+    if (this.#titleInternal) {
+      return this.#titleInternal;
     }
-    if (this.titleFunction) {
-      return this.titleFunction();
+    if (this.#titleFunction) {
+      return this.#titleFunction();
     }
     return '';
   }
 
   setTitleFunction(titleFunction: (() => Platform.UIString.LocalizedString)|undefined): void {
     if (titleFunction) {
-      this.titleFunction = titleFunction;
+      this.#titleFunction = titleFunction;
     }
   }
 
   setTitle(title: string): void {
-    this.titleInternal = title;
+    this.#titleInternal = title;
   }
 
   setRequiresUserAction(requiresUserAction: boolean): void {
-    this.requiresUserAction = requiresUserAction;
+    this.#requiresUserAction = requiresUserAction;
   }
 
   get(): V {
-    if (this.requiresUserAction && !this.hadUserAction) {
+    if (this.#requiresUserAction && !this.#hadUserAction) {
       return this.defaultValue;
     }
 
-    if (typeof this.value !== 'undefined') {
-      return this.value;
+    if (typeof this.#value !== 'undefined') {
+      return this.#value;
     }
 
-    this.value = this.defaultValue;
+    this.#value = this.defaultValue;
     if (this.storage.has(this.name)) {
       try {
-        this.value = this.serializer.parse(this.storage.get(this.name));
+        this.#value = this.#serializer.parse(this.storage.get(this.name));
       } catch (e) {
         this.storage.remove(this.name);
       }
     }
-    return this.value;
+    return this.#value;
   }
 
   set(value: V): void {
-    this.hadUserAction = true;
-    this.value = value;
+    this.#hadUserAction = true;
+    this.#value = value;
     try {
-      const settingString = this.serializer.stringify(value);
+      const settingString = this.#serializer.stringify(value);
       try {
         this.storage.set(this.name, settingString);
       } catch (e) {
@@ -370,19 +370,19 @@ export class Setting<V> {
   }
 
   setRegistration(registration: SettingRegistration): void {
-    this.registration = registration;
+    this.#registration = registration;
   }
 
   type(): SettingType|null {
-    if (this.registration) {
-      return this.registration.settingType;
+    if (this.#registration) {
+      return this.#registration.settingType;
     }
     return null;
   }
 
   options(): SimpleSettingOption[] {
-    if (this.registration && this.registration.options) {
-      return this.registration.options.map(opt => {
+    if (this.#registration && this.#registration.options) {
+      return this.#registration.options.map(opt => {
         const {value, title, text, raw} = opt;
         return {
           value: value,
@@ -396,30 +396,30 @@ export class Setting<V> {
   }
 
   reloadRequired(): boolean|null {
-    if (this.registration) {
-      return this.registration.reloadRequired || null;
+    if (this.#registration) {
+      return this.#registration.reloadRequired || null;
     }
     return null;
   }
 
   category(): SettingCategory|null {
-    if (this.registration) {
-      return this.registration.category || null;
+    if (this.#registration) {
+      return this.#registration.category || null;
     }
     return null;
   }
 
   tags(): string|null {
-    if (this.registration && this.registration.tags) {
+    if (this.#registration && this.#registration.tags) {
       // Get localized keys and separate by null character to prevent fuzzy matching from matching across them.
-      return this.registration.tags.map(tag => tag()).join('\0');
+      return this.#registration.tags.map(tag => tag()).join('\0');
     }
     return null;
   }
 
   order(): number|null {
-    if (this.registration) {
-      return this.registration.order || null;
+    if (this.#registration) {
+      return this.#registration.order || null;
     }
     return null;
   }
@@ -436,14 +436,14 @@ export class Setting<V> {
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class RegExpSetting extends Setting<any> {
-  private regexFlags: string|undefined;
-  private regex?: RegExp|null;
+  #regexFlags: string|undefined;
+  #regex?: RegExp|null;
 
   constructor(
       name: string, defaultValue: string, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage,
       regexFlags?: string) {
     super(name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage);
-    this.regexFlags = regexFlags;
+    this.#regexFlags = regexFlags;
   }
 
   get(): string {
@@ -467,23 +467,23 @@ export class RegExpSetting extends Setting<any> {
   }
 
   setAsArray(value: RegExpSettingItem[]): void {
-    delete this.regex;
+    this.#regex = undefined;
     super.set(value);
   }
 
   asRegExp(): RegExp|null {
-    if (typeof this.regex !== 'undefined') {
-      return this.regex;
+    if (typeof this.#regex !== 'undefined') {
+      return this.#regex;
     }
-    this.regex = null;
+    this.#regex = null;
     try {
       const pattern = this.get();
       if (pattern) {
-        this.regex = new RegExp(pattern, this.regexFlags || '');
+        this.#regex = new RegExp(pattern, this.#regexFlags || '');
       }
     } catch (e) {
     }
-    return this.regex;
+    return this.#regex;
   }
 }
 
@@ -981,7 +981,7 @@ export class VersionController {
     const openTabsInPanel = panelCloseableTabSetting.get();
     const openTabsInDrawer = panelCloseableTabSetting.get();
 
-    // Set value of new setting
+    // Set #value of new setting
     const newValue = Object.assign(openTabsInDrawer, openTabsInPanel);
     closeableTabSetting.set(newValue);
 

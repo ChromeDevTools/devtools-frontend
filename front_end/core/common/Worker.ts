@@ -29,11 +29,11 @@
  */
 
 export class WorkerWrapper {
-  private readonly workerPromise: Promise<Worker>;
-  private disposed?: boolean;
+  readonly #workerPromise: Promise<Worker>;
+  #disposed?: boolean;
 
   private constructor(workerLocation: URL) {
-    this.workerPromise = new Promise(fulfill => {
+    this.#workerPromise = new Promise(fulfill => {
       const worker = new Worker(workerLocation, {type: 'module'});
       worker.onmessage = (event: MessageEvent<unknown>): void => {
         console.assert(event.data === 'workerReady');
@@ -48,16 +48,16 @@ export class WorkerWrapper {
   }
 
   postMessage(message: unknown): void {
-    this.workerPromise.then(worker => {
-      if (!this.disposed) {
+    this.#workerPromise.then(worker => {
+      if (!this.#disposed) {
         worker.postMessage(message);
       }
     });
   }
 
   dispose(): void {
-    this.disposed = true;
-    this.workerPromise.then(worker => worker.terminate());
+    this.#disposed = true;
+    this.#workerPromise.then(worker => worker.terminate());
   }
 
   terminate(): void {
@@ -65,13 +65,13 @@ export class WorkerWrapper {
   }
 
   set onmessage(listener: (event: MessageEvent) => void) {
-    this.workerPromise.then(worker => {
+    this.#workerPromise.then(worker => {
       worker.onmessage = listener;
     });
   }
 
   set onerror(listener: (event: Event) => void) {
-    this.workerPromise.then(worker => {
+    this.#workerPromise.then(worker => {
       worker.onerror = listener;
     });
   }

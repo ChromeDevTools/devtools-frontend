@@ -36,30 +36,30 @@ import * as Platform from '../platform/platform.js';
 import {blendColors, contrastRatioAPCA, desiredLuminanceAPCA, luminance, luminanceAPCA, rgbaToHsla} from './ColorUtils.js';
 
 export class Color {
-  private hslaInternal: number[]|undefined;
-  private rgbaInternal: number[];
-  private originalText: string|null;
-  private readonly originalTextIsValid: boolean;
-  private formatInternal: Format;
+  #hslaInternal: number[]|undefined;
+  #rgbaInternal: number[];
+  #originalText: string|null;
+  readonly #originalTextIsValid: boolean;
+  #formatInternal: Format;
 
   constructor(rgba: number[], format: Format, originalText?: string) {
-    this.hslaInternal = undefined;
-    this.rgbaInternal = rgba;
-    this.originalText = originalText || null;
-    this.originalTextIsValid = Boolean(this.originalText);
-    this.formatInternal = format;
-    if (typeof this.rgbaInternal[3] === 'undefined') {
-      this.rgbaInternal[3] = 1;
+    this.#hslaInternal = undefined;
+    this.#rgbaInternal = rgba;
+    this.#originalText = originalText || null;
+    this.#originalTextIsValid = Boolean(this.#originalText);
+    this.#formatInternal = format;
+    if (typeof this.#rgbaInternal[3] === 'undefined') {
+      this.#rgbaInternal[3] = 1;
     }
 
     for (let i = 0; i < 4; ++i) {
-      if (this.rgbaInternal[i] < 0) {
-        this.rgbaInternal[i] = 0;
-        this.originalTextIsValid = false;
+      if (this.#rgbaInternal[i] < 0) {
+        this.#rgbaInternal[i] = 0;
+        this.#originalTextIsValid = false;
       }
-      if (this.rgbaInternal[i] > 1) {
-        this.rgbaInternal[i] = 1;
-        this.originalTextIsValid = false;
+      if (this.#rgbaInternal[i] > 1) {
+        this.#rgbaInternal[i] = 1;
+        this.#originalTextIsValid = false;
       }
     }
   }
@@ -100,8 +100,8 @@ export class Color {
         const rgba = Nicknames.get(nickname);
         if (rgba !== undefined) {
           const color = Color.fromRGBA(rgba);
-          color.formatInternal = Format.Nickname;
-          color.originalText = text;
+          color.#formatInternal = Format.Nickname;
+          color.#originalText = text;
           return color;
         }
         return null;
@@ -448,17 +448,17 @@ export class Color {
   }
 
   format(): Format {
-    return this.formatInternal;
+    return this.#formatInternal;
   }
 
   /** HSLA with components within [0..1]
      */
   hsla(): number[] {
-    if (this.hslaInternal) {
-      return this.hslaInternal;
+    if (this.#hslaInternal) {
+      return this.#hslaInternal;
     }
-    this.hslaInternal = rgbaToHsla(this.rgbaInternal);
-    return this.hslaInternal;
+    this.#hslaInternal = rgbaToHsla(this.#rgbaInternal);
+    return this.#hslaInternal;
   }
 
   canonicalHSLA(): number[] {
@@ -479,13 +479,13 @@ export class Color {
   }
 
   hasAlpha(): boolean {
-    return this.rgbaInternal[3] !== 1;
+    return this.#rgbaInternal[3] !== 1;
   }
 
   detectHEXFormat(): Format {
     let canBeShort = true;
     for (let i = 0; i < 4; ++i) {
-      const c = Math.round(this.rgbaInternal[i] * 255);
+      const c = Math.round(this.#rgbaInternal[i] * 255);
       if (c % 17) {
         canBeShort = false;
         break;
@@ -501,12 +501,12 @@ export class Color {
   }
 
   asString(format?: string|null): string|null {
-    if (format === this.formatInternal && this.originalTextIsValid) {
-      return this.originalText;
+    if (format === this.#formatInternal && this.#originalTextIsValid) {
+      return this.#originalText;
     }
 
     if (!format) {
-      format = this.formatInternal;
+      format = this.#formatInternal;
     }
 
     function toRgbValue(value: number): number {
@@ -524,15 +524,15 @@ export class Color {
 
     switch (format) {
       case Format.Original: {
-        return this.originalText;
+        return this.#originalText;
       }
       case Format.RGB:
       case Format.RGBA: {
         const start = Platform.StringUtilities.sprintf(
-            'rgb(%d %d %d', toRgbValue(this.rgbaInternal[0]), toRgbValue(this.rgbaInternal[1]),
-            toRgbValue(this.rgbaInternal[2]));
+            'rgb(%d %d %d', toRgbValue(this.#rgbaInternal[0]), toRgbValue(this.#rgbaInternal[1]),
+            toRgbValue(this.#rgbaInternal[2]));
         if (this.hasAlpha()) {
-          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(this.rgbaInternal[3] * 100));
+          return start + Platform.StringUtilities.sprintf(' / %d%)', Math.round(this.#rgbaInternal[3] * 100));
         }
         return start + ')';
       }
@@ -549,8 +549,8 @@ export class Color {
       case Format.HEXA: {
         return Platform.StringUtilities
             .sprintf(
-                '#%s%s%s%s', toHexValue(this.rgbaInternal[0]), toHexValue(this.rgbaInternal[1]),
-                toHexValue(this.rgbaInternal[2]), toHexValue(this.rgbaInternal[3]))
+                '#%s%s%s%s', toHexValue(this.#rgbaInternal[0]), toHexValue(this.#rgbaInternal[1]),
+                toHexValue(this.#rgbaInternal[2]), toHexValue(this.#rgbaInternal[3]))
             .toLowerCase();
       }
       case Format.HEX: {
@@ -559,8 +559,8 @@ export class Color {
         }
         return Platform.StringUtilities
             .sprintf(
-                '#%s%s%s', toHexValue(this.rgbaInternal[0]), toHexValue(this.rgbaInternal[1]),
-                toHexValue(this.rgbaInternal[2]))
+                '#%s%s%s', toHexValue(this.#rgbaInternal[0]), toHexValue(this.#rgbaInternal[1]),
+                toHexValue(this.#rgbaInternal[2]))
             .toLowerCase();
       }
       case Format.ShortHEXA: {
@@ -570,8 +570,8 @@ export class Color {
         }
         return Platform.StringUtilities
             .sprintf(
-                '#%s%s%s%s', toShortHexValue(this.rgbaInternal[0]), toShortHexValue(this.rgbaInternal[1]),
-                toShortHexValue(this.rgbaInternal[2]), toShortHexValue(this.rgbaInternal[3]))
+                '#%s%s%s%s', toShortHexValue(this.#rgbaInternal[0]), toShortHexValue(this.#rgbaInternal[1]),
+                toShortHexValue(this.#rgbaInternal[2]), toShortHexValue(this.#rgbaInternal[3]))
             .toLowerCase();
       }
       case Format.ShortHEX: {
@@ -583,8 +583,8 @@ export class Color {
         }
         return Platform.StringUtilities
             .sprintf(
-                '#%s%s%s', toShortHexValue(this.rgbaInternal[0]), toShortHexValue(this.rgbaInternal[1]),
-                toShortHexValue(this.rgbaInternal[2]))
+                '#%s%s%s', toShortHexValue(this.#rgbaInternal[0]), toShortHexValue(this.#rgbaInternal[1]),
+                toShortHexValue(this.#rgbaInternal[2]))
             .toLowerCase();
       }
       case Format.Nickname: {
@@ -592,19 +592,19 @@ export class Color {
       }
     }
 
-    return this.originalText;
+    return this.#originalText;
   }
 
   rgba(): number[] {
-    return this.rgbaInternal.slice();
+    return this.#rgbaInternal.slice();
   }
 
   canonicalRGBA(): number[] {
     const rgba = new Array(4);
     for (let i = 0; i < 3; ++i) {
-      rgba[i] = Math.round(this.rgbaInternal[i] * 255);
+      rgba[i] = Math.round(this.#rgbaInternal[i] * 255);
     }
-    rgba[3] = this.rgbaInternal[3];
+    rgba[3] = this.#rgbaInternal[3];
     return rgba;
   }
 
@@ -635,32 +635,32 @@ export class Color {
 
   invert(): Color {
     const rgba = [];
-    rgba[0] = 1 - this.rgbaInternal[0];
-    rgba[1] = 1 - this.rgbaInternal[1];
-    rgba[2] = 1 - this.rgbaInternal[2];
-    rgba[3] = this.rgbaInternal[3];
+    rgba[0] = 1 - this.#rgbaInternal[0];
+    rgba[1] = 1 - this.#rgbaInternal[1];
+    rgba[2] = 1 - this.#rgbaInternal[2];
+    rgba[3] = this.#rgbaInternal[3];
     return new Color(rgba, Format.RGBA);
   }
 
   setAlpha(alpha: number): Color {
-    const rgba = this.rgbaInternal.slice();
+    const rgba = this.#rgbaInternal.slice();
     rgba[3] = alpha;
     return new Color(rgba, Format.RGBA);
   }
 
   blendWith(fgColor: Color): Color {
-    const rgba: number[] = blendColors(fgColor.rgbaInternal, this.rgbaInternal);
+    const rgba: number[] = blendColors(fgColor.#rgbaInternal, this.#rgbaInternal);
     return new Color(rgba, Format.RGBA);
   }
 
   blendWithAlpha(alpha: number): Color {
-    const rgba = this.rgbaInternal.slice();
+    const rgba = this.#rgbaInternal.slice();
     rgba[3] *= alpha;
     return new Color(rgba, Format.RGBA);
   }
 
   setFormat(format: Format): void {
-    this.formatInternal = format;
+    this.#formatInternal = format;
   }
 }
 
@@ -882,27 +882,27 @@ export const IsolationModeHighlight = {
 };
 
 export class Generator {
-  private readonly hueSpace: number|{
+  readonly #hueSpace: number|{
     min: number,
     max: number,
     count: (number|undefined),
   };
-  private readonly satSpace: number|{
+  readonly #satSpace: number|{
     min: number,
     max: number,
     count: (number|undefined),
   };
-  private readonly lightnessSpace: number|{
+  readonly #lightnessSpace: number|{
     min: number,
     max: number,
     count: (number|undefined),
   };
-  private readonly alphaSpace: number|{
+  readonly #alphaSpace: number|{
     min: number,
     max: number,
     count: (number|undefined),
   };
-  private readonly colors: Map<string, string>;
+  readonly #colors: Map<string, string>;
   constructor(
       hueSpace?: number|{
         min: number,
@@ -924,32 +924,32 @@ export class Generator {
         max: number,
         count: (number|undefined),
       }) {
-    this.hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
-    this.satSpace = satSpace || 67;
-    this.lightnessSpace = lightnessSpace || 80;
-    this.alphaSpace = alphaSpace || 1;
-    this.colors = new Map();
+    this.#hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
+    this.#satSpace = satSpace || 67;
+    this.#lightnessSpace = lightnessSpace || 80;
+    this.#alphaSpace = alphaSpace || 1;
+    this.#colors = new Map();
   }
 
   setColorForID(id: string, color: string): void {
-    this.colors.set(id, color);
+    this.#colors.set(id, color);
   }
 
   colorForID(id: string): string {
-    let color = this.colors.get(id);
+    let color = this.#colors.get(id);
     if (!color) {
       color = this.generateColorForID(id);
-      this.colors.set(id, color);
+      this.#colors.set(id, color);
     }
     return color;
   }
 
   private generateColorForID(id: string): string {
     const hash = Platform.StringUtilities.hashCode(id);
-    const h = this.indexToValueInSpace(hash, this.hueSpace);
-    const s = this.indexToValueInSpace(hash >> 8, this.satSpace);
-    const l = this.indexToValueInSpace(hash >> 16, this.lightnessSpace);
-    const a = this.indexToValueInSpace(hash >> 24, this.alphaSpace);
+    const h = this.indexToValueInSpace(hash, this.#hueSpace);
+    const s = this.indexToValueInSpace(hash >> 8, this.#satSpace);
+    const l = this.indexToValueInSpace(hash >> 16, this.#lightnessSpace);
+    const a = this.indexToValueInSpace(hash >> 24, this.#alphaSpace);
     const start = `hsl(${h}deg ${s}% ${l}%`;
     if (a !== 1) {
       return `${start} / ${Math.floor(a * 100)}%)`;

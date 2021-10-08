@@ -8,13 +8,13 @@ import {reveal} from './Revealer.js';
 let consoleInstance: Console;
 
 export class Console extends ObjectWrapper<EventTypes> {
-  private readonly messagesInternal: Message[];
+  readonly #messagesInternal: Message[];
   /**
    * Instantiable via the instance() factory below.
    */
   private constructor() {
     super();
-    this.messagesInternal = [];
+    this.#messagesInternal = [];
   }
 
   static instance({forceNew}: {
@@ -29,7 +29,7 @@ export class Console extends ObjectWrapper<EventTypes> {
 
   addMessage(text: string, level: MessageLevel, show?: boolean): void {
     const message = new Message(text, level || MessageLevel.Info, Date.now(), show || false);
-    this.messagesInternal.push(message);
+    this.#messagesInternal.push(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
   }
 
@@ -46,7 +46,7 @@ export class Console extends ObjectWrapper<EventTypes> {
   }
 
   messages(): Message[] {
-    return this.messagesInternal;
+    return this.#messagesInternal;
   }
 
   show(): void {

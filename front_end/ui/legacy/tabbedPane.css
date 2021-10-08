@@ -154,12 +154,19 @@
 /**
  * In light-mode we have a blue border to show the active pane, and we don't change the background color. In dark mode we do not show the border, so we instead change the background color.
  */
+/* stylelint-disable no-descending-specificity */
 .-theme-with-dark-background .tabbed-pane-header-tab.selected,
 :host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected {
   --override-tabbed-dark-mode-bg-color: rgb(0 0 0);
 
   background-color: var(--override-tabbed-dark-mode-bg-color);
 }
+
+.-theme-with-dark-background .tabbed-pane-header-tab.selected,
+:host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected:focus {
+  background-color: var(--color-background-elevation-0);
+}
+/* stylelint-enable no-descending-specificity */
 
 .tabbed-pane-header-tab.dragging {
   --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
@@ -265,6 +272,7 @@
   cursor: pointer !important; /* stylelint-disable-line declaration-no-important */
 }
 
+/* stylelint-disable no-descending-specificity */
 .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {
   --override-vertical-tab-selected-border-color: #666;
 
@@ -278,6 +286,7 @@
 :host-context(.-theme-with-dark-background) .tabbed-pane-shadow.vertical-tab-layout .tabbed-pane-header-tab.selected {
   --override-vertical-tab-selected-border-color: rgb(153 153 153);
 }
+/* stylelint-enable no-descending-specificity */
 
 .tabbed-pane-tab-slider {
   height: 2px;

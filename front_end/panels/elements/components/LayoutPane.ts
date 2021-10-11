@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {BooleanSetting, EnumSetting, Setting} from './LayoutPaneUtils.js';
@@ -53,6 +54,10 @@ const UIStrings = {
   *@description Text in the Layout panel, when no flexbox elements are found
   */
   noFlexboxLayoutsFoundOnThisPage: 'No flexbox layouts found on this page',
+  /**
+  *@description Screen reader announcement when opening color picker tool.
+  */
+  colorPickerOpened: 'Color picker opened.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -240,6 +245,7 @@ export class LayoutPane extends HTMLElement {
       const target = event.target as HTMLLabelElement;
       const input = target.querySelector('input') as HTMLInputElement;
       input.click();
+      UI.ARIAUtils.alert(i18nString(UIStrings.colorPickerOpened));
       event.preventDefault();
     };
     const onColorLabelKeyDown = (event: KeyboardEvent): void => {

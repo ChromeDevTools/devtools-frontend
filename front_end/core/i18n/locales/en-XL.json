@@ -4025,6 +4025,9 @@
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "Ĉh́ôóŝé t̂h́ê óv̂ér̂ĺâý ĉól̂ór̂ f́ôŕ t̂h́îś êĺêḿêńt̂"
   },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Ĉól̂ór̂ ṕîćk̂ér̂ óp̂én̂éd̂."
+  },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "F̂ĺêx́b̂óx̂"
   },

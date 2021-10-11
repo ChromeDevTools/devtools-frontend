@@ -440,8 +440,6 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   private onAction(): void {
-    // Resetting alert variable to prime for next search query result.
-    UI.ARIAUtils.alert(' ');
     const searchConfig = this.buildSearchConfig();
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;

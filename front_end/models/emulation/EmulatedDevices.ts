@@ -49,8 +49,8 @@ export class EmulatedDevice {
   isDualScreen: boolean;
   verticalSpanned: Orientation;
   horizontalSpanned: Orientation;
-  private showInternal: string;
-  private showByDefault: boolean;
+  #showInternal: string;
+  #showByDefault: boolean;
 
   constructor() {
     this.title = '';
@@ -67,8 +67,8 @@ export class EmulatedDevice {
     this.verticalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
     this.horizontalSpanned = {width: 0, height: 0, outlineInsets: null, outlineImage: null, hinge: null};
 
-    this.showInternal = _Show.Default;
-    this.showByDefault = true;
+    this.#showInternal = _Show.Default;
+    this.#showByDefault = true;
   }
 
   static fromJSONV1(json: any): EmulatedDevice|null {
@@ -251,8 +251,8 @@ export class EmulatedDevice {
         mode.image = (parseValue(modes[i], 'image', 'string', null) as string);
         result.modes.push(mode);
       }
-      result.showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
-      result.showInternal = (parseValue(json, 'show', 'string', _Show.Default) as string);
+      result.#showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
+      result.#showInternal = (parseValue(json, 'show', 'string', _Show.Default) as string);
 
       return result;
     } catch (e) {
@@ -350,9 +350,9 @@ export class EmulatedDevice {
       json['modes'].push(mode);
     }
 
-    json['show-by-default'] = this.showByDefault;
+    json['show-by-default'] = this.#showByDefault;
     json['dual-screen'] = this.isDualScreen;
-    json['show'] = this.showInternal;
+    json['show'] = this.#showInternal;
 
     if (this.userAgentMetadata) {
       json['user-agent-metadata'] = this.userAgentMetadata;
@@ -441,18 +441,18 @@ export class EmulatedDevice {
     }
   }
   show(): boolean {
-    if (this.showInternal === _Show.Default) {
-      return this.showByDefault;
+    if (this.#showInternal === _Show.Default) {
+      return this.#showByDefault;
     }
-    return this.showInternal === _Show.Always;
+    return this.#showInternal === _Show.Always;
   }
 
   setShow(show: boolean): void {
-    this.showInternal = show ? _Show.Always : _Show.Never;
+    this.#showInternal = show ? _Show.Always : _Show.Never;
   }
 
   copyShowFrom(other: EmulatedDevice): void {
-    this.showInternal = other.showInternal;
+    this.#showInternal = other.#showInternal;
   }
 
   touch(): boolean {
@@ -495,21 +495,21 @@ export const _Show = {
 let _instance: EmulatedDevicesList;
 
 export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly standardSetting: Common.Settings.Setting<any[]>;
-  private standardInternal: Set<EmulatedDevice>;
-  private readonly customSetting: Common.Settings.Setting<any[]>;
-  private readonly customInternal: Set<EmulatedDevice>;
+  readonly #standardSetting: Common.Settings.Setting<any[]>;
+  #standardInternal: Set<EmulatedDevice>;
+  readonly #customSetting: Common.Settings.Setting<any[]>;
+  readonly #customInternal: Set<EmulatedDevice>;
   constructor() {
     super();
 
-    this.standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
-    this.standardInternal = new Set();
-    this.listFromJSONV1(this.standardSetting.get(), this.standardInternal);
+    this.#standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
+    this.#standardInternal = new Set();
+    this.listFromJSONV1(this.#standardSetting.get(), this.#standardInternal);
     this.updateStandardDevices();
 
-    this.customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
-    this.customInternal = new Set();
-    if (!this.listFromJSONV1(this.customSetting.get(), this.customInternal)) {
+    this.#customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
+    this.#customInternal = new Set();
+    if (!this.listFromJSONV1(this.#customSetting.get(), this.#customInternal)) {
       this.saveCustomDevices();
     }
   }
@@ -529,8 +529,8 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
         devices.add(device);
       }
     }
-    this.copyShowValues(this.standardInternal, devices);
-    this.standardInternal = devices;
+    this.copyShowValues(this.#standardInternal, devices);
+    this.#standardInternal = devices;
     this.saveStandardDevices();
   }
 
@@ -555,40 +555,40 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   standard(): EmulatedDevice[] {
-    return [...this.standardInternal];
+    return [...this.#standardInternal];
   }
 
   custom(): EmulatedDevice[] {
-    return [...this.customInternal];
+    return [...this.#customInternal];
   }
 
   revealCustomSetting(): void {
-    Common.Revealer.reveal(this.customSetting);
+    Common.Revealer.reveal(this.#customSetting);
   }
 
   addCustomDevice(device: EmulatedDevice): void {
-    this.customInternal.add(device);
+    this.#customInternal.add(device);
     this.saveCustomDevices();
   }
 
   removeCustomDevice(device: EmulatedDevice): void {
-    this.customInternal.delete(device);
+    this.#customInternal.delete(device);
     this.saveCustomDevices();
   }
 
   saveCustomDevices(): void {
     const json: any[] = [];
-    this.customInternal.forEach(device => json.push(device.toJSON()));
+    this.#customInternal.forEach(device => json.push(device.toJSON()));
 
-    this.customSetting.set(json);
+    this.#customSetting.set(json);
     this.dispatchEventToListeners(Events.CustomDevicesUpdated);
   }
 
   saveStandardDevices(): void {
     const json: any[] = [];
-    this.standardInternal.forEach(device => json.push(device.toJSON()));
+    this.#standardInternal.forEach(device => json.push(device.toJSON()));
 
-    this.standardSetting.set(json);
+    this.#standardSetting.set(json);
     this.dispatchEventToListeners(Events.StandardDevicesUpdated);
   }
 

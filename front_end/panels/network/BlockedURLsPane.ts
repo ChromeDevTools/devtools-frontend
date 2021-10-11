@@ -135,18 +135,20 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     this.list.addNewItem(0, {url: '', enabled: true});
   }
 
-  renderItem(pattern: SDK.NetworkManager.BlockedPattern, _editable: boolean): Element {
+  renderItem(pattern: SDK.NetworkManager.BlockedPattern, editable: boolean): Element {
     const count = this.blockedRequestsCount(pattern.url);
     const element = document.createElement('div');
     element.classList.add('blocked-url');
     const checkbox = (element.createChild('input', 'blocked-url-checkbox') as HTMLInputElement);
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;
-    checkbox.disabled = !this.manager.blockingEnabled();
+    checkbox.disabled = !editable;
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
     element.createChild('div', 'blocked-url-count').textContent = i18nString(UIStrings.dBlocked, {PH1: count});
-    element.addEventListener('click', event => this.togglePattern(pattern, event));
-    checkbox.addEventListener('click', event => this.togglePattern(pattern, event));
+    if (editable) {
+      element.addEventListener('click', event => this.togglePattern(pattern, event));
+      checkbox.addEventListener('click', event => this.togglePattern(pattern, event));
+    }
     return element;
   }
 
@@ -226,10 +228,11 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   private update(): Promise<void> {
     const enabled = this.manager.blockingEnabled();
     this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
+
     this.enabledCheckbox.setChecked(enabled);
     this.list.clear();
     for (const pattern of this.manager.blockedPatterns()) {
-      this.list.appendItem(pattern, true);
+      this.list.appendItem(pattern, enabled);
     }
     return Promise.resolve();
   }

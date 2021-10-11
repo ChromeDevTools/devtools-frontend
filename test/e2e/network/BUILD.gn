@@ -9,6 +9,7 @@ node_ts_library("network") {
     "network-conditions_test.ts",
     "network-datagrid_test.ts",
     "network-filter_test.ts",
+    "network-request-blocking-panel_test.ts",
     "network-request-view_test.ts",
     "network-throttle-persist_test.ts",
     "network_test.ts",

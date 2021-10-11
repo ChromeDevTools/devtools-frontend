@@ -10,7 +10,6 @@
 }
 
 .blocking-disabled {
-  pointer-events: none;
   opacity: 80%;
 }
 

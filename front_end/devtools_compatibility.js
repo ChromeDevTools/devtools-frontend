@@ -564,6 +564,14 @@
 
     /**
      * @override
+     * @param {!function(!InspectorFrontendHostAPI.SyncInformation):void} callback
+     */
+    getSyncInformation(callback) {
+      DevToolsAPI.sendMessageToEmbedder('getSyncInformation', [], callback);
+    }
+
+    /**
+     * @override
      * @param {string} origin
      * @param {string} script
      */

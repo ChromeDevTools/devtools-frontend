@@ -36,7 +36,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import type {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventTypes, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult} from './InspectorFrontendHostAPI.js';
+import type {CanShowSurveyResult, ContextMenuDescriptor, EnumeratedHistogram, EventTypes, ExtensionDescriptor, InspectorFrontendHostAPI, LoadNetworkResourceResult, ShowSurveyResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {EventDescriptors, Events} from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
@@ -272,6 +272,13 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   clearPreferences(): void {
     window.localStorage.clear();
+  }
+
+  getSyncInformation(callback: (arg0: SyncInformation) => void): void {
+    callback({
+      isSyncActive: false,
+      arePreferencesSynced: false,
+    });
   }
 
   upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void {

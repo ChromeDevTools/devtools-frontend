@@ -32,19 +32,19 @@ generate_ci_configs(
         ),
         config_section(
             name = "beta",
-            branch = "refs/heads/chromium/4638",
+            branch = "refs/heads/chromium/4664",
             notifiers = ["devtools notifier"],
             priority = 50,
         ),
         config_section(
             name = "stable",
-            branch = "refs/heads/chromium/4606",
+            branch = "refs/heads/chromium/4638",
             notifiers = ["devtools notifier"],
             priority = 50,
         ),
         config_section(
             name = "extended",
-            branch = "refs/heads/chromium/4515",
+            branch = "refs/heads/chromium/4606",
             notifiers = ["devtools notifier"],
             priority = 50,
         ),

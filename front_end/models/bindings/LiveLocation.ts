@@ -12,31 +12,31 @@ export interface LiveLocation {
 }
 
 export class LiveLocationWithPool implements LiveLocation {
-  private updateDelegate: ((arg0: LiveLocation) => Promise<void>)|null;
-  private readonly locationPool: LiveLocationPool;
-  private updatePromise: Promise<void>|null;
+  #updateDelegate: ((arg0: LiveLocation) => Promise<void>)|null;
+  readonly #locationPool: LiveLocationPool;
+  #updatePromise: Promise<void>|null;
 
   constructor(updateDelegate: (arg0: LiveLocation) => Promise<void>, locationPool: LiveLocationPool) {
-    this.updateDelegate = updateDelegate;
-    this.locationPool = locationPool;
-    this.locationPool.add(this);
+    this.#updateDelegate = updateDelegate;
+    this.#locationPool = locationPool;
+    this.#locationPool.add(this);
 
-    this.updatePromise = null;
+    this.#updatePromise = null;
   }
 
   async update(): Promise<void> {
-    if (!this.updateDelegate) {
+    if (!this.#updateDelegate) {
       return;
     }
     // The following is a basic scheduling algorithm, guaranteeing that
-    // {updateDelegate} is always run atomically. That is, we always
+    // {#updateDelegate} is always run atomically. That is, we always
     // wait for an update to finish before we trigger the next run.
-    if (this.updatePromise) {
-      await this.updatePromise.then(() => this.update());
+    if (this.#updatePromise) {
+      await this.#updatePromise.then(() => this.update());
     } else {
-      this.updatePromise = this.updateDelegate(this);
-      await this.updatePromise;
-      this.updatePromise = null;
+      this.#updatePromise = this.#updateDelegate(this);
+      await this.#updatePromise;
+      this.#updatePromise = null;
     }
   }
 
@@ -45,8 +45,8 @@ export class LiveLocationWithPool implements LiveLocation {
   }
 
   dispose(): void {
-    this.locationPool.delete(this);
-    this.updateDelegate = null;
+    this.#locationPool.delete(this);
+    this.#updateDelegate = null;
   }
 
   async isIgnoreListed(): Promise<boolean> {
@@ -55,22 +55,22 @@ export class LiveLocationWithPool implements LiveLocation {
 }
 
 export class LiveLocationPool {
-  private readonly locations: Set<LiveLocation>;
+  readonly #locations: Set<LiveLocation>;
 
   constructor() {
-    this.locations = new Set();
+    this.#locations = new Set();
   }
 
   add(location: LiveLocation): void {
-    this.locations.add(location);
+    this.#locations.add(location);
   }
 
   delete(location: LiveLocation): void {
-    this.locations.delete(location);
+    this.#locations.delete(location);
   }
 
   disposeAll(): void {
-    for (const location of this.locations) {
+    for (const location of this.#locations) {
       location.dispose();
     }
   }

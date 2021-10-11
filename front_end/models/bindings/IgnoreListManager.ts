@@ -12,12 +12,12 @@ import type {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
 let ignoreListManagerInstance: IgnoreListManager;
 
 export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  private readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
-  private readonly listeners: Set<() => void>;
-  private readonly isIgnoreListedURLCache: Map<string, boolean>;
+  readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  readonly #listeners: Set<() => void>;
+  readonly #isIgnoreListedURLCache: Map<string, boolean>;
 
   private constructor(debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
-    this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
@@ -29,9 +29,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
         .moduleSetting('skipContentScripts')
         .addChangeListener(this.patternChanged.bind(this));
 
-    this.listeners = new Set();
+    this.#listeners = new Set();
 
-    this.isIgnoreListedURLCache = new Map();
+    this.#isIgnoreListedURLCache = new Map();
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
@@ -55,11 +55,11 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   addChangeListener(listener: () => void): void {
-    this.listeners.add(listener);
+    this.#listeners.add(listener);
   }
 
   removeChangeListener(listener: () => void): void {
-    this.listeners.delete(listener);
+    this.#listeners.delete(listener);
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -77,8 +77,8 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   private clearCacheIfNeeded(): void {
-    if (this.isIgnoreListedURLCache.size > 1024) {
-      this.isIgnoreListedURLCache.clear();
+    if (this.#isIgnoreListedURLCache.size > 1024) {
+      this.#isIgnoreListedURLCache.clear();
     }
   }
 
@@ -109,15 +109,15 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   isIgnoreListedURL(url: string, isContentScript?: boolean): boolean {
-    if (this.isIgnoreListedURLCache.has(url)) {
-      return Boolean(this.isIgnoreListedURLCache.get(url));
+    if (this.#isIgnoreListedURLCache.has(url)) {
+      return Boolean(this.#isIgnoreListedURLCache.get(url));
     }
     if (isContentScript && Common.Settings.Settings.instance().moduleSetting('skipContentScripts').get()) {
       return true;
     }
     const regex = this.getSkipStackFramesPatternSetting().asRegExp();
     const isIgnoreListed = (regex && regex.test(url)) || false;
-    this.isIgnoreListedURLCache.set(url, isIgnoreListed);
+    this.#isIgnoreListedURLCache.set(url, isIgnoreListed);
     return isIgnoreListed;
   }
 
@@ -145,7 +145,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       if (scriptToRange.get(script) && await script.setBlackboxedRanges([])) {
         scriptToRange.delete(script);
       }
-      await this.debuggerWorkspaceBinding.updateLocations(script);
+      await this.#debuggerWorkspaceBinding.updateLocations(script);
       return;
     }
 
@@ -173,7 +173,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
       scriptToRange.set(script, newRanges);
     }
-    this.debuggerWorkspaceBinding.updateLocations(script);
+    this.#debuggerWorkspaceBinding.updateLocations(script);
 
     function isEqual(rangesA: SourceRange[], rangesB: SourceRange[]): boolean {
       if (rangesA.length !== rangesB.length) {
@@ -266,7 +266,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   private async patternChanged(): Promise<void> {
-    this.isIgnoreListedURLCache.clear();
+    this.#isIgnoreListedURLCache.clear();
 
     const promises: Promise<unknown>[] = [];
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
@@ -277,7 +277,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       }
     }
     await Promise.all(promises);
-    const listeners = Array.from(this.listeners);
+    const listeners = Array.from(this.#listeners);
     for (const listener of listeners) {
       listener();
     }

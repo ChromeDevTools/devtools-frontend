@@ -19,20 +19,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
-  private readonly formatter: Intl.NumberFormat;
-  private readonly controller: OverviewController;
+  readonly #formatter: Intl.NumberFormat;
+  readonly #controller: OverviewController;
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
 
-    this.formatter = new Intl.NumberFormat('en-US');
-    this.controller = controller;
+    this.#formatter = new Intl.NumberFormat('en-US');
+    this.#controller = controller;
     this.render();
   }
 
   private render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.cancel), () => this.controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
+        i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
         true /* primary */);
     this.setDefaultFocusedElement(cancelButton);
 

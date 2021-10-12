@@ -42,20 +42,20 @@ export interface GlobalStyleStats {
 }
 
 export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
-  private readonly runtimeAgent: ProtocolProxyApi.RuntimeApi;
-  private readonly cssAgent: ProtocolProxyApi.CSSApi;
-  private readonly domAgent: ProtocolProxyApi.DOMApi;
-  private readonly domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
-  private readonly overlayAgent: ProtocolProxyApi.OverlayApi;
+  readonly #runtimeAgent: ProtocolProxyApi.RuntimeApi;
+  readonly #cssAgent: ProtocolProxyApi.CSSApi;
+  readonly #domAgent: ProtocolProxyApi.DOMApi;
+  readonly #domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
+  readonly #overlayAgent: ProtocolProxyApi.OverlayApi;
 
   constructor(target: SDK.Target.Target) {
     super(target);
 
-    this.runtimeAgent = target.runtimeAgent();
-    this.cssAgent = target.cssAgent();
-    this.domAgent = target.domAgent();
-    this.domSnapshotAgent = target.domsnapshotAgent();
-    this.overlayAgent = target.overlayAgent();
+    this.#runtimeAgent = target.runtimeAgent();
+    this.#cssAgent = target.cssAgent();
+    this.#domAgent = target.domAgent();
+    this.#domSnapshotAgent = target.domsnapshotAgent();
+    this.#overlayAgent = target.overlayAgent();
   }
 
   highlightNode(node: Protocol.DOM.BackendNodeId): void {
@@ -66,8 +66,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
-    this.overlayAgent.invoke_hideHighlight();
-    this.overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
+    this.#overlayAgent.invoke_hideHighlight();
+    this.#overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
   }
 
   async getNodeStyleStats(): Promise<NodeStyleStats> {
@@ -175,7 +175,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
 
     let elementCount = 0;
 
-    const {documents, strings} = await this.domSnapshotAgent.invoke_captureSnapshot(snapshotConfig);
+    const {documents, strings} = await this.#domSnapshotAgent.invoke_captureSnapshot(snapshotConfig);
     for (const {nodes, layout} of documents) {
       // Track the number of elements in the documents.
       elementCount += layout.nodeIndex.length;
@@ -357,11 +357,11 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
   }
 
   getComputedStyleForNode(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.GetComputedStyleForNodeResponse> {
-    return this.cssAgent.invoke_getComputedStyleForNode({nodeId});
+    return this.#cssAgent.invoke_getComputedStyleForNode({nodeId});
   }
 
   async getMediaQueries(): Promise<Map<string, Protocol.CSS.CSSMedia[]>> {
-    const queries = await this.cssAgent.invoke_getMediaQueries();
+    const queries = await this.#cssAgent.invoke_getMediaQueries();
     const queryMap = new Map<string, Protocol.CSS.CSSMedia[]>();
 
     if (!queries) {
@@ -469,7 +469,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
         }
       }
     })()`;
-    const {result} = await this.runtimeAgent.invoke_evaluate({expression, returnByValue: true});
+    const {result} = await this.#runtimeAgent.invoke_evaluate({expression, returnByValue: true});
 
     // TODO(paullewis): Handle errors properly.
     if (result.type !== 'object') {

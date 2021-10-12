@@ -75,7 +75,7 @@ export class OverviewStartRequestedEvent extends Event {
 
 export class CSSOverviewStartView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-overview-start-view`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   #feedbackLink: HTMLAnchorElement;
 
   constructor() {
@@ -87,7 +87,7 @@ export class CSSOverviewStartView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
+    this.#shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
     this.render();
   }
 
@@ -149,12 +149,12 @@ export class CSSOverviewStartView extends HTMLElement {
         </section>
         <a class="feedback-standalone" href=${FEEDBACK_LINK} target="_blank">${i18nString(UIStrings.feedbackStandalone)}</a>
       </div>
-    `, this.shadow, {
+    `, this.#shadow, {
       host: this,
     });
     // clang-format on
 
-    const startButton = this.shadow.querySelector<HTMLElement>('.start-capture');
+    const startButton = this.#shadow.querySelector<HTMLElement>('.start-capture');
     if (startButton) {
       startButton.focus();
     }

@@ -5,11 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
-import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
+import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
@@ -55,12 +55,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementToConsolePin = new WeakMap<Element, ConsolePin>();
 
 export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly liveExpressionButton: UI.Toolbar.ToolbarButton;
   private pins: Set<ConsolePin>;
   private readonly pinsSetting: Common.Settings.Setting<string[]>;
-  constructor(liveExpressionButton: UI.Toolbar.ToolbarButton) {
+  constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
     super(true, 250);
-    this.liveExpressionButton = liveExpressionButton;
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
 
@@ -124,7 +122,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 
   addPin(expression: string, userGesture?: boolean): void {
-    const pin = new ConsolePin(expression, this);
+    const pin = new ConsolePin(expression, this, this.focusOut);
     this.contentElement.appendChild(pin.element());
     this.pins.add(pin);
     this.savePins();
@@ -173,32 +171,33 @@ export class ConsolePin {
   private readonly pinPreview: HTMLElement;
   private lastResult: SDK.RuntimeModel.EvaluationResult|null;
   private lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null;
-  private editor: UI.TextEditor.TextEditor|null;
+  private editor: TextEditor.TextEditor.TextEditor|null;
   private committedExpression: string;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
-  private readonly editorPromise: Promise<UI.TextEditor.TextEditor>;
+  private readonly editorPromise: Promise<TextEditor.TextEditor.TextEditor>;
   private consolePinNumber: number;
+  private deletePinIcon: UI.UIUtils.DevToolsCloseButton;
 
-  constructor(expression: string, pinPane: ConsolePinPane) {
+  constructor(expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void) {
     this.consolePinNumber = ++consolePinNumber;
-    const deletePinIcon = (document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton);
-    deletePinIcon.gray = true;
-    deletePinIcon.classList.add('close-button');
-    deletePinIcon.setTabbable(true);
+    this.deletePinIcon = document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton;
+    this.deletePinIcon.gray = true;
+    this.deletePinIcon.classList.add('close-button');
+    this.deletePinIcon.setTabbable(true);
     if (expression.length) {
-      deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
+      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
     } else {
-      deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
+      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
     }
-    self.onInvokeElement(deletePinIcon, event => {
+    self.onInvokeElement(this.deletePinIcon, event => {
       pinPane.removePin(this);
       event.consume(true);
     });
 
     const fragment = UI.Fragment.Fragment.build`
   <div class='console-pin'>
-  ${deletePinIcon}
+  ${this.deletePinIcon}
   <div class='console-pin-name' $='name'></div>
   <div class='console-pin-preview' $='preview'></div>
   </div>`;
@@ -224,61 +223,66 @@ export class ConsolePin {
       }
     }, false);
 
-    const createTextEditor = (factory: UI.TextEditor.TextEditorFactory): UI.TextEditor.TextEditor => {
-      this.editor = factory.createEditor({
-        devtoolsAccessibleName: i18nString(UIStrings.liveExpressionEditor),
-        lineNumbers: false,
-        lineWrapping: true,
-        mimeType: 'javascript',
-        autoHeight: true,
-        placeholder: i18nString(UIStrings.expression),
-        bracketMatchingSetting: undefined,
-        lineWiseCopyCut: undefined,
-        maxHighlightLength: undefined,
-        padBottom: undefined,
-        inputStyle: undefined,
-      });
-      this.editor.configureAutocomplete(
-          ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this.editor));
-      this.editor.widget().show(nameElement);
-      this.editor.widget().element.classList.add('console-pin-editor');
-      this.editor.widget().element.tabIndex = -1;
-      this.editor.setText(expression);
-      this.editor.widget().element.addEventListener('keydown', event => {
-        if (!this.editor) {
-          return;
-        }
-        if (event.key === 'Tab' && !this.editor.text()) {
-          event.consume();
-          return;
-        }
-        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
-          this.editor.setText(this.committedExpression);
-        }
-      }, true);
-      this.editor.widget().element.addEventListener('focusout', _event => {
-        if (!this.editor) {
-          return;
-        }
-        const text = this.editor.text();
-        const trimmedText = text.trim();
-        if (text.length !== trimmedText.length) {
-          this.editor.setText(trimmedText);
-        }
-        this.committedExpression = trimmedText;
-        pinPane.savePins();
-        if (this.committedExpression.length) {
-          deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
-        } else {
-          deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
-        }
-        this.editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
-      });
-      return this.editor;
-    };
+    // Prevent Esc from toggling the drawer
+    nameElement.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        event.consume();
+      }
+    });
+    this.editorPromise = this.createEditor(expression, nameElement);
+  }
 
-    const factory = TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditorFactory.instance();
-    this.editorPromise = Promise.resolve().then(() => createTextEditor(factory));
+  async createEditor(expression: string, parent: HTMLElement): Promise<TextEditor.TextEditor.TextEditor> {
+    const CM = await import('../../third_party/codemirror.next/codemirror.next.js');
+    const TE = await import('../../ui/components/text_editor/text_editor.js');
+    this.editor = new TE.TextEditor.TextEditor(CM.EditorState.create({
+      doc: expression,
+      extensions: [
+        CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
+        CM.EditorView.lineWrapping,
+        (await CM.javascript()).javascriptLanguage,
+        await TE.JavaScript.completion(),
+        TE.Config.showCompletionHint,
+        CM.placeholder(i18nString(UIStrings.expression)),
+        CM.keymap.of([
+          {
+            key: 'Escape',
+            run: (view: CodeMirror.EditorView): boolean => {
+              view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+              this.focusOut();
+              return true;
+            },
+          },
+          {
+            key: 'Mod-Enter',
+            run: (): boolean => {
+              this.focusOut();
+              return true;
+            },
+          },
+        ]),
+        CM.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
+        TE.Config.baseConfiguration(expression),
+      ],
+    }));
+    parent.appendChild(this.editor);
+    return this.editor;
+  }
+
+  onBlur(editor: CodeMirror.EditorView): void {
+    const text = editor.state.doc.toString();
+    const trimmedText = text.trim();
+    this.committedExpression = trimmedText;
+    this.pinPane.savePins();
+    if (this.committedExpression.length) {
+      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
+    } else {
+      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
+    }
+    editor.dispatch({
+      selection: {anchor: trimmedText.length},
+      changes: trimmedText !== text ? {from: 0, to: text.length, insert: trimmedText} : undefined,
+    });
   }
 
   setHovered(hovered: boolean): void {
@@ -300,9 +304,9 @@ export class ConsolePin {
   }
 
   async focus(): Promise<void> {
-    const editor = await this.editorPromise;
-    editor.widget().focus();
-    editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
+    const editor = this.editor || await this.editorPromise;
+    editor.editor.focus();
+    editor.editor.dispatch({selection: {anchor: editor.state.doc.length}});
   }
 
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -317,7 +321,8 @@ export class ConsolePin {
     if (!this.editor) {
       return;
     }
-    const text = this.editor.textWithCurrentSuggestion().trim();
+    const TE = await import('../../ui/components/text_editor/text_editor.js');
+    const text = TE.Config.contentIncludingHint(this.editor.editor);
     const isEditing = this.pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this.committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;

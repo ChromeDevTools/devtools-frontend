@@ -62,10 +62,13 @@
 .console-pin-name,
 .console-pin-preview {
   width: 100%;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-height: 13px;
+}
+
+.console-pin-preview {
+  overflow: hidden;
 }
 
 .console-delete-pin {

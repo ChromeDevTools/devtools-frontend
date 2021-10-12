@@ -461,17 +461,9 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.showSettingsPaneSetting.addChangeListener(
         () => settingsPane.element.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
 
-    this.pinPane = new ConsolePinPane(liveExpressionButton);
+    this.pinPane = new ConsolePinPane(liveExpressionButton, () => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
     this.pinPane.show(this.contentsElement);
-    this.pinPane.element.addEventListener('keydown', event => {
-      if ((event.key === 'Enter' &&
-           UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey((event as KeyboardEvent))) ||
-          event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
-        this.prompt.focus();
-        event.consume();
-      }
-    });
 
     this.viewport = new ConsoleViewport(this);
     this.viewport.setStickToBottom(true);

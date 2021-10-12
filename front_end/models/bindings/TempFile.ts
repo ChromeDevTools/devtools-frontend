@@ -36,16 +36,16 @@ import type {ChunkedReader} from './FileUtils.js';
 import {ChunkedFileReader} from './FileUtils.js';
 
 export class TempFile {
-  private lastBlob: Blob|null;
+  #lastBlob: Blob|null;
   constructor() {
-    this.lastBlob = null;
+    this.#lastBlob = null;
   }
 
   write(pieces: (string|Blob)[]): void {
-    if (this.lastBlob) {
-      pieces.unshift(this.lastBlob);
+    if (this.#lastBlob) {
+      pieces.unshift(this.#lastBlob);
     }
-    this.lastBlob = new Blob(pieces, {type: 'text/plain'});
+    this.#lastBlob = new Blob(pieces, {type: 'text/plain'});
   }
 
   read(): Promise<string|null> {
@@ -53,17 +53,17 @@ export class TempFile {
   }
 
   size(): number {
-    return this.lastBlob ? this.lastBlob.size : 0;
+    return this.#lastBlob ? this.#lastBlob.size : 0;
   }
 
   async readRange(startOffset?: number, endOffset?: number): Promise<string|null> {
-    if (!this.lastBlob) {
+    if (!this.#lastBlob) {
       Common.Console.Console.instance().error('Attempt to read a temp file that was never written');
       return '';
     }
     const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
-        this.lastBlob.slice((startOffset as number), (endOffset as number)) :
-        this.lastBlob;
+        this.#lastBlob.slice((startOffset as number), (endOffset as number)) :
+        this.#lastBlob;
 
     const reader = new FileReader();
     try {
@@ -82,58 +82,58 @@ export class TempFile {
   async copyToOutputStream(
       outputStream: Common.StringOutputStream.OutputStream,
       progress?: ((arg0: ChunkedReader) => void)): Promise<DOMError|null> {
-    if (!this.lastBlob) {
+    if (!this.#lastBlob) {
       outputStream.close();
       return null;
     }
-    const reader = new ChunkedFileReader((this.lastBlob as File), 10 * 1000 * 1000, progress);
+    const reader = new ChunkedFileReader((this.#lastBlob as File), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
   }
 
   remove(): void {
-    this.lastBlob = null;
+    this.#lastBlob = null;
   }
 }
 
 export class TempFileBackingStorage implements SDK.TracingModel.BackingStorage {
-  private file: TempFile|null;
-  private strings!: string[];
-  private stringsLength!: number;
+  #file: TempFile|null;
+  #strings!: string[];
+  #stringsLength!: number;
 
   constructor() {
-    this.file = null;
+    this.#file = null;
     this.reset();
   }
 
   appendString(string: string): void {
-    this.strings.push(string);
-    this.stringsLength += string.length;
+    this.#strings.push(string);
+    this.#stringsLength += string.length;
     const flushStringLength = 10 * 1024 * 1024;
-    if (this.stringsLength > flushStringLength) {
+    if (this.#stringsLength > flushStringLength) {
       this.flush();
     }
   }
 
   appendAccessibleString(string: string): () => Promise<string|null> {
     this.flush();
-    if (!this.file) {
+    if (!this.#file) {
       return async(): Promise<null> => null;
     }
-    const startOffset = this.file.size();
-    this.strings.push(string);
+    const startOffset = this.#file.size();
+    this.#strings.push(string);
     this.flush();
-    return this.file.readRange.bind(this.file, startOffset, this.file.size());
+    return this.#file.readRange.bind(this.#file, startOffset, this.#file.size());
   }
 
   private flush(): void {
-    if (!this.strings.length) {
+    if (!this.#strings.length) {
       return;
     }
-    if (!this.file) {
-      this.file = new TempFile();
+    if (!this.#file) {
+      this.#file = new TempFile();
     }
-    this.stringsLength = 0;
-    this.file.write(this.strings.splice(0));
+    this.#stringsLength = 0;
+    this.#file.write(this.#strings.splice(0));
   }
 
   finishWriting(): void {
@@ -141,15 +141,15 @@ export class TempFileBackingStorage implements SDK.TracingModel.BackingStorage {
   }
 
   reset(): void {
-    if (this.file) {
-      this.file.remove();
+    if (this.#file) {
+      this.#file.remove();
     }
-    this.file = null;
-    this.strings = [];
-    this.stringsLength = 0;
+    this.#file = null;
+    this.#strings = [];
+    this.#stringsLength = 0;
   }
 
   writeToStream(outputStream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
-    return this.file ? this.file.copyToOutputStream(outputStream) : Promise.resolve(null);
+    return this.#file ? this.#file.copyToOutputStream(outputStream) : Promise.resolve(null);
   }
 }

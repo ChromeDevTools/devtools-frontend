@@ -39,27 +39,27 @@ import {CSSWorkspaceBinding} from './CSSWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
 export class SASSSourceMapping implements SourceMapping {
-  readonly #sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
-  readonly #project: ContentProviderBasedProject;
-  readonly #eventListeners: Common.EventTarget.EventDescriptor[];
-  readonly #bindings: Map<string, Binding>;
+  private readonly sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>;
+  private readonly project: ContentProviderBasedProject;
+  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
+  private readonly bindings: Map<string, Binding>;
 
   constructor(
       target: SDK.Target.Target,
       sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.CSSStyleSheetHeader.CSSStyleSheetHeader>,
       workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.#sourceMapManager = sourceMapManager;
-    this.#project = new ContentProviderBasedProject(
+    this.sourceMapManager = sourceMapManager;
+    this.project = new ContentProviderBasedProject(
         workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
-    NetworkProject.setTargetForProject(this.#project, target);
+    NetworkProject.setTargetForProject(this.project, target);
 
-    this.#bindings = new Map();
+    this.bindings = new Map();
 
-    this.#eventListeners = [
-      this.#sourceMapManager.addEventListener(
+    this.eventListeners = [
+      this.sourceMapManager.addEventListener(
           SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this),
-      this.#sourceMapManager.addEventListener(
+      this.sourceMapManager.addEventListener(
           SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this),
     ];
   }
@@ -73,8 +73,8 @@ export class SASSSourceMapping implements SourceMapping {
       Promise<void> {
     const header = event.data.client;
     const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
-    const project = this.#project;
-    const bindings = this.#bindings;
+    const project = this.project;
+    const bindings = this.bindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
@@ -93,7 +93,7 @@ export class SASSSourceMapping implements SourceMapping {
       Promise<void> {
     const header = event.data.client;
     const sourceMap = (event.data.sourceMap as SDK.SourceMap.TextSourceMap);
-    const bindings = this.#bindings;
+    const bindings = this.bindings;
     for (const sourceURL of sourceMap.sourceURLs()) {
       const binding = bindings.get(sourceURL);
       if (binding) {
@@ -111,7 +111,7 @@ export class SASSSourceMapping implements SourceMapping {
     if (!header) {
       return null;
     }
-    const sourceMap = this.#sourceMapManager.sourceMapForClient(header);
+    const sourceMap = this.sourceMapManager.sourceMapForClient(header);
     if (!sourceMap) {
       return null;
     }
@@ -128,7 +128,7 @@ export class SASSSourceMapping implements SourceMapping {
     if (!entry || !entry.sourceURL) {
       return null;
     }
-    const uiSourceCode = this.#project.uiSourceCodeForURL(entry.sourceURL);
+    const uiSourceCode = this.project.uiSourceCodeForURL(entry.sourceURL);
     if (!uiSourceCode) {
       return null;
     }
@@ -136,7 +136,7 @@ export class SASSSourceMapping implements SourceMapping {
   }
 
   uiLocationToRawLocations(uiLocation: Workspace.UISourceCode.UILocation): SDK.CSSModel.CSSLocation[] {
-    // TODO(crbug.com/1153123): Revisit the `#columnNumber || 0` and also preserve `undefined` for source maps?
+    // TODO(crbug.com/1153123): Revisit the `columnNumber || 0` and also preserve `undefined` for source maps?
     const {uiSourceCode, lineNumber, columnNumber = 0} = uiLocation;
     const binding = uiSourceCodeToBinding.get(uiSourceCode);
     if (!binding) {
@@ -145,7 +145,7 @@ export class SASSSourceMapping implements SourceMapping {
     const locations: SDK.CSSModel.CSSLocation[] = [];
     for (const sourceMap of binding.getReferringSourceMaps()) {
       const entries = sourceMap.findReverseEntries(uiSourceCode.url(), lineNumber, columnNumber);
-      for (const header of this.#sourceMapManager.clientsForSourceMap(sourceMap)) {
+      for (const header of this.sourceMapManager.clientsForSourceMap(sourceMap)) {
         locations.push(
             ...entries.map(entry => new SDK.CSSModel.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
       }
@@ -154,23 +154,23 @@ export class SASSSourceMapping implements SourceMapping {
   }
 
   dispose(): void {
-    Common.EventTarget.removeEventListeners(this.#eventListeners);
-    this.#project.dispose();
+    Common.EventTarget.removeEventListeners(this.eventListeners);
+    this.project.dispose();
   }
 }
 
 const uiSourceCodeToBinding = new WeakMap<Workspace.UISourceCode.UISourceCode, Binding>();
 
 class Binding {
-  readonly #project: ContentProviderBasedProject;
-  readonly #url: string;
+  private readonly project: ContentProviderBasedProject;
+  private readonly url: string;
   referringSourceMaps: SDK.SourceMap.TextSourceMap[];
-  readonly #activeSourceMap?: SDK.SourceMap.TextSourceMap|null;
+  private readonly activeSourceMap?: SDK.SourceMap.TextSourceMap|null;
   uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
 
   constructor(project: ContentProviderBasedProject, url: string) {
-    this.#project = project;
-    this.#url = url;
+    this.project = project;
+    this.url = url;
 
     this.referringSourceMaps = [];
     this.uiSourceCode = null;
@@ -180,24 +180,24 @@ class Binding {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
 
     const contentProvider =
-        sourceMap.sourceContentProvider(this.#url, Common.ResourceType.resourceTypes.SourceMapStyleSheet);
-    const newUISourceCode = this.#project.createUISourceCode(this.#url, contentProvider.contentType());
+        sourceMap.sourceContentProvider(this.url, Common.ResourceType.resourceTypes.SourceMapStyleSheet);
+    const newUISourceCode = this.project.createUISourceCode(this.url, contentProvider.contentType());
     uiSourceCodeToBinding.set(newUISourceCode, this);
     const mimeType =
-        Common.ResourceType.ResourceType.mimeFromURL(this.#url) || contentProvider.contentType().canonicalMimeType();
-    const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
+        Common.ResourceType.ResourceType.mimeFromURL(this.url) || contentProvider.contentType().canonicalMimeType();
+    const embeddedContent = sourceMap.embeddedContentByURL(this.url);
     const metadata = typeof embeddedContent === 'string' ?
         new Workspace.UISourceCode.UISourceCodeMetadata(null, embeddedContent.length) :
         null;
 
     if (this.uiSourceCode) {
       NetworkProject.cloneInitialFrameAttribution(this.uiSourceCode, newUISourceCode);
-      this.#project.removeFile(this.uiSourceCode.url());
+      this.project.removeFile(this.uiSourceCode.url());
     } else {
       NetworkProject.setInitialFrameAttribution(newUISourceCode, frameId);
     }
     this.uiSourceCode = newUISourceCode;
-    this.#project.addUISourceCodeWithProvider(this.uiSourceCode, contentProvider, metadata, mimeType);
+    this.project.addUISourceCodeWithProvider(this.uiSourceCode, contentProvider, metadata, mimeType);
   }
 
   addSourceMap(sourceMap: SDK.SourceMap.TextSourceMap, frameId: Protocol.Page.FrameId): void {
@@ -216,7 +216,7 @@ class Binding {
       this.referringSourceMaps.splice(lastIndex, 1);
     }
     if (!this.referringSourceMaps.length) {
-      this.#project.removeFile(uiSourceCode.url());
+      this.project.removeFile(uiSourceCode.url());
       this.uiSourceCode = null;
     } else {
       this.recreateUISourceCodeIfNeeded(frameId);

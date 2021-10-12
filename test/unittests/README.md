@@ -32,6 +32,9 @@ COVERAGE_FOLDERS='front_end/ui/components' npm run auto-unittest
 COVERAGE_FOLDERS='front_end/{ui/components,core/common}' npm run auto-unittest
 ```
 
+The code coverage output is written to `/karma-coverage` in the repository root.
+You can open `/karma-coverage/index.html` in a browser to inspect coverage for individual files.
+
 ## Inspecting detailed errors
 
 By default, the Karma testing output is terse, to avoid console output cluttering.

@@ -799,6 +799,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       this.lastRevealedProperty = null;
     }
 
+    this.swatchPopoverHelper().reposition();
+
     // Record the elements tool load time after the sidepane has loaded.
     Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
 
@@ -1947,7 +1949,6 @@ export class StylePropertiesSection {
     } else {
       this.showAllButton.classList.add('hidden');
     }
-    this.parentPane.swatchPopoverHelper().reposition();
   }
 
   isPropertyOverloaded(property: SDK.CSSProperty.CSSProperty): boolean {

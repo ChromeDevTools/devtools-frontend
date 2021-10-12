@@ -15,7 +15,7 @@ export class ESTreeWalker {
       beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined),
       afterVisit?: ((arg0: Acorn.ESTree.Node) => void)) {
     this.beforeVisit = beforeVisit;
-    this.afterVisit = afterVisit || new Function();
+    this.afterVisit = afterVisit || function(): void {};
     this.walkNulls = false;
   }
 

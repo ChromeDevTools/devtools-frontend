@@ -33,7 +33,8 @@ async function disableNetworkRequestBlocking() {
   expect(await checkboxIsChecked(networkRequestBlockingCheckbox)).to.equal(false);
 }
 
-describe('Network request blocking panel', async () => {
+// Flakey in the beforeEach step on Mac bot.
+describe.skip('[crbug.com/1259120] Network request blocking panel', async () => {
   beforeEach(async () => {
     await navigateToNetworkRequestBlockingTab();
     for (let i = 0; i < 20; i++) {

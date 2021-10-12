@@ -44,11 +44,24 @@ for (const file of files) {
         continue;
       }
 
-      property.toggleModifier('private', false);
       // https://github.com/dsherret/ts-morph/issues/1198
-      property.rename(`SOME_STUPID_PREFIX_${name}`, {
+      const newName = `SOME_STUPID_PREFIX_${name}`;
+
+      property.toggleModifier('private', false);
+      property.rename(newName, {
         renameInComments: true,
       });
+      for (const reference of property.findReferencesAsNodes()) {
+        // The first ancestor is the property access on `this.`.
+        const containingNode = reference.getAncestors()[1];
+        // Replace all `delete this.#somePrivateVariable;` (since that is illegal on private class fields)
+        // and replace it with an assignment to `undefined`.
+        if (containingNode.getKind() === SyntaxKind.DeleteExpression) {
+          console.log(`Replacing delete statement on line ${reference.getStartLineNumber()}`);
+          // We should replace the statement, not the expression itself.
+          containingNode.getFirstAncestor().replaceWithText(`this.${newName} = undefined;`);
+        }
+      }
     }
   }
   file.saveSync();

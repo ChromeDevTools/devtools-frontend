@@ -48,9 +48,7 @@ for (const file of files) {
       const newName = `SOME_STUPID_PREFIX_${name}`;
 
       property.toggleModifier('private', false);
-      property.rename(newName, {
-        renameInComments: true,
-      });
+      property.rename(newName);
       for (const reference of property.findReferencesAsNodes()) {
         // The first ancestor is the property access on `this.`.
         const containingNode = reference.getAncestors()[1];

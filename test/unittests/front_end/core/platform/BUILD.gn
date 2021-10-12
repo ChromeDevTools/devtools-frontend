@@ -9,6 +9,7 @@ ts_library("platform") {
   sources = [
     "ArrayUtilities_test.ts",
     "DateUtilities_test.ts",
+    "DevToolsPath_test.ts",
     "KeyboardUtilities_test.ts",
     "MapUtilities_test.ts",
     "NumberUtilities_test.ts",

@@ -38,6 +38,7 @@ devtools_pre_built("dcheck") {
 
 devtools_module("platform") {
   sources = [
+    "DevToolsPath.ts",
     "UIString.ts",
     "array-utilities.ts",
     "date-utilities.ts",

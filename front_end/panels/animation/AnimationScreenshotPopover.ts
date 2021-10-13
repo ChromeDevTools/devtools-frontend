@@ -7,57 +7,57 @@ import * as UI from '../../ui/legacy/legacy.js';
 import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.js';
 
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
-  private frames: HTMLImageElement[];
-  private rafId: number;
-  private currentFrame: number;
-  private progressBar: HTMLElement;
-  private showFrame?: boolean;
-  private endDelay?: number;
+  #frames: HTMLImageElement[];
+  #rafId: number;
+  #currentFrame: number;
+  #progressBar: HTMLElement;
+  #showFrame?: boolean;
+  #endDelay?: number;
   constructor(images: HTMLImageElement[]) {
     super(true);
     console.assert(images.length > 0);
 
     this.contentElement.classList.add('animation-screenshot-popover');
-    this.frames = images;
+    this.#frames = images;
     for (const image of images) {
       this.contentElement.appendChild(image);
       image.style.display = 'none';
     }
-    this.rafId = 0;
-    this.currentFrame = 0;
-    this.frames[0].style.display = 'block';
-    this.progressBar = this.contentElement.createChild('div', 'animation-progress');
+    this.#rafId = 0;
+    this.#currentFrame = 0;
+    this.#frames[0].style.display = 'block';
+    this.#progressBar = this.contentElement.createChild('div', 'animation-progress');
   }
 
   wasShown(): void {
-    this.rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
+    this.#rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
     this.registerCSSFiles([animationScreenshotPopoverStyles]);
   }
 
   willHide(): void {
-    this.contentElement.window().cancelAnimationFrame(this.rafId);
-    delete this.endDelay;
+    this.contentElement.window().cancelAnimationFrame(this.#rafId);
+    this.#endDelay = undefined;
   }
 
   private changeFrame(): void {
-    this.rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
+    this.#rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
 
-    if (this.endDelay) {
-      this.endDelay--;
+    if (this.#endDelay) {
+      this.#endDelay--;
       return;
     }
-    this.showFrame = !this.showFrame;
-    if (!this.showFrame) {
+    this.#showFrame = !this.#showFrame;
+    if (!this.#showFrame) {
       return;
     }
 
-    const numFrames = this.frames.length;
-    this.frames[this.currentFrame % numFrames].style.display = 'none';
-    this.currentFrame++;
-    this.frames[(this.currentFrame) % numFrames].style.display = 'block';
-    if (this.currentFrame % numFrames === numFrames - 1) {
-      this.endDelay = 50;
+    const numFrames = this.#frames.length;
+    this.#frames[this.#currentFrame % numFrames].style.display = 'none';
+    this.#currentFrame++;
+    this.#frames[(this.#currentFrame) % numFrames].style.display = 'block';
+    if (this.#currentFrame % numFrames === numFrames - 1) {
+      this.#endDelay = 50;
     }
-    this.progressBar.style.width = (this.currentFrame % numFrames + 1) / numFrames * 100 + '%';
+    this.#progressBar.style.width = (this.#currentFrame % numFrames + 1) / numFrames * 100 + '%';
   }
 }

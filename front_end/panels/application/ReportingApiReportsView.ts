@@ -30,10 +30,10 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
     super(/* isVertical: */ false, /* secondIsSidebar: */ true);
     const topPanel = new UI.Widget.VBox();
     const bottomPanel = new UI.Widget.VBox();
-    const resizer = topPanel.element.createChild('div');
+    topPanel.setMinimumSize(0, 80);
     this.setMainWidget(topPanel);
+    bottomPanel.setMinimumSize(0, 40);
     this.setSidebarWidget(bottomPanel);
-    this.installResizer(resizer);
 
     topPanel.contentElement.appendChild(this.reportsGrid);
     this.reportsGrid.addEventListener('cellfocused', this.onFocus.bind(this));
@@ -73,6 +73,7 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
     const report = cell && this.reports.find(report => report.id === cell.value);
     if (report) {
       const jsonView = await SourceFrame.JSONView.JSONView.createView(JSON.stringify(report.body));
+      jsonView?.setMinimumSize(0, 40);
       if (jsonView) {
         this.setSidebarWidget(jsonView);
       }

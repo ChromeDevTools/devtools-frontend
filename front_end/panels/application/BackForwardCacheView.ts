@@ -10,6 +10,9 @@ import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
 
+import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
+import backForwardCacheViewStyles from './backForwardCacheView.css.js';
+
 const UIStrings = {
   /**
    * @description Title text in Back-forward Cache view of the Application panel
@@ -77,6 +80,11 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     this.getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.onBackForwardCacheUpdate, this);
     this.update();
+  }
+
+  wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([backForwardCacheViewStyles]);
   }
 
   private onBackForwardCacheUpdate(): void {
@@ -159,18 +167,26 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     // clang-format on
   }
 
-  private renderExplanations(description: string, explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]):
+  private renderExplanations(category: string, explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]):
       LitHtml.TemplateResult {
     return LitHtml.html`
       ${
-        explanations.length > 0 ?
-            LitHtml.html`
-          <${ReportView.ReportView.ReportKey.litTagName}>${description}</${ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>${
-                explanations.map(explanation => LitHtml.html`<div>${explanation.reason}</div>`)}</${
-                ReportView.ReportView.ReportValue.litTagName}>
+        explanations.length > 0 ? LitHtml.html`
+          <${ReportView.ReportView.ReportKey.litTagName}>${category}</${ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName}>
+          <ul class='not-restored-reason-list'>${explanations.map(explanation => this.renderReason(explanation))}</ul>
+          </${ReportView.ReportView.ReportValue.litTagName}>
         ` :
-            LitHtml.nothing}
+                                  LitHtml.nothing}
+    `;
+  }
+
+  private renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
+    return LitHtml.html`
+      <li>${explanation.reason} : ${
+        (explanation.reason in NotRestoredReasonDescription) ?
+            LitHtml.html`${NotRestoredReasonDescription[explanation.reason].name()}` :
+            LitHtml.nothing} </li>
     `;
   }
 }

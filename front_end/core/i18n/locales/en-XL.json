@@ -2330,6 +2330,339 @@
   "panels/application/AppManifestView.ts | theSpecifiedApplicationPlatform": {
     "message": "T̂h́ê śp̂éĉíf̂íêd́ âṕp̂ĺîćât́îón̂ ṕl̂át̂f́ôŕm̂ íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ ón̂ Android"
   },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "P̂áĝéŝ t́ĥát̂ ŕêq́ûéŝt́êd́ âń Âṕp̂B́âńn̂ér̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ b̂ý f̂ĺâǵŝ. V́îśît́ ĉh́r̂óm̂é://f̂ĺâǵŝ/#b́âćk̂-f́ôŕŵár̂d́-ĉáĉh́ê t́ô én̂áb̂ĺê ít̂ ĺôćâĺl̂ý ôń t̂h́îś d̂év̂íĉé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ b̂ý t̂h́ê ćôḿm̂án̂d́ l̂ín̂é."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô ín̂śûf́f̂íĉíêńt̂ ḿêḿôŕŷ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś n̂ót̂ śûṕp̂ór̂t́êd́ b̂ý d̂él̂éĝát̂é."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ f̂ór̂ ṕr̂ér̂én̂d́êŕêŕ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "T̂h́ê ṕâǵê ćâńn̂ót̂ b́ê ćâćĥéd̂ b́êćâúŝé ît́ ĥáŝ á B̂ŕôád̂ćâśt̂Ćĥán̂ńêĺ îńŝt́âńĉé ŵít̂h́ r̂éĝíŝt́êŕêd́ l̂íŝt́êńêŕŝ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "P̂áĝéŝ ẃît́ĥ ćâćĥé-ĉón̂t́r̂ól̂:ńô-śt̂ór̂é ĥéâd́êŕ ĉán̂ńôt́ êńt̂ér̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "T̂h́ê ćâćĥé ŵáŝ ín̂t́êńt̂íôńâĺl̂ý ĉĺêár̂éd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ t́ĥé ĉáĉh́ê t́ô ál̂ĺôẃ âńôt́ĥér̂ ṕâǵê t́ô b́ê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "P̂áĝéŝ ćôńt̂áîńîńĝ ṕl̂úĝín̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé F̂íl̂éĈh́ôóŝér̂ ÁP̂Í âŕê ńôt́ êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé F̂íl̂é Ŝýŝt́êḿ Âćĉéŝś ÂṔÎ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé M̂éd̂íâ D́êv́îćê D́îśp̂át̂ćĥér̂ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Â ḿêd́îá p̂ĺâýêŕ ŵáŝ ṕl̂áŷín̂ǵ ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé M̂éd̂íâŚêśŝíôń ÂṔÎ án̂d́ ŝét̂ á p̂ĺâýb̂áĉḱ ŝt́ât́ê ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé M̂éd̂íâŚêśŝíôń ÂṔÎ án̂d́ ŝét̂ áĉt́îón̂ h́âńd̂ĺêŕŝ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝéĉúr̂ít̂ýĤán̂d́l̂ér̂ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝér̂íâĺ ÂṔÎ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂Áût́ĥét̂íĉát̂íôń ÂṔÎ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂B́l̂úêt́ôót̂h́ ÂṔÎ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂ÚŜB́ ÂṔÎ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé â d́êd́îćât́êd́ ŵór̂ḱêŕ ôŕ ŵór̂ḱl̂ét̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "T̂h́ê d́ôćûḿêńt̂ d́îd́ n̂ót̂ f́îńîśĥ ĺôád̂ín̂ǵ b̂éf̂ór̂é n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "Êḿb̂éd̂d́êŕÂṕp̂B́âńn̂ér̂Ḿâńâǵêŕ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Êḿb̂éd̂d́êŕĈh́r̂óm̂éP̂áŝśŵór̂d́M̂án̂áĝér̂Ćl̂íêńt̂B́îńd̂Ćr̂éd̂én̂t́îál̂Ḿâńâǵêŕ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "Êḿb̂éd̂d́êŕD̂óm̂D́îśt̂íl̂ĺêŕŜél̂f́D̂él̂ét̂ín̂ǵR̂éq̂úêśt̂D́êĺêǵât́ê"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "Êḿb̂éd̂d́êŕD̂óm̂D́îśt̂íl̂ĺêŕV̂íêẃêŕŜóûŕĉé"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Ḿêśŝáĝín̂ǵ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Ḿêśŝáĝín̂ǵF̂ór̂Óp̂én̂Ṕôŕt̂"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂ś"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Śêńt̂ḾêśŝáĝéT̂óĈáĉh́êd́F̂ŕâḿê"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "Êḿb̂éd̂d́êŕM̂ód̂ál̂D́îál̂óĝ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "Êḿb̂éd̂d́êŕÔf́f̂ĺîńêṔâǵê"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Êḿb̂éd̂d́êŕÔóm̂Ín̂t́êŕv̂én̂t́îón̂T́âb́Ĥél̂ṕêŕ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "Êḿb̂éd̂d́êŕP̂ér̂ḿîśŝíôńR̂éq̂úêśt̂Ḿâńâǵêŕ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "Êḿb̂éd̂d́êŕP̂óp̂úp̂B́l̂óĉḱêŕT̂áb̂H́êĺp̂ér̂"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Êḿb̂éd̂d́êŕŜáf̂éB̂ŕôẃŝín̂ǵT̂h́r̂éât́D̂ét̂áîĺŝ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Êḿb̂éd̂d́êŕŜáf̂éB̂ŕôẃŝín̂ǵT̂ŕîǵĝér̂éd̂ṔôṕûṕB̂ĺôćk̂ér̂"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Â śêŕv̂íĉé ŵór̂ḱêŕ ŵáŝ áĉt́îv́ât́êd́ ŵh́îĺê t́ĥé p̂áĝé ŵáŝ ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ t́ĥé ĉáĉh́ê t́ô ál̂ĺôẃ âńôt́ĥér̂ ṕâǵê t́ô b́ê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ǵr̂án̂t́êd́ m̂éd̂íâ śt̂ŕêám̂ áĉćêśŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé p̂ór̂t́âĺŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Ôńl̂ý p̂áĝéŝ ĺôád̂éd̂ v́îá â ǴÊT́ r̂éq̂úêśt̂ ár̂é êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Ôńl̂ý p̂áĝéŝ ẃît́ĥ á ŝt́ât́ûś ĉód̂é ôf́ 2X̂X́ ĉán̂ b́ê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Îd́l̂éM̂án̂áĝér̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê án̂ óp̂én̂ Ín̂d́êx́êd́D̂B́ ĉón̂ńêćt̂íôń âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Îńêĺîǵîb́l̂é ÂṔÎś ŵér̂é ûśêd́."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ÎṔâǵêś t̂h́ât́ Ĵáv̂áŜćr̂íp̂t́ îś îńĵéĉt́êd́ îńt̂ó b̂ý êx́t̂én̂śîón̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "P̂áĝéŝ t́ĥát̂ Śt̂ýl̂éŜh́êét̂ íŝ ín̂j́êćt̂éd̂ ín̂t́ô b́ŷ éx̂t́êńŝíôńŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Îńt̂ér̂ńâĺ êŕr̂ór̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Ĉh́r̂óm̂é d̂ét̂éĉt́êd́ âń ât́t̂ém̂ṕt̂ t́ô éx̂éĉút̂é Ĵáv̂áŜćr̂íp̂t́ ŵh́îĺê ín̂ t́ĥé ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé K̂éŷb́ôár̂d́ l̂óĉḱ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "T̂h́ê ṕâǵê d́îd́ n̂ót̂ f́îńîśĥ ĺôád̂ín̂ǵ b̂éf̂ór̂é n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "P̂áĝéŝ ẃĥóŝé m̂áîń r̂éŝóûŕĉé ĥáŝ ćâćĥé-ĉón̂t́r̂ól̂:ńô-ćâćĥé ĉán̂ńôt́ êńt̂ér̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "P̂áĝéŝ ẃĥóŝé m̂áîń r̂éŝóûŕĉé ĥáŝ ćâćĥé-ĉón̂t́r̂ól̂:ńô-śt̂ór̂é ĉán̂ńôt́ êńt̂ér̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "N̂áv̂íĝát̂íôń ŵáŝ ćâńĉél̂ĺêd́ b̂éf̂ór̂é t̂h́ê ṕâǵê ćôúl̂d́ b̂é r̂éŝt́ôŕêd́ f̂ŕôḿ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ t́ĥé ĉáĉh́ê b́êćâúŝé âń âćt̂ív̂é n̂ét̂ẃôŕk̂ ćôńn̂éĉt́îón̂ ŕêćêív̂éd̂ t́ôó m̂úĉh́ d̂át̂á. Ĉh́r̂óm̂é l̂ím̂ít̂ś t̂h́ê ám̂óûńt̂ óf̂ d́ât́â t́ĥát̂ á p̂áĝé m̂áŷ ŕêćêív̂é ŵh́îĺê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ín̂f́l̂íĝh́t̂ f́êt́ĉh́() ôŕ X̂H́R̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê b́êćâúŝé âń âćt̂ív̂é n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ îńv̂ól̂v́êd́ â ŕêd́îŕêćt̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ t́ĥé ĉáĉh́ê b́êćâúŝé â ńêt́ŵór̂ḱ ĉón̂ńêćt̂íôń ŵáŝ óp̂én̂ t́ôó l̂ón̂ǵ. Ĉh́r̂óm̂é l̂ím̂ít̂ś t̂h́ê ám̂óûńt̂ óf̂ t́îḿê t́ĥát̂ á p̂áĝé m̂áŷ ŕêćêív̂é d̂át̂á ŵh́îĺê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "P̂áĝéŝ t́ĥát̂ d́ô ńôt́ ĥáv̂é â v́âĺîd́ r̂éŝṕôńŝé ĥéâd́ ĉán̂ńôt́ êńt̂ér̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "N̂áv̂íĝát̂íôń ĥáp̂ṕêńêd́ îń â f́r̂ám̂é ôt́ĥér̂ t́ĥán̂ t́ĥé m̂áîń f̂ŕâḿê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "T̂h́ê ṕâǵê h́âś ûńl̂óâd́ ĥán̂d́l̂ér̂ ẃît́ĥóût́ t̂h́ê b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê óp̂t́-îń ĥéâd́êŕ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "P̂áĝé ŵít̂h́ ôńĝóîńĝ ín̂d́êx́êd́ D̂B́ t̂ŕâńŝáĉt́îón̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "P̂áĝéŝ ẃît́ĥ án̂ ín̂-f́l̂íĝh́t̂ ńêt́ŵór̂ḱ r̂éq̂úêśt̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "P̂áĝéŝ ẃît́ĥ án̂ ín̂-f́l̂íĝh́t̂ f́êt́ĉh́ n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "P̂áĝéŝ ẃît́ĥ án̂ ín̂-f́l̂íĝh́t̂ ńêt́ŵór̂ḱ r̂éq̂úêśt̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "P̂áĝéŝ ẃît́ĥ án̂ ín̂-f́l̂íĝh́t̂ X́ĤŔ n̂ét̂ẃôŕk̂ ŕêq́ûéŝt́ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé P̂áŷḿêńt̂Ḿâńâǵêŕ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé P̂íĉt́ûŕê-ín̂-Ṕîćt̂úr̂é âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé p̂ór̂t́âĺŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "P̂áĝéŝ t́ĥát̂ śĥóŵ Ṕr̂ín̂t́îńĝ ÚÎ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "T̂h́ê ṕâǵê ẃâś ôṕêńêd́ ûśîńĝ window.open() án̂d́ âńôt́ĥér̂ t́âb́ ĥáŝ á r̂éf̂ér̂én̂ćê t́ô ít̂, ór̂ t́ĥé p̂áĝé ôṕêńêd́ â ẃîńd̂óŵ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "T̂h́ê ŕêńd̂ér̂ér̂ ṕr̂óĉéŝś f̂ór̂ t́ĥé p̂áĝé îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé ĉŕâśĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "T̂h́ê ŕêńd̂ér̂ér̂ ṕr̂óĉéŝś f̂ór̂ t́ĥé p̂áĝé îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé ŵáŝ ḱîĺl̂éd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ âúd̂íô ćâṕt̂úr̂é p̂ér̂ḿîśŝíôńŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ ŝén̂śôŕ p̂ér̂ḿîśŝíôńŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ b̂áĉḱĝŕôún̂d́ ŝýn̂ć ôŕ f̂ét̂ćĥ ṕêŕm̂íŝśîón̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ M̂ÍD̂Í p̂ér̂ḿîśŝíôńŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ n̂ót̂íf̂íĉát̂íôńŝ ṕêŕm̂íŝśîón̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ ŝt́ôŕâǵê áĉćêśŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ŕêq́ûéŝt́êd́ v̂íd̂éô ćâṕt̂úr̂é p̂ér̂ḿîśŝíôńŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Ôńl̂ý p̂áĝéŝ ẃĥóŝé ÛŔL̂ śĉh́êḿê íŝ H́T̂T́P̂ / H́T̂T́P̂Ś ĉán̂ b́ê ćâćĥéd̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "T̂h́ê ṕâǵê ẃâś ĉĺâím̂éd̂ b́ŷ á ŝér̂v́îćê ẃôŕk̂ér̂ ẃĥíl̂é ît́ îś îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Â śêŕv̂íĉé ŵór̂ḱêŕ ât́t̂ém̂ṕt̂éd̂ t́ô śêńd̂ t́ĥé p̂áĝé îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé â MessageEvent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Ŝér̂v́îćêẂôŕk̂ér̂ ẃâś ûńr̂éĝíŝt́êŕêd́ ŵh́îĺê á p̂áĝé ŵáŝ ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "T̂h́ê ṕâǵê ẃâś êv́îćt̂éd̂ f́r̂óm̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê d́ûé t̂ó â śêŕv̂íĉé ŵór̂ḱêŕ âćt̂ív̂át̂íôń."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Ĉh́r̂óm̂é r̂éŝt́âŕt̂éd̂ án̂d́ ĉĺêár̂éd̂ t́ĥé b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé êńt̂ŕîéŝ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝh́âŕêd́Ŵór̂ḱêŕ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝṕêéĉh́R̂éĉóĝńîźêŕ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝṕêéĉh́Ŝýn̂t́ĥéŝíŝ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Âń îf́r̂ám̂é ôń t̂h́ê ṕâǵê śt̂ár̂t́êd́ â ńâv́îǵât́îón̂ t́ĥát̂ d́îd́ n̂ót̂ ćôḿp̂ĺêt́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "P̂áĝéŝ ẃĥóŝé ŝúb̂ŕêśôúr̂ćê h́âś ĉáĉh́ê-ćôńt̂ŕôĺ:n̂ó-ĉáĉh́ê ćâńn̂ót̂ én̂t́êŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "P̂áĝéŝ ẃĥóŝé ŝúb̂ŕêśôúr̂ćê h́âś ĉáĉh́ê-ćôńt̂ŕôĺ:n̂ó-ŝt́ôŕê ćâńn̂ót̂ én̂t́êŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "T̂h́ê ṕâǵê éx̂ćêéd̂éd̂ t́ĥé m̂áx̂ím̂úm̂ t́îḿê ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê án̂d́ ŵáŝ éx̂ṕîŕêd́."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "T̂h́ê ṕâǵê t́îḿêd́ ôút̂ én̂t́êŕîńĝ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê (ĺîḱêĺŷ d́ûé t̂ó l̂ón̂ǵ-r̂ún̂ńîńĝ ṕâǵêh́îd́ê h́âńd̂ĺêŕŝ)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "T̂h́ê ṕâǵê h́âś âń ûńl̂óâd́ ĥán̂d́l̂ér̂ ín̂ t́ĥé m̂áîń f̂ŕâḿê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "T̂h́ê ṕâǵê h́âś âń ûńl̂óâd́ ĥán̂d́l̂ér̂ ín̂ á ŝúb̂ f́r̂ám̂é."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "B̂ŕôẃŝér̂ h́âś ĉh́âńĝéd̂ t́ĥé ûśêŕ âǵêńt̂ óv̂ér̂ŕîd́ê h́êád̂ér̂."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "P̂áĝéŝ t́ĥát̂ h́âv́ê ǵr̂án̂t́êd́ âćĉéŝś t̂ó r̂éĉór̂d́ v̂íd̂éô ór̂ áûd́îó âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂D́ât́âb́âśê ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂H́ÎD́ âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂Ĺôćk̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂Ńf̂ć âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâd́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂ÓT̂ṔŜér̂v́îćê ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́f̂ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "P̂áĝéŝ ẃît́ĥ Ẃêb́R̂T́Ĉ ćâńn̂ót̂ én̂t́êŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂Śĥár̂é âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâd́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "P̂áĝéŝ ẃît́ĥ Ẃêb́Ŝóĉḱêt́ ĉán̂ńôt́ êńt̂ér̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "P̂áĝéŝ ẃît́ĥ Ẃêb́T̂ŕâńŝṕôŕt̂ ćâńn̂ót̂ én̂t́êŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂X́R̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé"
   },

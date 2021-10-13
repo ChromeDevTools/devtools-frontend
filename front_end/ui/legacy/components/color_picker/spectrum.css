@@ -320,14 +320,12 @@
 
 .swatch-overlay:hover,
 .swatch-overlay:focus-visible {
-  background-color: rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-inverted-opacity-30);
   opacity: 100%;
 }
 
 .swatch-overlay:active {
-  background-color: rgb(0 0 0 / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--color-background-inverted-opacity-50);
 }
 
 [is=ui-icon].icon-mask.copy-color-icon {

@@ -26,13 +26,14 @@ export {bracketMatching} from '@codemirror/matchbrackets';
 export {Range, RangeSet, RangeSetBuilder} from '@codemirror/rangeset';
 export {selectNextOccurrence} from '@codemirror/search';
 export {
-  Annotation, AnnotationType, Compartment, EditorSelection,
-  EditorState, EditorStateConfig, Extension, Facet, Prec, SelectionRange,
-  StateEffect, StateEffectType, StateField, Transaction, TransactionSpec
+  Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,
+  EditorSelection, EditorState, EditorStateConfig, Extension, Facet, Prec,
+  SelectionRange, StateEffect, StateEffectType, StateField, Transaction,
+  TransactionSpec
 } from '@codemirror/state';
 export {StreamLanguage, StreamParser, StringStream} from '@codemirror/stream-parser';
 export {Line, Text, TextIterator} from '@codemirror/text';
-export {showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
+export {hoverTooltip, showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
 export {
   Command, Decoration, DecorationSet, drawSelection, EditorView,
   highlightSpecialChars, KeyBinding, keymap, MatchDecorator, placeholder,
@@ -42,6 +43,7 @@ export {
   NodeProp, NodeSet, NodeType, Parser, SyntaxNode, Tree, TreeCursor
 } from '@lezer/common';
 export {LRParser} from '@lezer/lr';
+export {StyleModule} from 'style-mod';
 
 export async function clojure() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clojure')).clojure);

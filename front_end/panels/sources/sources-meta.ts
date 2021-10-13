@@ -523,10 +523,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   contextTypes() {
     return maybeRetrieveContextTypes(
-        Sources =>
-            [Sources.SourcesView.SourcesView,
-             UI.ShortcutRegistry.ForwardedShortcut,
-    ]);
+        Sources => [Sources.SourcesView.SourcesView, UI.ShortcutRegistry.ForwardedShortcut]);
   },
   options: [
     {

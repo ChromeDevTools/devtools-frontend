@@ -9,14 +9,16 @@ import {Context} from './Context.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {ForwardedShortcut, ShortcutRegistry} from './ShortcutRegistry.js';
 
+// This handler only forwards the keystrokes if DevTools front-end is
+// not running in hosted mode.
 export class ForwardedInputEventHandler {
   constructor() {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
 
-  private onKeyEventUnhandled(
-      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.KeyEventUnhandledEvent>): void {
+  private async onKeyEventUnhandled(
+      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.KeyEventUnhandledEvent>): Promise<void> {
     const {type, key, keyCode, modifiers} = event.data;
     if (type !== 'keydown') {
       return;
@@ -26,7 +28,7 @@ export class ForwardedInputEventHandler {
     const shortcutRegistry = ShortcutRegistry.instance();
 
     context.setFlavor(ForwardedShortcut, ForwardedShortcut.instance);
-    shortcutRegistry.handleKey(KeyboardShortcut.makeKey(keyCode, modifiers), key);
+    await shortcutRegistry.handleKey(KeyboardShortcut.makeKey(keyCode, modifiers), key);
     context.setFlavor(ForwardedShortcut, null);
   }
 }

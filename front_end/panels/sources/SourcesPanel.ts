@@ -1230,9 +1230,36 @@ export class RevealingActionDelegate implements UI.ActionRegistration.ActionDele
       return false;
     }
     switch (actionId) {
-      case 'debugger.toggle-pause':
+      case 'debugger.toggle-pause': {
+        // This action can be triggered both on the DevTools front-end itself,
+        // or on the inspected target. If triggered on the DevTools front-end,
+        // it will take care of resuming.
+        //
+        // If triggered on the target, NOT in hosted mode:
+        //   * ..and the paused overlay is enabled:
+        //       => do not take any action here, as the paused overlay will resume
+        //   * ..and the paused overlay is disabled:
+        //       => take care of the resume here
+        // If triggered on the target in hosted mode:
+        //   * ..and the paused overlay is enabled:
+        //       => execution will not reach here, as shortcuts are not forwarded
+        //          and the paused overlay will resume
+        //   * ..and the paused overlay is disabled:
+        //       => overlay will not take care of resume, and neither will
+        //          DevTools as no shortcuts are forwarded from the target
+
+        // Do not trigger a resume action, if: the shortcut was forwarded and the
+        // paused overlay is enabled.
+        const actionHandledInPausedOverlay = context.flavor(UI.ShortcutRegistry.ForwardedShortcut) &&
+            !Common.Settings.Settings.instance().moduleSetting('disablePausedStateOverlay').get();
+        if (actionHandledInPausedOverlay) {
+          // Taken care of by inspector overlay: handled set to true to
+          // register user metric.
+          return true;
+        }
         panel.togglePause();
         return true;
+      }
     }
     return false;
   }

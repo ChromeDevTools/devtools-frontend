@@ -123,12 +123,13 @@ export class ParsedURL {
     return rawPath as Platform.DevToolsPath.UrlString;
   }
 
-  static urlToPlatformPath(fileURL: string, isWindows?: boolean): string {
+  static urlToRawPathString(fileURL: Platform.DevToolsPath.UrlString, isWindows?: boolean):
+      Platform.DevToolsPath.RawPathString {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
     if (isWindows) {
-      return fileURL.substr('file:///'.length).replace(/\//g, '\\');
+      return fileURL.substr('file:///'.length).replace(/\//g, '\\') as Platform.DevToolsPath.RawPathString;
     }
-    return fileURL.substr('file://'.length);
+    return fileURL.substr('file://'.length) as Platform.DevToolsPath.RawPathString;
   }
 
   static urlWithoutHash(url: string): string {

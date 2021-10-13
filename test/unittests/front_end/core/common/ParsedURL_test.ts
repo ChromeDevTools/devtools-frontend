@@ -88,14 +88,14 @@ describe('Parsed URL', () => {
   });
 
   it('converts URL to a platform path that starts with "file://"', () => {
-    const urlTest = 'file://usr/lib';
-    const convertedUrl = ParsedURL.urlToPlatformPath(urlTest);
+    const urlTest = 'file://usr/lib' as Platform.DevToolsPath.UrlString;
+    const convertedUrl = ParsedURL.urlToRawPathString(urlTest);
     assert.strictEqual(convertedUrl, 'usr/lib', 'URL was not converted successfully');
   });
 
   it('converts URL to a platform path that starts with "file:///" on Windows', () => {
-    const urlTest = 'file:///usr/lib';
-    const convertedUrl = ParsedURL.urlToPlatformPath(urlTest, true);
+    const urlTest = 'file:///usr/lib' as Platform.DevToolsPath.UrlString;
+    const convertedUrl = ParsedURL.urlToRawPathString(urlTest, true);
     assert.strictEqual(convertedUrl, 'usr\\lib', 'URL was not converted successfully');
   });
 

@@ -1,0 +1,36 @@
+# Copyright 2021 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "diffView.css" ]
+}
+
+devtools_module("diff_view") {
+  sources = [ "DiffView.ts" ]
+
+  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+
+  deps = [
+    ":css_files",
+    "../../../core/common:bundle",
+    "../../../core/sdk:bundle",
+    "../../../third_party/diff:bundle",
+    "../../lit-html:bundle",
+    "../code_highlighter:bundle",
+    "../helpers:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "diff_view.ts"
+
+  deps = [ ":diff_view" ]
+
+  visibility = default_components_visibility
+}

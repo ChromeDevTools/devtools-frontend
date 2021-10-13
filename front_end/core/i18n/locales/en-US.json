@@ -3608,17 +3608,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (from source map)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Addition:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Deletion:{PH1}"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binary data"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Changes diff viewer"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "No changes"
@@ -3631,9 +3622,6 @@
   },
   "panels/changes/ChangesView.ts | sInsertions": {
     "message": "{n, plural, =1 {# insertion (+)} other {# insertions (+)}}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Skipping {PH1} matching lines … )"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Open Console to view {PH1}"
@@ -11311,6 +11299,18 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sort By"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Addition:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Changes diff viewer"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Deletion:"
+  },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Skipping {PH1} matching lines … )"
   },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}"

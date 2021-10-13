@@ -44,6 +44,7 @@ group("front_end") {
     "ui",
     "ui/components",
     "ui/components/adorners",
+    "ui/components/diff_view",
     "ui/components/helpers",
     "ui/components/issue_counter",
     "ui/components/linear_memory_inspector",

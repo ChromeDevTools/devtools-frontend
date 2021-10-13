@@ -3608,17 +3608,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (f̂ŕôḿ ŝóûŕĉé m̂áp̂)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Âd́d̂ít̂íôń:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "D̂él̂ét̂íôń:{PH1}"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "B̂ín̂ár̂ý d̂át̂á"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Ĉh́âńĝéŝ d́îf́f̂ v́îéŵér̂"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "N̂ó ĉh́âńĝéŝ"
@@ -3631,9 +3622,6 @@
   },
   "panels/changes/ChangesView.ts | sInsertions": {
     "message": "{n, plural, =1 {# îńŝér̂t́îón̂ (+)} other {# ín̂śêŕt̂íôńŝ (+)}}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "Ôṕêń Ĉón̂śôĺê t́ô v́îéŵ {PH1}"
@@ -11311,6 +11299,18 @@
   },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ŝór̂t́ B̂ý"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Âd́d̂ít̂íôń:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Ĉh́âńĝéŝ d́îf́f̂ v́îéŵér̂"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "D̂él̂ét̂íôń:"
+  },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Ŝḱîṕp̂ín̂ǵ {PH1} m̂át̂ćĥín̂ǵ l̂ín̂éŝ … )"
   },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount, plural, =1 {# b̂ŕêák̂ín̂ǵ ĉh́âńĝé} other {# b̂ŕêák̂ín̂ǵ ĉh́âńĝéŝ}}"

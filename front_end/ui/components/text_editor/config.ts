@@ -200,8 +200,41 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.Prec.fallback(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     detectLineSeparator(text),
     autocompletion,
-    CM.tooltips({position: 'absolute'}),
+    CM.tooltips({parent: getTooltipHost() as unknown as HTMLElement}),
   ];
+}
+
+// Root editor tooltips at the top of the document, creating a special
+// element with the editor styles mounted in it for them. This is
+// annoying, but necessary because a scrollable parent node clips them
+// otherwise, `position: fixed` doesn't work due to `contain` styles,
+// and appending them diretly to `document.body` doesn't work because
+// the necessary style sheets aren't available there.
+let tooltipHost: ShadowRoot|null = null;
+
+function getTooltipHost(): ShadowRoot {
+  if (!tooltipHost) {
+    const styleModules = CM.EditorState
+                             .create({
+                               extensions: [
+                                 editorTheme,
+                                 themeIsDark() ? dummyDarkTheme : [],
+                                 CodeHighlighter.CodeHighlighter.getHighlightStyle(CM),
+                                 CM.showTooltip.of({
+                                   pos: 0,
+                                   create() {
+                                     return {dom: document.createElement('div')};
+                                   },
+                                 }),
+                               ],
+                             })
+                             .facet(CM.EditorView.styleModule);
+    const host = document.body.appendChild(document.createElement('div'));
+    host.className = 'editor-tooltip-host';
+    tooltipHost = host.attachShadow({mode: 'open'});
+    CM.StyleModule.mount(tooltipHost, styleModules);
+  }
+  return tooltipHost;
 }
 
 class CompletionHint extends CM.WidgetType {

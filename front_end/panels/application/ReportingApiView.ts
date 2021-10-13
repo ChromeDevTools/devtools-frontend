@@ -15,12 +15,11 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
     const networkManager = mainTarget && mainTarget.model(SDK.NetworkManager.NetworkManager);
     if (networkManager) {
       const reportingApiReportsView = new ReportingApiReportsView(networkManager);
-      const resizer = reportingApiReportsView.element.createChild('div');
       const reportingApiEndpointsView = new UI.Widget.VBox();
+      reportingApiEndpointsView.setMinimumSize(0, 40);
       reportingApiEndpointsView.contentElement.appendChild(new ApplicationComponents.EndpointsGrid.EndpointsGrid());
       this.setMainWidget(reportingApiReportsView);
       this.setSidebarWidget(reportingApiEndpointsView);
-      this.installResizer(resizer);
       networkManager.enableReportingApi();
     }
   }

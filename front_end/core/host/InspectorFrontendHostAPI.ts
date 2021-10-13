@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
+
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
@@ -131,7 +133,7 @@ export interface SavedURLEvent {
 
 export interface SearchCompletedEvent {
   requestId: number;
-  files: string[];
+  files: Platform.DevToolsPath.RawPathString[];
 }
 
 // While `EventDescriptors` are used to dynamically dispatch host binding events,

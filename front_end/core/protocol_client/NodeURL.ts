@@ -4,6 +4,7 @@
 
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
+import type * as Platform from '../platform/platform.js';
 
 export class NodeURL {
   static patch(object: {
@@ -13,7 +14,7 @@ export class NodeURL {
 
     function process(object: {url?: string}, path: string): void {
       if (object.url && NodeURL.isPlatformPath(object.url, Host.Platform.isWin())) {
-        object.url = Common.ParsedURL.ParsedURL.platformPathToURL(object.url);
+        object.url = Common.ParsedURL.ParsedURL.rawPathToUrlString(object.url as Platform.DevToolsPath.RawPathString);
       }
       for (const entry of Object.entries(object)) {
         const key = entry[0];

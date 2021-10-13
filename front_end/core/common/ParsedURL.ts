@@ -110,16 +110,17 @@ export class ParsedURL {
     return null;
   }
 
-  static platformPathToURL(fileSystemPath: string): string {
-    fileSystemPath = fileSystemPath.replace(/\\/g, '/');
-    if (!fileSystemPath.startsWith('file://')) {
-      if (fileSystemPath.startsWith('/')) {
-        fileSystemPath = 'file://' + fileSystemPath;
+  static rawPathToUrlString(fileSystemPath: Platform.DevToolsPath.RawPathString): Platform.DevToolsPath.UrlString {
+    let rawPath: string = fileSystemPath;
+    rawPath = rawPath.replace(/\\/g, '/');
+    if (!rawPath.startsWith('file://')) {
+      if (rawPath.startsWith('/')) {
+        rawPath = 'file://' + rawPath;
       } else {
-        fileSystemPath = 'file:///' + fileSystemPath;
+        rawPath = 'file:///' + rawPath;
       }
     }
-    return fileSystemPath;
+    return rawPath as Platform.DevToolsPath.UrlString;
   }
 
   static urlToPlatformPath(fileURL: string, isWindows?: boolean): string {

@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): All casts to RawPathString will be removed from this file when migration to branded types is complete.
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -51,7 +53,7 @@ let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<string, PlatformFileSystem>;
-  private readonly callbacks: Map<number, (arg0: Array<string>) => void>;
+  private readonly callbacks: Map<number, (arg0: Array<Platform.DevToolsPath.RawPathString>) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
   private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
@@ -173,7 +175,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   private innerAddFileSystem(fileSystem: Host.InspectorFrontendHostAPI.DevToolsFileSystem, dispatchEvent: boolean):
       Promise<IsolatedFileSystem|null> {
     const embedderPath = fileSystem.fileSystemPath;
-    const fileSystemURL = Common.ParsedURL.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
+    const fileSystemURL =
+        Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath as Platform.DevToolsPath.RawPathString);
     const promise = IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
@@ -220,7 +223,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
     const embedderPath = event.data;
-    const fileSystemPath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
+    const fileSystemPath =
+        Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath as Platform.DevToolsPath.RawPathString);
     const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
@@ -244,7 +248,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         this: IsolatedFileSystemManager, embedderPaths: string[]): Platform.MapUtilities.Multimap<string, string> {
       const paths = new Platform.MapUtilities.Multimap<string, string>();
       for (const embedderPath of embedderPaths) {
-        const filePath = Common.ParsedURL.ParsedURL.platformPathToURL(embedderPath);
+        const filePath =
+            Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath as Platform.DevToolsPath.RawPathString);
         for (const fileSystemPath of this.fileSystemsInternal.keys()) {
           const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
           if (fileSystem && fileSystem.isFileExcluded(embedderPath)) {
@@ -273,7 +278,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.workspaceFolderExcludePatternSettingInternal;
   }
 
-  registerCallback(callback: (arg0: Array<string>) => void): number {
+  registerCallback(callback: (arg0: Array<Platform.DevToolsPath.RawPathString>) => void): number {
     const requestId = ++lastRequestId;
     this.callbacks.set(requestId, callback);
     return requestId;

@@ -33,11 +33,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import requestHTMLViewStyles from './requestHTMLView.css.js';
 
 export class RequestHTMLView extends UI.Widget.VBox {
-  private readonly dataURL: string;
+  readonly #dataURL: string;
   constructor(dataURL: string) {
     super(true);
 
-    this.dataURL = encodeURI(dataURL).replace(/#/g, '%23');
+    this.#dataURL = encodeURI(dataURL).replace(/#/g, '%23');
     this.contentElement.classList.add('html', 'request-view');
   }
 
@@ -57,7 +57,7 @@ export class RequestHTMLView extends UI.Widget.VBox {
     const iframe = document.createElement('iframe');
     iframe.className = 'html-preview-frame';
     iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
-    iframe.setAttribute('src', this.dataURL);
+    iframe.setAttribute('src', this.#dataURL);
     iframe.tabIndex = -1;
     UI.ARIAUtils.markAsPresentation(iframe);
     this.contentElement.appendChild(iframe);

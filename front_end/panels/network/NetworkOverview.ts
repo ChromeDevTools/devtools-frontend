@@ -12,28 +12,28 @@ import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
 export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
-  private selectedFilmStripTime: number;
-  private numBands: number;
-  private updateScheduled: boolean;
-  private highlightedRequest: SDK.NetworkRequest.NetworkRequest|null;
-  private loadEvents!: number[];
-  private domContentLoadedEvents!: number[];
-  private nextBand!: number;
-  private bandMap!: Map<string, number>;
-  private requestsList!: SDK.NetworkRequest.NetworkRequest[];
-  private requestsSet!: Set<SDK.NetworkRequest.NetworkRequest>;
-  private span!: number;
-  private filmStripModel?: SDK.FilmStripModel.FilmStripModel|null;
-  private lastBoundary?: NetworkTimeBoundary|null;
+  #selectedFilmStripTime: number;
+  #numBands: number;
+  #updateScheduled: boolean;
+  #highlightedRequest: SDK.NetworkRequest.NetworkRequest|null;
+  #loadEvents!: number[];
+  #domContentLoadedEvents!: number[];
+  #nextBand!: number;
+  #bandMap!: Map<string, number>;
+  #requestsList!: SDK.NetworkRequest.NetworkRequest[];
+  #requestsSet!: Set<SDK.NetworkRequest.NetworkRequest>;
+  #span!: number;
+  #filmStripModel?: SDK.FilmStripModel.FilmStripModel|null;
+  #lastBoundary?: NetworkTimeBoundary|null;
 
   constructor() {
     super();
-    this.selectedFilmStripTime = -1;
+    this.#selectedFilmStripTime = -1;
     this.element.classList.add('network-overview');
 
-    this.numBands = 1;
-    this.updateScheduled = false;
-    this.highlightedRequest = null;
+    this.#numBands = 1;
+    this.#updateScheduled = false;
+    this.#highlightedRequest = null;
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
@@ -45,22 +45,22 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 
   setHighlightedRequest(request: SDK.NetworkRequest.NetworkRequest|null): void {
-    this.highlightedRequest = request;
+    this.#highlightedRequest = request;
     this.scheduleUpdate();
   }
 
   setFilmStripModel(filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
-    this.filmStripModel = filmStripModel;
+    this.#filmStripModel = filmStripModel;
     this.scheduleUpdate();
   }
 
   selectFilmStripFrame(time: number): void {
-    this.selectedFilmStripTime = time;
+    this.#selectedFilmStripTime = time;
     this.scheduleUpdate();
   }
 
   clearFilmStripFrame(): void {
-    this.selectedFilmStripTime = -1;
+    this.#selectedFilmStripTime = -1;
     this.scheduleUpdate();
   }
 
@@ -69,7 +69,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
           .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>): void {
     const time = event.data.loadTime;
     if (time) {
-      this.loadEvents.push(time * 1000);
+      this.#loadEvents.push(time * 1000);
     }
     this.scheduleUpdate();
   }
@@ -77,7 +77,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   private domContentLoadedEventFired(event: Common.EventTarget.EventTargetEvent<number>): void {
     const {data} = event;
     if (data) {
-      this.domContentLoadedEvents.push(data * 1000);
+      this.#domContentLoadedEvents.push(data * 1000);
     }
     this.scheduleUpdate();
   }
@@ -86,18 +86,18 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     if (!connectionId || connectionId === '0') {
       return -1;
     }
-    if (this.bandMap.has(connectionId)) {
-      return this.bandMap.get(connectionId) as number;
+    if (this.#bandMap.has(connectionId)) {
+      return this.#bandMap.get(connectionId) as number;
     }
-    const result = this.nextBand++;
-    this.bandMap.set(connectionId, result);
+    const result = this.#nextBand++;
+    this.#bandMap.set(connectionId, result);
     return result;
   }
 
   updateRequest(request: SDK.NetworkRequest.NetworkRequest): void {
-    if (!this.requestsSet.has(request)) {
-      this.requestsSet.add(request);
-      this.requestsList.push(request);
+    if (!this.#requestsSet.has(request)) {
+      this.#requestsSet.add(request);
+      this.#requestsList.push(request);
     }
     this.scheduleUpdate();
   }
@@ -116,48 +116,48 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.calculator().setDisplayWidth(width);
     this.resetCanvas();
     const numBands = (((height - _padding - 1) / _bandHeight) - 1) | 0;
-    this.numBands = (numBands > 0) ? numBands : 1;
+    this.#numBands = (numBands > 0) ? numBands : 1;
     this.scheduleUpdate();
   }
 
   reset(): void {
-    this.filmStripModel = null;
+    this.#filmStripModel = null;
 
-    this.span = 1;
-    this.lastBoundary = null;
-    this.nextBand = 0;
-    this.bandMap = new Map();
-    this.requestsList = [];
-    this.requestsSet = new Set();
-    this.loadEvents = [];
-    this.domContentLoadedEvents = [];
+    this.#span = 1;
+    this.#lastBoundary = null;
+    this.#nextBand = 0;
+    this.#bandMap = new Map();
+    this.#requestsList = [];
+    this.#requestsSet = new Set();
+    this.#loadEvents = [];
+    this.#domContentLoadedEvents = [];
 
     // Clear screen.
     this.resetCanvas();
   }
 
   scheduleUpdate(): void {
-    if (this.updateScheduled || !this.isShowing()) {
+    if (this.#updateScheduled || !this.isShowing()) {
       return;
     }
-    this.updateScheduled = true;
+    this.#updateScheduled = true;
     this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
   update(): void {
-    this.updateScheduled = false;
+    this.#updateScheduled = false;
 
     const calculator = this.calculator();
 
     const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
-    if (!this.lastBoundary || !newBoundary.equals(this.lastBoundary)) {
+    if (!this.#lastBoundary || !newBoundary.equals(this.#lastBoundary)) {
       const span = calculator.boundarySpan();
-      while (this.span < span) {
-        this.span *= 1.25;
+      while (this.#span < span) {
+        this.#span *= 1.25;
       }
 
-      calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this.span);
-      this.lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
+      calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this.#span);
+      this.#lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
 
     const context = this.context();
@@ -197,12 +197,12 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       lines.push(y, start, end);
     }
 
-    const requests = this.requestsList;
+    const requests = this.#requestsList;
     const n = requests.length;
     for (let i = 0; i < n; ++i) {
       const request = requests[i];
       const band = this.bandId(request.connectionId);
-      const y = (band === -1) ? 0 : (band % this.numBands + 1);
+      const y = (band === -1) ? 0 : (band % this.#numBands + 1);
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
@@ -230,13 +230,13 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     drawLines(RequestTimeRangeNames.Waiting);
     drawLines(RequestTimeRangeNames.Receiving);
 
-    if (this.highlightedRequest) {
+    if (this.#highlightedRequest) {
       const size = 5;
       const borderSize = 2;
 
-      const request = this.highlightedRequest;
+      const request = this.#highlightedRequest;
       const band = this.bandId(request.connectionId);
-      const y = ((band === -1) ? 0 : (band % this.numBands + 1)) * _bandHeight + paddingTop;
+      const y = ((band === -1) ? 0 : (band % this.#numBands + 1)) * _bandHeight + paddingTop;
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
       context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--legacy-selection-bg-color');
@@ -268,8 +268,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.lineWidth = 1;
     context.beginPath();
     context.strokeStyle = NetworkLogView.getDCLEventColor();
-    for (let i = this.domContentLoadedEvents.length - 1; i >= 0; --i) {
-      const x = Math.round(calculator.computePosition(this.domContentLoadedEvents[i])) + 0.5;
+    for (let i = this.#domContentLoadedEvents.length - 1; i >= 0; --i) {
+      const x = Math.round(calculator.computePosition(this.#domContentLoadedEvents[i])) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
     }
@@ -277,18 +277,18 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 
     context.beginPath();
     context.strokeStyle = NetworkLogView.getLoadEventColor();
-    for (let i = this.loadEvents.length - 1; i >= 0; --i) {
-      const x = Math.round(calculator.computePosition(this.loadEvents[i])) + 0.5;
+    for (let i = this.#loadEvents.length - 1; i >= 0; --i) {
+      const x = Math.round(calculator.computePosition(this.#loadEvents[i])) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
     }
     context.stroke();
 
-    if (this.selectedFilmStripTime !== -1) {
+    if (this.#selectedFilmStripTime !== -1) {
       context.lineWidth = 2;
       context.beginPath();
       context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--network-frame-divider-color');
-      const x = Math.round(calculator.computePosition(this.selectedFilmStripTime));
+      const x = Math.round(calculator.computePosition(this.#selectedFilmStripTime));
       context.moveTo(x, 0);
       context.lineTo(x, height);
       context.stroke();

@@ -33,15 +33,15 @@ interface CustomHeader {
 }
 
 export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI.ListWidget.Delegate<CustomHeader> {
-  private readonly list: UI.ListWidget.ListWidget<CustomHeader>;
-  private readonly columnConfigs: Map<string, {
+  readonly #list: UI.ListWidget.ListWidget<CustomHeader>;
+  readonly #columnConfigs: Map<string, {
     title: string,
     editable: boolean,
   }>;
-  private addHeaderColumnCallback: (arg0: string) => boolean;
-  private changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean;
-  private readonly removeHeaderColumnCallback: (arg0: string) => boolean;
-  private editor?: UI.ListWidget.Editor<CustomHeader>;
+  #addHeaderColumnCallback: (arg0: string) => boolean;
+  #changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean;
+  readonly #removeHeaderColumnCallback: (arg0: string) => boolean;
+  #editor?: UI.ListWidget.Editor<CustomHeader>;
 
   constructor(
       columnData: {
@@ -56,40 +56,40 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
-    this.list = new UI.ListWidget.ListWidget(this);
-    this.list.element.classList.add('custom-headers-list');
+    this.#list = new UI.ListWidget.ListWidget(this);
+    this.#list.element.classList.add('custom-headers-list');
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('custom-headers-list-list-empty');
     placeholder.textContent = i18nString(UIStrings.noCustomHeaders);
-    this.list.setEmptyPlaceholder(placeholder);
-    this.list.show(this.contentElement);
+    this.#list.setEmptyPlaceholder(placeholder);
+    this.#list.show(this.contentElement);
     this.contentElement.appendChild(UI.UIUtils.createTextButton(
         i18nString(UIStrings.addCustomHeader), this.addButtonClicked.bind(this), 'add-button'));
 
-    this.columnConfigs = new Map();
-    columnData.forEach(columnData => this.columnConfigs.set(columnData.title.toLowerCase(), columnData));
+    this.#columnConfigs = new Map();
+    columnData.forEach(columnData => this.#columnConfigs.set(columnData.title.toLowerCase(), columnData));
 
-    this.addHeaderColumnCallback = addHeaderColumnCallback;
-    this.changeHeaderColumnCallback = changeHeaderColumnCallback;
-    this.removeHeaderColumnCallback = removeHeaderColumnCallback;
+    this.#addHeaderColumnCallback = addHeaderColumnCallback;
+    this.#changeHeaderColumnCallback = changeHeaderColumnCallback;
+    this.#removeHeaderColumnCallback = removeHeaderColumnCallback;
 
     this.contentElement.tabIndex = 0;
   }
 
   wasShown(): void {
     this.headersUpdated();
-    this.list.registerCSSFiles([networkManageCustomHeadersViewStyles]);
+    this.#list.registerCSSFiles([networkManageCustomHeadersViewStyles]);
     this.registerCSSFiles([networkManageCustomHeadersViewStyles]);
   }
 
   private headersUpdated(): void {
-    this.list.clear();
-    this.columnConfigs.forEach(headerData => this.list.appendItem({header: headerData.title}, headerData.editable));
+    this.#list.clear();
+    this.#columnConfigs.forEach(headerData => this.#list.appendItem({header: headerData.title}, headerData.editable));
   }
 
   private addButtonClicked(): void {
-    this.list.addNewItem(this.columnConfigs.size, {header: ''});
+    this.#list.addNewItem(this.#columnConfigs.size, {header: ''});
   }
 
   renderItem(item: CustomHeader, _editable: boolean): Element {
@@ -102,8 +102,8 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
   }
 
   removeItemRequested(item: CustomHeader, _index: number): void {
-    this.removeHeaderColumnCallback(item.header);
-    this.columnConfigs.delete(item.header.toLowerCase());
+    this.#removeHeaderColumnCallback(item.header);
+    this.#columnConfigs.delete(item.header.toLowerCase());
     this.headersUpdated();
   }
 
@@ -111,16 +111,16 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
     const headerId = editor.control('header').value.trim();
     let success;
     if (isNew) {
-      success = this.addHeaderColumnCallback(headerId);
+      success = this.#addHeaderColumnCallback(headerId);
     } else {
-      success = this.changeHeaderColumnCallback(item.header, headerId);
+      success = this.#changeHeaderColumnCallback(item.header, headerId);
     }
 
     if (success && !isNew) {
-      this.columnConfigs.delete(item.header.toLowerCase());
+      this.#columnConfigs.delete(item.header.toLowerCase());
     }
     if (success) {
-      this.columnConfigs.set(headerId.toLowerCase(), {title: headerId, editable: true});
+      this.#columnConfigs.set(headerId.toLowerCase(), {title: headerId, editable: true});
     }
 
     this.headersUpdated();
@@ -133,12 +133,12 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
   }
 
   private createEditor(): UI.ListWidget.Editor<CustomHeader> {
-    if (this.editor) {
-      return this.editor;
+    if (this.#editor) {
+      return this.#editor;
     }
 
     const editor = new UI.ListWidget.Editor<CustomHeader>();
-    this.editor = editor;
+    this.#editor = editor;
     const content = editor.contentElement();
 
     const titles = content.createChild('div', 'custom-headers-edit-row');
@@ -155,7 +155,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
         _input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       let valid = true;
       const headerId = editor.control('header').value.trim().toLowerCase();
-      if (this.columnConfigs.has(headerId) && item.header !== headerId) {
+      if (this.#columnConfigs.has(headerId) && item.header !== headerId) {
         valid = false;
       }
       return {valid, errorMessage: undefined};

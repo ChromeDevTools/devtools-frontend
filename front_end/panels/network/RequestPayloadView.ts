@@ -47,12 +47,12 @@ import requestPayloadTreeStyles from './requestPayloadTree.css.js';
 import requestPayloadViewStyles from './requestPayloadView.css.js';
 const UIStrings = {
   /**
-  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
+  *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane #request.
   */
   copyValue: 'Copy value',
   /**
   * @description Text in Request Payload View of the Network panel. This is a noun-phrase meaning the
-  * payload of a network request.
+  * payload of a network #request.
   */
   requestPayload: 'Request Payload',
   /**
@@ -115,22 +115,22 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPayloadView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPayloadView extends UI.Widget.VBox {
-  private request: SDK.NetworkRequest.NetworkRequest;
-  private decodeRequestParameters: boolean;
-  private queryStringCategory: Category;
-  private formDataCategory: Category;
-  private requestPayloadCategory: Category;
+  #request: SDK.NetworkRequest.NetworkRequest;
+  #decodeRequestParameters: boolean;
+  #queryStringCategory: Category;
+  #formDataCategory: Category;
+  #requestPayloadCategory: Category;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-payload-view');
 
-    this.request = request;
-    this.decodeRequestParameters = true;
+    this.#request = request;
+    this.#decodeRequestParameters = true;
 
     const contentType = request.requestContentType();
     if (contentType) {
-      this.decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
+      this.#decodeRequestParameters = Boolean(contentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i));
     }
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
@@ -139,14 +139,14 @@ export class RequestPayloadView extends UI.Widget.VBox {
     root.makeDense();
     this.element.appendChild(root.element);
 
-    this.queryStringCategory = new Category(root, 'queryString', '');
-    this.formDataCategory = new Category(root, 'formData', '');
-    this.requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
+    this.#queryStringCategory = new Category(root, 'queryString', '');
+    this.#formDataCategory = new Category(root, 'formData', '');
+    this.#requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
   }
 
   wasShown(): void {
     this.registerCSSFiles([requestPayloadViewStyles]);
-    this.request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
+    this.#request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
 
     this.refreshQueryString();
     this.refreshFormData();
@@ -154,7 +154,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   willHide(): void {
-    this.request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
+    this.#request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
   }
 
   private addEntryContextMenuHandler(treeElement: UI.TreeOutline.TreeElement, value: string): void {
@@ -200,36 +200,36 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   private refreshQueryString(): void {
-    const queryString = this.request.queryString();
-    const queryParameters = this.request.queryParameters;
-    this.queryStringCategory.hidden = !queryParameters;
+    const queryString = this.#request.queryString();
+    const queryParameters = this.#request.queryParameters;
+    this.#queryStringCategory.hidden = !queryParameters;
     if (queryParameters) {
       this.refreshParams(
-          i18nString(UIStrings.queryStringParameters), queryParameters, queryString, this.queryStringCategory);
+          i18nString(UIStrings.queryStringParameters), queryParameters, queryString, this.#queryStringCategory);
     }
   }
 
   private async refreshFormData(): Promise<void> {
-    const formData = await this.request.requestFormData();
+    const formData = await this.#request.requestFormData();
     if (!formData) {
-      this.formDataCategory.hidden = true;
-      this.requestPayloadCategory.hidden = true;
+      this.#formDataCategory.hidden = true;
+      this.#requestPayloadCategory.hidden = true;
       return;
     }
 
-    const formParameters = await this.request.formParameters();
+    const formParameters = await this.#request.formParameters();
     if (formParameters) {
-      this.formDataCategory.hidden = false;
-      this.requestPayloadCategory.hidden = true;
-      this.refreshParams(i18nString(UIStrings.formData), formParameters, formData, this.formDataCategory);
+      this.#formDataCategory.hidden = false;
+      this.#requestPayloadCategory.hidden = true;
+      this.refreshParams(i18nString(UIStrings.formData), formParameters, formData, this.#formDataCategory);
     } else {
-      this.requestPayloadCategory.hidden = false;
-      this.formDataCategory.hidden = true;
+      this.#requestPayloadCategory.hidden = false;
+      this.#formDataCategory.hidden = true;
       try {
         const json = JSON.parse(formData);
         this.refreshRequestJSONPayload(json, formData);
       } catch (e) {
-        this.populateTreeElementWithSourceText(this.requestPayloadCategory, formData);
+        this.populateTreeElementWithSourceText(this.#requestPayloadCategory, formData);
       }
     }
   }
@@ -333,14 +333,14 @@ export class RequestPayloadView extends UI.Widget.VBox {
     for (const param of params || []) {
       const paramNameValue = document.createDocumentFragment();
       if (param.name !== '') {
-        const name = this.formatParameter(param.name + ': ', 'payload-name', this.decodeRequestParameters);
-        const value = this.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters);
+        const name = this.formatParameter(param.name + ': ', 'payload-name', this.#decodeRequestParameters);
+        const value = this.formatParameter(param.value, 'payload-value source-code', this.#decodeRequestParameters);
         paramNameValue.appendChild(name);
         paramNameValue.createChild('span', 'payload-separator');
         paramNameValue.appendChild(value);
       } else {
         paramNameValue.appendChild(
-            this.formatParameter(i18nString(UIStrings.empty), 'empty-request-payload', this.decodeRequestParameters));
+            this.formatParameter(i18nString(UIStrings.empty), 'empty-request-payload', this.#decodeRequestParameters));
       }
 
       const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);
@@ -371,7 +371,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       const section = contextMenu.newSection();
       section.appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
       const viewURLEncodedText =
-          this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
+          this.#decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
       section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event));
       contextMenu.show();
     };
@@ -380,7 +380,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     listItemElement.appendChild(viewSourceButton);
 
     const toggleTitle =
-        this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncodedL) : i18nString(UIStrings.viewDecodedL);
+        this.#decodeRequestParameters ? i18nString(UIStrings.viewUrlEncodedL) : i18nString(UIStrings.viewDecodedL);
     const toggleButton = this.createToggleButton(toggleTitle);
     toggleButton.addEventListener('click', toggleURLDecoding.bind(this), false);
     listItemElement.appendChild(toggleButton);
@@ -391,13 +391,13 @@ export class RequestPayloadView extends UI.Widget.VBox {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private refreshRequestJSONPayload(parsedObject: any, sourceText: string): void {
-    const rootListItem = this.requestPayloadCategory;
+    const rootListItem = this.#requestPayloadCategory;
     rootListItem.removeChildren();
 
     const rootListItemElement = rootListItem.listItemElement;
     rootListItemElement.removeChildren();
     rootListItemElement.createChild('div', 'selection fill');
-    UI.UIUtils.createTextChild(rootListItemElement, this.requestPayloadCategory.title.toString());
+    UI.UIUtils.createTextChild(rootListItemElement, this.#requestPayloadCategory.title.toString());
 
     if (viewSourceForItems.has(rootListItem)) {
       this.appendJSONPayloadSource(rootListItem, parsedObject, sourceText);
@@ -482,7 +482,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   private toggleURLDecoding(event: Event): void {
-    this.decodeRequestParameters = !this.decodeRequestParameters;
+    this.#decodeRequestParameters = !this.#decodeRequestParameters;
     this.refreshQueryString();
     this.refreshFormData();
     event.consume();
@@ -500,16 +500,16 @@ const viewSourceForItems = new WeakSet<Category|UI.TreeOutline.TreeElement>();
 
 export class Category extends UI.TreeOutline.TreeElement {
   toggleOnClick: boolean;
-  private readonly expandedSetting: Common.Settings.Setting<boolean>;
+  readonly #expandedSetting: Common.Settings.Setting<boolean>;
   expanded: boolean;
 
   constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
     super(title || '', true);
     this.toggleOnClick = true;
     this.hidden = true;
-    this.expandedSetting =
+    this.#expandedSetting =
         Common.Settings.Settings.instance().createSetting('request-info-' + name + '-category-expanded', true);
-    this.expanded = this.expandedSetting.get();
+    this.expanded = this.#expandedSetting.get();
     root.appendChild(this);
   }
 
@@ -520,10 +520,10 @@ export class Category extends UI.TreeOutline.TreeElement {
   }
 
   onexpand(): void {
-    this.expandedSetting.set(true);
+    this.#expandedSetting.set(true);
   }
 
   oncollapse(): void {
-    this.expandedSetting.set(false);
+    this.#expandedSetting.set(false);
   }
 }

@@ -67,36 +67,36 @@ let xhrBreakpointsSidebarPaneInstance: XHRBreakpointsSidebarPane;
 export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.ContextFlavorListener.ContextFlavorListener,
                                                                          UI.Toolbar.ItemsProvider,
                                                                          UI.ListControl.ListDelegate<string> {
-  private readonly breakpoints: UI.ListModel.ListModel<string>;
-  private list: UI.ListControl.ListControl<string>;
-  private readonly emptyElement: HTMLElement;
-  private readonly breakpointElements: Map<string, Element>;
-  private readonly addButton: UI.Toolbar.ToolbarButton;
+  readonly #breakpoints: UI.ListModel.ListModel<string>;
+  #list: UI.ListControl.ListControl<string>;
+  readonly #emptyElement: HTMLElement;
+  readonly #breakpointElements: Map<string, Element>;
+  readonly #addButton: UI.Toolbar.ToolbarButton;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private hitBreakpoint?: any;
+  #hitBreakpoint?: any;
 
   private constructor() {
     super(true);
 
-    this.breakpoints = new UI.ListModel.ListModel();
-    this.list = new UI.ListControl.ListControl(this.breakpoints, this, UI.ListControl.ListMode.NonViewport);
-    this.contentElement.appendChild(this.list.element);
-    this.list.element.classList.add('breakpoint-list', 'hidden');
-    UI.ARIAUtils.markAsList(this.list.element);
-    UI.ARIAUtils.setAccessibleName(this.list.element, i18nString(UIStrings.xhrfetchBreakpoints));
-    this.emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this.emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
+    this.#breakpoints = new UI.ListModel.ListModel();
+    this.#list = new UI.ListControl.ListControl(this.#breakpoints, this, UI.ListControl.ListMode.NonViewport);
+    this.contentElement.appendChild(this.#list.element);
+    this.#list.element.classList.add('breakpoint-list', 'hidden');
+    UI.ARIAUtils.markAsList(this.#list.element);
+    UI.ARIAUtils.setAccessibleName(this.#list.element, i18nString(UIStrings.xhrfetchBreakpoints));
+    this.#emptyElement = this.contentElement.createChild('div', 'gray-info-message');
+    this.#emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
 
-    this.breakpointElements = new Map();
+    this.#breakpointElements = new Map();
 
-    this.addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addXhrfetchBreakpoint), 'largeicon-add');
-    this.addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+    this.#addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addXhrfetchBreakpoint), 'largeicon-add');
+    this.#addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.addButtonClicked();
     });
 
-    this.emptyElement.addEventListener('contextmenu', this.emptyElementContextMenu.bind(this), true);
-    this.emptyElement.tabIndex = -1;
+    this.#emptyElement.addEventListener('contextmenu', this.emptyElementContextMenu.bind(this), true);
+    this.#emptyElement.tabIndex = -1;
     this.restoreBreakpoints();
     this.update();
   }
@@ -109,7 +109,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   }
 
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this.addButton];
+    return [this.#addButton];
   }
 
   private emptyElementContextMenu(event: Event): void {
@@ -127,7 +127,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
     UI.ARIAUtils.setAccessibleName(inputElement, i18nString(UIStrings.urlBreakpoint));
-    this.addListElement(inputElementContainer, this.list.element.firstChild as Element | null);
+    this.addListElement(inputElementContainer, this.#list.element.firstChild as Element | null);
 
     function finishEditing(this: XHRBreakpointsSidebarPane, accept: boolean, e: Element, text: string): void {
       this.removeListElement(inputElementContainer);
@@ -153,10 +153,10 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   }
 
   private setBreakpoint(url: string): void {
-    if (this.breakpoints.indexOf(url) !== -1) {
-      this.list.refreshItem(url);
+    if (this.#breakpoints.indexOf(url) !== -1) {
+      this.#list.refreshItem(url);
     } else {
-      this.breakpoints.insertWithComparator(url, (a, b) => {
+      this.#breakpoints.insertWithComparator(url, (a, b) => {
         if (a > b) {
           return 1;
         }
@@ -166,8 +166,8 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
         return 0;
       });
     }
-    if (!this.list.selectedItem() || !this.hasFocus()) {
-      this.list.selectItem(this.breakpoints.at(0));
+    if (!this.#list.selectedItem() || !this.hasFocus()) {
+      this.#list.selectItem(this.#breakpoints.at(0));
     }
   }
 
@@ -195,7 +195,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     breakpointEntryToCheckbox.set(element, label.checkboxElement);
     label.checkboxElement.tabIndex = -1;
     element.tabIndex = -1;
-    if (item === this.list.selectedItem()) {
+    if (item === this.#list.selectedItem()) {
       element.tabIndex = 0;
       this.setDefaultFocusedElement(element);
     }
@@ -214,14 +214,14 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       }
     });
 
-    if (item === this.hitBreakpoint) {
+    if (item === this.#hitBreakpoint) {
       element.classList.add('breakpoint-hit');
       UI.ARIAUtils.setDescription(element, i18nString(UIStrings.breakpointHit));
     }
 
     label.classList.add('cursor-auto');
     label.textElement.addEventListener('dblclick', this.labelClicked.bind(this, item), false);
-    this.breakpointElements.set(item, listItemElement);
+    this.#breakpointElements.set(item, listItemElement);
     return listItemElement;
   }
 
@@ -252,25 +252,25 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   }
 
   private removeBreakpoint(url: string): void {
-    const index = this.breakpoints.indexOf(url);
+    const index = this.#breakpoints.indexOf(url);
     if (index >= 0) {
-      this.breakpoints.remove(index);
+      this.#breakpoints.remove(index);
     }
-    this.breakpointElements.delete(url);
+    this.#breakpointElements.delete(url);
     this.update();
   }
 
   private addListElement(element: Element, beforeNode: Node|null): void {
-    this.list.element.insertBefore(element, beforeNode);
-    this.emptyElement.classList.add('hidden');
-    this.list.element.classList.remove('hidden');
+    this.#list.element.insertBefore(element, beforeNode);
+    this.#emptyElement.classList.add('hidden');
+    this.#list.element.classList.remove('hidden');
   }
 
   private removeListElement(element: Element): void {
-    this.list.element.removeChild(element);
-    if (!this.list.element.firstElementChild) {
-      this.emptyElement.classList.remove('hidden');
-      this.list.element.classList.add('hidden');
+    this.#list.element.removeChild(element);
+    if (!this.#list.element.firstElementChild) {
+      this.#emptyElement.classList.remove('hidden');
+      this.#list.element.classList.add('hidden');
     }
   }
 
@@ -283,7 +283,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     }
 
     function removeAllBreakpoints(this: XHRBreakpointsSidebarPane): void {
-      for (const url of this.breakpointElements.keys()) {
+      for (const url of this.#breakpointElements.keys()) {
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(url);
         this.removeBreakpoint(url);
       }
@@ -300,20 +300,20 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   private checkboxClicked(url: string, checked: boolean): void {
     const hadFocus = this.hasFocus();
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance().toggleXHRBreakpoint(url, !checked);
-    this.list.refreshItem(url);
-    this.list.selectItem(url);
+    this.#list.refreshItem(url);
+    this.#list.selectItem(url);
     if (hadFocus) {
       this.focus();
     }
   }
 
   private labelClicked(url: string): void {
-    const element = this.breakpointElements.get(url);
+    const element = this.#breakpointElements.get(url);
     const inputElement = document.createElement('span');
     inputElement.classList.add('breakpoint-condition');
     inputElement.textContent = url;
     if (element) {
-      this.list.element.insertBefore(inputElement, element);
+      this.#list.element.insertBefore(inputElement, element);
       element.classList.add('hidden');
     }
 
@@ -333,7 +333,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
         }
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint(text, enabled);
         this.setBreakpoint(text);
-        this.list.selectItem(text);
+        this.#list.selectItem(text);
       } else if (element) {
         element.classList.remove('hidden');
       }
@@ -351,27 +351,27 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   }
 
   private update(): void {
-    const isEmpty = this.breakpoints.length === 0;
-    this.list.element.classList.toggle('hidden', isEmpty);
-    this.emptyElement.classList.toggle('hidden', !isEmpty);
+    const isEmpty = this.#breakpoints.length === 0;
+    this.#list.element.classList.toggle('hidden', isEmpty);
+    this.#emptyElement.classList.toggle('hidden', !isEmpty);
 
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details || details.reason !== Protocol.Debugger.PausedEventReason.XHR) {
-      if (this.hitBreakpoint) {
-        const oldHitBreakpoint = this.hitBreakpoint;
-        delete this.hitBreakpoint;
-        if (this.breakpoints.indexOf(oldHitBreakpoint) >= 0) {
-          this.list.refreshItem(oldHitBreakpoint);
+      if (this.#hitBreakpoint) {
+        const oldHitBreakpoint = this.#hitBreakpoint;
+        this.#hitBreakpoint = undefined;
+        if (this.#breakpoints.indexOf(oldHitBreakpoint) >= 0) {
+          this.#list.refreshItem(oldHitBreakpoint);
         }
       }
       return;
     }
     const url = details.auxData && details.auxData['breakpointURL'];
-    this.hitBreakpoint = url;
-    if (this.breakpoints.indexOf(url) < 0) {
+    this.#hitBreakpoint = url;
+    if (this.#breakpoints.indexOf(url) < 0) {
       return;
     }
-    this.list.refreshItem(url);
+    this.#list.refreshItem(url);
     UI.ViewManager.ViewManager.instance().showView('sources.xhrBreakpoints');
   }
 

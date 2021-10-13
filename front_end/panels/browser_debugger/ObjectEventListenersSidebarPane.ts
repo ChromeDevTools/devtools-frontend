@@ -19,20 +19,20 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let objectEventListenersSidebarPaneInstance: ObjectEventListenersSidebarPane;
 
 export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements UI.Toolbar.ItemsProvider {
-  private readonly refreshButton: UI.Toolbar.ToolbarButton;
-  private readonly eventListenersView: EventListeners.EventListenersView.EventListenersView;
-  private lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
+  readonly #refreshButton: UI.Toolbar.ToolbarButton;
+  readonly #eventListenersView: EventListeners.EventListenersView.EventListenersView;
+  #lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
   private constructor() {
     super();
-    this.refreshButton =
+    this.#refreshButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshGlobalListeners), 'largeicon-refresh');
-    this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshClick, this);
-    this.refreshButton.setEnabled(false);
+    this.#refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshClick, this);
+    this.#refreshButton.setEnabled(false);
 
-    this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(
+    this.#eventListenersView = new EventListeners.EventListenersView.EventListenersView(
         this.update.bind(this), /* enableDefaultTreeFocus */ true);
-    this.eventListenersView.show(this.element);
-    this.setDefaultFocusedChild(this.eventListenersView);
+    this.#eventListenersView.show(this.element);
+    this.setDefaultFocusedChild(this.#eventListenersView);
   }
 
   static instance(): ObjectEventListenersSidebarPane {
@@ -42,37 +42,41 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
     return objectEventListenersSidebarPaneInstance;
   }
 
+  get eventListenersView(): EventListeners.EventListenersView.EventListenersView {
+    return this.#eventListenersView;
+  }
+
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [this.refreshButton];
+    return [this.#refreshButton];
   }
 
   update(): void {
-    if (this.lastRequestedContext) {
-      this.lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
-      delete this.lastRequestedContext;
+    if (this.#lastRequestedContext) {
+      this.#lastRequestedContext.runtimeModel.releaseObjectGroup(objectGroupName);
+      this.#lastRequestedContext = undefined;
     }
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (!executionContext) {
-      this.eventListenersView.reset();
-      this.eventListenersView.addEmptyHolderIfNeeded();
+      this.#eventListenersView.reset();
+      this.#eventListenersView.addEmptyHolderIfNeeded();
       return;
     }
-    this.lastRequestedContext = executionContext;
+    this.#lastRequestedContext = executionContext;
     Promise.all([this.windowObjectInContext(executionContext)])
-        .then(this.eventListenersView.addObjects.bind(this.eventListenersView));
+        .then(this.#eventListenersView.addObjects.bind(this.#eventListenersView));
   }
 
   wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
-    this.refreshButton.setEnabled(true);
+    this.#refreshButton.setEnabled(true);
     this.update();
   }
 
   willHide(): void {
     super.willHide();
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
-    this.refreshButton.setEnabled(false);
+    this.#refreshButton.setEnabled(false);
   }
 
   private windowObjectInContext(executionContext: SDK.RuntimeModel.ExecutionContext):

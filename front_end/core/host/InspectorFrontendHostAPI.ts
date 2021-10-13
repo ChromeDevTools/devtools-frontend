@@ -86,7 +86,7 @@ export interface DevToolsFileSystem {
   type: string;
   fileSystemName: string;
   rootURL: string;
-  fileSystemPath: string;
+  fileSystemPath: Platform.DevToolsPath.RawPathString;
 }
 
 export interface FileSystemAddedEvent {
@@ -95,9 +95,9 @@ export interface FileSystemAddedEvent {
 }
 
 export interface FilesChangedEvent {
-  changed: string[];
-  added: string[];
-  removed: string[];
+  changed: Platform.DevToolsPath.RawPathString[];
+  added: Platform.DevToolsPath.RawPathString[];
+  removed: Platform.DevToolsPath.RawPathString[];
 }
 
 export interface IndexingEvent {
@@ -155,7 +155,7 @@ export type EventTypes = {
   [Events.EnterInspectElementMode]: void,
   [Events.EyeDropperPickedColor]: EyeDropperPickedColorEvent,
   [Events.FileSystemsLoaded]: DevToolsFileSystem[],
-  [Events.FileSystemRemoved]: string,
+  [Events.FileSystemRemoved]: Platform.DevToolsPath.RawPathString,
   [Events.FileSystemAdded]: FileSystemAddedEvent,
   [Events.FileSystemFilesChangedAddedRemoved]: FilesChangedEvent,
   [Events.IndexingTotalWorkCalculated]: IndexingTotalWorkCalculatedEvent,

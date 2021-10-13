@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): All casts to RawPathString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -175,8 +173,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   private innerAddFileSystem(fileSystem: Host.InspectorFrontendHostAPI.DevToolsFileSystem, dispatchEvent: boolean):
       Promise<IsolatedFileSystem|null> {
     const embedderPath = fileSystem.fileSystemPath;
-    const fileSystemURL =
-        Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath as Platform.DevToolsPath.RawPathString);
+    const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
@@ -221,10 +218,9 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<string>): void {
+  private onFileSystemRemoved(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.RawPathString>): void {
     const embedderPath = event.data;
-    const fileSystemPath =
-        Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath as Platform.DevToolsPath.RawPathString);
+    const fileSystemPath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
     const isolatedFileSystem = this.fileSystemsInternal.get(fileSystemPath);
     if (!isolatedFileSystem) {
       return;
@@ -245,11 +241,11 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     this.dispatchEventToListeners(Events.FileSystemFilesChanged, urlPaths);
 
     function groupFilePathsIntoFileSystemPaths(
-        this: IsolatedFileSystemManager, embedderPaths: string[]): Platform.MapUtilities.Multimap<string, string> {
+        this: IsolatedFileSystemManager,
+        embedderPaths: Platform.DevToolsPath.RawPathString[]): Platform.MapUtilities.Multimap<string, string> {
       const paths = new Platform.MapUtilities.Multimap<string, string>();
       for (const embedderPath of embedderPaths) {
-        const filePath =
-            Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath as Platform.DevToolsPath.RawPathString);
+        const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
         for (const fileSystemPath of this.fileSystemsInternal.keys()) {
           const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
           if (fileSystem && fileSystem.isFileExcluded(embedderPath)) {

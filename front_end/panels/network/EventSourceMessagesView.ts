@@ -39,14 +39,14 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventSourceMessagesView extends UI.Widget.VBox {
-  readonly #request: SDK.NetworkRequest.NetworkRequest;
-  #dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<EventSourceMessageNode>;
+  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<EventSourceMessageNode>;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
 
     this.element.classList.add('event-source-messages-view');
-    this.#request = request;
+    this.request = request;
 
     const columns = ([
       {id: 'id', title: i18nString(UIStrings.id), sortable: true, weight: 8},
@@ -55,46 +55,46 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
       {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 8},
     ] as DataGrid.DataGrid.ColumnDescriptor[]);
 
-    this.#dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+    this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.eventSource),
       columns,
       editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
-    this.#dataGrid.setStriped(true);
-    this.#dataGrid.setStickToBottom(true);
-    this.#dataGrid.setRowContextMenuCallback(this.onRowContextMenu.bind(this));
-    this.#dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
+    this.dataGrid.setStriped(true);
+    this.dataGrid.setStickToBottom(true);
+    this.dataGrid.setRowContextMenuCallback(this.onRowContextMenu.bind(this));
+    this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this.sortItems();
-    this.#dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortItems, this);
 
-    this.#dataGrid.setName('EventSourceMessagesView');
-    this.#dataGrid.asWidget().show(this.element);
+    this.dataGrid.setName('EventSourceMessagesView');
+    this.dataGrid.asWidget().show(this.element);
   }
 
   wasShown(): void {
-    this.#dataGrid.rootNode().removeChildren();
+    this.dataGrid.rootNode().removeChildren();
     this.registerCSSFiles([eventSourceMessagesViewStyles]);
-    const messages = this.#request.eventSourceMessages();
+    const messages = this.request.eventSourceMessages();
     for (let i = 0; i < messages.length; ++i) {
-      this.#dataGrid.insertChild(new EventSourceMessageNode(messages[i]));
+      this.dataGrid.insertChild(new EventSourceMessageNode(messages[i]));
     }
 
-    this.#request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
+    this.request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 
   willHide(): void {
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
+    this.request.removeEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 
   private messageAdded(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.EventSourceMessage>): void {
     const message = event.data;
-    this.#dataGrid.insertChild(new EventSourceMessageNode(message));
+    this.dataGrid.insertChild(new EventSourceMessageNode(message));
   }
 
   private sortItems(): void {
-    const sortColumnId = this.#dataGrid.sortColumnId();
+    const sortColumnId = this.dataGrid.sortColumnId();
     if (!sortColumnId) {
       return;
     }
@@ -106,7 +106,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     if (!comparator) {
       return;
     }
-    this.#dataGrid.sortNodes(comparator, !this.#dataGrid.isSortOrderAscending());
+    this.dataGrid.sortNodes(comparator, !this.dataGrid.isSortOrderAscending());
   }
 
   private onRowContextMenu(

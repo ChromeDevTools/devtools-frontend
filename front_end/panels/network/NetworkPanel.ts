@@ -93,7 +93,7 @@ const UIStrings = {
   */
   networkSettings: 'Network settings',
   /**
-  *@description Tooltip for expanding network #request row setting
+  *@description Tooltip for expanding network request row setting
   */
   showMoreInformationInRequestRows: 'Show more information in request rows',
   /**
@@ -101,7 +101,7 @@ const UIStrings = {
   */
   useLargeRequestRows: 'Use large request rows',
   /**
-  *@description Tooltip text for network #request overview setting
+  *@description Tooltip text for network request overview setting
   */
   showOverviewOfNetworkRequests: 'Show overview of network requests',
   /**
@@ -109,7 +109,7 @@ const UIStrings = {
   */
   showOverview: 'Show overview',
   /**
-  *@description Tooltip for group by #frame network setting
+  *@description Tooltip for group by frame network setting
   */
   groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
   /**
@@ -166,100 +166,100 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkPanelInstance: NetworkPanel;
 
 export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provider, UI.View.ViewLocationResolver {
-  readonly #networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
-  readonly #networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
-  readonly #networkRecordFilmStripSetting: Common.Settings.Setting<boolean>;
-  readonly #toggleRecordAction: UI.ActionRegistration.Action;
-  #pendingStopTimer!: number|undefined;
+  private readonly networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
+  private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
+  private readonly networkRecordFilmStripSetting: Common.Settings.Setting<boolean>;
+  private readonly toggleRecordAction: UI.ActionRegistration.Action;
+  private pendingStopTimer!: number|undefined;
   networkItemView: NetworkItemView|null;
-  #filmStripView: PerfUI.FilmStripView.FilmStripView|null;
-  #filmStripRecorder: FilmStripRecorder|null;
-  #currentRequest: SDK.NetworkRequest.NetworkRequest|null;
-  readonly #panelToolbar: UI.Toolbar.Toolbar;
-  readonly #rightToolbar: UI.Toolbar.Toolbar;
-  readonly #filterBar: UI.FilterBar.FilterBar;
-  readonly #settingsPane: UI.Widget.HBox;
-  #showSettingsPaneSetting: Common.Settings.Setting<boolean>;
-  readonly #filmStripPlaceholderElement: HTMLElement;
-  readonly #overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
-  readonly #networkOverview: NetworkOverview;
-  readonly #overviewPlaceholderElement: HTMLElement;
-  readonly #calculator: NetworkTransferTimeCalculator;
-  #splitWidget: UI.SplitWidget.SplitWidget;
-  readonly #sidebarLocation: UI.View.TabbedViewLocation;
-  readonly #progressBarContainer: HTMLDivElement;
+  private filmStripView: PerfUI.FilmStripView.FilmStripView|null;
+  private filmStripRecorder: FilmStripRecorder|null;
+  private currentRequest: SDK.NetworkRequest.NetworkRequest|null;
+  private readonly panelToolbar: UI.Toolbar.Toolbar;
+  private readonly rightToolbar: UI.Toolbar.Toolbar;
+  private readonly filterBar: UI.FilterBar.FilterBar;
+  private readonly settingsPane: UI.Widget.HBox;
+  private showSettingsPaneSetting: Common.Settings.Setting<boolean>;
+  private readonly filmStripPlaceholderElement: HTMLElement;
+  private readonly overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
+  private readonly networkOverview: NetworkOverview;
+  private readonly overviewPlaceholderElement: HTMLElement;
+  private readonly calculator: NetworkTransferTimeCalculator;
+  private splitWidget: UI.SplitWidget.SplitWidget;
+  private readonly sidebarLocation: UI.View.TabbedViewLocation;
+  private readonly progressBarContainer: HTMLDivElement;
   networkLogView: NetworkLogView;
-  readonly #fileSelectorElement: HTMLElement;
-  readonly #detailsWidget: UI.Widget.VBox;
-  readonly #closeButtonElement: HTMLDivElement;
-  #preserveLogSetting: Common.Settings.Setting<boolean>;
+  private readonly fileSelectorElement: HTMLElement;
+  private readonly detailsWidget: UI.Widget.VBox;
+  private readonly closeButtonElement: HTMLDivElement;
+  private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
-  readonly #throttlingSelect: UI.Toolbar.ToolbarComboBox;
+  private readonly throttlingSelect: UI.Toolbar.ToolbarComboBox;
 
   constructor() {
     super('network');
 
-    this.#networkLogShowOverviewSetting =
+    this.networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);
-    this.#networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
-    this.#networkRecordFilmStripSetting =
+    this.networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
+    this.networkRecordFilmStripSetting =
         Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
-    this.#toggleRecordAction =
+    this.toggleRecordAction =
         (UI.ActionRegistry.ActionRegistry.instance().action('network.toggle-recording') as
          UI.ActionRegistration.Action);
     this.networkItemView = null;
-    this.#filmStripView = null;
-    this.#filmStripRecorder = null;
-    this.#currentRequest = null;
+    this.filmStripView = null;
+    this.filmStripRecorder = null;
+    this.currentRequest = null;
 
     const panel = new UI.Widget.VBox();
 
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
-    this.#panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
-    this.#panelToolbar.makeWrappable(true);
-    this.#rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
+    this.panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
+    this.panelToolbar.makeWrappable(true);
+    this.rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
 
-    this.#filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
-    this.#filterBar.show(panel.contentElement);
-    this.#filterBar.addEventListener(UI.FilterBar.FilterBarEvents.Changed, this.handleFilterChanged.bind(this));
+    this.filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+    this.filterBar.show(panel.contentElement);
+    this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.Changed, this.handleFilterChanged.bind(this));
 
-    this.#settingsPane = new UI.Widget.HBox();
-    this.#settingsPane.element.classList.add('network-settings-pane');
-    this.#settingsPane.show(panel.contentElement);
-    this.#showSettingsPaneSetting =
+    this.settingsPane = new UI.Widget.HBox();
+    this.settingsPane.element.classList.add('network-settings-pane');
+    this.settingsPane.show(panel.contentElement);
+    this.showSettingsPaneSetting =
         Common.Settings.Settings.instance().createSetting('networkShowSettingsToolbar', false);
-    this.#showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
+    this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
 
-    this.#filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
+    this.filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
 
     // Create top overview component.
-    this.#overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
-    this.#overviewPane.addEventListener(
+    this.overviewPane = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('network');
+    this.overviewPane.addEventListener(
         PerfUI.TimelineOverviewPane.Events.WindowChanged, this.onWindowChanged.bind(this));
-    this.#overviewPane.element.id = 'network-overview-panel';
-    this.#networkOverview = new NetworkOverview();
-    this.#overviewPane.setOverviewControls([this.#networkOverview]);
-    this.#overviewPlaceholderElement = panel.contentElement.createChild('div');
+    this.overviewPane.element.id = 'network-overview-panel';
+    this.networkOverview = new NetworkOverview();
+    this.overviewPane.setOverviewControls([this.networkOverview]);
+    this.overviewPlaceholderElement = panel.contentElement.createChild('div');
 
-    this.#calculator = new NetworkTransferTimeCalculator();
+    this.calculator = new NetworkTransferTimeCalculator();
 
-    this.#splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'networkPanelSplitViewState');
-    this.#splitWidget.hideMain();
-    this.#splitWidget.show(panel.contentElement);
+    this.splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'networkPanelSplitViewState');
+    this.splitWidget.hideMain();
+    this.splitWidget.show(panel.contentElement);
 
-    panel.setDefaultFocusedChild(this.#filterBar);
+    panel.setDefaultFocusedChild(this.filterBar);
 
     const initialSidebarWidth = 225;
     const splitWidget = new UI.SplitWidget.SplitWidget(true, false, 'networkPanelSidebarState', initialSidebarWidth);
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
-    this.#sidebarLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
+    this.sidebarLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
       UI.ViewManager.ViewManager.instance().showView('network');
       splitWidget.showBoth();
     }, 'network-sidebar', true);
-    const tabbedPane = this.#sidebarLocation.tabbedPane();
+    const tabbedPane = this.sidebarLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('network-tabbed-pane');
     tabbedPane.element.addEventListener('keydown', event => {
@@ -277,38 +277,38 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     splitWidget.setDefaultFocusedChild(panel);
     this.setDefaultFocusedChild(splitWidget);
 
-    this.#progressBarContainer = document.createElement('div');
+    this.progressBarContainer = document.createElement('div');
 
     this.networkLogView =
-        new NetworkLogView(this.#filterBar, this.#progressBarContainer, this.#networkLogLargeRowsSetting);
-    this.#splitWidget.setSidebarWidget(this.networkLogView);
-    this.#fileSelectorElement =
+        new NetworkLogView(this.filterBar, this.progressBarContainer, this.networkLogLargeRowsSetting);
+    this.splitWidget.setSidebarWidget(this.networkLogView);
+    this.fileSelectorElement =
         (UI.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView)) as
          HTMLElement);
-    panel.element.appendChild(this.#fileSelectorElement);
+    panel.element.appendChild(this.fileSelectorElement);
 
-    this.#detailsWidget = new UI.Widget.VBox();
-    this.#detailsWidget.element.classList.add('network-details-view');
-    this.#splitWidget.setMainWidget(this.#detailsWidget);
+    this.detailsWidget = new UI.Widget.VBox();
+    this.detailsWidget.element.classList.add('network-details-view');
+    this.splitWidget.setMainWidget(this.detailsWidget);
 
-    this.#closeButtonElement = document.createElement('div', {is: 'dt-close-button'});
-    this.#closeButtonElement.addEventListener('click', async () => {
+    this.closeButtonElement = document.createElement('div', {is: 'dt-close-button'});
+    this.closeButtonElement.addEventListener('click', async () => {
       const action = UI.ActionRegistry.ActionRegistry.instance().action('network.hide-request-details');
       if (action) {
         await action.execute();
       }
     }, false);
-    this.#closeButtonElement.style.margin = '0 5px';
+    this.closeButtonElement.style.margin = '0 5px';
 
-    this.#networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
-    this.#networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
-    this.#networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
+    this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
+    this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
+    this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
 
-    this.#preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
+    this.preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log');
     this.recordLogSetting = Common.Settings.Settings.instance().moduleSetting('network_log.record-log');
     this.recordLogSetting.addChangeListener(({data}) => this.toggleRecord(data));
 
-    this.#throttlingSelect = this.createThrottlingConditionsSelect();
+    this.throttlingSelect = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);
 
     this.toggleRecord(this.recordLogSetting.get());
@@ -366,30 +366,14 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     await panel.selectAndActivateRequest(request, tab, options);
   }
 
-  get networkLogLargeRowsSetting(): Common.Settings.Setting<boolean> {
-    return this.#networkLogLargeRowsSetting;
-  }
-
-  get overviewPane(): PerfUI.TimelineOverviewPane.TimelineOverviewPane {
-    return this.#overviewPane;
-  }
-
-  get filmStripView(): PerfUI.FilmStripView.FilmStripView|null {
-    return this.#filmStripView;
-  }
-
-  get networkRecordFilmStripSetting(): Common.Settings.Setting<boolean> {
-    return this.#networkRecordFilmStripSetting;
-  }
-
   throttlingSelectForTest(): UI.Toolbar.ToolbarComboBox {
-    return this.#throttlingSelect;
+    return this.throttlingSelect;
   }
 
   private onWindowChanged(event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.WindowChangedEvent>):
       void {
-    const startTime = Math.max(this.#calculator.minimumBoundary(), event.data.startTime / 1000);
-    const endTime = Math.min(this.#calculator.maximumBoundary(), event.data.endTime / 1000);
+    const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1000);
+    const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1000);
     this.networkLogView.setWindow(startTime, endTime);
   }
 
@@ -409,32 +393,32 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
         (searchToggle.element as HTMLElement).focus();
       }
     }
-    this.#panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#toggleRecordAction));
+    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     clearButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, () => Logs.NetworkLog.NetworkLog.instance().reset(true), this);
-    this.#panelToolbar.appendToolbarItem(clearButton);
-    this.#panelToolbar.appendSeparator();
+    this.panelToolbar.appendToolbarItem(clearButton);
+    this.panelToolbar.appendSeparator();
 
-    this.#panelToolbar.appendToolbarItem(this.#filterBar.filterButton());
+    this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
     searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.searchToggleClick();
     });
-    this.#panelToolbar.appendToolbarItem(searchToggle);
-    this.#panelToolbar.appendSeparator();
+    this.panelToolbar.appendToolbarItem(searchToggle);
+    this.panelToolbar.appendSeparator();
 
-    this.#panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.#preserveLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog)));
+    this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
+        this.preserveLogSetting, i18nString(UIStrings.doNotClearLogOnPageReload), i18nString(UIStrings.preserveLog)));
 
-    this.#panelToolbar.appendSeparator();
+    this.panelToolbar.appendSeparator();
     const disableCacheCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('cacheDisabled'),
         i18nString(UIStrings.disableCacheWhileDevtoolsIsOpen), i18nString(UIStrings.disableCache));
-    this.#panelToolbar.appendToolbarItem(disableCacheCheckbox);
+    this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
-    this.#panelToolbar.appendToolbarItem(this.#throttlingSelect);
+    this.panelToolbar.appendToolbarItem(this.throttlingSelect);
 
     const networkConditionsIcon = new IconButton.Icon.Icon();
     networkConditionsIcon.data = {
@@ -448,45 +432,45 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       UI.ViewManager.ViewManager.instance().showView('network.config');
     }, this);
-    this.#panelToolbar.appendToolbarItem(networkConditionsButton);
+    this.panelToolbar.appendToolbarItem(networkConditionsButton);
 
-    this.#rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.#progressBarContainer));
-    this.#rightToolbar.appendSeparator();
-    this.#rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this.#showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.networkSettings)));
+    this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.progressBarContainer));
+    this.rightToolbar.appendSeparator();
+    this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
+        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.networkSettings)));
 
-    const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this.#settingsPane.element);
+    const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this.settingsPane.element);
     settingsToolbarLeft.makeVertical();
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.#networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
+        this.networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
         i18nString(UIStrings.useLargeRequestRows)));
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.#networkLogShowOverviewSetting, i18nString(UIStrings.showOverviewOfNetworkRequests),
+        this.networkLogShowOverviewSetting, i18nString(UIStrings.showOverviewOfNetworkRequests),
         i18nString(UIStrings.showOverview)));
 
-    const settingsToolbarRight = new UI.Toolbar.Toolbar('', this.#settingsPane.element);
+    const settingsToolbarRight = new UI.Toolbar.Toolbar('', this.settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
         i18nString(UIStrings.groupRequestsByTopLevelRequest), i18nString(UIStrings.groupByFrame)));
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.#networkRecordFilmStripSetting, i18nString(UIStrings.captureScreenshotsWhenLoadingA),
+        this.networkRecordFilmStripSetting, i18nString(UIStrings.captureScreenshotsWhenLoadingA),
         i18nString(UIStrings.captureScreenshots)));
 
-    this.#panelToolbar.appendSeparator();
+    this.panelToolbar.appendSeparator();
     const importHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'largeicon-load');
     importHarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => this.#fileSelectorElement.click(), this);
-    this.#panelToolbar.appendToolbarItem(importHarButton);
+        UI.Toolbar.ToolbarButton.Events.Click, () => this.fileSelectorElement.click(), this);
+    this.panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'largeicon-download');
     exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       this.networkLogView.exportAll();
     }, this);
-    this.#panelToolbar.appendToolbarItem(exportHarButton);
+    this.panelToolbar.appendToolbarItem(exportHarButton);
   }
 
   private updateSettingsPaneVisibility(): void {
-    this.#settingsPane.element.classList.toggle('hidden', !this.#showSettingsPaneSetting.get());
+    this.settingsPane.element.classList.toggle('hidden', !this.showSettingsPaneSetting.get());
   }
 
   private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarComboBox {
@@ -498,14 +482,14 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   toggleRecord(toggled: boolean): void {
-    this.#toggleRecordAction.setToggled(toggled);
+    this.toggleRecordAction.setToggled(toggled);
     if (this.recordLogSetting.get() !== toggled) {
       this.recordLogSetting.set(toggled);
     }
 
     this.networkLogView.setRecording(toggled);
-    if (!toggled && this.#filmStripRecorder) {
-      this.#filmStripRecorder.stopRecording(this.filmStripAvailable.bind(this));
+    if (!toggled && this.filmStripRecorder) {
+      this.filmStripRecorder.stopRecording(this.filmStripAvailable.bind(this));
     }
   }
 
@@ -514,11 +498,11 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       return;
     }
     const calculator = this.networkLogView.timeCalculator();
-    if (this.#filmStripView) {
-      this.#filmStripView.setModel(
+    if (this.filmStripView) {
+      this.filmStripView.setModel(
           filmStripModel, calculator.minimumBoundary() * 1000, calculator.boundarySpan() * 1000);
     }
-    this.#networkOverview.setFilmStripModel(filmStripModel);
+    this.networkOverview.setFilmStripModel(filmStripModel);
     const timestamps = filmStripModel.frames().map(mapTimestamp);
 
     function mapTimestamp(frame: SDK.FilmStripModel.Frame): number {
@@ -531,36 +515,36 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   private onNetworkLogReset(event: Common.EventTarget.EventTargetEvent<Logs.NetworkLog.ResetEvent>): void {
     const {clearIfPreserved} = event.data;
     BlockedURLsPane.reset();
-    if (!this.#preserveLogSetting.get() || clearIfPreserved) {
-      this.#calculator.reset();
-      this.#overviewPane.reset();
+    if (!this.preserveLogSetting.get() || clearIfPreserved) {
+      this.calculator.reset();
+      this.overviewPane.reset();
     }
-    if (this.#filmStripView) {
+    if (this.filmStripView) {
       this.resetFilmStripView();
     }
   }
 
   private willReloadPage(): void {
-    if (this.#pendingStopTimer) {
-      clearTimeout(this.#pendingStopTimer);
-      this.#pendingStopTimer = undefined;
+    if (this.pendingStopTimer) {
+      clearTimeout(this.pendingStopTimer);
+      delete this.pendingStopTimer;
     }
-    if (this.isShowing() && this.#filmStripRecorder) {
-      this.#filmStripRecorder.startRecording();
+    if (this.isShowing() && this.filmStripRecorder) {
+      this.filmStripRecorder.startRecording();
     }
   }
 
   private load(): void {
-    if (this.#filmStripRecorder && this.#filmStripRecorder.isRecording()) {
-      this.#pendingStopTimer = window.setTimeout(this.stopFilmStripRecording.bind(this), displayScreenshotDelay);
+    if (this.filmStripRecorder && this.filmStripRecorder.isRecording()) {
+      this.pendingStopTimer = window.setTimeout(this.stopFilmStripRecording.bind(this), displayScreenshotDelay);
     }
   }
 
   private stopFilmStripRecording(): void {
-    if (this.#filmStripRecorder) {
-      this.#filmStripRecorder.stopRecording(this.filmStripAvailable.bind(this));
+    if (this.filmStripRecorder) {
+      this.filmStripRecorder.stopRecording(this.filmStripAvailable.bind(this));
     }
-    this.#pendingStopTimer = undefined;
+    delete this.pendingStopTimer;
   }
 
   private toggleLargerRequests(): void {
@@ -568,35 +552,35 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private toggleShowOverview(): void {
-    const toggled = this.#networkLogShowOverviewSetting.get();
+    const toggled = this.networkLogShowOverviewSetting.get();
     if (toggled) {
-      this.#overviewPane.show(this.#overviewPlaceholderElement);
+      this.overviewPane.show(this.overviewPlaceholderElement);
     } else {
-      this.#overviewPane.detach();
+      this.overviewPane.detach();
     }
     this.doResize();
   }
 
   private toggleRecordFilmStrip(): void {
-    const toggled = this.#networkRecordFilmStripSetting.get();
-    if (toggled && !this.#filmStripRecorder) {
-      this.#filmStripView = new PerfUI.FilmStripView.FilmStripView();
-      this.#filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
-      this.#filmStripView.element.classList.add('network-film-strip');
-      this.#filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.#filmStripView);
-      this.#filmStripView.show(this.#filmStripPlaceholderElement);
-      this.#filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this.onFilmFrameSelected, this);
-      this.#filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameEnter, this.onFilmFrameEnter, this);
-      this.#filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameExit, this.onFilmFrameExit, this);
+    const toggled = this.networkRecordFilmStripSetting.get();
+    if (toggled && !this.filmStripRecorder) {
+      this.filmStripView = new PerfUI.FilmStripView.FilmStripView();
+      this.filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
+      this.filmStripView.element.classList.add('network-film-strip');
+      this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
+      this.filmStripView.show(this.filmStripPlaceholderElement);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this.onFilmFrameSelected, this);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameEnter, this.onFilmFrameEnter, this);
+      this.filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameExit, this.onFilmFrameExit, this);
       this.resetFilmStripView();
     }
 
-    if (!toggled && this.#filmStripRecorder) {
-      if (this.#filmStripView) {
-        this.#filmStripView.detach();
+    if (!toggled && this.filmStripRecorder) {
+      if (this.filmStripView) {
+        this.filmStripView.detach();
       }
-      this.#filmStripView = null;
-      this.#filmStripRecorder = null;
+      this.filmStripView = null;
+      this.filmStripRecorder = null;
     }
   }
 
@@ -604,10 +588,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const reloadShortcut =
         UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector_main.reload')[0];
 
-    if (this.#filmStripView) {
-      this.#filmStripView.reset();
+    if (this.filmStripView) {
+      this.filmStripView.reset();
       if (reloadShortcut) {
-        this.#filmStripView.setStatusText(
+        this.filmStripView.setStatusText(
             i18nString(UIStrings.hitSToReloadAndCaptureFilmstrip, {PH1: reloadShortcut.title()}));
       }
     }
@@ -662,8 +646,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private onRequestSelected(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest|null>): void {
     const request = event.data;
-    this.#currentRequest = request;
-    this.#networkOverview.setHighlightedRequest(request);
+    this.currentRequest = request;
+    this.networkOverview.setHighlightedRequest(request);
     this.updateNetworkItemView();
   }
 
@@ -677,12 +661,12 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private showRequestPanel(shownTab?: NetworkForward.UIRequestLocation.UIRequestTabs, takeFocus?: boolean): void {
-    if (this.#splitWidget.showMode() === UI.SplitWidget.ShowMode.Both && !shownTab && !takeFocus) {
+    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.Both && !shownTab && !takeFocus) {
       // If panel is already shown, and we are not forcing a specific tab, return.
       return;
     }
     this.clearNetworkItemView();
-    if (this.#currentRequest) {
+    if (this.currentRequest) {
       const networkItemView = this.createNetworkItemView(shownTab);
       if (networkItemView && takeFocus) {
         networkItemView.focus();
@@ -693,12 +677,12 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   hideRequestPanel(): void {
     this.clearNetworkItemView();
-    this.#splitWidget.hideMain();
+    this.splitWidget.hideMain();
     this.updateUI();
   }
 
   private updateNetworkItemView(): void {
-    if (this.#splitWidget.showMode() === UI.SplitWidget.ShowMode.Both) {
+    if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.Both) {
       this.clearNetworkItemView();
       this.createNetworkItemView();
       this.updateUI();
@@ -713,23 +697,23 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
   private createNetworkItemView(initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs): NetworkItemView
       |undefined {
-    if (!this.#currentRequest) {
+    if (!this.currentRequest) {
       return;
     }
-    this.networkItemView = new NetworkItemView(this.#currentRequest, this.networkLogView.timeCalculator(), initialTab);
-    this.networkItemView.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(this.#closeButtonElement));
-    this.networkItemView.show(this.#detailsWidget.element);
-    this.#splitWidget.showBoth();
+    this.networkItemView = new NetworkItemView(this.currentRequest, this.networkLogView.timeCalculator(), initialTab);
+    this.networkItemView.leftToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(this.closeButtonElement));
+    this.networkItemView.show(this.detailsWidget.element);
+    this.splitWidget.showBoth();
     return this.networkItemView;
   }
 
   private updateUI(): void {
-    if (this.#detailsWidget) {
-      this.#detailsWidget.element.classList.toggle(
-          'network-details-view-tall-header', this.#networkLogLargeRowsSetting.get());
+    if (this.detailsWidget) {
+      this.detailsWidget.element.classList.toggle(
+          'network-details-view-tall-header', this.networkLogLargeRowsSetting.get());
     }
     if (this.networkLogView) {
-      this.networkLogView.switchViewMode(!this.#splitWidget.isResizable());
+      this.networkLogView.switchViewMode(!this.splitWidget.isResizable());
     }
   }
 
@@ -778,32 +762,32 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
     const timestamp = event.data;
-    this.#overviewPane.setWindowTimes(0, timestamp);
+    this.overviewPane.setWindowTimes(0, timestamp);
   }
 
   private onFilmFrameEnter(event: Common.EventTarget.EventTargetEvent<number>): void {
     const timestamp = event.data;
-    this.#networkOverview.selectFilmStripFrame(timestamp);
+    this.networkOverview.selectFilmStripFrame(timestamp);
     this.networkLogView.selectFilmStripFrame(timestamp / 1000);
   }
 
   private onFilmFrameExit(): void {
-    this.#networkOverview.clearFilmStripFrame();
+    this.networkOverview.clearFilmStripFrame();
     this.networkLogView.clearFilmStripFrame();
   }
 
   private onUpdateRequest(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
-    this.#calculator.updateBoundaries(request);
+    this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
-    this.#overviewPane.setBounds(this.#calculator.minimumBoundary() * 1000, this.#calculator.maximumBoundary() * 1000);
-    this.#networkOverview.updateRequest(request);
-    this.#overviewPane.scheduleUpdate();
+    this.overviewPane.setBounds(this.calculator.minimumBoundary() * 1000, this.calculator.maximumBoundary() * 1000);
+    this.networkOverview.updateRequest(request);
+    this.overviewPane.scheduleUpdate();
   }
 
   resolveLocation(locationName: string): UI.View.ViewLocation|null {
     if (locationName === 'network-sidebar') {
-      return this.#sidebarLocation;
+      return this.sidebarLocation;
     }
     return null;
   }
@@ -896,43 +880,43 @@ export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer {
 }
 
 export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClient {
-  #tracingManager: SDK.TracingManager.TracingManager|null;
-  #resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
-  readonly #timeCalculator: NetworkTimeCalculator;
-  readonly #filmStripView: PerfUI.FilmStripView.FilmStripView;
-  #tracingModel: SDK.TracingModel.TracingModel|null;
-  #callback: ((arg0: SDK.FilmStripModel.FilmStripModel|null) => void)|null;
+  private tracingManager: SDK.TracingManager.TracingManager|null;
+  private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
+  private readonly timeCalculator: NetworkTimeCalculator;
+  private readonly filmStripView: PerfUI.FilmStripView.FilmStripView;
+  private tracingModel: SDK.TracingModel.TracingModel|null;
+  private callback: ((arg0: SDK.FilmStripModel.FilmStripModel|null) => void)|null;
 
   constructor(timeCalculator: NetworkTimeCalculator, filmStripView: PerfUI.FilmStripView.FilmStripView) {
-    this.#tracingManager = null;
-    this.#resourceTreeModel = null;
-    this.#timeCalculator = timeCalculator;
-    this.#filmStripView = filmStripView;
-    this.#tracingModel = null;
-    this.#callback = null;
+    this.tracingManager = null;
+    this.resourceTreeModel = null;
+    this.timeCalculator = timeCalculator;
+    this.filmStripView = filmStripView;
+    this.tracingModel = null;
+    this.callback = null;
   }
 
   traceEventsCollected(events: SDK.TracingManager.EventPayload[]): void {
-    if (this.#tracingModel) {
-      this.#tracingModel.addEvents(events);
+    if (this.tracingModel) {
+      this.tracingModel.addEvents(events);
     }
   }
 
   tracingComplete(): void {
-    if (!this.#tracingModel || !this.#tracingManager) {
+    if (!this.tracingModel || !this.tracingManager) {
       return;
     }
-    this.#tracingModel.tracingComplete();
-    this.#tracingManager = null;
-    if (this.#callback) {
-      this.#callback(
-          new SDK.FilmStripModel.FilmStripModel(this.#tracingModel, this.#timeCalculator.minimumBoundary() * 1000));
+    this.tracingModel.tracingComplete();
+    this.tracingManager = null;
+    if (this.callback) {
+      this.callback(
+          new SDK.FilmStripModel.FilmStripModel(this.tracingModel, this.timeCalculator.minimumBoundary() * 1000));
     }
-    this.#callback = null;
-    if (this.#resourceTreeModel) {
-      this.#resourceTreeModel.resumeReload();
+    this.callback = null;
+    if (this.resourceTreeModel) {
+      this.resourceTreeModel.resumeReload();
     }
-    this.#resourceTreeModel = null;
+    this.resourceTreeModel = null;
   }
 
   tracingBufferUsage(): void {
@@ -942,42 +926,42 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
   }
 
   startRecording(): void {
-    this.#filmStripView.reset();
-    this.#filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
+    this.filmStripView.reset();
+    this.filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
     const tracingManagers = SDK.TargetManager.TargetManager.instance().models(SDK.TracingManager.TracingManager);
-    if (this.#tracingManager || !tracingManagers.length) {
+    if (this.tracingManager || !tracingManagers.length) {
       return;
     }
 
-    this.#tracingManager = tracingManagers[0];
-    if (!this.#tracingManager) {
+    this.tracingManager = tracingManagers[0];
+    if (!this.tracingManager) {
       return;
     }
-    this.#resourceTreeModel = this.#tracingManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (this.#tracingModel) {
-      this.#tracingModel.dispose();
+    this.resourceTreeModel = this.tracingManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (this.tracingModel) {
+      this.tracingModel.dispose();
     }
-    this.#tracingModel = new SDK.TracingModel.TracingModel(new Bindings.TempFile.TempFileBackingStorage());
-    this.#tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
+    this.tracingModel = new SDK.TracingModel.TracingModel(new Bindings.TempFile.TempFileBackingStorage());
+    this.tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FilmStripStartedRecording);
   }
 
   isRecording(): boolean {
-    return Boolean(this.#tracingManager);
+    return Boolean(this.tracingManager);
   }
 
   stopRecording(callback: (arg0: SDK.FilmStripModel.FilmStripModel|null) => void): void {
-    if (!this.#tracingManager) {
+    if (!this.tracingManager) {
       return;
     }
 
-    this.#tracingManager.stop();
-    if (this.#resourceTreeModel) {
-      this.#resourceTreeModel.suspendReload();
+    this.tracingManager.stop();
+    if (this.resourceTreeModel) {
+      this.resourceTreeModel.suspendReload();
     }
-    this.#callback = callback;
-    this.#filmStripView.setStatusText(i18nString(UIStrings.fetchingFrames));
+    this.callback = callback;
+    this.filmStripView.setStatusText(i18nString(UIStrings.fetchingFrames));
   }
 }
 

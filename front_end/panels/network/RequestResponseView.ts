@@ -48,13 +48,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestResponseView extends UI.Widget.VBox {
   request: SDK.NetworkRequest.NetworkRequest;
-  #contentViewPromise: Promise<UI.Widget.Widget>|null;
+  private contentViewPromise: Promise<UI.Widget.Widget>|null;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     this.element.classList.add('request-view');
     this.request = request;
-    this.#contentViewPromise = null;
+    this.contentViewPromise = null;
   }
 
   private static hasTextContent(
@@ -101,15 +101,11 @@ export class RequestResponseView extends UI.Widget.VBox {
     this.doShowPreview();
   }
 
-  get contentViewPromise(): Promise<UI.Widget.Widget>|null {
-    return this.#contentViewPromise;
-  }
-
   private doShowPreview(): Promise<UI.Widget.Widget> {
-    if (!this.#contentViewPromise) {
-      this.#contentViewPromise = this.showPreview();
+    if (!this.contentViewPromise) {
+      this.contentViewPromise = this.showPreview();
     }
-    return this.#contentViewPromise;
+    return this.contentViewPromise;
   }
 
   async showPreview(): Promise<UI.Widget.Widget> {

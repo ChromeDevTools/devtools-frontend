@@ -41,15 +41,15 @@ const UIStrings = {
   */
   textPatternToBlockMatching: 'Text pattern to block matching requests; use * for wildcard',
   /**
-  *@description Error text for empty #list widget input in Request Blocking tool
+  *@description Error text for empty list widget input in Request Blocking tool
   */
   patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
   /**
-  *@description Error text for duplicate #list widget input in Request Blocking tool
+  *@description Error text for duplicate list widget input in Request Blocking tool
   */
   patternAlreadyExists: 'Pattern already exists.',
   /**
-  *@description Message to be announced for a when #list item is removed from #list widget
+  *@description Message to be announced for a when list item is removed from list widget
   */
   itemDeleted: 'Item successfully deleted',
 };
@@ -59,47 +59,47 @@ export let blockedURLsPaneInstance: BlockedURLsPane|null = null;
 
 export class BlockedURLsPane extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.BlockedPattern> {
-  #manager: SDK.NetworkManager.MultitargetNetworkManager;
-  readonly #toolbar: UI.Toolbar.Toolbar;
-  readonly #enabledCheckbox: UI.Toolbar.ToolbarCheckbox;
-  readonly #list: UI.ListWidget.ListWidget<SDK.NetworkManager.BlockedPattern>;
-  #editor: UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>|null;
-  #blockedCountForUrl: Map<string, number>;
-  readonly #updateThrottler: Common.Throttler.Throttler;
+  private manager: SDK.NetworkManager.MultitargetNetworkManager;
+  private readonly toolbar: UI.Toolbar.Toolbar;
+  private readonly enabledCheckbox: UI.Toolbar.ToolbarCheckbox;
+  private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.BlockedPattern>;
+  private editor: UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>|null;
+  private blockedCountForUrl: Map<string, number>;
+  private readonly updateThrottler: Common.Throttler.Throttler;
 
   constructor() {
     super(true);
 
-    this.#manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-    this.#manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
+    this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    this.manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
       this.update();
     }, this);
 
-    this.#toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
-    this.#enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
+    this.toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
+    this.enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this));
-    this.#toolbar.appendToolbarItem(this.#enabledCheckbox);
-    this.#toolbar.appendSeparator();
+    this.toolbar.appendToolbarItem(this.enabledCheckbox);
+    this.toolbar.appendSeparator();
     const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'largeicon-add');
     addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.addButtonClicked, this);
-    this.#toolbar.appendToolbarItem(addButton);
+    this.toolbar.appendToolbarItem(addButton);
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeAll, this);
-    this.#toolbar.appendToolbarItem(clearButton);
+    this.toolbar.appendToolbarItem(clearButton);
 
-    this.#list = new UI.ListWidget.ListWidget(this);
-    this.#list.element.classList.add('blocked-urls');
+    this.list = new UI.ListWidget.ListWidget(this);
+    this.list.element.classList.add('blocked-urls');
 
-    this.#list.setEmptyPlaceholder(this.createEmptyPlaceholder());
-    this.#list.show(this.contentElement);
+    this.list.setEmptyPlaceholder(this.createEmptyPlaceholder());
+    this.list.show(this.contentElement);
 
-    this.#editor = null;
+    this.editor = null;
 
-    this.#blockedCountForUrl = new Map();
+    this.blockedCountForUrl = new Map();
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this);
 
-    this.#updateThrottler = new Common.Throttler.Throttler(200);
+    this.updateThrottler = new Common.Throttler.Throttler(200);
 
     this.update();
   }
@@ -131,8 +131,8 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   private addButtonClicked(): void {
-    this.#manager.setBlockingEnabled(true);
-    this.#list.addNewItem(0, {url: '', enabled: true});
+    this.manager.setBlockingEnabled(true);
+    this.list.addNewItem(0, {url: '', enabled: true});
   }
 
   renderItem(pattern: SDK.NetworkManager.BlockedPattern, editable: boolean): Element {
@@ -154,46 +154,46 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   private togglePattern(pattern: SDK.NetworkManager.BlockedPattern, event: Event): void {
     event.consume(true);
-    const patterns = this.#manager.blockedPatterns();
+    const patterns = this.manager.blockedPatterns();
     patterns.splice(patterns.indexOf(pattern), 1, {enabled: !pattern.enabled, url: pattern.url});
-    this.#manager.setBlockedPatterns(patterns);
+    this.manager.setBlockedPatterns(patterns);
   }
 
   private toggleEnabled(): void {
-    this.#manager.setBlockingEnabled(!this.#manager.blockingEnabled());
+    this.manager.setBlockingEnabled(!this.manager.blockingEnabled());
     this.update();
   }
 
   removeItemRequested(pattern: SDK.NetworkManager.BlockedPattern, index: number): void {
-    const patterns = this.#manager.blockedPatterns();
+    const patterns = this.manager.blockedPatterns();
     patterns.splice(index, 1);
-    this.#manager.setBlockedPatterns(patterns);
+    this.manager.setBlockedPatterns(patterns);
     UI.ARIAUtils.alert(UIStrings.itemDeleted);
   }
 
   beginEdit(pattern: SDK.NetworkManager.BlockedPattern): UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern> {
-    this.#editor = this.createEditor();
-    this.#editor.control('url').value = pattern.url;
-    return this.#editor;
+    this.editor = this.createEditor();
+    this.editor.control('url').value = pattern.url;
+    return this.editor;
   }
 
   commitEdit(
       item: SDK.NetworkManager.BlockedPattern, editor: UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>,
       isNew: boolean): void {
     const url = editor.control('url').value;
-    const patterns = this.#manager.blockedPatterns();
+    const patterns = this.manager.blockedPatterns();
     if (isNew) {
       patterns.push({enabled: true, url: url});
     } else {
       patterns.splice(patterns.indexOf(item), 1, {enabled: true, url: url});
     }
 
-    this.#manager.setBlockedPatterns(patterns);
+    this.manager.setBlockedPatterns(patterns);
   }
 
   private createEditor(): UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern> {
-    if (this.#editor) {
-      return this.#editor;
+    if (this.editor) {
+      return this.editor;
     }
 
     const editor = new UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern>();
@@ -210,7 +210,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
       if (!input.value) {
         errorMessage = i18nString(UIStrings.patternInputCannotBeEmpty);
         valid = false;
-      } else if (this.#manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
+      } else if (this.manager.blockedPatterns().find(pattern => pattern.url === input.value)) {
         errorMessage = i18nString(UIStrings.patternAlreadyExists);
         valid = false;
       }
@@ -222,18 +222,17 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   private removeAll(): void {
-    this.#manager.setBlockedPatterns([]);
+    this.manager.setBlockedPatterns([]);
   }
 
   private update(): Promise<void> {
-    const enabled = this.#manager.blockingEnabled();
-    this.#list.element.classList.toggle(
-        'blocking-disabled', !enabled && Boolean(this.#manager.blockedPatterns().length));
+    const enabled = this.manager.blockingEnabled();
+    this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
 
-    this.#enabledCheckbox.setChecked(enabled);
-    this.#list.clear();
-    for (const pattern of this.#manager.blockedPatterns()) {
-      this.#list.appendItem(pattern, enabled);
+    this.enabledCheckbox.setChecked(enabled);
+    this.list.clear();
+    for (const pattern of this.manager.blockedPatterns()) {
+      this.list.appendItem(pattern, enabled);
     }
     return Promise.resolve();
   }
@@ -244,9 +243,9 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     }
 
     let result = 0;
-    for (const blockedUrl of this.#blockedCountForUrl.keys()) {
+    for (const blockedUrl of this.blockedCountForUrl.keys()) {
       if (this.matches(url, blockedUrl)) {
-        result += (this.#blockedCountForUrl.get(blockedUrl) as number);
+        result += (this.blockedCountForUrl.get(blockedUrl) as number);
       }
     }
     return result;
@@ -270,21 +269,21 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   }
 
   reset(): void {
-    this.#blockedCountForUrl.clear();
-    this.#updateThrottler.schedule(this.update.bind(this));
+    this.blockedCountForUrl.clear();
+    this.updateThrottler.schedule(this.update.bind(this));
   }
 
   private onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
     if (request.wasBlocked()) {
-      const count = this.#blockedCountForUrl.get(request.url()) || 0;
-      this.#blockedCountForUrl.set(request.url(), count + 1);
-      this.#updateThrottler.schedule(this.update.bind(this));
+      const count = this.blockedCountForUrl.get(request.url()) || 0;
+      this.blockedCountForUrl.set(request.url(), count + 1);
+      this.updateThrottler.schedule(this.update.bind(this));
     }
   }
   wasShown(): void {
     super.wasShown();
-    this.#list.registerCSSFiles([blockedURLsPaneStyles]);
+    this.list.registerCSSFiles([blockedURLsPaneStyles]);
     this.registerCSSFiles([blockedURLsPaneStyles]);
   }
 }

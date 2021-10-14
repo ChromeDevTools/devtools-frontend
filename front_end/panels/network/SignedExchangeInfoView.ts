@@ -102,7 +102,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
-  readonly #responseHeadersItem?: UI.TreeOutline.TreeElement;
+  private readonly responseHeadersItem?: UI.TreeOutline.TreeElement;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
@@ -158,15 +158,15 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.responseCode), String(header.responseCode)));
       headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.headerIntegrityHash), header.headerIntegrity));
 
-      this.#responseHeadersItem =
+      this.responseHeadersItem =
           headerCategory.createLeaf(this.formatHeader(i18nString(UIStrings.responseHeaders), ''));
       const responseHeaders = header.responseHeaders;
       for (const name in responseHeaders) {
         const headerTreeElement = new UI.TreeOutline.TreeElement(this.formatHeader(name, responseHeaders[name]));
         headerTreeElement.selectable = false;
-        this.#responseHeadersItem.appendChild(headerTreeElement);
+        this.responseHeadersItem.appendChild(headerTreeElement);
       }
-      this.#responseHeadersItem.expand();
+      this.responseHeadersItem.expand();
 
       for (let i = 0; i < header.signatures.length; ++i) {
         const errorFieldSet = errorFieldSetMap.get(i) || new Set();

@@ -28,20 +28,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {
-  readonly #linkifier: Components.Linkifier.Linkifier;
-  readonly #request: SDK.NetworkRequest.NetworkRequest;
-  readonly #emptyWidget: UI.EmptyWidget.EmptyWidget;
-  #hasShown: boolean;
+  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  private readonly emptyWidget: UI.EmptyWidget.EmptyWidget;
+  private hasShown: boolean;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
 
     this.element.classList.add('request-initiator-view');
-    this.#linkifier = new Components.Linkifier.Linkifier();
-    this.#request = request;
-    this.#emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
-    this.#emptyWidget.show(this.element);
-    this.#hasShown = false;
+    this.linkifier = new Components.Linkifier.Linkifier();
+    this.request = request;
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoInitiatorData));
+    this.emptyWidget.show(this.element);
+    this.hasShown = false;
   }
 
   static createStackTracePreview(
@@ -96,7 +96,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const initiated = initiatorGraph.initiated;
-    this.depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this.#request);
+    this.depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this.request);
     return root;
   }
 
@@ -104,8 +104,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
       initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
       parentElement: UI.TreeOutline.TreeElement, parentRequest: SDK.NetworkRequest.NetworkRequest): void {
     const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
-    // this.#request should be already in the tree when build initiator part
-    visited.add(this.#request);
+    // this.request should be already in the tree when build initiator part
+    visited.add(this.request);
     for (const request of initiated.keys()) {
       if (initiated.get(request) === parentRequest) {
         const treeElement = new UI.TreeOutline.TreeElement(request.url());
@@ -136,21 +136,21 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   }
 
   wasShown(): void {
-    if (this.#hasShown) {
+    if (this.hasShown) {
       return;
     }
     this.registerCSSFiles([requestInitiatorViewStyles]);
     let initiatorDataPresent = false;
     const containerTree = this.createTree();
 
-    const stackTracePreview = RequestInitiatorView.createStackTracePreview(this.#request, this.#linkifier, true);
+    const stackTracePreview = RequestInitiatorView.createStackTracePreview(this.request, this.linkifier, true);
 
     if (stackTracePreview) {
       initiatorDataPresent = true;
       this.buildStackTraceSection(stackTracePreview.element, i18nString(UIStrings.requestCallStack), containerTree);
     }
 
-    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
+    const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.request);
 
     if (initiatorGraph.initiators.size > 1 || initiatorGraph.initiated.size > 1) {
       initiatorDataPresent = true;
@@ -165,8 +165,8 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
     if (initiatorDataPresent) {
       this.element.appendChild(containerTree.element);
-      this.#emptyWidget.hideWidget();
+      this.emptyWidget.hideWidget();
     }
-    this.#hasShown = true;
+    this.hasShown = true;
   }
 }

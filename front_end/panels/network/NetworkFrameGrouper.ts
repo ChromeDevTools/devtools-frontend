@@ -11,12 +11,12 @@ import {NetworkGroupNode} from './NetworkDataGridNode.js';
 import type {GroupLookupInterface, NetworkLogView} from './NetworkLogView.js';
 
 export class NetworkFrameGrouper implements GroupLookupInterface {
-  #parentView: NetworkLogView;
-  readonly #activeGroups: Map<SDK.ResourceTreeModel.ResourceTreeFrame, FrameGroupNode>;
+  private parentView: NetworkLogView;
+  private readonly activeGroups: Map<SDK.ResourceTreeModel.ResourceTreeFrame, FrameGroupNode>;
 
   constructor(parentView: NetworkLogView) {
-    this.#parentView = parentView;
-    this.#activeGroups = new Map();
+    this.parentView = parentView;
+    this.activeGroups = new Map();
   }
 
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null {
@@ -24,30 +24,30 @@ export class NetworkFrameGrouper implements GroupLookupInterface {
     if (!frame || frame.isTopFrame()) {
       return null;
     }
-    let groupNode = this.#activeGroups.get(frame);
+    let groupNode = this.activeGroups.get(frame);
     if (groupNode) {
       return groupNode;
     }
-    groupNode = new FrameGroupNode(this.#parentView, frame);
-    this.#activeGroups.set(frame, groupNode);
+    groupNode = new FrameGroupNode(this.parentView, frame);
+    this.activeGroups.set(frame, groupNode);
     return groupNode;
   }
 
   reset(): void {
-    this.#activeGroups.clear();
+    this.activeGroups.clear();
   }
 }
 
 export class FrameGroupNode extends NetworkGroupNode {
-  readonly #frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+  private readonly frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 
   constructor(parentView: NetworkLogView, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(parentView);
-    this.#frame = frame;
+    this.frame = frame;
   }
 
   displayName(): string {
-    return new Common.ParsedURL.ParsedURL(this.#frame.url).domain() || this.#frame.name || '<iframe>';
+    return new Common.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || '<iframe>';
   }
 
   renderCell(cell: HTMLElement, columnId: string): void {

@@ -222,15 +222,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTimingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {
-  #request: SDK.NetworkRequest.NetworkRequest;
-  #calculator: NetworkTimeCalculator;
-  #tableElement?: Element;
+  private request: SDK.NetworkRequest.NetworkRequest;
+  private calculator: NetworkTimeCalculator;
+  private tableElement?: Element;
   constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator) {
     super();
     this.element.classList.add('resource-timing-view');
 
-    this.#request = request;
-    this.#calculator = calculator;
+    this.request = request;
+    this.calculator = calculator;
   }
 
   private static timeRangeTitle(name: RequestTimeRangeNames): string {
@@ -319,7 +319,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     if (timing.pushStart) {
       const pushEnd = timing.pushEnd || endTime;
       // Only show the part of push that happened after the navigation/reload.
-      // Pushes that happened on the same connection before we started main #request will not be shown.
+      // Pushes that happened on the same connection before we started main request will not be shown.
       if (pushEnd > navigationStart) {
         addRange(RequestTimeRangeNames.Push, Math.max(timing.pushStart, navigationStart), pushEnd);
       }
@@ -544,11 +544,11 @@ export class RequestTimingView extends UI.Widget.VBox {
   }
 
   private constructFetchDetailsView(): void {
-    if (!this.#tableElement) {
+    if (!this.tableElement) {
       return;
     }
 
-    const document = this.#tableElement.ownerDocument;
+    const document = this.tableElement.ownerDocument;
     const fetchDetailsElement = document.querySelector('.network-fetch-timing-bar-details');
 
     if (!fetchDetailsElement) {
@@ -557,12 +557,12 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     fetchDetailsElement.classList.add('network-fetch-timing-bar-details-collapsed');
 
-    self.onInvokeElement(this.#tableElement, this.onToggleFetchDetails.bind(this, fetchDetailsElement));
+    self.onInvokeElement(this.tableElement, this.onToggleFetchDetails.bind(this, fetchDetailsElement));
 
     const detailsView = new UI.TreeOutline.TreeOutlineInShadow();
     fetchDetailsElement.appendChild(detailsView.element);
 
-    const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
+    const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this.request.url());
     if (origRequest) {
       const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
       const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(requestObject);
@@ -570,7 +570,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       detailsView.appendChild(requestTreeElement);
     }
 
-    const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
+    const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this.request.url());
     if (response) {
       const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
       const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(responseObject);
@@ -581,7 +581,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const serviceWorkerResponseSource = document.createElement('div');
     serviceWorkerResponseSource.classList.add('network-fetch-details-treeitem');
     let swResponseSourceString = i18nString(UIStrings.unknown);
-    const swResponseSource = this.#request.serviceWorkerResponseSource();
+    const swResponseSource = this.request.serviceWorkerResponseSource();
     if (swResponseSource) {
       swResponseSourceString = this.getLocalizedResponseSourceForCode(swResponseSource);
     }
@@ -592,7 +592,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     const cacheNameElement = document.createElement('div');
     cacheNameElement.classList.add('network-fetch-details-treeitem');
-    const responseCacheStorageName = this.#request.getResponseCacheStorageCacheName();
+    const responseCacheStorageName = this.request.getResponseCacheStorageCacheName();
     if (responseCacheStorageName) {
       cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameS, {PH1: responseCacheStorageName});
     } else {
@@ -602,7 +602,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const cacheNameTreeElement = new UI.TreeOutline.TreeElement(cacheNameElement);
     detailsView.appendChild(cacheNameTreeElement);
 
-    const retrievalTime = this.#request.getResponseRetrievalTime();
+    const retrievalTime = this.request.getResponseRetrievalTime();
     if (retrievalTime) {
       const responseTimeElement = document.createElement('div');
       responseTimeElement.classList.add('network-fetch-details-treeitem');
@@ -645,29 +645,29 @@ export class RequestTimingView extends UI.Widget.VBox {
   }
 
   wasShown(): void {
-    this.#request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
-    this.#request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
-    this.#calculator.addEventListener(Events.BoundariesChanged, this.refresh, this);
+    this.request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
+    this.request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
+    this.calculator.addEventListener(Events.BoundariesChanged, this.refresh, this);
     this.registerCSSFiles([networkingTimingTableStyles]);
     this.refresh();
   }
 
   willHide(): void {
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
-    this.#request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
-    this.#calculator.removeEventListener(Events.BoundariesChanged, this.refresh, this);
+    this.request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
+    this.request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
+    this.calculator.removeEventListener(Events.BoundariesChanged, this.refresh, this);
   }
 
   private refresh(): void {
-    if (this.#tableElement) {
-      this.#tableElement.remove();
+    if (this.tableElement) {
+      this.tableElement.remove();
     }
 
-    this.#tableElement = RequestTimingView.createTimingTable(this.#request, this.#calculator);
-    this.#tableElement.classList.add('resource-timing-table');
-    this.element.appendChild(this.#tableElement);
+    this.tableElement = RequestTimingView.createTimingTable(this.request, this.calculator);
+    this.tableElement.classList.add('resource-timing-table');
+    this.element.appendChild(this.tableElement);
 
-    if (this.#request.fetchedViaServiceWorker) {
+    if (this.request.fetchedViaServiceWorker) {
       this.constructFetchDetailsView();
     }
   }

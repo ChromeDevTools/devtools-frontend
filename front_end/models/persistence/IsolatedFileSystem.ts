@@ -176,7 +176,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             }
             if (this.isFileExcluded(entry.fullPath + '/')) {
               this.excludedEmbedderFolders.push(Common.ParsedURL.ParsedURL.urlToRawPathString(
-                  (this.path() + entry.fullPath) as Platform.DevToolsPath.UrlString, Host.Platform.isWin()));
+                  this.path() + entry.fullPath as Platform.DevToolsPath.UrlString, Host.Platform.isWin()));
               continue;
             }
             ++pendingRequests;
@@ -552,10 +552,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                                              Common.ResourceType.resourceTypes.Document;
   }
 
-  tooltipForURL(url: string): string {
+  tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
     const path = Platform.StringUtilities.trimMiddle(
-        Common.ParsedURL.ParsedURL.urlToRawPathString(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
-        150);
+        Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin()), 150);
     return i18nString(UIStrings.linkedToS, {PH1: path});
   }
 

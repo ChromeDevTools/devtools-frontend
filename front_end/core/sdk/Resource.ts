@@ -32,7 +32,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import * as Platfrom from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import type {NetworkRequest} from './NetworkRequest.js';
@@ -73,7 +73,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     this.#mimeTypeInternal = mimeType;
     this.#isGeneratedInternal = false;
 
-    this.#lastModifiedInternal = lastModified && Platfrom.DateUtilities.isValid(lastModified) ? lastModified : null;
+    this.#lastModifiedInternal = lastModified && Platform.DateUtilities.isValid(lastModified) ? lastModified : null;
     this.#contentSizeInternal = contentSize;
     this.#pendingContentCallbacks = [];
     if (this.#requestInternal && !this.#requestInternal.finished) {
@@ -87,7 +87,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     }
     const lastModifiedHeader = this.#requestInternal.responseLastModified();
     const date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-    this.#lastModifiedInternal = date && Platfrom.DateUtilities.isValid(date) ? date : null;
+    this.#lastModifiedInternal = date && Platform.DateUtilities.isValid(date) ? date : null;
     return this.#lastModifiedInternal;
   }
 
@@ -151,8 +151,9 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     this.#isGeneratedInternal = val;
   }
 
-  contentURL(): string {
-    return this.#urlInternal;
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.#urlInternal as Platform.DevToolsPath.UrlString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

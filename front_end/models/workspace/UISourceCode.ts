@@ -192,8 +192,9 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
         WorkspaceImplEvents.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
-  contentURL(): string {
-    return this.url();
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.url() as Platform.DevToolsPath.UrlString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

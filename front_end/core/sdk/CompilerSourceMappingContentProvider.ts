@@ -30,6 +30,7 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import * as i18n from '../i18n/i18n.js';
 
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
@@ -58,8 +59,9 @@ export class CompilerSourceMappingContentProvider implements TextUtils.ContentPr
     this.#initiator = initiator;
   }
 
-  contentURL(): string {
-    return this.#sourceURL;
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.#sourceURL as Platform.DevToolsPath.UrlString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

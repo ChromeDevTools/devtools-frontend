@@ -30,6 +30,7 @@
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import * as i18n from '../i18n/i18n.js';
 
 import type {DebuggerModel} from './DebuggerModel.js';
@@ -163,8 +164,9 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return this.#isLiveEditInternal;
   }
 
-  contentURL(): string {
-    return this.sourceURL;
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.sourceURL as Platform.DevToolsPath.UrlString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

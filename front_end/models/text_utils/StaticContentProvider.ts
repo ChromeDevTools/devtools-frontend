@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 
 import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';
 import {performSearchInContent} from './TextUtils.js';
@@ -28,8 +29,9 @@ export class StaticContentProvider implements ContentProvider {
     return new StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
-  contentURL(): string {
-    return this.contentURLInternal;
+  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.UrlString {
+    return this.contentURLInternal as Platform.DevToolsPath.UrlString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

@@ -32,8 +32,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): All casts to UrlString will be removed from this file when migration to branded types is complete.
-
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
@@ -420,13 +418,13 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return this.agent.invoke_pauseOnAsyncCall({parentStackTraceId: parentStackTraceId});
   }
 
-  async setBreakpointByURL(url: string, lineNumber: number, columnNumber?: number, condition?: string):
-      Promise<SetBreakpointResult> {
+  async setBreakpointByURL(
+      url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber?: number,
+      condition?: string): Promise<SetBreakpointResult> {
     // Convert file url to node-js path.
     let urlRegex;
     if (this.target().type() === Type.Node && url.startsWith('file://')) {
-      const platformPath =
-          Common.ParsedURL.ParsedURL.urlToRawPathString(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
+      const platformPath = Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin());
       urlRegex =
           `${Platform.StringUtilities.escapeForRegExp(platformPath)}|${Platform.StringUtilities.escapeForRegExp(url)}`;
     }

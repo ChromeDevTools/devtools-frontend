@@ -28,8 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): All casts to UrlString will be removed from this file when migration to branded types is complete.
+
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -627,7 +630,7 @@ export class ModelBreakpoint {
         const positions = debuggerLocations.map(loc => {
           const script = loc.script() as SDK.Script.Script;
           return {
-            url: script.sourceURL,
+            url: script.sourceURL as Platform.DevToolsPath.UrlString,
             scriptId: script.scriptId,
             scriptHash: script.hash,
             lineNumber: loc.lineNumber,
@@ -642,7 +645,7 @@ export class ModelBreakpoint {
         // at least signal a warning to the developer that this #breakpoint wasn't
         // really resolved.
         const position = {
-          url: this.#breakpoint.url(),
+          url: this.#breakpoint.url() as Platform.DevToolsPath.UrlString,
           scriptId: '' as Protocol.Runtime.ScriptId,
           scriptHash: '',
           lineNumber,
@@ -791,7 +794,7 @@ export class ModelBreakpoint {
 }
 
 interface Position {
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
   scriptId: Protocol.Runtime.ScriptId;
   scriptHash: string;
   lineNumber: number;

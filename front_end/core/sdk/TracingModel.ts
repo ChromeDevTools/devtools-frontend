@@ -295,7 +295,7 @@ export class TracingModel {
   }
 
   sortedProcesses(): Process[] {
-    return Sorter.sort([...this.#processById.values()]);
+    return NamedObject.sort([...this.#processById.values()]);
   }
 
   getProcessByName(name: string): Process|null {
@@ -712,21 +712,6 @@ class ProfileEventsGroup {
     this.children.push(event);
   }
 }
-interface Sortable {
-  _sortIndex: number;
-  name: () => string;
-}
-
-class Sorter {
-  static sort<Item>(array: Item[]): Item[] {
-    function comparator(a: Sortable, b: Sortable): number {
-      return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
-    }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (array as any).sort(comparator);
-  }
-}
 
 class NamedObject {
   model: TracingModel;
@@ -738,6 +723,12 @@ class NamedObject {
     this.idInternal = id;
     this.#nameInternal = '';
     this.#sortIndex = 0;
+  }
+
+  static sort<Item extends NamedObject>(array: Item[]): Item[] {
+    return array.sort((a, b) => {
+      return a.#sortIndex !== b.#sortIndex ? a.#sortIndex - b.#sortIndex : a.name().localeCompare(b.name());
+    });
   }
 
   setName(name: string): void {
@@ -792,7 +783,7 @@ export class Process extends NamedObject {
   }
 
   sortedThreads(): Thread[] {
-    return Sorter.sort([...this.threads.values()]);
+    return NamedObject.sort([...this.threads.values()]);
   }
 }
 

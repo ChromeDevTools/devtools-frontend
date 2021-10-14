@@ -83,7 +83,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   constructor(
       manager: IsolatedFileSystemManager, path: string, embedderPath: string, domFileSystem: FileSystem, type: string) {
-    super(path, type);
+    super(path as Platform.DevToolsPath.UrlString, type);
     this.manager = manager;
     this.embedderPathInternal = embedderPath;
     this.domFileSystem = domFileSystem;

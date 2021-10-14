@@ -18,8 +18,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
   private readonly pathInternal: Platform.DevToolsPath.UrlString;
   private readonly typeInternal: string;
-  constructor(path: string, type: string) {
-    this.pathInternal = path as Platform.DevToolsPath.UrlString;
+  constructor(path: Platform.DevToolsPath.UrlString, type: string) {
+    this.pathInternal = path;
     this.typeInternal = type;
   }
 

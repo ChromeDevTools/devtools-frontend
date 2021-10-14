@@ -40,7 +40,8 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   private readonly lastSnippetIdentifierSetting: Common.Settings.Setting<number>;
   private readonly snippetsSetting: Common.Settings.Setting<Snippet[]>;
   constructor() {
-    super('snippet://', 'snippets');
+    // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+    super('snippet://' as Platform.DevToolsPath.UrlString, 'snippets');
     this.lastSnippetIdentifierSetting =
         Common.Settings.Settings.instance().createSetting('scriptSnippets_lastIdentifier', 0);
     this.snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);

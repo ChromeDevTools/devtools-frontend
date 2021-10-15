@@ -9,7 +9,6 @@
 }
 
 .security-main-view {
-  user-select: text;
   overflow-x: hidden;
   overflow-y: auto;
   /* crbug.com/1152736 Consider moving --toolbar-bg-color to theme colors */
@@ -23,6 +22,7 @@
 .security-summary-section-title {
   font-size: 15px;
   margin: 12px 16px;
+  user-select: text;
 }
 
 .lock-spectrum {
@@ -109,6 +109,7 @@
   font-size: 15px;
   background: var(--color-background);
   border-color: var(--color-background-elevation-1);
+  user-select: text;
 }
 
 .security-summary-secure .triangle-pointer,

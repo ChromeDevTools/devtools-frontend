@@ -117,16 +117,25 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     toolbar.appendToolbarItem(this.typeSelector);
 
     const content = oldCondition || '';
+    const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
+      if (modTextEditor.JavaScript.isExpressionComplete(view.state)) {
+        this.finishEditing(true, this.editor.state.doc.toString());
+        return true;
+      }
+      return false;
+    };
     const keymap = [
       {
         key: 'Mod-Enter',
-        run: (view: CodeMirror.EditorView): boolean => {
-          if (modTextEditor.JavaScript.isExpressionComplete(view.state)) {
-            this.finishEditing(true, this.editor.state.doc.toString());
-            return true;
-          }
-          return false;
-        },
+        run: finishIfComplete,
+      },
+      {
+        key: 'Enter',
+        run: finishIfComplete,
+      },
+      {
+        ...modCodeMirror.standardKeymap.find(binding => binding.key === 'Enter') as CodeMirror.KeyBinding,
+        key: 'Shift-Enter',
       },
       {
         key: 'Escape',
@@ -139,6 +148,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     this.placeholderCompartment = new modCodeMirror.Compartment();
 
+    const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
+    editorWrapper.classList.add('condition-editor');
+
     this.editor = new modTextEditor.TextEditor.TextEditor(modCodeMirror.EditorState.create({
       doc: content,
       selection: {anchor: 0, head: content.length},
@@ -148,10 +160,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
         editorConfig,
       ],
     }));
-    this.editor.classList.add('condition-editor');
+    editorWrapper.appendChild(this.editor);
 
     this.updateTooltip();
-    this.contentElement.appendChild(this.editor);
+
     this.element.addEventListener('blur', event => {
       if (!event.relatedTarget ||
           (event.relatedTarget && !(event.relatedTarget as Node).isSelfOrDescendant(this.element))) {

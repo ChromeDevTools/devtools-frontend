@@ -66,6 +66,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;
         break;
+      case Type.AuctionWorklet:
+        this.#capabilitiesMask = Capability.JS;
+        break;
       case Type.Browser:
         this.#capabilitiesMask = Capability.Target | Capability.IO;
         break;
@@ -221,6 +224,7 @@ export enum Type {
   SharedWorker = 'shared-worker',
   Node = 'node',
   Browser = 'browser',
+  AuctionWorklet = 'auction-worklet',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

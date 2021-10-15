@@ -14,7 +14,7 @@ describe('Button', async () => {
   const iconUrl = new URL('../../../../../../front_end/Images/ic_file_image.svg', import.meta.url).toString();
 
   async function renderButton(
-      data: Buttons.Button.ButtonDataWithVariant = {
+      data: Buttons.Button.ButtonData = {
         variant: Buttons.Button.Variant.PRIMARY,
       },
       text = 'Button'): Promise<Buttons.Button.Button> {
@@ -26,8 +26,10 @@ describe('Button', async () => {
     return button;
   }
 
-  it('can be clicked', async () => {
-    const button = await renderButton();
+  async function testClick(data: Buttons.Button.ButtonData = {
+    variant: Buttons.Button.Variant.PRIMARY,
+  }): Promise<void> {
+    const button = await renderButton(data);
 
     let clicks = 0;
     button.onclick = () => clicks++;
@@ -41,6 +43,25 @@ describe('Button', async () => {
     });
 
     assert.strictEqual(clicks, 1);
+  }
+
+  it('primary button can be clicked', async () => {
+    await testClick({
+      variant: Buttons.Button.Variant.PRIMARY,
+    });
+  });
+
+  it('secondary button can be clicked', async () => {
+    await testClick({
+      variant: Buttons.Button.Variant.SECONDARY,
+    });
+  });
+
+  it('toolbar button can be clicked', async () => {
+    await testClick({
+      variant: Buttons.Button.Variant.TOOLBAR,
+      iconUrl,
+    });
   });
 
   it('gets the no additional classes set for the inner button if only text is provided', async () => {

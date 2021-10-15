@@ -15,6 +15,14 @@ function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);
 }
 
+function appendToToolbar(element: HTMLElement): void {
+  document.querySelector('#toolbar')?.appendChild(element);
+}
+
+function appendToSmallToolbar(element: HTMLElement): void {
+  document.querySelector('#small-toolbar')?.appendChild(element);
+}
+
 // Primary
 const primaryButton = new Buttons.Button.Button();
 primaryButton.data = {
@@ -62,13 +70,13 @@ primaryIconOnlyButton.data = {
   iconUrl: testIcon,
 };
 primaryIconOnlyButton.onclick = () => alert('clicked');
-primaryIconOnlyButton.style.width = '25px';
+primaryIconOnlyButton.style.width = '24px';
 appendButton(primaryIconOnlyButton);
 
 // Secondary Icon Only
 const secondaryIconOnlyButton = new Buttons.Button.Button();
 secondaryIconOnlyButton.onclick = () => alert('clicked');
-secondaryIconOnlyButton.style.width = '25px';
+secondaryIconOnlyButton.style.width = '24px';
 secondaryIconOnlyButton.data = {
   variant: Buttons.Button.Variant.SECONDARY,
   iconUrl: testIcon,
@@ -96,3 +104,36 @@ smallSecondaryIconOnlyButton.data = {
   size: Buttons.Button.Size.SMALL,
 };
 appendButton(smallSecondaryIconOnlyButton);
+
+for (let i = 0; i < 6; i++) {
+  // Regular Toolbar Button
+  const toolbarButton = new Buttons.Button.Button();
+  toolbarButton.onclick = () => alert('clicked');
+  toolbarButton.data = {
+    variant: Buttons.Button.Variant.TOOLBAR,
+    iconUrl: testIcon,
+  };
+  appendToToolbar(toolbarButton);
+  if (i % 3 === 1) {
+    const sep = document.createElement('div');
+    sep.classList.add('separator');
+    appendToToolbar(sep);
+  }
+}
+
+for (let i = 0; i < 6; i++) {
+  // Small Toolbar Button
+  const smallToolbarButton = new Buttons.Button.Button();
+  smallToolbarButton.onclick = () => alert('clicked');
+  smallToolbarButton.data = {
+    variant: Buttons.Button.Variant.TOOLBAR,
+    size: Buttons.Button.Size.SMALL,
+    iconUrl: testIcon,
+  };
+  appendToSmallToolbar(smallToolbarButton);
+  if (i % 3 === 1) {
+    const sep = document.createElement('div');
+    sep.classList.add('separator');
+    appendToSmallToolbar(sep);
+  }
+}

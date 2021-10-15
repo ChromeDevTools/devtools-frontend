@@ -19,10 +19,38 @@
       #container > * {
         margin-right: 10px;
       }
+      #toolbar {
+        background-color: var(--color-background);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1px solid var(--color-details-hairline);
+        padding: 0px 5px;
+        height: 29px;
+      }
+      #small-toolbar {
+        background-color: var(--color-background);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1px solid var(--color-details-hairline);
+        padding: 0px 5px;
+        height: 23px;
+      }
+      .separator {
+        background-color: var(--color-details-hairline);
+        width: 1px;
+        height: 17px;
+        margin: 0px 5px;
+      }
     </style>
   </head>
   <body>
     <div id="container">
+    </div>
+    <div id="toolbar">
+    </div>
+    <div id="small-toolbar">
     </div>
     <script type="module" src="./basic.js"></script>
   </body>

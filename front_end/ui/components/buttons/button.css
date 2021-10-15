@@ -21,13 +21,18 @@
   outline: none;
 }
 
+:host {
+  display: inline-flex;
+  flex-direction: row;
+}
+
 button {
   align-items: center;
   border-radius: 4px;
   display: inline-flex;
   font-family: inherit;
   font-size: 12px;
-  height: 25px;
+  height: 24px;
   line-height: 14px;
   padding: 5px 12px;
   justify-content: center;
@@ -45,6 +50,23 @@ button:focus-visible {
 
 button:hover {
   cursor: pointer;
+}
+
+button.toolbar {
+  background: transparent;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
+}
+
+button.toolbar.small {
+  height: 18px;
+  width: 18px;
 }
 
 button.primary {
@@ -86,6 +108,18 @@ button.secondary:active:focus-visible {
   border: 1px solid var(--color-button-secondary-background-pressed);
 }
 
+button.toolbar:hover {
+  background-color: var(--color-button-secondary-background-hovering);
+}
+
+button.toolbar:active {
+  background-color: var(--color-button-secondary-background-pressed);
+}
+
+button.toolbar:focus-visible {
+  background-color: var(--color-background-elevation-2);
+}
+
 button.text-with-icon {
   padding: 0 12px 0 4px;
 }
@@ -103,9 +137,11 @@ button devtools-icon {
   height: 19px;
 }
 
-button.small devtools-icon {
-  width: 14px;
-  height: 14px;
+button.toolbar devtools-icon {
+  width: 24px;
+  height: 24px;
+
+  --icon-color: var(--color-text-primary);
 }
 
 button.primary devtools-icon {
@@ -114,4 +150,14 @@ button.primary devtools-icon {
 
 button.secondary devtools-icon {
   --icon-color: var(--color-primary);
+}
+
+button.small devtools-icon {
+  width: 14px;
+  height: 14px;
+}
+
+button.toolbar.small devtools-icon {
+  width: 18px;
+  height: 18px;
 }

@@ -17,6 +17,7 @@ declare global {
 export const enum Variant {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
+  TOOLBAR = 'toolbar',
 }
 
 export const enum Size {
@@ -24,21 +25,27 @@ export const enum Size {
   MEDIUM = 'MEDIUM',
 }
 
-interface ButtonData {
+interface ButtonState {
   iconUrl?: string;
   variant?: Variant;
   size?: Size;
 }
 
-export interface ButtonDataWithVariant extends ButtonData {
-  variant: Variant;
-}
+export type ButtonData = {
+  variant: Variant.TOOLBAR,
+  iconUrl: string,
+  size?: Size,
+}|{
+  variant: Variant.PRIMARY | Variant.SECONDARY,
+  iconUrl?: string,
+  size?: Size,
+};
 
 export class Button extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-button`;
   private readonly shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   private readonly boundRender = this.render.bind(this);
-  private readonly props: ButtonData = {
+  private readonly props: ButtonState = {
     size: Size.MEDIUM,
   };
   private isEmpty = true;
@@ -52,7 +59,7 @@ export class Button extends HTMLElement {
    * Perfer using the .data= setter instead of setting the individual properties
    * for increased type-safety.
    */
-  set data(data: ButtonDataWithVariant) {
+  set data(data: ButtonData) {
     this.props.variant = data.variant;
     this.props.iconUrl = data.iconUrl;
     this.props.size = data.size || Size.MEDIUM;
@@ -94,9 +101,18 @@ export class Button extends HTMLElement {
     if (!this.props.variant) {
       throw new Error('Button requires a variant to be defined');
     }
+    if (this.props.variant === Variant.TOOLBAR) {
+      if (!this.props.iconUrl) {
+        throw new Error('Toolbar button requires an icon');
+      }
+      if (!this.isEmpty) {
+        throw new Error('Tooblar button does not accept children');
+      }
+    }
     const classes = {
       primary: this.props.variant === Variant.PRIMARY,
       secondary: this.props.variant === Variant.SECONDARY,
+      toolbar: this.props.variant === Variant.TOOLBAR,
       'text-with-icon': Boolean(this.props.iconUrl) && !this.isEmpty,
       'only-icon': Boolean(this.props.iconUrl) && this.isEmpty,
       small: Boolean(this.props.size === Size.SMALL),

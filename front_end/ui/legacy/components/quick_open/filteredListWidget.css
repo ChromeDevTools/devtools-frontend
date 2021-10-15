@@ -139,6 +139,7 @@ devtools-text-prompt {
   line-height: 24px;
   height: 24px;
   align-self: center;
+  flex-shrink: 0;
 }
 
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {

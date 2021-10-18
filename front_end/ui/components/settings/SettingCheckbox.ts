@@ -1,0 +1,69 @@
+// Copyright 2021 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import type * as Common from '../../../core/common/common.js';
+import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
+
+import settingCheckboxStyles from './settingCheckbox.css.js';
+
+export interface SettingCheckboxData {
+  setting: Common.Settings.Setting<boolean>;
+}
+
+/**
+ * A simple checkbox that is backed by a boolean setting.
+ */
+export class SettingCheckbox extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`setting-checkbox`;
+  private readonly shadow = this.attachShadow({mode: 'open'});
+
+  private setting?: Common.Settings.Setting<boolean>;
+  private changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [settingCheckboxStyles];
+  }
+
+  set data(data: SettingCheckboxData) {
+    if (this.changeListenerDescriptor && this.setting) {
+      this.setting.removeChangeListener(this.changeListenerDescriptor.listener);
+    }
+
+    this.setting = data.setting;
+
+    this.changeListenerDescriptor = this.setting.addChangeListener(() => {
+      this.render();
+    });
+    this.render();
+  }
+
+  private render(): void {
+    if (!this.setting) {
+      throw new Error('No "Setting" object provided for rendering');
+    }
+
+    LitHtml.render(
+        LitHtml.html`
+      <p>
+        <label>
+          <input type="checkbox" ?checked=${this.setting.get()} @change="${this.checkboxChanged}" aria-label="${
+            this.setting.title()}" /> ${this.setting.title()}
+        </label>
+      </p>`,
+        this.shadow, {host: this});
+  }
+
+  private checkboxChanged(e: Event): void {
+    this.setting?.set((e.target as HTMLInputElement).checked);
+  }
+}
+
+ComponentHelpers.CustomElements.defineComponent('setting-checkbox', SettingCheckbox);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'setting-checkbox': SettingCheckbox;
+  }
+}

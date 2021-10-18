@@ -50,6 +50,7 @@ group("front_end") {
     "ui/components/linear_memory_inspector",
     "ui/components/render_coordinator",
     "ui/components/request_link_icon",
+    "ui/components/settings",
     "ui/legacy",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/object_ui",

@@ -1,0 +1,31 @@
+/*
+ * Copyright 2021 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  padding: 0;
+  margin: 0;
+}
+
+input {
+  height: 12px;
+  width: 12px;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+p {
+  margin: 12px 0;
+}
+
+/* Preserve look of legacy checkboxes in dark mode */
+:host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
+  filter: invert(80%);
+}

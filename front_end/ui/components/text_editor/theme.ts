@@ -7,6 +7,9 @@ import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 export const editorTheme = CM.EditorView.theme({
   '&.cm-editor': {
     color: 'color: var(--color-text-primary)',
+    '&.cm-focused': {
+      outline: 'none',
+    },
   },
 
   '.cm-scroller': {

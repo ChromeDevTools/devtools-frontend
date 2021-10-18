@@ -380,6 +380,17 @@ const UIStrings = {
   /**
   * @description Accessibility attribute name that appears under the Computed Properties section in
   * the Accessibility pane of the Elements pane. Indicates that this element got assigned this
+  * attribute because there is a related description, hence it received it from the description.
+  * 'description' is part of the ARIA API and should not be translated.
+  */
+  fromDescription: 'From `description`',
+  /**
+  *@description Tooltip text that appears when hovering over the 'From description' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
+  */
+  valueFromDescriptionElement: 'Value from `description` element.',
+  /**
+  * @description Accessibility attribute name that appears under the Computed Properties section in
+  * the Accessibility pane of the Elements pane. Indicates that this element got assigned this
   * attribute because there is a related label, hence it received it from the label. 'label'
   * is part of the ARIA API and should not be translated.
   */
@@ -656,6 +667,10 @@ export const AXSourceTypes = {
 };
 
 export const AXNativeSourceTypes = {
+  'description': {
+    name: i18nLazyString(UIStrings.fromDescription),
+    description: i18nLazyString(UIStrings.valueFromDescriptionElement),
+  },
   'figcaption':
       {name: i18nLazyString(UIStrings.fromCaption), description: i18nLazyString(UIStrings.valueFromFigcaptionElement)},
   'label': {name: i18nLazyString(UIStrings.fromLabel), description: i18nLazyString(UIStrings.valueFromLabelElement)},

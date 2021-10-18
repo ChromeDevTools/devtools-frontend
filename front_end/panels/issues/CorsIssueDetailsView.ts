@@ -206,7 +206,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse|
-                                 IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess>(issueCode);
+                                 IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess|
+                                 IssuesManager.CorsIssue.IssueCode.UnexpectedPrivateNetworkAccess>(issueCode);
     }
 
     this.affectedResources.appendChild(header);
@@ -431,7 +432,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidResponse|
-                                 IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess>(issueCode);
+                                 IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess|
+                                 IssuesManager.CorsIssue.IssueCode.UnexpectedPrivateNetworkAccess>(issueCode);
         break;
     }
 

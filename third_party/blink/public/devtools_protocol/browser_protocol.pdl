@@ -48,6 +48,7 @@ experimental domain Accessibility
   # Enum of possible native property sources (as a subtype of a particular AXValueSourceType).
   type AXValueNativeSourceType extends string
     enum
+      description
       figcaption
       label
       labelfor
@@ -408,86 +409,6 @@ experimental domain Animation
       # Animation that was started.
       Animation animation
 
-# The domain is deprecated as AppCache is being removed (see crbug.com/582750).
-experimental deprecated domain ApplicationCache
-  depends on Page
-
-  # Detailed application cache resource information.
-  type ApplicationCacheResource extends object
-    properties
-      # Resource url.
-      string url
-      # Resource size.
-      integer size
-      # Resource type.
-      string type
-
-  # Detailed application cache information.
-  type ApplicationCache extends object
-    properties
-      # Manifest URL.
-      string manifestURL
-      # Application cache size.
-      number size
-      # Application cache creation time.
-      number creationTime
-      # Application cache update time.
-      number updateTime
-      # Application cache resources.
-      array of ApplicationCacheResource resources
-
-  # Frame identifier - manifest URL pair.
-  type FrameWithManifest extends object
-    properties
-      # Frame identifier.
-      Page.FrameId frameId
-      # Manifest URL.
-      string manifestURL
-      # Application cache status.
-      integer status
-
-  # Enables application cache domain notifications.
-  command enable
-
-  # Returns relevant application cache data for the document in given frame.
-  command getApplicationCacheForFrame
-    parameters
-      # Identifier of the frame containing document whose application cache is retrieved.
-      Page.FrameId frameId
-    returns
-      # Relevant application cache data for the document in given frame.
-      ApplicationCache applicationCache
-
-  # Returns array of frame identifiers with manifest urls for each frame containing a document
-  # associated with some application cache.
-  command getFramesWithManifests
-    returns
-      # Array of frame identifiers with manifest urls for each frame containing a document
-      # associated with some application cache.
-      array of FrameWithManifest frameIds
-
-  # Returns manifest URL for document in the given frame.
-  command getManifestForFrame
-    parameters
-      # Identifier of the frame containing document whose manifest is retrieved.
-      Page.FrameId frameId
-    returns
-      # Manifest URL for document in the given frame.
-      string manifestURL
-
-  event applicationCacheStatusUpdated
-    parameters
-      # Identifier of the frame containing document whose application cache updated status.
-      Page.FrameId frameId
-      # Manifest URL.
-      string manifestURL
-      # Updated application cache status.
-      integer status
-
-  event networkStateUpdated
-    parameters
-      boolean isNowOnline
-
 # Audits domain allows investigation of page violations and possible improvements.
 experimental domain Audits
   depends on Network
@@ -658,6 +579,7 @@ experimental domain Audits
       kURLViolation
       kTrustedTypesSinkViolation
       kTrustedTypesPolicyViolation
+      kWasmEvalViolation
 
   type SourceCodeLocation extends object
     properties
@@ -4916,8 +4838,14 @@ domain Network
       MethodDisallowedByPreflightResponse
       HeaderDisallowedByPreflightResponse
       RedirectContainsCredentials
+      # Request was a private network request initiated by a non-secure context.
       InsecurePrivateNetwork
+      # Request carried a target IP address space property that did not match
+      # the target resource's address space.
       InvalidPrivateNetworkAccess
+      # Request was a private network request yet did not carry a target IP
+      # address space.
+      UnexpectedPrivateNetworkAccess
       NoCorsRedirectModeNotFollow
 
   type CorsErrorStatus extends object
@@ -5947,6 +5875,8 @@ domain Network
       Allow
       BlockFromInsecureToMorePrivate
       WarnFromInsecureToMorePrivate
+      PreflightBlock
+      PreflightWarn
 
   experimental type IPAddressSpace extends string
     enum
@@ -6790,6 +6720,7 @@ domain Page
       hid
       idle-detection
       interest-cohort
+      keyboard-map
       magnetometer
       microphone
       midi
@@ -7650,18 +7581,9 @@ domain Page
   # Stops sending each frame in the `screencastFrame`.
   experimental command stopScreencast
 
-  # Forces compilation cache to be generated for every subresource script.
-  # See also: `Page.produceCompilationCache`.
-  experimental command setProduceCompilationCache
-    parameters
-      boolean enabled
-
   # Requests backend to produce compilation cache for the specified scripts.
-  # Unlike setProduceCompilationCache, this allows client to only produce cache
-  # for specific scripts. `scripts` are appeneded to the list of scripts
-  # for which the cache for would produced. Disabling compilation cache with
-  # `setProduceCompilationCache` would reset all pending cache requests.
-  # The list may also be reset during page navigation.
+  # `scripts` are appeneded to the list of scripts for which the cache
+  # would be produced. The list may be reset during page navigation.
   # When script with a matching URL is encountered, the cache is optionally
   # produced upon backend discretion, based on internal heuristics.
   # See also: `Page.compilationCacheProduced`.
@@ -8907,7 +8829,7 @@ domain Target
       # Frame height in DIP (headless chrome only).
       optional integer height
       # The browser context to create the page in.
-      optional Browser.BrowserContextID browserContextId
+      experimental optional Browser.BrowserContextID browserContextId
       # Whether BeginFrames for this target will be controlled via DevTools (headless chrome only,
       # not supported on MacOS yet, false by default).
       experimental optional boolean enableBeginFrameControl

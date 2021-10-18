@@ -592,10 +592,6 @@ export class TargetBase {
     return this.getAgent('Animation');
   }
 
-  applicationCacheAgent(): ProtocolProxyApi.ApplicationCacheApi {
-    return this.getAgent('ApplicationCache');
-  }
-
   auditsAgent(): ProtocolProxyApi.AuditsApi {
     return this.getAgent('Audits');
   }
@@ -766,10 +762,6 @@ export class TargetBase {
 
   registerAnimationDispatcher(dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
     this.registerDispatcher('Animation', dispatcher);
-  }
-
-  registerApplicationCacheDispatcher(dispatcher: ProtocolProxyApi.ApplicationCacheDispatcher): void {
-    this.registerDispatcher('ApplicationCache', dispatcher);
   }
 
   registerAuditsDispatcher(dispatcher: ProtocolProxyApi.AuditsDispatcher): void {

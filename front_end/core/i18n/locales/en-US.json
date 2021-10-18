@@ -1694,6 +1694,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "From caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "From description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "From label"
   },
@@ -1843,6 +1846,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Value from attribute."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Value from description element."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Value from element contents."

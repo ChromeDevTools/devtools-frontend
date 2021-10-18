@@ -1206,11 +1206,6 @@ export const NativeFunctions = [
   {
     name: 'null',
     signatures: [['type', '?eventInitDict']],
-    receiver: 'ApplicationCacheErrorEvent',
-  },
-  {
-    name: 'null',
-    signatures: [['type', '?eventInitDict']],
     receiver: 'ClipboardEvent',
   },
   {

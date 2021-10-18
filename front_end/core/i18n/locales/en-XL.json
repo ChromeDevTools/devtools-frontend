@@ -1694,6 +1694,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "F̂ŕôḿ caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "F̂ŕôḿ description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "F̂ŕôḿ label"
   },
@@ -1843,6 +1846,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "V̂ál̂úê f́r̂óm̂ át̂t́r̂íb̂út̂é."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "V̂ál̂úê f́r̂óm̂ description él̂ém̂én̂t́."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "V̂ál̂úê f́r̂óm̂ él̂ém̂én̂t́ ĉón̂t́êńt̂ś."

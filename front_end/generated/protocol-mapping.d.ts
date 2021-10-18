@@ -24,8 +24,6 @@ export namespace ProtocolMapping {
      * Event for animation that has been started.
      */
     'Animation.animationStarted': [Protocol.Animation.AnimationStartedEvent];
-    'ApplicationCache.applicationCacheStatusUpdated': [Protocol.ApplicationCache.ApplicationCacheStatusUpdatedEvent];
-    'ApplicationCache.networkStateUpdated': [Protocol.ApplicationCache.NetworkStateUpdatedEvent];
     'Audits.issueAdded': [Protocol.Audits.IssueAddedEvent];
     /**
      * Called when the recording state for the service has been updated.
@@ -765,30 +763,6 @@ export namespace ProtocolMapping {
      * Sets the timing of an animation node.
      */
     'Animation.setTiming': {paramsType: [Protocol.Animation.SetTimingRequest]; returnType: void;};
-    /**
-     * Enables application cache domain notifications.
-     */
-    'ApplicationCache.enable': {paramsType: []; returnType: void;};
-    /**
-     * Returns relevant application cache data for the document in given frame.
-     */
-    'ApplicationCache.getApplicationCacheForFrame': {
-      paramsType: [Protocol.ApplicationCache.GetApplicationCacheForFrameRequest];
-      returnType: Protocol.ApplicationCache.GetApplicationCacheForFrameResponse;
-    };
-    /**
-     * Returns array of frame identifiers with manifest urls for each frame containing a document
-     * associated with some application cache.
-     */
-    'ApplicationCache.getFramesWithManifests':
-        {paramsType: []; returnType: Protocol.ApplicationCache.GetFramesWithManifestsResponse;};
-    /**
-     * Returns manifest URL for document in the given frame.
-     */
-    'ApplicationCache.getManifestForFrame': {
-      paramsType: [Protocol.ApplicationCache.GetManifestForFrameRequest];
-      returnType: Protocol.ApplicationCache.GetManifestForFrameResponse;
-    };
     /**
      * Returns the response body and size if it were re-encoded with the specified settings. Only
      * applies to images.
@@ -2326,18 +2300,9 @@ export namespace ProtocolMapping {
      */
     'Page.stopScreencast': {paramsType: []; returnType: void;};
     /**
-     * Forces compilation cache to be generated for every subresource script.
-     * See also: `Page.produceCompilationCache`.
-     */
-    'Page.setProduceCompilationCache':
-        {paramsType: [Protocol.Page.SetProduceCompilationCacheRequest]; returnType: void;};
-    /**
      * Requests backend to produce compilation cache for the specified scripts.
-     * Unlike setProduceCompilationCache, this allows client to only produce cache
-     * for specific scripts. `scripts` are appeneded to the list of scripts
-     * for which the cache for would produced. Disabling compilation cache with
-     * `setProduceCompilationCache` would reset all pending cache requests.
-     * The list may also be reset during page navigation.
+     * `scripts` are appeneded to the list of scripts for which the cache
+     * would be produced. The list may be reset during page navigation.
      * When script with a matching URL is encountered, the cache is optionally
      * produced upon backend discretion, based on internal heuristics.
      * See also: `Page.compilationCacheProduced`.

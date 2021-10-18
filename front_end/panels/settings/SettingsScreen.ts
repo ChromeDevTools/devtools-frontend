@@ -424,10 +424,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
       const warningMessage = i18nString(UIStrings.theseExperimentsAreParticularly);
       this.unstableExperimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
       for (const experiment of unstableExperiments) {
-        // TODO(crbug.com/1161439): remove experiment duplication
-        if (experiment.name !== 'blackboxJSFramesOnTimeline') {
-          this.unstableExperimentsSection.appendChild(this.createExperimentCheckbox(experiment));
-        }
+        this.unstableExperimentsSection.appendChild(this.createExperimentCheckbox(experiment));
       }
     }
     if (!stableExperiments.length && !unstableExperiments.length) {
@@ -462,10 +459,6 @@ export class ExperimentsSettingsTab extends SettingsTab {
     input.name = experiment.name;
     function listener(): void {
       experiment.setEnabled(input.checked);
-      // TODO(crbug.com/1161439): remove experiment duplication
-      if (experiment.name === 'ignoreListJSFramesOnTimeline') {
-        Root.Runtime.experiments.setEnabled('blackboxJSFramesOnTimeline', input.checked);
-      }
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
           i18nString(UIStrings.oneOrMoreSettingsHaveChanged));

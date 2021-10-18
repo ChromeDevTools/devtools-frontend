@@ -247,9 +247,6 @@ export class MainImpl {
         'backgroundServicesPaymentHandler', 'Background services section for Payment Handler');
     Root.Runtime.experiments.register(
         'backgroundServicesPushMessaging', 'Background services section for Push Messaging');
-    // TODO(crbug.com/1161439): remove 'blackboxJSFramesOnTimeline', keep 'ignoreListJSFramesOnTimeline'
-    Root.Runtime.experiments.register(
-        'blackboxJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
@@ -365,10 +362,6 @@ export class MainImpl {
         Root.Runtime.experiments.enableForTest('liveHeapProfile');
       }
     }
-
-    // TODO(crbug.com/1161439): remove experiment duplication
-    const isBlackboxJSFramesOnTimelineEnabled = Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
-    Root.Runtime.experiments.setEnabled('ignoreListJSFramesOnTimeline', isBlackboxJSFramesOnTimelineEnabled);
 
     for (const experiment of Root.Runtime.experiments.enabledExperiments()) {
       Host.userMetrics.experimentEnabledAtLaunch(experiment.name);

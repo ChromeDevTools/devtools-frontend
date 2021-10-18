@@ -594,7 +594,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const isExtension = entryType === EntryType.ExtensionEvent;
     const openEvents = [];
-    const ignoreListingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
+    const ignoreListingEnabled = !isExtension && Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group: PerfUI.FlameChart.Group|null = null;
     if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {

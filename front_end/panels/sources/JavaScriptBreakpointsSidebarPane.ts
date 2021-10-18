@@ -11,6 +11,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {LogpointPrefix} from './BreakpointEditDialog.js';
 import javaScriptBreakpointsSidebarPaneStyles from './javaScriptBreakpointsSidebarPane.css.js';
 
 const UIStrings = {
@@ -292,6 +293,8 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     const uiLocation = item.locations[0].uiLocation;
     const hasEnabled = item.locations.some(location => location.breakpoint.enabled());
     const hasDisabled = item.locations.some(location => !location.breakpoint.enabled());
+    const hasLogpoint = item.locations.some(location => location.breakpoint.condition().includes(LogpointPrefix));
+    const hasConditional = item.locations.some(location => Boolean(location.breakpoint.condition()));
     checkboxLabel.textElement.textContent = uiLocation.linkText() +
         (item.showColumn && typeof uiLocation.columnNumber === 'number' ? ':' + (uiLocation.columnNumber + 1) : '');
     checkboxLabel.checkboxElement.checked = hasEnabled;
@@ -319,7 +322,17 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
       }
     });
 
-    const snippetElement = element.createChild('div', 'source-text monospace');
+    const lineElement = element.createChild('div', 'decoration-and-source');
+    const decorationElement = lineElement.createChild('span', 'breakpoint');
+    if (hasDisabled) {
+      decorationElement.classList.add('disabled');
+    }
+    if (hasLogpoint) {
+      decorationElement.classList.add('logpoint');
+    } else if (hasConditional) {
+      decorationElement.classList.add('breakpoint-conditional');
+    }
+    const snippetElement = lineElement.createChild('div', 'source-text monospace');
     const lineNumber = uiLocation.lineNumber;
 
     if (item.text && lineNumber < item.text.lineCount()) {

@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "ഉറവിടങ്ങൾ"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "സമന്വയിപ്പിക്കുക"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -461,6 +464,9 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "അഭ്യർത്ഥനാ URL-ന്റെ ഡൊമെയ്ൻ കുക്കിയുടെ ഡൊമെയ്‌നുമായി കൃത്യമായി പൊരുത്തപ്പെടാത്തതിനാലും അഭ്യർത്ഥനാ URL-ന്റെ ഡൊമെയ്ൻ കുക്കിയുടെ ഡൊമെയ്ൻ ആട്രിബ്യൂട്ട് മൂല്യത്തിന്റെ ഉപഡൊമെയ്ൻ അല്ലാത്തതിനാലും ഈ കുക്കി ബ്ലോക്ക് ചെയ്തു."
   },
+  "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
+    "message": "വലുപ്പം കൂടുതലായതിനാൽ ഈ കുക്കി ബ്ലോക്ക് ചെയ്തു. പേരിന്റെയും മൂല്യത്തിന്റെയും സംയോജിത വലുപ്പം 4096 പ്രതീകങ്ങളിൽ കുറവോ അതിന് തുല്യമോ ആയിരിക്കണം."
+  },
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "അഭ്യർത്ഥിച്ച URL-ന്റെ പാതയുമായി കൃത്യമായും പൊരുത്തപ്പെടാത്തതിനാലോ അതിന്റെ സൂപ്പർ ഡയറക്ടറി അല്ലാത്തതിനാലോ ഈ കുക്കി ബ്ലോക്ക് ചെയ്തു."
   },
@@ -492,7 +498,7 @@
     "message": "\"Secure\" ആട്രിബ്യൂട്ട് ഉള്ളതിനാലും കണക്ഷൻ സുരക്ഷിതമല്ലാത്തതിനാലും ഈ കുക്കി ബ്ലോക്ക് ചെയ്തു."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "ഇനിപ്പറയുന്ന URL-ൽ നിന്നുള്ള പ്രതികരണം കാരണം Set-Cookie ഹെഡ്ഡർ അവഗണിച്ചു: {PH1}. കുക്കിയുടെ നീളം 4096 പ്രതീകങ്ങളോ അതിൽ കുറവോ ആയിരിക്കണം."
+    "message": "ഇനിപ്പറയുന്ന URL-ൽ നിന്നുള്ള പ്രതികരണം കാരണം Set-Cookie ഹെഡ്ഡർ അവഗണിച്ചു: {PH1}. പേരിന്റെയും മൂല്യത്തിന്റെയും സംയോജിത വലുപ്പം 4096 പ്രതീകങ്ങളിൽ കുറവോ അതിന് തുല്യമോ ആയിരിക്കണം."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "ഈ കണക്ഷന്റെ സ്കീമിന് കുക്കികൾ സംഭരിക്കാൻ അനുവാദമില്ല."
@@ -511,6 +517,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "\"{PH1}\" ആട്രിബ്യൂട്ട് ഉണ്ടെങ്കിലും ടോപ്പ് ലെവൽ നാവിഗേഷനോടുള്ള പ്രതികരണമല്ലാത്ത ഒരു ക്രോസ് സൈറ്റ് പ്രതികരണത്തിൽ നിന്ന് വരുന്നതിനാൽ Set-Cookie ഹെഡർ മുഖേന ഒരു കുക്കി സജ്ജീകരിക്കാനുള്ള ഈ ശ്രമം ബ്ലോക്ക് ചെയ്‌തു. URL-ന് നിലവിലെ സൈറ്റിൽ നിന്ന് വ്യത്യസ്‌തമായ ഒരു സ്‌കീം ഉള്ളതിനാൽ ഈ പ്രതികരണം ക്രോസ് സൈറ്റ് പ്രതികരണമായി പരിഗണിക്കപ്പെടുന്നു."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
+    "message": "കുക്കി വളരെ വലുതായതിനാൽ Set-Cookie ഹെഡ്ഡർ വഴി കുക്കി സജ്ജീകരിക്കാനുള്ള ഈ ശ്രമം ബ്ലോക്ക് ചെയ്തു. പേരിന്റെയും മൂല്യത്തിന്റെയും സംയോജിത വലുപ്പം 4096 പ്രതീകങ്ങളിൽ കുറവോ അതിന് തുല്യമോ ആയിരിക്കണം."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Set-Cookie ഹെഡർ മുഖേന ഒരു കുക്കി സജ്ജീകരിക്കാനുള്ള ഈ ശ്രമം ഉപഭോക്തൃ മുൻഗണനകൾ കാരണം ബ്ലോക്ക് ചെയ്‌തു."
@@ -635,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP ഫോർമാറ്റ് പ്രവർത്തനരഹിതമാക്കുക"
   },
+  "core/sdk/sdk-meta.ts | disabledDarkMode": {
+    "message": "പ്രവർത്തനരഹിതമാക്കുക"
+  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "അസിങ്ക്രോണസ് സ്റ്റാക്ക് ട്രെയ്സുകൾ ക്യാപ്‌ചർ ചെയ്യരുത്"
   },
@@ -673,6 +685,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "അക്രോമാറ്റോപ്സിയ അനുകരിക്കുക"
+  },
+  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
+    "message": "സ്വയമേവയുള്ള ഡാർക്ക് മോഡ് അനുകരിക്കുക"
   },
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "മങ്ങിയ കാഴ്ച അനുകരിക്കുക"
@@ -727,6 +742,9 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP ഫോർമാറ്റ് പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "core/sdk/sdk-meta.ts | enabledDarkMode": {
+    "message": "പ്രവർത്തനക്ഷമമാക്കുക"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ഗ്രിഡ് ലൈനുകൾ വിപുലീകരിക്കുക"
@@ -859,6 +877,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "ഫോക്കസ് ചെയ്ത പേജ് അനുകരിക്കുന്നു."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
+    "message": "പരിശോധിച്ച പേജിനായി സ്വയമേവയുള്ള ഡാർക്ക് മോഡ് പ്രവർത്തനക്ഷമമാക്കുന്നു."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut മീഡിയ ഫീച്ചർ നിർബന്ധമാക്കുന്നു"
@@ -1063,6 +1084,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "പാനലുകൾക്കിടയിൽ മാറാൻ ⌘ + 1-9 കുറുക്കുവഴി പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "ക്രമീകരണം സമന്വയിപ്പിക്കൽ പ്രവർത്തനക്ഷമമാക്കുക"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "അടുത്ത ഫലം കണ്ടെത്തുക"
@@ -1310,17 +1334,29 @@
   "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
     "message": "ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗ് ചുരുക്കൽ"
   },
+  "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
+    "message": "Portals - Same-origin communication channels"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "പരസ്യങ്ങളുടെ അമിതമായ ഇടപെടലുകൾ കൈകാര്യം ചെയ്യുന്നു"
   },
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "ബ്രേക്കിംഗ് ചേഞ്ച് പ്രശ്നം: Chrome-ന്റെ വരാനിരിക്കുന്ന പതിപ്പിൽ പേജ് പ്രവർത്തനം അവസാനിപ്പിച്ചേക്കാം"
   },
+  "models/issues_manager/Issue.ts | breakingChanges": {
+    "message": "Breaking Changes"
+  },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "മെച്ചപ്പെടുത്തൽ പ്രശ്നം: പേജ് മെച്ചപ്പെടുത്താൻ അവസരമുണ്ട്"
   },
+  "models/issues_manager/Issue.ts | improvements": {
+    "message": "Improvements"
+  },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "ഒരു പേജ് പിശക് പ്രശ്നം: പേജ് ശരിയായി പ്രവർത്തിക്കുന്നില്ല"
+  },
+  "models/issues_manager/Issue.ts | pageErrors": {
+    "message": "Page Errors"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "നിറം, ദൃശ്യതീവ്രത ഉപയോഗസഹായി"
@@ -1338,7 +1374,7 @@
     "message": "സുരക്ഷിതമല്ലാത്തത്"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets വിവരിച്ചിരിക്കുന്നു"
+    "message": "First-Party Sets, SameParty ആട്രിബ്യൂട്ട് എന്നിവ"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "സ്കീംഫുൾ Same-Site എങ്ങനെ പ്രവർത്തിക്കുന്നു"
@@ -1982,14 +2018,11 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} എന്നതിന്റെ യഥാർത്ഥ വീതി ({PH1}px) നിർദ്ദേശിച്ച വീതിയുമായി ({PH4}px) പൊരുത്തപ്പെടുന്നില്ല"
   },
-  "panels/application/AppManifestView.ts | appId": {
-    "message": "ആപ്പ് ഐഡി"
-  },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "മാനിഫെസ്റ്റ് നിലവിലുള്ള ആപ്പ് അപ്ഡേറ്റ് ചെയ്യണോ അതോ ഇൻസ്റ്റാൾ ചെയ്യാനാകുന്ന പുതിയൊരു വെബ് ആപ്പിനെക്കുറിച്ച് പരാമർശിക്കുകയാണോ എന്നറിയാൻ ബ്രൗസർ ഇത് ഉപയോഗിക്കുന്നു."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "ശ്രദ്ധിക്കുക: മാനിഫെസ്റ്റിൽ 'id' വ്യക്തമാക്കിയിട്ടില്ല, പകരം 'start_url' ഉപയോഗിച്ചിരിക്കുന്നു. നിലവിലെ ഐഡന്റിറ്റിയുമായി പൊരുത്തപ്പെടുന്ന ഒരു ആപ്പ് ഐഡി വ്യക്തമാക്കാൻ 'id' ഫീൽഡ് ''{PH1}'' എന്നതിലേക്ക് സജ്ജീകരിക്കുക."
+    "message": "{PH1} മാനിഫെസ്റ്റിൽ {PH2} വ്യക്തമാക്കിയിട്ടില്ല, പകരം {PH3} ഉപയോഗിച്ചിരിക്കുന്നു. നിലവിലെ ഐഡന്റിറ്റിയുമായി പൊരുത്തപ്പെടുന്ന ആപ്പ് ഐഡി വ്യക്തമാക്കാൻ, {PH4} ഫീൽഡ് {PH5} {PH6} എന്നതിലേക്ക് സജ്ജീകരിക്കുക."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "ആപ്പ് മാനിഫെസ്റ്റ്"
@@ -1999,6 +2032,12 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "പശ്ചാത്തല നിറം"
+  },
+  "panels/application/AppManifestView.ts | computedAppId": {
+    "message": "കമ്പ്യൂട്ട് ചെയ്ത ആപ്പ് ഐഡി"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "മാനിഫെസ്‌റ്റിലെ 'start_url' ഫീൽഡ് ഇല്ലാതെ service worker പരിശോധിക്കാനായില്ല"
@@ -2038,6 +2077,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "ഇൻസ്റ്റാൾ ചെയ്യാൻ കഴിയുന്ന അവസ്ഥ"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "മാനിഫെസ്റ്റിൽ 'display_override' അടങ്ങിയിരിക്കുന്നു, ആദ്യം പിന്തുണയ്ക്കുന്ന പ്രദർശന മോഡ് 'standalone', 'fullscreen' അല്ലെങ്കിൽ 'minimal-ui' എന്നതിൽ ഒന്നായിരിക്കണം"
@@ -2080,6 +2122,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "\"any\" എന്ന് സജ്ജീകരിക്കുകയോ സജ്ജീകരിച്ചത് മാറ്റുകയോ ചെയ്യാനുള്ള ഉദ്ദേശ്യ ആട്രിബ്യൂട്ട് ഉപയോഗിച്ച് PNG, SVG അല്ലെങ്കിൽ WebP ഫോർമാറ്റിൽ ഏറ്റവും കുറഞ്ഞത് {PH1} പിക്സൽ സ്ക്വയർ ഉള്ള സപ്ലൈ ചെയ്ത ഐക്കണുകൾ ഒന്നുമില്ല."
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "ശ്രദ്ധിക്കുക:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "ഓറിയന്റേഷൻ"
@@ -2180,33 +2225,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "തീമിന്റെ നിറം"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "AppCache"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "ആപ്പ് കാഷേ"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "ഇല്ലാതാക്കുക"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "ആപ്പ് കാഷെ വിവരങ്ങളൊന്നും ലഭ്യമല്ല."
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "ഓഫ്‌ലൈൻ"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "ഓൺലൈൻ"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "ഉറവിടം"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "വലുപ്പം"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "തരം"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "ബാക്ക്-ഫോർവേഡ് കാഷെ"
   },
@@ -2221,9 +2239,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "ആപ്പ്"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "ആപ്പ് കാഷേ"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "പശ്ചാത്തല സേവനങ്ങൾ"
@@ -2300,8 +2315,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "ബാക്ക്-ഫോർവേഡ് കാഷെ നില"
   },
-  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
-    "message": "The last navigation was not cached because"
+  "panels/application/BackForwardCacheView.ts | circumstantial": {
+    "message": "Not Actionable"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "അവസാനത്തെ പ്രധാന ഫ്രെയിം നാവിഗേഷൻ"
@@ -2310,13 +2325,16 @@
     "message": "പ്രധാന ഫ്രെയിം"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "സാധാരണ നാവിഗേഷൻ"
+    "message": "Normal navigation (Not restored from back-forward cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Features preventing back-forward cache"
+    "message": "Actionable"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ബാക്ക്-ഫോർവേഡ് കാഷെയിൽ നിന്ന് പുനഃസ്ഥാപിച്ചു"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPending": {
+    "message": "Pending Support"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ലഭ്യമല്ല"
@@ -2326,9 +2344,6 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
-  },
-  "panels/application/BackForwardCacheView.ts | willBeSupported": {
-    "message": "(Supported in a future version of Chrome)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "പശ്ചാത്തലം ലഭ്യമാക്കൽ"
@@ -2603,6 +2618,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ഉവ്വ്"
   },
+  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
+    "message": "റിപ്പോർട്ടിന്റെ ബോഡി കാണാൻ അതിൽ ക്ലിക്ക് ചെയ്യുക"
+  },
+  "panels/application/ReportingApiTreeElement.ts | reportingApi": {
+    "message": "റിപ്പോർട്ടിംഗ് API"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "കാഷെ"
   },
@@ -2777,9 +2798,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "ആപ്പ്"
   },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "ആപ്പ് കാഷെ"
-  },
   "panels/application/StorageView.ts | cache": {
     "message": "കാഷെ"
   },
@@ -2884,6 +2902,9 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ഇവന്റുകൾ റെക്കോർഡ് ചെയ്യുന്നത് നിർത്തുക"
+  },
+  "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
+    "message": "കാണിക്കാൻ എൻഡ്‌പോയിന്റുകളൊന്നുമില്ല"
   },
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "ഫ്രെയിം ആൻസെസ്‌റ്റർ സുരക്ഷിതമല്ലാത്ത സന്ദർഭമാണ്"
@@ -3082,6 +3103,9 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "വിശദാംശങ്ങൾ കാണിക്കുക"
+  },
+  "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
+    "message": "കാണിക്കാൻ റിപ്പോർട്ടുകളൊന്നുമില്ല"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്‌സ് റെൻഡർ ചെയ്യാനാകുന്നില്ല"
@@ -3440,6 +3464,9 @@
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "കൺസോൾ സൈഡ്‌ബാർ കാണിക്കുക"
   },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "കൺസോളിൽ CORS പിശകുകൾ കാണിക്കുക"
+  },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "വെർബോസ്"
   },
@@ -3497,6 +3524,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<some> ഇവന്റ്"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "സ്റ്റാക്ക് പട്ടിക ചുരുക്കി"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "സ്റ്റാക്ക് പട്ടിക വികസിപ്പിച്ചു"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "ആദ്യം വികസിപ്പിച്ചപ്പോൾ ഈ മൂല്യം വിലയിരുത്തി. അതിന് ശേഷം ഇത് മാറിയിരിക്കാം."
   },
@@ -3521,12 +3554,6 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{മുന്നറിയിപ്പ്, # തവണ ആവർത്തിച്ചു}other{മുന്നറിയിപ്പ്, # തവണ ആവർത്തിച്ചു}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "Chrome-ന്റെ ഭാവി പതിപ്പിൽ ഈ സൈഡ്‌ബാർ നീക്കം ചെയ്യും. നിങ്ങൾക്ക് ഫീഡ്ബാക്ക് ഉണ്ടെങ്കിൽ, ഇതിലൂടെ ഞങ്ങളെ അറിയിക്കുക"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "പ്രശ്ന ട്രാക്കർ"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ചരിത്രത്തിൽ നിന്ന് സ്വയമേവ പൂർത്തിയാക്കുക"
   },
@@ -3550,6 +3577,9 @@
   },
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "കൺസോളിൽ സമാനമായ സന്ദേശങ്ങൾ ഗ്രൂപ്പ് ചെയ്യരുത്"
+  },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "കൺസോളിൽ CORS പിശകുകൾ കാണിക്കരുത്"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "മൂല്യനിർണ്ണയത്തെ ഉപയോക്തൃ സജീവമാക്കലായി കണക്കാക്കരുത്"
@@ -3583,6 +3613,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "കൺസോൾ കാണിക്കുക"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "കൺസോളിൽ CORS പിശകുകൾ കാണിക്കുക"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "എല്ലാ സന്ദർഭങ്ങളിൽ നിന്നുമുള്ള സന്ദേശങ്ങൾ കാണിക്കുക"
@@ -3977,6 +4010,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "കമ്പ്യൂട്ട് ചെയ്‌തത്"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "DOM ട്രീ എക്സ്പ്ലോറർ"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "എലമെന്റ് നില: {PH1}"
   },
@@ -3997,6 +4033,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "കമ്പ്യൂട്ട് ചെയ്‌ത സ്റ്റൈലുകൾ സൈഡ്‌ബാർ കാണിക്കുക"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "സൈഡ് പാനൽ ഉള്ളടക്കം"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "സൈഡ് പാനൽ ടൂൾബാർ"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "സ്റ്റൈലുകൾ"
@@ -4084,6 +4126,12 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "സ്‌ക്രോൾ സ്‌നാപ്പ് ഓവർലേ പ്രവർത്തനക്ഷമമാക്കുക"
+  },
+  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
+    "message": "ഐസൊലേഷൻ മോഡിലേക്ക് പോകുക"
+  },
+  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
+    "message": "ഐസൊലേഷൻ മോഡിൽ നിന്ന് പുറത്ത് കടക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "ആവർത്തിച്ച് വികസിപ്പിക്കുക"
@@ -4178,8 +4226,14 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "റെൻഡർ ചെയ്ത ഫോണ്ടുകൾ"
   },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
+    "message": "എല്ലാ പ്രസ്‌താവനകളും JS ആയി പകർത്തുക"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "എല്ലാ പ്രസ്താവനകളും പകർത്തുക"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyCssDeclarationAsJs": {
+    "message": "പ്രസ്‌താവന JS ആയി പകർത്തുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "പ്രസ്താവന പകർത്തുക"
@@ -4292,8 +4346,14 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "ബാഡ്‌ജുകൾ കാണിക്കുക"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "DOM ട്രീ ബ്രെഡ്‌ക്രമ്പുകൾ"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(ടെക്‌സ്റ്റ്)"
+  },
+  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "Choose the overlay color for this element"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4817,6 +4877,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "ഫ്രെയിം"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
+    "message": "അസാധുവായ event-source-trigger-data"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "അസാധുവായ attributionsourceeventid"
   },
@@ -4913,11 +4976,17 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "മുന്നറിയിപ്പ്"
   },
+  "panels/issues/GenericIssueDetailsView.ts | frameId": {
+    "message": "Frame"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | nResources": {
+    "message": "{n,plural, =1{# ഉറവിടം}other{# ഉറവിടങ്ങൾ}}"
+  },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "മറച്ചിരിക്കുന്ന പ്രശ്നങ്ങൾ"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "മറച്ച എല്ലാ പ്രശ്‌നങ്ങളും പഴയപടിയാക്കുക"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "മറച്ചവയെല്ലാം പഴയപടിയാക്കുക"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ബാധിച്ച ഉറവിടങ്ങൾ"
@@ -4958,11 +5027,20 @@
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "ക്രോസ്-ഒറിജിൻ എംബെഡർ പോളിസി"
   },
+  "panels/issues/IssuesPane.ts | generic": {
+    "message": "Generic"
+  },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "വിഭാഗം അനുസരിച്ച് ഗ്രൂപ്പ് ചെയ്യുക"
   },
+  "panels/issues/IssuesPane.ts | groupByKind": {
+    "message": "Group by kind"
+  },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ബന്ധപ്പെട്ട വിഭാഗങ്ങൾക്ക് കീഴിൽ പ്രദർശിപ്പിച്ച പ്രശ്‌നങ്ങൾ ഗ്രൂപ്പ് ചെയ്യുക"
+  },
+  "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
+    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "വലിയ പരസ്യങ്ങൾ"
@@ -6002,14 +6080,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "ഹെഡറുകൾ"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "ഹെഡ്ഡറുകളും അഭ്യർത്ഥനാ ബോഡിയും"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "ഇനീഷിയേറ്റർ"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "സന്ദേശങ്ങൾ"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "പേലോഡ്"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "പ്രിവ്യൂ ചെയ്യുക"
@@ -6452,12 +6530,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "ഡീകോഡ് ചെയ്‌തു:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "(ശൂന്യം)"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "ഫോം ഡാറ്റ"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(ഡിസ്‌ക് കാഷെയിൽ നിന്നുള്ളത്)"
   },
@@ -6472,6 +6544,9 @@
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(സൈൻ ചെയ്‌ത എക്‌സ്‌ചേഞ്ചിൽ നിന്നുള്ളത്)"
+  },
+  "panels/network/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(വെബ് ബണ്ടിലിൽ നിന്നുള്ളത്)"
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "പൊതുവായവ"
@@ -6494,9 +6569,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "പ്രൊവിഷണൽ ഹെഡറുകൾ കാണിക്കുന്നുണ്ട്. പൂർണ്ണ ഹെഡ്ഡറുകൾ കാണാൻ കാഷെ പ്രവർത്തനരഹിതമാക്കുക."
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "അന്വേഷണ സ്ട്രിംഗ് പാരാമീറ്ററുകൾ"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "trigger-data ഉപയോഗിച്ച് റെക്കോർഡ് ചെയ്ത ആട്രിബ്യൂഷൻ: {PH1}"
   },
@@ -6511,9 +6583,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "അഭ്യർത്ഥനാ രീതി"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "പേലോഡ് അഭ്യർത്ഥിക്കുക"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "URL അഭ്യർത്ഥിക്കുക"
@@ -6542,32 +6611,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "മറ്റൊരു സൈറ്റിൽ നിന്ന് ഈ ഉറവിടം ഉപയോഗിക്കാൻ, ക്രോസ്-ഒറിജിൻ ഉറവിട നയ പ്രതികരണ ഹെഡറിന് സെർവർ ഇളവ് നൽകിയേക്കാം:"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(മൂല്യം ഡീകോഡ് ചെയ്യാനാകുന്നില്ല)"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "ഡീകോഡ് ചെയ്തത് കാണുക"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "ഡീകോഡ് ചെയ്തത് കാണുക"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "വിശകലനം ചെയ്തത് കാണുക"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
     "message": "വിശകലനം ചെയ്തത് കാണുക"
   },
   "panels/network/RequestHeadersView.ts | viewSource": {
     "message": "ഉറവിടം കാണുക"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "ഉറവിടം കാണുക"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "എൻകോഡ് ചെയ്‌ത URL കാണുക"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "എൻ‌കോഡ് ചെയ്‌ത URL കാണുക"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "കോൾ സ്റ്റാക്ക് അഭ്യർത്ഥിക്കുക"
@@ -6577,6 +6625,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "ഈ അഭ്യർത്ഥനയ്‌ക്ക് ഇനീഷിയേറ്റർ ഡാറ്റ ഇല്ല."
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "മൂല്യം പകർത്തുക"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "(ശൂന്യം)"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "ഫോം ഡാറ്റ"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "അന്വേഷണ സ്ട്രിംഗ് പാരാമീറ്ററുകൾ"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "പേലോഡ് അഭ്യർത്ഥിക്കുക"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "കൂടുതൽ കാണിക്കുക"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "(മൂല്യം ഡീകോഡ് ചെയ്യാനാകുന്നില്ല)"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "ഡീകോഡ് ചെയ്തത് കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "ഡീകോഡ് ചെയ്തത് കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "വിശകലനം ചെയ്തത് കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "വിശകലനം ചെയ്തത് കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "ഉറവിടം കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "ഉറവിടം കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "എൻകോഡ് ചെയ്‌ത URL കാണുക"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "എൻ‌കോഡ് ചെയ്‌ത URL കാണുക"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "പ്രതികരണ ഡാറ്റ ലോഡ് ചെയ്യാനായില്ല"
@@ -7770,16 +7863,16 @@
     "message": "{PH2} ഉള്ള {PH1}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "The security of this page is unknown."
+    "message": "ഈ പേജിന്റെ സുരക്ഷ അജ്ഞാതമാണ്."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "This page is not secure."
+    "message": "ഈ പേജ് സുരക്ഷിതമല്ല."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "This page is not secure (broken HTTPS)."
+    "message": "ഈ പേജ് സുരക്ഷിതമല്ല (HTTPS-ൽ തകരാറുണ്ട്)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "This page is secure (valid HTTPS)."
+    "message": "ഈ പേജ് സുരക്ഷിതമാണ് (സാധുതയുള്ള HTTPS)."
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "സർട്ടിഫിക്കറ്റ് പിശകുകളുള്ള സജീവ ഉള്ളടക്കം"
@@ -8582,8 +8675,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "സ്‌നിപ്പറ്റുകളൊന്നും കണ്ടെത്തിയില്ല."
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "സ്‌നിപ്പറ്റ് റണ്‍ ചെയ്യുക"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "റൺ ചെയ്യുക"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "സ്‌നിപ്പെറ്റ്"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "ചേർക്കുക"
@@ -8801,11 +8897,11 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "ഫയലൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല."
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "ഒരു ലൈനിലേക്ക് പോകാൻ ആ നമ്പർ ടൈപ്പ് ചെയ്യുക."
-  },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "ലോക്കൽ പരിഷ്‌കരണങ്ങൾ..."
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "ഫോർമാറ്റ്"
@@ -9230,17 +9326,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "തിരഞ്ഞെടുത്ത ടെക്‌സ്റ്റ് കൺസോളിൽ വിലയിരുത്തുക"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "ഫയൽ"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "ഫയൽ സിസ്റ്റം"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "ഇതിലേക്ക് പോകുക"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "ഒരു ഫംഗ്ഷൻ ഡിക്ലറേഷൻ/റൂൾ സെറ്റിലേക്ക് പോകുക"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "ലൈനിലേക്ക് പോകുക"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "ചിഹ്നത്തിലേക്ക് പോകുക"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS യൂണിറ്റ് {PH1} ആയി വർദ്ധിപ്പിക്കുക"
@@ -9251,14 +9350,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "മുമ്പത്തെ എഡിറ്റിംഗ് ലൊക്കേഷനിലേക്ക് പോകുക"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "ലൈൻ"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "അടുത്ത കോൾ ഫ്രെയിം"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "ഒന്നുമില്ല"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "ഫയൽ തുറക്കുക"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "തുറക്കുക"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "സ്ക്രിപ്റ്റ് എക്സിക്യൂഷൻ താൽക്കാലികമായി നിർത്തുക"
@@ -9349,6 +9451,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "ഫയൽ മാറ്റുക"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "ചിഹ്നം"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "ത്രെഡുകൾ"
@@ -10931,6 +11036,9 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "നിങ്ങളുടെ ഫീഡ്ബാക്കിന് നന്ദി"
   },
+  "ui/components/text_editor/config.ts | codeEditor": {
+    "message": "കോഡ് എഡിറ്റർ"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "അടയ്ക്കുക"
   },
@@ -10978,6 +11086,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "DevTools ഇപ്പോൾ {PH1} ഭാഷയിൽ ലഭ്യമാണ്!"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "ടൂൾ ഡ്രോയർ"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "പ്രധാന ടൂൾബാർ"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "കൂടുതൽ ടൂളുകൾ"
@@ -11098,6 +11212,9 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "കൂടുതൽ ടാബുകൾ"
+  },
+  "ui/legacy/TabbedPane.ts | previewFeature": {
+    "message": "Preview feature"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "പേജിൽ നിന്ന് DevTools വിച്ഛേദിച്ചു."
@@ -11567,14 +11684,17 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
     "message": "സൂം ചെയ്യുക"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "കമാൻഡ്"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "കമാൻഡുകളൊന്നും കണ്ടെത്തിയില്ല"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "ഒന്നോ അതിലധികമോ ക്രമീകരണം മാറിയിരിക്കുന്നു, അത് പ്രാബല്യത്തിൽ വരാൻ റീലോഡ് ചെയ്യേണ്ടതുണ്ട്."
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "കമാൻഡ് റൺ ചെയ്യുക"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "റൺ ചെയ്യുക"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല"
@@ -11589,7 +11709,7 @@
     "message": "{PH1} (സ്ഥിരീകരിക്കാൻ 'Enter' അമർത്തുക, റദ്ദാക്കാൻ 'Escape' അമർത്തുക.)"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | useTabToSwitchCommandsTypeToSeeAvailableCommands": {
-    "message": "Use Tab to switch commands. Type '?' to see available commands"
+    "message": "കമാൻഡുകൾ മാറാൻ ടാബ് ഉപയോഗിക്കുക. ലഭ്യമായ കമാൻഡുകൾ കാണാൻ '?' ടൈപ്പ് ചെയ്യുക"
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | openFile": {
     "message": "ഫയൽ തുറക്കുക"

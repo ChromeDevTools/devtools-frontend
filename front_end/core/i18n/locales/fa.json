@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "منابع"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "همگام‌سازی"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -461,6 +464,9 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "این کوکی مسدود شده است زیرا نه دامنه نشانی وب درخواست دقیقاً با دامنه کوکی مطابقت دارد، و نه دامنه نشانی وب درخواست زیردامنه‌ای از مقدار مشخصه Domain در کوکی است."
   },
+  "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
+    "message": "این کوکی مسدود شد، چون بیش‌ازاندازه بزرگ بود. طول نام و مقدار باهم باید کمتر یا مساوی با ۴۰۹۶ نویسه باشد."
+  },
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "این کوکی مسدود شده است زیرا مسیر آن دقیقاً منطبق با نشانی وب درخواست یا مسیر مافوق آن نیست."
   },
@@ -492,7 +498,7 @@
     "message": "این کوکی مسدود شده است زیرا مشخصه «Secure» داشت و اتصال ایمن نبود."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "سرصفحه Set-Cookie در پاسخ دریافتی از این نشانی وب نادیده گرفته شد: {PH1}. طول کوکی باید کمتر از یا برابر با ۴۰۹۶ نویسه باشد."
+    "message": "سرصفحه Set-Cookie در پاسخ دریافتی از این نشانی وب نادیده گرفته شد: {PH1}. طول نام و مقدار باهم باید کمتر یا مساوی با ۴۰۹۶ نویسه باشد."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "طرح این اتصال اجازه ذخیره کردن کوکی‌ها را ندارد."
@@ -511,6 +517,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا مشخصه «{PH1}» داشت اما از یک پاسخ بین‌سایتی آمده بود که پاسخ به پیمایش سطح بالا نبود. این پاسخ بین‌سایتی محسوب می‌شود زیرا نشانی وب طرح متفاوتی نسبت به سایت کنونی دارد."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
+    "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شد، چون کوکی بیش‌ازاندازه بزرگ بود. طول نام و مقدار باهم باید کمتر یا مساوی با ۴۰۹۶ نویسه باشد."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie به‌دلیل اولویت‌های کاربر مسدود شده است."
@@ -635,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "غیرفعال کردن قالب WebP"
   },
+  "core/sdk/sdk-meta.ts | disabledDarkMode": {
+    "message": "غیرفعال کردن"
+  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "ردیابی پشته‌ای غیرهمگام ضبط نشود"
   },
@@ -673,6 +685,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "شبیه‌سازی رنگ‌کوری کامل"
+  },
+  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
+    "message": "شبیه‌سازی در حالت تاریک خودکار"
   },
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "شبیه‌سازی تاری دید"
@@ -728,11 +743,14 @@
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "فعال کردن قالب WebP"
   },
+  "core/sdk/sdk-meta.ts | enabledDarkMode": {
+    "message": "فعال کردن"
+  },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "گسترش خطوط جدول"
   },
   "core/sdk/sdk-meta.ts | hideCoreWebVitalsOverlay": {
-    "message": "پنهان کردن همپوشانی «جزئیات بسیار مهم وب»"
+    "message": "پنهان کردن همپوشانی «معیارهای کلیدی اصلی وب»"
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "پنهان کردن کنتور فریم در ثانیه (FPS)"
@@ -783,7 +801,7 @@
     "message": "نمایش نام مناطق"
   },
   "core/sdk/sdk-meta.ts | showCoreWebVitalsOverlay": {
-    "message": "نمایش همپوشانی «جزئیات بسیار مهم وب»"
+    "message": "نمایش همپوشانی «معیارهای کلیدی اصلی وب»"
   },
   "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
     "message": "نمایش کنتور فریم در ثانیه (FPS)"
@@ -837,7 +855,7 @@
     "message": "DevTools اختصاصی را برای Node.js باز کنید"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
-    "message": "جزئیات بسیار مهم وب"
+    "message": "معیارهای کلیدی اصلی وب"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "غیرفعال کردن قالب تصویر AVIF"
@@ -859,6 +877,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "صفحه متمرکز را شبیه‌سازی می‌کند."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
+    "message": "حالت تاریک خودکار را برای صفحه بازرسی‌شده فعال می‌کند."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "ویژگی رسانه color-gamut CSS را اجباری می‌کند"
@@ -921,7 +942,7 @@
     "message": "مشکلات عملکرد پیمایش"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
-    "message": "یک همپوشانی با «جزئیات بسیار مهم وب» نشان می‌دهد"
+    "message": "همپوشانی با «معیارهای کلیدی اصلی وب» نشان می‌دهد"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
     "message": "نمایش حاشیه‌های اطراف مناطق آزمایش ضربه."
@@ -1063,6 +1084,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "فعال کردن میان‌برهای ‎ ⌘ + ۱-۹برای تغییر پانل‌ها"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "فعال کردن همگام‌سازی تنظیمات"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "یافتن نتیجه بعدی"
@@ -1310,17 +1334,29 @@
   "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
     "message": "کاهش در رشته نماینده کاربر"
   },
+  "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
+    "message": "Portals - Same-origin communication channels"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "مدیریت مداخله آگهی‌های سنگین"
   },
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "مشکل تغییر ناگهانی: این صفحه ممکن است در نسخه آتی Chrome کار نکند."
   },
+  "models/issues_manager/Issue.ts | breakingChanges": {
+    "message": "Breaking Changes"
+  },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "مشکل بهبود: فرصتی برای بهبود صفحه وجود دارد"
   },
+  "models/issues_manager/Issue.ts | improvements": {
+    "message": "Improvements"
+  },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "مشکل خطای صفحه: صفحه درست کار نمی‌کند"
+  },
+  "models/issues_manager/Issue.ts | pageErrors": {
+    "message": "Page Errors"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "دسترس‌پذیری کنتراست و رنگ"
@@ -1338,7 +1374,7 @@
     "message": "غیرایمن"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "توضیحات First-Party Sets"
+    "message": "مشخصه First-Party Sets و SameParty"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "نحوه عملکرد Schemeful Same-Site"
@@ -1982,14 +2018,11 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "عرض واقعی {PH2} {PH3} ‏ ({PH1} پیکسل) با عرض مشخص‌شده ({PH4} پیکسل) مطابقت ندارد"
   },
-  "panels/application/AppManifestView.ts | appId": {
-    "message": "شناسه برنامه"
-  },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "مرورگر بااستفاده از آن تشخیص می‌هد آیا مانیفست باید برنامه‌ای موجود را به‌روزرسانی کند یا اینکه به برنامه وب جدید و قابل‌نصب اشاره دارد."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "توجه: «id» در مانیفست مشخص نشده است، درعوض از «start_url» استفاده می‌شود. برای مشخص کردن «شناسه برنامه‌ای» که با هویت فعلی مطابقت داشته باشد، فیلد «id» را روی «{PH1}» تنظیم کنید."
+    "message": "{PH1} {PH2} در مانیفست مشخص نشده است، درعوض از {PH3} استفاده می‌شود. برای مشخص کردن «شناسه برنامه‌ای» که با هویت فعلی مطابقت داشته باشد، فیلد {PH4} را روی {PH5} {PH6} تنظیم کنید."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "مانیفست برنامه"
@@ -1999,6 +2032,12 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "رنگ پس‌زمینه"
+  },
+  "panels/application/AppManifestView.ts | computedAppId": {
+    "message": "شناسه برنامه محاسبه‌شده"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "کپی کردن در بریده‌دان"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "نمی‌توان service worker را بدون فیلد «start_url» در مانیفست بررسی کرد"
@@ -2038,6 +2077,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "قابلیت نصب"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "بیشتر بدانید"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "مانیفست حاوی فیلد «display_override» است و اولین حالت نمایش پشتیبانی‌شده باید یکی از موارد «standalone»، «fullscreen»، یا «minimal-ui» باشد"
@@ -2080,6 +2122,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "هیچ نمادی با حداقل {PH1} پیکسل مربع و قالب PNG،‏ SVG یا WebP ارائه نشده است که مشخصه هدف آن تنظیم نشده باشد یا روی \"any\" تنظیم شده باشد."
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "توجه:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "جهت‌‌"
@@ -2180,33 +2225,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "رنگ طرح زمینه"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "حافظه پنهان برنامه"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "حافظه پنهان برنامه"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "حذف"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "هیچ اطلاعاتی درباره «حافظه پنهان برنامه» دردسترس نیست."
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "آفلاین"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "آنلاین"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "منبع"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "اندازه"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "نوع"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "حافظه پنهان عقب-جلو"
   },
@@ -2221,9 +2239,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "برنامه"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "حافظه پنهان برنامه"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "سرویس‌های پس‌زمینه‌ای"
@@ -2300,8 +2315,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "وضعیت حافظه پنهان عقب-جلو"
   },
-  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
-    "message": "آخرین پیمایش در حافظه پنهان ذخیره نشد، زیرا"
+  "panels/application/BackForwardCacheView.ts | circumstantial": {
+    "message": "Not Actionable"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "پیمایش آخرین قاب اصلی"
@@ -2310,13 +2325,16 @@
     "message": "قاب اصلی"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "پیمایش معمول"
+    "message": "Normal navigation (Not restored from back-forward cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "ویژگی‌هایی که از حافظه پنهان عقب-جلو جلوگیری می‌کنند"
+    "message": "Actionable"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "از حافظه پنهان عقب-جلو بازیابی شده است"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPending": {
+    "message": "Pending Support"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "دردسترس نیست"
@@ -2326,9 +2344,6 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "نشانی وب"
-  },
-  "panels/application/BackForwardCacheView.ts | willBeSupported": {
-    "message": "(در نسخه‌های بعدی Chrome پشتیبانی می‌شود)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "واکشی پس‌زمینه"
@@ -2603,6 +2618,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "بله"
   },
+  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
+    "message": "برای مشاهده محتوای هر گزارش روی آن کلیک کنید"
+  },
+  "panels/application/ReportingApiTreeElement.ts | reportingApi": {
+    "message": "میانای برنامه‌سازی کاربردی گزارش‌دهی"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "حافظهٔ پنهان"
   },
@@ -2777,9 +2798,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "برنامه"
   },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "حافظه پنهان برنامه"
-  },
   "panels/application/StorageView.ts | cache": {
     "message": "حافظهٔ پنهان"
   },
@@ -2884,6 +2902,9 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "توقف ضبط رویدادها"
+  },
+  "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
+    "message": "نقطه پایانی برای نمایش وجود ندارد"
   },
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "یکی از قاب‌های والدْ بافت امنی نیست"
@@ -3082,6 +3103,9 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "نمایش جزئیات"
+  },
+  "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
+    "message": "هیچ گزارشی برای نمایش وجود ندارد"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ردیابی پشته‌ای پرداز نمی‌شود"
@@ -3440,6 +3464,9 @@
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "نمایش نوار کناری کنسول"
   },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "نمایش خطاهای CORS در کنسول"
+  },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "سطح جزئیات"
   },
@@ -3497,6 +3524,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "رویداد <some>"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "جدول پشته‌ای جمع شده است"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "جدول پشته‌ای گسترده شده است"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "این مقدار در اولین گسترش ارزیابی شده است. ممکن است از آن زمان تاکنون تغییر کرده باشد."
   },
@@ -3521,12 +3554,6 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{هشدار، # بار تکرار شده است}one{هشدار، # بار تکرار شده است}other{هشدار، # بار تکرار شده است}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "این نوار کناری در نسخه آتی Chrome برداشته خواهد شد. اگر بازخوردی دارید، لطفاً از این طریق به ما اطلاع دهید:"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "سامانه پیگیری"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "تکمیل خودکار از حافظه"
   },
@@ -3550,6 +3577,9 @@
   },
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "پیام‌های مشابه در کنسول گروه‌بندی نشود"
+  },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "عدم نمایش خطاهای CORS در کنسول"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "ارزیابی مثل فعال‌سازی کاربر درنظر گرفته نشود"
@@ -3583,6 +3613,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "نمایش کنسول"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "نمایش خطاهای CORS در کنسول"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "نمایش پیام‌ها از همه بافت‌ها"
@@ -3977,6 +4010,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "محاسبه‌شده"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "کاوشگر درخت DOM"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "وضعیت عنصر: {PH1}"
   },
@@ -3997,6 +4033,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "نمایش نوار کناری سبک‌های محاسبه‌شده"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "محتوای پانل کناری"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "نوارابزار پانل کناری"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "سبک‌ها"
@@ -4084,6 +4126,12 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "فعال کردن همپوشانی قفل پیمایش"
+  },
+  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
+    "message": "ورود به «حالت جداسازی»"
+  },
+  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
+    "message": "خروج از «حالت جداسازی»"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "گسترده کردن تکرارشونده"
@@ -4178,8 +4226,14 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "قلم‌های پردازشده"
   },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
+    "message": "کپی کردن همه اعلامیه‌ها به‌عنوان JS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "کپی کردن همه تعریف‌ها"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyCssDeclarationAsJs": {
+    "message": "کپی کردن اعلامیه به‌عنوان JS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "کپی کردن تعریف"
@@ -4292,8 +4346,14 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "نمایش نشان‌ها"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "نشانگر صفحات درخت DOM"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(نوشتار)"
+  },
+  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "Choose the overlay color for this element"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "چارگوش انعطاف‌پذیر"
@@ -4817,6 +4877,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "قاب"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
+    "message": "event-source-trigger-data نامعتبر است"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "attributionsourceeventid نامعتبر است"
   },
@@ -4913,11 +4976,17 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "هشدار"
   },
+  "panels/issues/GenericIssueDetailsView.ts | frameId": {
+    "message": "Frame"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | nResources": {
+    "message": "{n,plural, =1{# منبع}one{# منبع}other{# منبع}}"
+  },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "مشکلات پنهان"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "آشکار کردن همه مشکلات"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "آشکار کردن همه موارد"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "منابع تأثیرگرفته"
@@ -4958,11 +5027,20 @@
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "خط‌مشی جاساز بین‌مبدائی"
   },
+  "panels/issues/IssuesPane.ts | generic": {
+    "message": "Generic"
+  },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "گروه‌بندی براساس دسته"
   },
+  "panels/issues/IssuesPane.ts | groupByKind": {
+    "message": "Group by kind"
+  },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "مشکلات نمایش داده‌شده در دسته‌های مرتبط گروه‌بندی شوند"
+  },
+  "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
+    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "آگهی‌های سنگین"
@@ -6002,14 +6080,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "سرصفحه‌ها"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "متن درخواست و سرصفحه‌ها"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "آغازگر"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "پیام‌ها"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "بار داده"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "پیش‌نمایش"
@@ -6452,12 +6530,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "رمزگشایی‌شده:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "(خالی)"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "داده‌های فرم"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(از حافظه پنهان دیسک)"
   },
@@ -6472,6 +6544,9 @@
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(از تبادل امضا)"
+  },
+  "panels/network/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(از «بسته وب»)"
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "کلی"
@@ -6494,9 +6569,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "سرصفحه‌های موقت نمایش داده شده است. برای دیدن سرصفحه‌های کامل، حافظه پنهان را غیرفعال کنید."
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "پارامترهای رشته پرسمان"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "مشخصه ضبط‌شده با trigger-data: {PH1}"
   },
@@ -6511,9 +6583,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "روش درخواست"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "درخواست بار داده"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "درخواست نشانی وب"
@@ -6542,32 +6611,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "برای استفاده از این منبع از سایتی دیگر، سرور ممکن است سرصفحه پاسخ خط‌مشی منبع بین‌مبدائی را رها کند:"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(مقدار رمزگشایی نشد)"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "مشاهده داده رمزگشایی‌شده"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "مشاهده داده رمزگشایی‌شده"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "نمای تجزیه‌شده"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
     "message": "نمای تجزیه‌شده"
   },
   "panels/network/RequestHeadersView.ts | viewSource": {
     "message": "مشاهده منبع"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "مشاهده منبع"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "مشاهده نشانی وب کدبندی‌شده"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "مشاهده نشانی وب کدبندی‌شده"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "پشته فراخوانی درخواست"
@@ -6577,6 +6625,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "این درخواست داده‌های آغازگر ندارد."
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "کپی کردن مقدار"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "(خالی)"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "داده‌های فرم"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "پارامترهای رشته پرسمان"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "درخواست بار داده"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "نمایش موارد بیشتر"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "(مقدار رمزگشایی نشد)"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "مشاهده داده رمزگشایی‌شده"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "مشاهده داده رمزگشایی‌شده"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "نمای تجزیه‌شده"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "نمای تجزیه‌شده"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "مشاهده منبع"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "مشاهده منبع"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "مشاهده نشانی وب کدبندی‌شده"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "مشاهده نشانی وب کدبندی‌شده"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "داده‌های پاسخ بار نشد"
@@ -8582,8 +8675,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "تکه‌کدی پیدا نشد."
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "اجرای پاره‌کد"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "اجرا"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "تکه‌کد"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "افزودن"
@@ -8801,11 +8897,11 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "فایلی انتخاب نشده است."
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "نتیجه‌ای پیدا نشد"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "شماره‌ای را تایپ کنید تا به آن خط بروید."
-  },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "تغییرات محلی…"
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "قالب"
@@ -9230,17 +9326,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "ارزیابی نوشتار انتخاب‌شده در کنسول"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "فایل"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "سیستم فایل"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "رفتن به"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "رفتن به مجموعه قوانین/ تعریف‌های تابع"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "رفتن به خط"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "رفتن به نماد"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "افزایش واحد CSS به میزان {PH1}"
@@ -9251,14 +9350,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "پرش به مکان ویرایش قبلی"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "خط"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "قاب فراخوانی بعدی"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "هیچ‌کدام"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "باز کردن فایل"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "باز کردن"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "توقف موقت اجرای متن"
@@ -9276,7 +9378,7 @@
     "message": "ازسرگیری اجرای متن"
   },
   "panels/sources/sources-meta.ts | runSnippet": {
-    "message": "اجرای پاره‌کد"
+    "message": "اجرای تکه‌کد"
   },
   "panels/sources/sources-meta.ts | save": {
     "message": "ذخیره"
@@ -9349,6 +9451,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "تغییر فایل"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "نماد"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "رشته‌ها"
@@ -10931,6 +11036,9 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "از بازخورد شما متشکریم"
   },
+  "ui/components/text_editor/config.ts | codeEditor": {
+    "message": "ویرایشگر کد"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "بستن"
   },
@@ -10978,6 +11086,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "ازاین‌پس DevTools به زبان {PH1} دردسترس است!"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "کشوی ابزار"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "نوارابزار اصلی"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "ابزارهای بیشتر"
@@ -11098,6 +11212,9 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "برگه‌های بیشتر"
+  },
+  "ui/legacy/TabbedPane.ts | previewFeature": {
+    "message": "Preview feature"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "ارتباط DevTools با صفحه قطع شد."
@@ -11567,14 +11684,17 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
     "message": "بزرگ‌نمایی"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "فرمان"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "هیچ فرمانی پیدا نشد"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "یک یا چند تنظیم تغییر کرده است که برای اعمال شدن به تازه‌سازی نیاز دارد."
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "اجرای فرمان"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "اجرا"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "نتیجه‌ای پیدا نشد"

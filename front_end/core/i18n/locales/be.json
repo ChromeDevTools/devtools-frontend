@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "Крыніцы"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "Сінхранізацыя"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools – {PH1}"
   },
@@ -461,6 +464,9 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "Гэты запыт cookie быў заблакіраваны, паколькі дамен URL-адраса запыту не супадаў дакладна дамену запыту cookie, а дамен URL-адраса запыту не быў паддаменам значэння атрыбута Domain запыту cookie."
   },
+  "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
+    "message": "Гэты запіс cookie быў заблакіраваны, паколькі ён занадта вялікі Сумарная даўжыня імені і значэння не павінна перавышаць 4096 сімвалаў."
+  },
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "Гэты запыт cookie быў заблакіраваны, паколькі яго шлях не супадаў дакладна са шляхам URL-адраса запыту або не з'яўляўся яго суперкаталогам."
   },
@@ -492,7 +498,7 @@
     "message": "Гэты запіс cookie быў заблакіраваны, паколькі ён меў атрыбут \"Secure\", а падключэнне не было бяспечным."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Загаловак Set-Cookie ігнаруецца ў адказе з URL-адраса: {PH1}. Даўжыня запыту cookie павінна быць меншай або раўняцца 4096 сімвалам."
+    "message": "Загаловак Set-Cookie ігнаруецца ў адказе з URL-адраса: {PH1}. Сумарная даўжыня імені і значэння не павінна перавышаць 4096 сімвалаў."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "Схема гэтага падключэнне не дазваляе захоўванне запытаў cookies."
@@ -511,6 +517,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "Спроба захаваць запіс cookie пры дапамозе загалоўка \"Set-Cookie\" была заблакіравана, паколькі ён меў атрыбут \"{PH1}\", але быў атрыманы з адказу cross-site, які не быў адказам на навігацыю вышэйшага ўзроўню. Гэты адказ лічыцца cross-site, паколькі URL-адрас мае не такую схему, як бягучы сайт."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
+    "message": "Спроба захаваць запіс cookie пры дапамозе загалоўка \"Set-Cookie\" была заблакіравана, паколькі запіс cookie быў занадта вялікі. Сумарная даўжыня імені і значэння не павінна перавышаць 4096 сімвалаў."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Спроба захаваць запіс cookie пры дапамозе загалоўка \"Set-Cookie\" была заблакіравана ў адпаведнасці з наладамі карыстальніка."
@@ -635,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Адключыць фармат WebP"
   },
+  "core/sdk/sdk-meta.ts | disabledDarkMode": {
+    "message": "Адключыць"
+  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "Не захопліваць асінхронныя трасіроўкі стэка"
   },
@@ -673,6 +685,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Эмуляцыя поўнай колеравай слепаты"
+  },
+  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
+    "message": "Ажыццявіць эмуляцыю аўтаматычнага цёмнага рэжыму"
   },
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "Эмуляваць расфакусіраваны зрок"
@@ -727,6 +742,9 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "Уключыць фармат WebP"
+  },
+  "core/sdk/sdk-meta.ts | enabledDarkMode": {
+    "message": "Уключыць"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Пашырыць лініі сеткі"
@@ -859,6 +877,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "Эмулюе фокус на старонцы."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
+    "message": "Уключае аўтаматычны цёмны рэжым для старонкі, якая правяраецца"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Прымусова задае медыяфункцыю CSS color-gamut"
@@ -1063,6 +1084,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Уключыць спалучэнні клавіш ⌘ + 1-9 для пераключэння панэляў"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "Уключыць сінхранізацыю налад"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "Знайсці наступны вынік"
@@ -1310,17 +1334,29 @@
   "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
     "message": "Скарачэнне радка User-Agent"
   },
+  "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
+    "message": "Portals - Same-origin communication channels"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Пра апрацоўку цяжкай рэкламы"
   },
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "Праблема крытычнага змянення: старонка можа перастаць працаваць у будучай версіі Chrome"
   },
+  "models/issues_manager/Issue.ts | breakingChanges": {
+    "message": "Breaking Changes"
+  },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Праблема паляпшэння: ёсць магчымасць палепшыць старонку"
   },
+  "models/issues_manager/Issue.ts | improvements": {
+    "message": "Improvements"
+  },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Праблема з памылкай старонкі: старонка не працуе належным чынам"
+  },
+  "models/issues_manager/Issue.ts | pageErrors": {
+    "message": "Page Errors"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Спецыяльныя магчымасці: колер і кантраст"
@@ -1338,7 +1374,7 @@
     "message": "небяспечн."
   },
   "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets: тлумачэнне"
+    "message": "First-Party Sets і атрыбут SameParty"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "Як працуе Schemeful Same-Site"
@@ -1982,14 +2018,11 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "Фактычная шырыня ({PH1} пікс.) відарыса \"{PH2}\" {PH3} не адпавядае ўказанай ({PH4} пікс.)"
   },
-  "panels/application/AppManifestView.ts | appId": {
-    "message": "Ідэнтыфікатар праграмы"
-  },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "Гэтыя даныя выкарыстоўваюцца браўзерам, каб выявіць, ці маніфест павінен абнавіць існуючую праграму, ці ён адносіцца да новай вэб-праграмы, якую можна ўсталяваць."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "Заўвага. поле \"id\" не ўказана ў маніфесце, замест яго выкарыстоўваецца поле \"start_url\". Каб указаць ідэнтыфікатар праграмы, які ёй адпавядае, задайце ў полі \"id'\" значэнне ''{PH1}''."
+    "message": "{PH1} поле \"{PH2}\" не ўказана ў маніфесце, замест яго выкарыстоўваецца поле \"{PH3}\". Каб указаць ідэнтыфікатар праграмы, які ёй адпавядае, задайце ў полі \"{PH4}\" значэнне \"{PH5}\" {PH6}."
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "Маніфест праграмы"
@@ -1999,6 +2032,12 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "Колер фону"
+  },
+  "panels/application/AppManifestView.ts | computedAppId": {
+    "message": "Вылічаны ідэнтыфікатар праграмы"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "Скапіраваць у буфер абмену"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "Не ўдалося праверыць service worker без поля \"start_url\" у маніфесце"
@@ -2038,6 +2077,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "Магчымасць усталявання"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "Даведацца больш"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "Маніфест змяшчае поле \"display_override\", і рэжым паказу, які падтрымліваецца першым, павінен мець адно з наступных значэнняў: \"standalone\", \"fullscreen\" або \"minimal-ui\""
@@ -2080,6 +2122,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Няма значка з мінімальным памерам {PH1} пікс. (квадрат) у фармаце PNG, SVG або WebP з атрыбутам purpose, які не вызначаны або мае значэнне \"any\"."
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "Заўвага:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Арыентацыя"
@@ -2180,33 +2225,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Колер тэмы"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "AppCache"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "Кэш праграмы"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "Выдаліць"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "Няма даступнай інфармацыі пра кэш праграмы."
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "Па-за сеткай"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "Анлайн"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "Рэсурс"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "Памер"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "Тып"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "Кэш пераходу назад і наперад"
   },
@@ -2221,9 +2239,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Праграма"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "Кэш праграмы"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "Фонавыя сэрвісы"
@@ -2300,8 +2315,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "Стан кэша пераходу назад і наперад"
   },
-  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
-    "message": "Апошняя навігацыя не была захавана ў кэшы, бо"
+  "panels/application/BackForwardCacheView.ts | circumstantial": {
+    "message": "Not Actionable"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "Апошняя навігацыя па асноўным фрэйме"
@@ -2310,13 +2325,16 @@
     "message": "Асноўны фрэйм"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Звычайная навігацыя"
+    "message": "Normal navigation (Not restored from back-forward cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Функцыі, якія не даюць выкарыстоўваць кэш пераходу назад і наперад"
+    "message": "Actionable"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Адноўлена з кэша пераходу назад і наперад"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPending": {
+    "message": "Pending Support"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "недаступна"
@@ -2326,9 +2344,6 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL-адрас"
-  },
-  "panels/application/BackForwardCacheView.ts | willBeSupported": {
-    "message": "(Падтрымка будзе забяспечана ў будучай версіі Chrome.)"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Фонавае атрыманне даных"
@@ -2603,6 +2618,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Так"
   },
+  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
+    "message": "Каб паглядзець змесціва любой справаздачы, націсніце на яе"
+  },
+  "panels/application/ReportingApiTreeElement.ts | reportingApi": {
+    "message": "Reporting API"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "Кэш"
   },
@@ -2777,9 +2798,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Праграма"
   },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "Кэш праграмы"
-  },
   "panels/application/StorageView.ts | cache": {
     "message": "Кэш"
   },
@@ -2884,6 +2902,9 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Спыніць запіс падзей"
+  },
+  "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
+    "message": "Няма канцавых пунктаў"
   },
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "Продак фрэйма з'яўляецца небяспечным кантэкстам"
@@ -3082,6 +3103,9 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Паказаць падрабязныя звесткі"
+  },
+  "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
+    "message": "Няма справаздач"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Не ўдалося візуалізаваць трасіроўку стэка"
@@ -3440,6 +3464,9 @@
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "Паказаць бакавую панэль кансолі"
   },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "Паказваць памылкі CORS у кансолі"
+  },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "Дэталізацыя"
   },
@@ -3497,6 +3524,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "падзея <some>"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "Табліца стэка згорнута"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "Табліца стэка разгорнута"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "Гэта значэнне было разлічана пры першым разгортванні. З таго часу яно магло змяніцца."
   },
@@ -3521,12 +3554,6 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{Папярэджанне, паўтаралася # раз}one{Папярэджанне, паўтаралася # раз}few{Папярэджанне, паўтаралася # разы}many{Папярэджанне, паўтаралася # разоў}other{Папярэджанне, паўтаралася # разу}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "У будучай версіі Chrome гэта бакавая панэль будзе выдалена. Калі вы хацелі б падзяліцца з намі сваім меркаваннем, выкарыстайце"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "інструмент адсочвання праблем"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Аўтазапаўненне з гісторыі"
   },
@@ -3550,6 +3577,9 @@
   },
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "Не групаваць падобныя паведамленні ў кансолі"
+  },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "Не паказваць памылкі CORS у кансолі"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "Не інтэрпрэтаваць выкананне як карыстальніцкую актывацыю"
@@ -3583,6 +3613,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "Паказаць кансоль"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "Паказваць памылкі CORS у кансолі"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "Паказаць паведамленні з усіх кантэкстаў"
@@ -3977,6 +4010,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Вылічаныя"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "Агляд дрэва DOM"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "Стан элемента: {PH1}"
   },
@@ -3997,6 +4033,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Паказваць панэль вылічаных стыляў"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "Змесціва бакавой панэлі"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "Бакавая панэль інструментаў"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "Стылі"
@@ -4084,6 +4126,12 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "Уключыць накладку, якая дэманструе прагортку з прывязкай"
+  },
+  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
+    "message": "Увайсці ў рэжым ізаляцыі"
+  },
+  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
+    "message": "Выйсці з рэжыму ізаляцыі"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "Разгарнуць рэкурсіўна"
@@ -4178,8 +4226,14 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Візуалізаваныя шрыфты"
   },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
+    "message": "Скапіраваць усе абвяшчэнні як JS"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "Скапіраваць усе абвяшчэнні"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyCssDeclarationAsJs": {
+    "message": "Скапіраваць абвяшчэнне як JS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "Скапіраваць абвяшчэнне"
@@ -4292,8 +4346,14 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "Паказ значкоў"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "Ланцужкі навігацыі дрэва DOM"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "(тэкст)"
+  },
+  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "Choose the overlay color for this element"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4817,6 +4877,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "Фрэйм"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
+    "message": "event-source-trigger-data: няправільнае значэнне"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "Няправільнае значэнне атрыбута attributionsourceeventid"
   },
@@ -4913,11 +4976,17 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "папярэджанне"
   },
+  "panels/issues/GenericIssueDetailsView.ts | frameId": {
+    "message": "Frame"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | nResources": {
+    "message": "{n,plural, =1{# рэсурс}one{# рэсурс}few{# рэсурсы}many{# рэсурсаў}other{# рэсурсу}}"
+  },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "Схаваныя праблемы"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "Паказаць усе праблемы"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "Паказаць усе"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Закранутыя рэсурсы"
@@ -4958,11 +5027,20 @@
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "Палітыка ўбудоўшчыка, які паходзіць з іншых крыніц"
   },
+  "panels/issues/IssuesPane.ts | generic": {
+    "message": "Generic"
+  },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Групаваць па катэгорыях"
   },
+  "panels/issues/IssuesPane.ts | groupByKind": {
+    "message": "Group by kind"
+  },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Групаваць паказаныя праблемы паводле катэгорый"
+  },
+  "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
+    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Цяжкавагавыя рэкламныя аб'явы"
@@ -6002,14 +6080,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "Загалоўкі"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "Загалоўкі і цела запыту"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "Ініцыятар"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "Паведамленні"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "Карысныя даныя"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "Перадпрагляд"
@@ -6219,7 +6297,7 @@
     "message": "Разблакіраваць {PH1}"
   },
   "panels/network/NetworkLogViewColumns.ts | connectionId": {
-    "message": "Ідэнтыфікатар злучэння"
+    "message": "Ідэнтыфікатар падключэння"
   },
   "panels/network/NetworkLogViewColumns.ts | content": {
     "message": "Змесціва"
@@ -6452,12 +6530,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "Дэкадавана:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "(пуста)"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "Даныя форм"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "(з кэша на дыску)"
   },
@@ -6472,6 +6544,9 @@
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "(крыніца: Signed Exchange)"
+  },
+  "panels/network/RequestHeadersView.ts | fromWebBundle": {
+    "message": "(з Web Bundle)"
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Агульнае"
@@ -6494,9 +6569,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "Паказаны папярэднія загалоўкі. Каб убачыць поўныя загалоўкі, адключыце кэш."
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "Параметры радка запыту"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "Была запісана атрыбуцыя з выкарыстаннем элемента trigger-data: {PH1}"
   },
@@ -6511,9 +6583,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "Метад запыту"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "Карысныя даныя запыту"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "Запытаць URL-адрас"
@@ -6542,32 +6611,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "Калі вы хочаце выкарыстаць гэты рэсурс з іншага сайта, сервер можа паслабіць палітыку выкарыстання рэсурсаў, якія паходзяць з іншых крыніц, у загалоўку адказу:"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "(не ўдалося дэкадаваць значэнне)"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "Праглядзець дэкадаванае"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "праглядзець дэкадаванае"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "Праглядзець прааналізаванае"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
-    "message": "праглядзець сінтаксічна прааналізаванае"
+    "message": "Праглядзець даныя аналізу"
   },
   "panels/network/RequestHeadersView.ts | viewSource": {
     "message": "Праглядзець крыніцу"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "праглядзець крыніцу"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "Паказаць у выглядзе URL-encoded"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "паказаць у выглядзе URL-encoded"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Стэк выклікаў для запыту"
@@ -6577,6 +6625,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "Гэты запыт не мае даных аб ініцыятары."
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "Скапіраваць значэнне"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "(пуста)"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "Даныя форм"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "Параметры радка запыту"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "Карысныя даныя запыту"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "Паказаць больш"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "(не ўдалося дэкадаваць значэнне)"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "Праглядзець дэкадаванае"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "праглядзець дэкадаванае"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "Праглядзець даныя аналізу"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "праглядзець сінтаксічна прааналізаванае"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "Праглядзець крыніцу"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "праглядзець крыніцу"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "Паказаць у выглядзе URL-encoded"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "паказаць у выглядзе URL-encoded"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Не ўдалося загрузіць даныя адказу"
@@ -8582,8 +8675,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "Фрагменты не знойдзены."
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "Выканаць фрагмент"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "Выканаць"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "Фрагмент"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "Дадаць"
@@ -8801,11 +8897,11 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "Файл не выбраны."
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "Вынікі не знойдзены"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "Каб перайсці да патрэбнага радка, увядзіце яго нумар."
-  },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "Лакальныя змяненні..."
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "Фармаціраваць"
@@ -9230,17 +9326,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Выканаць выбраны тэкст у кансолі"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "Файл"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "Файлавая сістэма"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "Перайсці да"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "Перайсці да абвяшчэння функцыі/задавання правіла"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "Перайсці да радка"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "Перайсці да сімвала"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Павялічыць адзінку вымярэння CSS на {PH1}"
@@ -9251,14 +9350,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "Перайсці да папярэдняга месца рэдагавання"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "Радок"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "Наступны фрэйм выкліку"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "Няма"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "Адкрыць файл"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "Адкрыць"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "Прыпыніць выкананне сцэнарыя"
@@ -9349,6 +9451,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "Змяніць файл"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "Сімвал"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "Патокі"
@@ -10931,6 +11036,9 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "Дзякуй за ваш водгук"
   },
+  "ui/components/text_editor/config.ts | codeEditor": {
+    "message": "Рэдактар кода"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Закрыць"
   },
@@ -10978,6 +11086,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "Інструменты DevTools цяпер даступныя на яшчэ адной мове ({PH1})!"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "Высоўнае меню інструментаў"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "Асноўная панэль інструментаў"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "Іншыя інструменты"
@@ -11098,6 +11212,9 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "Іншыя ўкладкі"
+  },
+  "ui/legacy/TabbedPane.ts | previewFeature": {
+    "message": "Preview feature"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools былі адключаны ад старонкі."
@@ -11567,14 +11684,17 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
     "message": "Павялічыць маштаб"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "Каманда"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "Каманды не знойдзены"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Адна або больш налад змяніліся. Каб змяненні ўступілі ў сілу, патрабуецца перазагрузка."
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "Выканаць каманду"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "Выканаць"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Вынікі не знойдзены"

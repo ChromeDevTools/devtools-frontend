@@ -161,6 +161,9 @@
   "core/common/SettingRegistration.ts | sources": {
     "message": "ソース"
   },
+  "core/common/SettingRegistration.ts | sync": {
+    "message": "同期"
+  },
   "core/host/InspectorFrontendHost.ts | devtoolsS": {
     "message": "DevTools - {PH1}"
   },
@@ -461,6 +464,9 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "この Cookie は、リクエスト URL のドメインが Cookie のドメインと完全に一致せず、リクエスト URL のドメインが Cookie の Domain 属性の値のサブドメインでもなかったため、ブロックされました。"
   },
+  "core/sdk/NetworkRequest.ts | nameValuePairExceedsMaxSize": {
+    "message": "この Cookie はサイズが大きすぎたため、ブロックされました。名前と値の合計サイズは、4096 文字以下にする必要があります。"
+  },
   "core/sdk/NetworkRequest.ts | notOnPath": {
     "message": "この Cookie は、パスがリクエスト URL のパスと完全に一致しなかった、またはそのスーパーディレクトリではなかったため、ブロックされました。"
   },
@@ -492,7 +498,7 @@
     "message": "この Cookie は、「Secure」属性がありましたが、接続が安全ではなかったため、ブロックされました。"
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie ヘッダーは URL: {PH1} からのレスポンスで無視されています。Cookie の長さは 4,096 文字以下にしてください。"
+    "message": "Set-Cookie ヘッダーは URL: {PH1} からのレスポンスで無視されています。名前と値の合計サイズは、4096 文字以下にする必要があります。"
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "この接続のスキームに Cookie の保存は許可されていません。"
@@ -511,6 +517,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
     "message": "Set-Cookie ヘッダーを介して Cookie の設定を試みましたが、「{PH1}」属性は指定されていたものの、トップレベル ナビゲーションへのレスポンスではないクロスサイト レスポンスが送信元だったため、ブロックされました。このレスポンスは、URL のスキームが現在のサイトとは異なるため、クロスサイトと見なされます。"
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
+    "message": "Set-Cookie ヘッダーを介して Cookie の設定を試みましたが、Cookie のサイズが大きすぎたためブロックされました。名前と値の合計サイズは、4096 文字以下にする必要があります。"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "Set-Cookie ヘッダーを介して Cookie の設定を試みましたが、ユーザー設定によりブロックされました。"
@@ -635,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "WebP 形式を無効にする"
   },
+  "core/sdk/sdk-meta.ts | disabledDarkMode": {
+    "message": "無効にする"
+  },
   "core/sdk/sdk-meta.ts | doNotCaptureAsyncStackTraces": {
     "message": "非同期のスタック トレースをキャプチャしない"
   },
@@ -673,6 +685,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "色覚異常をエミュレート"
+  },
+  "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
+    "message": "自動ダークモードをエミュレートする"
   },
   "core/sdk/sdk-meta.ts | emulateBlurredVision": {
     "message": "かすみ目をエミュレート"
@@ -727,6 +742,9 @@
   },
   "core/sdk/sdk-meta.ts | enableWebpFormat": {
     "message": "WebP 形式を有効にする"
+  },
+  "core/sdk/sdk-meta.ts | enabledDarkMode": {
+    "message": "有効にする"
   },
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "グリッド線を延長"
@@ -859,6 +877,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | emulatesAFocusedPage": {
     "message": "フォーカスのあるページをエミュレートします。"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | emulatesAutoDarkMode": {
+    "message": "検査ページで自動ダークモードを有効にする"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "CSS color-gamut メディア特性を強制します"
@@ -1063,6 +1084,9 @@
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "パネルの切り替えに ⌘+1～9 のショートカットを有効にする"
+  },
+  "entrypoints/main/main-meta.ts | enableSync": {
+    "message": "設定の同期を有効にする"
   },
   "entrypoints/main/main-meta.ts | findNextResult": {
     "message": "次の結果を探す"
@@ -1310,17 +1334,29 @@
   "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
     "message": "ユーザー エージェント文字列の削減"
   },
+  "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
+    "message": "Portals - Same-origin communication channels"
+  },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "時間のかかった広告の問題を処理する"
   },
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "互換性を破る変更の問題: Chrome の今後のバージョンでページが動作を停止する可能性があります"
   },
+  "models/issues_manager/Issue.ts | breakingChanges": {
+    "message": "Breaking Changes"
+  },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "改善対象の問題: ページを改善するための最適化案があります"
   },
+  "models/issues_manager/Issue.ts | improvements": {
+    "message": "Improvements"
+  },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "ページエラー問題: ページが正しく動作していません"
+  },
+  "models/issues_manager/Issue.ts | pageErrors": {
+    "message": "Page Errors"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "色とコントラストのユーザー補助"
@@ -1338,7 +1374,7 @@
     "message": "安全ではない"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | firstPartySetsExplained": {
-    "message": "First-Party Sets の説明"
+    "message": "First-Party Sets と SameParty 属性"
   },
   "models/issues_manager/SameSiteCookieIssue.ts | howSchemefulSamesiteWorks": {
     "message": "スキームフル Same-Site の仕組み"
@@ -1982,14 +2018,11 @@
   "panels/application/AppManifestView.ts | actualWidthSpxOfSSDoesNotMatch": {
     "message": "{PH2} {PH3} の実際の幅（{PH1} ピクセル）が、指定された幅（{PH4} ピクセル）に一致しません。"
   },
-  "panels/application/AppManifestView.ts | appId": {
-    "message": "アプリ ID"
-  },
   "panels/application/AppManifestView.ts | appIdExplainer": {
     "message": "マニフェストで既存のアプリを更新するのか、またはインストール可能な新しいウェブアプリを参照するのかをブラウザに通知するために使用されます。"
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "注: マニフェストで「id」が指定されていない場合は、代わりに「start_url」が使用されます。現在のアプリを示すアプリ ID を指定するには、「id」フィールドを「{PH1}」に設定します。"
+    "message": "{PH1} {PH2} がマニフェストで指定されていません。代わりに {PH3} を使用します。現在のアプリを示すアプリ ID を指定するには、{PH4} フィールドを {PH5} {PH6} に設定します。"
   },
   "panels/application/AppManifestView.ts | appManifest": {
     "message": "アプリ マニフェスト"
@@ -1999,6 +2032,12 @@
   },
   "panels/application/AppManifestView.ts | backgroundColor": {
     "message": "背景の色"
+  },
+  "panels/application/AppManifestView.ts | computedAppId": {
+    "message": "計算済みアプリ ID"
+  },
+  "panels/application/AppManifestView.ts | copyToClipboard": {
+    "message": "クリップボードにコピー"
   },
   "panels/application/AppManifestView.ts | couldNotCheckServiceWorker": {
     "message": "マニフェストに「start_url」フィールドがないため service worker をチェックできませんでした"
@@ -2038,6 +2077,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "インストール性"
+  },
+  "panels/application/AppManifestView.ts | learnMore": {
+    "message": "詳細"
   },
   "panels/application/AppManifestView.ts | manifestContainsDisplayoverride": {
     "message": "マニフェストに「display_override」フィールドが含まれており、最初のサポート表示モードを「standalone」、「fullscreen」、「minimal-ui」のいずれかに設定する必要があります"
@@ -2080,6 +2122,9 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "purpose 属性が設定されていないか \"any\" に設定された、PNG、SVG、または WebP 形式の {PH1} 平方ピクセル以上のアイコンが提供されていません。"
+  },
+  "panels/application/AppManifestView.ts | note": {
+    "message": "注:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "向き"
@@ -2180,33 +2225,6 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "テーマの色"
   },
-  "panels/application/ApplicationCacheItemsView.ts | appcache": {
-    "message": "AppCache"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | applicationCache": {
-    "message": "アプリケーション キャッシュ"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | deleteString": {
-    "message": "削除"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | noApplicationCacheInformation": {
-    "message": "利用可能なアプリケーション キャッシュ情報はありません。"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | offline": {
-    "message": "オフライン"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | online": {
-    "message": "オンライン"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | resource": {
-    "message": "リソース"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | sizeString": {
-    "message": "サイズ"
-  },
-  "panels/application/ApplicationCacheItemsView.ts | typeString": {
-    "message": "タイプ"
-  },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
     "message": "バックフォワード キャッシュ"
   },
@@ -2221,9 +2239,6 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "アプリケーション"
-  },
-  "panels/application/ApplicationPanelSidebar.ts | applicationCache": {
-    "message": "アプリケーション キャッシュ"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
     "message": "バックグラウンド サービス"
@@ -2300,8 +2315,8 @@
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
     "message": "バックフォワード キャッシュのステータス"
   },
-  "panels/application/BackForwardCacheView.ts | chromeSupportNeeded": {
-    "message": "前のページは次の理由によりキャッシュされませんでした"
+  "panels/application/BackForwardCacheView.ts | circumstantial": {
+    "message": "Not Actionable"
   },
   "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
     "message": "前回のメインフレーム ナビゲーション"
@@ -2310,13 +2325,16 @@
     "message": "メインフレーム"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "通常のナビゲーション"
+    "message": "Normal navigation (Not restored from back-forward cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "バックフォワード キャッシュを妨げている機能があります"
+    "message": "Actionable"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "バックフォワード キャッシュから復元"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPending": {
+    "message": "Pending Support"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "使用不可"
@@ -2326,9 +2344,6 @@
   },
   "panels/application/BackForwardCacheView.ts | url": {
     "message": "URL"
-  },
-  "panels/application/BackForwardCacheView.ts | willBeSupported": {
-    "message": "（Chrome の今後のバージョンでサポート予定）"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "バックグラウンド フェッチ"
@@ -2603,6 +2618,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "はい"
   },
+  "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
+    "message": "レポートをクリックすると本文が表示されます"
+  },
+  "panels/application/ReportingApiTreeElement.ts | reportingApi": {
+    "message": "Reporting API"
+  },
   "panels/application/ServiceWorkerCacheViews.ts | cache": {
     "message": "キャッシュ"
   },
@@ -2777,9 +2798,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "アプリケーション"
   },
-  "panels/application/StorageView.ts | applicationCache": {
-    "message": "アプリケーション キャッシュ"
-  },
   "panels/application/StorageView.ts | cache": {
     "message": "キャッシュ"
   },
@@ -2884,6 +2902,9 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "イベントの録画を停止"
+  },
+  "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
+    "message": "表示するエンドポイントがありません"
   },
   "panels/application/components/FrameDetailsView.ts | aFrameAncestorIsAnInsecure": {
     "message": "フレームの祖先のコンテキストが安全ではありません"
@@ -3082,6 +3103,9 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "詳細を表示"
+  },
+  "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
+    "message": "表示するレポートがありません"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "スタック トレースをレンダリングできません"
@@ -3440,6 +3464,9 @@
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
     "message": "コンソール サイドバーを表示します"
   },
+  "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
+    "message": "コンソールに CORS エラーを表示する"
+  },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "詳細"
   },
@@ -3497,6 +3524,12 @@
   "panels/console/ConsoleViewMessage.ts | someEvent": {
     "message": "<数件の> イベント"
   },
+  "panels/console/ConsoleViewMessage.ts | stackMessageCollapsed": {
+    "message": "スタック テーブルが閉じられています"
+  },
+  "panels/console/ConsoleViewMessage.ts | stackMessageExpanded": {
+    "message": "スタック テーブルが展開されています"
+  },
   "panels/console/ConsoleViewMessage.ts | thisValueWasEvaluatedUponFirst": {
     "message": "この値は最初の展開時に評価されました。その後変更されている可能性があります。"
   },
@@ -3521,12 +3554,6 @@
   "panels/console/ConsoleViewMessage.ts | warningS": {
     "message": "{n,plural, =1{警告が # 回繰り返されました}other{警告が # 回繰り返されました}}"
   },
-  "panels/console/components/SidebarDeprecation.ts | deprecationNotice": {
-    "message": "このサイドバーは Chrome の今後のバージョンで削除される予定です。ご意見やご要望などがありましたら、以下からお知らせください。"
-  },
-  "panels/console/components/SidebarDeprecation.ts | issueTrackerLinkText": {
-    "message": "Issue Tracker"
-  },
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "履歴からオートコンプリート"
   },
@@ -3550,6 +3577,9 @@
   },
   "panels/console/console-meta.ts | doNotGroupSimilarMessagesIn": {
     "message": "コンソールで類似したメッセージをグループ化しない"
+  },
+  "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
+    "message": "コンソールに CORS エラーを表示しない"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
     "message": "評価をユーザー アクティベーションとして扱わない"
@@ -3583,6 +3613,9 @@
   },
   "panels/console/console-meta.ts | showConsole": {
     "message": "コンソールを表示"
+  },
+  "panels/console/console-meta.ts | showCorsErrorsInConsole": {
+    "message": "コンソールに CORS エラーを表示する"
   },
   "panels/console/console-meta.ts | showMessagesFromAllContexts": {
     "message": "すべてのコンテキストからのメッセージを表示"
@@ -3977,6 +4010,9 @@
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "計算済み"
   },
+  "panels/elements/ElementsPanel.ts | domTreeExplorer": {
+    "message": "DOM ツリー エクスプローラ"
+  },
   "panels/elements/ElementsPanel.ts | elementStateS": {
     "message": "要素の状態: {PH1}"
   },
@@ -3997,6 +4033,12 @@
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "計算済みスタイルのサイドバーを表示"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelContent": {
+    "message": "サイドパネルのコンテンツ"
+  },
+  "panels/elements/ElementsPanel.ts | sidePanelToolbar": {
+    "message": "サイドパネルのツールバー"
   },
   "panels/elements/ElementsPanel.ts | styles": {
     "message": "スタイル"
@@ -4084,6 +4126,12 @@
   },
   "panels/elements/ElementsTreeElement.ts | enableScrollSnap": {
     "message": "スクロール スナップのオーバーレイを有効にする"
+  },
+  "panels/elements/ElementsTreeElement.ts | enterIsolationMode": {
+    "message": "分離モードを開始"
+  },
+  "panels/elements/ElementsTreeElement.ts | exitIsolationMode": {
+    "message": "分離モードを終了"
   },
   "panels/elements/ElementsTreeElement.ts | expandRecursively": {
     "message": "再帰的に展開"
@@ -4178,8 +4226,14 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "レンダリング フォント"
   },
+  "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
+    "message": "すべての宣言を JS としてコピー"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
     "message": "宣言をすべてコピー"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | copyCssDeclarationAsJs": {
+    "message": "宣言を JS としてコピー"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
     "message": "宣言をコピー"
@@ -4292,8 +4346,14 @@
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
     "message": "バッジを表示"
   },
+  "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
+    "message": "DOM ツリーのパンくずリスト"
+  },
   "panels/elements/components/ElementsBreadcrumbsUtils.ts | text": {
     "message": "（テキスト）"
+  },
+  "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
+    "message": "Choose the overlay color for this element"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4817,6 +4877,9 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | frame": {
     "message": "フレーム"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidEventSourceTriggerData": {
+    "message": "event-source-trigger-data が無効です"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "attributionsourceeventid が無効です"
   },
@@ -4913,11 +4976,17 @@
   "panels/issues/CorsIssueDetailsView.ts | warning": {
     "message": "警告"
   },
+  "panels/issues/GenericIssueDetailsView.ts | frameId": {
+    "message": "Frame"
+  },
+  "panels/issues/GenericIssueDetailsView.ts | nResources": {
+    "message": "{n,plural, =1{# 件のリソース}other{# 件のリソース}}"
+  },
   "panels/issues/HiddenIssuesRow.ts | hiddenIssues": {
     "message": "非表示にした問題"
   },
-  "panels/issues/HiddenIssuesRow.ts | unhideIssues": {
-    "message": "すべての問題を再表示"
+  "panels/issues/HiddenIssuesRow.ts | unhideAll": {
+    "message": "すべて再表示"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "影響を受けるリソース"
@@ -4958,11 +5027,20 @@
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
     "message": "クロスオリジンの埋め込みポリシー"
   },
+  "panels/issues/IssuesPane.ts | generic": {
+    "message": "Generic"
+  },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "カテゴリ別に分類"
   },
+  "panels/issues/IssuesPane.ts | groupByKind": {
+    "message": "Group by kind"
+  },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "表示された問題を関連するカテゴリに分類"
+  },
+  "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
+    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "リソース消費が多い広告"
@@ -6002,14 +6080,14 @@
   "panels/network/NetworkItemView.ts | headers": {
     "message": "ヘッダー"
   },
-  "panels/network/NetworkItemView.ts | headersAndRequestBody": {
-    "message": "ヘッダーとリクエスト本文"
-  },
   "panels/network/NetworkItemView.ts | initiator": {
     "message": "イニシエータ"
   },
   "panels/network/NetworkItemView.ts | messages": {
     "message": "メッセージ"
+  },
+  "panels/network/NetworkItemView.ts | payload": {
+    "message": "ペイロード"
   },
   "panels/network/NetworkItemView.ts | preview": {
     "message": "プレビュー"
@@ -6452,12 +6530,6 @@
   "panels/network/RequestHeadersView.ts | decoded": {
     "message": "デコード済み:"
   },
-  "panels/network/RequestHeadersView.ts | empty": {
-    "message": "（空）"
-  },
-  "panels/network/RequestHeadersView.ts | formData": {
-    "message": "フォームデータ"
-  },
   "panels/network/RequestHeadersView.ts | fromDiskCache": {
     "message": "（ディスク キャッシュから）"
   },
@@ -6472,6 +6544,9 @@
   },
   "panels/network/RequestHeadersView.ts | fromSignedexchange": {
     "message": "（signed-exchange から）"
+  },
+  "panels/network/RequestHeadersView.ts | fromWebBundle": {
+    "message": "（ウェブバンドルから）"
   },
   "panels/network/RequestHeadersView.ts | general": {
     "message": "全般"
@@ -6494,9 +6569,6 @@
   "panels/network/RequestHeadersView.ts | provisionalHeadersAreShownS": {
     "message": "一時的なヘッダーが表示されています。完全なヘッダーを表示するには、キャッシュを無効にしてください。"
   },
-  "panels/network/RequestHeadersView.ts | queryStringParameters": {
-    "message": "クエリ文字列パラメータ"
-  },
   "panels/network/RequestHeadersView.ts | recordedAttribution": {
     "message": "trigger-data でアトリビューションを記録: {PH1}"
   },
@@ -6511,9 +6583,6 @@
   },
   "panels/network/RequestHeadersView.ts | requestMethod": {
     "message": "リクエスト メソッド"
-  },
-  "panels/network/RequestHeadersView.ts | requestPayload": {
-    "message": "リクエストのペイロード"
   },
   "panels/network/RequestHeadersView.ts | requestUrl": {
     "message": "リクエスト URL"
@@ -6542,32 +6611,11 @@
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferentSite": {
     "message": "このリソースを別のサイトから使用するために、サーバーはクロスオリジン リソース ポリシー レスポンス ヘッダーを緩和できます。"
   },
-  "panels/network/RequestHeadersView.ts | unableToDecodeValue": {
-    "message": "（値をデコードできません）"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecoded": {
-    "message": "デコード済みを表示"
-  },
-  "panels/network/RequestHeadersView.ts | viewDecodedL": {
-    "message": "デコード済みを表示"
-  },
   "panels/network/RequestHeadersView.ts | viewParsed": {
-    "message": "解析を表示"
-  },
-  "panels/network/RequestHeadersView.ts | viewParsedL": {
     "message": "解析表示"
   },
   "panels/network/RequestHeadersView.ts | viewSource": {
-    "message": "ソースを表示"
-  },
-  "panels/network/RequestHeadersView.ts | viewSourceL": {
-    "message": "ソースを表示"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncoded": {
-    "message": "エンコードされた URL を表示"
-  },
-  "panels/network/RequestHeadersView.ts | viewUrlEncodedL": {
-    "message": "エンコードされた URL を表示"
+    "message": "ソース表示"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "コールスタックをリクエスト"
@@ -6577,6 +6625,51 @@
   },
   "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
     "message": "このリクエストにはイニシエータ データがありません。"
+  },
+  "panels/network/RequestPayloadView.ts | copyValue": {
+    "message": "値をコピー"
+  },
+  "panels/network/RequestPayloadView.ts | empty": {
+    "message": "（空）"
+  },
+  "panels/network/RequestPayloadView.ts | formData": {
+    "message": "フォームデータ"
+  },
+  "panels/network/RequestPayloadView.ts | queryStringParameters": {
+    "message": "クエリ文字列パラメータ"
+  },
+  "panels/network/RequestPayloadView.ts | requestPayload": {
+    "message": "リクエストのペイロード"
+  },
+  "panels/network/RequestPayloadView.ts | showMore": {
+    "message": "もっと見る"
+  },
+  "panels/network/RequestPayloadView.ts | unableToDecodeValue": {
+    "message": "（値をデコードできません）"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecoded": {
+    "message": "デコード済みを表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewDecodedL": {
+    "message": "デコード済みを表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsed": {
+    "message": "解析表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewParsedL": {
+    "message": "解析表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewSource": {
+    "message": "ソース表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewSourceL": {
+    "message": "ソースを表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
+    "message": "エンコードされた URL を表示"
+  },
+  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
+    "message": "エンコードされた URL を表示"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "レスポンス データの読み込みに失敗しました"
@@ -8582,8 +8675,11 @@
   "panels/snippets/SnippetsQuickOpen.ts | noSnippetsFound": {
     "message": "スニペットが見つかりませんでした。"
   },
-  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
-    "message": "スニペットを実行"
+  "panels/snippets/SnippetsQuickOpen.ts | run": {
+    "message": "実行"
+  },
+  "panels/snippets/SnippetsQuickOpen.ts | snippet": {
+    "message": "スニペット"
   },
   "panels/sources/AddSourceMapURLDialog.ts | add": {
     "message": "追加"
@@ -8801,11 +8897,11 @@
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
     "message": "ファイルが選択されていません。"
   },
+  "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
+    "message": "該当する結果が見つかりませんでした"
+  },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "行番号を入力すると、その行に移動します"
-  },
-  "panels/sources/GutterDiffPlugin.ts | localModifications": {
-    "message": "ローカルの変更..."
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "形式です"
@@ -9230,17 +9326,20 @@
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "コンソール内の選択されたテキストを評価"
   },
+  "panels/sources/sources-meta.ts | file": {
+    "message": "ファイル"
+  },
   "panels/sources/sources-meta.ts | filesystem": {
     "message": "ファイルシステム"
+  },
+  "panels/sources/sources-meta.ts | goTo": {
+    "message": "移動"
   },
   "panels/sources/sources-meta.ts | goToAFunctionDeclarationruleSet": {
     "message": "関数宣言 / ルールセットに移動"
   },
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "行に移動"
-  },
-  "panels/sources/sources-meta.ts | goToSymbol": {
-    "message": "記号に移動"
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "CSS 単位を {PH1} 増やす"
@@ -9251,14 +9350,17 @@
   "panels/sources/sources-meta.ts | jumpToPreviousEditingLocation": {
     "message": "前の編集場所に移動"
   },
+  "panels/sources/sources-meta.ts | line": {
+    "message": "行"
+  },
   "panels/sources/sources-meta.ts | nextCallFrame": {
     "message": "次の呼び出しフレーム"
   },
   "panels/sources/sources-meta.ts | none": {
     "message": "なし"
   },
-  "panels/sources/sources-meta.ts | openFile": {
-    "message": "ファイルを開く"
+  "panels/sources/sources-meta.ts | open": {
+    "message": "開く"
   },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "スクリプトの実行を一時停止"
@@ -9349,6 +9451,9 @@
   },
   "panels/sources/sources-meta.ts | switchFile": {
     "message": "ファイルを切り替え"
+  },
+  "panels/sources/sources-meta.ts | symbol": {
+    "message": "記号"
   },
   "panels/sources/sources-meta.ts | threads": {
     "message": "スレッド"
@@ -10931,6 +11036,9 @@
   "ui/components/survey_link/SurveyLink.ts | thankYouForYourFeedback": {
     "message": "ご意見をお寄せいただき、ありがとうございました"
   },
+  "ui/components/text_editor/config.ts | codeEditor": {
+    "message": "コードエディタ"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "閉じる"
   },
@@ -10978,6 +11086,12 @@
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
     "message": "{PH1}で DevTools をご利用いただけるようになりました。"
+  },
+  "ui/legacy/InspectorView.ts | drawer": {
+    "message": "ツールドロワー"
+  },
+  "ui/legacy/InspectorView.ts | mainToolbar": {
+    "message": "メインのツールバー"
   },
   "ui/legacy/InspectorView.ts | moreTools": {
     "message": "その他のツール"
@@ -11098,6 +11212,9 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "その他のタブ"
+  },
+  "ui/legacy/TabbedPane.ts | previewFeature": {
+    "message": "Preview feature"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools とこのページの接続が切断されました。"
@@ -11567,14 +11684,17 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
     "message": "ズーム"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | command": {
+    "message": "コマンド"
+  },
   "ui/legacy/components/quick_open/CommandMenu.ts | noCommandsFound": {
     "message": "コマンドが見つかりません"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
     "message": "1 つ以上の設定が変更されました。変更を有効にするには再読み込みが必要です。"
   },
-  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
-    "message": "コマンドを実行"
+  "ui/legacy/components/quick_open/CommandMenu.ts | run": {
+    "message": "実行"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "該当する結果が見つかりませんでした"

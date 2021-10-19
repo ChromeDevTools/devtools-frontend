@@ -240,9 +240,9 @@ const escapedReplacements = new Map([
   ['\v', '\\v'],
   ['\'', '\\\''],
   ['\\', '\\\\'],
-  ['<!--', '<\\!--'],
-  ['<script', '<\\script'],
-  ['</script', '<\\/script'],
+  ['<!--', '\\x3C!--'],
+  ['<script', '\\x3Cscript'],
+  ['</script', '\\x3C/script'],
 ]);
 
 export const formatAsJSLiteral = (content: string): string => {

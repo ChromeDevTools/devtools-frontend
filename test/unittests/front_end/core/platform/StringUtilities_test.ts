@@ -747,7 +747,7 @@ describe('StringUtilities', () => {
 
     it('escapes problematic script tags', () => {
       const inputString = '<!-- <script </script';
-      const expectedString = String.raw`<\!-- <\script <\/script`;
+      const expectedString = String.raw`\x3C!-- \x3Cscript \x3C/script`;
       assert.strictEqual('\'' + expectedString + '\'', Platform.StringUtilities.formatAsJSLiteral(inputString));
     });
 

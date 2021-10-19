@@ -314,7 +314,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     if (!frame) {
       return null;
     }
-    return this.linkifier.maybeLinkifyConsoleCallFrame(target, frame);
+    return this.linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true, inlineFrameIndex: 0});
   }
 
   selectProfileNode(treeNode: TimelineModel.TimelineProfileTree.Node, suppressSelectedEvent: boolean): void {

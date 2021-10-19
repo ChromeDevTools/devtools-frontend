@@ -1810,7 +1810,7 @@ export class TimelineUIUtils {
       const uiLocation =
           await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
               rawLocation);
-      return uiLocation ? uiLocation.linkText() : null;
+      return uiLocation ? uiLocation.linkText(false /* skipTrim*/, true /* showColumnNumber*/) : null;
     }
 
     async function linkifyTopCallFrameAsText(): Promise<string|null> {
@@ -1821,10 +1821,7 @@ export class TimelineUIUtils {
       let text: string|(string | null) =
           await linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
       if (!text) {
-        text = frame.url;
-        if (typeof frame.lineNumber === 'number') {
-          text += ':' + (frame.lineNumber + 1);
-        }
+        text = frame.url + ':' + (frame.lineNumber + 1) + ':' + (frame.columnNumber + 1);
       }
       return text;
     }
@@ -1876,6 +1873,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            showColumnNumber: false,
             inlineFrameIndex: 0,
             text: undefined,
             lineNumber: undefined,
@@ -1943,7 +1941,8 @@ export class TimelineUIUtils {
     function linkifyLocation(
         scriptId: Protocol.Runtime.ScriptId|null, url: string, lineNumber: number, columnNumber?: number): Element|
         null {
-      const options = {columnNumber, inlineFrameIndex: 0, className: 'timeline-details', tabStop: true};
+      const options =
+          {columnNumber, showColumnNumber: true, inlineFrameIndex: 0, className: 'timeline-details', tabStop: true};
       return linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, options);
     }
 
@@ -1951,7 +1950,7 @@ export class TimelineUIUtils {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
       return frame ? linkifier.maybeLinkifyConsoleCallFrame(
                          target, frame,
-                         {className: 'timeline-details', tabStop: true, inlineFrameIndex: 0, columnNumber: undefined}) :
+                         {className: 'timeline-details', tabStop: true, inlineFrameIndex: 0, showColumnNumber: true}) :
                      null;
     }
   }
@@ -2129,6 +2128,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            showColumnNumber: false,
             inlineFrameIndex: 0,
             lineNumber: undefined,
             text: undefined,
@@ -2266,6 +2266,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            showColumnNumber: false,
             lineNumber: undefined,
             inlineFrameIndex: 0,
             text: undefined,
@@ -2286,6 +2287,7 @@ export class TimelineUIUtils {
             tabStop: true,
             className: undefined,
             columnNumber: undefined,
+            showColumnNumber: false,
             inlineFrameIndex: 0,
             lineNumber: undefined,
             text: undefined,
@@ -2637,6 +2639,7 @@ export class TimelineUIUtils {
         tabStop: true,
         className: undefined,
         columnNumber: undefined,
+        showColumnNumber: false,
         text: undefined,
         inlineFrameIndex: 0,
         lineNumber: undefined,
@@ -2704,7 +2707,7 @@ export class TimelineUIUtils {
     const topFrame = TimelineModel.TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
-          target, topFrame, {tabStop: true, className: undefined, inlineFrameIndex: 0, columnNumber: undefined});
+          target, topFrame, {tabStop: true, className: undefined, inlineFrameIndex: 0, showColumnNumber: true});
       if (link) {
         contentHelper.appendElementRow(title, link);
       }
@@ -3455,7 +3458,8 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
       stack.createChild('span').textContent = TimelineUIUtils.frameDisplayName(topFrame);
       const linkifier = this.contentHelper.linkifier();
       if (linkifier) {
-        const link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
+        const link =
+            linkifier.maybeLinkifyConsoleCallFrame(target, topFrame, {showColumnNumber: true, inlineFrameIndex: 0});
         if (link) {
           // Linkifier is using a workaround with the 'zero width space' (\u200b).
           // TODO(szuend): Remove once the Linkifier is no longer using the workaround.
@@ -3708,6 +3712,7 @@ export class TimelineDetailsContentHelper {
       tabStop: true,
       className: undefined,
       columnNumber: startColumn,
+      showColumnNumber: true,
       inlineFrameIndex: 0,
       text: undefined,
       lineNumber: undefined,

@@ -543,7 +543,7 @@ export class UILocation {
     this.columnNumber = columnNumber;
   }
 
-  linkText(skipTrim?: boolean): string {
+  linkText(skipTrim?: boolean, showColumnNumber?: boolean): string {
     let linkText = this.uiSourceCode.displayName(skipTrim);
     if (this.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in
@@ -551,8 +551,11 @@ export class UILocation {
       if (typeof this.columnNumber === 'number') {
         linkText += `:0x${this.columnNumber.toString(16)}`;
       }
-    } else if (typeof this.lineNumber === 'number') {
+    } else {
       linkText += ':' + (this.lineNumber + 1);
+      if (showColumnNumber && typeof this.columnNumber === 'number') {
+        linkText += ':' + (this.columnNumber + 1);
+      }
     }
     return linkText;
   }

@@ -152,4 +152,52 @@ describeWithMockConnection('Linkifier', async () => {
     const observer = new MutationObserver(callback);
     observer.observe(anchor, {childList: true});
   });
+
+  it('optionally shows column numbers in the link text', done => {
+    const {target, linkifier} = setUpEnvironment();
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+    debuggerModel.suspendModel();
+
+    const lineNumber = 4;
+    const options = {columnNumber: 8, showColumnNumber: true, inlineFrameIndex: 0};
+    // Explicitly set url to empty string and let it resolve through the live location.
+    const url = '';
+    const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId1, url, lineNumber, options);
+    assertNotNullOrUndefined(anchor);
+    assert.strictEqual(anchor.textContent, '\u200b');
+
+    debuggerModel.resumeModel();
+    const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
+      scriptId: scriptId1,
+      url: 'https://www.google.com/script.js',
+      startLine: 0,
+      startColumn: 0,
+      endLine: 10,
+      endColumn: 10,
+      executionContextId,
+      hash: '',
+      isLiveEdit: false,
+      sourceMapURL: undefined,
+      hasSourceURL: false,
+      length: 10,
+    };
+    dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent);
+
+    const callback: MutationCallback = function(mutations: MutationRecord[]) {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList') {
+          const info = Components.Linkifier.Linkifier.linkInfo(anchor);
+          assertNotNullOrUndefined(info);
+          assertNotNullOrUndefined(info.uiLocation);
+          assert.strictEqual(anchor.textContent, `script.js:${lineNumber + 1}:${options.columnNumber + 1}`);
+          observer.disconnect();
+          done();
+        }
+      }
+    };
+    const observer = new MutationObserver(callback);
+    observer.observe(anchor, {childList: true});
+  });
 });

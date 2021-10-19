@@ -207,6 +207,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       lineNumber,
       maxLength: this.maxLength,
       columnNumber: options ? options.columnNumber : undefined,
+      showColumnNumber: Boolean(options?.showColumnNumber),
       className: options ? options.className : undefined,
       tabStop: options ? options.tabStop : undefined,
       inlineFrameIndex: options ? options.inlineFrameIndex : 0,
@@ -270,9 +271,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
     if (!pool) {
       return fallbackAnchor;
     }
+
+    const linkDisplayOptions = {showColumnNumber: linkifyURLOptions.showColumnNumber};
+
     const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor), pool)
+        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor, linkDisplayOptions), pool)
         .then(liveLocation => {
           if (liveLocation) {
             info.liveLocation = liveLocation;
@@ -296,6 +300,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       maxLength: this.maxLength,
       className: options ? options.className : undefined,
       columnNumber: options ? options.columnNumber : undefined,
+      showColumnNumber: Boolean(options?.showColumnNumber),
       inlineFrameIndex: options ? options.inlineFrameIndex : 0,
       tabStop: options ? options.tabStop : undefined,
       text: undefined,
@@ -321,6 +326,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       |null {
     const linkifyOptions = {
       columnNumber: callFrame.columnNumber,
+      showColumnNumber: Boolean(options?.showColumnNumber),
       inlineFrameIndex: options ? options.inlineFrameIndex : 0,
       tabStop: options ? options.tabStop : undefined,
       className: options ? options.className : undefined,
@@ -338,6 +344,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       className: classes,
       lineNumber: topFrame.lineNumber,
       columnNumber: topFrame.columnNumber,
+      showColumnNumber: false,
       inlineFrameIndex: 0,
       maxLength: this.maxLength,
       text: undefined,
@@ -373,9 +380,13 @@ export class Linkifier implements SDK.TargetManager.Observer {
     if (!pool) {
       return fallbackAnchor;
     }
+
+    const linkDisplayOptions = {showColumnNumber: false};
+
     const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-        .createStackTraceTopFrameLiveLocation(rawLocations, this.updateAnchor.bind(this, anchor), pool)
+        .createStackTraceTopFrameLiveLocation(
+            rawLocations, this.updateAnchor.bind(this, anchor, linkDisplayOptions), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -411,9 +422,12 @@ export class Linkifier implements SDK.TargetManager.Observer {
     if (!pool) {
       return anchor;
     }
+
+    const linkDisplayOptions = {showColumnNumber: false};
+
     const currentOnLiveLocationUpdate = this.onLiveLocationUpdate;
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
-        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor), pool)
+        .createLiveLocation(rawLocation, this.updateAnchor.bind(this, anchor, linkDisplayOptions), pool)
         .then(liveLocation => {
           info.liveLocation = liveLocation;
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -443,7 +457,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
     instances.delete(this);
   }
 
-  private async updateAnchor(anchor: HTMLElement, liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
+  private async updateAnchor(
+      anchor: HTMLElement, options: LinkDisplayOptions,
+      liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     Linkifier.unbindUILocation(anchor);
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
@@ -466,7 +482,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
 
     Linkifier.bindUILocation(anchor, uiLocation);
-    const text = uiLocation.linkText(true /* skipTrim */);
+    const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
     Linkifier.setTrimmedText(anchor, text, this.maxLength);
 
     let titleText = uiLocation.uiSourceCode.url();
@@ -476,8 +492,11 @@ export class Linkifier implements SDK.TargetManager.Observer {
       if (typeof uiLocation.columnNumber === 'number') {
         titleText += `:0x${uiLocation.columnNumber.toString(16)}`;
       }
-    } else if (typeof uiLocation.lineNumber === 'number') {
+    } else {
       titleText += ':' + (uiLocation.lineNumber + 1);
+      if (options.showColumnNumber && typeof uiLocation.columnNumber === 'number') {
+        titleText += ':' + (uiLocation.columnNumber + 1);
+      }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
     anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
@@ -513,6 +532,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       className: undefined,
       lineNumber: undefined,
       columnNumber: undefined,
+      showColumnNumber: false,
       inlineFrameIndex: 0,
       preventClick: undefined,
       maxLength: undefined,
@@ -523,6 +543,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     const className = options.className || '';
     const lineNumber = options.lineNumber;
     const columnNumber = options.columnNumber;
+    const showColumnNumber = options.showColumnNumber;
     const preventClick = options.preventClick;
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
@@ -538,6 +559,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
     let linkText = text || Bindings.ResourceUtils.displayNameForURL(url);
     if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
+      if (showColumnNumber && typeof columnNumber === 'number') {
+        linkText += ':' + (columnNumber + 1);
+      }
     }
     const title = linkText !== url ? url : '';
     const linkOptions = {maxLength, title, href: url, preventClick, tabStop: options.tabStop, bypassURLTrimming};
@@ -1012,6 +1036,7 @@ export interface LinkifyURLOptions {
   className?: string;
   lineNumber?: number;
   columnNumber?: number;
+  showColumnNumber: boolean;
   inlineFrameIndex: number;
   preventClick?: boolean;
   maxLength?: number;
@@ -1022,6 +1047,7 @@ export interface LinkifyURLOptions {
 export interface LinkifyOptions {
   className?: string;
   columnNumber?: number;
+  showColumnNumber?: boolean;
   inlineFrameIndex: number;
   tabStop?: boolean;
 }
@@ -1035,6 +1061,10 @@ export interface _CreateLinkOptions {
   preventClick?: boolean;
   tabStop?: boolean;
   bypassURLTrimming?: boolean;
+}
+
+interface LinkDisplayOptions {
+  showColumnNumber: boolean;
 }
 
 export type LinkHandler = (arg0: TextUtils.ContentProvider.ContentProvider, arg1: number) => void;

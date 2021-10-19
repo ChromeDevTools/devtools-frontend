@@ -130,6 +130,7 @@ export class LighthouseReportRenderer extends LighthouseReport.ReportRenderer {
       const element = await Components.Linkifier.Linkifier.linkifyURL(url, {
         lineNumber: line,
         columnNumber: column,
+        showColumnNumber: false,
         inlineFrameIndex: 0,
         maxLength: MaxLengthForLinks,
         bypassURLTrimming: undefined,

@@ -1519,6 +1519,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             className: undefined,
             lineNumber: undefined,
             columnNumber: undefined,
+            showColumnNumber: false,
             inlineFrameIndex: 0,
             maxLength: undefined,
             tabStop: undefined,

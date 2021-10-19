@@ -1175,9 +1175,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#contentDataProvider = dataProvider;
   }
 
-  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.UrlString {
-    return this.#urlInternal as Platform.DevToolsPath.UrlString;
+  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.RawPathString {
+    return this.#urlInternal as Platform.DevToolsPath.RawPathString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

@@ -298,7 +298,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
   }
 
-  contentURL(): Platform.DevToolsPath.UrlString {
+  contentURL(): Platform.DevToolsPath.RawPathString {
     console.assert(this.headers.size > 0);
     return this.headers.values().next().value.originalContentProvider().contentURL();
   }

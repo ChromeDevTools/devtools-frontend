@@ -87,16 +87,16 @@ describe('Parsed URL', () => {
     assert.strictEqual(convertedUrl, 'file://usr/lib', 'URL was not converted correctly');
   });
 
-  it('converts URL to a platform path that starts with "file://"', () => {
-    const urlTest = 'file://usr/lib' as Platform.DevToolsPath.UrlString;
-    const convertedUrl = ParsedURL.urlToRawPathString(urlTest);
-    assert.strictEqual(convertedUrl, 'usr/lib', 'URL was not converted successfully');
+  it('converts path that starts with "file://" to a platform path', () => {
+    const pathTest = 'file://usr/lib' as Platform.DevToolsPath.RawPathString;
+    const convertedPath = ParsedURL.capFilePrefix(pathTest);
+    assert.strictEqual(convertedPath, 'usr/lib', 'URL was not converted successfully');
   });
 
-  it('converts URL to a platform path that starts with "file:///" on Windows', () => {
-    const urlTest = 'file:///usr/lib' as Platform.DevToolsPath.UrlString;
-    const convertedUrl = ParsedURL.urlToRawPathString(urlTest, true);
-    assert.strictEqual(convertedUrl, 'usr\\lib', 'URL was not converted successfully');
+  it('converts path that starts with "file:///" to a platform path on Windows', () => {
+    const pathTest = 'file:///usr/lib' as Platform.DevToolsPath.RawPathString;
+    const convertedPath = ParsedURL.capFilePrefix(pathTest, true);
+    assert.strictEqual(convertedPath, 'usr\\lib', 'URL was not converted successfully');
   });
 
   it('converts URL with a hash to a URL without a hash', () => {

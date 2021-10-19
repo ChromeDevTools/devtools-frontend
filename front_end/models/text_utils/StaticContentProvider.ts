@@ -29,9 +29,9 @@ export class StaticContentProvider implements ContentProvider {
     return new StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
-  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.UrlString {
-    return this.contentURLInternal as Platform.DevToolsPath.UrlString;
+  // TODO(crbug.com/1253323): Cast to PawPathString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.RawPathString {
+    return this.contentURLInternal as Platform.DevToolsPath.RawPathString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

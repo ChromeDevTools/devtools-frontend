@@ -146,9 +146,9 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return afterStart && beforeEnd;
   }
 
-  // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.UrlString {
-    return this.resourceURL() as Platform.DevToolsPath.UrlString;
+  // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
+  contentURL(): Platform.DevToolsPath.RawPathString {
+    return this.resourceURL() as Platform.DevToolsPath.RawPathString;
   }
 
   contentType(): Common.ResourceType.ResourceType {

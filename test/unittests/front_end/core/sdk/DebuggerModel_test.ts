@@ -87,7 +87,7 @@ describeWithMockConnection('DebuggerModel', () => {
       const target = createTarget();
       target.markAsNodeJSForTest();
       const model = new SDK.DebuggerModel.DebuggerModel(target);
-      const {breakpointId} = await model.setBreakpointByURL('fs.js' as Platform.DevToolsPath.UrlString, 1);
+      const {breakpointId} = await model.setBreakpointByURL('fs.js' as Platform.DevToolsPath.RawPathString, 1);
       assert.strictEqual(breakpointId, breakpointId1);
     });
   });

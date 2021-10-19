@@ -123,7 +123,7 @@ export class ParsedURL {
     return rawPath as Platform.DevToolsPath.UrlString;
   }
 
-  static urlToRawPathString(fileURL: Platform.DevToolsPath.UrlString, isWindows?: boolean):
+  static capFilePrefix(fileURL: Platform.DevToolsPath.RawPathString, isWindows?: boolean):
       Platform.DevToolsPath.RawPathString {
     console.assert(fileURL.startsWith('file://'), 'This must be a file URL.');
     if (isWindows) {

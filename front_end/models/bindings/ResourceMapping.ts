@@ -421,7 +421,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
     return this.resources.values().next().value;
   }
 
-  contentURL(): Platform.DevToolsPath.UrlString {
+  contentURL(): Platform.DevToolsPath.RawPathString {
     return this.firstResource().contentURL();
   }
 

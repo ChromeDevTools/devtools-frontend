@@ -172,7 +172,7 @@ export class ElementsTreeOutline extends
 
     this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('showHTMLComments');
     this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
-    this.useLightSelectionColor();
+    this.setUseLightSelectionColor(true);
   }
 
   static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline|null {

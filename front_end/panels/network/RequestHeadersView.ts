@@ -232,6 +232,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
 
     root.element.classList.add('request-headers-tree');
     root.makeDense();
+    root.setUseLightSelectionColor(true);
     this.element.appendChild(root.element);
 
     const generalCategory = new Category(root, 'general', i18nString(UIStrings.general));

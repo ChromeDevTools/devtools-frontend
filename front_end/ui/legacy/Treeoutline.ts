@@ -77,7 +77,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   showSelectionOnKeyboardFocus: boolean;
   private focusable: boolean;
   element: HTMLElement;
-  useLightSelectionColorInternal: boolean;
+  private useLightSelectionColor: boolean;
   private treeElementToScrollIntoView: TreeElement|null;
   private centerUponScrollIntoView: boolean;
 
@@ -99,7 +99,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.setFocusable(true);
     this.element = this.contentElement;
     ARIAUtils.markAsTree(this.element);
-    this.useLightSelectionColorInternal = false;
+    this.useLightSelectionColor = false;
     this.treeElementToScrollIntoView = null;
     this.centerUponScrollIntoView = false;
   }
@@ -203,8 +203,12 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
   }
 
-  useLightSelectionColor(): void {
-    this.useLightSelectionColorInternal = true;
+  setUseLightSelectionColor(flag: boolean): void {
+    this.useLightSelectionColor = flag;
+  }
+
+  getUseLightSelectionColor(): boolean {
+    return this.useLightSelectionColor;
   }
 
   bindTreeElement(element: TreeElement): void {
@@ -1195,7 +1199,7 @@ export class TreeElement {
   }
 
   private onFocus(): void {
-    if (!this.treeOutline || this.treeOutline.useLightSelectionColor()) {
+    if (!this.treeOutline || this.treeOutline.getUseLightSelectionColor()) {
       return;
     }
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred')) {
@@ -1204,7 +1208,7 @@ export class TreeElement {
   }
 
   private onBlur(): void {
-    if (!this.treeOutline || this.treeOutline.useLightSelectionColor()) {
+    if (!this.treeOutline || this.treeOutline.getUseLightSelectionColor()) {
       return;
     }
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred')) {

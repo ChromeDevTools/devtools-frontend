@@ -26,9 +26,12 @@ describe('Button', async () => {
     return button;
   }
 
-  async function testClick(data: Buttons.Button.ButtonData = {
-    variant: Buttons.Button.Variant.PRIMARY,
-  }): Promise<void> {
+  async function testClick(
+      data: Buttons.Button.ButtonData = {
+        variant: Buttons.Button.Variant.PRIMARY,
+        disabled: false,
+      },
+      expectedClickCount = 1): Promise<void> {
     const button = await renderButton(data);
 
     let clicks = 0;
@@ -42,7 +45,7 @@ describe('Button', async () => {
       key: 'Enter',
     });
 
-    assert.strictEqual(clicks, 1);
+    assert.strictEqual(clicks, expectedClickCount);
   }
 
   it('primary button can be clicked', async () => {
@@ -51,10 +54,28 @@ describe('Button', async () => {
     });
   });
 
+  it('disabled primary button cannot be clicked', async () => {
+    await testClick(
+        {
+          variant: Buttons.Button.Variant.PRIMARY,
+          disabled: true,
+        },
+        0);
+  });
+
   it('secondary button can be clicked', async () => {
     await testClick({
       variant: Buttons.Button.Variant.SECONDARY,
     });
+  });
+
+  it('disabled secondary button cannot be clicked', async () => {
+    await testClick(
+        {
+          variant: Buttons.Button.Variant.SECONDARY,
+          disabled: true,
+        },
+        0);
   });
 
   it('toolbar button can be clicked', async () => {
@@ -62,6 +83,16 @@ describe('Button', async () => {
       variant: Buttons.Button.Variant.TOOLBAR,
       iconUrl,
     });
+  });
+
+  it('disabled toolbar button cannot be clicked', async () => {
+    await testClick(
+        {
+          variant: Buttons.Button.Variant.TOOLBAR,
+          iconUrl,
+          disabled: true,
+        },
+        0);
   });
 
   it('gets the no additional classes set for the inner button if only text is provided', async () => {

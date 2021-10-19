@@ -56,7 +56,6 @@ button.toolbar {
   background: transparent;
   border-radius: 2px;
   border: none;
-  cursor: pointer;
   height: 24px;
   width: 24px;
   overflow: hidden;
@@ -85,6 +84,14 @@ button.primary:active {
   border: 1px solid var(--color-button-primary-background-pressed);
 }
 
+button.primary:disabled,
+button.primary:disabled:hover {
+  border: 1px solid transparent;
+  background: var(--color-background-elevation-1);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
 button.secondary {
   border: 1px solid var(--color-details-hairline);
   background: var(--color-background);
@@ -104,6 +111,14 @@ button.secondary:focus-visible {
   border: 1px solid var(--color-background);
 }
 
+button.secondary:disabled,
+button.secondary:disabled:hover {
+  border: 1px solid var(--color-background-elevation-1);
+  background: var(--color-background);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
 button.secondary:active:focus-visible {
   border: 1px solid var(--color-button-secondary-background-pressed);
 }
@@ -118,6 +133,14 @@ button.toolbar:active {
 
 button.toolbar:focus-visible {
   background-color: var(--color-background-elevation-2);
+}
+
+button.toolbar:disabled,
+button.toolbar:disabled:hover {
+  border: 1px solid transparent;
+  background: var(--color-background);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
 }
 
 button.text-with-icon {
@@ -160,4 +183,16 @@ button.small devtools-icon {
 button.toolbar.small devtools-icon {
   width: 18px;
   height: 18px;
+}
+
+button.toolbar:disabled devtools-icon {
+  --icon-color: var(--color-text-disabled);
+}
+
+button.primary:disabled devtools-icon {
+  --icon-color: var(--color-text-disabled);
+}
+
+button.secondary:disabled devtools-icon {
+  --icon-color: var(--color-text-disabled);
 }

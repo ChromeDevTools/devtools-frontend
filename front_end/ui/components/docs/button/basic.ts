@@ -41,6 +41,26 @@ secondaryButton.data = {
 };
 appendButton(secondaryButton);
 
+// Primary
+const disabledPrimaryButtons = new Buttons.Button.Button();
+disabledPrimaryButtons.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  disabled: true,
+};
+disabledPrimaryButtons.innerText = 'Cannot click me';
+disabledPrimaryButtons.onclick = () => alert('clicked');
+appendButton(disabledPrimaryButtons);
+
+// Secondary
+const disabledSecondaryButton = new Buttons.Button.Button();
+disabledSecondaryButton.innerText = 'Cannot click me';
+disabledSecondaryButton.onclick = () => alert('clicked');
+disabledSecondaryButton.data = {
+  variant: Buttons.Button.Variant.SECONDARY,
+  disabled: true,
+};
+appendButton(disabledSecondaryButton);
+
 // Primary Icon
 const primaryIconButton = new Buttons.Button.Button();
 primaryIconButton.innerText = 'Click me';
@@ -105,6 +125,30 @@ smallSecondaryIconOnlyButton.data = {
 };
 appendButton(smallSecondaryIconOnlyButton);
 
+// Disabled Primary Icon
+const disabledPrimaryIconButton = new Buttons.Button.Button();
+disabledPrimaryIconButton.innerText = 'Cannot click me';
+disabledPrimaryIconButton.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  iconUrl: testIcon,
+  size: Buttons.Button.Size.SMALL,
+  disabled: true,
+};
+disabledPrimaryIconButton.onclick = () => alert('clicked');
+appendButton(disabledPrimaryIconButton);
+
+// Disabled Secondary Icon Only
+const disabledSecondaryIconOnlyButton = new Buttons.Button.Button();
+disabledSecondaryIconOnlyButton.onclick = () => alert('clicked');
+disabledSecondaryIconOnlyButton.style.width = '18px';
+disabledSecondaryIconOnlyButton.data = {
+  variant: Buttons.Button.Variant.SECONDARY,
+  iconUrl: testIcon,
+  size: Buttons.Button.Size.SMALL,
+  disabled: true,
+};
+appendButton(disabledSecondaryIconOnlyButton);
+
 for (let i = 0; i < 6; i++) {
   // Regular Toolbar Button
   const toolbarButton = new Buttons.Button.Button();
@@ -120,6 +164,16 @@ for (let i = 0; i < 6; i++) {
     appendToToolbar(sep);
   }
 }
+
+// Disabled Toolbar Button
+const toolbarButton = new Buttons.Button.Button();
+toolbarButton.onclick = () => alert('clicked');
+toolbarButton.data = {
+  variant: Buttons.Button.Variant.TOOLBAR,
+  iconUrl: testIcon,
+  disabled: true,
+};
+appendToToolbar(toolbarButton);
 
 for (let i = 0; i < 6; i++) {
   // Small Toolbar Button

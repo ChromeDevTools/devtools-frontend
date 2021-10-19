@@ -6545,6 +6545,9 @@
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + P̂ŕêf́l̂íĝh́t̂"
   },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "L̂át̂én̂ćŷ (ŕêśp̂ón̂śê ŕêćêív̂éd̂ t́îḿê - śt̂ár̂t́ t̂ím̂é)"
+  },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(ûńk̂ńôẃn̂)"
   },

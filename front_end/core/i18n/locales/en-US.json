@@ -6545,6 +6545,9 @@
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Preflight"
   },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latency (response received time - start time)"
+  },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(unknown)"
   },

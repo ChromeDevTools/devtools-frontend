@@ -196,6 +196,37 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+// Some instrumentation breakpoints have their titles adjusted to localized
+// versions, and some are merely renamed to more recognizable names.
+//
+// This function returns a table that links the breakpoint names and replacement
+// titles.
+function getInstrumentationBreakpointTitles(): [string, string|Common.UIString.LocalizedString][] {
+  return [
+    ['setTimeout.callback', i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'})],
+    ['setInterval.callback', i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'})],
+    ['scriptFirstStatement', i18nString(UIStrings.scriptFirstStatement)],
+    ['scriptBlockedByCSP', i18nString(UIStrings.scriptBlockedByContentSecurity)],
+    ['requestAnimationFrame', i18nString(UIStrings.requestAnimationFrame)],
+    ['cancelAnimationFrame', i18nString(UIStrings.cancelAnimationFrame)],
+    ['requestAnimationFrame.callback', i18nString(UIStrings.animationFrameFired)],
+    ['webglErrorFired', i18nString(UIStrings.webglErrorFired)],
+    ['webglWarningFired', i18nString(UIStrings.webglWarningFired)],
+    ['Element.setInnerHTML', i18nString(UIStrings.setInnerhtml)],
+    ['canvasContextCreated', i18nString(UIStrings.createCanvasContext)],
+    ['Geolocation.getCurrentPosition', 'getCurrentPosition'],
+    ['Geolocation.watchPosition', 'watchPosition'],
+    ['Notification.requestPermission', 'requestPermission'],
+    ['DOMWindow.close', 'window.close'],
+    ['Document.write', 'document.write'],
+    ['audioContextCreated', i18nString(UIStrings.createAudiocontext)],
+    ['audioContextClosed', i18nString(UIStrings.closeAudiocontext)],
+    ['audioContextResumed', i18nString(UIStrings.resumeAudiocontext)],
+    ['audioContextSuspended', i18nString(UIStrings.suspendAudiocontext)],
+  ];
+}
+
 export class DOMDebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DOMDebuggerApi;
   readonly #runtimeModelInternal: RuntimeModel;
@@ -874,86 +905,11 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
         ['xmlhttprequest', 'xmlhttprequestupload']);
 
-    let breakpoint;
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:setTimeout.callback');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'}));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:setInterval.callback');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'}));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:scriptFirstStatement');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.scriptFirstStatement));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:scriptBlockedByCSP');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.scriptBlockedByContentSecurity));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:requestAnimationFrame');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.requestAnimationFrame));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:cancelAnimationFrame');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.cancelAnimationFrame));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:requestAnimationFrame.callback');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.animationFrameFired));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:webglErrorFired');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.webglErrorFired));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:webglWarningFired');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.webglWarningFired));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:Element.setInnerHTML');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.setInnerhtml));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:canvasContextCreated');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.createCanvasContext));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:Geolocation.getCurrentPosition');
-    if (breakpoint) {
-      breakpoint.setTitle('getCurrentPosition');
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:Geolocation.watchPosition');
-    if (breakpoint) {
-      breakpoint.setTitle('watchPosition');
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:Notification.requestPermission');
-    if (breakpoint) {
-      breakpoint.setTitle('requestPermission');
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:DOMWindow.close');
-    if (breakpoint) {
-      breakpoint.setTitle('window.close');
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:Document.write');
-    if (breakpoint) {
-      breakpoint.setTitle('document.write');
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:audioContextCreated');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.createAudiocontext));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:audioContextClosed');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.closeAudiocontext));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:audioContextResumed');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.resumeAudiocontext));
-    }
-    breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:audioContextSuspended');
-    if (breakpoint) {
-      breakpoint.setTitle(i18nString(UIStrings.suspendAudiocontext));
+    for (const [name, newTitle] of getInstrumentationBreakpointTitles()) {
+      const breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:' + name);
+      if (breakpoint) {
+        breakpoint.setTitle(newTitle);
+      }
     }
 
     TargetManager.instance().observeModels(DOMDebuggerModel, this);

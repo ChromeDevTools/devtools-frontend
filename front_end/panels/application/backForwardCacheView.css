@@ -8,3 +8,7 @@
   list-style-type: none;
   padding-inline-start: 0;
 }
+
+.inline-icon {
+  vertical-align: sub;
+}

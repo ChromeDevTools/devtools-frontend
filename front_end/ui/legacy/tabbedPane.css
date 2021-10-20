@@ -163,7 +163,7 @@
 }
 
 .-theme-with-dark-background .tabbed-pane-header-tab.selected,
-:host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected:focus {
+:host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected:focus-visible {
   background-color: var(--color-background-elevation-0);
 }
 /* stylelint-enable no-descending-specificity */

@@ -42,7 +42,7 @@ h1 {
   min-height: 30px;
   display: grid;
   grid-template-rows: repeat(auto-fit, 30px);
-  grid-template-columns: 1fr 30px 1fr 30px 30px;
+  grid-template-columns: 1fr 30px 2fr 30px 30px;
   flex: auto 1 1;
 }
 

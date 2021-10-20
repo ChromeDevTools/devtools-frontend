@@ -7,12 +7,19 @@
 .watch-expression-delete-button {
   position: absolute;
   top: 5px;
-  right: 16px;
   cursor: pointer;
   opacity: 0%;
 }
 
-.watch-expression-header:hover .watch-expression-delete-button {
+.right-aligned {
+  right: 16px;
+}
+
+.left-aligned {
+  left: -11px;
+}
+
+.watch-expression-title:hover .watch-expression-delete-button {
   opacity: 100%;
 }
 
@@ -108,7 +115,7 @@ li.watch-expression-editing::before {
 }
 
 @media (forced-colors: active) {
-  .watch-expression-header:hover .watch-expression-delete-button,
+  .watch-expression-title:hover .watch-expression-delete-button,
   .watch-expressions .dimmed {
     opacity: 100%;
   }

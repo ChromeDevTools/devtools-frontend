@@ -120,8 +120,10 @@
   --color-button-outline-focus: rgb(26 115 232 / 50%);
   --color-button-primary-background-hovering: rgb(77 134 225 / 100%);
   --color-button-primary-background-pressed: rgb(88 132 205);
+  --color-button-primary-text: rgb(255 255 255);
   --color-button-secondary-background-hovering: rgb(26 115 232 / 10%);
   --color-button-secondary-background-pressed: rgb(26 92 178 / 25%);
+  --color-button-secondary-border: rgb(218 220 224);
 
   /* Colors for file icons */
   --color-ic-file-document: rgb(39 116 240);
@@ -239,8 +241,10 @@
   --color-button-outline-focus: rgb(138 180 248 / 80%);
   --color-button-primary-background-hovering: rgb(174 203 250 / 100%);
   --color-button-primary-background-pressed: rgb(210 227 252 / 100%);
+  --color-button-primary-text: rgb(0 0 0);
   --color-button-secondary-background-hovering: rgb(138 180 248 / 15%);
   --color-button-secondary-background-pressed: rgb(138 180 248 / 23%);
+  --color-button-secondary-border: rgb(60 61 65);
 
   /* Colors for file icons */
   --color-ic-file-document: rgb(39 116 240);

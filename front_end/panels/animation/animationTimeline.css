@@ -399,12 +399,12 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button {
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--color-button-secondary-border);
   color: var(--color-text-primary);
   display: inline-block;
   margin-right: -1px;
   padding: 1px 4px;
-  background: var(--color-background);
+  background-color: transparent;
   flex: 1 0 auto;
   text-align: center;
   cursor: pointer;
@@ -419,9 +419,9 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button.selected {
-  color: var(--legacy-selection-fg-color);
-  background-color: var(--legacy-selection-bg-color);
-  border-color: var(--legacy-selection-bg-color);
+  color: var(--color-button-primary-text);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
   z-index: 1;
 }
 

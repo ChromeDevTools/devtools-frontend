@@ -330,7 +330,7 @@ export interface SyncInformation {
   /** Whether Chrome Sync is enabled and active */
   isSyncActive: boolean;
   /** Whether syncing of Chrome Settings is enabled via Chrome Sync is enabled */
-  arePreferencesSynced: boolean;
+  arePreferencesSynced?: boolean;
   /** The email of the account used for syncing */
   accountEmail?: string;
   /** The image of the account used for syncing. Its a base64 encoded PNG */

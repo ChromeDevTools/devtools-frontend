@@ -8765,6 +8765,18 @@
   "panels/sensors/SensorsView.ts | timezoneId": {
     "message": "T̂ím̂éẑón̂é ÎD́"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "T̂ó t̂úr̂ń t̂h́îś ŝét̂t́îńĝ ón̂, ýôú m̂úŝt́ f̂ír̂śt̂ én̂áb̂ĺê śêt́t̂ín̂ǵŝ śŷńĉ ín̂ Ćĥŕôḿê."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Ĝó t̂ó Ŝét̂t́îńĝś"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Ŝíĝńêd́ îńt̂ó Ĉh́r̂óm̂é âś:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "T̂ó t̂úr̂ń t̂h́îś ŝét̂t́îńĝ ón̂, ýôú m̂úŝt́ êńâb́l̂é Ĉh́r̂óm̂é ŝýn̂ć."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Âd́d̂ B́r̂án̂d́"
   },

@@ -35,6 +35,7 @@ import * as Root from '../../core/root/root.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as PanelComponents from './components/components.js';
 
 import settingsScreenStyles from './settingsScreen.css.js';
 
@@ -260,6 +261,8 @@ class SettingsTab extends UI.Widget.VBox {
 let genericSettingsTabInstance: GenericSettingsTab;
 
 export class GenericSettingsTab extends SettingsTab {
+  private readonly syncSection: PanelComponents.SyncSection.SyncSection = new PanelComponents.SyncSection.SyncSection();
+
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
 
@@ -301,13 +304,7 @@ export class GenericSettingsTab extends SettingsTab {
     for (const sectionCategory of explicitSectionOrder) {
       const settingsForSection = preRegisteredSettings.filter(
           setting => setting.category === sectionCategory && GenericSettingsTab.isSettingVisible(setting));
-
-      // Always create the EXTENSIONS section and append the link handling control.
-      if (sectionCategory === Common.Settings.SettingCategory.EXTENSIONS) {
-        this.createExtensionSection(settingsForSection);
-      } else if (settingsForSection.length > 0) {
-        this.createSectionElement(sectionCategory, settingsForSection);
-      }
+      this.createSectionElement(sectionCategory, settingsForSection);
     }
 
     this.appendSection().appendChild(
@@ -335,17 +332,43 @@ export class GenericSettingsTab extends SettingsTab {
     return Boolean(title && setting.category);
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.updateSyncSection();
+  }
+
+  private updateSyncSection(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
+      this.syncSection.data = {
+        syncInfo,
+        syncSetting: Common.Settings.moduleSetting('sync_preferences') as Common.Settings.Setting<boolean>,
+      };
+    });
+  }
+
   private createExtensionSection(settings: Common.Settings.SettingRegistration[]): void {
     const sectionName = Common.Settings.SettingCategory.EXTENSIONS;
     const settingUI = Components.Linkifier.LinkHandlerSettingUI.instance() as UI.SettingsUI.SettingUI;
     const element = settingUI.settingElement();
     if (element) {
-      const sectionElement = this.createSectionElement(sectionName, settings);
+      const sectionElement = this.createStandardSectionElement(sectionName, settings);
       sectionElement.appendChild(element);
     }
   }
 
   private createSectionElement(
+      category: Common.Settings.SettingCategory, settings: Common.Settings.SettingRegistration[]): void {
+    // Always create the EXTENSIONS section and append the link handling control.
+    if (category === Common.Settings.SettingCategory.EXTENSIONS) {
+      this.createExtensionSection(settings);
+    } else if (category === Common.Settings.SettingCategory.SYNC && settings.length > 0) {
+      this.containerElement.appendChild(this.syncSection);
+    } else if (settings.length > 0) {
+      this.createStandardSectionElement(category, settings);
+    }
+  }
+
+  private createStandardSectionElement(
       category: Common.Settings.SettingCategory, settings: Common.Settings.SettingRegistration[]): Element {
     const uiSectionName = Common.Settings.getLocalizedSettingsCategory(category);
     const sectionElement = this.appendSection(uiSectionName);

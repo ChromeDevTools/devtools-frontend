@@ -8765,6 +8765,18 @@
   "panels/sensors/SensorsView.ts | timezoneId": {
     "message": "Timezone ID"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "To turn this setting on, you must first enable settings sync in Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Go to Settings"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Signed into Chrome as:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "To turn this setting on, you must enable Chrome sync."
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
     "message": "Add Brand"
   },

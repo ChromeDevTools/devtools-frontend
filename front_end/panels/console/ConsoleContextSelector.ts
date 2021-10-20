@@ -254,7 +254,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
   }
 
   itemSelected(item: SDK.RuntimeModel.ExecutionContext|null): void {
-    this.toolbarItemInternal.element.classList.toggle('warning', !this.isTopContext(item) && this.hasTopContext());
+    this.toolbarItemInternal.element.classList.toggle('highlight', !this.isTopContext(item) && this.hasTopContext());
     const title = item ? i18nString(UIStrings.javascriptContextS, {PH1: this.titleFor(item)}) :
                          i18nString(UIStrings.javascriptContextNotSelected);
     this.toolbarItemInternal.setTitle(title);

@@ -7,8 +7,6 @@
 :host {
   flex: none;
   padding: 0 2px;
-
-  --override-toolbar-warning-red: rgb(238 68 47 / 7%);
 }
 
 .toolbar-shadow {
@@ -406,8 +404,24 @@ input[is=history-input]:not(:placeholder-shown) {
   box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
-.toolbar-item.warning {
-  background: var(--override-toolbar-warning-red);
+.toolbar-item.highlight::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  border-radius: 2px;
+  background: var(--color-primary);
+  z-index: -1;
+}
+
+.toolbar-item.highlight {
+  color: var(--color-button-primary-text);
+}
+
+.toolbar-item.highlight > .icon-mask {
+  background: var(--color-button-primary-text);
 }
 
 devtools-icon.leading-issue-icon {

@@ -26,9 +26,9 @@ describe('The Console Tab', async () => {
 
     assert.deepEqual(messages, [
       `Uncaught (in promise) Error: err1
-    at uncaught-promise.html:7`,
+    at uncaught-promise.html:7:18`,
       `Uncaught (in promise) Error: err2
-    at uncaught-promise.html:25`,
+    at uncaught-promise.html:25:10`,
       `Uncaught (in promise) DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
     at throwDOMException (https://localhost:${
           getTestServerPort()}/test/e2e/resources/console/uncaught-promise.html:40:7)
@@ -74,9 +74,9 @@ describe('The Console Tab', async () => {
     assert.deepEqual(messages, [
       '/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|\'(?:[^\\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i',
       '/foo\\\\bar\\sbaz/i',
-      'Error\n    at built-ins.html:13',
-      'Error: My error message\n    at built-ins.html:16',
-      'Error: my multiline\nerror message\n    at built-ins.html:19',
+      'Error\n    at built-ins.html:13:17',
+      'Error: My error message\n    at built-ins.html:16:28',
+      'Error: my multiline\nerror message\n    at built-ins.html:19:37',
       'ƒ () { return 1; }',
       'ƒ () {\n    return 2;\n  }',
       'ƒ ( /**/ foo/**/, /*/**/bar,\n  /**/baz) {}',
@@ -172,8 +172,8 @@ describe('The Console Tab', async () => {
 
     assert.deepEqual(messages, [
       `Uncaught ReferenceError: FAIL is not defined
-    at foo (foo2.js:1)
-    at source-url-exceptions.html:9`,
+    at foo (foo2.js:1:18)
+    at source-url-exceptions.html:9:3`,
     ]);
   });
 
@@ -185,12 +185,12 @@ describe('The Console Tab', async () => {
       'msg',  // 5 times from eval script, collapsed
       'msg',  // 5 times from data url script, collapsed
       `Uncaught Error: Failed
-    at fail (data-url-exceptions.html:12)
-    at foo1 (data:text/javascript…pIHsgZm9vMSgpOyB9:1)
-    at foo2 (data:text/javascript…pIHsgZm9vMSgpOyB9:2)
-    at bar1 (data:text/javascript…9IAogYmFyMigpOw==:1)
-    at bar2 (data:text/javascript…9IAogYmFyMigpOw==:2)
-    at data:text/javascript…9IAogYmFyMigpOw==:3`,
+    at fail (data-url-exceptions.html:12:11)
+    at foo1 (data:text/javascript…sgZm9vMSgpOyB9:1:19)
+    at foo2 (data:text/javascript…sgZm9vMSgpOyB9:2:20)
+    at bar1 (data:text/javascript…ogYmFyMigpOw==:1:19)
+    at bar2 (data:text/javascript…ogYmFyMigpOw==:2:20)
+    at data:text/javascript…AogYmFyMigpOw==:3:2`,
     ]);
   });
 
@@ -199,16 +199,16 @@ describe('The Console Tab', async () => {
 
     assert.deepEqual(messages, [
       `Uncaught RangeError: Maximum call stack size exceeded
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)
-    at boo (foo2.js:2)`,
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)
+    at boo (foo2.js:2:2)`,
     ]);
   });
 
@@ -232,7 +232,7 @@ describe('The Console Tab', async () => {
       'onrejectionhandled1',
       'onunhandledrejection2',
       `Uncaught (in promise) Error: e
-    at runSecondPromiseRejection (onunhandledrejection.html:23)`,
+    at runSecondPromiseRejection (onunhandledrejection.html:23:44)`,
       'onrejectionhandled2',
     ]);
   });

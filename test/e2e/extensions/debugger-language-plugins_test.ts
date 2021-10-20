@@ -99,7 +99,7 @@ describe('The Debugger Language Plugins', async () => {
       return messages.find(message => message.message.startsWith('Uncaught (in promise) RuntimeError: unreachable'));
     });
     const callframes = error.message.split('\n').slice(1);
-    assert.deepEqual(callframes, ['    at Main (unreachable.ll:6)', '    at go (unreachable.html:27)']);
+    assert.deepEqual(callframes, ['    at Main (unreachable.ll:6:3)', '    at go (unreachable.html:27:29)']);
   });
 
   // Resolve the location for a breakpoint.
@@ -337,7 +337,7 @@ describe('The Debugger Language Plugins', async () => {
     at inner_inline_func (unreachable.ll:6)
     at outer_inline_func (unreachable.ll:11)
     at Main (unreachable.ll:16)
-    at go (unreachable.html:27)`;
+    at go (unreachable.html:27:29)`;
     });
   });
 

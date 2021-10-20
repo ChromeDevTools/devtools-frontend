@@ -1650,9 +1650,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const suffix = `${line.substring(link.positionRight)}${newline}`;
 
       formattedLine.appendChild(this.linkifyStringAsFragment(prefix));
-      const scriptLocationLink = this.linkifier.linkifyScriptLocation(
-          debuggerModel.target(), null, link.url, link.lineNumber,
-          {columnNumber: link.columnNumber, className: undefined, tabStop: undefined, inlineFrameIndex: 0});
+      const scriptLocationLink =
+          this.linkifier.linkifyScriptLocation(debuggerModel.target(), null, link.url, link.lineNumber, {
+            columnNumber: link.columnNumber,
+            className: undefined,
+            tabStop: undefined,
+            inlineFrameIndex: 0,
+            showColumnNumber: true,
+          });
       scriptLocationLink.tabIndex = -1;
       this.selectableChildren.push({element: scriptLocationLink, forceSelect: (): void => scriptLocationLink.focus()});
       formattedLine.appendChild(scriptLocationLink);

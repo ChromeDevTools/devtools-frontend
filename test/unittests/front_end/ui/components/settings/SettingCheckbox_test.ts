@@ -62,4 +62,13 @@ describe('SettingCheckbox', () => {
 
     assert.isTrue(setting.get());
   });
+
+  it('ignores clicks when disabled', () => {
+    const setting = createFakeSetting<boolean>('setting', false);
+    const {checkbox} = renderSettingCheckbox({setting, disabled: true});
+
+    checkbox.click();
+
+    assert.isFalse(setting.get());
+  });
 });

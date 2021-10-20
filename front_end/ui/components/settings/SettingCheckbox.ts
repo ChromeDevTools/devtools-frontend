@@ -10,6 +10,11 @@ import settingCheckboxStyles from './settingCheckbox.css.js';
 
 export interface SettingCheckboxData {
   setting: Common.Settings.Setting<boolean>;
+  /**
+   * If set to true, the checkbox is disabled and not clickable by the user.
+   * The checkbox will still reflect the current value of the setting (i.e. checked/unchecked).
+   */
+  disabled?: boolean;
 }
 
 /**
@@ -20,6 +25,7 @@ export class SettingCheckbox extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
 
   private setting?: Common.Settings.Setting<boolean>;
+  private disabled: boolean = false;
   private changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
 
   connectedCallback(): void {
@@ -32,6 +38,7 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     this.setting = data.setting;
+    this.disabled = Boolean(data.disabled);
 
     this.changeListenerDescriptor = this.setting.addChangeListener(() => {
       this.render();
@@ -48,8 +55,8 @@ export class SettingCheckbox extends HTMLElement {
         LitHtml.html`
       <p>
         <label>
-          <input type="checkbox" ?checked=${this.setting.get()} @change="${this.checkboxChanged}" aria-label="${
-            this.setting.title()}" /> ${this.setting.title()}
+          <input type="checkbox" ?checked=${this.setting.get()} ?disabled=${this.disabled} @change="${
+            this.checkboxChanged}" aria-label="${this.setting.title()}" /> ${this.setting.title()}
         </label>
       </p>`,
         this.shadow, {host: this});

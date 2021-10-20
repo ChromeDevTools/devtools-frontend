@@ -293,7 +293,7 @@ fieldset.device-orientation-override-section {
 }
 
 button.text-button {
-  margin: 0 10px;
+  margin: 4px 0 0 10px;
 }
 
 @media (forced-colors: active) {

@@ -118,14 +118,14 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     let targetName = '';
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
-    } else if (targetInfo.type !== 'iframe') {
+    } else if (targetInfo.type !== 'iframe' && targetInfo.type !== 'webview') {
       const parsedURL = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
       targetName =
           parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++ChildTargetManager.lastAnonymousTargetId);
     }
 
     let type = Type.Browser;
-    if (targetInfo.type === 'iframe') {
+    if (targetInfo.type === 'iframe' || targetInfo.type === 'webview') {
       type = Type.Frame;
     }
     // TODO(lfg): ensure proper capabilities for child pages (e.g. portals).

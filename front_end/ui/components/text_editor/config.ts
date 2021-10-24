@@ -57,7 +57,7 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.k
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
-export const autocompletion = DynamicSetting.bool('textEditorAutocompletion', CM.autocompletion());
+export const autocompletion = DynamicSetting.bool('textEditorAutocompletion', CM.autocompletion({icons: false}));
 
 export const bracketMatching = DynamicSetting.bool('textEditorBracketMatching', CM.bracketMatching());
 

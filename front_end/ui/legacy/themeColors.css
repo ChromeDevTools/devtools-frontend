@@ -163,6 +163,8 @@
   --color-nonmatching-bracket-background: rgb(255 0 0 / 7%);
   --color-editor-selection: #cfe8fc;
   --color-editor-selection-blurred: #e0e0e0;
+  --color-selected-option: #fff;
+  --color-selected-option-background: #1a73e8;
   --color-highlighted-line: rgb(255 255 0 / 50%);
 }
 
@@ -282,5 +284,7 @@
   --color-nonmatching-bracket-background: initial;
   --color-editor-selection: hsl(207deg 88% 22%);
   --color-editor-selection-blurred: #454545;
+  --color-selected-option: #fff;
+  --color-selected-option-background: #0e639c;
   --color-highlighted-line: hsl(133deg 100% 30% / 50%);
 }

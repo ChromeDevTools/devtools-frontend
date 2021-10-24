@@ -112,6 +112,14 @@ export const editorTheme = CM.EditorView.theme({
     width: 'fit-content',
   },
 
+  '.cm-tooltip.cm-tooltip-autocomplete > ul': {
+    minWidth: '16em',
+    '& > li[aria-selected]': {
+      backgroundColor: 'var(--color-selected-option-background)',
+      color: 'var(--color-selected-option)',
+    },
+  },
+
   '.cm-highlightedLine': {
     animation: 'cm-fading-highlight 2s 0s',
   },

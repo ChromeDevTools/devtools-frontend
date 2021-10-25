@@ -443,10 +443,6 @@ function getDisableLocaleInfoBarSetting(): Common.Settings.Setting<boolean> {
 }
 
 function shouldShowLocaleInfobar(): boolean {
-  if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS)) {
-    return false;
-  }
-
   if (getDisableLocaleInfoBarSetting().get()) {
     return false;
   }

@@ -769,7 +769,6 @@ Common.Settings.registerSettingExtension({
     ...filterLocalesForSettings().map(locale => createOptionForLocale(locale)),
   ],
   reloadRequired: true,
-  experiment: Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
 });
 
 Common.Settings.registerSettingExtension({

@@ -151,13 +151,7 @@ export class MainImpl {
   }
 
   async requestAndRegisterLocaleData(): Promise<void> {
-    // The language setting is only available when the experiment is enabled.
-    // TODO(crbug.com/1163928): Remove the check when the experiment is gone.
-    let settingLanguage = 'en-US';
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS)) {
-      settingLanguage = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
-    }
-
+    const settingLanguage = Common.Settings.Settings.instance().moduleSetting<string>('language').get();
     const devToolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance({
       create: true,
       data: {
@@ -325,15 +319,11 @@ export class MainImpl {
     // Hide Issues Feature.
     Root.Runtime.experiments.register('groupAndHideIssuesByKind', 'Allow grouping and hiding of issues by IssueKind');
 
-    // Localized DevTools, hide "locale selector" setting behind an experiment.
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS, 'Enable localized DevTools');
-
     // Checkbox in the Settings UI to enable Chrome Sync is behind this experiment.
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.SYNC_SETTINGS, 'Sync DevTools settings with Chrome Sync');
 
     Root.Runtime.experiments.enableExperimentsByDefault([
-      Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS,
       'sourceOrderViewer',
       'hideIssuesFeature',
       'bfcacheDebugging',

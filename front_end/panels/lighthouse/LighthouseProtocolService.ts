@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Root from '../../core/root/root.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
 
@@ -35,10 +34,7 @@ export class ProtocolService {
   }
 
   getLocales(): readonly string[] {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.LOCALIZED_DEVTOOLS)) {
-      return [i18n.DevToolsLocale.DevToolsLocale.instance().locale];
-    }
-    return navigator.languages;
+    return [i18n.DevToolsLocale.DevToolsLocale.instance().locale];
   }
 
   startLighthouse(auditURL: string, categoryIDs: string[], flags: Object): Promise<ReportRenderer.RunnerResult> {

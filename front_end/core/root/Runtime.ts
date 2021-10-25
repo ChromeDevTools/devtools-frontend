@@ -554,7 +554,6 @@ export enum ExperimentName {
   ALL = '*',
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
-  LOCALIZED_DEVTOOLS = 'localizedDevTools',
   SYNC_SETTINGS = 'syncSettings',
 }
 

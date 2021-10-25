@@ -717,6 +717,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
+  storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'activeKeybindSet',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'devToolsDefault',
@@ -783,6 +784,7 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
+  storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'userShortcuts',
   settingType: Common.Settings.SettingType.ARRAY,
   defaultValue: [],

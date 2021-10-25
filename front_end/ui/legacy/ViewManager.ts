@@ -28,6 +28,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export const defaultOptionsForTabs = {
+  security: true,
+};
+
 export class PreRegisteredView implements View {
   private readonly viewRegistration: ViewRegistration;
   private widgetRequested: boolean;
@@ -615,9 +620,12 @@ export class _TabbedLocation extends Location implements TabbedViewLocation {
   private setOrUpdateCloseableTabsSetting(): void {
     // Update the setting value, we respect the closed state decided by the user
     // and append the new tabs with value of true so they are shown open
-    const defaultOptionsForTabs = {'security': true};
     const tabs = this.closeableTabSetting.get();
-    const newClosable = Object.assign(defaultOptionsForTabs, tabs);
+    const newClosable = Object.assign(
+        {
+          ...defaultOptionsForTabs,
+        },
+        tabs);
     this.closeableTabSetting.set(newClosable);
   }
 

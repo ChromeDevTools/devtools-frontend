@@ -9104,6 +9104,9 @@
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Âd́d̂ śĉŕîṕt̂ t́ô íĝńôŕê ĺîśt̂"
   },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Ŝóm̂é ĉál̂ĺ f̂ŕâḿêś ĥáv̂é ŵár̂ńîńĝś"
+  },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Ĉál̂ĺ Ŝt́âćk̂"
   },

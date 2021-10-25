@@ -82,6 +82,10 @@ const UIStrings = {
   *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
   */
   addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
+  /**
+  *@description Text in Call Stack Sidebar Pane of the Sources panel when some call frames have warnings
+  */
+  callFrameWarnings: 'Some call frames have warnings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -92,6 +96,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
                                                                         UI.ListControl.ListDelegate<Item> {
   private readonly ignoreListMessageElement: Element;
   private readonly notPausedMessageElement: HTMLElement;
+  private readonly callFrameWarningsElement: HTMLElement;
   private readonly items: UI.ListModel.ListModel<Item>;
   private list: UI.ListControl.ListControl<Item>;
   private readonly showMoreMessageElement: Element;
@@ -112,6 +117,12 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
     this.notPausedMessageElement.textContent = i18nString(UIStrings.notPaused);
     this.notPausedMessageElement.tabIndex = -1;
+
+    this.callFrameWarningsElement = this.contentElement.createChild('div', 'ignore-listed-message');
+    const icon = UI.Icon.Icon.create('smallicon-warning', 'call-frame-warning-icon');
+    this.callFrameWarningsElement.appendChild(icon);
+    this.callFrameWarningsElement.appendChild(document.createTextNode(i18nString(UIStrings.callFrameWarnings)));
+    this.callFrameWarningsElement.tabIndex = -1;
 
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
@@ -164,6 +175,8 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   private async doUpdate(): Promise<void> {
     this.locationPool.disposeAll();
 
+    this.callFrameWarningsElement.classList.add('hidden');
+
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (!details) {
       this.notPausedMessageElement.classList.remove('hidden');
@@ -178,6 +191,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.notPausedMessageElement.classList.add('hidden');
 
     const itemPromises = [];
+    const uniqueWarnings: Set<string> = new Set();
     for (const frame of details.callFrames) {
       const itemPromise =
           Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this)).then(item => {
@@ -185,8 +199,15 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
             return item;
           });
       itemPromises.push(itemPromise);
+      for (const warning of frame.warnings) {
+        uniqueWarnings.add(warning);
+      }
     }
     const items = await Promise.all(itemPromises);
+    if (uniqueWarnings.size) {
+      this.callFrameWarningsElement.classList.remove('hidden');
+      UI.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join('\n'));
+    }
 
     let asyncStackTrace: Protocol.Runtime.StackTrace|null|undefined = details.asyncStackTrace;
     if (!asyncStackTrace && details.asyncStackTraceId) {

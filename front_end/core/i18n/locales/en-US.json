@@ -9104,6 +9104,9 @@
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Add script to ignore list"
   },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Some call frames have warnings"
+  },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Call Stack"
   },

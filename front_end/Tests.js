@@ -145,10 +145,10 @@
    * Run specified test on a fresh instance of the test suite.
    * @param {Array<string>} args method name followed by its parameters.
    */
-  TestSuite.prototype.dispatchOnTestSuite = function(args) {
+  TestSuite.prototype.dispatchOnTestSuite = async function(args) {
     const methodName = args.shift();
     try {
-      this[methodName].apply(this, args);
+      await this[methodName].apply(this, args);
       if (!this.controlTaken_) {
         this.reportOk_();
       }

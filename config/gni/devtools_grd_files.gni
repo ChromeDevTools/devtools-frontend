@@ -344,7 +344,6 @@ grd_files_release_sources = [
   "front_end/panels/changes/changes-legacy.js",
   "front_end/panels/changes/changes-meta.js",
   "front_end/panels/changes/changes.js",
-  "front_end/panels/changes/changes_module.js",
   "front_end/panels/console/console-legacy.js",
   "front_end/panels/console/console-meta.js",
   "front_end/panels/console/console.js",

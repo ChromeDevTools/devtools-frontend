@@ -1,6 +1,0 @@
-{
-  "dependencies": [
-    "ui/legacy/components/text_editor",
-    "ui/legacy"
-  ]
-}

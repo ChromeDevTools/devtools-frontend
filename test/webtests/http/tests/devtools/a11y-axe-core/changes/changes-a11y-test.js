@@ -5,7 +5,7 @@
 (async function() {
   TestRunner.addResult('Tests accessibility in the Changes drawer.');
   await TestRunner.loadTestModule('axe_core_test_runner');
-  await TestRunner.loadModule('changes');
+  await TestRunner.loadLegacyModule('changes');
 
   const diff = [
     {0: Diff.Diff.Operation.Insert, 1: ['line 1 inserted']},

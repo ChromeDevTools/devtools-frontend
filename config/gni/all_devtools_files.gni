@@ -188,7 +188,6 @@ all_devtools_files = [
   "front_end/panels/security/module.json",
   "front_end/panels/settings/module.json",
   "front_end/entrypoints/shell/shell.json",
-  "front_end/panels/snippets/module.json",
   "front_end/ui/legacy/components/source_frame/fontView.css",
   "front_end/ui/legacy/components/source_frame/imageView.css",
   "front_end/ui/legacy/components/source_frame/jsonView.css",

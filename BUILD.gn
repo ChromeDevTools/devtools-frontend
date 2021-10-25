@@ -113,7 +113,6 @@ non_autostart_non_remote_modules = [
   "panels/search/search_module.js",
   "panels/security/security_module.js",
   "panels/settings/settings_module.js",
-  "panels/snippets/snippets_module.js",
   "ui/legacy/components/source_frame/source_frame_module.js",
   "panels/sources/sources_module.js",
   "ui/legacy/components/text_editor/text_editor_module.js",

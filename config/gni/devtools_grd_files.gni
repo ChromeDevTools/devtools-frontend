@@ -1533,6 +1533,8 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/object_ui/ObjectPopoverHelper.js",
   "front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.js",
   "front_end/ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.js",
+  "front_end/ui/legacy/components/object_ui/customPreviewComponent.css.js",
+  "front_end/ui/legacy/components/object_ui/objectPopover.css.js",
   "front_end/ui/legacy/components/object_ui/objectPropertiesSection.css.js",
   "front_end/ui/legacy/components/object_ui/objectValue.css.js",
   "front_end/ui/legacy/components/perf_ui/ChartViewport.js",

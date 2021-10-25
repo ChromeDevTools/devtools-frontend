@@ -9,6 +9,8 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "customPreviewComponent.css",
+    "objectPopover.css",
     "objectPropertiesSection.css",
     "objectValue.css",
   ]
@@ -41,19 +43,13 @@ devtools_module("object_ui") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [
-    "customPreviewComponent.css",
-    "objectPopover.css",
-    "objectPropertiesSection.css",
-    "objectValue.css",
-  ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "object_ui.ts"
 
-  deps = [ ":object_ui" ]
+  deps = [
+    ":css_files",
+    ":object_ui",
+  ]
 
   visibility = [
     ":*",

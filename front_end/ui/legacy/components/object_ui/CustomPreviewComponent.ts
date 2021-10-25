@@ -9,6 +9,7 @@ import * as UI from '../../legacy.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+import customPreviewComponentStyles from './customPreviewComponent.css.js';
 
 const UIStrings = {
   /**
@@ -188,7 +189,7 @@ export class CustomPreviewComponent {
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(this.element, {
-      cssFile: 'ui/legacy/components/object_ui/customPreviewComponent.css',
+      cssFile: [customPreviewComponentStyles],
       delegatesFocus: undefined,
     });
     this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);

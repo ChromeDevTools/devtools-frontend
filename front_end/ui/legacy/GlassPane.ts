@@ -58,6 +58,10 @@ export class GlassPane {
     this.widgetInternal.registerRequiredCSS(cssFile);
   }
 
+  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
+    this.widgetInternal.registerCSSFiles(cssFiles);
+  }
+
   setDefaultFocusedElement(element: Element|null): void {
     this.widgetInternal.setDefaultFocusedElement(element);
   }

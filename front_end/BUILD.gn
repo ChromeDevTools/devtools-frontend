@@ -46,7 +46,6 @@ group("legacy_css") {
     "ui/legacy:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
     "ui/legacy/components/inline_editor:legacy_css",
-    "ui/legacy/components/object_ui:legacy_css",
     "ui/legacy/components/text_editor:legacy_css",
   ]
 }

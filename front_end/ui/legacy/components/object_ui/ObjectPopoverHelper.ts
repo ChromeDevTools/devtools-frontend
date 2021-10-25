@@ -34,7 +34,9 @@ import * as UI from '../../legacy.js';
 import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
+import objectPopoverStyles from './objectPopover.css.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
+import objectValueStyles from './objectValue.css.js';
 
 export class ObjectPopoverHelper {
   private readonly linkifier: Components.Linkifier.Linkifier|null;
@@ -72,7 +74,7 @@ export class ObjectPopoverHelper {
       } else {
         popoverContentElement = document.createElement('div');
         popoverContentElement.classList.add('object-popover-content');
-        UI.Utils.appendStyle(popoverContentElement, 'ui/legacy/components/object_ui/objectPopover.css');
+        popover.registerCSSFiles([objectPopoverStyles]);
         const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
         linkifier = new Components.Linkifier.Linkifier();
@@ -90,8 +92,7 @@ export class ObjectPopoverHelper {
 
     popoverContentElement = document.createElement('span');
     popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
-    UI.Utils.appendStyle(popoverContentElement, 'ui/legacy/components/object_ui/objectValue.css');
-    UI.Utils.appendStyle(popoverContentElement, 'ui/legacy/components/object_ui/objectPopover.css');
+    popover.registerCSSFiles([objectValueStyles, objectPopoverStyles]);
     const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
     valueElement.style.whiteSpace = 'pre';
 

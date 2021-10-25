@@ -502,12 +502,14 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   constructor() {
     super();
 
-    this.#standardSetting = Common.Settings.Settings.instance().createSetting('standardEmulatedDeviceList', []);
+    this.#standardSetting = Common.Settings.Settings.instance().createSetting(
+        'standardEmulatedDeviceList', [], Common.Settings.SettingStorageType.Synced);
     this.#standardInternal = new Set();
     this.listFromJSONV1(this.#standardSetting.get(), this.#standardInternal);
     this.updateStandardDevices();
 
-    this.#customSetting = Common.Settings.Settings.instance().createSetting('customEmulatedDeviceList', []);
+    this.#customSetting = Common.Settings.Settings.instance().createSetting(
+        'customEmulatedDeviceList', [], Common.Settings.SettingStorageType.Synced);
     this.#customInternal = new Set();
     if (!this.listFromJSONV1(this.#customSetting.get(), this.#customInternal)) {
       this.saveCustomDevices();

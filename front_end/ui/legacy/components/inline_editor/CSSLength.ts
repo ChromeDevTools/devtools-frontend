@@ -77,6 +77,10 @@ export class CSSLength extends HTMLElement {
   }
 
   private onValueMousedown(event: MouseEvent): void {
+    if (event.button !== 0) {
+      return;
+    }
+
     this.currentMouseClientX = event.clientX;
     const targetDocument = event.target instanceof Node && event.target.ownerDocument;
     if (targetDocument) {
@@ -136,9 +140,12 @@ export class CSSLength extends HTMLElement {
         <span class="value"
           @mousedown=${this.onValueMousedown}
           @mouseup=${this.onValueMouseup}
-        >${this.length.value}</span><select class="unit ${this.length.unit}" @mouseup=${this.onUnitMouseup} @change=${this.onUnitChange}>
-          ${options}
-        </select>
+        >${this.length.value}</span><span class="unit">${this.length.unit}</span><div class="unit-dropdown">
+          <span class="icon"></span>
+          <select @mouseup=${this.onUnitMouseup} @change=${this.onUnitChange}>
+            ${options}
+          </select>
+        </div>
       `;
     // clang-format on
   }

@@ -4,7 +4,6 @@
     "panels/coverage",
     "panels/layer_viewer",
     "ui/legacy/components/perf_ui",
-    "ui/legacy/components/data_grid",
     "panels/profiler",
     "panels/mobile_throttling"
   ]

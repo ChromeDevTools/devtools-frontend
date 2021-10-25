@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui/legacy",
-    "ui/legacy/components/data_grid",
     "ui/legacy/components/object_ui",
     "ui/legacy/components/text_editor"
   ]

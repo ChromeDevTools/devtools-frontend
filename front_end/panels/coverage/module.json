@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "ui/legacy/components/data_grid",
     "ui/legacy/components/source_frame",
     "ui/legacy"
   ]

@@ -89,7 +89,6 @@ non_autostart_non_remote_modules = [
   "ui/legacy/components/cookie_table/cookie_table_module.js",
   "panels/coverage/coverage_module.js",
   "panels/css_overview/css_overview_module.js",
-  "ui/legacy/components/data_grid/data_grid_module.js",
   "panels/elements/elements_module.js",
   "panels/event_listeners/event_listeners_module.js",
   "panels/help/help_module.js",

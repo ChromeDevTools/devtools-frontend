@@ -31,6 +31,8 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
+import dataGridStyles from './dataGrid.css.js';
+
 const UIStrings = {
   /**
   *@description Accessible text label for expandible nodes in datagrids
@@ -169,7 +171,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const {displayName, columns: columnsArray, editCallback, deleteCallback, refreshCallback} = dataGridParameters;
     this.element = document.createElement('div');
     this.element.classList.add('data-grid');
-    UI.Utils.appendStyle(this.element, 'ui/legacy/components/data_grid/dataGrid.css');
     this.element.tabIndex = 0;
     this.element.addEventListener('keydown', this.keyDown.bind(this), false);
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), true);
@@ -2351,6 +2352,7 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
   }
 
   wasShown(): void {
+    this.registerCSSFiles([dataGridStyles]);
     this.dataGrid.wasShown();
   }
 

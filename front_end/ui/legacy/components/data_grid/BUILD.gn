@@ -4,7 +4,12 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "dataGrid.css" ]
+}
 
 devtools_module("data_grid") {
   sources = [
@@ -29,7 +34,10 @@ copy_to_gen("legacy_css") {
 devtools_entrypoint("bundle") {
   entrypoint = "data_grid.ts"
 
-  deps = [ ":data_grid" ]
+  deps = [
+    ":css_files",
+    ":data_grid",
+  ]
 
   visibility = [
     ":*",

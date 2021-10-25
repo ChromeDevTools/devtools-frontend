@@ -53,8 +53,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
   "front_end/panels/css_overview/module.json",
   "front_end/legacy_test_runner/data_grid_test_runner/data_grid_test_runner.js",
-  "front_end/ui/legacy/components/data_grid/dataGrid.css",
-  "front_end/ui/legacy/components/data_grid/module.json",
   "front_end/legacy_test_runner/device_mode_test_runner/device_mode_test_runner.js",
   "front_end/legacy_test_runner/elements_test_runner/elements_test_runner.js",
   "front_end/legacy_test_runner/elements_test_runner/EditDOMTestRunner.js",

@@ -7,7 +7,6 @@
     { "name": "ui/legacy/components/color_picker" },
     { "name": "panels/console" },
     { "name": "panels/coverage" },
-    { "name": "ui/legacy/components/data_grid" },
     { "name": "panels/event_listeners" },
     { "name": "ui/legacy/components/inline_editor" },
     { "name": "panels/input"},

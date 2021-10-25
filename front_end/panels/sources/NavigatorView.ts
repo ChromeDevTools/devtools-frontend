@@ -782,8 +782,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.rename(node, false);
   }
 
-  private handleContextMenuExclude(project: Workspace.Workspace.Project, path: string): void {
-    const shouldExclude = window.confirm(i18nString(UIStrings.areYouSureYouWantToExcludeThis));
+  private async handleContextMenuExclude(project: Workspace.Workspace.Project, path: string): Promise<void> {
+    const shouldExclude = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToExcludeThis));
     if (shouldExclude) {
       UI.UIUtils.startBatchUpdate();
       project.excludeFolder(
@@ -792,8 +792,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  private handleContextMenuDelete(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const shouldDelete = window.confirm(i18nString(UIStrings.areYouSureYouWantToDeleteThis));
+  private async handleContextMenuDelete(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    const shouldDelete = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToDeleteThis));
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
@@ -816,8 +816,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     contextMenu.show();
   }
 
-  private handleDeleteOverrides(node: NavigatorTreeNode): void {
-    const shouldRemove = window.confirm(i18nString(UIStrings.areYouSureYouWantToDeleteAll));
+  private async handleDeleteOverrides(node: NavigatorTreeNode): Promise<void> {
+    const shouldRemove = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToDeleteAll));
     if (shouldRemove) {
       this.handleDeleteOverridesHelper(node);
     }
@@ -871,8 +871,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
       if (node instanceof NavigatorGroupTreeNode) {
-        contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), () => {
-          const shouldRemove = window.confirm(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
+          const shouldRemove = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
           if (shouldRemove) {
             project.remove();
           }

@@ -379,6 +379,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   order: 1,
   title: i18nLazyString(UIStrings.showUserAgentShadowDOM),
   settingName: 'showUAShadowDOM',
@@ -388,6 +389,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   order: 2,
   title: i18nLazyString(UIStrings.wordWrap),
   settingName: 'domWordWrap',
@@ -407,6 +409,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   order: 3,
   title: i18nLazyString(UIStrings.showHtmlComments),
   settingName: 'showHTMLComments',
@@ -426,6 +429,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   order: 4,
   title: i18nLazyString(UIStrings.revealDomNodeOnHover),
   settingName: 'highlightNodeOnHoverInOverlay',
@@ -435,6 +439,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   order: 5,
   title: i18nLazyString(UIStrings.showDetailedInspectTooltip),
   settingName: 'showDetailedInspectTooltip',

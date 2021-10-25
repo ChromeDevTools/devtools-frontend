@@ -433,6 +433,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.showRulers),
   settingName: 'showMetricsRulers',
   settingType: Common.Settings.SettingType.BOOLEAN,

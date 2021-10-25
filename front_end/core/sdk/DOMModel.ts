@@ -159,13 +159,13 @@ export class DOMNode {
       this.childrenInternal = [];
     }
 
-    const frameOwnerTags = ['IFRAME', 'PORTAL', 'EMBED', 'OBJECT'];
+    const frameOwnerTags = new Set(['EMBED', 'IFRAME', 'OBJECT', 'PORTAL']);
     if (payload.contentDocument) {
       this.contentDocumentInternal = new DOMDocument(this.#domModelInternal, payload.contentDocument);
       this.contentDocumentInternal.parentNode = this;
       this.childrenInternal = [];
-    } else if (payload.frameId && frameOwnerTags.includes(payload.nodeName)) {
-      // At this point we know we are in an OOPIF, otherwise #payload.contentDocument would have been set.
+    } else if (payload.frameId && frameOwnerTags.has(payload.nodeName)) {
+      // At this point we know we are in an OOPIF, otherwise `payload.contentDocument` would have been set.
       this.childDocumentPromiseForTesting = this.requestChildDocument(payload.frameId, this.#domModelInternal.target());
       this.childrenInternal = [];
     }

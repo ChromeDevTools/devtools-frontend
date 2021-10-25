@@ -275,6 +275,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.colorcodeResourceTypes),
   settingName: 'networkColorCodeResourceTypes',
   settingType: Common.Settings.SettingType.BOOLEAN,
@@ -297,6 +298,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NETWORK,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.groupNetworkLogByFrame),
   settingName: 'network.group-by-frame',
   settingType: Common.Settings.SettingType.BOOLEAN,

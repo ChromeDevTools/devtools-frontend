@@ -390,6 +390,7 @@ UI.ActionRegistration.registerActionExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.hideChromeFrameInLayersView),
   settingName: 'frameViewerHideChromeWindow',
   settingType: Common.Settings.SettingType.BOOLEAN,

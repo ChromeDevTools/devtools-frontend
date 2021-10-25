@@ -4,7 +4,6 @@
 
 (async function() {
   TestRunner.addResult('Test accessibility in Quick Open dialog\n');
-  await self.runtime.loadModulePromise('quick_open');
   await TestRunner.loadLegacyModule('quick_open');
   await TestRunner.loadTestModule('axe_core_test_runner');
 

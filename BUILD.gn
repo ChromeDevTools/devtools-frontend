@@ -109,7 +109,6 @@ non_autostart_non_remote_modules = [
   "panels/issues/issues_module.js",
   "panels/developer_resources/developer_resources_module.js",
   "panels/protocol_monitor/protocol_monitor_module.js",
-  "ui/legacy/components/quick_open/quick_open_module.js",
   "panels/application/application_module.js",
   "panels/search/search_module.js",
   "panels/security/security_module.js",

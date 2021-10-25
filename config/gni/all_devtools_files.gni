@@ -180,8 +180,6 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
   "front_end/panels/developer_resources/module.json",
   "front_end/panels/protocol_monitor/module.json",
-  "front_end/ui/legacy/components/quick_open/filteredListWidget.css",
-  "front_end/ui/legacy/components/quick_open/module.json",
   "front_end/panels/application/module.json",
   "front_end/panels/screencast/module.json",
   "front_end/legacy_test_runner/sdk_test_runner/sdk_test_runner.js",

@@ -13,6 +13,8 @@ import * as Diff from '../../../../third_party/diff/diff.js';
 import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.js';
 import * as UI from '../../legacy.js';
 
+import filteredListWidgetStyles from './filteredListWidget.css.js';
+
 const UIStrings = {
   /**
   * @description Aria label for quick open dialog prompt
@@ -64,7 +66,6 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     const listener = (this.onKeyDown.bind(this) as (arg0: Event) => void);
     this.contentElement.addEventListener('keydown', listener, true);
     UI.ARIAUtils.markAsCombobox(this.contentElement);
-    this.registerRequiredCSS('ui/legacy/components/quick_open/filteredListWidget.css');
 
     this.inputBoxElement = new TextPrompt.TextPrompt.TextPrompt();
     this.inputBoxElement.data = {ariaLabel: i18nString(UIStrings.quickOpenPrompt), prefix: '', suggestion: ''};
@@ -212,6 +213,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   }
 
   wasShown(): void {
+    this.registerCSSFiles([filteredListWidgetStyles]);
     this.attachProvider();
   }
 

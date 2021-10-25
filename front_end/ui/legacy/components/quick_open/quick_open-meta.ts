@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Root from '../../../../core/root/root.js';
 import * as UI from '../../legacy.js';
 
 const UIStrings = {
@@ -26,8 +25,6 @@ let loadedQuickOpenModule: (typeof QuickOpen|undefined);
 
 async function loadQuickOpenModule(): Promise<typeof QuickOpen> {
   if (!loadedQuickOpenModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('ui/legacy/components/quick_open');
     loadedQuickOpenModule = await import('./quick_open.js');
   }
   return loadedQuickOpenModule;

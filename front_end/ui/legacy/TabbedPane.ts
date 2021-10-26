@@ -251,6 +251,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   closeTabs(ids: string[], userGesture?: boolean): void {
+    if (ids.length === 0) {
+      return;
+    }
+
     const focused = this.hasFocus();
     for (let i = 0; i < ids.length; ++i) {
       this.innerCloseTab(ids[i], userGesture);

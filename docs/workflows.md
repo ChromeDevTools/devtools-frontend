@@ -250,7 +250,7 @@ The following scripts run as AutoRollers, but can be manually invoked if desired
 
 ## Merges and cherry-picks
 
-_Merge request/approval is handled by Chromium Release Managers. DevTools follows [The Zen of Merge Requests](https://www.chromium.org/developers/the-zen-of-merge-requests). In exceptional cases please get in touch with hablich@chromium.org._
+_Merge request/approval is handled by Chromium Release Managers. DevTools follows [The Zen of Merge Requests](https://chromium.googlesource.com/playground/chromium-org-site/+/refs/heads/main/developers/the-zen-of-merge-requests.md). In exceptional cases please get in touch with hablich@chromium.org._
 
 Step-by-step guide on how to merge:
 

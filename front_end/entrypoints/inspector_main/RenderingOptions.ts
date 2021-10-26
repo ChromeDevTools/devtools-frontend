@@ -208,7 +208,7 @@ const supportsPrefersContrast = (): boolean => {
 };
 
 const supportsJpegXl = async(): Promise<boolean> => {
-  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wp/QCQIBgEAFABLEiRhAA==';
+  const JPEG_XL_IMAGE_URL = 'data:image/jxl;base64,/wr/BwiDBAwASyAY';
   const promise = new Promise<boolean>((resolve): void => {
     const img = document.createElement('img');
     img.onload = (): void => resolve(true);

@@ -160,6 +160,18 @@ const UIStrings = {
   *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
   */
   newStyleRule: 'New Style Rule',
+  /**
+  *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
+  */
+  cssPropertyName: '`CSS` property name',
+  /**
+  *@description Text that is announced by the screen reader when the user focuses on an input field for entering the value of a CSS property in the Styles panel
+  */
+  cssPropertyValue: '`CSS` property value',
+  /**
+  *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
+  */
+  cssSelector: '`CSS` selector',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
@@ -1235,6 +1247,7 @@ export class StylePropertiesSection {
 
     const selectorContainer = document.createElement('div');
     this.selectorElement = document.createElement('span');
+    UI.ARIAUtils.setAccessibleName(this.selectorElement, i18nString(UIStrings.cssSelector));
     this.selectorElement.classList.add('selector');
     this.selectorElement.textContent = this.headerText();
     selectorContainer.appendChild(this.selectorElement);
@@ -2985,6 +2998,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderName(): Element {
     const nameElement = document.createElement('span');
+    UI.ARIAUtils.setAccessibleName(nameElement, i18nString(UIStrings.cssPropertyName));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this.propertyName;
     nameElement.normalize();
@@ -2993,6 +3007,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderValue(): Element {
     const valueElement = document.createElement('span');
+    UI.ARIAUtils.setAccessibleName(valueElement, i18nString(UIStrings.cssPropertyValue));
     valueElement.className = 'value';
     if (!this.propertyValue) {
       return valueElement;

@@ -4778,6 +4778,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Copy selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS property name"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS property value"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS selector"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
   },

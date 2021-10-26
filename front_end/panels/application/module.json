@@ -4,7 +4,6 @@
     "ui/legacy/components/cookie_table",
     "ui/legacy/components/inline_editor",
     "ui/legacy",
-    "ui/legacy/components/object_ui",
     "ui/legacy/components/perf_ui",
     "panels/mobile_throttling",
     "panels/network",

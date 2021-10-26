@@ -99,7 +99,6 @@ all_devtools_files = [
   "front_end/panels/network/module.json",
   "front_end/entrypoints/node_main/module.json",
   "front_end/entrypoints/node_main/nodeConnectionsPanel.css",
-  "front_end/ui/legacy/components/object_ui/module.json",
   "front_end/ui/legacy/components/perf_ui/chartViewport.css",
   "front_end/ui/legacy/components/perf_ui/filmStripView.css",
   "front_end/ui/legacy/components/perf_ui/flameChart.css",

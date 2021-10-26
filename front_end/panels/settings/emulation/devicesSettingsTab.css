@@ -24,7 +24,7 @@
 }
 
 .devices-settings-tab .devices-list {
-  width: 350px;
+  width: min(350px, 100%);
   margin-top: 10px;
 }
 

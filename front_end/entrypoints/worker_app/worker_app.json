@@ -7,7 +7,6 @@
     { "name": "panels/elements" },
     { "name": "panels/help" },
     { "name": "panels/issues" },
-    { "name": "panels/developer_resources" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },
     { "name": "panels/application" },

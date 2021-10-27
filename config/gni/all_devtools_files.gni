@@ -170,7 +170,6 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/TwaDigitalAssetLinksFailed.md",
   "front_end/models/issues_manager/descriptions/TwaHttpError.md",
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
-  "front_end/panels/developer_resources/module.json",
   "front_end/panels/protocol_monitor/module.json",
   "front_end/panels/application/module.json",
   "front_end/panels/screencast/module.json",

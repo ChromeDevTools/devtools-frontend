@@ -32,6 +32,7 @@ button {
   display: inline-flex;
   font-family: inherit;
   font-size: 12px;
+  font-weight: 500;
   height: 24px;
   line-height: 14px;
   padding: 5px 12px;

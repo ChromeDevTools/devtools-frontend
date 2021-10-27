@@ -1331,9 +1331,6 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ŝám̂é-Ŝít̂é âńd̂ Śâḿê-Ór̂íĝín̂"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Ûśêŕ-Âǵêńt̂ Śt̂ŕîńĝ Ŕêd́ûćt̂íôń"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "P̂ór̂t́âĺŝ - Śâḿê-ór̂íĝín̂ ćôḿm̂ún̂íĉát̂íôń ĉh́âńn̂él̂ś"
   },
@@ -1363,6 +1360,9 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "P̂ŕêv́êńt̂ín̂ǵ m̂íx̂éd̂ ćôńt̂én̂t́"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Ûśêŕ-Âǵêńt̂ Śt̂ŕîńĝ Ŕêd́ûćt̂íôń"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "D̂óĉúm̂én̂t́ ĉóm̂ṕât́îb́îĺît́ŷ ḿôd́ê"

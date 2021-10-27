@@ -17,7 +17,7 @@ const UIStrings = {
    */
   userAgentReduction: 'User-Agent String Reduction',
 };
-const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/issues_manager/NavigatorUserAgentIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/1167717): Make this a const enum again
@@ -26,7 +26,7 @@ export enum IssueCode {
   NavigatorUserAgentIssue = 'DeprecationIssue::NavigatorUserAgentIssue',
 }
 
-export class DeprecationIssue extends Issue<IssueCode> {
+export class NavigatorUserAgentIssue extends Issue<IssueCode> {
   private issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
@@ -73,12 +73,12 @@ export class DeprecationIssue extends Issue<IssueCode> {
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      DeprecationIssue[] {
+      NavigatorUserAgentIssue[] {
     const details = inspectorIssue.details.navigatorUserAgentIssueDetails;
     if (!details) {
       console.warn('NavigatorUserAgent issue without details received.');
       return [];
     }
-    return [new DeprecationIssue(details, issuesModel)];
+    return [new NavigatorUserAgentIssue(details, issuesModel)];
   }
 }

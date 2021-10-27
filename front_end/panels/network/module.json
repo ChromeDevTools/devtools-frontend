@@ -3,7 +3,6 @@
     "ui/legacy/components/cookie_table",
     "panels/mobile_throttling",
     "ui/legacy/components/perf_ui",
-    "panels/search",
     "ui/legacy/components/source_frame",
     "ui/legacy"
   ]

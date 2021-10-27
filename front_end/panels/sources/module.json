@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui/legacy",
-    "panels/search",
     "ui/legacy/components/source_frame",
     "ui/legacy/components/inline_editor",
     "ui/legacy/components/color_picker",

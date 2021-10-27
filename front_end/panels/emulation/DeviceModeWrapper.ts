@@ -56,6 +56,10 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     this.showDeviceModeSetting.set(!this.showDeviceModeSetting.get());
   }
 
+  isDeviceModeOn(): boolean {
+    return this.showDeviceModeSetting.get();
+  }
+
   captureScreenshot(fullSize?: boolean, clip?: Protocol.Page.Viewport): boolean {
     if (!this.deviceModeView) {
       this.deviceModeView = new DeviceModeView();

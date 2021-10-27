@@ -106,7 +106,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     field.appendChild(textInput);
     textInput.id = propertyName;
     textInput.addEventListener('keydown', this.handleValueModification.bind(this), false);
-    textInput.addEventListener('mousewheel', this.handleValueModification.bind(this), false);
+    textInput.addEventListener('wheel', this.handleValueModification.bind(this), false);
     textInput.addEventListener('input', this.onTextInput.bind(this), false);
     textInput.addEventListener('blur', this.onTextBlur.bind(this), false);
     return textInput;

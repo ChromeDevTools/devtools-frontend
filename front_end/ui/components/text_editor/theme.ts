@@ -57,6 +57,11 @@ export const editorTheme = CM.EditorView.theme({
     padding: '0 3px 0 9px',
   },
 
+  '.cm-matchingBracket, .cm-nonmatchingBracket': {
+    background: 'transparent',
+    borderBottom: 'none',
+  },
+
   '&:focus-within .cm-matchingBracket': {
     color: 'inherit',
     backgroundColor: 'var(--color-matching-bracket-background)',

@@ -1052,7 +1052,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         html(),
         TextEditor.Config.domWordWrap,
         CodeMirror.EditorView.theme({
-          '.cm-editor': {maxHeight: '300px'},
+          '&.cm-editor': {maxHeight: '300px'},
           '.cm-scroller': {overflowY: 'auto'},
         }),
         CodeMirror.EditorView.domEventHandlers({

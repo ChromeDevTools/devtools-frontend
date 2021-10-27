@@ -46,8 +46,6 @@ all_devtools_files = [
   "front_end/panels/console/consoleSidebar.css",
   "front_end/panels/console/consoleView.css",
   "front_end/panels/console/module.json",
-  "front_end/ui/legacy/components/cookie_table/cookiesTable.css",
-  "front_end/ui/legacy/components/cookie_table/module.json",
   "front_end/legacy_test_runner/coverage_test_runner/coverage_test_runner.js",
   "front_end/panels/coverage/module.json",
   "front_end/legacy_test_runner/cpu_profiler_test_runner/cpu_profiler_test_runner.js",

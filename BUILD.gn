@@ -86,7 +86,6 @@ non_autostart_non_remote_modules = [
   "panels/browser_debugger/browser_debugger_module.js",
   "ui/legacy/components/color_picker/color_picker_module.js",
   "panels/console/console_module.js",
-  "ui/legacy/components/cookie_table/cookie_table_module.js",
   "panels/coverage/coverage_module.js",
   "panels/css_overview/css_overview_module.js",
   "panels/elements/elements_module.js",

@@ -43,6 +43,8 @@ import * as NetworkForward from '../../../../panels/network/forward/forward.js';
 import * as UI from '../../legacy.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 
+import cookiesTableStyles from './cookiesTable.css.js';
+
 const UIStrings = {
   /**
   *@description Cookie table cookies table expires session value in Cookies Table of the Cookies table in the Application panel
@@ -124,7 +126,6 @@ export class CookiesTable extends UI.Widget.VBox {
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void)) {
     super();
 
-    this.registerRequiredCSS('ui/legacy/components/cookie_table/cookiesTable.css');
     this.element.classList.add('cookies-table');
 
     this.saveCallback = saveCallback;
@@ -284,6 +285,10 @@ export class CookiesTable extends UI.Widget.VBox {
     this.cookieDomain = '';
 
     this.cookieToBlockedReasons = null;
+  }
+
+  wasShown(): void {
+    this.registerCSSFiles([cookiesTableStyles]);
   }
 
   setCookies(

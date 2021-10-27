@@ -3,7 +3,6 @@
     { "name": "panels/mobile_throttling", "type": "autostart"  },
 
     { "name": "panels/browser_debugger" },
-    { "name": "ui/legacy/components/cookie_table" },
     { "name": "panels/elements" },
     { "name": "panels/help" },
     { "name": "panels/issues" },

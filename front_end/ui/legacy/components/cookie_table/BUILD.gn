@@ -4,7 +4,12 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "cookiesTable.css" ]
+}
 
 devtools_module("cookie_table") {
   sources = [ "CookiesTable.ts" ]
@@ -26,7 +31,10 @@ devtools_module("cookie_table") {
 devtools_entrypoint("bundle") {
   entrypoint = "cookie_table.ts"
 
-  deps = [ ":cookie_table" ]
+  deps = [
+    ":cookie_table",
+    ":css_files",
+  ]
 
   visibility = [
     ":*",

@@ -11,6 +11,10 @@ import {CONSOLE_MESSAGE_WRAPPER_SELECTOR, deleteConsoleMessagesFilter, filterCon
 
 type MessageCheck = (msg: string) => boolean;
 
+function toConsoleRegex(regex: string) {
+  return regex.replace('\\', '\\\\');
+}
+
 function createUrlFilter(url: string) {
   return `-url:${url}`;
 }
@@ -25,6 +29,10 @@ function collectSourceUrlsFromConsoleOutput(frontend: puppeteer.Page) {
 
 function getExpectedMessages(unfilteredMessages: string[], filter: MessageCheck) {
   return unfilteredMessages.filter((msg: string) => {
+    // console.group() outputs are not filtered
+    if (/outerGroup$|innerGroup$/.test(msg)) {
+      return true;
+    }
     return filter(msg);
   });
 }
@@ -157,7 +165,7 @@ describe('The Console Tab', async () => {
     });
 
     for (const urlToKeep of uniqueUrls) {
-      const filter = `url:${urlToKeep}`;
+      const filter = urlToKeep;
       const expectedMessageFilter: MessageCheck = msg => {
         return msg.indexOf(urlToKeep) !== -1;
       };
@@ -179,19 +187,18 @@ describe('The Console Tab', async () => {
   it('can apply text filter', async () => {
     const filter = 'outer';
     const expectedMessageFilter: MessageCheck = msg => {
-      // With new implementation of console group filtering, we also include child messages
-      // if parent group is filtered.
-      return msg.indexOf(filter) !== -1 || msg.indexOf('inner') !== -1;
+      return msg.indexOf(filter) !== -1;
     };
     await testMessageFilter(filter, expectedMessageFilter);
   });
 
   it('can apply start/end line regex filter', async () => {
-    const filter = new RegExp(/.*Hello\s\d$/);
+    const filter = '/^Hello\s\d$/';
     const expectedMessageFilter: MessageCheck = msg => {
-      return filter.test(msg);
+      const regExp = new RegExp(filter);
+      return regExp.test(msg);
     };
-    await testMessageFilter(filter.toString(), expectedMessageFilter);
+    await testMessageFilter(toConsoleRegex(filter), expectedMessageFilter);
   });
 
   it('can apply context filter', async () => {
@@ -210,11 +217,12 @@ describe('The Console Tab', async () => {
   });
 
   it('can apply filter on anchor', async () => {
-    const filter = new RegExp(/.*log-source\.js:\d+/);
+    const filter = '/^log-source\.js:\d+$/';
     const expectedMessageFilter: MessageCheck = msg => {
-      return filter.test(msg);
+      const regex = new RegExp(filter.replace('$', ''));
+      return regex.test(msg);
     };
-    await testMessageFilter(filter.toString(), expectedMessageFilter);
+    await testMessageFilter(toConsoleRegex(filter), expectedMessageFilter);
   });
 
   it('can reset filter', async () => {
@@ -237,22 +245,6 @@ describe('The Console Tab', async () => {
       const messages = await getCurrentConsoleMessages();
       assert.deepEqual(messages, unfilteredMessages);
     });
-  });
-
-  it('will show group parent message if child is filtered', async () => {
-    const filter = '1outerGroup';
-    const expectedMessageFilter: MessageCheck = msg => {
-      return new RegExp(/.* (1|)outerGroup.*$/).test(msg);
-    };
-    await testMessageFilter(filter, expectedMessageFilter);
-  });
-
-  it('will show messages in group if group name is filtered', async () => {
-    const filter = 'innerGroup';
-    const expectedMessageFilter: MessageCheck = msg => {
-      return msg.indexOf(filter) !== -1 || new RegExp(/.* outerGroup.*$/).test(msg);
-    };
-    await testMessageFilter(filter, expectedMessageFilter);
   });
 
   it('can exclude CORS error messages', async () => {

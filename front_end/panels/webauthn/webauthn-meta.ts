@@ -26,8 +26,6 @@ let loadedWebauthnModule: (typeof Webauthn|undefined);
 
 async function loadWebauthnModule(): Promise<typeof Webauthn> {
   if (!loadedWebauthnModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/webauthn');
     loadedWebauthnModule = await import('./webauthn.js');
   }
   return loadedWebauthnModule;

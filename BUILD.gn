@@ -113,7 +113,6 @@ non_autostart_non_remote_modules = [
   "ui/legacy/components/text_editor/text_editor_module.js",
   "panels/timeline/timeline_module.js",
   "panels/web_audio/web_audio_module.js",
-  "panels/webauthn/webauthn_module.js",
   "emulated_devices/emulated_devices_module.js",
 ]
 

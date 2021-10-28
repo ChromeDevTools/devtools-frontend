@@ -26,7 +26,7 @@ describe('measuredScrollbarWidth', () => {
     // Enforce custom width on scrollbars to test.
     style = document.createElement('style');
     style.textContent = `::-webkit-scrollbar {
-      -webkit-appearance: none;
+      appearance: none;
       width: ${width}px;
     }`;
     document.head.appendChild(style);

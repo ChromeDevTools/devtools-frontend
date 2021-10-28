@@ -2681,9 +2681,6 @@
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page."
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Last Main Frame Navigation"
-  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Main Frame"
   },
@@ -2698,6 +2695,9 @@
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restored from back-forward cache"
+  },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Run Test"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "Pending Support"

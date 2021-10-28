@@ -2681,9 +2681,6 @@
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "T̂h́êśê ŕêáŝón̂ś âŕê ńôt́ âćt̂íôńâb́l̂é î.é. ĉáĉh́îńĝ ẃâś p̂ŕêv́êńt̂éd̂ b́ŷ śôḿêt́ĥín̂ǵ ôút̂śîd́ê óf̂ t́ĥé d̂ír̂éĉt́ ĉón̂t́r̂ól̂ óf̂ t́ĥé p̂áĝé."
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "L̂áŝt́ M̂áîń F̂ŕâḿê Ńâv́îǵât́îón̂"
-  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "M̂áîń F̂ŕâḿê"
   },
@@ -2698,6 +2695,9 @@
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "R̂éŝt́ôŕêd́ f̂ŕôḿ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé"
+  },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "R̂ún̂ T́êśt̂"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "P̂én̂d́îńĝ Śûṕp̂ór̂t́"

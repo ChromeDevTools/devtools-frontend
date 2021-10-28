@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -51,8 +50,6 @@ let loadedHelpModule: (typeof Help|undefined);
 
 async function loadHelpModule(): Promise<typeof Help> {
   if (!loadedHelpModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/help');
     loadedHelpModule = await import('./help.js');
   }
   return loadedHelpModule;

@@ -69,7 +69,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/legacy_test_runner/heap_profiler_test_runner/heap_profiler_test_runner.js",
-  "front_end/panels/help/module.json",
   "front_end/ui/legacy/components/inline_editor/bezierEditor.css",
   "front_end/ui/legacy/components/inline_editor/bezierSwatch.css",
   "front_end/ui/legacy/components/inline_editor/colorSwatch.css",

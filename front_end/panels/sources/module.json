@@ -2,7 +2,6 @@
   "dependencies": [
     "ui/legacy",
     "ui/legacy/components/source_frame",
-    "ui/legacy/components/inline_editor",
     "ui/legacy/components/color_picker",
     "panels/event_listeners",
     "panels/coverage"

@@ -7,6 +7,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
+import swatchPopoverStyles from './swatchPopover.css.js';
 
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly popover: UI.GlassPane.GlassPane;
@@ -22,7 +23,6 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
   constructor() {
     super();
     this.popover = new UI.GlassPane.GlassPane();
-    this.popover.registerRequiredCSS('ui/legacy/components/inline_editor/swatchPopover.css');
     this.popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this.popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this.popover.element.addEventListener('mousedown', e => e.consume(), false);
@@ -60,6 +60,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
       this.hide(true);
     }
 
+    this.popover.registerCSSFiles([swatchPopoverStyles]);
     this.dispatchEventToListeners(Events.WillShowPopover);
 
     this.isHidden = false;

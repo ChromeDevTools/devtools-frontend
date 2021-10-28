@@ -48,7 +48,6 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/legacy/progressIndicator.css',
   'panels/application/serviceWorkerUpdateCycleView.css',
   'ui/legacy/tabbedPane.css',
-  'ui/legacy/components/inline_editor/colorSwatch.css',
   'ui/legacy/glassPane.css',
   'ui/legacy/suggestBox.css',
   'ui/legacy/treeoutline.css',

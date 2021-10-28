@@ -8,6 +8,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
+import fontEditorStyles from './fontEditor.css.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
 
@@ -123,7 +124,6 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/fontEditor.css');
     this.selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     this.propertyMap = propertyMap;
@@ -172,6 +172,10 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         'letter-spacing', i18nString(UIStrings.spacing), cssPropertySection, letterSpacingPropertyInfo,
         FontEditorUtils.LetterSpacingStaticParams, this.updatePropertyValue.bind(this), this.resizePopout.bind(this),
         /** hasUnits= */ true);
+  }
+
+  wasShown(): void {
+    this.registerCSSFiles([fontEditorStyles]);
   }
 
   private async createFontSelectorSection(propertyValue?: string): Promise<void> {

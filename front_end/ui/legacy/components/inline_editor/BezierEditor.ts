@@ -6,6 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
+import bezierEditorStyles from './bezierEditor.css.js';
 import {BezierUI} from './BezierUI.js';
 
 export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
@@ -29,7 +30,6 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   constructor(bezier: UI.Geometry.CubicBezier) {
     super(true);
     this.bezierInternal = bezier;
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/bezierEditor.css');
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
@@ -79,6 +79,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   wasShown(): void {
+    this.registerCSSFiles([bezierEditorStyles]);
     this.unselectPresets();
     // Check if bezier matches a preset
     for (const category of this.presetCategories) {

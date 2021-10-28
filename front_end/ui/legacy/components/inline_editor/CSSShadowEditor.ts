@@ -9,6 +9,7 @@ import * as UI from '../../legacy.js';
 
 import type {CSSShadowModel} from './CSSShadowModel.js';
 import {CSSLength} from './CSSShadowModel.js';
+import cssShadowEditorStyles from './cssShadowEditor.css.js';
 
 const UIStrings = {
   /**
@@ -61,7 +62,6 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   private changedElement?: HTMLInputElement|null;
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/inline_editor/cssShadowEditor.css');
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
@@ -120,6 +120,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   wasShown(): void {
+    this.registerCSSFiles([cssShadowEditorStyles]);
     this.updateUI();
   }
 

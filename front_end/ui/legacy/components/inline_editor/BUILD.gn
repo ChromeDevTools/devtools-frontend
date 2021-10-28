@@ -10,12 +10,18 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "bezierEditor.css",
+    "bezierSwatch.css",
     "colorSwatch.css",
     "cssAngle.css",
     "cssAngleEditor.css",
     "cssAngleSwatch.css",
     "cssLength.css",
+    "cssShadowEditor.css",
+    "cssShadowSwatch.css",
     "cssVarSwatch.css",
+    "fontEditor.css",
+    "swatchPopover.css",
   ]
 }
 
@@ -56,10 +62,6 @@ devtools_module("inline_editor") {
   ]
 
   visibility = [ "../../../../component_docs/*" ]
-}
-
-copy_to_gen("legacy_css") {
-  sources = [ "colorSwatch.css" ]
 }
 
 devtools_entrypoint("bundle") {

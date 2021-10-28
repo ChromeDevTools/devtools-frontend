@@ -90,7 +90,6 @@ non_autostart_non_remote_modules = [
   "panels/css_overview/css_overview_module.js",
   "panels/elements/elements_module.js",
   "panels/event_listeners/event_listeners_module.js",
-  "ui/legacy/components/inline_editor/inline_editor_module.js",
   "panels/js_profiler/js_profiler_module.js",
   "panels/layer_viewer/layer_viewer_module.js",
   "panels/layers/layers_module.js",

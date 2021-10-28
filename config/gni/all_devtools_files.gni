@@ -233,7 +233,6 @@ all_devtools_files = [
   "front_end/ui/legacy/toolbar.css",
   "front_end/ui/legacy/treeoutline.css",
   "front_end/ui/legacy/viewContainers.css",
-  "front_end/panels/web_audio/module.json",
 ]
 
 lighthouse_locale_files = [

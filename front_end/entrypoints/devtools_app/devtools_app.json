@@ -18,7 +18,6 @@
     { "name": "panels/application" },
     { "name": "panels/security" },
     { "name": "panels/timeline" },
-    { "name": "panels/web_audio" },
     { "name": "panels/media" }
   ],
   "extends": "shell"

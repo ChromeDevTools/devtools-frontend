@@ -13,7 +13,6 @@
     { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},
-    { "name": "panels/settings" },
     { "name": "ui/legacy/components/source_frame" },
     { "name": "panels/sources" },
     { "name": "ui/legacy/components/text_editor" }

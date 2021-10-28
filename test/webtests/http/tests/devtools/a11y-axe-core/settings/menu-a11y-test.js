@@ -7,7 +7,6 @@
       'Tests accessibility in the settings menu using the axe-core linter.');
 
   await TestRunner.loadTestModule('axe_core_test_runner');
-  await TestRunner.loadModule('settings');
   await TestRunner.loadLegacyModule('settings');
 
   await UI.actionRegistry.action('settings.show').execute();

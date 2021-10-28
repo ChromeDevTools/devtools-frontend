@@ -61,8 +61,6 @@ let loadedSettingsModule: (typeof Settings|undefined);
 
 async function loadSettingsModule(): Promise<typeof Settings> {
   if (!loadedSettingsModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/settings');
     loadedSettingsModule = await import('./settings.js');
   }
   return loadedSettingsModule;

@@ -9,7 +9,6 @@
     { "name": "panels/coverage" },
     { "name": "panels/event_listeners" },
     { "name": "ui/legacy/components/inline_editor" },
-    { "name": "panels/input"},
     { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},

@@ -93,6 +93,9 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     let parent: AXBreadcrumb|null = null;
     this.inspectedNodeBreadcrumb = null;
     for (ancestor of ancestorChain) {
+      if (ancestor !== axNode && ancestor.ignored() && ancestor.parentNode()) {
+        continue;
+      }
       const breadcrumb = new AXBreadcrumb(ancestor, depth, (ancestor === axNode));
       if (parent) {
         parent.appendChild(breadcrumb);
@@ -112,6 +115,10 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     function append(
         parentBreadcrumb: AXBreadcrumb, axNode: SDK.AccessibilityModel.AccessibilityNode, localDepth: number): void {
+      if (axNode.ignored()) {
+        axNode.children().map(child => append(parentBreadcrumb, child, localDepth));
+        return;
+      }
       const childBreadcrumb = new AXBreadcrumb(axNode, localDepth, false);
       parentBreadcrumb.appendChild(childBreadcrumb);
 
@@ -121,7 +128,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       }
     }
 
-    if (this.inspectedNodeBreadcrumb) {
+    if (this.inspectedNodeBreadcrumb && !axNode.ignored()) {
       for (const child of axNode.children()) {
         append(this.inspectedNodeBreadcrumb, child, depth);
         if (child.backendDOMNodeId() === this.collapsingBreadcrumbId) {

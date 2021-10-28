@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -12,8 +11,6 @@ let loadedConsoleCountersModule: (typeof ConsoleCounters|undefined);
 
 async function loadConsoleCountersModule(): Promise<typeof ConsoleCounters> {
   if (!loadedConsoleCountersModule) {
-    // Side-effect import reconsole_counters in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/console_counters');
     loadedConsoleCountersModule = await import('./console_counters.js');
   }
   return loadedConsoleCountersModule;

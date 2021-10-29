@@ -2,7 +2,6 @@
   "dependencies": [
     "panels/emulation",
     "panels/timeline",
-    "entrypoints/inspector_main",
     "ui/legacy"
   ],
   "resources": [

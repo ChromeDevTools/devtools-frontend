@@ -1,7 +1,6 @@
 {
   "modules" : [
     { "name": "panels/emulation", "type": "autostart" },
-    { "name": "entrypoints/inspector_main", "type": "autostart" },
 
     { "name": "panels/accessibility" },
     { "name": "panels/lighthouse" },

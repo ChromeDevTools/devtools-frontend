@@ -1,9 +1,0 @@
-{
-  "dependencies": [
-    "ui/legacy"
-  ],
-    "resources": [
-    "nodeIcon.css",
-    "renderingOptions.css"
-  ]
-}

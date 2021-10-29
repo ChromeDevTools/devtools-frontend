@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -109,8 +108,6 @@ let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 
 async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   if (!loadedInspectorMainModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/inspector_main');
     loadedInspectorMainModule = await import('./inspector_main.js');
   }
   return loadedInspectorMainModule;

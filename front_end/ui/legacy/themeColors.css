@@ -265,10 +265,10 @@
   --color-token-builtin: rgb(159 180 214);
   --color-token-variable-special: rgb(0 85 170);
   --color-token-keyword: rgb(154 127 213);
-  --color-token-number: var(--color-token-number);
   --color-token-string: rgb(242 139 84);
   --color-token-string-special: var(--color-token-string);
   --color-token-atom: rgb(161 247 181);
+  --color-token-number: var(--color-token-atom);
   --color-token-comment: rgb(137 137 137);
   --color-token-tag: rgb(93 176 215);
   --color-token-attribute: rgb(155 187 220);

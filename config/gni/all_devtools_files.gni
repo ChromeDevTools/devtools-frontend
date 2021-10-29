@@ -80,7 +80,6 @@ all_devtools_files = [
   "front_end/entrypoints/ndb_app/ndb_app.json",
   "front_end/legacy_test_runner/network_test_runner/network_test_runner.js",
   "front_end/panels/network/module.json",
-  "front_end/entrypoints/node_main/module.json",
   "front_end/entrypoints/node_main/nodeConnectionsPanel.css",
   "front_end/ui/legacy/components/perf_ui/chartViewport.css",
   "front_end/ui/legacy/components/perf_ui/filmStripView.css",

@@ -286,6 +286,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                   crumb: true,
                   selected: crumb.selected,
                 };
+                // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
                 return LitHtml.html`
                   <li class=${LitHtml.Directives.classMap(crumbClasses)}
                     data-node-id=${crumb.node.id}

@@ -30,6 +30,7 @@ module.exports = {
         'rulesdir/ban_literal_devtools_component_tag_names': 2,
         'rulesdir/ban_self_closing_custom_element_tagnames': 2,
         'rulesdir/ban_style_tags_in_lit_html': 2,
+        'rulesdir/ban_a_tags_in_lit_html': 2,
         'rulesdir/check_component_naming': 2,
         'rulesdir/check_was_shown_methods': 2,
         'rulesdir/static_custom_event_names': 2,

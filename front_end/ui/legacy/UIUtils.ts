@@ -450,7 +450,7 @@ function modifiedHexValue(hexString: string, event: Event): string|null {
   return resultString;
 }
 
-function modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number): number|null {
+export function modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number): number|null {
   const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;

@@ -729,6 +729,7 @@ export class DataGrid extends HTMLElement {
                 const cellIsFocusableCell = anyColumnsSortable && columnIndex === tabbableCell[0] && tabbableCell[1] === 0;
 
                 return LitHtml.html`<th class=${thClasses}
+                  style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                   data-grid-header-cell=${col.id}
                   @focus=${(): void => {
                     this.focusCellIfRequired([columnIndex, 0]);
@@ -790,6 +791,7 @@ export class DataGrid extends HTMLElement {
                   const cellOutput = col.visible ? renderCellValue(cell) : null;
                   return LitHtml.html`<td
                     class=${cellClasses}
+                    style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                     tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}
                     title=${cell.title || String(cell.value).substr(0, 20)}

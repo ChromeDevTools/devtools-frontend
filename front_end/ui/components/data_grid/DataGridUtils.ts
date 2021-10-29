@@ -6,6 +6,10 @@ import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as DataGridRenderers from './DataGridRenderers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 
+export interface CSSStylesObject {
+  readonly [name: string]: string;
+}
+
 /**
   * A column is an object with the following properties:
   *
@@ -19,6 +23,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
   *   Note, if you're rendering a data-grid yourself you likely  shouldn't set
   *   this. It's set by the `data-grid-controller`, which is the component you
   *   want if your table needs to be sortable.
+  * - `styles`: an optional property of key-value sets of CSS properties and values.
 */
 export interface Column {
   id: string;
@@ -28,6 +33,7 @@ export interface Column {
   widthWeighting: number;
   hideable: boolean;
   visible: boolean;
+  styles?: CSSStylesObject;
 }
 
 export type CellValue = string|number|boolean|IconButton.Icon.Icon|null;
@@ -57,14 +63,10 @@ export function getStringifiedCellValues(cells: Cell[]): string {
       .toLowerCase();
 }
 
-export interface RowCSSStylesObject {
-  readonly [name: string]: string;
-}
-
 export type Row = {
   cells: Cell[],
   hidden?: boolean,
-  styles?: RowCSSStylesObject,
+  styles?: CSSStylesObject,
 };
 
 export const enum SortDirection {

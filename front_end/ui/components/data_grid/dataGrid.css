@@ -106,11 +106,6 @@ th.firstVisibleColumn {
   padding: 0;
 }
 
-tr td:nth-child(1),
-tr th:nth-child(1) {
-  text-align: center;
-}
-
 .filler-row.empty-table td {
   /* If the table is empty and we have no renderable rows, the filler row cell
    * needs to have some form of padding to make it have some height, else it

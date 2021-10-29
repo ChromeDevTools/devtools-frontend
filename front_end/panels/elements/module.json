@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "ui/legacy",
-    "panels/event_listeners",
     "ui/legacy/components/text_editor"
   ]
 }

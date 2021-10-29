@@ -370,7 +370,6 @@ grd_files_release_sources = [
   "front_end/panels/emulation/emulation-meta.js",
   "front_end/panels/emulation/emulation.js",
   "front_end/panels/event_listeners/event_listeners.js",
-  "front_end/panels/event_listeners/event_listeners_module.js",
   "front_end/panels/help/help-meta.js",
   "front_end/panels/help/help.js",
   "front_end/panels/input/input-meta.js",

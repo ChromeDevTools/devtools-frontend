@@ -62,7 +62,6 @@ all_devtools_files = [
   "front_end/panels/emulation/inspectedPagePlaceholder.css",
   "front_end/panels/emulation/mediaQueryInspector.css",
   "front_end/panels/emulation/module.json",
-  "front_end/panels/event_listeners/module.json",
   "front_end/legacy_test_runner/extensions_test_runner/extensions_test_runner.js",
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsTestRunner.js",

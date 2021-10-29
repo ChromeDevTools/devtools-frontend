@@ -5,7 +5,6 @@
 
     { "name": "panels/console" },
     { "name": "panels/coverage" },
-    { "name": "panels/event_listeners" },
     { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" },
     { "name": "panels/protocol_monitor"},

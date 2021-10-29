@@ -75,6 +75,9 @@ export default commandLineArgs => ({
       options: {
         strategy: minifyHTMLStrategy,
         minifyOptions: {
+          collapseInlineTagWhitespace: false,
+          collapseWhitespace: true,
+          conservativeCollapse: true,
           minifyCSS: false,
           removeOptionalTags: true,
         },

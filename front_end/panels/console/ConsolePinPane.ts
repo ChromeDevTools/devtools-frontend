@@ -263,6 +263,7 @@ export class ConsolePin {
         ]),
         CM.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
         TE.Config.baseConfiguration(expression),
+        TE.Config.autocompletion,
       ],
     }));
     parent.appendChild(this.editor);

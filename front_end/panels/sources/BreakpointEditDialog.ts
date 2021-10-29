@@ -71,6 +71,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     const editorConfig = [
       (await CodeMirror.javascript()).javascriptLanguage,
       TextEditor.Config.baseConfiguration(oldCondition || ''),
+      TextEditor.Config.autocompletion,
       CodeMirror.EditorView.lineWrapping,
       TextEditor.Config.showCompletionHint,
       await TextEditor.JavaScript.completion(),

@@ -11,7 +11,14 @@ import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 const {assert} = chai;
 
 function makeState(doc: string, extensions: CodeMirror.Extension = []) {
-  return CodeMirror.EditorState.create({doc, extensions: [extensions, TextEditor.Config.baseConfiguration(doc)]});
+  return CodeMirror.EditorState.create({
+    doc,
+    extensions: [
+      extensions,
+      TextEditor.Config.baseConfiguration(doc),
+      TextEditor.Config.autocompletion,
+    ],
+  });
 }
 
 describeWithEnvironment('TextEditor', () => {

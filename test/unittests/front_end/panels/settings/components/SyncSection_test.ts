@@ -18,7 +18,8 @@ async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionDa
   return {section, shadowRoot: section.shadowRoot};
 }
 
-describe('SyncSection', () => {
+// TODO: reenable after stabilized. https://crbug.com/1245541
+xdescribe('SyncSection', () => {
   it('shows a warning when sync is not active', async () => {
     const syncSetting = createFakeSetting<boolean>('setting', true);
     const {shadowRoot} = await renderSyncSection({syncInfo: {isSyncActive: false}, syncSetting});

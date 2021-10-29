@@ -5,6 +5,7 @@
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as ComponentHelpers from '../components/helpers/helpers.js';
+import * as LitHtml from '../lit-html/lit-html.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu, Provider} from './ContextMenu.js';
@@ -152,3 +153,5 @@ export class ContextMenuProvider implements Provider {
 }
 
 ComponentHelpers.CustomElements.defineComponent('x-link', XLink);
+
+export const sample = LitHtml.html`<p>Hello, <x-link>world!</x-link></p>`;

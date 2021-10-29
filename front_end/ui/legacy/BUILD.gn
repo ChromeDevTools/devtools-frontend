@@ -87,6 +87,7 @@ devtools_module("ui") {
     "../components/helpers:bundle",
     "../components/icon_button:bundle",
     "../components/settings:bundle",
+    "../lit-html:bundle",
     "utils:bundle",
   ]
 }

@@ -4,7 +4,12 @@
 
 import("../../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "spectrum.css" ]
+}
 
 devtools_module("color_picker") {
   sources = [
@@ -29,7 +34,10 @@ devtools_module("color_picker") {
 devtools_entrypoint("bundle") {
   entrypoint = "color_picker.ts"
 
-  deps = [ ":color_picker" ]
+  deps = [
+    ":color_picker",
+    ":css_files",
+  ]
 
   visibility = [
     ":*",

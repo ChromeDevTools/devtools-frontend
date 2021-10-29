@@ -42,6 +42,7 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 
 import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
+import spectrumStyles from './spectrum.css.js';
 
 const UIStrings = {
   /**
@@ -183,7 +184,6 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private colorFormat?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/color_picker/spectrum.css');
 
     this.contentElement.tabIndex = 0;
     this.colorElement = this.contentElement.createChild('div', 'spectrum-color');
@@ -1140,6 +1140,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   wasShown(): void {
+    this.registerCSSFiles([spectrumStyles]);
     this.hueAlphaWidth = this.hueElement.offsetWidth;
     this.slideHelperWidth = this.hueSlider.offsetWidth / 2;
     this.dragWidth = this.colorElement.offsetWidth;

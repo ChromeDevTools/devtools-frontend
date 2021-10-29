@@ -3,7 +3,6 @@
     { "name": "entrypoints/main", "type": "autostart" },
     { "name": "ui/legacy", "type": "autostart" },
 
-    { "name": "ui/legacy/components/color_picker" },
     { "name": "panels/console" },
     { "name": "panels/coverage" },
     { "name": "panels/event_listeners" },

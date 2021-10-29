@@ -90,7 +90,6 @@ all_devtools_files = [
   "front_end/ui/legacy/components/perf_ui/overviewGrid.css",
   "front_end/ui/legacy/components/perf_ui/timelineGrid.css",
   "front_end/ui/legacy/components/perf_ui/timelineOverviewInfo.css",
-  "front_end/panels/performance_monitor/module.json",
   "front_end/panels/protocol_monitor/module.json",
   "front_end/legacy_test_runner/performance_test_runner/performance_test_runner.js",
   "front_end/legacy_test_runner/performance_test_runner/TimelineDataTestRunner.js",

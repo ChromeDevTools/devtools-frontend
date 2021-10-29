@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -47,8 +46,6 @@ let loadedPerformanceMonitorModule: (typeof PerformanceMonitor|undefined);
 
 async function loadPerformanceMonitorModule(): Promise<typeof PerformanceMonitor> {
   if (!loadedPerformanceMonitorModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/performance_monitor');
     loadedPerformanceMonitorModule = await import('./performance_monitor.js');
   }
   return loadedPerformanceMonitorModule;

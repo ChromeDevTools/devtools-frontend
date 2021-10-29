@@ -23,17 +23,6 @@ button.soft-dropdown > .title {
   text-overflow: ellipsis;
 }
 
-button.soft-dropdown:focus-visible::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  right: 2px;
-  bottom: 2px;
-  border-radius: 2px;
-  background: var(--divider-line);
-}
-
 @media (forced-colors: active) {
   button.soft-dropdown {
     border: 1px solid ButtonText;

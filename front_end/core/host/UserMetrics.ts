@@ -576,7 +576,8 @@ export const DevtoolsExperiments: {
   'reportingApiDebugging': 49,
   'syncSettings': 50,
   'groupAndHideIssuesByKind': 51,
-  '__lastValidEnumPosition': 51,
+  'cssTypeComponentLength': 52,
+  '__lastValidEnumPosition': 52,
 };
 
 export const IssueExpanded: {

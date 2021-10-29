@@ -749,7 +749,7 @@ export class DataGrid extends HTMLElement {
                   data-row-index='0'
                   data-col-index=${columnIndex}
                   tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
-                >${col.title}</th>`;
+                >${col.titleElement || col.title}</th>`;
               })}
             </tr>
           </thead>

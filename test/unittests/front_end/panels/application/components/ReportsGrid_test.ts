@@ -35,6 +35,11 @@ const renderReportsGrid =
   return datagrid;
 };
 
+const getHeaderText = (cell: HTMLTableCellElement): string|null => {
+  return cell.textContent?.trim() ||
+      cell.querySelector('devtools-resources-reports-grid-status-header')?.shadowRoot?.textContent?.trim() || null;
+};
+
 describe('ReportsGrid', async () => {
   afterEach(() => {
     Root.Runtime.experiments.clearForTest();
@@ -75,7 +80,7 @@ describe('ReportsGrid', async () => {
     assertShadowRoot(dataGrid.shadowRoot);
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
-    const values = Array.from(headerCells, cell => cell.textContent || '');
+    const values = Array.from(headerCells, getHeaderText);
     assert.deepEqual(values, ['URL', 'Type', 'Status', 'Destination', 'Timestamp', 'Body']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
@@ -114,7 +119,7 @@ describe('ReportsGrid', async () => {
     assertShadowRoot(dataGrid.shadowRoot);
 
     const headerCells = getHeaderCells(dataGrid.shadowRoot);
-    const values = Array.from(headerCells, cell => cell.textContent || '');
+    const values = Array.from(headerCells, getHeaderText);
     assert.deepEqual(values, ['ID', 'URL', 'Type', 'Status', 'Destination', 'Timestamp', 'Body']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);

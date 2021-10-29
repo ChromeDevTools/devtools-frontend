@@ -23,6 +23,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 export interface Column {
   id: string;
   title: string;
+  titleElement?: LitHtml.TemplateResult;
   sortable?: boolean;
   widthWeighting: number;
   hideable: boolean;

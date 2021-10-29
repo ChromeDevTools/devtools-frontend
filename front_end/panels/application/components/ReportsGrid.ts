@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type * as Protocol from '../../../generated/protocol.js';
@@ -23,6 +24,33 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/components/ReportsG
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {render, html} = LitHtml;
+
+export class ReportsGridStatusHeader extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-resources-reports-grid-status-header`;
+  private readonly shadow = this.attachShadow({mode: 'open'});
+
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [reportingApiGridStyles];
+    this.render();
+  }
+
+  private render(): void {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    render(html`
+      ${i18n.i18n.lockedString('Status')}
+      <x-link href="https://web.dev/reporting-api/#report-status">
+        <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+          iconName: 'help_outline',
+          color: 'var(--color-primary)',
+          width: '16px',
+          height: '16px',
+          } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
+      </x-link>
+    `, this.shadow, {host: this});
+    // clang-format on
+  }
+}
 
 export interface ReportsGridData {
   reports: Protocol.Network.ReportingApiReport[];
@@ -59,21 +87,24 @@ export class ReportsGrid extends HTMLElement {
         {
           id: 'type',
           title: i18n.i18n.lockedString('Type'),
-          widthWeighting: 10,
+          widthWeighting: 20,
           hideable: false,
           visible: true,
         },
         {
           id: 'status',
           title: i18n.i18n.lockedString('Status'),
-          widthWeighting: 10,
+          widthWeighting: 20,
           hideable: false,
           visible: true,
+          titleElement: html`
+          <${ReportsGridStatusHeader.litTagName}></${ReportsGridStatusHeader.litTagName}>
+          `,
         },
         {
           id: 'destination',
           title: i18n.i18n.lockedString('Destination'),
-          widthWeighting: 10,
+          widthWeighting: 20,
           hideable: false,
           visible: true,
         },
@@ -116,7 +147,7 @@ export class ReportsGrid extends HTMLElement {
           </div>
         `}
       </div>
-    `, this.shadow);
+    `, this.shadow, {host: this});
     // clang-format on
   }
 
@@ -135,10 +166,13 @@ export class ReportsGrid extends HTMLElement {
   }
 }
 
+ComponentHelpers.CustomElements.defineComponent(
+    'devtools-resources-reports-grid-status-header', ReportsGridStatusHeader);
 ComponentHelpers.CustomElements.defineComponent('devtools-resources-reports-grid', ReportsGrid);
 
 declare global {
   interface HTMLElementTagNameMap {
+    'devtools-resources-reports-grid-status-header': ReportsGridStatusHeader;
     'devtools-resources-reports-grid': ReportsGrid;
   }
 }

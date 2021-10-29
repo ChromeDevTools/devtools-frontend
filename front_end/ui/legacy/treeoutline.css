@@ -215,4 +215,20 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     forced-color-adjust: none;
     color: HighlightText;
   }
+
+  .tree-outline:not(.hide-selection-when-blurred) li.selected:focus-visible devtools-adorner,
+  .tree-outline.hide-selection-when-blurred li.selected:focus-visible devtools-adorner {
+    --override-adorner-background-color: Highlight;
+    --override-adorner-border-color: HighlightText;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) devtools-icon,
+  .tree-outline.hide-selection-when-blurred devtools-icon {
+    --icon-color: ButtonText;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) .selected devtools-icon,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible devtools-icon {
+    --icon-color: HighlightText;
+  }
 }

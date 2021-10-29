@@ -71,7 +71,12 @@
 @media (forced-colors: active) {
   .expandable-view-title:focus-visible {
     forced-color-adjust: none;
-    background: canvas !important; /* stylelint-disable-line declaration-no-important */
+    color: HighlightText;
+    background-color: Highlight;
     box-shadow: 0 0 0 2px Highlight inset;
+  }
+
+  .expandable-view-title:focus-visible .title-expand-icon {
+    background-color: HighlightText;
   }
 }

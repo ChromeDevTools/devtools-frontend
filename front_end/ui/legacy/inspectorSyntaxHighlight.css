@@ -113,7 +113,7 @@
 
 .cm-css-property,
 .webkit-css-property {
-  color: rgb(200 0 0); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--webkit-css-property-color, rgb(200 0 0)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .cm-xml-meta {

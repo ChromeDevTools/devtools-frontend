@@ -431,3 +431,14 @@ devtools-icon.network-panel {
   vertical-align: baseline;
   height: 14px;
 }
+
+@media (forced-colors: active) {
+  .title {
+    color: ButtonText;
+  }
+
+  .tree-outline:not(.hide-selection-when-blurred) .selected .header .title,
+  .tree-outline.hide-selection-when-blurred .selected:focus-visible .header .title {
+    color: HighlightText;
+  }
+}

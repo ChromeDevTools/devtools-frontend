@@ -390,6 +390,11 @@
     color: HighlightText;
   }
 
+  .tabbed-pane-header-tab:hover .tabbed-pane-close-button,
+  .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible .tabbed-pane-close-button {
+    --icon-color: HighlightText;
+  }
+
   .tabbed-pane-header-tabs-drop-down-container {
     opacity: 100%;
   }

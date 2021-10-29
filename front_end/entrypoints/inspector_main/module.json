@@ -1,7 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy",
-    "panels/mobile_throttling"
+    "ui/legacy"
   ],
     "resources": [
     "nodeIcon.css",

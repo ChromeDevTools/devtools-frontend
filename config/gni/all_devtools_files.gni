@@ -77,7 +77,6 @@ all_devtools_files = [
   "front_end/panels/layers/module.json",
   "front_end/entrypoints/main/module.json",
   "front_end/panels/media/module.json",
-  "front_end/panels/mobile_throttling/module.json",
   "front_end/entrypoints/ndb_app/ndb_app.json",
   "front_end/legacy_test_runner/network_test_runner/network_test_runner.js",
   "front_end/panels/network/module.json",

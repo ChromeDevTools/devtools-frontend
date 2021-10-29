@@ -3,7 +3,6 @@
     "ui/legacy/components/source_frame",
     "ui/legacy",
     "ui/legacy/components/perf_ui",
-    "panels/mobile_throttling",
     "panels/network",
     "panels/sources"
   ]

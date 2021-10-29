@@ -1,7 +1,5 @@
 {
   "modules" : [
-    { "name": "panels/mobile_throttling", "type": "autostart"  },
-
     { "name": "panels/browser_debugger" },
     { "name": "panels/elements" },
     { "name": "panels/issues" },

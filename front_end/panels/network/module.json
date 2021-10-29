@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "panels/mobile_throttling",
     "ui/legacy/components/perf_ui",
     "ui/legacy/components/source_frame",
     "ui/legacy"

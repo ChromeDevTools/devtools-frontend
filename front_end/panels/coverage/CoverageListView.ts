@@ -138,8 +138,8 @@ export class CoverageListView extends UI.Widget.VBox {
     this.highlightRegExp = null;
 
     const columns: DataGrid.DataGrid.ColumnDescriptor[] = [
-      {id: 'url', title: i18nString(UIStrings.url), width: '250px', fixedWidth: false, sortable: true},
-      {id: 'type', title: i18nString(UIStrings.type), width: '45px', fixedWidth: true, sortable: true},
+      {id: 'url', title: i18nString(UIStrings.url), width: '250px', weight: 3, fixedWidth: false, sortable: true},
+      {id: 'type', title: i18nString(UIStrings.type), width: '45px', weight: 1, fixedWidth: true, sortable: true},
       {
         id: 'size',
         title: i18nString(UIStrings.totalBytes),
@@ -147,6 +147,7 @@ export class CoverageListView extends UI.Widget.VBox {
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
+        weight: 1,
       },
       {
         id: 'unusedSize',
@@ -156,9 +157,17 @@ export class CoverageListView extends UI.Widget.VBox {
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending,
+        weight: 1,
       },
-      {id: 'bars', title: i18nString(UIStrings.usageVisualization), width: '250px', fixedWidth: false, sortable: true},
-    ] as DataGrid.DataGrid.ColumnDescriptor[];
+      {
+        id: 'bars',
+        title: i18nString(UIStrings.usageVisualization),
+        width: '250px',
+        fixedWidth: false,
+        sortable: true,
+        weight: 1,
+      },
+    ];
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid<GridNode>({
       displayName: i18nString(UIStrings.codeCoverage),
       columns,

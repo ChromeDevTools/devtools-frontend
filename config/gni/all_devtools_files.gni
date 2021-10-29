@@ -36,6 +36,8 @@ all_devtools_files = [
   "front_end/legacy_test_runner/bindings_test_runner/PersistenceTestRunner.js",
   "front_end/panels/browser_debugger/module.json",
   "front_end/third_party/codemirror/codemirror.css",
+  "front_end/ui/legacy/components/color_picker/module.json",
+  "front_end/ui/legacy/components/color_picker/spectrum.css",
   "front_end/legacy_test_runner/console_test_runner/console_test_runner.js",
   "front_end/panels/console/consoleContextSelector.css",
   "front_end/panels/console/consolePinPane.css",

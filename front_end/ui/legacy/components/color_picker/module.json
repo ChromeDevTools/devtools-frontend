@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    "ui/legacy"
+  ],
+    "resources": [
+    "spectrum.css"
+  ]
+}

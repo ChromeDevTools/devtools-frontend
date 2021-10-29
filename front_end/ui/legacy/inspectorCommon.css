@@ -390,7 +390,7 @@ input::placeholder {
 .chrome-select:enabled:active,
 .chrome-select:enabled:focus,
 .chrome-select:enabled:hover {
-  --override-select-box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+  --override-select-box-shadow: 0 0 0 2px var(--color-button-outline-focus);
 
   background-color: var(--color-background-elevation-1);
   box-shadow: var(--override-select-box-shadow);
@@ -401,10 +401,7 @@ input::placeholder {
 }
 
 .chrome-select:enabled:focus {
-  --override-extra-box-shadow-focus: 0 0 0 2px rgb(66 133 244 / 40%);
-
   border-color: transparent;
-  box-shadow: var(--override-select-box-shadow), var(--override-extra-box-shadow-focus);
 }
 
 .-theme-with-dark-background .chrome-select:enabled:active,
@@ -413,14 +410,7 @@ input::placeholder {
 :host-context(.-theme-with-dark-background) .chrome-select:enabled:active,
 :host-context(.-theme-with-dark-background) .chrome-select:enabled:focus,
 :host-context(.-theme-with-dark-background) .chrome-select:enabled:hover {
-  --override-select-box-shadow: 0 1px 2px rgb(230 230 230 / 10%);
-}
-
-/* Disabled so we can keep all the selectors above in one block */
-/* stylelint-disable-next-line no-descending-specificity */
-.-theme-with-dark-background .chrome-select:enabled:focus,
-:host-context(.-theme-with-dark-background) .chrome-select:enabled:focus {
-  --override-extra-box-shadow-focus: 0 0 0 2px rgb(11 78 189 / 40%);
+  --override-select-box-shadow: 0 0 0 2px var(--color-button-outline-focus);
 }
 
 .chrome-select-label {

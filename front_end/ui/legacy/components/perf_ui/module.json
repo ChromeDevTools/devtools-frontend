@@ -1,8 +1,6 @@
 {
   "dependencies": [
-    "ui/legacy",
-    "ui/legacy/components/source_frame",
-    "ui/legacy/components/text_editor"
+    "ui/legacy"
   ],
     "resources": [
     "chartViewport.css",

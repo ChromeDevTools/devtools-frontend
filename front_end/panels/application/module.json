@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "ui/legacy/components/source_frame",
     "ui/legacy",
     "ui/legacy/components/perf_ui",
     "panels/network",

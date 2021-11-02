@@ -283,10 +283,8 @@ export class Editor<T> {
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this.commitButton = createTextButton('', this.commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this.commitButton);
-    this.cancelButton = createTextButton(
-        i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), '', true /* primary */, 'mousedown');
-    this.cancelButton.addEventListener(
-        'keydown', onKeyDown.bind(null, event => event.key === 'Enter', this.cancelClicked.bind(this)), false);
+    this.cancelButton =
+        createTextButton(i18nString(UIStrings.cancelString), this.cancelClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this.cancelButton);
 
     this.errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');

@@ -13,6 +13,7 @@ ts_library("ui") {
     "Icon_test.ts",
     "KeyboardShortcut_test.ts",
     "ListModel_test.ts",
+    "ListWidget_test.ts",
     "ShortcutRegistry_test.ts",
     "Treeoutline-keyboard_test.ts",
     "UIUtils_test.ts",

@@ -19,7 +19,8 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await waitForAria('link\xa0"cats" [role="treeitem"]');
   });
 
-  it('allows navigating iframes', async () => {
+  // Test disabled to unblock chromium roll.
+  it.skip('[crbug.com/1265818] allows navigating iframes', async () => {
     await goToResource('elements/accessibility-iframe-page.html');
     await toggleAccessibilityPane();
     await toggleAccessibilityTree();
@@ -28,7 +29,8 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await waitForAria('link\xa0"cats" [role="treeitem"]');
   });
 
-  it('listens for changes to DOM and redraws the tree', async () => {
+  // Test disabled to unblock chromium roll.
+  it.skip('[crbug.com/1265818] listens for text changes to DOM and redraws the tree', async () => {
     const {target} = getBrowserAndPages();
     await goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityPane();

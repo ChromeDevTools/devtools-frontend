@@ -1440,11 +1440,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const currentNode = this.parentPaneInternal.node();
     this.parentPaneInternal.setUserOperation(true);
 
+    styleText += Platform.StringUtilities.findUnclosedCssQuote(styleText);
+
     // Append a ";" if the new text does not end in ";".
     // FIXME: this does not handle trailing comments.
     if (styleText.length && !/;\s*$/.test(styleText)) {
       styleText += ';';
     }
+
     const overwriteProperty = !this.newProperty || hasBeenEditedIncrementally;
     let success: boolean = await this.property.setText(styleText, majorChange, overwriteProperty);
     // Revert to the original text if applying the new text failed

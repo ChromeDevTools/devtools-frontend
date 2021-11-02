@@ -29,8 +29,6 @@ let loadedProtocolMonitorModule: (typeof ProtocolMonitor|undefined);
 
 async function loadProtocolMonitorModule(): Promise<typeof ProtocolMonitor> {
   if (!loadedProtocolMonitorModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/protocol_monitor');
     loadedProtocolMonitorModule = await import('./protocol_monitor.js');
   }
   return loadedProtocolMonitorModule;

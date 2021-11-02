@@ -60,10 +60,6 @@ input.dt-checkbox-themed:checked::after {
   background-color: var(--color-background-inverted);
 }
 
-:host-context(.-theme-with-dark-background) input:not(.dt-checkbox-themed) {
-  filter: invert(80%);
-}
-
 .dt-checkbox-text {
   margin-left: 3px;
   overflow: hidden;

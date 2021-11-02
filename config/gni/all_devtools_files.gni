@@ -34,7 +34,6 @@ all_devtools_files = [
   "front_end/third_party/codemirror/codemirror.css",
   "front_end/legacy_test_runner/console_test_runner/console_test_runner.js",
   "front_end/legacy_test_runner/coverage_test_runner/coverage_test_runner.js",
-  "front_end/panels/coverage/module.json",
   "front_end/legacy_test_runner/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
   "front_end/legacy_test_runner/data_grid_test_runner/data_grid_test_runner.js",
   "front_end/legacy_test_runner/device_mode_test_runner/device_mode_test_runner.js",

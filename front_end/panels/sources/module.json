@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "ui/legacy",
-    "panels/coverage"
+    "ui/legacy"
   ]
 }

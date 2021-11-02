@@ -83,7 +83,6 @@ foreach(application, devtools_applications) {
 
 non_autostart_non_remote_modules = [
   "panels/browser_debugger/browser_debugger_module.js",
-  "panels/coverage/coverage_module.js",
   "panels/elements/elements_module.js",
   "panels/js_profiler/js_profiler_module.js",
   "panels/layer_viewer/layer_viewer_module.js",

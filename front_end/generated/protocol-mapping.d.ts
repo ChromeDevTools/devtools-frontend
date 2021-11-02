@@ -1362,6 +1362,16 @@ export namespace ProtocolMapping {
      */
     'DOMDebugger.setXHRBreakpoint': {paramsType: [Protocol.DOMDebugger.SetXHRBreakpointRequest]; returnType: void;};
     /**
+     * Sets breakpoint on particular native event.
+     */
+    'EventBreakpoints.setInstrumentationBreakpoint':
+        {paramsType: [Protocol.EventBreakpoints.SetInstrumentationBreakpointRequest]; returnType: void;};
+    /**
+     * Removes breakpoint on particular native event.
+     */
+    'EventBreakpoints.removeInstrumentationBreakpoint':
+        {paramsType: [Protocol.EventBreakpoints.RemoveInstrumentationBreakpointRequest]; returnType: void;};
+    /**
      * Disables DOM snapshot agent for the given page.
      */
     'DOMSnapshot.disable': {paramsType: []; returnType: void;};

@@ -37,6 +37,8 @@ declare namespace ProtocolProxyApi {
 
     DOMDebugger: DOMDebuggerApi;
 
+    EventBreakpoints: EventBreakpointsApi;
+
     DOMSnapshot: DOMSnapshotApi;
 
     DOMStorage: DOMStorageApi;
@@ -126,6 +128,8 @@ declare namespace ProtocolProxyApi {
     DOM: DOMDispatcher;
 
     DOMDebugger: DOMDebuggerDispatcher;
+
+    EventBreakpoints: EventBreakpointsDispatcher;
 
     DOMSnapshot: DOMSnapshotDispatcher;
 
@@ -1163,6 +1167,21 @@ declare namespace ProtocolProxyApi {
         Promise<Protocol.ProtocolResponseWithError>;
   }
   export interface DOMDebuggerDispatcher {}
+
+  export interface EventBreakpointsApi {
+    /**
+     * Sets breakpoint on particular native event.
+     */
+    invoke_setInstrumentationBreakpoint(params: Protocol.EventBreakpoints.SetInstrumentationBreakpointRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Removes breakpoint on particular native event.
+     */
+    invoke_removeInstrumentationBreakpoint(params: Protocol.EventBreakpoints.RemoveInstrumentationBreakpointRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+  }
+  export interface EventBreakpointsDispatcher {}
 
   export interface DOMSnapshotApi {
     /**

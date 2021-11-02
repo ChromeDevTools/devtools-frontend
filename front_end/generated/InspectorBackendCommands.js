@@ -276,7 +276,8 @@ export function registerCommands(inspectorBackend) {
     QuirksModeIssue: 'QuirksModeIssue',
     NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
     WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue',
-    GenericIssue: 'GenericIssue'
+    GenericIssue: 'GenericIssue',
+    DeprecationIssue: 'DeprecationIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});
@@ -889,6 +890,14 @@ export function registerCommands(inspectorBackend) {
       'DOMDebugger.setInstrumentationBreakpoint', [{'name': 'eventName', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'DOMDebugger.setXHRBreakpoint', [{'name': 'url', 'type': 'string', 'optional': false}], []);
+
+  // EventBreakpoints.
+  inspectorBackend.registerCommand(
+      'EventBreakpoints.setInstrumentationBreakpoint', [{'name': 'eventName', 'type': 'string', 'optional': false}],
+      []);
+  inspectorBackend.registerCommand(
+      'EventBreakpoints.removeInstrumentationBreakpoint', [{'name': 'eventName', 'type': 'string', 'optional': false}],
+      []);
 
   // DOMSnapshot.
   inspectorBackend.registerCommand('DOMSnapshot.disable', [], []);
@@ -1630,13 +1639,14 @@ export function registerCommands(inspectorBackend) {
   ]);
   inspectorBackend.registerEvent('Network.requestServedFromCache', ['requestId']);
   inspectorBackend.registerEvent('Network.requestWillBeSent', [
-    'requestId', 'loaderId', 'documentURL', 'request', 'timestamp', 'wallTime', 'initiator', 'redirectResponse', 'type',
-    'frameId', 'hasUserGesture'
+    'requestId', 'loaderId', 'documentURL', 'request', 'timestamp', 'wallTime', 'initiator', 'redirectHasExtraInfo',
+    'redirectResponse', 'type', 'frameId', 'hasUserGesture'
   ]);
   inspectorBackend.registerEvent('Network.resourceChangedPriority', ['requestId', 'newPriority', 'timestamp']);
   inspectorBackend.registerEvent('Network.signedExchangeReceived', ['requestId', 'info']);
   inspectorBackend.registerEvent(
-      'Network.responseReceived', ['requestId', 'loaderId', 'timestamp', 'type', 'response', 'frameId']);
+      'Network.responseReceived',
+      ['requestId', 'loaderId', 'timestamp', 'type', 'response', 'hasExtraInfo', 'frameId']);
   inspectorBackend.registerEvent('Network.webSocketClosed', ['requestId', 'timestamp']);
   inspectorBackend.registerEvent('Network.webSocketCreated', ['requestId', 'url', 'initiator']);
   inspectorBackend.registerEvent('Network.webSocketFrameError', ['requestId', 'timestamp', 'errorMessage']);
@@ -2176,7 +2186,6 @@ export function registerCommands(inspectorBackend) {
     ContentWebUSB: 'ContentWebUSB',
     ContentMediaSession: 'ContentMediaSession',
     ContentMediaSessionService: 'ContentMediaSessionService',
-    ContentMediaPlay: 'ContentMediaPlay',
     EmbedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',
     EmbedderSafeBrowsingTriggeredPopupBlocker: 'EmbedderSafeBrowsingTriggeredPopupBlocker',
     EmbedderSafeBrowsingThreatDetails: 'EmbedderSafeBrowsingThreatDetails',

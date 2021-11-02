@@ -552,6 +552,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
           timestamp,
           type: type || Protocol.Network.ResourceType.Other,
           response: redirectResponse,
+          hasExtraInfo: false,
           frameId,
         });
       }

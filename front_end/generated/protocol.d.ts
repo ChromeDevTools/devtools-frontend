@@ -965,6 +965,26 @@ declare namespace Protocol {
     }
 
     /**
+     * This issue tracks information needed to print a deprecation message.
+     * The formatting is inherited from the old console.log version, see more at:
+     * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
+     * TODO(crbug.com/1264960): Re-work format to add i18n support per:
+     * https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+     */
+    export interface DeprecationIssueDetails {
+      affectedFrame?: AffectedFrame;
+      sourceCodeLocation: SourceCodeLocation;
+      /**
+       * The content of the deprecation issue (this won't be translated),
+       * e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
+       * around January 2022. Please use Web Storage or Indexed Database
+       * instead. This standard was abandoned in January, 1970. See
+       * https://www.chromestatus.com/feature/5684870116278272 for more details."
+       */
+      message?: string;
+    }
+
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -984,6 +1004,7 @@ declare namespace Protocol {
       NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
       WasmCrossOriginModuleSharingIssue = 'WasmCrossOriginModuleSharingIssue',
       GenericIssue = 'GenericIssue',
+      DeprecationIssue = 'DeprecationIssue',
     }
 
     /**
@@ -1006,6 +1027,7 @@ declare namespace Protocol {
       navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
       wasmCrossOriginModuleSharingIssue?: WasmCrossOriginModuleSharingIssueDetails;
       genericIssueDetails?: GenericIssueDetails;
+      deprecationIssueDetails?: DeprecationIssueDetails;
     }
 
     /**
@@ -4071,6 +4093,29 @@ declare namespace Protocol {
        * Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
        */
       url: string;
+    }
+  }
+
+  /**
+   * EventBreakpoints permits setting breakpoints on particular operations and
+   * events in targets that run JavaScript but do not have a DOM.
+   * JavaScript execution will stop on these operations as if there was a regular
+   * breakpoint set.
+   */
+  export namespace EventBreakpoints {
+
+    export interface SetInstrumentationBreakpointRequest {
+      /**
+       * Instrumentation name to stop on.
+       */
+      eventName: string;
+    }
+
+    export interface RemoveInstrumentationBreakpointRequest {
+      /**
+       * Instrumentation name to stop on.
+       */
+      eventName: string;
     }
   }
 
@@ -8529,6 +8574,12 @@ declare namespace Protocol {
        */
       initiator: Initiator;
       /**
+       * In the case that redirectResponse is populated, this flag indicates whether
+       * requestWillBeSentExtraInfo and responseReceivedExtraInfo events will be or were emitted
+       * for the request which was just redirected.
+       */
+      redirectHasExtraInfo: boolean;
+      /**
        * Redirect response data.
        */
       redirectResponse?: Response;
@@ -8602,6 +8653,11 @@ declare namespace Protocol {
        * Response data.
        */
       response: Response;
+      /**
+       * Indicates whether requestWillBeSentExtraInfo and responseReceivedExtraInfo events will be
+       * or were emitted for this request.
+       */
+      hasExtraInfo: boolean;
       /**
        * Frame identifier.
        */
@@ -10492,7 +10548,6 @@ declare namespace Protocol {
       ContentWebUSB = 'ContentWebUSB',
       ContentMediaSession = 'ContentMediaSession',
       ContentMediaSessionService = 'ContentMediaSessionService',
-      ContentMediaPlay = 'ContentMediaPlay',
       EmbedderPopupBlockerTabHelper = 'EmbedderPopupBlockerTabHelper',
       EmbedderSafeBrowsingTriggeredPopupBlocker = 'EmbedderSafeBrowsingTriggeredPopupBlocker',
       EmbedderSafeBrowsingThreatDetails = 'EmbedderSafeBrowsingThreatDetails',

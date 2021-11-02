@@ -489,7 +489,7 @@ export const generatedProperties = [
   },
   {'name': 'font-variation-settings', 'inherited': true, 'keywords': ['normal']},
   {'name': 'font-weight', 'inherited': true, 'keywords': ['normal', 'bold', 'bolder', 'lighter']},
-  {'name': 'forced-color-adjust', 'inherited': true, 'keywords': ['auto', 'none']},
+  {'name': 'forced-color-adjust', 'inherited': true, 'keywords': ['auto', 'none', 'preserve-parent-color']},
   {'longhands': ['row-gap', 'column-gap'], 'name': 'gap'},
   {
     'longhands': [
@@ -764,7 +764,10 @@ export const generatedProperties = [
     'name': 'text-decoration'
   },
   {'name': 'text-decoration-color', 'keywords': ['currentcolor']},
-  {'name': 'text-decoration-line', 'keywords': ['none', 'underline', 'overline', 'line-through', 'blink']},
+  {
+    'name': 'text-decoration-line',
+    'keywords': ['none', 'underline', 'overline', 'line-through', 'blink', 'spelling-error', 'grammar-error']
+  },
   {'name': 'text-decoration-skip-ink', 'inherited': true, 'keywords': ['none', 'auto']},
   {'name': 'text-decoration-style', 'keywords': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
   {'name': 'text-decoration-thickness', 'inherited': true, 'keywords': ['auto', 'from-font']},
@@ -1041,7 +1044,7 @@ export const generatedPropertyValues = {
   },
   'font-variation-settings': {'values': ['normal']},
   'font-weight': {'values': ['normal', 'bold', 'bolder', 'lighter']},
-  'forced-color-adjust': {'values': ['auto', 'none']},
+  'forced-color-adjust': {'values': ['auto', 'none', 'preserve-parent-color']},
   'grid-auto-columns': {'values': ['auto', 'min-content', 'max-content']},
   'grid-auto-flow': {'values': ['row', 'column']},
   'grid-auto-rows': {'values': ['auto', 'min-content', 'max-content']},
@@ -1152,7 +1155,8 @@ export const generatedPropertyValues = {
   'text-anchor': {'values': ['start', 'middle', 'end']},
   'text-combine-upright': {'values': ['none', 'all']},
   'text-decoration-color': {'values': ['currentcolor']},
-  'text-decoration-line': {'values': ['none', 'underline', 'overline', 'line-through', 'blink']},
+  'text-decoration-line':
+      {'values': ['none', 'underline', 'overline', 'line-through', 'blink', 'spelling-error', 'grammar-error']},
   'text-decoration-skip-ink': {'values': ['none', 'auto']},
   'text-decoration-style': {'values': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
   'text-decoration-thickness': {'values': ['auto', 'from-font']},

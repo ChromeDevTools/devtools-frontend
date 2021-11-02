@@ -159,7 +159,7 @@ export class DOMNode {
       this.childrenInternal = [];
     }
 
-    const frameOwnerTags = new Set(['EMBED', 'IFRAME', 'OBJECT', 'PORTAL']);
+    const frameOwnerTags = new Set(['EMBED', 'IFRAME', 'OBJECT', 'PORTAL', 'FENCEDFRAME']);
     if (payload.contentDocument) {
       this.contentDocumentInternal = new DOMDocument(this.#domModelInternal, payload.contentDocument);
       this.contentDocumentInternal.parentNode = this;

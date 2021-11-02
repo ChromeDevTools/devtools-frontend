@@ -337,6 +337,7 @@ export class MainImpl {
       'hideIssuesFeature',
       'bfcacheDebugging',
       'cssTypeComponentLength',
+      Root.Runtime.ExperimentName.SYNC_SETTINGS,
     ]);
 
     Root.Runtime.experiments.cleanUpStaleExperiments();

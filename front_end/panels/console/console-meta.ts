@@ -306,6 +306,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   title: i18nLazyString(UIStrings.groupSimilarMessagesInConsole),
   settingName: 'consoleGroupSimilar',
   settingType: Common.Settings.SettingType.BOOLEAN,

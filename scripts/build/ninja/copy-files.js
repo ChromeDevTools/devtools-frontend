@@ -13,7 +13,7 @@ for (const file of files.split(',')) {
   // is because the file in that location might be a hardlinked file, and
   // overwriting it doesn't change the fact that it's hardlinked.
   const srcContents = fs.readFileSync(srcPath);
-  if (fs.existsSync(destPath)) {
+  if (fileExists(destPath)) {
     // Check contents, return early if match
     const destContents = fs.readFileSync(destPath);
     if (srcContents.equals(destContents)) {
@@ -25,4 +25,13 @@ for (const file of files.split(',')) {
   // toolchain will create a hardlink, which in turn reflects changes in
   // gen and resources/inspector back to //front_end.
   fs.writeFileSync(destPath, srcContents);
+}
+
+/**
+ * Case sensitive implementation of a file look up.
+ */
+function fileExists(filePath) {
+  const dir = path.dirname(filePath);
+  const files = fs.readdirSync(dir);
+  return files.includes(path.basename(filePath));
 }

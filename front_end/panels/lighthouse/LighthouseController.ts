@@ -262,42 +262,19 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       return '';
     }
     const mainTarget = this.manager.target();
-    const runtimeModel = mainTarget.model(SDK.RuntimeModel.RuntimeModel);
-    const executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
-    let inspectedURL = mainTarget.inspectedURL();
-    if (!executionContext) {
+    // target.inspectedURL is reliably populated, however it lacks any url #hash
+    const inspectedURL = mainTarget.inspectedURL();
+
+    // We'll use the navigationHistory to acquire the current URL including hash
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const navHistory = resourceTreeModel && await resourceTreeModel.navigationHistory();
+    if (!resourceTreeModel || !navHistory) {
       return inspectedURL;
     }
 
-    // Evaluate location.href for a more specific URL than inspectedURL provides so that SPA hash navigation routes
-    // will be respected and audited.
-    try {
-      const result = await executionContext.evaluate(
-          {
-            expression: 'window.location.href',
-            objectGroup: 'lighthouse',
-            includeCommandLineAPI: false,
-            silent: false,
-            returnByValue: true,
-            generatePreview: false,
-            allowUnsafeEvalBlockedByCSP: undefined,
-            disableBreaks: undefined,
-            replMode: undefined,
-            throwOnSideEffect: undefined,
-            timeout: undefined,
-          },
-          /* userGesture */ false, /* awaitPromise */ false);
-      if ((!('exceptionDetails' in result) || !result.exceptionDetails) && 'object' in result && result.object) {
-        if (result.object.value) {
-          inspectedURL = result.object.value;
-        }
-        result.object.release();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return inspectedURL;
+    const {currentIndex, entries} = navHistory;
+    const navigationEntry = entries[currentIndex];
+    return navigationEntry.url;
   }
 
   getFlags(): {internalDisableDeviceScreenEmulation: boolean, emulatedFormFactor: (string|undefined)} {

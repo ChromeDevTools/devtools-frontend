@@ -1,4 +1,4 @@
-#!/usr/bin/env lucicfg
+#!/usr/bin/env -S bash -xc 'lucicfg format && lucicfg "$0"'
 
 lucicfg.check_version("1.29.1", "Please update depot_tools")
 
@@ -20,9 +20,10 @@ lucicfg.config(
         "luci-notify/**/*",
         "luci-scheduler.cfg",
         "project.cfg",
-        "realms.cfg"
+        "realms.cfg",
     ],
     fail_on_warnings = True,
+    lint_checks = ["none", "+formatting"],
 )
 
 luci.project(
@@ -106,6 +107,7 @@ def led_users(*, pool_realm, builder_realms, groups):
             roles = "role/swarming.taskTriggerer",
             groups = groups,
         )
+
 led_users(
     pool_realm = "pools/ci",
     builder_realms = ["ci"],
@@ -169,8 +171,8 @@ The autoroller may be stuck. Please check out <a href=\"https://chromium-review.
 Builder {{.Build.Builder.Builder}} found stale CL at
 <a href=\"https://ci.chromium.org/b/{{.Build.Id}}\">Build {{.Build.Number}}</a>
 on `{{.Build.EndTime | time}}`
-"""
-    )
+""",
+    ),
 )
 
 luci.milo(

@@ -3,7 +3,6 @@
     { "name": "panels/emulation", "type": "autostart" },
 
     { "name": "panels/lighthouse" },
-    { "name": "panels/browser_debugger" },
     { "name": "emulated_devices" },
     { "name": "panels/issues" },
     { "name": "panels/layers" },

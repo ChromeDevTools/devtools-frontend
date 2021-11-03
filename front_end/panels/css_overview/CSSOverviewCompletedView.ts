@@ -11,12 +11,9 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
+import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
 import type {OverviewController, PopulateNodesEvent, PopulateNodesEventNodes, PopulateNodesEventNodeTypes} from './CSSOverviewController.js';
 import {Events as CSSOverViewControllerEvents} from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, SidebarEvents} from './CSSOverviewSidebarPanel.js';
@@ -227,15 +224,14 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   readonly #resultsContainer: UI.Widget.VBox;
   readonly #elementContainer: DetailsView;
   readonly #sideBar: CSSOverviewSidebarPanel;
-  #cssModel: SDK.CSSModel.CSSModel;
-  #domModel: SDK.DOMModel.DOMModel;
-  readonly #domAgent: ProtocolProxyApi.DOMApi;
+  #cssModel?: SDK.CSSModel.CSSModel;
+  #domModel?: SDK.DOMModel.DOMModel;
   #linkifier: Components.Linkifier.Linkifier;
   #viewMap: Map<string, ElementDetailsView>;
   #data: OverviewData|null;
   #fragment?: UI.Fragment.Fragment;
 
-  constructor(controller: OverviewController, target: SDK.Target.Target) {
+  constructor(controller: OverviewController) {
     super('css_overview_completed_view');
 
     this.#controller = controller;
@@ -264,14 +260,6 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.splitWidget().setSidebarWidget(this.#sideBar);
     this.splitWidget().setMainWidget(this.#mainContainer);
 
-    const cssModel = target.model(SDK.CSSModel.CSSModel);
-    const domModel = target.model(SDK.DOMModel.DOMModel);
-    if (!cssModel || !domModel) {
-      throw new Error('Target must provide CSS and DOM models');
-    }
-    this.#cssModel = cssModel;
-    this.#domModel = domModel;
-    this.#domAgent = target.domAgent();
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
 
     this.#viewMap = new Map();
@@ -298,6 +286,16 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.registerCSSFiles([cssOverviewCompletedViewStyles]);
 
     // TODO(paullewis): update the links in the panels in case source has been .
+  }
+
+  initializeModels(target: SDK.Target.Target): void {
+    const cssModel = target.model(SDK.CSSModel.CSSModel);
+    const domModel = target.model(SDK.DOMModel.DOMModel);
+    if (!cssModel || !domModel) {
+      throw new Error('Target must provide CSS and DOM models');
+    }
+    this.#cssModel = cssModel;
+    this.#domModel = domModel;
   }
 
   private sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<string>): void {
@@ -650,6 +648,9 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     let view = this.#viewMap.get(id);
     if (!view) {
+      if (!this.#domModel || !this.#cssModel) {
+        throw new Error('Unable to initialize CSS Overview, missing models');
+      }
       view = new ElementDetailsView(this.#controller, this.#domModel, this.#cssModel, this.#linkifier);
       view.populateNodes(payload.nodes);
       this.#viewMap.set(id, view);

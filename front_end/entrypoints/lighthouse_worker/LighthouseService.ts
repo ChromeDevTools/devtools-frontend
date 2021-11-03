@@ -29,6 +29,8 @@ class LighthousePort {
   send(message: string): void {
     notifyFrontendViaWorkerMessage('sendProtocolMessage', {message});
   }
+  close(): void {
+  }
 }
 
 const port = new LighthousePort();
@@ -59,7 +61,7 @@ async function start(params: any): Promise<unknown> {
     const url = params.url;
 
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return self.runLighthouse(url, flags, config, connection);
+    return await self.runLighthouse(url, flags, config, connection);
   } catch (err) {
     return ({
       fatal: true,

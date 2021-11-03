@@ -40,6 +40,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../node_app/*",
   ]
 
   visibility += devtools_entrypoints_visibility

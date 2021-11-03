@@ -7,4 +7,7 @@ import '../node_main/node_main-meta.js';
 import './node_app-meta.js';
 import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
 
+// Side-effect start the `node_main` module, which implements runnables in
+// the NodeMain class
+await import('../node_main/node_main.js');
 Startup.RuntimeInstantiator.startApplication('node_app');

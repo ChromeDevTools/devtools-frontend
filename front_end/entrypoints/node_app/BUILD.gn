@@ -11,6 +11,7 @@ ts_library("node_app") {
 
   deps = [
     ":node_app-meta",
+    "../../entrypoints/node_main:bundle",
     "../../entrypoints/node_main:meta",
     "../../entrypoints/startup:bundle",
     "../../panels/js_profiler:meta",

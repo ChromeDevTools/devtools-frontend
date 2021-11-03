@@ -245,6 +245,22 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ConsoleShowsCorsErrors, Number(show), 2);
   }
+
+  syncSetting(devtoolsSyncSettingEnabled: boolean): void {
+    const size = Object.keys(SyncSetting).length + 1;
+
+    InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
+      let settingValue = SyncSetting.ChromeSyncDisabled;
+      if (syncInfo.isSyncActive && !syncInfo.arePreferencesSynced) {
+        settingValue = SyncSetting.ChromeSyncSettingsDisabled;
+      } else if (syncInfo.isSyncActive && syncInfo.arePreferencesSynced) {
+        settingValue = devtoolsSyncSettingEnabled ? SyncSetting.DevToolsSyncSettingEnabled :
+                                                    SyncSetting.DevToolsSyncSettingDisabled;
+      }
+
+      InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SyncSetting, settingValue, size);
+    });
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -800,3 +816,12 @@ export const Language: Record<string, number> = {
   'zh-TW': 81,
   'zu': 82,
 };
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum SyncSetting {
+  ChromeSyncDisabled = 1,
+  ChromeSyncSettingsDisabled = 2,
+  DevToolsSyncSettingDisabled = 3,
+  DevToolsSyncSettingEnabled = 4,
+}

@@ -147,6 +147,9 @@ export class MainImpl {
     console.timeStamp('Main._gotPreferences');
     this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
+
+    Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
+
     this.createAppUI();
   }
 

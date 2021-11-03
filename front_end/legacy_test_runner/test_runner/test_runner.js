@@ -59,15 +59,13 @@ export async function _executeTestScript() {
 
     // Auto-start unit tests
     self.test = async function() {
-      // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-      await eval(`import("${testScriptURL}")`);
+      await import(testScriptURL);
     };
     return;
   }
 
   try {
-    // TODO(crbug.com/1011811): Remove eval when we use TypeScript which does support dynamic imports
-    await eval(`import("${testScriptURL}")`);
+    await import(testScriptURL);
   } catch (err) {
     TestRunner.addResult('TEST ENDED EARLY DUE TO UNCAUGHT ERROR:');
     TestRunner.addResult(err && err.stack || err);

@@ -971,7 +971,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.#elementGrid.setStriped(true);
     this.#elementGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortMediaQueryDataGrid.bind(this));
 
-    this.element.appendChild(this.#elementGrid.element);
+    this.#elementGrid.asWidget().show(this.element);
   }
 
   private sortMediaQueryDataGrid(): void {

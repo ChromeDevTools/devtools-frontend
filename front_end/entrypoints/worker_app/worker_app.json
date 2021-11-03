@@ -1,7 +1,6 @@
 {
   "modules" : [
     { "name": "panels/browser_debugger" },
-    { "name": "panels/elements" },
     { "name": "panels/issues" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/network" },

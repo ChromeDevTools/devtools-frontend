@@ -140,8 +140,6 @@ let loadedElementsModule: (typeof Elements|undefined);
 
 async function loadElementsModule(): Promise<typeof Elements> {
   if (!loadedElementsModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/elements');
     loadedElementsModule = await import('./elements.js');
   }
   return loadedElementsModule;

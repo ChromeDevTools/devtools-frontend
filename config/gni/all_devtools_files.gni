@@ -43,7 +43,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/elements_test_runner/ElementsTestRunner.js",
   "front_end/legacy_test_runner/elements_test_runner/SetOuterHTMLTestRunner.js",
   "front_end/legacy_test_runner/elements_test_runner/StylesUpdateLinksTestRunner.js",
-  "front_end/panels/elements/module.json",
   "front_end/emulated_devices/module.json",
   "front_end/panels/emulation/deviceModeToolbar.css",
   "front_end/panels/emulation/deviceModeView.css",

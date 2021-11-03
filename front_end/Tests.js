@@ -1290,7 +1290,6 @@
 
   TestSuite.prototype.testInspectedElementIs = async function(nodeName) {
     this.takeControl();
-    await self.runtime.loadModulePromise('elements');
     if (!Elements.ElementsPanel.firstInspectElementNodeNameForTest) {
       await new Promise(f => this.addSniffer(Elements.ElementsPanel, 'firstInspectElementCompletedForTest', f));
     }

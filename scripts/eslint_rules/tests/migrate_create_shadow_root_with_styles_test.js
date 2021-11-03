@@ -12,7 +12,7 @@ const ruleTester = new (require('eslint').RuleTester)({
 
 const MIGRATION_ERROR_MESSAGE = 'Import CSS file instead of passing a string into createShadowRootWithStyles';
 const MANUALLY_MIGRATE_ERROR_ESSAGE =
-    'Please manually migrate this file. Got error: Cannot read property \'properties\' of undefined';
+    'Please manually migrate this file. Got error: Cannot read properties of undefined (reading \'properties\')';
 
 ruleTester.run('check_migrate_RegisterRequiredCSS', rule, {
   valid: [

@@ -62,6 +62,24 @@ ruleTester.run('check_e2e_tests', rule, {
       `,
       filename: 'test/e2e/folder/file.ts',
     },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+      // Explaining comment
+      describe.skip('[crbug.com/123456]: e2e-test', async () => {
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [{message: rule.meta.messages.missingBugId}],
+    },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+      // Explaining comment
+      describe.skipOnPlatforms(['mac'], '[crbug.com/123456]: e2e-test', async () => {
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [{message: rule.meta.messages.missingBugId}],
+    },
   ],
 
   invalid: [
@@ -110,6 +128,22 @@ ruleTester.run('check_e2e_tests', rule, {
       `,
       filename: 'test/e2e/folder/file.ts',
       errors: [{message: rule.meta.messages.extraBugId}],
+    },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+      describe.skip('e2e-test', async () => {
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [{message: rule.meta.messages.missingBugId}, {message: rule.meta.messages.comment}],
+    },
+    {
+      code: `import {describe, it} from '../../shared/mocha-extensions.js';
+      describe.skipOnPlatforms(['mac'], 'e2e-test', async () => {
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [{message: rule.meta.messages.missingBugId}, {message: rule.meta.messages.comment}],
     },
   ]
 });

@@ -72,6 +72,15 @@ describe.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
   return wrapDescribe(Mocha.describe.skip, title, fn);
 };
 
+describe.skipOnPlatforms = function(platforms: Array<Platform>, name: string, fn: (this: Mocha.Suite) => void) {
+  const shouldSkip = platforms.includes(platform);
+  if (shouldSkip) {
+    wrapDescribe(Mocha.describe.skip, name, fn);
+  } else {
+    describe(name, fn);
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err?: any) {
   function* joinStacks() {

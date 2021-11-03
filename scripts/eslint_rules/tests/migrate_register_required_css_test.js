@@ -15,7 +15,7 @@ const ADD_WAS_SHOW_EXPECTED_ERROR_MESSAGE =
 const EDIT_WAS_SHOW_EXPECTED_ERROR_MESSAGE =
     'Import CSS file instead of using registerRequiredCSS and edit wasShown method';
 const MANUALLY_MIGRATE_ERROR_ESSAGE =
-    'Please manually migrate components/test.css as it has edge cases not covered by this script. Got error: Cannot read property \'range\' of undefined.';
+    'Please manually migrate components/test.css as it has edge cases not covered by this script. Got error: Cannot read properties of undefined (reading \'range\').';
 
 ruleTester.run('check_migrate_RegisterRequiredCSS', rule, {
   valid: [

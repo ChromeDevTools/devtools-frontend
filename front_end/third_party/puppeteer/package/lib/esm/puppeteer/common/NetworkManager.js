@@ -274,10 +274,7 @@ export class NetworkManager extends EventEmitter {
         const request = new HTTPRequest(this._client, frame, interceptionId, this._userRequestInterceptionEnabled, event, redirectChain);
         this._requestIdToRequest.set(event.requestId, request);
         this.emit(NetworkManagerEmittedEvents.Request, request);
-        request.finalizeInterceptions().catch((error) => {
-            // This should never happen, but catch just in case.
-            debugError(error);
-        });
+        request.finalizeInterceptions();
     }
     _onRequestServedFromCache(event) {
         const request = this._requestIdToRequest.get(event.requestId);

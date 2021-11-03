@@ -26,6 +26,7 @@ import { BrowserRunner } from './BrowserRunner.js';
 
 const mkdtempAsync = promisify(fs.mkdtemp);
 const writeFileAsync = promisify(fs.writeFile);
+const tmpDir = () => process.env.PUPPETEER_TMP_DIR || os.tmpdir();
 /**
  * @internal
  */
@@ -36,8 +37,8 @@ class ChromeLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel = null, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, } = options;
-        const profilePath = path.join(os.tmpdir(), 'puppeteer_dev_chrome_profile-');
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel = null, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort = null, } = options;
+        const profilePath = path.join(tmpDir(), 'puppeteer_dev_chrome_profile-');
         const chromeArguments = [];
         if (!ignoreDefaultArgs)
             chromeArguments.push(...this.defaultArgs(options));
@@ -46,8 +47,15 @@ class ChromeLauncher {
         else
             chromeArguments.push(...args);
         let temporaryUserDataDir = null;
-        if (!chromeArguments.some((argument) => argument.startsWith('--remote-debugging-')))
-            chromeArguments.push(pipe ? '--remote-debugging-pipe' : '--remote-debugging-port=0');
+        if (!chromeArguments.some((argument) => argument.startsWith('--remote-debugging-'))) {
+            if (pipe) {
+                assert(debuggingPort === null, 'Browser should be launched with either pipe or debugging port - not both.');
+                chromeArguments.push('--remote-debugging-pipe');
+            }
+            else {
+                chromeArguments.push(`--remote-debugging-port=${debuggingPort || 0}`);
+            }
+        }
         if (!chromeArguments.some((arg) => arg.startsWith('--user-data-dir'))) {
             temporaryUserDataDir = await mkdtempAsync(profilePath);
             chromeArguments.push(`--user-data-dir=${temporaryUserDataDir}`);
@@ -90,7 +98,7 @@ class ChromeLauncher {
             });
             const browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
             if (waitForInitialPage)
-                await browser.waitForTarget((t) => t.type() === 'page');
+                await browser.waitForTarget((t) => t.type() === 'page', { timeout });
             return browser;
         }
         catch (error) {
@@ -126,6 +134,7 @@ class ChromeLauncher {
             // TODO(sadym): remove '--enable-blink-features=IdleDetection'
             // once IdleDetection is turned on by default.
             '--enable-blink-features=IdleDetection',
+            '--export-tagged-pdf',
         ];
         const { devtools = false, headless = !devtools, args = [], userDataDir = null, } = options;
         if (userDataDir)
@@ -162,7 +171,7 @@ class FirefoxLauncher {
         this._isPuppeteerCore = isPuppeteerCore;
     }
     async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, } = options;
+        const { ignoreDefaultArgs = false, args = [], dumpio = false, executablePath = null, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, extraPrefsFirefox = {}, waitForInitialPage = true, debuggingPort = null, } = options;
         const firefoxArguments = [];
         if (!ignoreDefaultArgs)
             firefoxArguments.push(...this.defaultArgs(options));
@@ -170,8 +179,12 @@ class FirefoxLauncher {
             firefoxArguments.push(...this.defaultArgs(options).filter((arg) => !ignoreDefaultArgs.includes(arg)));
         else
             firefoxArguments.push(...args);
-        if (!firefoxArguments.some((argument) => argument.startsWith('--remote-debugging-')))
-            firefoxArguments.push('--remote-debugging-port=0');
+        if (!firefoxArguments.some((argument) => argument.startsWith('--remote-debugging-'))) {
+            if (pipe) {
+                assert(debuggingPort === null, 'Browser should be launched with either pipe or debugging port - not both.');
+            }
+            firefoxArguments.push(`--remote-debugging-port=${debuggingPort || 0}`);
+        }
         let temporaryUserDataDir = null;
         if (!firefoxArguments.includes('-profile') &&
             !firefoxArguments.includes('--profile')) {
@@ -205,7 +218,7 @@ class FirefoxLauncher {
             });
             const browser = await Browser.create(connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner));
             if (waitForInitialPage)
-                await browser.waitForTarget((t) => t.type() === 'page');
+                await browser.waitForTarget((t) => t.type() === 'page', { timeout });
             return browser;
         }
         catch (error) {
@@ -250,7 +263,7 @@ class FirefoxLauncher {
         return firefoxArguments;
     }
     async _createProfile(extraPrefs) {
-        const profilePath = await mkdtempAsync(path.join(os.tmpdir(), 'puppeteer_dev_firefox_profile-'));
+        const profilePath = await mkdtempAsync(path.join(tmpDir(), 'puppeteer_dev_firefox_profile-'));
         const prefsJS = [];
         const userJS = [];
         const server = 'dummy.test';
@@ -350,8 +363,10 @@ class FirefoxLauncher {
             'extensions.update.notifyUser': false,
             // Make sure opening about:addons will not hit the network
             'extensions.webservice.discoverURL': `http://${server}/dummy/discoveryURL`,
-            // Force disable Fission until the Remote Agent is compatible
-            'fission.autostart': false,
+            // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
+            'fission.bfcacheInParent': false,
+            // Force all web content to use a single content process
+            'fission.webContentIsolationStrategy': 0,
             // Allow the application to have focus even it runs in the background
             'focusmanager.testmode': true,
             // Disable useragent updates

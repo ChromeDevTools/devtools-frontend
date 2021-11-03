@@ -153,7 +153,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
                     this._preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
             }
             this._changedProduct = false;
-            this._lazyLauncher = Launcher_js_1.default(this._projectRoot, this._preferredRevision, this._isPuppeteerCore, this._productName);
+            this._lazyLauncher = (0, Launcher_js_1.default)(this._projectRoot, this._preferredRevision, this._isPuppeteerCore, this._productName);
         }
         return this._lazyLauncher;
     }

@@ -313,7 +313,7 @@ export class BrowserFetcher {
      * @internal
      */
     _getFolderPath(revision) {
-        return path.join(this._downloadsFolder, `${this._platform}-${revision}`);
+        return path.resolve(this._downloadsFolder, `${this._platform}-${revision}`);
     }
 }
 function parseFolderPath(product, folderPath) {

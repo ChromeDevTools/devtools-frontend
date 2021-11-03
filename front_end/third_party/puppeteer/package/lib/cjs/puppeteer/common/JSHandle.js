@@ -128,7 +128,8 @@ class JSHandle {
             return result;
         }, propertyName);
         const properties = await objectHandle.getProperties();
-        const result = properties.get(propertyName) || null;
+        const result = properties.get(propertyName);
+        (0, assert_js_1.assert)(result instanceof JSHandle);
         await objectHandle.dispose();
         return result;
     }
@@ -379,7 +380,7 @@ class ElementHandle extends JSHandle {
         };
         return this._client
             .send('DOM.getBoxModel', params)
-            .catch((error) => helper_js_1.debugError(error));
+            .catch((error) => (0, helper_js_1.debugError)(error));
     }
     _fromProtocolQuad(quad) {
         return [
@@ -419,7 +420,7 @@ class ElementHandle extends JSHandle {
      * This method creates and captures a dragevent from the element.
      */
     async drag(target) {
-        assert_js_1.assert(this._page.isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
+        (0, assert_js_1.assert)(this._page.isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
         await this._scrollIntoViewIfNeeded();
         const start = await this.clickablePoint();
         return await this._page.mouse.drag(start, target);
@@ -473,7 +474,7 @@ class ElementHandle extends JSHandle {
      */
     async select(...values) {
         for (const value of values)
-            assert_js_1.assert(helper_js_1.helper.isString(value), 'Values must be strings. Found value "' +
+            (0, assert_js_1.assert)(helper_js_1.helper.isString(value), 'Values must be strings. Found value "' +
                 value +
                 '" of type "' +
                 typeof value +
@@ -509,7 +510,7 @@ class ElementHandle extends JSHandle {
             }
             return element.multiple;
         });
-        assert_js_1.assert(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
+        (0, assert_js_1.assert)(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
         if (!environment_js_1.isNode) {
             throw new Error(`JSHandle#uploadFile can only be used in Node environments.`);
         }
@@ -659,7 +660,7 @@ class ElementHandle extends JSHandle {
     async screenshot(options = {}) {
         let needsViewportReset = false;
         let boundingBox = await this.boundingBox();
-        assert_js_1.assert(boundingBox, 'Node is either not visible or not an HTMLElement');
+        (0, assert_js_1.assert)(boundingBox, 'Node is either not visible or not an HTMLElement');
         const viewport = this._page.viewport();
         if (viewport &&
             (boundingBox.width > viewport.width ||
@@ -673,9 +674,9 @@ class ElementHandle extends JSHandle {
         }
         await this._scrollIntoViewIfNeeded();
         boundingBox = await this.boundingBox();
-        assert_js_1.assert(boundingBox, 'Node is either not visible or not an HTMLElement');
-        assert_js_1.assert(boundingBox.width !== 0, 'Node has 0 width.');
-        assert_js_1.assert(boundingBox.height !== 0, 'Node has 0 height.');
+        (0, assert_js_1.assert)(boundingBox, 'Node is either not visible or not an HTMLElement');
+        (0, assert_js_1.assert)(boundingBox.width !== 0, 'Node has 0 width.');
+        (0, assert_js_1.assert)(boundingBox.height !== 0, 'Node has 0 height.');
         const layoutMetrics = await this._client.send('Page.getLayoutMetrics');
         // Fallback to `layoutViewport` in case of using Firefox.
         const { pageX, pageY } = layoutMetrics.cssLayoutViewport || layoutMetrics.layoutViewport;
@@ -694,7 +695,7 @@ class ElementHandle extends JSHandle {
      * the return value resolves to `null`.
      */
     async $(selector) {
-        const { updatedSelector, queryHandler } = QueryHandler_js_1.getQueryHandlerAndSelector(selector);
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
         return queryHandler.queryOne(this, updatedSelector);
     }
     /**
@@ -702,7 +703,7 @@ class ElementHandle extends JSHandle {
      * the return value resolves to `[]`.
      */
     async $$(selector) {
-        const { updatedSelector, queryHandler } = QueryHandler_js_1.getQueryHandlerAndSelector(selector);
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
         return queryHandler.queryAll(this, updatedSelector);
     }
     /**
@@ -760,7 +761,7 @@ class ElementHandle extends JSHandle {
      * ```
      */
     async $$eval(selector, pageFunction, ...args) {
-        const { updatedSelector, queryHandler } = QueryHandler_js_1.getQueryHandlerAndSelector(selector);
+        const { updatedSelector, queryHandler } = (0, QueryHandler_js_1.getQueryHandlerAndSelector)(selector);
         const arrayHandle = await queryHandler.queryAllArray(this, updatedSelector);
         const result = await arrayHandle.evaluate(pageFunction, ...args);
         await arrayHandle.dispose();

@@ -107,7 +107,8 @@ export class JSHandle {
             return result;
         }, propertyName);
         const properties = await objectHandle.getProperties();
-        const result = properties.get(propertyName) || null;
+        const result = properties.get(propertyName);
+        assert(result instanceof JSHandle);
         await objectHandle.dispose();
         return result;
     }

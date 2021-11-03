@@ -1,18 +1,22 @@
 import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+
 import { ConnectionTransport } from './ConnectionTransport.js';
+import { ProtocolError } from './Errors.js';
 import { EventEmitter } from './EventEmitter.js';
+
 /**
  * @public
  */
 export { ConnectionTransport, ProtocolMapping };
+
 /**
  * @public
  */
 export interface ConnectionCallback {
     resolve: Function;
     reject: Function;
-    error: Error;
+    error: ProtocolError;
     method: string;
 }
 /**
@@ -63,6 +67,7 @@ export interface CDPSessionOnMessageObject {
     error: {
         message: string;
         data: any;
+        code: number;
     };
     result?: any;
 }
@@ -126,5 +131,9 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     _onClosed(): void;
+    /**
+     * @internal
+     */
+    id(): string;
 }
 //# sourceMappingURL=Connection.d.ts.map

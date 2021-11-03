@@ -111,7 +111,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this._extraHTTPHeaders = {};
         for (const key of Object.keys(extraHTTPHeaders)) {
             const value = extraHTTPHeaders[key];
-            assert_js_1.assert(helper_js_1.helper.isString(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+            (0, assert_js_1.assert)(helper_js_1.helper.isString(value), `Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
             this._extraHTTPHeaders[key.toLowerCase()] = value;
         }
         await this._client.send('Network.setExtraHTTPHeaders', {
@@ -276,10 +276,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         const request = new HTTPRequest_js_1.HTTPRequest(this._client, frame, interceptionId, this._userRequestInterceptionEnabled, event, redirectChain);
         this._requestIdToRequest.set(event.requestId, request);
         this.emit(exports.NetworkManagerEmittedEvents.Request, request);
-        request.finalizeInterceptions().catch((error) => {
-            // This should never happen, but catch just in case.
-            helper_js_1.debugError(error);
-        });
+        request.finalizeInterceptions();
     }
     _onRequestServedFromCache(event) {
         const request = this._requestIdToRequest.get(event.requestId);

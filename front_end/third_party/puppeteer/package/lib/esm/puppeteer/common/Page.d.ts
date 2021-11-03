@@ -37,6 +37,7 @@ import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { Protocol } from 'devtools-protocol';
 import { SerializableOrJSHandle, EvaluateHandleFn, WrapElementHandle, EvaluateFn, EvaluateFnReturnType, UnwrapPromiseLike } from './EvalTypes.js';
 import { PDFOptions } from './PDFOptions.js';
+import { TaskQueue } from './TaskQueue.js';
 /**
  * @public
  */
@@ -385,7 +386,7 @@ export declare class Page extends EventEmitter {
     /**
      * @internal
      */
-    static create(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null): Promise<Page>;
+    static create(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue): Promise<Page>;
     private _closed;
     private _client;
     private _target;
@@ -406,10 +407,11 @@ export declare class Page extends EventEmitter {
     private _fileChooserInterceptors;
     private _disconnectPromise?;
     private _userDragInterceptionEnabled;
+    private _handlerMap;
     /**
      * @internal
      */
-    constructor(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean);
+    constructor(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean, screenshotTaskQueue: TaskQueue);
     private _initialize;
     private _onFileChooser;
     /**
@@ -425,6 +427,7 @@ export declare class Page extends EventEmitter {
      */
     on<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
     once<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
+    off<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
     /**
      * This method is typically coupled with an action that triggers file
      * choosing. The following example clicks a button that issues a file chooser
@@ -922,7 +925,9 @@ export declare class Page extends EventEmitter {
      * })();
      * ```
      */
-    exposeFunction(name: string, puppeteerFunction: Function): Promise<void>;
+    exposeFunction(name: string, puppeteerFunction: Function | {
+        default: Function;
+    }): Promise<void>;
     /**
      * Provide credentials for `HTTP authentication`.
      * @remarks To disable authentication, pass `null`.
@@ -1210,6 +1215,26 @@ export declare class Page extends EventEmitter {
         timeout?: number;
     }): Promise<void>;
     /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched frame.
+     * @example
+     * ```js
+     * const frame = await page.waitForFrame(async (frame) => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     * pass `0` to disable the timeout. The default value can be changed by using
+     * the {@link Page.setDefaultTimeout} method.
+     */
+    waitForFrame(urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>), options?: {
+        timeout?: number;
+    }): Promise<Frame>;
+    /**
      * This method navigate to the previous page in history.
      * @param options - Navigation parameters
      * @returns Promise which resolves to the main resource response. In case of
@@ -1341,6 +1366,10 @@ export declare class Page extends EventEmitter {
      * ```
      */
     emulateMediaType(type?: string): Promise<void>;
+    /**
+     * Enables CPU throttling to emulate slow CPUs.
+     * @param factor - slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+     */
     emulateCPUThrottling(factor: number | null): Promise<void>;
     /**
      * @param features - `<?Array<Object>>` Given an array of media feature
@@ -1638,7 +1667,7 @@ export declare class Page extends EventEmitter {
      * @returns Promise which resolves to buffer or a base64 string (depending on
      * the value of `encoding`) with captured screenshot.
      */
-    screenshot(options?: ScreenshotOptions): Promise<Buffer | string | void>;
+    screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
     private _screenshotTask;
     /**
      * Generatees a PDF of the page with the `print` CSS media type.

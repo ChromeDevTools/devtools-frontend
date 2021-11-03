@@ -46,12 +46,18 @@ export class BrowserRunner {
     }
     start(options) {
         const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe } = options;
-        let stdio = ['pipe', 'pipe', 'pipe'];
+        let stdio;
         if (pipe) {
             if (dumpio)
                 stdio = ['ignore', 'pipe', 'pipe', 'pipe', 'pipe'];
             else
                 stdio = ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'];
+        }
+        else {
+            if (dumpio)
+                stdio = ['pipe', 'pipe', 'pipe'];
+            else
+                stdio = ['pipe', 'ignore', 'pipe'];
         }
         assert(!this.proc, 'This process has previously been started.');
         debugLauncher(`Calling ${this._executablePath} ${this._processArguments.join(' ')}`);

@@ -25,7 +25,7 @@ import { getQueryHandlerAndSelector } from './QueryHandler.js';
  * @internal
  */
 export class DOMWorld {
-    constructor(frameManager, frame, timeoutSettings) {
+    constructor(client, frameManager, frame, timeoutSettings) {
         this._documentPromise = null;
         this._contextPromise = null;
         this._contextResolveCallback = null;
@@ -44,17 +44,21 @@ export class DOMWorld {
         // If multiple waitFor are set up asynchronously, we need to wait for the
         // first one to set up the binding in the page before running the others.
         this._settingUpBinding = null;
+        // Keep own reference to client because it might differ from the FrameManager's
+        // client for OOP iframes.
+        this._client = client;
         this._frameManager = frameManager;
         this._frame = frame;
         this._timeoutSettings = timeoutSettings;
         this._setContext(null);
-        frameManager._client.on('Runtime.bindingCalled', (event) => this._onBindingCalled(event));
+        this._client.on('Runtime.bindingCalled', (event) => this._onBindingCalled(event));
     }
     frame() {
         return this._frame;
     }
     async _setContext(context) {
         if (context) {
+            assert(this._contextResolveCallback, 'Execution Context has already been set.');
             this._ctxBindings.clear();
             this._contextResolveCallback.call(null, context);
             this._contextResolveCallback = null;

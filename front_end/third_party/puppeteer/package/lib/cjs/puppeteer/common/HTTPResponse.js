@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTPResponse = void 0;
 const SecurityDetails_js_1 = require("./SecurityDetails.js");
+const Errors_js_1 = require("./Errors.js");
 /**
  * The HTTPResponse class represents responses which are received by the
  * {@link Page} class.
@@ -96,10 +97,19 @@ class HTTPResponse {
             this._contentPromise = this._bodyLoadedPromise.then(async (error) => {
                 if (error)
                     throw error;
-                const response = await this._client.send('Network.getResponseBody', {
-                    requestId: this._request._requestId,
-                });
-                return Buffer.from(response.body, response.base64Encoded ? 'base64' : 'utf8');
+                try {
+                    const response = await this._client.send('Network.getResponseBody', {
+                        requestId: this._request._requestId,
+                    });
+                    return Buffer.from(response.body, response.base64Encoded ? 'base64' : 'utf8');
+                }
+                catch (error) {
+                    if (error instanceof Errors_js_1.ProtocolError &&
+                        error.originalMessage === 'No resource with given identifier found') {
+                        throw new Errors_js_1.ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+                    }
+                    throw error;
+                }
             });
         }
         return this._contentPromise;

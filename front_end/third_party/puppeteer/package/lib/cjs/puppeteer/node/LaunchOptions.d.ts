@@ -39,6 +39,10 @@ export interface BrowserLaunchArgumentOptions {
      */
     devtools?: boolean;
     /**
+     *
+     */
+    debuggingPort?: number;
+    /**
      * Additional command line arguments to pass to the browser instance.
      */
     args?: string[];

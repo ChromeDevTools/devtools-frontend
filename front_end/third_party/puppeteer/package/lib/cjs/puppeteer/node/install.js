@@ -126,7 +126,7 @@ async function downloadBrowser() {
     }
     function getFirefoxNightlyVersion() {
         const firefoxVersionsUrl = 'https://product-details.mozilla.org/1.0/firefox_versions.json';
-        const proxyURL = proxy_from_env_1.getProxyForUrl(firefoxVersionsUrl);
+        const proxyURL = (0, proxy_from_env_1.getProxyForUrl)(firefoxVersionsUrl);
         const requestOptions = {};
         if (proxyURL) {
             const parsedProxyURL = url_1.default.parse(proxyURL);
@@ -134,7 +134,7 @@ async function downloadBrowser() {
                 ...parsedProxyURL,
                 secureProxy: parsedProxyURL.protocol === 'https:',
             };
-            requestOptions.agent = https_proxy_agent_1.default(proxyOptions);
+            requestOptions.agent = (0, https_proxy_agent_1.default)(proxyOptions);
             requestOptions.rejectUnauthorized = false;
         }
         const promise = new Promise((resolve, reject) => {

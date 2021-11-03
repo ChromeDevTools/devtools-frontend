@@ -34,16 +34,6 @@ import { TimeoutSettings } from './TimeoutSettings.js';
 import { Tracing } from './Tracing.js';
 import { WebWorker } from './WebWorker.js';
 
-class ScreenshotTaskQueue {
-    constructor() {
-        this._chain = Promise.resolve(undefined);
-    }
-    postTask(task) {
-        const result = this._chain.then(task);
-        this._chain = result.catch(() => { });
-        return result;
-    }
-}
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page} in Chromium.
@@ -91,7 +81,7 @@ export class Page extends EventEmitter {
     /**
      * @internal
      */
-    constructor(client, target, ignoreHTTPSErrors) {
+    constructor(client, target, ignoreHTTPSErrors, screenshotTaskQueue) {
         super();
         this._closed = false;
         this._timeoutSettings = new TimeoutSettings();
@@ -102,6 +92,7 @@ export class Page extends EventEmitter {
         // something?
         this._fileChooserInterceptors = new Set();
         this._userDragInterceptionEnabled = false;
+        this._handlerMap = new WeakMap();
         this._client = client;
         this._target = target;
         this._keyboard = new Keyboard(client);
@@ -112,7 +103,7 @@ export class Page extends EventEmitter {
         this._emulationManager = new EmulationManager(client);
         this._tracing = new Tracing(client);
         this._coverage = new Coverage(client);
-        this._screenshotTaskQueue = new ScreenshotTaskQueue();
+        this._screenshotTaskQueue = screenshotTaskQueue;
         this._viewport = null;
         client.on('Target.attachedToTarget', (event) => {
             if (event.targetInfo.type !== 'worker' &&
@@ -130,10 +121,12 @@ export class Page extends EventEmitter {
                     .catch(debugError);
                 return;
             }
-            const session = Connection.fromSession(client).session(event.sessionId);
-            const worker = new WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
-            this._workers.set(event.sessionId, worker);
-            this.emit("workercreated" /* WorkerCreated */, worker);
+            if (event.targetInfo.type === 'worker') {
+                const session = Connection.fromSession(client).session(event.sessionId);
+                const worker = new WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
+                this._workers.set(event.sessionId, worker);
+                this.emit("workercreated" /* WorkerCreated */, worker);
+            }
         });
         client.on('Target.detachedFromTarget', (event) => {
             const worker = this._workers.get(event.sessionId);
@@ -170,8 +163,8 @@ export class Page extends EventEmitter {
     /**
      * @internal
      */
-    static async create(client, target, ignoreHTTPSErrors, defaultViewport) {
-        const page = new Page(client, target, ignoreHTTPSErrors);
+    static async create(client, target, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
+        const page = new Page(client, target, ignoreHTTPSErrors, screenshotTaskQueue);
         await page._initialize();
         if (defaultViewport)
             await page.setViewport(defaultViewport);
@@ -221,9 +214,11 @@ export class Page extends EventEmitter {
     // dispatching is delegated to EventEmitter.
     on(eventName, handler) {
         if (eventName === 'request') {
-            return super.on(eventName, (event) => {
+            const wrap = (event) => {
                 event.enqueueInterceptAction(() => handler(event));
-            });
+            };
+            this._handlerMap.set(handler, wrap);
+            return super.on(eventName, wrap);
         }
         return super.on(eventName, handler);
     }
@@ -231,6 +226,12 @@ export class Page extends EventEmitter {
         // Note: this method only exists to define the types; we delegate the impl
         // to EventEmitter.
         return super.once(eventName, handler);
+    }
+    off(eventName, handler) {
+        if (eventName === 'request') {
+            handler = this._handlerMap.get(handler) || handler;
+        }
+        return super.off(eventName, handler);
     }
     /**
      * This method is typically coupled with an action that triggers file
@@ -850,7 +851,17 @@ export class Page extends EventEmitter {
     async exposeFunction(name, puppeteerFunction) {
         if (this._pageBindings.has(name))
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
-        this._pageBindings.set(name, puppeteerFunction);
+        let exposedFunction;
+        if (typeof puppeteerFunction === 'function') {
+            exposedFunction = puppeteerFunction;
+        }
+        else if (typeof puppeteerFunction.default === 'function') {
+            exposedFunction = puppeteerFunction.default;
+        }
+        else {
+            throw new Error(`Failed to add page binding with name ${name}: ${puppeteerFunction} is not a function or a module with a default export.`);
+        }
+        this._pageBindings.set(name, exposedFunction);
         const expression = helper.pageBindingInitString('exposedFun', name);
         await this._client.send('Runtime.addBinding', { name: name });
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
@@ -964,7 +975,7 @@ export class Page extends EventEmitter {
             // @see https://github.com/puppeteer/puppeteer/issues/3865
             return;
         }
-        const context = this._frameManager.executionContextById(event.executionContextId);
+        const context = this._frameManager.executionContextById(event.executionContextId, this._client);
         const values = event.args.map((arg) => createJSHandle(context, arg));
         this._addConsoleMessage(event.type, values, event.stackTrace);
     }
@@ -1340,6 +1351,37 @@ export class Page extends EventEmitter {
         });
     }
     /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched frame.
+     * @example
+     * ```js
+     * const frame = await page.waitForFrame(async (frame) => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     * pass `0` to disable the timeout. The default value can be changed by using
+     * the {@link Page.setDefaultTimeout} method.
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+        const { timeout = this._timeoutSettings.timeout() } = options;
+        async function predicate(frame) {
+            if (helper.isString(urlOrPredicate))
+                return urlOrPredicate === frame.url();
+            if (typeof urlOrPredicate === 'function')
+                return !!(await urlOrPredicate(frame));
+            return false;
+        }
+        return Promise.race([
+            helper.waitForEvent(this._frameManager, FrameManagerEmittedEvents.FrameAttached, predicate, timeout, this._sessionClosePromise()),
+            helper.waitForEvent(this._frameManager, FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, this._sessionClosePromise()),
+        ]);
+    }
+    /**
      * This method navigate to the previous page in history.
      * @param options - Navigation parameters
      * @returns Promise which resolves to the main resource response. In case of
@@ -1503,6 +1545,10 @@ export class Page extends EventEmitter {
             media: type || '',
         });
     }
+    /**
+     * Enables CPU throttling to emulate slow CPUs.
+     * @param factor - slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+     */
     async emulateCPUThrottling(factor) {
         assert(factor === null || factor >= 1, 'Throttling rate should be greater or equal to 1');
         await this._client.send('Emulation.setCPUThrottlingRate', {
@@ -1898,7 +1944,7 @@ export class Page extends EventEmitter {
         if (!screenshotType)
             screenshotType = 'png';
         if (options.quality) {
-            assert(screenshotType === 'jpeg', 'options.quality is unsupported for the ' +
+            assert(screenshotType === 'jpeg' || screenshotType === 'webp', 'options.quality is unsupported for the ' +
                 screenshotType +
                 ' screenshots');
             assert(typeof options.quality === 'number', 'Expected options.quality to be a number but found ' +

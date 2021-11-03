@@ -35,16 +35,6 @@ const FileChooser_js_1 = require("./FileChooser.js");
 const ConsoleMessage_js_1 = require("./ConsoleMessage.js");
 const PDFOptions_js_1 = require("./PDFOptions.js");
 const environment_js_1 = require("../environment.js");
-class ScreenshotTaskQueue {
-    constructor() {
-        this._chain = Promise.resolve(undefined);
-    }
-    postTask(task) {
-        const result = this._chain.then(task);
-        this._chain = result.catch(() => { });
-        return result;
-    }
-}
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page} in Chromium.
@@ -92,7 +82,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    constructor(client, target, ignoreHTTPSErrors) {
+    constructor(client, target, ignoreHTTPSErrors, screenshotTaskQueue) {
         super();
         this._closed = false;
         this._timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
@@ -103,6 +93,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         // something?
         this._fileChooserInterceptors = new Set();
         this._userDragInterceptionEnabled = false;
+        this._handlerMap = new WeakMap();
         this._client = client;
         this._target = target;
         this._keyboard = new Input_js_1.Keyboard(client);
@@ -113,7 +104,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         this._emulationManager = new EmulationManager_js_1.EmulationManager(client);
         this._tracing = new Tracing_js_1.Tracing(client);
         this._coverage = new Coverage_js_1.Coverage(client);
-        this._screenshotTaskQueue = new ScreenshotTaskQueue();
+        this._screenshotTaskQueue = screenshotTaskQueue;
         this._viewport = null;
         client.on('Target.attachedToTarget', (event) => {
             if (event.targetInfo.type !== 'worker' &&
@@ -131,10 +122,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
                     .catch(helper_js_1.debugError);
                 return;
             }
-            const session = Connection_js_1.Connection.fromSession(client).session(event.sessionId);
-            const worker = new WebWorker_js_1.WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
-            this._workers.set(event.sessionId, worker);
-            this.emit("workercreated" /* WorkerCreated */, worker);
+            if (event.targetInfo.type === 'worker') {
+                const session = Connection_js_1.Connection.fromSession(client).session(event.sessionId);
+                const worker = new WebWorker_js_1.WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
+                this._workers.set(event.sessionId, worker);
+                this.emit("workercreated" /* WorkerCreated */, worker);
+            }
         });
         client.on('Target.detachedFromTarget', (event) => {
             const worker = this._workers.get(event.sessionId);
@@ -171,8 +164,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    static async create(client, target, ignoreHTTPSErrors, defaultViewport) {
-        const page = new Page(client, target, ignoreHTTPSErrors);
+    static async create(client, target, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
+        const page = new Page(client, target, ignoreHTTPSErrors, screenshotTaskQueue);
         await page._initialize();
         if (defaultViewport)
             await page.setViewport(defaultViewport);
@@ -222,9 +215,11 @@ class Page extends EventEmitter_js_1.EventEmitter {
     // dispatching is delegated to EventEmitter.
     on(eventName, handler) {
         if (eventName === 'request') {
-            return super.on(eventName, (event) => {
+            const wrap = (event) => {
                 event.enqueueInterceptAction(() => handler(event));
-            });
+            };
+            this._handlerMap.set(handler, wrap);
+            return super.on(eventName, wrap);
         }
         return super.on(eventName, handler);
     }
@@ -232,6 +227,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
         // Note: this method only exists to define the types; we delegate the impl
         // to EventEmitter.
         return super.once(eventName, handler);
+    }
+    off(eventName, handler) {
+        if (eventName === 'request') {
+            handler = this._handlerMap.get(handler) || handler;
+        }
+        return super.off(eventName, handler);
     }
     /**
      * This method is typically coupled with an action that triggers file
@@ -762,8 +763,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
             const item = Object.assign({}, cookie);
             if (!item.url && startsWithHTTP)
                 item.url = pageURL;
-            assert_js_1.assert(item.url !== 'about:blank', `Blank page can not have cookie "${item.name}"`);
-            assert_js_1.assert(!String.prototype.startsWith.call(item.url || '', 'data:'), `Data URL page can not have cookie "${item.name}"`);
+            (0, assert_js_1.assert)(item.url !== 'about:blank', `Blank page can not have cookie "${item.name}"`);
+            (0, assert_js_1.assert)(!String.prototype.startsWith.call(item.url || '', 'data:'), `Data URL page can not have cookie "${item.name}"`);
             return item;
         });
         await this.deleteCookie(...items);
@@ -851,7 +852,17 @@ class Page extends EventEmitter_js_1.EventEmitter {
     async exposeFunction(name, puppeteerFunction) {
         if (this._pageBindings.has(name))
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
-        this._pageBindings.set(name, puppeteerFunction);
+        let exposedFunction;
+        if (typeof puppeteerFunction === 'function') {
+            exposedFunction = puppeteerFunction;
+        }
+        else if (typeof puppeteerFunction.default === 'function') {
+            exposedFunction = puppeteerFunction.default;
+        }
+        else {
+            throw new Error(`Failed to add page binding with name ${name}: ${puppeteerFunction} is not a function or a module with a default export.`);
+        }
+        this._pageBindings.set(name, exposedFunction);
         const expression = helper_js_1.helper.pageBindingInitString('exposedFun', name);
         await this._client.send('Runtime.addBinding', { name: name });
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
@@ -965,8 +976,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
             // @see https://github.com/puppeteer/puppeteer/issues/3865
             return;
         }
-        const context = this._frameManager.executionContextById(event.executionContextId);
-        const values = event.args.map((arg) => JSHandle_js_1.createJSHandle(context, arg));
+        const context = this._frameManager.executionContextById(event.executionContextId, this._client);
+        const values = event.args.map((arg) => (0, JSHandle_js_1.createJSHandle)(context, arg));
         this._addConsoleMessage(event.type, values, event.stackTrace);
     }
     async _onBindingCalled(event) {
@@ -1037,7 +1048,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         if (validDialogTypes.has(event.type)) {
             dialogType = event.type;
         }
-        assert_js_1.assert(dialogType, 'Unknown javascript dialog type: ' + event.type);
+        (0, assert_js_1.assert)(dialogType, 'Unknown javascript dialog type: ' + event.type);
         const dialog = new Dialog_js_1.Dialog(this._client, dialogType, event.message, event.defaultPrompt);
         this.emit("dialog" /* Dialog */, dialog);
     }
@@ -1341,6 +1352,37 @@ class Page extends EventEmitter_js_1.EventEmitter {
         });
     }
     /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched frame.
+     * @example
+     * ```js
+     * const frame = await page.waitForFrame(async (frame) => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     * pass `0` to disable the timeout. The default value can be changed by using
+     * the {@link Page.setDefaultTimeout} method.
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+        const { timeout = this._timeoutSettings.timeout() } = options;
+        async function predicate(frame) {
+            if (helper_js_1.helper.isString(urlOrPredicate))
+                return urlOrPredicate === frame.url();
+            if (typeof urlOrPredicate === 'function')
+                return !!(await urlOrPredicate(frame));
+            return false;
+        }
+        return Promise.race([
+            helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, this._sessionClosePromise()),
+            helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, this._sessionClosePromise()),
+        ]);
+    }
+    /**
      * This method navigate to the previous page in history.
      * @param options - Navigation parameters
      * @returns Promise which resolves to the main resource response. In case of
@@ -1499,13 +1541,17 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * ```
      */
     async emulateMediaType(type) {
-        assert_js_1.assert(type === 'screen' || type === 'print' || type === null, 'Unsupported media type: ' + type);
+        (0, assert_js_1.assert)(type === 'screen' || type === 'print' || type === null, 'Unsupported media type: ' + type);
         await this._client.send('Emulation.setEmulatedMedia', {
             media: type || '',
         });
     }
+    /**
+     * Enables CPU throttling to emulate slow CPUs.
+     * @param factor - slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+     */
     async emulateCPUThrottling(factor) {
-        assert_js_1.assert(factor === null || factor >= 1, 'Throttling rate should be greater or equal to 1');
+        (0, assert_js_1.assert)(factor === null || factor >= 1, 'Throttling rate should be greater or equal to 1');
         await this._client.send('Emulation.setCPUThrottlingRate', {
             rate: factor !== null ? factor : 1,
         });
@@ -1568,7 +1614,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         if (Array.isArray(features)) {
             features.every((mediaFeature) => {
                 const name = mediaFeature.name;
-                assert_js_1.assert(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
+                (0, assert_js_1.assert)(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
                 return true;
             });
             await this._client.send('Emulation.setEmulatedMedia', {
@@ -1660,7 +1706,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
             'tritanopia',
         ]);
         try {
-            assert_js_1.assert(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
+            (0, assert_js_1.assert)(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
             await this._client.send('Emulation.setEmulatedVisionDeficiency', {
                 type: type || 'none',
             });
@@ -1879,7 +1925,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         if (options.type) {
             const type = options.type;
             if (type !== 'png' && type !== 'jpeg' && type !== 'webp') {
-                assert_js_1.assertNever(type, 'Unknown options.type value: ' + type);
+                (0, assert_js_1.assertNever)(type, 'Unknown options.type value: ' + type);
             }
             screenshotType = options.type;
         }
@@ -1894,32 +1940,32 @@ class Page extends EventEmitter_js_1.EventEmitter {
                 screenshotType = 'jpeg';
             else if (extension === 'webp')
                 screenshotType = 'webp';
-            assert_js_1.assert(screenshotType, `Unsupported screenshot type for extension \`.${extension}\``);
+            (0, assert_js_1.assert)(screenshotType, `Unsupported screenshot type for extension \`.${extension}\``);
         }
         if (!screenshotType)
             screenshotType = 'png';
         if (options.quality) {
-            assert_js_1.assert(screenshotType === 'jpeg', 'options.quality is unsupported for the ' +
+            (0, assert_js_1.assert)(screenshotType === 'jpeg' || screenshotType === 'webp', 'options.quality is unsupported for the ' +
                 screenshotType +
                 ' screenshots');
-            assert_js_1.assert(typeof options.quality === 'number', 'Expected options.quality to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.quality === 'number', 'Expected options.quality to be a number but found ' +
                 typeof options.quality);
-            assert_js_1.assert(Number.isInteger(options.quality), 'Expected options.quality to be an integer');
-            assert_js_1.assert(options.quality >= 0 && options.quality <= 100, 'Expected options.quality to be between 0 and 100 (inclusive), got ' +
+            (0, assert_js_1.assert)(Number.isInteger(options.quality), 'Expected options.quality to be an integer');
+            (0, assert_js_1.assert)(options.quality >= 0 && options.quality <= 100, 'Expected options.quality to be between 0 and 100 (inclusive), got ' +
                 options.quality);
         }
-        assert_js_1.assert(!options.clip || !options.fullPage, 'options.clip and options.fullPage are exclusive');
+        (0, assert_js_1.assert)(!options.clip || !options.fullPage, 'options.clip and options.fullPage are exclusive');
         if (options.clip) {
-            assert_js_1.assert(typeof options.clip.x === 'number', 'Expected options.clip.x to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.x === 'number', 'Expected options.clip.x to be a number but found ' +
                 typeof options.clip.x);
-            assert_js_1.assert(typeof options.clip.y === 'number', 'Expected options.clip.y to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.y === 'number', 'Expected options.clip.y to be a number but found ' +
                 typeof options.clip.y);
-            assert_js_1.assert(typeof options.clip.width === 'number', 'Expected options.clip.width to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.width === 'number', 'Expected options.clip.width to be a number but found ' +
                 typeof options.clip.width);
-            assert_js_1.assert(typeof options.clip.height === 'number', 'Expected options.clip.height to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.height === 'number', 'Expected options.clip.height to be a number but found ' +
                 typeof options.clip.height);
-            assert_js_1.assert(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
-            assert_js_1.assert(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
+            (0, assert_js_1.assert)(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
+            (0, assert_js_1.assert)(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
         }
         return this._screenshotTaskQueue.postTask(() => this._screenshotTask(screenshotType, options));
     }
@@ -2009,7 +2055,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         let paperHeight = 11;
         if (options.format) {
             const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()];
-            assert_js_1.assert(format, 'Unknown paper format: ' + options.format);
+            (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
             paperWidth = format.width;
             paperHeight = format.height;
         }
@@ -2066,7 +2112,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         return this.mainFrame().title();
     }
     async close(options = { runBeforeUnload: undefined }) {
-        assert_js_1.assert(!!this._client._connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+        (0, assert_js_1.assert)(!!this._client._connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
         const runBeforeUnload = !!options.runBeforeUnload;
         if (runBeforeUnload) {
             await this._client.send('Page.close');
@@ -2477,7 +2523,7 @@ function convertPrintParameterToInches(parameter) {
             valueText = text;
         }
         const value = Number(valueText);
-        assert_js_1.assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
+        (0, assert_js_1.assert)(!isNaN(value), 'Failed to parse parameter value: ' + text);
         pixels = value * unitToPixels[unit];
     }
     else {

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /// <reference types="node" />
+import { CDPSession } from './Connection.js';
 import { EvaluateFn, EvaluateFnReturnType, EvaluateHandleFn, SerializableOrJSHandle, UnwrapPromiseLike , WrapElementHandle} from './EvalTypes.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame , FrameManager} from './FrameManager.js';
@@ -42,6 +43,7 @@ export interface PageBinding {
  */
 export declare class DOMWorld {
     private _frameManager;
+    private _client;
     private _frame;
     private _timeoutSettings;
     private _documentPromise?;
@@ -59,7 +61,7 @@ export declare class DOMWorld {
     _boundFunctions: Map<string, Function>;
     private _ctxBindings;
     private static bindingIdentifier;
-    constructor(frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
+    constructor(client: CDPSession, frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
     frame(): Frame;
     _setContext(context?: ExecutionContext): Promise<void>;
     _hasContext(): boolean;

@@ -175,7 +175,7 @@ class ExecutionContext {
                 throw new Error('Evaluation failed: ' + helper_js_1.helper.getExceptionMessage(exceptionDetails));
             return returnByValue
                 ? helper_js_1.helper.valueFromRemoteObject(remoteObject)
-                : JSHandle_js_1.createJSHandle(this, remoteObject);
+                : (0, JSHandle_js_1.createJSHandle)(this, remoteObject);
         }
         if (typeof pageFunction !== 'function')
             throw new Error(`Expected to get |string| or |function| as the first argument, but got "${pageFunction}" instead.`);
@@ -221,7 +221,7 @@ class ExecutionContext {
             throw new Error('Evaluation failed: ' + helper_js_1.helper.getExceptionMessage(exceptionDetails));
         return returnByValue
             ? helper_js_1.helper.valueFromRemoteObject(remoteObject)
-            : JSHandle_js_1.createJSHandle(this, remoteObject);
+            : (0, JSHandle_js_1.createJSHandle)(this, remoteObject);
         /**
          * @param {*} arg
          * @returns {*}
@@ -289,12 +289,12 @@ class ExecutionContext {
      * @returns A handle to an array of objects with the given prototype.
      */
     async queryObjects(prototypeHandle) {
-        assert_js_1.assert(!prototypeHandle._disposed, 'Prototype JSHandle is disposed!');
-        assert_js_1.assert(prototypeHandle._remoteObject.objectId, 'Prototype JSHandle must not be referencing primitive value');
+        (0, assert_js_1.assert)(!prototypeHandle._disposed, 'Prototype JSHandle is disposed!');
+        (0, assert_js_1.assert)(prototypeHandle._remoteObject.objectId, 'Prototype JSHandle must not be referencing primitive value');
         const response = await this._client.send('Runtime.queryObjects', {
             prototypeObjectId: prototypeHandle._remoteObject.objectId,
         });
-        return JSHandle_js_1.createJSHandle(this, response.objects);
+        return (0, JSHandle_js_1.createJSHandle)(this, response.objects);
     }
     /**
      * @internal
@@ -304,14 +304,14 @@ class ExecutionContext {
             backendNodeId: backendNodeId,
             executionContextId: this._contextId,
         });
-        return JSHandle_js_1.createJSHandle(this, object);
+        return (0, JSHandle_js_1.createJSHandle)(this, object);
     }
     /**
      * @internal
      */
     async _adoptElementHandle(elementHandle) {
-        assert_js_1.assert(elementHandle.executionContext() !== this, 'Cannot adopt handle that already belongs to this execution context');
-        assert_js_1.assert(this._world, 'Cannot adopt handle without DOMWorld');
+        (0, assert_js_1.assert)(elementHandle.executionContext() !== this, 'Cannot adopt handle that already belongs to this execution context');
+        (0, assert_js_1.assert)(this._world, 'Cannot adopt handle without DOMWorld');
         const nodeInfo = await this._client.send('DOM.describeNode', {
             objectId: elementHandle._remoteObject.objectId,
         });

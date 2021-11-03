@@ -18,6 +18,7 @@ import { ConnectionEmittedEvents } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { helper } from './helper.js';
 import { Target } from './Target.js';
+import { TaskQueue } from './TaskQueue.js';
 
 const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
     ['geolocation', 'geolocation'],
@@ -92,9 +93,11 @@ export class Browser extends EventEmitter {
      */
     constructor(connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback) {
         super();
+        this._ignoredTargets = new Set();
         this._ignoreHTTPSErrors = ignoreHTTPSErrors;
         this._defaultViewport = defaultViewport;
         this._process = process;
+        this._screenshotTaskQueue = new TaskQueue();
         this._connection = connection;
         this._closeCallback = closeCallback || function () { };
         this._targetFilterCallback = targetFilterCallback || (() => true);
@@ -181,9 +184,10 @@ export class Browser extends EventEmitter {
             : this._defaultContext;
         const shouldAttachToTarget = this._targetFilterCallback(targetInfo);
         if (!shouldAttachToTarget) {
+            this._ignoredTargets.add(targetInfo.targetId);
             return;
         }
-        const target = new Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, this._defaultViewport);
+        const target = new Target(targetInfo, context, () => this._connection.createSession(targetInfo), this._ignoreHTTPSErrors, this._defaultViewport, this._screenshotTaskQueue);
         assert(!this._targets.has(event.targetInfo.targetId), 'Target should not exist before targetCreated');
         this._targets.set(event.targetInfo.targetId, target);
         if (await target._initializedPromise) {
@@ -192,6 +196,8 @@ export class Browser extends EventEmitter {
         }
     }
     async _targetDestroyed(event) {
+        if (this._ignoredTargets.has(event.targetId))
+            return;
         const target = this._targets.get(event.targetId);
         target._initializedCallback(false);
         this._targets.delete(event.targetId);
@@ -204,6 +210,8 @@ export class Browser extends EventEmitter {
         }
     }
     _targetInfoChanged(event) {
+        if (this._ignoredTargets.has(event.targetInfo.targetId))
+            return;
         const target = this._targets.get(event.targetInfo.targetId);
         assert(target, 'target should exist before targetInfoChanged');
         const previousURL = target.url();

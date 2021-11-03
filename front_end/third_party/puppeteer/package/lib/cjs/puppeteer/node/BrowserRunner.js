@@ -49,8 +49,8 @@ const PipeTransport_js_1 = require("./PipeTransport.js");
 const readline = __importStar(require("readline"));
 const Errors_js_1 = require("../common/Errors.js");
 const util_1 = require("util");
-const removeFolderAsync = util_1.promisify(rimraf_1.default);
-const debugLauncher = Debug_js_1.debug('puppeteer:launcher');
+const removeFolderAsync = (0, util_1.promisify)(rimraf_1.default);
+const debugLauncher = (0, Debug_js_1.debug)('puppeteer:launcher');
 const PROCESS_ERROR_EXPLANATION = `Puppeteer was unable to kill the process which ran the browser binary.
 This means that, on future Puppeteer launches, Puppeteer might not be able to launch the browser.
 Please check your open processes and ensure that the browser processes that Puppeteer launched have been killed.
@@ -68,14 +68,20 @@ class BrowserRunner {
     }
     start(options) {
         const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe } = options;
-        let stdio = ['pipe', 'pipe', 'pipe'];
+        let stdio;
         if (pipe) {
             if (dumpio)
                 stdio = ['ignore', 'pipe', 'pipe', 'pipe', 'pipe'];
             else
                 stdio = ['ignore', 'ignore', 'ignore', 'pipe', 'pipe'];
         }
-        assert_js_1.assert(!this.proc, 'This process has previously been started.');
+        else {
+            if (dumpio)
+                stdio = ['pipe', 'pipe', 'pipe'];
+            else
+                stdio = ['pipe', 'ignore', 'pipe'];
+        }
+        (0, assert_js_1.assert)(!this.proc, 'This process has previously been started.');
         debugLauncher(`Calling ${this._executablePath} ${this._processArguments.join(' ')}`);
         this.proc = childProcess.spawn(this._executablePath, this._processArguments, {
             // On non-windows platforms, `detached: true` makes child process a
@@ -130,7 +136,7 @@ class BrowserRunner {
         else if (this.connection) {
             // Attempt to close the browser gracefully
             this.connection.send('Browser.close').catch((error) => {
-                helper_js_1.debugError(error);
+                (0, helper_js_1.debugError)(error);
                 this.kill();
             });
         }

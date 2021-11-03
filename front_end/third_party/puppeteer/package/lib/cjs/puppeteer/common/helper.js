@@ -39,7 +39,7 @@ const Errors_js_1 = require("./Errors.js");
 const Debug_js_1 = require("./Debug.js");
 const assert_js_1 = require("./assert.js");
 const environment_js_1 = require("../environment.js");
-exports.debugError = Debug_js_1.debug('puppeteer:error');
+exports.debugError = (0, Debug_js_1.debug)('puppeteer:error');
 function getExceptionMessage(exceptionDetails) {
     if (exceptionDetails.exception)
         return (exceptionDetails.exception.description || exceptionDetails.exception.value);
@@ -58,7 +58,7 @@ function getExceptionMessage(exceptionDetails) {
     return message;
 }
 function valueFromRemoteObject(remoteObject) {
-    assert_js_1.assert(!remoteObject.objectId, 'Cannot extract value when objectId is given');
+    (0, assert_js_1.assert)(!remoteObject.objectId, 'Cannot extract value when objectId is given');
     if (remoteObject.unserializableValue) {
         if (remoteObject.type === 'bigint' && typeof BigInt !== 'undefined')
             return BigInt(remoteObject.unserializableValue.replace('n', ''));
@@ -86,7 +86,7 @@ async function releaseObject(client, remoteObject) {
         .catch((error) => {
         // Exceptions might happen in case of a page been navigated or closed.
         // Swallow these since they are harmless and we don't leak anything in this case.
-        exports.debugError(error);
+        (0, exports.debugError)(error);
     });
 }
 function addEventListener(emitter, eventName, handler) {
@@ -137,7 +137,7 @@ async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise
 }
 function evaluationString(fun, ...args) {
     if (isString(fun)) {
-        assert_js_1.assert(args.length === 0, 'Cannot evaluate a string with arguments');
+        (0, assert_js_1.assert)(args.length === 0, 'Cannot evaluate a string with arguments');
         return fun;
     }
     function serializeArgument(arg) {
@@ -276,9 +276,9 @@ async function getReadableFromProtocolStream(client, handle) {
             const response = await client.send('IO.read', { handle, size });
             this.push(response.data, response.base64Encoded ? 'base64' : undefined);
             if (response.eof) {
-                this.push(null);
                 eof = true;
                 await client.send('IO.close', { handle });
+                this.push(null);
             }
         },
     });

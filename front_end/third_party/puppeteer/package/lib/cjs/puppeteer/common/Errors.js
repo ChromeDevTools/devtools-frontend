@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.puppeteerErrors = exports.TimeoutError = exports.CustomError = void 0;
+exports.puppeteerErrors = exports.ProtocolError = exports.TimeoutError = exports.CustomError = void 0;
 /**
  * @public
  */
@@ -40,6 +40,14 @@ exports.CustomError = CustomError;
 class TimeoutError extends CustomError {
 }
 exports.TimeoutError = TimeoutError;
+/**
+ * ProtocolError is emitted whenever there is an error from the protocol.
+ *
+ * @public
+ */
+class ProtocolError extends CustomError {
+}
+exports.ProtocolError = ProtocolError;
 /**
  * @public
  */

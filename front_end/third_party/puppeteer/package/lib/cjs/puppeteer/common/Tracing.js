@@ -49,7 +49,7 @@ class Tracing {
      * @param options - Optional `TracingOptions`.
      */
     async start(options = {}) {
-        assert_js_1.assert(!this._recording, 'Cannot start recording trace while already recording trace.');
+        (0, assert_js_1.assert)(!this._recording, 'Cannot start recording trace while already recording trace.');
         const defaultCategories = [
             '-*',
             'devtools.timeline',

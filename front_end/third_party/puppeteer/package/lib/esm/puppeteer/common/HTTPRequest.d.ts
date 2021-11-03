@@ -125,6 +125,7 @@ export declare class HTTPRequest {
     private _currentStrategy;
     private _currentPriority;
     private _interceptActions;
+    private _initiator;
     /**
      * @internal
      */
@@ -198,6 +199,10 @@ export declare class HTTPRequest {
      * @returns true if the request is the driver of the current frame's navigation.
      */
     isNavigationRequest(): boolean;
+    /**
+     * @returns the initiator of the request.
+     */
+    initiator(): Protocol.Network.Initiator;
     /**
      * A `redirectChain` is a chain of requests initiated to fetch a resource.
      * @remarks

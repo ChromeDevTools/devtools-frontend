@@ -120,7 +120,7 @@ class JSCoverage {
         this._client = client;
     }
     async start(options = {}) {
-        assert_js_1.assert(!this._enabled, 'JSCoverage is already enabled');
+        (0, assert_js_1.assert)(!this._enabled, 'JSCoverage is already enabled');
         const { resetOnNavigation = true, reportAnonymousScripts = false, includeRawScriptCoverage = false, } = options;
         this._resetOnNavigation = resetOnNavigation;
         this._reportAnonymousScripts = reportAnonymousScripts;
@@ -164,11 +164,11 @@ class JSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            helper_js_1.debugError(error);
+            (0, helper_js_1.debugError)(error);
         }
     }
     async stop() {
-        assert_js_1.assert(this._enabled, 'JSCoverage is not enabled');
+        (0, assert_js_1.assert)(this._enabled, 'JSCoverage is not enabled');
         this._enabled = false;
         const result = await Promise.all([
             this._client.send('Profiler.takePreciseCoverage'),
@@ -215,7 +215,7 @@ class CSSCoverage {
         this._client = client;
     }
     async start(options = {}) {
-        assert_js_1.assert(!this._enabled, 'CSSCoverage is already enabled');
+        (0, assert_js_1.assert)(!this._enabled, 'CSSCoverage is already enabled');
         const { resetOnNavigation = true } = options;
         this._resetOnNavigation = resetOnNavigation;
         this._enabled = true;
@@ -251,11 +251,11 @@ class CSSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            helper_js_1.debugError(error);
+            (0, helper_js_1.debugError)(error);
         }
     }
     async stop() {
-        assert_js_1.assert(this._enabled, 'CSSCoverage is not enabled');
+        (0, assert_js_1.assert)(this._enabled, 'CSSCoverage is not enabled');
         this._enabled = false;
         const ruleTrackingResponse = await this._client.send('CSS.stopRuleUsageTracking');
         await Promise.all([

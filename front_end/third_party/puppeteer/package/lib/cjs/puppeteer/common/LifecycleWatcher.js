@@ -39,7 +39,7 @@ class LifecycleWatcher {
             waitUntil = [waitUntil];
         this._expectedLifecycle = waitUntil.map((value) => {
             const protocolEvent = puppeteerToProtocolLifecycle.get(value);
-            assert_js_1.assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
+            (0, assert_js_1.assert)(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
         });
         this._frameManager = frameManager;

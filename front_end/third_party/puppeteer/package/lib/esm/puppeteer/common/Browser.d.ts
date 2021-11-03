@@ -164,6 +164,8 @@ export declare class Browser extends EventEmitter {
     private _targetFilterCallback;
     private _defaultContext;
     private _contexts;
+    private _screenshotTaskQueue;
+    private _ignoredTargets;
     /**
      * @internal
      * Used in Target.ts directly so cannot be marked private.

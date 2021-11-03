@@ -445,6 +445,7 @@ export class Mouse {
     /**
      * Dispatches a `dragenter` event.
      * @param target - point for emitting `dragenter` event
+     * @param data - drag data containing items and operations mask
      */
     async dragEnter(target, data) {
         await this._client.send('Input.dispatchDragEvent', {
@@ -458,6 +459,7 @@ export class Mouse {
     /**
      * Dispatches a `dragover` event.
      * @param target - point for emitting `dragover` event
+     * @param data - drag data containing items and operations mask
      */
     async dragOver(target, data) {
         await this._client.send('Input.dispatchDragEvent', {
@@ -472,9 +474,6 @@ export class Mouse {
      * Performs a dragenter, dragover, and drop in sequence.
      * @param target - point to drop on
      * @param data - drag data containing items and operations mask
-     * @param options - An object of options. Accepts delay which,
-     * if specified, is the time to wait between `dragover` and `drop` in milliseconds.
-     * Defaults to 0.
      */
     async drop(target, data) {
         await this._client.send('Input.dispatchDragEvent', {

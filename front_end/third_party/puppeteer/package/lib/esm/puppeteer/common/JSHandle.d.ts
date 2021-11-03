@@ -20,7 +20,7 @@ import { CDPSession } from './Connection.js';
 import { EvaluateFn, EvaluateFnReturnType, EvaluateHandleFn, SerializableOrJSHandle, UnwrapPromiseLike , WrapElementHandle} from './EvalTypes.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame , FrameManager} from './FrameManager.js';
-import { Page } from './Page.js';
+import { Page, ScreenshotOptions } from './Page.js';
 import { KeyInput } from './USKeyboardLayout.js';
 
 /**
@@ -143,7 +143,7 @@ export declare class JSHandle<HandleObjectType = unknown> {
     evaluateHandle<HandleType extends JSHandle = JSHandle>(pageFunction: EvaluateHandleFn, ...args: SerializableOrJSHandle[]): Promise<HandleType>;
     /** Fetches a single property from the referenced object.
      */
-    getProperty(propertyName: string): Promise<JSHandle | undefined>;
+    getProperty(propertyName: string): Promise<JSHandle>;
     /**
      * The method returns a map with property names as keys and JSHandle
      * instances for the property values.
@@ -370,7 +370,7 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
      * {@link Page.screenshot} to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    screenshot(options?: {}): Promise<string | Buffer | void>;
+    screenshot(options?: ScreenshotOptions): Promise<string | Buffer>;
     /**
      * Runs `element.querySelector` within the page. If no element matches the selector,
      * the return value resolves to `null`.

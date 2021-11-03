@@ -16,7 +16,6 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = exports.FrameManager = exports.FrameManagerEmittedEvents = void 0;
-const Debug_js_1 = require("../common/Debug.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 const assert_js_1 = require("./assert.js");
 const helper_js_1 = require("./helper.js");
@@ -24,6 +23,7 @@ const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
 const DOMWorld_js_1 = require("./DOMWorld.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
+const Connection_js_1 = require("./Connection.js");
 const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
 const xPathPattern = /^\(\/\/[^\)]+\)|^\/\//;
 /**
@@ -54,31 +54,70 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this._page = page;
         this._networkManager = new NetworkManager_js_1.NetworkManager(client, ignoreHTTPSErrors, this);
         this._timeoutSettings = timeoutSettings;
-        this._client.on('Page.frameAttached', (event) => this._onFrameAttached(event.frameId, event.parentFrameId));
-        this._client.on('Page.frameNavigated', (event) => this._onFrameNavigated(event.frame));
-        this._client.on('Page.navigatedWithinDocument', (event) => this._onFrameNavigatedWithinDocument(event.frameId, event.url));
-        this._client.on('Page.frameDetached', (event) => this._onFrameDetached(event.frameId));
-        this._client.on('Page.frameStoppedLoading', (event) => this._onFrameStoppedLoading(event.frameId));
-        this._client.on('Runtime.executionContextCreated', (event) => this._onExecutionContextCreated(event.context));
-        this._client.on('Runtime.executionContextDestroyed', (event) => this._onExecutionContextDestroyed(event.executionContextId));
-        this._client.on('Runtime.executionContextsCleared', () => this._onExecutionContextsCleared());
-        this._client.on('Page.lifecycleEvent', (event) => this._onLifecycleEvent(event));
-        this._client.on('Target.attachedToTarget', async (event) => this._onFrameMoved(event));
+        this.setupEventListeners(this._client);
     }
-    async initialize() {
-        const result = await Promise.all([
-            this._client.send('Page.enable'),
-            this._client.send('Page.getFrameTree'),
-        ]);
-        const { frameTree } = result[1];
-        this._handleFrameTree(frameTree);
-        await Promise.all([
-            this._client.send('Page.setLifecycleEventsEnabled', { enabled: true }),
-            this._client
-                .send('Runtime.enable')
-                .then(() => this._ensureIsolatedWorld(UTILITY_WORLD_NAME)),
-            this._networkManager.initialize(),
-        ]);
+    setupEventListeners(session) {
+        session.on('Page.frameAttached', (event) => {
+            this._onFrameAttached(session, event.frameId, event.parentFrameId);
+        });
+        session.on('Page.frameNavigated', (event) => {
+            this._onFrameNavigated(event.frame);
+        });
+        session.on('Page.navigatedWithinDocument', (event) => {
+            this._onFrameNavigatedWithinDocument(event.frameId, event.url);
+        });
+        session.on('Page.frameDetached', (event) => {
+            this._onFrameDetached(event.frameId, event.reason);
+        });
+        session.on('Page.frameStoppedLoading', (event) => {
+            this._onFrameStoppedLoading(event.frameId);
+        });
+        session.on('Runtime.executionContextCreated', (event) => {
+            this._onExecutionContextCreated(event.context, session);
+        });
+        session.on('Runtime.executionContextDestroyed', (event) => {
+            this._onExecutionContextDestroyed(event.executionContextId, session);
+        });
+        session.on('Runtime.executionContextsCleared', () => {
+            this._onExecutionContextsCleared(session);
+        });
+        session.on('Page.lifecycleEvent', (event) => {
+            this._onLifecycleEvent(event);
+        });
+        session.on('Target.attachedToTarget', async (event) => {
+            this._onAttachedToTarget(event);
+        });
+        session.on('Target.detachedFromTarget', async (event) => {
+            this._onDetachedFromTarget(event);
+        });
+    }
+    async initialize(client = this._client) {
+        try {
+            const result = await Promise.all([
+                client.send('Page.enable'),
+                client.send('Page.getFrameTree'),
+            ]);
+            const { frameTree } = result[1];
+            this._handleFrameTree(client, frameTree);
+            await Promise.all([
+                client.send('Page.setLifecycleEventsEnabled', { enabled: true }),
+                client
+                    .send('Runtime.enable')
+                    .then(() => this._ensureIsolatedWorld(client, UTILITY_WORLD_NAME)),
+                // TODO: Network manager is not aware of OOP iframes yet.
+                client === this._client
+                    ? this._networkManager.initialize()
+                    : Promise.resolve(),
+            ]);
+        }
+        catch (error) {
+            // The target might have been closed before the initialization finished.
+            if (error.message.includes('Target closed') ||
+                error.message.includes('Session closed')) {
+                return;
+            }
+            throw error;
+        }
     }
     networkManager() {
         return this._networkManager;
@@ -135,15 +174,23 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             throw error;
         return watcher.navigationResponse();
     }
-    async _onFrameMoved(event) {
+    async _onAttachedToTarget(event) {
         if (event.targetInfo.type !== 'iframe') {
             return;
         }
-        // TODO(sadym): Remove debug message once proper OOPIF support is
-        // implemented: https://github.com/puppeteer/puppeteer/issues/2548
-        Debug_js_1.debug('puppeteer:frame')(`The frame '${event.targetInfo.targetId}' moved to another session. ` +
-            `Out-of-process iframes (OOPIF) are not supported by Puppeteer yet. ` +
-            `https://github.com/puppeteer/puppeteer/issues/2548`);
+        const frame = this._frames.get(event.targetInfo.targetId);
+        const session = Connection_js_1.Connection.fromSession(this._client).session(event.sessionId);
+        frame._updateClient(session);
+        this.setupEventListeners(session);
+        await this.initialize(session);
+    }
+    async _onDetachedFromTarget(event) {
+        const frame = this._frames.get(event.targetId);
+        if (frame && frame.isOOPFrame()) {
+            // When an OOP iframe is removed from the page, it
+            // will only get a Target.detachedFromTarget event.
+            this._removeFramesRecursively(frame);
+        }
     }
     _onLifecycleEvent(event) {
         const frame = this._frames.get(event.frameId);
@@ -159,14 +206,16 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         frame._onLoadingStopped();
         this.emit(exports.FrameManagerEmittedEvents.LifecycleEvent, frame);
     }
-    _handleFrameTree(frameTree) {
-        if (frameTree.frame.parentId)
-            this._onFrameAttached(frameTree.frame.id, frameTree.frame.parentId);
+    _handleFrameTree(session, frameTree) {
+        if (frameTree.frame.parentId) {
+            this._onFrameAttached(session, frameTree.frame.id, frameTree.frame.parentId);
+        }
         this._onFrameNavigated(frameTree.frame);
         if (!frameTree.childFrames)
             return;
-        for (const child of frameTree.childFrames)
-            this._handleFrameTree(child);
+        for (const child of frameTree.childFrames) {
+            this._handleFrameTree(session, child);
+        }
     }
     page() {
         return this._page;
@@ -180,12 +229,20 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
     frame(frameId) {
         return this._frames.get(frameId) || null;
     }
-    _onFrameAttached(frameId, parentFrameId) {
-        if (this._frames.has(frameId))
+    _onFrameAttached(session, frameId, parentFrameId) {
+        if (this._frames.has(frameId)) {
+            const frame = this._frames.get(frameId);
+            if (session && frame.isOOPFrame()) {
+                // If an OOP iframes becomes a normal iframe again
+                // it is first attached to the parent page before
+                // the target is removed.
+                frame._updateClient(session);
+            }
             return;
-        assert_js_1.assert(parentFrameId);
+        }
+        (0, assert_js_1.assert)(parentFrameId);
         const parentFrame = this._frames.get(parentFrameId);
-        const frame = new Frame(this, parentFrame, frameId);
+        const frame = new Frame(this, parentFrame, frameId, session);
         this._frames.set(frame._id, frame);
         this.emit(exports.FrameManagerEmittedEvents.FrameAttached, frame);
     }
@@ -194,7 +251,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         let frame = isMainFrame
             ? this._mainFrame
             : this._frames.get(framePayload.id);
-        assert_js_1.assert(isMainFrame || frame, 'We either navigate top level or have old version of the navigated frame');
+        (0, assert_js_1.assert)(isMainFrame || frame, 'We either navigate top level or have old version of the navigated frame');
         // Detach all child frames first.
         if (frame) {
             for (const child of frame.childFrames())
@@ -209,7 +266,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             }
             else {
                 // Initial main frame navigation.
-                frame = new Frame(this, null, framePayload.id);
+                frame = new Frame(this, null, framePayload.id, this._client);
             }
             this._frames.set(framePayload.id, frame);
             this._mainFrame = frame;
@@ -218,22 +275,23 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         frame._navigated(framePayload);
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigated, frame);
     }
-    async _ensureIsolatedWorld(name) {
-        if (this._isolatedWorlds.has(name))
+    async _ensureIsolatedWorld(session, name) {
+        const key = `${session.id()}:${name}`;
+        if (this._isolatedWorlds.has(key))
             return;
-        this._isolatedWorlds.add(name);
-        await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
+        this._isolatedWorlds.add(key);
+        await session.send('Page.addScriptToEvaluateOnNewDocument', {
             source: `//# sourceURL=${ExecutionContext_js_1.EVALUATION_SCRIPT_URL}`,
             worldName: name,
         });
         // Frames might be removed before we send this.
-        await Promise.all(this.frames().map((frame) => this._client
-            .send('Page.createIsolatedWorld', {
+        await Promise.all(this.frames()
+            .filter((frame) => frame._client === session)
+            .map((frame) => session.send('Page.createIsolatedWorld', {
             frameId: frame._id,
             worldName: name,
             grantUniveralAccess: true,
-        })
-            .catch(helper_js_1.debugError)));
+        })));
     }
     _onFrameNavigatedWithinDocument(frameId, url) {
         const frame = this._frames.get(frameId);
@@ -243,17 +301,25 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigatedWithinDocument, frame);
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigated, frame);
     }
-    _onFrameDetached(frameId) {
+    _onFrameDetached(frameId, reason) {
         const frame = this._frames.get(frameId);
-        if (frame)
-            this._removeFramesRecursively(frame);
+        if (reason === 'remove') {
+            // Only remove the frame if the reason for the detached event is
+            // an actual removement of the frame.
+            // For frames that become OOP iframes, the reason would be 'swap'.
+            if (frame)
+                this._removeFramesRecursively(frame);
+        }
     }
-    _onExecutionContextCreated(contextPayload) {
+    _onExecutionContextCreated(contextPayload, session) {
         const auxData = contextPayload.auxData;
         const frameId = auxData ? auxData.frameId : null;
         const frame = this._frames.get(frameId) || null;
         let world = null;
         if (frame) {
+            // Only care about execution contexts created for the current session.
+            if (frame._client !== session)
+                return;
             if (contextPayload.auxData && !!contextPayload.auxData['isDefault']) {
                 world = frame._mainWorld;
             }
@@ -265,29 +331,36 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 world = frame._secondaryWorld;
             }
         }
-        const context = new ExecutionContext_js_1.ExecutionContext(this._client, contextPayload, world);
+        const context = new ExecutionContext_js_1.ExecutionContext(frame._client || this._client, contextPayload, world);
         if (world)
             world._setContext(context);
-        this._contextIdToContext.set(contextPayload.id, context);
+        const key = `${session.id()}:${contextPayload.id}`;
+        this._contextIdToContext.set(key, context);
     }
-    _onExecutionContextDestroyed(executionContextId) {
-        const context = this._contextIdToContext.get(executionContextId);
+    _onExecutionContextDestroyed(executionContextId, session) {
+        const key = `${session.id()}:${executionContextId}`;
+        const context = this._contextIdToContext.get(key);
         if (!context)
             return;
-        this._contextIdToContext.delete(executionContextId);
+        this._contextIdToContext.delete(key);
         if (context._world)
             context._world._setContext(null);
     }
-    _onExecutionContextsCleared() {
-        for (const context of this._contextIdToContext.values()) {
+    _onExecutionContextsCleared(session) {
+        for (const [key, context] of this._contextIdToContext.entries()) {
+            // Make sure to only clear execution contexts that belong
+            // to the current session.
+            if (context._client !== session)
+                continue;
             if (context._world)
                 context._world._setContext(null);
+            this._contextIdToContext.delete(key);
         }
-        this._contextIdToContext.clear();
     }
-    executionContextById(contextId) {
-        const context = this._contextIdToContext.get(contextId);
-        assert_js_1.assert(context, 'INTERNAL ERROR: missing context with id = ' + contextId);
+    executionContextById(contextId, session = this._client) {
+        const key = `${session.id()}:${contextId}`;
+        const context = this._contextIdToContext.get(key);
+        (0, assert_js_1.assert)(context, 'INTERNAL ERROR: missing context with id = ' + contextId);
         return context;
     }
     _removeFramesRecursively(frame) {
@@ -352,7 +425,7 @@ class Frame {
     /**
      * @internal
      */
-    constructor(frameManager, parentFrame, frameId) {
+    constructor(frameManager, parentFrame, frameId, client) {
         this._url = '';
         this._detached = false;
         /**
@@ -369,11 +442,21 @@ class Frame {
         this._id = frameId;
         this._detached = false;
         this._loaderId = '';
-        this._mainWorld = new DOMWorld_js_1.DOMWorld(frameManager, this, frameManager._timeoutSettings);
-        this._secondaryWorld = new DOMWorld_js_1.DOMWorld(frameManager, this, frameManager._timeoutSettings);
         this._childFrames = new Set();
         if (this._parentFrame)
             this._parentFrame._childFrames.add(this);
+        this._updateClient(client);
+    }
+    /**
+     * @internal
+     */
+    _updateClient(client) {
+        this._client = client;
+        this._mainWorld = new DOMWorld_js_1.DOMWorld(this._client, this._frameManager, this, this._frameManager._timeoutSettings);
+        this._secondaryWorld = new DOMWorld_js_1.DOMWorld(this._client, this._frameManager, this, this._frameManager._timeoutSettings);
+    }
+    isOOPFrame() {
+        return this._client !== this._frameManager._client;
     }
     /**
      * @remarks
@@ -958,8 +1041,8 @@ class Frame {
 }
 exports.Frame = Frame;
 function assertNoLegacyNavigationOptions(options) {
-    assert_js_1.assert(options['networkIdleTimeout'] === undefined, 'ERROR: networkIdleTimeout option is no longer supported.');
-    assert_js_1.assert(options['networkIdleInflight'] === undefined, 'ERROR: networkIdleInflight option is no longer supported.');
-    assert_js_1.assert(options.waitUntil !== 'networkidle', 'ERROR: "networkidle" option is no longer supported. Use "networkidle2" instead');
+    (0, assert_js_1.assert)(options['networkIdleTimeout'] === undefined, 'ERROR: networkIdleTimeout option is no longer supported.');
+    (0, assert_js_1.assert)(options['networkIdleInflight'] === undefined, 'ERROR: networkIdleInflight option is no longer supported.');
+    (0, assert_js_1.assert)(options.waitUntil !== 'networkidle', 'ERROR: "networkidle" option is no longer supported. Use "networkidle2" instead');
 }
 //# sourceMappingURL=FrameManager.js.map

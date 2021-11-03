@@ -130,7 +130,7 @@ class Keyboard {
             location: 0,
         };
         const definition = USKeyboardLayout_js_1.keyDefinitions[keyString];
-        assert_js_1.assert(definition, `Unknown key: "${keyString}"`);
+        (0, assert_js_1.assert)(definition, `Unknown key: "${keyString}"`);
         if (definition.key)
             description.key = definition.key;
         if (shift && definition.shiftKey)
@@ -449,6 +449,7 @@ class Mouse {
     /**
      * Dispatches a `dragenter` event.
      * @param target - point for emitting `dragenter` event
+     * @param data - drag data containing items and operations mask
      */
     async dragEnter(target, data) {
         await this._client.send('Input.dispatchDragEvent', {
@@ -462,6 +463,7 @@ class Mouse {
     /**
      * Dispatches a `dragover` event.
      * @param target - point for emitting `dragover` event
+     * @param data - drag data containing items and operations mask
      */
     async dragOver(target, data) {
         await this._client.send('Input.dispatchDragEvent', {
@@ -476,9 +478,6 @@ class Mouse {
      * Performs a dragenter, dragover, and drop in sequence.
      * @param target - point to drop on
      * @param data - drag data containing items and operations mask
-     * @param options - An object of options. Accepts delay which,
-     * if specified, is the time to wait between `dragover` and `drop` in milliseconds.
-     * Defaults to 0.
      */
     async drop(target, data) {
         await this._client.send('Input.dispatchDragEvent', {

@@ -7,6 +7,7 @@ import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
+import * as DeprecationIssue from './DeprecationIssue.js';
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as Issue from './Issue.js';
@@ -30,6 +31,7 @@ export {
   ContrastCheckTrigger,
   CorsIssue,
   CrossOriginEmbedderPolicyIssue,
+  DeprecationIssue,
   GenericIssue,
   HeavyAdIssue,
   Issue,

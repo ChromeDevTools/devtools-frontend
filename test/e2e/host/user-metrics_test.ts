@@ -366,6 +366,13 @@ describe('User Metrics', () => {
       },
     ]);
   });
+
+  it('records the sync setting', async () => {
+    await assertHistogramEventsInclude([{
+      actionName: 'DevTools.SyncSetting',
+      actionCode: 1,  // Chrome Sync is disabled
+    }]);
+  });
 });
 
 describe('User Metrics for dual screen emulation', () => {

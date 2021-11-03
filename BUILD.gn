@@ -95,7 +95,6 @@ non_autostart_non_remote_modules = [
   "panels/protocol_monitor/protocol_monitor_module.js",
   "panels/application/application_module.js",
   "panels/security/security_module.js",
-  "panels/sources/sources_module.js",
   "panels/timeline/timeline_module.js",
   "emulated_devices/emulated_devices_module.js",
 ]

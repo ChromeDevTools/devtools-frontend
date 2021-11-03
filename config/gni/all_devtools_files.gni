@@ -157,7 +157,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/sources_test_runner/LiveEditTestRunner.js",
   "front_end/legacy_test_runner/sources_test_runner/SearchTestRunner.js",
   "front_end/legacy_test_runner/sources_test_runner/SourcesTestRunner.js",
-  "front_end/panels/sources/module.json",
   "front_end/ui/legacy/components/text_editor/autocompleteTooltip.css",
   "front_end/ui/legacy/components/text_editor/cmdevtools.css",
   "front_end/ui/legacy/components/text_editor/module.json",

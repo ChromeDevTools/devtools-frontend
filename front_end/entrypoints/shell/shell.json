@@ -7,7 +7,6 @@
 
     { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" },
-    { "name": "panels/protocol_monitor"},
-    { "name": "panels/sources" }
+    { "name": "panels/protocol_monitor"}
   ]
 }

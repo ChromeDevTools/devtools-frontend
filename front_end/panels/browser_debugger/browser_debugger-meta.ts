@@ -99,8 +99,6 @@ let loadedSourcesModule: (typeof Sources|undefined);
 //  collision with node_app as a separate view with the same id is registered in it.
 async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('sources');
     loadedSourcesModule = await import('../sources/sources.js');
   }
   return loadedSourcesModule;

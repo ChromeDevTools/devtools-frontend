@@ -387,8 +387,6 @@ let loadedSourcesModule: (typeof Sources|undefined);
 
 async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/sources');
     loadedSourcesModule = await import('./sources.js');
   }
   return loadedSourcesModule;

@@ -2,7 +2,6 @@
   "dependencies": [
     "ui/legacy",
     "ui/legacy/components/perf_ui",
-    "panels/network",
-    "panels/sources"
+    "panels/network"
   ]
 }

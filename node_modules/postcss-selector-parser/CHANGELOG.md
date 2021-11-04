@@ -1,3 +1,7 @@
+# 6.0.6
+
+- Fixed: parse quoted attributes containing a newline correctly
+
 # 6.0.5
 
 - Perf: rework unesc for a 63+% performance boost

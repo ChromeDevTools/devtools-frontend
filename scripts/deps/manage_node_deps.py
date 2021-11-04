@@ -83,7 +83,7 @@ DEPS = {
     "mocha": "9.1.1",
     # Purposefully not the latest; we keep this in sync with what stylelint
     # depends on
-    "postcss": "7.0.35",
+    "postcss": "8.3.11",
     "puppeteer": "10.0.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
@@ -92,8 +92,8 @@ DEPS = {
     "rollup-plugin-terser": "7.0.2",
     "sinon": "11.1.2",
     "source-map-support": "0.5.19",
-    "stylelint": "13.13.1",
-    "stylelint-config-standard": "22.0.0",
+    "stylelint": "14.0.1",
+    "stylelint-config-standard": "23.0.0",
     "svgo": "2.3.1",
     "terser": "5.8.0",
     "typescript": "4.4.3",

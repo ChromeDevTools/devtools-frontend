@@ -1,1 +1,1 @@
-export * from './dist/types.js'
+module.exports = require('./dist/types')

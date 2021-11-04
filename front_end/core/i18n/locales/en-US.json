@@ -9147,7 +9147,7 @@
     "message": "Coverage: n/a"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Coverage: {PH1} %"
+    "message": "Coverage: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Show Details"

@@ -25,7 +25,7 @@ const UIStrings = {
   *@description Text to show in the status bar if coverage data is available
   *@example {12.3} PH1
   */
-  coverageS: 'Coverage: {PH1} %',
+  coverageS: 'Coverage: {PH1}',
   /**
   *@description Text to be shown in the status bar if no coverage data is available
   */
@@ -96,7 +96,12 @@ export class CoveragePlugin extends Plugin {
   private updateStats(): void {
     if (this.coverage) {
       this.infoInToolbar.setTitle(i18nString(UIStrings.showDetails));
-      this.infoInToolbar.setText(i18nString(UIStrings.coverageS, {PH1: this.coverage.usedPercentage().toFixed(1)}));
+      const formatter = new Intl.NumberFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale, {
+        style: 'percent',
+        maximumFractionDigits: 1,
+      });
+      this.infoInToolbar.setText(
+          i18nString(UIStrings.coverageS, {PH1: formatter.format(this.coverage.usedPercentage())}));
     } else {
       this.infoInToolbar.setTitle(i18nString(UIStrings.clickToShowCoveragePanel));
       this.infoInToolbar.setText(i18nString(UIStrings.coverageNa));

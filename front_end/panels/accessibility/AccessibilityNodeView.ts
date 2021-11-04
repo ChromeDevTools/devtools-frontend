@@ -673,7 +673,7 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
         reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsNotVisible, {});
         break;
       case 'presentationalRole': {
-        const role = axNode && axNode.role() || '';
+        const role = axNode && axNode.role()?.value || '';
         const rolePresentationSpan = document.createElement('span', {is: 'source-code'}).textContent = 'role=' + role;
         reasonElement =
             i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementHasPlaceholder, {PH1: rolePresentationSpan});

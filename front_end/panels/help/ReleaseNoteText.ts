@@ -36,6 +36,34 @@ function getLocalizedReleaseNoteURL(url: string): string {
 
 export const releaseNoteText: ReleaseNote[] = [
   {
+    version: 39,
+    header: 'Highlights from the Chrome 97 update',
+    highlights: [
+      {
+        title: 'New preview feature: Recorder panel',
+        subtitle: 'Record, replay and measure user flows with options to export to Puppeteer script and more.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-97/#recorder'),
+      },
+      {
+        title: 'Enhanced "Edit as HTML" with code completion',
+        subtitle: 'Edit as HTML in the Elements panel now supports code completion, syntax highlights and more.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-97/#code-completion'),
+      },
+      {
+        title: 'Refresh device list in Device Mode',
+        subtitle: 'New devices are added in the device list.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-97/#device'),
+      },
+      {
+        title: 'Improved code debugging experience',
+        subtitle:
+            'Include column number in the Console stack trace, improved breakpoints display in the Sources panel and more.',
+        link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-97/#debugging'),
+      },
+    ],
+    link: getLocalizedReleaseNoteURL('https://developer.chrome.com/blog/new-in-devtools-97'),
+  },
+  {
     version: 38,
     header: 'Highlights from the Chrome 96 update',
     highlights: [

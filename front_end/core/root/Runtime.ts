@@ -232,6 +232,10 @@ export class Runtime {
   getModulesMap(): {[x: string]: Module} {
     return this.modulesMap;
   }
+
+  loadLegacyModule(modulePath: string): Promise<void> {
+    return import(`../../${modulePath}`);
+  }
 }
 
 export class ModuleDescriptor {

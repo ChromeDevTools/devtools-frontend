@@ -1290,6 +1290,7 @@
 
   TestSuite.prototype.testInspectedElementIs = async function(nodeName) {
     this.takeControl();
+    await self.runtime.loadLegacyModule('panels/elements/elements-legacy.js');
     if (!Elements.ElementsPanel.firstInspectElementNodeNameForTest) {
       await new Promise(f => this.addSniffer(Elements.ElementsPanel, 'firstInspectElementCompletedForTest', f));
     }

@@ -334,14 +334,20 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
         break;
       }
     }
-    if (!completion) {
-      return false;
+    // If there is an auto-completion, press 'tab' first time will show the auto-completion, second time will rewrite
+    // the query. Otherwise it will select the next item.
+    if (completion) {
+      const selection = this.inputBoxElement.getComponentSelection();
+      if (selection && selection.toString().trim() !== '') {
+        this.setQuery(completion);
+        return true;
+      }
+      this.inputBoxElement.focus();
+      this.inputBoxElement.setText(completion);
+      this.setQuerySelectedRange(userEnteredText.length, completion.length);
+      return true;
     }
-    this.inputBoxElement.focus();
-    this.inputBoxElement.setText(completion);
-    this.inputBoxElement.setSelectedRange(userEnteredText.length, completion.length);
-    this.scheduleFilter();
-    return true;
+    return this.list.selectNextItem(true, false);
   }
 
   private itemsFilteredForTest(): void {

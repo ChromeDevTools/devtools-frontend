@@ -33,7 +33,7 @@
   -webkit-mask-size: 19px 6px;
   -webkit-mask-repeat: no-repeat;
   background-color: var(--color-text-primary);
-  content: '';
+  content: "";
   height: 1em;
   width: 1em;
 }

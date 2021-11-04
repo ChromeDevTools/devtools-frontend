@@ -67,7 +67,7 @@
   user-select: none;
   -webkit-mask-image: var(--image-file-treeoutlineTriangles);
   -webkit-mask-size: 32px 24px;
-  content: '\A0\A0';
+  content: "\A0\A0";
   color: transparent;
   text-shadow: none;
   margin-right: -3px;

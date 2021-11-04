@@ -35,7 +35,7 @@
   flex: none;
   width: 16px;
   height: 16px;
-  margin: 0 0;
+  margin: 0;
 }
 /* Separate the middle icon from the other two. */
 
@@ -65,7 +65,7 @@
 
 .triangle-pointer-container {
   margin: 8px 24px 0;
-  padding: 0 0;
+  padding: 0;
 }
 
 .triangle-pointer-wrapper {

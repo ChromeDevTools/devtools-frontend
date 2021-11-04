@@ -17,11 +17,11 @@ body.platform-linux {
 
 body.platform-mac {
   color: rgb(48 57 66);
-  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
 }
 
 body.platform-windows {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 .fill {

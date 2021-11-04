@@ -209,15 +209,15 @@
   color: var(--color-link);
 }
 
-.devtools-link [is=ui-icon] {
+.devtools-link [is="ui-icon"] {
   vertical-align: middle;
 }
 
-.devtools-link [is=ui-icon].icon-mask {
+.devtools-link [is="ui-icon"].icon-mask {
   background-color: var(--color-link);
 }
 
-:focus .selected .devtools-link [is=ui-icon].icon-mask {
+:focus .selected .devtools-link [is="ui-icon"].icon-mask {
   background-color: var(--legacy-item-selection-bg-color);
 }
 

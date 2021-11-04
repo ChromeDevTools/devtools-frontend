@@ -33,7 +33,7 @@
 
 .icon,
 .icon-badge {
-  margin: -3px -5px -3px -5px;
+  margin: -3px -5px;
 }
 
 .icon-stack {
@@ -41,7 +41,7 @@
   display: inline-flex;
 }
 
-.icon-stack > [is=ui-icon]:not(:first-child) {
+.icon-stack > [is="ui-icon"]:not(:first-child) {
   position: absolute;
   left: 0;
   top: 0;
@@ -124,7 +124,7 @@
 }
 
 @media (forced-colors: active) {
-  .tree-outline li .leading-icons [is=ui-icon].icon-mask {
+  .tree-outline li .leading-icons [is="ui-icon"].icon-mask {
     background: ButtonText;
   }
 
@@ -134,7 +134,7 @@
   }
 
   .tree-outline:not(.hide-selection-when-blurred) li.parent:hover:not(.selected)::before,
-  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) [is=ui-icon].icon-mask {
+  .tree-outline:not(.hide-selection-when-blurred) li:hover:not(.selected) [is="ui-icon"].icon-mask {
     background-color: HighlightText;
   }
 

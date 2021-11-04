@@ -13,7 +13,7 @@
   flex: none;
   max-width: 600px;
   max-height: 202px;
-  margin: 20px 0 5px 0;
+  margin: 20px 0 5px;
 }
 
 .network-discovery-list-empty {
@@ -25,7 +25,7 @@
 }
 
 .network-discovery-list-item {
-  padding: 3px 5px 3px 5px;
+  padding: 3px 5px;
   height: 30px;
   display: flex;
   align-items: center;

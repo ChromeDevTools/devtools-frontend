@@ -62,7 +62,7 @@
   border-bottom: 0;
 }
 
-.network-summary-bar span[is=dt-icon-label] {
+.network-summary-bar span[is="dt-icon-label"] {
   margin-right: 6px;
 }
 
@@ -243,7 +243,7 @@
   filter: brightness(0) invert(1);
 }
 
-.network-log-grid.data-grid:focus .data-grid-data-grid-node.selected [is=ui-icon].icon-mask {
+.network-log-grid.data-grid:focus .data-grid-data-grid-node.selected [is="ui-icon"].icon-mask {
   --network-grid-selected-color: #dadce0;
   --override-icon-mask-background-color: var(--network-grid-selected-color);
 }
@@ -446,7 +446,7 @@
     background-color: canvas;
   }
 
-  .network-waterfall-header:hover .sort-order-icon-container [is=ui-icon].icon-mask {
+  .network-waterfall-header:hover .sort-order-icon-container [is="ui-icon"].icon-mask {
     background-color: HighlightText;
   }
 }

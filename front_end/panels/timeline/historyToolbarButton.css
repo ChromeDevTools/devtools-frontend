@@ -45,7 +45,7 @@
     opacity: 100%;
   }
 
-  .history-dropdown-button[disabled] [is=ui-icon].icon-mask {
+  .history-dropdown-button[disabled] [is="ui-icon"].icon-mask {
     background-color: GrayText;
   }
 }

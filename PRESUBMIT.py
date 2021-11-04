@@ -348,7 +348,6 @@ def _CheckDevToolsStyleCSS(input_api, output_api):
                                  script_args))
 
     if not ts_should_bail_out:
-        script_args = ["--syntax", "html"]
         if len(ts_files_to_lint) < 50:
             script_args += ["--files"] + ts_files_to_lint
         else:

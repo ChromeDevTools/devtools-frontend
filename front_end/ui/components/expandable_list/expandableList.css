@@ -17,7 +17,7 @@ div {
 
 .arrow-icon {
   display: inline-block;
-  -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
+  -webkit-mask-image: url("Images/treeoutlineTriangles.svg");
   -webkit-mask-size: 32px 24px;
   -webkit-mask-position: 0 0;
   background-color: var(--color-text-primary);

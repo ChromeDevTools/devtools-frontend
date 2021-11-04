@@ -33,7 +33,7 @@ slot {
   border-color: var(--override-adorner-focus-border-color, var(--color-primary));
 }
 
-:host([aria-pressed=true]) slot {
+:host([aria-pressed="true"]) slot {
   color: var(--override-adorner-active-text-color, var(--color-background));
   background-color: var(--override-adorner-active-background-color, var(--color-primary));
   border: 1px solid var(--override-adorner-active-background-color, var(--color-primary));

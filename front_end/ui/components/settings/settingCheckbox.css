@@ -24,3 +24,8 @@ label {
 p {
   margin: 12px 0;
 }
+
+/* Preserve look of legacy checkboxes in dark mode */
+:host-context(.-theme-with-dark-background) input[type="checkbox"]:not(.-theme-preserve) {
+  accent-color: var(--color-checkbox-accent-color);
+}

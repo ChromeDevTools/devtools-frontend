@@ -233,6 +233,7 @@
   --color-error-text: hsl(0deg 100% 75%);
   --color-error-border: rgb(92 0 0);
   --color-error-background: hsl(0deg 100% 8%);
+  --color-checkbox-accent-color: rgb(255 165 0);
   /* Colors for styling inputs */
   --color-input-outline: rgb(189 193 198);
   --color-input-outline-active: rgb(138 180 248);

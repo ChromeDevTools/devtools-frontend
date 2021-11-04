@@ -44,6 +44,12 @@
   white-space: nowrap;
 }
 
+.soft-context-menu-item devtools-icon {
+  --icon-color: var(--color-text-secondary);
+
+  pointer-events: none;
+}
+
 .soft-context-menu-disabled {
   color: var(--color-text-disabled);
   pointer-events: none;
@@ -64,6 +70,10 @@
 .soft-context-menu-item-mouse-over {
   background-color: var(--color-primary);
   color: var(--override-context-menu-hover-text-color);
+}
+
+.soft-context-menu-item-mouse-over devtools-icon {
+  --icon-color: var(--override-context-menu-hover-text-color);
 }
 
 .-theme-with-dark-background .soft-context-menu-item-mouse-over,

@@ -137,8 +137,11 @@ export class Section {
     this.items = [];
   }
 
-  appendItem(label: string, handler: () => void, disabled?: boolean): Item {
+  appendItem(label: string, handler: () => void, disabled?: boolean, additionalElement?: Element): Item {
     const item = new Item(this.contextMenu, 'item', label, disabled);
+    if (additionalElement) {
+      item.customElement = additionalElement;
+    }
     this.items.push(item);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item.id(), handler);
@@ -147,7 +150,7 @@ export class Section {
   }
 
   appendCustomItem(element: Element): Item {
-    const item = new Item(this.contextMenu, 'item', '<custom>');
+    const item = new Item(this.contextMenu, 'item');
     item.customElement = element;
     this.items.push(item);
     return item;

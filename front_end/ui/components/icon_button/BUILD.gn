@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     # TODO(crbug.com/1202788): Remove invalid dependents
+    "../../../entrypoints/main/*",
     "../../legacy/*",
     "../../legacy/components/color_picker/*",
     "../../legacy/components/object_ui/*",

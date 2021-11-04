@@ -47,6 +47,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -876,6 +877,16 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       if (location !== 'drawer-view' && location !== 'panel') {
         continue;
       }
+
+      if (viewExtension.isPreviewFeature()) {
+        const previewIcon = new IconButton.Icon.Icon();
+        previewIcon.data = {iconName: 'ic_preview_feature', color: 'var(--icon-color)', width: '14px', height: '14px'};
+        moreTools.defaultSection().appendItem(title, () => {
+          UI.ViewManager.ViewManager.instance().showView(id, true, false);
+        }, /* disabled=*/ false, previewIcon);
+        continue;
+      }
+
       moreTools.defaultSection().appendItem(title, () => {
         UI.ViewManager.ViewManager.instance().showView(id, true, false);
       });

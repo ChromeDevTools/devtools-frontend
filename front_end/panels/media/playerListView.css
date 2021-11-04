@@ -10,7 +10,7 @@
 }
 
 li.storage-group-list-item {
-  padding: 10px 8px 6px;
+  padding: 10px 8px 6px 8px;
 }
 
 li.storage-group-list-item:not(:first-child) {

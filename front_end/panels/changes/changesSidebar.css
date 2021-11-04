@@ -23,7 +23,7 @@
 }
 
 li .icon {
-  margin: -3px -5px;
+  margin: -3px -5px -3px -5px;
   background: var(--color-background-elevation-2);
 }
 

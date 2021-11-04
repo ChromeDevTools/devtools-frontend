@@ -4,12 +4,12 @@
  * found in the LICENSE file.
  */
 
-[slot="insertion-point-main"] {
+[slot=insertion-point-main] {
   flex-direction: column;
   display: flex;
 }
 
-[slot="insertion-point-sidebar"] {
+[slot=insertion-point-sidebar] {
   overflow: auto;
 }
 

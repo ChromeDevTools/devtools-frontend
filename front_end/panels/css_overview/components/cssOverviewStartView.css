@@ -84,7 +84,7 @@ h1 {
   font-size: 13px;
   line-height: 20px;
   letter-spacing: 0.01em;
-  margin: 9px 0 14px;
+  margin: 9px 0 14px 0;
 }
 
 .preview-icon {

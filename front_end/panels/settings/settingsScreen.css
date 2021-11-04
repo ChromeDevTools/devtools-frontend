@@ -7,7 +7,7 @@
 .settings-window-main {
   color: var(--color-text-primary);
   background-color: var(--color-background);
-  padding: 11px 0 0;
+  padding: 11px 0 0 0;
 }
 
 .settings-content {
@@ -101,7 +101,7 @@ fieldset {
   color: inherit;
 }
 
-.settings-content input[type="checkbox"] {
+.settings-content input[type=checkbox] {
   margin: 1px 7px 1px 2px;
 }
 

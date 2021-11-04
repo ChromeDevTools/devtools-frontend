@@ -16,10 +16,10 @@
 .profile-launcher-view-content h1 {
   font-size: 15px;
   font-weight: normal;
-  margin: 6px 0 10px;
+  margin: 6px 0 10px 0;
 }
 
-.profile-launcher-view-content [is="dt-radio"] {
+.profile-launcher-view-content [is=dt-radio] {
   font-size: 13px;
 }
 
@@ -29,7 +29,7 @@
   margin-left: 22px;
 }
 
-.profile-launcher-view-content p [is="dt-checkbox"] {
+.profile-launcher-view-content p [is=dt-checkbox] {
   display: flex;
 }
 

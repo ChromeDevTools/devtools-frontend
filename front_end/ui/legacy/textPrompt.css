@@ -47,7 +47,7 @@
 }
 
 .text-prompt:not([data-placeholder]):empty::after {
-  content: "\00A0";
+  content: '\00A0';
   width: 0;
   display: block;
 }

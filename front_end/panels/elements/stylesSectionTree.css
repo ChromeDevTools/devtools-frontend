@@ -137,7 +137,7 @@ ol.expanded {
 
 .tree-outline li.editing-sub-part {
   padding: 3px 6px 8px 18px;
-  margin: -1px -6px -8px;
+  margin: -1px -6px -8px -6px;
   text-overflow: clip;
 }
 

@@ -54,7 +54,7 @@ button.link {
 }
 
 .inline-name::after {
-  content: ":\u00a0";
+  content: ':\u00a0';
 }
 
 .inline-items {

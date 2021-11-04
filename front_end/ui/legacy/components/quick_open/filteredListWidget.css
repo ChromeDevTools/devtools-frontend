@@ -30,7 +30,7 @@
 devtools-text-prompt {
   flex: 0 0 40px;
   font-size: 14px;
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   line-height: 16px;
   padding: 12px;
 }
@@ -80,7 +80,7 @@ devtools-text-prompt {
   color: var(--color-text-primary);
   display: flex;
   border-bottom: 1px solid var(--color-details-hairline-light);
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   padding-left: 8px;
   padding-right: 8px;
 }

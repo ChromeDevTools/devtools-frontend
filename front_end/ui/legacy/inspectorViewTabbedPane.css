@@ -14,7 +14,7 @@
 }
 
 .tabbed-pane-header-tab.selected {
-  border-width: 0 2px;
+  border-width: 0 2px 0 2px;
 }
 
 .tabbed-pane-header-contents {

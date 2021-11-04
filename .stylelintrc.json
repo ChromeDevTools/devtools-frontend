@@ -12,6 +12,15 @@
     "declaration-no-important": true,
     "color-named": "never",
     "max-empty-lines": 1,
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": [
+          "border-image",
+          "/^mask-/"
+        ]
+      }
+    ],
     "selector-type-no-unknown": [
       true,
       {
@@ -19,19 +28,6 @@
           "/^devtools-/"
         ]
       }
-    ],
-    "max-line-length": null,
-    "selector-class-pattern": null,
-    "keyframes-name-pattern": null,
-    "selector-no-vendor-prefix": null,
-    "property-no-vendor-prefix": null,
-    "value-no-vendor-prefix": null,
-    "media-feature-name-no-vendor-prefix": null
-  },
-  "overrides": [
-    {
-      "files": ["**/*.ts"],
-      "customSyntax": "html"
-    }
-  ]
+    ]
+  }
 }

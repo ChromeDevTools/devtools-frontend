@@ -59,7 +59,7 @@
 .bad {
   display: block;
   border: 1px solid transparent;
-  border-width: 0 6px 12px;
+  border-width: 0 6px 12px 6px;
   border-bottom-color: var(--lighthouse-red);
   width: 0;
 }

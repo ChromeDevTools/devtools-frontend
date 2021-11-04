@@ -5,7 +5,7 @@
  */
 
 .breakpoint-entry {
-  padding: 3px 8px;
+  padding: 3px 8px 3px 8px;
   min-height: 18px;
   line-height: 15px;
   border-top: 1px solid var(--color-details-hairline-light);
@@ -15,7 +15,7 @@
   background-color: var(--legacy-focus-bg-color);
 }
 
-.breakpoint-entry [is="dt-checkbox"] {
+.breakpoint-entry [is=dt-checkbox] {
   max-width: 100%;
   white-space: nowrap;
 }

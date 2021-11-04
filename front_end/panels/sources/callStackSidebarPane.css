@@ -87,7 +87,7 @@
 .call-frame-location {
   color: var(--color-text-secondary);
   margin-left: auto;
-  padding: 0 10px;
+  padding: 0 10px 0 10px;
 }
 
 .async-header::before {

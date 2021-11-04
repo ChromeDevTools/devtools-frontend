@@ -185,7 +185,7 @@
 .orientation-left::after,
 .orientation-right::before,
 .orientation-right::after {
-  content: "";
+  content: '';
   width: 8px;
   height: 6px;
 }
@@ -242,7 +242,7 @@
 .orientation-top::after,
 .orientation-bottom::before,
 .orientation-bottom::after {
-  content: "";
+  content: '';
   width: 8px;
   height: 8px;
 }

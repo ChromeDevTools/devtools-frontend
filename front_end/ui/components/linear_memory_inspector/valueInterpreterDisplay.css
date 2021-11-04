@@ -17,7 +17,8 @@
   width: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr;
-  gap: 4px 24px;
+  grid-column-gap: 24px;
+  grid-row-gap: 4px;
   min-height: 24px;
   overflow: hidden;
   padding: 2px 12px;

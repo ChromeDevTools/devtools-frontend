@@ -6,7 +6,7 @@
 
 :host {
   flex: 1 1 auto;
-  padding: 2px 0 0;
+  padding: 2px 0 0 0;
 }
 
 .tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) {
@@ -166,7 +166,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 @media (forced-colors: active) {
   .tree-outline-disclosure li.parent::before,
   .tree-outline:not(.hide-selection-when-blurred) li.parent:not(.selected)::before,
-  .tree-outline li [is="ui-icon"].icon-mask {
+  .tree-outline li [is=ui-icon].icon-mask {
     forced-color-adjust: none;
     background-color: ButtonText;
   }
@@ -200,8 +200,8 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     background-color: transparent;
   }
 
-  .tree-outline li.selected [is="ui-icon"].icon-mask,
-  .tree-outline li.selected:focus [is="ui-icon"]:not(.icon-mask) {
+  .tree-outline li.selected [is=ui-icon].icon-mask,
+  .tree-outline li.selected:focus [is=ui-icon]:not(.icon-mask) {
     background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }
 

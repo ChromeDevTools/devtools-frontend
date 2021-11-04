@@ -9,7 +9,7 @@
 }
 
 .object-properties-section {
-  padding: 0;
+  padding: 0 0 0 0;
   color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
@@ -25,7 +25,7 @@
 
 .object-properties-section li.editing-sub-part {
   padding: 3px 12px 8px 6px;
-  margin: -1px -6px -8px;
+  margin: -1px -6px -8px -6px;
   text-overflow: clip;
 }
 

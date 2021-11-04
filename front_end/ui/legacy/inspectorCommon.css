@@ -85,7 +85,7 @@ body {
   overflow: hidden;
   margin: 0;
   cursor: default;
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
   font-size: 12px;
   tab-size: 4;
   user-select: none;
@@ -99,7 +99,7 @@ body {
 }
 
 .platform-mac {
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
 }
 
 .platform-mac,
@@ -110,7 +110,7 @@ body {
 }
 
 .platform-windows {
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
 :focus {
@@ -292,8 +292,8 @@ input::placeholder {
 }
 
 .harmony-input:not([type]),
-.harmony-input[type="number"],
-.harmony-input[type="text"] {
+.harmony-input[type=number],
+.harmony-input[type=text] {
   padding: 3px 6px;
   height: 24px;
   border: none;
@@ -301,23 +301,23 @@ input::placeholder {
 }
 
 .harmony-input:not([type]).error-input,
-.harmony-input[type="number"].error-input,
-.harmony-input[type="text"].error-input,
+.harmony-input[type=number].error-input,
+.harmony-input[type=text].error-input,
 .harmony-input:not([type]):invalid,
-.harmony-input[type="number"]:invalid,
-.harmony-input[type="text"]:invalid {
+.harmony-input[type=number]:invalid,
+.harmony-input[type=text]:invalid {
   box-shadow: 0 0 0 1px var(--color-red);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,
-.harmony-input[type="number"]:not(.error-input):not(:invalid):hover,
-.harmony-input[type="text"]:not(.error-input):not(:invalid):hover {
+.harmony-input[type=number]:not(.error-input):not(:invalid):hover,
+.harmony-input[type=text]:not(.error-input):not(:invalid):hover {
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):focus,
-.harmony-input[type="number"]:not(.error-input):not(:invalid):focus,
-.harmony-input[type="text"]:not(.error-input):not(:invalid):focus {
+.harmony-input[type=number]:not(.error-input):not(:invalid):focus,
+.harmony-input[type=text]:not(.error-input):not(:invalid):focus {
   box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
@@ -426,7 +426,7 @@ input::placeholder {
 /* This class is used outside of the settings screen in the "Renderer" and
    "Sensors" panel. As such we need to override their style globally */
 .settings-select {
-  margin: 0;
+  margin: 0 0;
 }
 
 .chrome-select optgroup,
@@ -443,7 +443,7 @@ input::placeholder {
   white-space: nowrap;
 }
 
-span[is="dt-icon-label"] {
+span[is=dt-icon-label] {
   flex: none;
 }
 
@@ -469,29 +469,29 @@ span[is="dt-icon-label"] {
   z-index: 500;
 }
 
-[is="ui-icon"] {
+[is=ui-icon] {
   display: inline-block;
   flex-shrink: 0;
 }
 
-.-theme-with-dark-background [is="ui-icon"].icon-invert,
-:host-context(.-theme-with-dark-background) [is="ui-icon"].icon-invert {
+.-theme-with-dark-background [is=ui-icon].icon-invert,
+:host-context(.-theme-with-dark-background) [is=ui-icon].icon-invert {
   filter: invert(80%) hue-rotate(180deg);
 }
 
-[is="ui-icon"].icon-mask {
+[is=ui-icon].icon-mask {
   --override-icon-mask-background-color: rgb(110 110 110);
 
   background-color: var(--override-icon-mask-background-color);
   -webkit-mask-position: var(--spritesheet-position);
 }
 
-.-theme-with-dark-background [is="ui-icon"].icon-mask,
-:host-context(.-theme-with-dark-background) [is="ui-icon"].icon-mask {
+.-theme-with-dark-background [is=ui-icon].icon-mask,
+:host-context(.-theme-with-dark-background) [is=ui-icon].icon-mask {
   --override-icon-mask-background-color: rgb(145 145 145);
 }
 
-[is="ui-icon"]:not(.icon-mask) {
+[is=ui-icon]:not(.icon-mask) {
   background-position: var(--spritesheet-position);
 }
 
@@ -523,27 +523,27 @@ span[is="dt-icon-label"] {
   background-image: var(--image-file-popoverArrows);
 }
 
-.force-white-icons [is="ui-icon"].spritesheet-smallicons,
-:host-context(.force-white-icons) [is="ui-icon"].spritesheet-smallicons,
-[is="ui-icon"].force-white-icons.spritesheet-smallicons,
+.force-white-icons [is=ui-icon].spritesheet-smallicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
+[is=ui-icon].force-white-icons.spritesheet-smallicons,
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-smallIcons);
   -webkit-mask-position: var(--spritesheet-position);
   background: var(--override-force-white-icons-background) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.force-white-icons [is="ui-icon"].spritesheet-largeicons,
-:host-context(.force-white-icons) [is="ui-icon"].spritesheet-largeicons,
-[is="ui-icon"].force-white-icons.spritesheet-largeicons,
+.force-white-icons [is=ui-icon].spritesheet-largeicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
+[is=ui-icon].force-white-icons.spritesheet-largeicons,
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-largeIcons);
   -webkit-mask-position: var(--spritesheet-position);
   background: var(--override-force-white-icons-background) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.force-white-icons [is="ui-icon"].spritesheet-mediumicons,
-:host-context(.force-white-icons) [is="ui-icon"].spritesheet-mediumicons,
-[is="ui-icon"].force-white-icons.spritesheet-mediumicons,
+.force-white-icons [is=ui-icon].spritesheet-mediumicons,
+:host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicons,
+[is=ui-icon].force-white-icons.spritesheet-mediumicons,
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-mediumIcons);
   -webkit-mask-position: var(--spritesheet-position);
@@ -635,30 +635,30 @@ button.link:focus-visible {
     opacity: 100%;
   }
 
-  [is="ui-icon"].icon-mask,
-  .force-white-icons [is="ui-icon"].spritesheet-smallicons,
-  :host-context(.force-white-icons) [is="ui-icon"].spritesheet-smallicons,
-  [is="ui-icon"].force-white-icons.spritesheet-smallicons,
-  .force-white-icons [is="ui-icon"].spritesheet-largeicons,
-  :host-context(.force-white-icons) [is="ui-icon"].spritesheet-largeicons,
-  [is="ui-icon"].force-white-icons.spritesheet-largeicons,
-  .force-white-icons [is="ui-icon"].spritesheet-mediumicons,
-  :host-context(.force-white-icons) [is="ui-icon"].spritesheet-mediumicons,
-  [is="ui-icon"].force-white-icons.spritesheet-mediumicons,
+  [is=ui-icon].icon-mask,
+  .force-white-icons [is=ui-icon].spritesheet-smallicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons,
+  [is=ui-icon].force-white-icons.spritesheet-smallicons,
+  .force-white-icons [is=ui-icon].spritesheet-largeicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons,
+  [is=ui-icon].force-white-icons.spritesheet-largeicons,
+  .force-white-icons [is=ui-icon].spritesheet-mediumicons,
+  :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicons,
+  [is=ui-icon].force-white-icons.spritesheet-mediumicons,
   .-theme-preserve {
     forced-color-adjust: none;
     background-color: ButtonText;
   }
 
   .harmony-input:not([type]),
-  .harmony-input[type="number"],
-  .harmony-input[type="text"] {
+  .harmony-input[type=number],
+  .harmony-input[type=text] {
     border: 1px solid ButtonText;
   }
 
   .harmony-input:not([type]):focus,
-  .harmony-input[type="number"]:focus,
-  .harmony-input[type="text"]:focus {
+  .harmony-input[type=number]:focus,
+  .harmony-input[type=text]:focus {
     border: 1px solid Highlight;
   }
 }

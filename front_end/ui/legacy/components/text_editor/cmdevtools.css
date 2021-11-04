@@ -650,8 +650,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .cm-search-highlight::before {
   position: absolute;
-  border-top: 1px solid var(--override-search-highlight-border-color);
-  border-bottom: 1px solid var(--override-search-highlight-border-color);
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-top-color: var(--override-search-highlight-border-color);
+  border-bottom-color: var(--override-search-highlight-border-color);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
   top: -1px;
   bottom: 0;
   left: 0;
@@ -665,15 +669,19 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-search-highlight-start::before {
-  border-left: 1px solid var(--override-search-highlight-border-color);
+  border-left-width: 1px;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
+  border-left-style: solid;
+  border-left-color: var(--override-search-highlight-border-color);
 }
 
 .cm-search-highlight-end::before {
-  border-right: 1px solid var(--override-search-highlight-border-color);
+  border-right-width: 1px;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
+  border-right-style: solid;
+  border-right-color: var(--override-search-highlight-border-color);
 }
 
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight-full::before {
@@ -693,7 +701,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .cm-line-with-selection .cm-column-with-selection.cm-search-highlight::before {
   --override-auto-gen-cmlinewithselectioncmcolumnwithselectioncmsearchhighlightbefore-backgroundcolor: rgb(241 234 0);
 
-  margin: -1px;
+  margin: -1px -1px -1px -1px;
   background-color: var(--override-auto-gen-cmlinewithselectioncmcolumnwithselectioncmsearchhighlightbefore-backgroundcolor);
   z-index: -1;
 }
@@ -925,7 +933,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-foldmarker::before {
-  content: "\2026";
+  content: '\2026';
   font-size: 13px;
   color: var(--color-text-secondary);
 }

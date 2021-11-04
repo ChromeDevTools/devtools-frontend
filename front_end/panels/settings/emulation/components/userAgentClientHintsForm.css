@@ -127,7 +127,7 @@
     border: 1px solid;
   }
 
-  .tree-title[aria-disabled="true"] {
+  .tree-title[aria-disabled='true'] {
     color: GrayText;
   }
 }

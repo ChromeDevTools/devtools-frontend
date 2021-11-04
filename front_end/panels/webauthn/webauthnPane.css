@@ -39,7 +39,7 @@
 
 .new-authenticator-container {
   display: none;
-  margin: 10px;
+  margin: 10px 10px;
 }
 
 .webauthn-pane.enabled .new-authenticator-container {
@@ -97,7 +97,7 @@
 }
 
 .authenticator-field-value {
-  padding: 5px 0;
+  padding: 5px 0 5px 0;
   display: inline-block;
   font-family: monospace;
 }

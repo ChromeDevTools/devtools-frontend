@@ -72,7 +72,7 @@
   width: calc(100% - 20px);
 }
 
-.network-config-ua input[type="text"],
+.network-config-ua input[type=text],
 .network-config-ua .chrome-select {
   margin-top: 8px;
 }

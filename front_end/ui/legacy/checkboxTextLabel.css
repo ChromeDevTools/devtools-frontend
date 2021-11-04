@@ -44,7 +44,7 @@ input.dt-checkbox-themed {
 }
 
 input.dt-checkbox-themed::after {
-  content: "";
+  content: '';
   line-height: 10px;
   position: absolute;
   cursor: pointer;

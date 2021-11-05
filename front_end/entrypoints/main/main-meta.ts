@@ -237,8 +237,6 @@ async function loadMainModule(): Promise<typeof Main> {
 
 async function loadInspectorMainModule(): Promise<typeof InspectorMain> {
   if (!loadedInspectorMainModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/inspector_main');
     loadedInspectorMainModule = await import('../inspector_main/inspector_main.js');
   }
   return loadedInspectorMainModule;

@@ -184,14 +184,14 @@ circle.animation-keyframe-point:active {
   height: 100%;
   width: 100%;
   top: 28px;
-  border-left: 1px solid var(--color-syntax-1);
+  border-left: 1px solid var(--color-red);
   z-index: 2;
   cursor: col-resize;
 }
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, var(--color-syntax-1) 5px, var(--color-syntax-1) 6px, transparent 6px);
+  background: linear-gradient(to right, transparent 5px, var(--color-red) 5px, var(--color-red) 6px, transparent 6px);
   position: absolute;
   top: -28px;
   height: 28px;
@@ -204,7 +204,7 @@ circle.animation-keyframe-point:active {
   width: 7px;
   height: 7px;
   transform: rotate(45deg);
-  background: var(--color-syntax-1);
+  background: var(--color-red);
   position: absolute;
   left: 2px;
   top: 1px;

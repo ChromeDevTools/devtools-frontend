@@ -52,7 +52,7 @@
 }
 
 .lighthouse-form-section-label {
-  margin: 7px 0 7px;
+  margin: 7px 0;
   font-weight: 500;
 }
 
@@ -129,6 +129,6 @@ input[type="radio"]:focus {
 }
 
 .lighthouse-warning-text::before {
-  content: '⚠';
+  content: "⚠";
   margin-right: 10px;
 }

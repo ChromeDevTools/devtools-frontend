@@ -242,26 +242,26 @@
   user-select: text;
 }
 
-.contrast-details-value [is=ui-icon] {
+.contrast-details-value [is="ui-icon"] {
   display: none;
   margin-left: 5px;
   background-color: var(--color-text-primary);
 }
 
-.spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
+.spectrum-contrast-details .toolbar-state-on [is="ui-icon"] {
   background-color: var(--color-text-secondary);
 }
 
-[is=ui-icon].smallicon-no {
+[is="ui-icon"].smallicon-no {
   background-color: var(--color-accent-red);
 }
 
-.contrast-pass-fail span[is=ui-icon] {
+.contrast-pass-fail span[is="ui-icon"] {
   margin-left: 5px;
 }
 
-[is=ui-icon].smallicon-checkmark-square,
-[is=ui-icon].smallicon-checkmark-behind {
+[is="ui-icon"].smallicon-checkmark-square,
+[is="ui-icon"].smallicon-checkmark-behind {
   background-color: var(--color-accent-green);
 }
 
@@ -328,7 +328,7 @@
   background-color: var(--color-background-inverted-opacity-50);
 }
 
-[is=ui-icon].icon-mask.copy-color-icon {
+[is="ui-icon"].icon-mask.copy-color-icon {
   background-color: var(--color-background);
 }
 
@@ -461,7 +461,7 @@
 }
 
 .palette-color-shades > .spectrum-palette-color {
-  margin: 8px 0 0 0;
+  margin: 8px 0 0;
   margin-left: 8px;
   width: 12px;
 }
@@ -644,7 +644,7 @@ div.palette-preview {
   padding-bottom: 2px;
 }
 
-.swatch.contrast [is=ui-icon] {
+.swatch.contrast [is="ui-icon"] {
   margin: -2px;
 }
 

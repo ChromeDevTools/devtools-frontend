@@ -18,7 +18,7 @@
 }
 
 li.storage-group-list-item {
-  padding: 10px 8px 6px 8px;
+  padding: 10px 8px 6px;
 }
 
 li.storage-group-list-item:not(:first-child) {

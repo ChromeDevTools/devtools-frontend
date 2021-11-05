@@ -100,7 +100,7 @@
   position: relative;
 }
 
-.filter-checkbox-filter > [is=dt-checkbox] {
+.filter-checkbox-filter > [is="dt-checkbox"] {
   display: flex;
   margin: auto 0;
 }

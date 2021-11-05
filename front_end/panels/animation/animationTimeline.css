@@ -112,7 +112,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-timeline-header::after {
-  content: '';
+  content: "";
   height: calc(100% - 48px - 28px);
   position: absolute;
   width: 150px;
@@ -361,7 +361,7 @@ text.animation-timeline-grid-label {
 
 .animation-paused::before,
 .animation-paused::after {
-  content: '';
+  content: "";
   background: var(--color-background);
   width: 7px;
   height: 20px;

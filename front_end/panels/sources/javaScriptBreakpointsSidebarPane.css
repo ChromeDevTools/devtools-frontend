@@ -15,7 +15,7 @@
   background-color: var(--legacy-focus-bg-color);
 }
 
-.breakpoint-entry [is=dt-checkbox] {
+.breakpoint-entry [is="dt-checkbox"] {
   max-width: 100%;
   white-space: nowrap;
   border-left-width: 3px;

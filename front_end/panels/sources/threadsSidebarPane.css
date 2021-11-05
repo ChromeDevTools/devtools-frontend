@@ -35,7 +35,7 @@
 .thread-item-paused-state {
   color: var(--color-text-disabled);
   margin-left: auto;
-  padding: 0 10px 0 10px;
+  padding: 0 10px;
 }
 
 .selected-thread-icon {

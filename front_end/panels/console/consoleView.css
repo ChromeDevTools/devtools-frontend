@@ -462,7 +462,7 @@
 
 @media (forced-colors: active) {
   .console-message-expand-icon,
-  .console-warning-level [is=ui-icon].icon-mask.expand-group-icon {
+  .console-warning-level [is="ui-icon"].icon-mask.expand-group-icon {
     forced-color-adjust: none;
     background-color: ButtonText;
   }
@@ -493,7 +493,7 @@
     color: HighlightText;
   }
 
-  .console-message-wrapper:focus [is=ui-icon].icon-mask {
+  .console-message-wrapper:focus [is="ui-icon"].icon-mask {
     background-color: HighlightText;
   }
 

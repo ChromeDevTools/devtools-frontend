@@ -307,7 +307,7 @@ select.toolbar-item:focus-visible > * {
 .toolbar-input {
   width: 120px;
   height: 19px;
-  padding: 4px 3px 3px 3px;
+  padding: 4px 3px 3px;
   margin: 1px 3px;
   background-color: var(--color-background);
   border: 1px solid transparent;
@@ -389,18 +389,18 @@ select.toolbar-item:focus-visible > * {
   left: -2px;
 }
 
-input[is=history-input] {
+input[is="history-input"] {
   border: 1px solid transparent;
   line-height: 16px;
   padding: 1px;
 }
 
-input[is=history-input]:hover {
+input[is="history-input"]:hover {
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
 }
 
-input[is=history-input]:focus,
-input[is=history-input]:not(:placeholder-shown) {
+input[is="history-input"]:focus,
+input[is="history-input"]:not(:placeholder-shown) {
   box-shadow: var(--legacy-focus-ring-active-shadow);
 }
 
@@ -470,7 +470,7 @@ devtools-icon.leading-issue-icon {
     color: HighlightText;
   }
 
-  .toolbar-button:disabled [is=ui-icon].icon-mask {
+  .toolbar-button:disabled [is="ui-icon"].icon-mask {
     background-color: GrayText;
     color: GrayText;
   }
@@ -505,8 +505,8 @@ devtools-icon.leading-issue-icon {
   :not(.toolbar-render-as-links) .toolbar-button:enabled:hover .toolbar-glyph,
   :not(.toolbar-render-as-links) .toolbar-button:enabled:focus .toolbar-glyph,
   :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph,
-  .toolbar-button:enabled:hover [is=ui-icon].icon-mask,
-  .toolbar-button:enabled:focus [is=ui-icon].icon-mask {
+  .toolbar-button:enabled:hover [is="ui-icon"].icon-mask,
+  .toolbar-button:enabled:focus [is="ui-icon"].icon-mask {
     background-color: HighlightText;
   }
 

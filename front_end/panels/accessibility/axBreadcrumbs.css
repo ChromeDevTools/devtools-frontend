@@ -45,7 +45,7 @@
   -webkit-mask-size: 30px 10px;
   -webkit-mask-repeat: no-repeat;
   background-color: var(--color-syntax-7);
-  content: '';
+  content: "";
   text-shadow: none;
   margin-right: -2px;
   height: 12px;

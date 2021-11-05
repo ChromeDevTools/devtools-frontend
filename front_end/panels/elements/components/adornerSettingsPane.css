@@ -44,7 +44,7 @@
 
 .close::before,
 .close::after {
-  content: '';
+  content: "";
   display: inline-block;
   position: absolute;
   left: 0;

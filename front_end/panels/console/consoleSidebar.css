@@ -19,7 +19,7 @@
   margin: 0 8px;
 }
 
-[is=ui-icon] {
+[is="ui-icon"] {
   margin: 0 5px;
 }
 
@@ -48,7 +48,7 @@ li .largeicon-navigator-folder {
 }
 
 @media (forced-colors: active) {
-  [is=ui-icon].icon-mask {
+  [is="ui-icon"].icon-mask {
     background-color: ButtonText;
   }
 
@@ -65,8 +65,8 @@ li .largeicon-navigator-folder {
     color: HighlightText;
   }
 
-  .tree-outline li:hover [is=ui-icon].icon-mask,
-  .tree-outline li.selected [is=ui-icon].icon-mask,
+  .tree-outline li:hover [is="ui-icon"].icon-mask,
+  .tree-outline li.selected [is="ui-icon"].icon-mask,
   .tree-outline li.selected:focus .spritesheet-mediumicons:not(.icon-mask) {
     background-color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
   }

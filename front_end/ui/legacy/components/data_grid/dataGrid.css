@@ -292,7 +292,7 @@
 }
 
 @media (forced-colors: active) {
-  .sort-order-icon-container [is=ui-icon].icon-mask,
+  .sort-order-icon-container [is="ui-icon"].icon-mask,
   .data-grid td.disclosure::before {
     forced-color-adjust: none;
     background-color: ButtonText;
@@ -303,7 +303,7 @@
   }
 
   .data-grid th.sortable:hover *,
-  .data-grid th.sortable:hover .sort-order-icon-container [is=ui-icon].icon-mask,
+  .data-grid th.sortable:hover .sort-order-icon-container [is="ui-icon"].icon-mask,
   .data-grid tr.parent.selected td.disclosure::before,
   .data-grid:focus tr.parent.selected td.disclosure::before,
   .data-grid table.data tr.parent.revealed:hover td.disclosure::before {

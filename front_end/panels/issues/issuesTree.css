@@ -51,7 +51,7 @@
 
 .issue-category.hidden-issues.parent.expanded,
 .issue-kind.parent.expanded {
-  border-width: 0 0 1px 0;
+  border-width: 0 0 1px;
   background-color: var(--color-background-elevation-1);
 }
 
@@ -143,7 +143,7 @@ p {
 
 /* Show a colored border on the left side of opened issues. */
 .body::before {
-  content: '';
+  content: "";
   display: block;
   position: absolute;
   left: calc(var(--issue-indent) + 23px);
@@ -193,7 +193,7 @@ devtools-icon.leading-issue-icon {
 }
 
 .separator::before {
-  content: '·';
+  content: "·";
   padding-left: 1ex;
   padding-right: 1ex;
 }
@@ -262,7 +262,7 @@ ul > li.plain-enum::before {
 }
 
 .affected-resources-label + .affected-resources {
-  padding: 3px 0 0 0;
+  padding: 3px 0 0;
   position: relative;
   user-select: text;
 }
@@ -394,7 +394,7 @@ ul > li.plain-enum::before {
 
 .affected-resources > .parent {
   margin-top: 0;
-  padding: 2px 5px 0 5px;
+  padding: 2px 5px 0;
 }
 
 .affected-resources > .parent.expanded {

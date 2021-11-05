@@ -301,10 +301,6 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
 
   private setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {
     const title = this.listItemElement.createChild('span', 'event-listener-details');
-    const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
-    const linkElement =
-        linkifier.linkifyRawLocation(this.eventListenerInternal.location(), this.eventListenerInternal.sourceURL());
-    subtitle.appendChild(linkElement);
 
     const propertyValue = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValue(
         object, /* wasThrown */ false, /* showPreview */ false);
@@ -332,6 +328,11 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       }, false);
       title.appendChild(passiveButton);
     }
+
+    const subtitle = title.createChild('span', 'event-listener-tree-subtitle');
+    const linkElement =
+        linkifier.linkifyRawLocation(this.eventListenerInternal.location(), this.eventListenerInternal.sourceURL());
+    subtitle.appendChild(linkElement);
 
     this.listItemElement.addEventListener('contextmenu', event => {
       const menu = new UI.ContextMenu.ContextMenu(event);

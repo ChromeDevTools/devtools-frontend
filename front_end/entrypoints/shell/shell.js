@@ -20,4 +20,5 @@ import '../../models/persistence/persistence-legacy.js';
 import '../../models/extensions/extensions-legacy.js';
 
 import './shell-meta-files.js';
+import '../main/main.js';
 // We generate the descriptors in this file, which depend on the runtime.

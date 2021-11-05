@@ -223,8 +223,6 @@ let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 
 async function loadMainModule(): Promise<typeof Main> {
   if (!loadedMainModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('entrypoints/main');
     loadedMainModule = await import('./main.js');
   }
   return loadedMainModule;

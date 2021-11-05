@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -89,7 +90,8 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
 
     function stringMatchesQuery(string: string): boolean {
       const flags = searchConfig.ignoreCase() ? 'i' : '';
-      const regExps = searchConfig.queries().map(query => new RegExp(query, flags));
+      const regExps =
+          searchConfig.queries().map(query => new RegExp(Platform.StringUtilities.escapeForRegExp(query), flags));
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);

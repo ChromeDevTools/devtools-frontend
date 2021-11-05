@@ -77,15 +77,18 @@ export class SoftContextMenu {
   private hideOnUserGesture?: ((event: Event) => void);
   private activeSubMenuElement?: HTMLElement;
   private subMenu?: SoftContextMenu;
+  private onMenuClosed?: () => void;
 
   constructor(
-      items: SoftContextMenuDescriptor[], itemSelectedCallback: (arg0: number) => void, parentMenu?: SoftContextMenu) {
+      items: SoftContextMenuDescriptor[], itemSelectedCallback: (arg0: number) => void, parentMenu?: SoftContextMenu,
+      onMenuClosed?: () => void) {
     this.items = items;
     this.itemSelectedCallback = itemSelectedCallback;
     this.parentMenu = parentMenu;
     this.highlightedMenuItemElement = null;
 
     this.detailsForElementMap = new WeakMap();
+    this.onMenuClosed = onMenuClosed;
   }
 
   show(document: Document, anchorBox: AnchorBox): void {
@@ -165,6 +168,7 @@ export class SoftContextMenu {
         delete this.parentMenu.activeSubMenuElement;
       }
     }
+    this.onMenuClosed?.();
   }
 
   private createMenuItem(item: SoftContextMenuDescriptor): HTMLElement {

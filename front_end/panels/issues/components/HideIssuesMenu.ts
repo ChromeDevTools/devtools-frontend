@@ -30,7 +30,6 @@ export interface HiddenIssuesMenuData {
 export class HideIssuesMenu extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-hide-issues-menu`;
   private readonly shadow: ShadowRoot = this.attachShadow({mode: 'open'});
-  private visible: boolean = false;
   private menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
   private menuItemAction: () => void = () => {};
 
@@ -44,23 +43,20 @@ export class HideIssuesMenu extends HTMLElement {
     this.shadow.adoptedStyleSheets = [hideIssuesMenuStyles];
   }
 
-  setVisible(x: boolean): void {
-    if (this.visible === x) {
-      return;
-    }
-    this.visible = x;
-    this.render();
-  }
-
   onMenuOpen(event: Event): void {
     event.stopPropagation();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {
+      useSoftMenu: true,
+      onSoftMenuClosed: (): void => {
+        this.classList.toggle('has-context-menu-opened', false);
+      },
+    });
     contextMenu.headerSection().appendItem(this.menuItemLabel, () => this.menuItemAction());
     contextMenu.show();
+    this.classList.toggle('has-context-menu-opened', true);
   }
 
   private render(): void {
-    this.classList.toggle('hidden', !this.visible);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       LitHtml.render(LitHtml.html`

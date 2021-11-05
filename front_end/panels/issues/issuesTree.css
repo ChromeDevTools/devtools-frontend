@@ -95,6 +95,18 @@ p {
   width: 100%;
 }
 
+.header devtools-hide-issues-menu {
+  display: none;
+}
+
+.header:hover devtools-hide-issues-menu {
+  display: block;
+}
+
+.header devtools-hide-issues-menu.has-context-menu-opened {
+  display: block;
+}
+
 .issue-category .header,
 .issue-kind .header {
   line-height: 24px;

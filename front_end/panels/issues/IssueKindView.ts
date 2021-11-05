@@ -110,12 +110,6 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     header.appendChild(countAdorner);
     header.appendChild(title);
     header.appendChild(hideAvailableIssuesBtn);
-    header.addEventListener('mouseenter', () => {
-      hideAvailableIssuesBtn.setVisible(true);
-    });
-    header.addEventListener('mouseleave', () => {
-      hideAvailableIssuesBtn.setVisible(false);
-    });
 
     this.listItemElement.appendChild(header);
   }

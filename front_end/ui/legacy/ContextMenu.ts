@@ -334,6 +334,7 @@ export class SubMenu extends Item {
 
 export interface ContextMenuOptions {
   useSoftMenu?: boolean;
+  onSoftMenuClosed?: () => void;
   x?: number;
   y?: number;
 }
@@ -347,6 +348,7 @@ export class ContextMenu extends SubMenu {
   private readonly useSoftMenu: boolean;
   private x: number;
   private y: number;
+  private onSoftMenuClosed?: () => void;
   private readonly handlers: Map<number, () => void>;
   idInternal: number;
   private softMenu?: SoftContextMenu;
@@ -363,6 +365,7 @@ export class ContextMenu extends SubMenu {
     this.useSoftMenu = Boolean(options.useSoftMenu);
     this.x = options.x === undefined ? mouseEvent.x : options.x;
     this.y = options.y === undefined ? mouseEvent.y : options.y;
+    this.onSoftMenuClosed = options.onSoftMenuClosed;
     this.handlers = new Map();
     this.idInternal = 0;
 
@@ -434,7 +437,8 @@ export class ContextMenu extends SubMenu {
     const ownerDocument = (eventTarget as HTMLElement).ownerDocument;
     if (this.useSoftMenu || ContextMenu.useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
-      this.softMenu = new SoftContextMenu((menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this));
+      this.softMenu = new SoftContextMenu(
+          (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), undefined, this.onSoftMenuClosed);
       this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(

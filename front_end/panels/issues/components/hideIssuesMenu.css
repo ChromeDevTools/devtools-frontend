@@ -16,4 +16,12 @@
   border-radius: 0;
   cursor: pointer;
   border: none;
+
+  --icon-color: var(--color-text-primary);
+
+  opacity: 50%;
+}
+
+.hide-issues-menu-btn:hover {
+  opacity: 100%;
 }

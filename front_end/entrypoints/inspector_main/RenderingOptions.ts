@@ -187,6 +187,10 @@ const UIStrings = {
   * page from loading images with the WebP format.
   */
   disableWebpImageFormat: 'Disable `WebP` image format',
+  /**
+   * @description Explanation text for the 'Forces CSS forced-colors' setting in the Rendering tool.
+   */
+  forcesCssForcedColors: 'Forces CSS forced-colors media feature',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/RenderingOptions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -263,13 +267,16 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
     this.appendSelect(
-        i18nString(UIStrings.forcesCssPrefersreducedmotion),
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
+        i18nString(UIStrings.forcesCssForcedColors),
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureForcedColors'));
     if (supportsPrefersContrast()) {
       this.appendSelect(
           i18nString(UIStrings.forcesCssPreferscontrastMedia),
           Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersContrast'));
     }
+    this.appendSelect(
+        i18nString(UIStrings.forcesCssPrefersreducedmotion),
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersReducedMotion'));
     if (supportsPrefersReducedData()) {
       this.appendSelect(
           i18nString(UIStrings.forcesCssPrefersreduceddataMedia),

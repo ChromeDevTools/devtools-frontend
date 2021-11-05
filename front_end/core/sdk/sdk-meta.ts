@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-
 import * as i18n from '../i18n/i18n.js';
+
 const UIStrings = {
   /**
   *@description Title of a setting under the Console category that can be invoked through the Command Menu
@@ -744,6 +744,35 @@ Common.Settings.registerSettingExtension({
     i18nLazyString(UIStrings.query),
   ],
   title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-color-scheme'}),
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'emulatedCSSMediaFeatureForcedColors',
+  settingType: Common.Settings.SettingType.ENUM,
+  storageType: Common.Settings.SettingStorageType.Session,
+  defaultValue: '',
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'forced-colors'}),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: active'}),
+      text: i18n.i18n.lockedLazyString('forced-colors: active'),
+      value: 'active',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'forced-colors: none'}),
+      text: i18n.i18n.lockedLazyString('forced-colors: none'),
+      value: 'none',
+    },
+  ],
+  tags: [
+    i18nLazyString(UIStrings.query),
+  ],
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'forced-colors'}),
 });
 
 Common.Settings.registerSettingExtension({

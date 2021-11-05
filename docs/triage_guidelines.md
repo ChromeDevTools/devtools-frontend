@@ -43,21 +43,23 @@ Issues in the untriaged queue should receive a meaningful response within a busi
 
 ## How should issues be triaged?
 
-An issue is triaged when it meets the following criteria:
-
-- Priority is set correctly
-- Component is set correctly
-- Type is set correctly especially consider Feature vs Bug vs Bug-Regression
-- Status is set correctly (Available most of the time)
-- Request bisection from the Chrome Test Engineer team by adding the label "Needs-Bisect".
+- Close issues as `WontFix` if they don't reproduce (in simple cases) or are requests for features we've already concluded not to pursue.
+- Close issues as `Archived` that are valid, but it seems unlikely that we will get there anytime soon.
+- Move issues out of `Platform>DevTools` if they are not DevTools issues (but just reported via the menu item in DevTools), put on the `Hotlist-DevTools-Triaged` and leave the `Untriaged` status as is.
+- Assign regression bugs with bisects to individuals directly and set the status to `Assigned`.  
+  - Put proper `Platform>DevTools>XXX` component(s) on the issue and do an initial check-in regarding the priority.
+  - Put one of the following labels on it and set the status to "Available":
+  - `Hotlist-DevTools-ProductReview` if it's controversial or clear that consensus needs to be built first.
+  - `Hotlist-DevTools-BrowserAutomation-Backlog` if it's an issue related to ChromeDriver or puppeteer.
+  - `Hotlist-DevTools-Debugging-Backlog` if it's a debugging issue.
+  - `Hotlist-DevTools-DesignAccessibility-Backlog` if it's a design or accessibility issue.
+  - `Hotlist-DevTools-Performance-Backlog` if the issue is related to our performance tooling (i.e. Performance panel, Lighthouse).
+  - `Hotlist-DevTools-Backlog` if it's a general DevTools issue that is not specific to one of the core areas.
+- Also remember to put the Needs-UX label on it, if help from a designer is likely to be required.
 
 ### Setting Assigned or Available
 
 Set issues to Available if they don’t need immediate action and nobody right now and in the short-term future (an iteration) needs to work on it.
-
-If you think they should be addressed in the short-term please add the label “Hotlist-DevTools-CurrentSprint”.
-
-If you think they should be addressed mid-term or the next iteration, please add the label “Hotlist-DevTools-Backlog”
 
 Issues that are handled by Microsoft have the label “Hotlist-DevTools-MS-Backlog” and “Hotlist-DevTools-MS-CurrentSprint” respectively and can be considered triaged.
 

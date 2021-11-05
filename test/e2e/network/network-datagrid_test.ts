@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, pressKey, step, waitFor, waitForAria, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToNetworkTab, setCacheDisabled, setPersistLog, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
+import {getAllRequestNames, navigateToNetworkTab, selectRequestByName, setCacheDisabled, setPersistLog, waitForSelectedRequestChange, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 
 describe('The Network Tab', async function() {
   if (this.timeout() !== 0.0) {
@@ -325,5 +325,21 @@ describe('The Network Tab', async function() {
       // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
       return (status === '(unknown)' || status === '404') && time === '(unknown)';
     });
+  });
+
+  it('repeats xhr request on "r" shortcut when the request is focused', async () => {
+    const {target} = getBrowserAndPages();
+
+    await navigateToNetworkTab('xhr.html');
+    await target.reload({waitUntil: 'networkidle0'});
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('image.svg');
+    await waitForSelectedRequestChange(null);
+    await pressKey('r');
+    await waitForSomeRequestsToAppear(3);
+
+    const updatedRequestNames = await getAllRequestNames();
+    assert.deepStrictEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
   });
 });

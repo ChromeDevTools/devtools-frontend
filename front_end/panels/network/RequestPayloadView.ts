@@ -491,6 +491,8 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private createToggleButton(title: string): Element {
     const button = document.createElement('span');
     button.classList.add('payload-toggle');
+    button.tabIndex = 0;
+    button.setAttribute('role', 'button');
     button.textContent = title;
     return button;
   }

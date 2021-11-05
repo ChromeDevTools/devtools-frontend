@@ -64,6 +64,11 @@
   color: var(--color-text-primary);
 }
 
+.tree-outline li.expanded .payload-toggle:focus-visible {
+  border: 2px solid var(--color-button-outline-focus);
+  border-radius: 5px;
+}
+
 .tree-outline li .header-toggle:hover {
   color: var(--color-text-secondary);
   cursor: pointer;

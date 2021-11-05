@@ -4879,6 +4879,7 @@ declare namespace Protocol {
     export interface UserAgentMetadata {
       brands?: UserAgentBrandVersion[];
       fullVersion?: string;
+      fullVersionList?: UserAgentBrandVersion[];
       platform: string;
       platformVersion: string;
       architecture: string;
@@ -9844,6 +9845,7 @@ declare namespace Protocol {
       ChUaModel = 'ch-ua-model',
       ChUaMobile = 'ch-ua-mobile',
       ChUaFullVersion = 'ch-ua-full-version',
+      ChUaFullVersionList = 'ch-ua-full-version-list',
       ChUaPlatformVersion = 'ch-ua-platform-version',
       ChUaReduced = 'ch-ua-reduced',
       ChViewportHeight = 'ch-viewport-height',

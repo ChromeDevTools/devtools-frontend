@@ -7404,8 +7404,17 @@
                         },
                         {
                             "name": "fullVersion",
+                            "deprecated": true,
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "fullVersionList",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "UserAgentBrandVersion"
+                            }
                         },
                         {
                             "name": "platform",
@@ -14509,6 +14518,7 @@
                         "ch-ua-model",
                         "ch-ua-mobile",
                         "ch-ua-full-version",
+                        "ch-ua-full-version-list",
                         "ch-ua-platform-version",
                         "ch-ua-reduced",
                         "ch-viewport-height",

@@ -106,7 +106,7 @@ module.exports = {
 
           const importDir = 'front_end/' + path.dirname(filenameWithExtension);
           const fileDir = path.dirname(context.getFilename());
-          const relativeImport = path.relative(fileDir, importDir);
+          const relativeImport = path.relative(fileDir, importDir).replace(/\\/g, '/');
           const importStatement = relativeImport === '' ?
               `import ${newFileName} from \'./${filename}.css.js\';\n` :
               `import ${newFileName} from \'${relativeImport}/${filename}.css.js\';\n`;

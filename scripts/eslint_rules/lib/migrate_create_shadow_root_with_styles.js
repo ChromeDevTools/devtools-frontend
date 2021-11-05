@@ -57,13 +57,13 @@ module.exports = {
             const propertyNode = lookForCSSFileProperty(options.properties);
 
             if (propertyNode && propertyNode.value.type === 'Literal') {
-              const filenameWithExtension = propertyNode.value.value;
+              const filenameWithExtension = propertyNode.value.value.replace(/\\/g, '/');
               const filename = path.basename(filenameWithExtension, '.css');
               const newFileName = filename + 'Styles';
 
               const importDir = 'front_end/' + path.dirname(filenameWithExtension);
               const fileDir = path.dirname(context.getFilename());
-              const relativeImport = path.relative(fileDir, importDir);
+              const relativeImport = path.relative(fileDir, importDir).replace(/\\/g, '/');
               const importStatement = relativeImport === '' ?
                   `import ${newFileName} from \'./${filename}.css.js\';\n` :
                   `import ${newFileName} from \'${relativeImport}/${filename}.css.js\';\n`;

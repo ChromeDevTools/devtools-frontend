@@ -64,12 +64,13 @@ module.exports = {
         const previousFileLocationArgument = callExpression.arguments[0];
         const actualPath = path.join(FRONT_END_DIRECTORY, previousFileLocationArgument.value);
         if (!allowedPathArguments.includes(actualPath)) {
+          const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');
           context.report({
             node: callExpression,
-            message: `First argument to 'registerUIStrings' call must be '${
-                currentFileRelativeToFrontEnd}' or the ModuleUIStrings.(js|ts)`,
+            message:
+                `First argument to 'registerUIStrings' call must be '${newFileName}' or the ModuleUIStrings.(js|ts)`,
             fix(fixer) {
-              return fixer.replaceText(previousFileLocationArgument, `'${currentFileRelativeToFrontEnd}'`);
+              return fixer.replaceText(previousFileLocationArgument, `'${newFileName}'`);
             }
           });
         }

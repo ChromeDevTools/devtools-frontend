@@ -155,7 +155,8 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import { Exporting } from \'./Exporting.js\';',
       filename: 'front_end/common/common.js',
       errors: [{
-        message: 'Incorrect same-namespace import: "Exporting.js". Use "import * as File from \'./File.js\';" instead.'
+        message:
+            'Incorrect same-namespace import: "./Exporting.js". Use "import * as File from \'./File.js\';" instead.'
       }],
     },
     {
@@ -220,7 +221,7 @@ ruleTester.run('es_modules_import', rule, {
       filename: 'front_end/some_folder/nested_entrypoint/nested_entrypoint.js',
       errors: [{
         message:
-            'Incorrect same-namespace import: "append-style.js". Use "import * as File from \'./File.js\';" instead.'
+            'Incorrect same-namespace import: "./append-style.js". Use "import * as File from \'./File.js\';" instead.'
       }]
     },
     {

@@ -49,6 +49,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       timestamp: entry.timestamp,
       workerId: entry.workerId,
       category: entry.category,
+      affectedResources: entry.networkRequestId ? {requestId: entry.networkRequestId} : undefined,
     };
     const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(
         target.model(SDK.RuntimeModel.RuntimeModel), entry.source, entry.level, entry.text, details);

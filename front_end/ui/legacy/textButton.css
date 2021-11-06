@@ -108,8 +108,9 @@
   .text-button:not(:disabled):focus {
     forced-color-adjust: none;
     background-color: ButtonFace;
-    color: ButtonText;
+    color: Highlight !important; /* stylelint-disable-line declaration-no-important */
     border-color: Highlight;
+    outline: 2px solid ButtonText;
     box-shadow: var(--legacy-focus-ring-active-shadow);
   }
 
@@ -117,7 +118,7 @@
   .text-button:not(:disabled):active {
     forced-color-adjust: none;
     background-color: Highlight;
-    color: HighlightText;
+    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
     box-shadow: var(--legacy-accent-color);
   }
 
@@ -130,14 +131,14 @@
 
   .text-button.primary-button:not(:disabled):focus {
     background-color: Highlight;
-    color: HighlightText;
+    color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
     border-color: ButtonText;
   }
 
   .text-button.primary-button:not(:disabled):hover,
   .text-button.primary-button:not(:disabled):active {
     background-color: HighlightText;
-    color: Highlight;
+    color: Highlight !important; /* stylelint-disable-line declaration-no-important */
     border-color: Highlight;
   }
 }

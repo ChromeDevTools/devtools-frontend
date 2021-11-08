@@ -4,7 +4,7 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { getImplicitRole } = require('../utils/getImplicitRole.js');
 const { getExplicitRole } = require('../utils/getExplicitRole.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
@@ -38,6 +38,10 @@ const NoRedundantRoleRule = {
           const analyzer = TemplateAnalyzer.create(node);
           analyzer.traverse({
             enterElement(element) {
+              if (!element.sourceCodeLocation) {
+                return; // probably a tree correction node
+              }
+
               const tagName = element.name;
               const implicitRole = getImplicitRole(tagName, element.attribs);
               const explicitRole = getExplicitRole(element.attribs);
@@ -53,15 +57,21 @@ const NoRedundantRoleRule = {
                   return;
                 }
 
-                const loc = analyzer.getLocationFor(element);
-                context.report({
-                  loc,
-                  message: '"{{role}}" role is implicit in <{{tagName}}> element.',
-                  data: {
-                    role: explicitRole,
-                    tagName,
-                  },
-                });
+                const loc =
+                  analyzer.resolveLocation(
+                    element.sourceCodeLocation.startTag,
+                    context.getSourceCode(),
+                  ) ?? node.loc;
+                if (loc) {
+                  context.report({
+                    loc,
+                    message: '"{{role}}" role is implicit in <{{tagName}}> element.',
+                    data: {
+                      role: explicitRole,
+                      tagName,
+                    },
+                  });
+                }
               }
             },
           });

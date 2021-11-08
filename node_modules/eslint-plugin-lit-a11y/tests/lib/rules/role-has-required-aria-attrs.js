@@ -31,7 +31,15 @@ ruleTester.run('role-has-required-aria-attrs', rule, {
     },
     { code: 'html`<span role="row"></span>`' },
     { code: 'html`<input type="checkbox" role="switch" aria-checked="true" />`' },
-    { code: 'html`<div role="combobox" aria-controls="foo"  aria-expanded="foo"></div>`' },
+    { code: 'html`<div role="combobox" aria-controls="foo" aria-expanded="foo"></div>`' },
+    {
+      code:
+        'html`<div role="combobox" aria-activedescendant="child" aria-autocomplete="none" aria-controls="listbox" aria-expanded="false"></div>`;',
+    },
+    {
+      code:
+        'html`<div role="combobox" aria-activedescendant=${"child"} aria-autocomplete=${"none"} aria-controls="listbox" aria-expanded=${"false"}></div>`;',
+    },
   ],
 
   invalid: [

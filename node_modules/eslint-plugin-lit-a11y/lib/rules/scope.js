@@ -3,7 +3,7 @@
  * @author open-wc
  */
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { elementHasAttribute } = require('../utils/elementHasAttribute.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
@@ -41,26 +41,34 @@ const ScopeRule = {
                 !element.name.includes('-') &&
                 elementHasAttribute(element, 'scope')
               ) {
-                const loc = analyzer.getLocationForAttribute(element, 'scope');
-                context.report({
-                  loc,
-                  message: 'The scope attribute may only be used on <th> elements.',
-                });
+                const loc =
+                  analyzer.getLocationForAttribute(element, 'scope', context.getSourceCode()) ??
+                  node.loc;
+                if (loc) {
+                  context.report({
+                    loc,
+                    message: 'The scope attribute may only be used on <th> elements.',
+                  });
+                }
               } else if (
                 element.name === 'th' &&
                 elementHasAttribute(element, 'scope') &&
                 !validScopeValues.includes(element.attribs.scope)
               ) {
-                const loc = analyzer.getLocationForAttribute(element, 'scope');
-                context.report({
-                  loc,
-                  message:
-                    '"{{scope}}" is not a valid value for the scope attribute. The valid values are: {{validScopes}}.',
-                  data: {
-                    scope: element.attribs.scope,
-                    validScopes: validScopeValues.join(', '),
-                  },
-                });
+                const loc =
+                  analyzer.getLocationForAttribute(element, 'scope', context.getSourceCode()) ??
+                  node.loc;
+                if (loc) {
+                  context.report({
+                    loc,
+                    message:
+                      '"{{scope}}" is not a valid value for the scope attribute. The valid values are: {{validScopes}}.',
+                    data: {
+                      scope: element.attribs.scope,
+                      validScopes: validScopeValues.join(', '),
+                    },
+                  });
+                }
               }
             },
           });

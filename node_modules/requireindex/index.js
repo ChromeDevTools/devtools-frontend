@@ -32,18 +32,19 @@ module.exports = function (dir, basenames) {
     });
 
     files.forEach(function (filename) {
-      // ignore index.js and files prefixed with underscore and 
-      if ((filename === 'index.js') || (filename[0] === '_') || (filename[0] === '.')) { 
-        return; 
+      // ignore index.js and files prefixed with underscore and
+      if ((filename === 'index.js') || (filename[0] === '_') || (filename[0] === '.')) {
+        return;
       }
-      
+
       var filepath = Path.resolve(Path.join(dir, filename));
       var ext      = Path.extname(filename);
       var stats    = FS.statSync(filepath);
-      
+
       // don't require non-javascript files (.txt .md etc.)
-      if (stats.isFile() && !(ext in require.extensions)) { 
-        return; 
+      var exts = ['.js', '.node', '.json'];
+      if (stats.isFile() && (exts.indexOf(ext) === -1)) {
+        return;
       }
 
       var basename = Path.basename(filename, ext);

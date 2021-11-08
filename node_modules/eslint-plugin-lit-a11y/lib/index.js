@@ -38,7 +38,7 @@ module.exports.configs = {
       'lit-a11y/no-access-key': 'error',
       'lit-a11y/no-autofocus': 'error',
       'lit-a11y/no-distracting-elements': 'error',
-      'lit-a11y/no-invalid-change-handler': 'error',
+      'lit-a11y/no-invalid-change-handler': 'off',
       'lit-a11y/no-redundant-role': 'error',
       'lit-a11y/role-has-required-aria-attrs': 'error',
       'lit-a11y/role-supports-aria-attr': 'error',

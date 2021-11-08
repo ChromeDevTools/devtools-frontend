@@ -4,7 +4,7 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
 
@@ -36,15 +36,25 @@ const NoDistractingElementsRule = {
 
           analyzer.traverse({
             enterElement(element) {
+              if (!element.sourceCodeLocation) {
+                return; // probably a tree correction node
+              }
+
               if (BANNED_ELEMENTS.includes(element.name)) {
-                const loc = analyzer.getLocationFor(element);
-                context.report({
-                  loc,
-                  message: `<{{tagName}}> elements are distracting and must not be used.`,
-                  data: {
-                    tagName: element.name,
-                  },
-                });
+                const loc =
+                  analyzer.resolveLocation(
+                    element.sourceCodeLocation.startTag,
+                    context.getSourceCode(),
+                  ) ?? node.loc;
+                if (loc) {
+                  context.report({
+                    loc,
+                    message: `<{{tagName}}> elements are distracting and must not be used.`,
+                    data: {
+                      tagName: element.name,
+                    },
+                  });
+                }
               }
             },
           });

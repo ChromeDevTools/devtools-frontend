@@ -4,7 +4,7 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isIncludedInAOM } = require('../utils/isIncludedInAOM.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { isNonInteractiveElement } = require('../utils/isNonInteractiveElement.js');
@@ -79,6 +79,10 @@ const ClickEventsHaveKeyEventsRule = {
 
           analyzer.traverse({
             enterElement(element) {
+              if (!element.sourceCodeLocation) {
+                return; // probably a tree correction node
+              }
+
               const options = (context.options && context.options[0]) || {};
 
               if (
@@ -87,9 +91,14 @@ const ClickEventsHaveKeyEventsRule = {
                 isIncludedInAOM(element) &&
                 isNonInteractiveElement(element, options)
               ) {
-                const loc = analyzer.getLocationFor(element);
-
-                context.report({ loc, messageId: 'clickableNonInteractiveElements' });
+                const loc =
+                  analyzer.resolveLocation(
+                    element.sourceCodeLocation.startTag,
+                    context.getSourceCode(),
+                  ) ?? node.loc;
+                if (loc) {
+                  context.report({ loc, messageId: 'clickableNonInteractiveElements' });
+                }
               }
             },
           });

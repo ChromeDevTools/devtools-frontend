@@ -5,20 +5,10 @@
 
 const ruleExtender = require('eslint-rule-extender');
 const { roles } = require('aria-query');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isAriaRole } = require('../utils/aria.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
-
-if (!('ListFormat' in Intl)) {
-  /* eslint-disable global-require */
-  // @ts-expect-error: since we allow node 10. Remove when we require node >= 12
-  require('intl-list-format');
-  // eslint-disable-next-line global-require
-  // @ts-expect-error: since we allow node 10. Remove when we require node >= 12
-  require('intl-list-format/locale-data/en');
-  /* eslint-enable global-require */
-}
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -51,6 +41,10 @@ const RoleHasRequiredAriaAttrsRule = {
 
           analyzer.traverse({
             enterElement(element) {
+              if (!element.sourceCodeLocation) {
+                return; // probably a tree correction node
+              }
+
               // if element has a role attr
               if (Object.keys(element.attribs).includes('role')) {
                 const { role } = element.attribs;
@@ -60,21 +54,29 @@ const RoleHasRequiredAriaAttrsRule = {
                   const presentAriaAttributes = Object.keys(element.attribs)
                     .filter(attr => attr.startsWith('aria-'))
                     .sort();
-                  const hasRequiredAriaAttributes = requiredAriaAttributes.every(
-                    (attr, i) => attr === presentAriaAttributes[i],
+                  const hasRequiredAriaAttributes = requiredAriaAttributes.every(attr =>
+                    presentAriaAttributes.includes(attr),
                   );
 
                   if (!hasRequiredAriaAttributes) {
-                    const loc = analyzer.getLocationFor(element);
-                    context.report({
-                      loc,
-                      message: `The "{{role}}" role requires the {{plural}} {{requiredAttrs}}.`,
-                      data: {
-                        role,
-                        plural: requiredAriaAttributes.length > 1 ? 'attributes' : 'attribute',
-                        requiredAttrs: formatter.format(requiredAriaAttributes.map(x => `"${x}"`)),
-                      },
-                    });
+                    const loc =
+                      analyzer.resolveLocation(
+                        element.sourceCodeLocation.startTag,
+                        context.getSourceCode(),
+                      ) ?? node.loc;
+                    if (loc) {
+                      context.report({
+                        loc,
+                        message: `The "{{role}}" role requires the {{plural}} {{requiredAttrs}}.`,
+                        data: {
+                          role,
+                          plural: requiredAriaAttributes.length > 1 ? 'attributes' : 'attribute',
+                          requiredAttrs: formatter.format(
+                            requiredAriaAttributes.map(x => `"${x}"`),
+                          ),
+                        },
+                      });
+                    }
                   }
                 }
               }

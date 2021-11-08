@@ -4,7 +4,7 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
 
@@ -36,11 +36,15 @@ const NoAccessKeyRule = {
           analyzer.traverse({
             enterElement(element) {
               if (Object.keys(element.attribs).includes('accesskey')) {
-                const loc = analyzer.getLocationForAttribute(element, 'accesskey');
-                context.report({
-                  loc,
-                  message: `Avoid using the accesskey attribute.`,
-                });
+                const loc =
+                  analyzer.getLocationForAttribute(element, 'accesskey', context.getSourceCode()) ??
+                  node.loc;
+                if (loc) {
+                  context.report({
+                    loc,
+                    message: `Avoid using the accesskey attribute.`,
+                  });
+                }
               }
             },
           });

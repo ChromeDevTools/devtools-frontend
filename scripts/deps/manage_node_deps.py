@@ -65,7 +65,7 @@ DEPS = {
     "escodegen": "2.0.0",
     "eslint": "7.32.0",
     "eslint-plugin-import": "2.24.2",
-    "eslint-plugin-lit-a11y": "1.0.1",
+    "eslint-plugin-lit-a11y": "2.1.0",
     "eslint-plugin-mocha": "9.0.0",
     "eslint-plugin-rulesdir": "0.2.0",
     "istanbul-lib-instrument": "5.0.2",

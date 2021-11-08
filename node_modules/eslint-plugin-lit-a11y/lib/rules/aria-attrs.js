@@ -4,7 +4,7 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isInvalidAriaAttribute } = require('../utils/aria.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
@@ -38,14 +38,19 @@ const AriaAttrsRule = {
             enterElement(element) {
               for (const attr of Object.keys(element.attribs)) {
                 if (isInvalidAriaAttribute(attr)) {
-                  const loc = analyzer.getLocationForAttribute(element, attr);
-                  context.report({
-                    loc,
-                    message: 'Invalid ARIA attribute "{{attr}}".',
-                    data: {
-                      attr,
-                    },
-                  });
+                  const loc =
+                    analyzer.getLocationForAttribute(element, attr, context.getSourceCode()) ??
+                    node.loc;
+
+                  if (loc) {
+                    context.report({
+                      loc,
+                      message: 'Invalid ARIA attribute "{{attr}}".',
+                      data: {
+                        attr,
+                      },
+                    });
+                  }
                 }
               }
             },

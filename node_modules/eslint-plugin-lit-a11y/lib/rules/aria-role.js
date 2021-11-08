@@ -4,10 +4,11 @@
  */
 
 const ruleExtender = require('eslint-rule-extender');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
 const { isConcreteAriaRole } = require('../utils/aria.js');
+const { getLiteralAttributeValue } = require('../utils/getLiteralAttributeValue.js');
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -39,24 +40,31 @@ const AriaRoleRule = {
 
           analyzer.traverse({
             enterElement(element) {
-              for (const [attr, rawValue] of Object.entries(element.attribs)) {
+              for (const attr of Object.keys(element.attribs)) {
                 if (attr !== 'role') return;
 
-                const { value } = analyzer.describeAttribute(rawValue);
+                const role = getLiteralAttributeValue(
+                  analyzer,
+                  element,
+                  'role',
+                  context.getSourceCode(),
+                );
 
-                if (value === undefined) return;
-
-                const role = value.toString();
+                if (role === undefined) return;
 
                 if (!isConcreteAriaRole(role)) {
-                  const loc = analyzer.getLocationForAttribute(element, attr);
-                  context.report({
-                    loc,
-                    messageId: 'invalidRole',
-                    data: {
-                      role,
-                    },
-                  });
+                  const loc =
+                    analyzer.getLocationForAttribute(element, attr, context.getSourceCode()) ??
+                    node.loc;
+                  if (loc) {
+                    context.report({
+                      loc,
+                      messageId: 'invalidRole',
+                      data: {
+                        role,
+                      },
+                    });
+                  }
                 }
               }
             },

@@ -5,7 +5,7 @@
 
 const ruleExtender = require('eslint-rule-extender');
 const { roles, aria } = require('aria-query');
-const { TemplateAnalyzer } = require('../../template-analyzer/template-analyzer.js');
+const { TemplateAnalyzer } = require('eslint-plugin-lit/lib/template-analyzer.js');
 const { isAriaPropertyName } = require('../utils/aria.js');
 const { isHtmlTaggedTemplate } = require('../utils/isLitHtmlTemplate.js');
 const { HasLitHtmlImportRuleExtension } = require('../utils/HasLitHtmlImportRuleExtension.js');
@@ -52,15 +52,19 @@ const RoleSupportsAriaAttrRule = {
                   .filter(isAriaPropertyName)
                   .forEach(attr => {
                     if (invalidAriaPropsForRole.includes(attr)) {
-                      const loc = analyzer.getLocationForAttribute(element, attr);
-                      context.report({
-                        loc,
-                        message: `The "{{role}}" role must not be used with the "${attr}" attribute.'`,
-                        data: {
-                          role,
-                          attr,
-                        },
-                      });
+                      const loc =
+                        analyzer.getLocationForAttribute(element, attr, context.getSourceCode()) ??
+                        node.loc;
+                      if (loc) {
+                        context.report({
+                          loc,
+                          message: `The "{{role}}" role must not be used with the "${attr}" attribute.'`,
+                          data: {
+                            role,
+                            attr,
+                          },
+                        });
+                      }
                     }
                   });
               }

@@ -27,7 +27,7 @@
  * @typedef {Omit<import('eslint').Rule.RuleContext, 'settings'|'parserServices'> & LitA11yRuleContextExtensions} LitA11yRuleContext
  */
 
-const DEFAULT_LIT_HTML_SPECIFIERS = ['lit-html', 'lit-element'];
+const DEFAULT_LIT_HTML_SPECIFIERS = ['lit-html', 'lit-element', 'lit'];
 
 /**
  * Given an import id like `lit-html/lit-html.js`, returns the package name i.e. `lit-html`

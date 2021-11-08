@@ -57,11 +57,7 @@ An `<a>` tag is not inherently interactive. Without an href attribute, it really
 Let's look at an example that is not accessible by all users:
 
 ```js
-html`
-  <a class="thing" @mouseenter=${() => (this.showSomething = true)}>
-    ${label}
-  </a>
-`;
+html` <a class="thing" @mouseenter=${() => (this.showSomething = true)}> ${label} </a> `;
 ```
 
 If you need to create an interface element that the user can click on, consider using a button:

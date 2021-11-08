@@ -4,7 +4,7 @@ Write minimal node index.js files that require and export siblings by file basen
 
 # Latest Version
 
-1.1.0
+1.2.0
 
 # Installation
 ```

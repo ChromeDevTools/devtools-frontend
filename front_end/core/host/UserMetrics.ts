@@ -687,6 +687,7 @@ export const IssueCreated: {
   'CorsIssue::NoCorsRedirectModeNotFollow': 57,
   'QuirksModeIssue::QuirksMode': 58,
   'QuirksModeIssue::LimitedQuirksMode': 59,
+  DeprecationIssue: 60,
 };
 
 // TODO(crbug.com/1167717): Make this a const enum again

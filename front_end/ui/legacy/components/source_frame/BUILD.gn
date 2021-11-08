@@ -7,7 +7,15 @@ import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 copy_to_gen("legacy_css") {
-  sources = [ "jsonView.css" ]
+  sources = [
+    "fontView.css",
+    "imageView.css",
+    "jsonView.css",
+    "messagesPopover.css",
+    "resourceSourceFrame.css",
+    "xmlTree.css",
+    "xmlView.css",
+  ]
 }
 devtools_module("source_frame") {
   sources = [

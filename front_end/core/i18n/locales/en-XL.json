@@ -401,6 +401,21 @@
   "core/sdk/DOMDebuggerModel.ts | xhr": {
     "message": "X̂H́R̂"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Âd́ Âúĉt́îón̂ Ẃôŕk̂ĺêt́"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "B̂íd̂d́êŕ B̂íd̂d́îńĝ Ṕĥáŝé Ŝt́âŕt̂"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "B̂íd̂d́êŕ R̂ép̂ór̂t́îńĝ Ṕĥáŝé Ŝt́âŕt̂"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Ŝél̂ĺêŕ R̂ép̂ór̂t́îńĝ Ṕĥáŝé Ŝt́âŕt̂"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Ŝél̂ĺêŕ Ŝćôŕîńĝ Ṕĥáŝé Ŝt́âŕt̂"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêád̂ B́l̂óĉḱîńĝ (ĆÔŔB̂) b́l̂óĉḱêd́ ĉŕôśŝ-ór̂íĝín̂ ŕêśp̂ón̂śê {PH1} ẃît́ĥ ḾÎḾÊ t́ŷṕê {PH2}. Śêé ĥt́t̂ṕŝ://ẃŵẃ.ĉh́r̂óm̂éŝt́ât́ûś.ĉóm̂/f́êát̂úr̂é/5629709824032768 f̂ór̂ ḿôŕê d́êt́âíl̂ś."
   },

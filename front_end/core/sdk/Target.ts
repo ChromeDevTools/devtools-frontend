@@ -67,7 +67,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.JS;
         break;
       case Type.AuctionWorklet:
-        this.#capabilitiesMask = Capability.JS;
+        this.#capabilitiesMask = Capability.JS | Capability.EventBreakpoints;
         break;
       case Type.Browser:
         this.#capabilitiesMask = Capability.Target | Capability.IO;
@@ -249,5 +249,6 @@ export enum Capability {
   WebAuthn = 1 << 16,
   IO = 1 << 17,
   Media = 1 << 18,
+  EventBreakpoints = 1 << 19,
   None = 0,
 }

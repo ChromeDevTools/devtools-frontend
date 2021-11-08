@@ -26,14 +26,14 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
   }
 
   protected getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
-      SDK.DOMDebuggerModel.CategorizedBreakpoint|null {
+      SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
     const breakpointType = details.auxData && details.auxData['violationType'] ? details.auxData['violationType'] : '';
     const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     const breakpoint = breakpoints.find(x => x.type() === breakpointType);
     return breakpoint ? breakpoint : null;
   }
 
-  protected toggleBreakpoint(breakpoint: SDK.DOMDebuggerModel.CategorizedBreakpoint, enabled: boolean): void {
+  protected toggleBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean): void {
     breakpoint.setEnabled(enabled);
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance().updateCSPViolationBreakpoints();
   }

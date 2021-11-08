@@ -644,6 +644,10 @@ export class TargetBase {
     return this.getAgent('Emulation');
   }
 
+  eventBreakpointsAgent(): ProtocolProxyApi.EventBreakpointsApi {
+    return this.getAgent('EventBreakpoints');
+  }
+
   heapProfilerAgent(): ProtocolProxyApi.HeapProfilerApi {
     return this.getAgent('HeapProfiler');
   }

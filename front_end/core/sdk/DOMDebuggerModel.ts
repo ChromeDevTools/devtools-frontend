@@ -7,6 +7,7 @@ import * as i18n from '../i18n/i18n.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
+import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
 import type {Location} from './DebuggerModel.js';
 import type {DOMNode} from './DOMModel.js';
 import {DOMModel, Events as DOMModelEvents} from './DOMModel.js';
@@ -690,38 +691,6 @@ export namespace EventListener {
   }
 }
 
-export class CategorizedBreakpoint {
-  readonly #categoryInternal: string;
-  titleInternal: string;
-  enabledInternal: boolean;
-
-  constructor(category: string, title: string) {
-    this.#categoryInternal = category;
-    this.titleInternal = title;
-    this.enabledInternal = false;
-  }
-
-  category(): string {
-    return this.#categoryInternal;
-  }
-
-  enabled(): boolean {
-    return this.enabledInternal;
-  }
-
-  setEnabled(enabled: boolean): void {
-    this.enabledInternal = enabled;
-  }
-
-  title(): string {
-    return this.titleInternal;
-  }
-
-  setTitle(title: string): void {
-    this.titleInternal = title;
-  }
-}
-
 export class CSPViolationBreakpoint extends CategorizedBreakpoint {
   readonly #typeInternal: Protocol.DOMDebugger.CSPViolationType;
   constructor(category: string, title: string, type: Protocol.DOMDebugger.CSPViolationType) {
@@ -734,7 +703,7 @@ export class CSPViolationBreakpoint extends CategorizedBreakpoint {
   }
 }
 
-export class EventListenerBreakpoint extends CategorizedBreakpoint {
+export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
   readonly instrumentationName: string;
   readonly eventName: string;
   readonly eventTargetNames: string[];
@@ -784,7 +753,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   readonly #xhrBreakpointsSetting: Common.Settings.Setting<{url: string, enabled: boolean}[]>;
   readonly #xhrBreakpointsInternal: Map<string, boolean>;
   readonly #cspViolationsToBreakOn: CSPViolationBreakpoint[];
-  readonly #eventListenerBreakpointsInternal: EventListenerBreakpoint[];
+  readonly #eventListenerBreakpointsInternal: DOMEventListenerBreakpoint[];
 
   constructor() {
     this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhrBreakpoints', []);
@@ -933,19 +902,19 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   private createInstrumentationBreakpoints(category: string, instrumentationNames: string[]): void {
     for (const instrumentationName of instrumentationNames) {
       this.#eventListenerBreakpointsInternal.push(
-          new EventListenerBreakpoint(instrumentationName, '', [], category, instrumentationName));
+          new DOMEventListenerBreakpoint(instrumentationName, '', [], category, instrumentationName));
     }
   }
 
   private createEventListenerBreakpoints(category: string, eventNames: string[], eventTargetNames: string[]): void {
     for (const eventName of eventNames) {
       this.#eventListenerBreakpointsInternal.push(
-          new EventListenerBreakpoint('', eventName, eventTargetNames, category, eventName));
+          new DOMEventListenerBreakpoint('', eventName, eventTargetNames, category, eventName));
     }
   }
 
-  private resolveEventListenerBreakpointInternal(eventName: string, eventTargetName?: string): EventListenerBreakpoint
-      |null {
+  private resolveEventListenerBreakpointInternal(eventName: string, eventTargetName?: string):
+      DOMEventListenerBreakpoint|null {
     const instrumentationPrefix = 'instrumentation:';
     const listenerPrefix = 'listener:';
     let instrumentationName = '';
@@ -958,7 +927,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
       return null;
     }
     eventTargetName = (eventTargetName || '*').toLowerCase();
-    let result: EventListenerBreakpoint|null = null;
+    let result: DOMEventListenerBreakpoint|null = null;
     for (const breakpoint of this.#eventListenerBreakpointsInternal) {
       if (instrumentationName && breakpoint.instrumentationName === instrumentationName) {
         result = breakpoint;
@@ -975,7 +944,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     return result;
   }
 
-  eventListenerBreakpoints(): EventListenerBreakpoint[] {
+  eventListenerBreakpoints(): DOMEventListenerBreakpoint[] {
     return this.#eventListenerBreakpointsInternal.slice();
   }
 
@@ -1008,7 +977,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   resolveEventListenerBreakpoint(auxData: {
     eventName: string,
     targetName: string,
-  }): EventListenerBreakpoint|null {
+  }): DOMEventListenerBreakpoint|null {
     return this.resolveEventListenerBreakpointInternal(auxData['eventName'], auxData['targetName']);
   }
 

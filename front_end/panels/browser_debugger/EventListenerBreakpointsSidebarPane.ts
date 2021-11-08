@@ -11,10 +11,13 @@ let eventListenerBreakpointsSidebarPaneInstance: EventListenerBreakpointsSidebar
 
 export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsSidebarPane {
   private constructor() {
-    const categories = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints().map(
-        breakpoint => breakpoint.category());
+    let breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[] =
+        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
+    const nonDomBreakpoints = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().eventListenerBreakpoints();
+    breakpoints = breakpoints.concat(nonDomBreakpoints);
+
+    const categories = breakpoints.map(breakpoint => breakpoint.category());
     categories.sort();
-    const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().eventListenerBreakpoints();
     super(
         categories, breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
   }
@@ -27,10 +30,15 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
   }
 
   getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
-      SDK.DOMDebuggerModel.CategorizedBreakpoint|null {
-    return SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(details.auxData as {
+      SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
+    const auxData = details.auxData as {
       eventName: string,
       targetName: string,
-    });
+    };
+    const domBreakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
+    if (domBreakpoint) {
+      return domBreakpoint;
+    }
+    return SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(auxData);
   }
 }

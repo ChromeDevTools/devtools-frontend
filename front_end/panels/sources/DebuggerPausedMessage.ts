@@ -191,13 +191,20 @@ export class DebuggerPausedMessage {
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
       let eventNameForUI = '';
       if (details.auxData) {
-        eventNameForUI =
-            SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle((details.auxData as {
-              directiveText: string,
-              eventName: string,
-              targetName: string,
-              webglErrorName: string,
-            }));
+        const maybeNonDomEventNameForUI =
+            SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
+                (details.auxData as {eventName: string}));
+        if (maybeNonDomEventNameForUI) {
+          eventNameForUI = maybeNonDomEventNameForUI;
+        } else {
+          eventNameForUI = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle(
+              (details.auxData as {
+                directiveText: string,
+                eventName: string,
+                targetName: string,
+                webglErrorName: string,
+              }));
+        }
       }
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedOnEventListener), eventNameForUI);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {

@@ -11,6 +11,7 @@ import './NetworkManager.js';
 import './RuntimeModel.js';
 
 import * as AccessibilityModel from './AccessibilityModel.js';
+import * as CategorizedBreakpoint from './CategorizedBreakpoint.js';
 import * as ChildTargetManager from './ChildTargetManager.js';
 import * as CompilerSourceMappingContentProvider from './CompilerSourceMappingContentProvider.js';
 import * as Connections from './Connections.js';
@@ -37,6 +38,7 @@ import * as DebuggerModel from './DebuggerModel.js';
 import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
 import * as EmulationModel from './EmulationModel.js';
+import * as EventBreakpointsModel from './EventBreakpointsModel.js';
 import * as FilmStripModel from './FilmStripModel.js';
 import * as FrameManager from './FrameManager.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
@@ -76,6 +78,7 @@ import * as WebAuthnModel from './WebAuthnModel.js';
 
 export {
   AccessibilityModel,
+  CategorizedBreakpoint,
   ChildTargetManager,
   CompilerSourceMappingContentProvider,
   Connections,
@@ -102,6 +105,7 @@ export {
   DOMDebuggerModel,
   DOMModel,
   EmulationModel,
+  EventBreakpointsModel,
   FilmStripModel,
   FrameManager,
   HeapProfilerModel,

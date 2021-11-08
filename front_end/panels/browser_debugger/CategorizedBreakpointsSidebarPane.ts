@@ -24,10 +24,10 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   readonly #viewId: string;
   readonly #detailsPausedReason: Protocol.Debugger.PausedEventReason;
   readonly #categories: Map<string, Item>;
-  readonly #breakpoints: Map<SDK.DOMDebuggerModel.CategorizedBreakpoint, Item>;
+  readonly #breakpoints: Map<SDK.CategorizedBreakpoint.CategorizedBreakpoint, Item>;
   #highlightedElement?: HTMLLIElement;
   constructor(
-      categories: string[], breakpoints: SDK.DOMDebuggerModel.CategorizedBreakpoint[], viewId: string,
+      categories: string[], breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], viewId: string,
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
     super(true);
     this.#categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
@@ -66,7 +66,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     return this.#categories;
   }
 
-  get breakpoints(): Map<SDK.DOMDebuggerModel.CategorizedBreakpoint, Item> {
+  get breakpoints(): Map<SDK.CategorizedBreakpoint.CategorizedBreakpoint, Item> {
     return this.#breakpoints;
   }
 
@@ -96,7 +96,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     this.#categories.set(name, {element: treeElement, checkbox: labelNode.checkboxElement});
   }
 
-  protected createBreakpoint(breakpoint: SDK.DOMDebuggerModel.CategorizedBreakpoint): void {
+  protected createBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint): void {
     const labelNode = UI.UIUtils.CheckboxLabel.create(breakpoint.title());
     labelNode.classList.add('source-code');
     labelNode.checkboxElement.addEventListener('click', this.breakpointCheckboxClicked.bind(this, breakpoint), true);
@@ -124,7 +124,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   }
 
   protected getBreakpointFromPausedDetails(_details: SDK.DebuggerModel.DebuggerPausedDetails):
-      SDK.DOMDebuggerModel.CategorizedBreakpoint|null {
+      SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
     return null;
   }
 
@@ -180,11 +180,11 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     }
   }
 
-  protected toggleBreakpoint(breakpoint: SDK.DOMDebuggerModel.CategorizedBreakpoint, enabled: boolean): void {
+  protected toggleBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint, enabled: boolean): void {
     breakpoint.setEnabled(enabled);
   }
 
-  private breakpointCheckboxClicked(breakpoint: SDK.DOMDebuggerModel.CategorizedBreakpoint): void {
+  private breakpointCheckboxClicked(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint): void {
     const item = this.#breakpoints.get(breakpoint);
     if (!item) {
       return;

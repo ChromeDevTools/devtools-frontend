@@ -51,6 +51,10 @@ export namespace CST {
     readonly hasComment: boolean
     readonly hasProps: boolean
     readonly jsonLike: boolean
+    readonly rangeAsLinePos: null | {
+      start: { line: number; col: number }
+      end?: { line: number; col: number }
+    }
     readonly rawValue: string | null
     readonly tag:
       | null

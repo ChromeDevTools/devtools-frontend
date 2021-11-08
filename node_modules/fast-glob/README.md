@@ -333,7 +333,9 @@ fg.sync('**', { onlyFiles: false, cwd: 'dir', deep: 2 }); // ['one', 'one/two']
 * Type: `boolean`
 * Default: `true`
 
-Indicates whether to traverse descendants of symbolic link directories.
+Indicates whether to traverse descendants of symbolic link directories when expanding `**` patterns.
+
+> :book: Note that this option does not affect the base directory of the pattern. For example, if `./a` is a symlink to directory `./b` and you specified `['./a**', './b/**']` patterns, then directory `./a` will still be read.
 
 > :book: If the [`stats`](#stats) option is specified, the information about the symbolic link (`fs.lstat`) will be replaced with information about the entry (`fs.stat`) behind it.
 

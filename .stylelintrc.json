@@ -27,11 +27,5 @@
     "property-no-vendor-prefix": null,
     "value-no-vendor-prefix": null,
     "media-feature-name-no-vendor-prefix": null
-  },
-  "overrides": [
-    {
-      "files": ["**/*.ts"],
-      "customSyntax": "html"
-    }
-  ]
+  }
 }

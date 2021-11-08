@@ -1,10 +1,12 @@
-import {Options as FastGlobOptions} from 'fast-glob';
+import {Options as FastGlobOptions, Entry as FastGlobEntry} from 'fast-glob';
 
 declare namespace globby {
 	type ExpandDirectoriesOption =
 		| boolean
 		| readonly string[]
 		| {files?: readonly string[]; extensions?: readonly string[]};
+
+	type Entry = FastGlobEntry;
 
 	interface GlobbyOptions extends FastGlobOptions {
 		/**
@@ -88,10 +90,13 @@ declare const globby: {
 	@param options - See the [`fast-glob` options](https://github.com/mrmlnc/fast-glob#options-3) in addition to the ones in this package.
 	@returns The matching paths.
 	*/
-	sync: (
+	sync: ((
+		patterns: string | readonly string[],
+		options: globby.GlobbyOptions & {objectMode: true}
+	) => globby.Entry[]) & ((
 		patterns: string | readonly string[],
 		options?: globby.GlobbyOptions
-	) => string[];
+	) => string[]);
 
 	/**
 	Find files and directories using glob patterns.
@@ -145,6 +150,11 @@ declare const globby: {
 	) => boolean;
 
 	readonly gitignore: Gitignore;
+
+	(
+		patterns: string | readonly string[],
+		options: globby.GlobbyOptions & {objectMode: true}
+	): Promise<globby.Entry[]>;
 
 	/**
 	Find files and directories using glob patterns.

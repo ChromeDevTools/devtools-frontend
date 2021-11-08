@@ -592,6 +592,10 @@ describe('User Metrics for Issue Panel', () => {
       },
       {
         actionName: 'DevTools.IssueCreated',
+        actionCode: 60,  // DeprecationIssue
+      },
+      {
+        actionName: 'DevTools.IssueCreated',
         actionCode: 36,  // SharedArrayBufferIssue::TransferIssue
       },
     ]);

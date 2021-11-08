@@ -378,6 +378,7 @@ export const PanelCodes: {
   'issues-pane': 37,
   'settings-keybinds': 38,
   'cssoverview': 39,
+  'chrome_recorder': 40,
 };
 
 export const SidebarPaneCodes: {

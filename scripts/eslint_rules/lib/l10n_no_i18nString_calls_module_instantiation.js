@@ -7,7 +7,7 @@
 // One of these AST nodes must be an ancestor of an i18nString call.
 const REQUIRED_ANCESTOR = new Set([
   'ArrowFunctionExpression',
-  'ClassProperty',
+  'PropertyDefinition',
   'FunctionDeclaration',
   'FunctionExpression',
   'MethodDefinition',

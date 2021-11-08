@@ -49,7 +49,7 @@ module.exports = {
   },
   create: function(context) {
     return {
-      ClassProperty(node) {
+      PropertyDefinition(node) {
         checkNodeForUnderscoredProperties(context, node, 'property');
       },
       MethodDefinition(node) {

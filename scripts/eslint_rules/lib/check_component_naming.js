@@ -44,7 +44,7 @@ module.exports = {
 
     function findComponentTagNameFromStaticProperty(classBodyNode) {
       return classBodyNode.body.find(node => {
-        return node.type === 'ClassProperty' && node.key.name === 'litTagName';
+        return node.type === 'PropertyDefinition' && node.key.name === 'litTagName';
       });
     }
 

@@ -73,7 +73,7 @@ module.exports = {
 
         // If the reference is right, let's find the value of the static eventName property and make sure it is valid.
         const eventNameProperty = node.body.body.find(classBodyPart => {
-          return classBodyPart.type === 'ClassProperty' && classBodyPart.key.name === 'eventName';
+          return classBodyPart.type === 'PropertyDefinition' && classBodyPart.key.name === 'eventName';
         });
 
         // This should always exist because we checked for its existence

@@ -369,4 +369,9 @@ export enum EnumeratedHistogram {
   Language = 'DevTools.Language',
   ConsoleShowsCorsErrors = 'DevTools.ConsoleShowsCorsErrors',
   SyncSetting = 'DevTools.SyncSetting',
+  RecordingEdited = 'DevTools.RecordingEdited',
+  RecordingExported = 'DevTools.RecordingExported',
+  RecordingReplayFinished = 'DevTools.RecordingReplayFinished',
+  RecordingReplayStarted = 'DevTools.RecordingReplayStarted',
+  RecordingToggled = 'DevTools.RecordingToggled',
 }

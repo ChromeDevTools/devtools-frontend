@@ -261,6 +261,31 @@ export class UserMetrics {
       InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.SyncSetting, settingValue, size);
     });
   }
+
+  recordingToggled(value: RecordingToggled): void {
+    const size = Object.keys(RecordingToggled).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingToggled, value, size);
+  }
+
+  recordingReplayFinished(value: RecordingReplayFinished): void {
+    const size = Object.keys(RecordingReplayFinished).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayFinished, value, size);
+  }
+
+  recordingReplayStarted(value: RecordingReplayStarted): void {
+    const size = Object.keys(RecordingReplayStarted).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingReplayStarted, value, size);
+  }
+
+  recordingEdited(value: RecordingEdited): void {
+    const size = Object.keys(RecordingEdited).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingEdited, value, size);
+  }
+
+  recordingExported(value: RecordingExported): void {
+    const size = Object.keys(RecordingExported).length + 1;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.RecordingExported, value, size);
+  }
 }
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -826,4 +851,49 @@ export enum SyncSetting {
   ChromeSyncSettingsDisabled = 2,
   DevToolsSyncSettingDisabled = 3,
   DevToolsSyncSettingEnabled = 4,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingToggled {
+  RecordingStarted = 1,
+  RecordingFinished = 2,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingReplayFinished {
+  Success = 1,
+  TimeoutErrorSelectors = 2,
+  TimeoutErrorTarget = 3,
+  OtherError = 4,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingReplayStarted {
+  ReplayOnly = 1,
+  ReplayWithPerformanceTracing = 2,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingEdited {
+  SelectorPickerUsed = 1,
+  StepAdded = 2,
+  StepRemoved = 3,
+  SelectorAdded = 4,
+  SelectorRemoved = 5,
+  SelectorPartAdded = 6,
+  SelectorPartEdited = 7,
+  SelectorPartRemoved = 8,
+  TypeChanged = 9,
+  OtherEditing = 10,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum RecordingExported {
+  ToPuppeteer = 1,
+  ToJSON = 2,
 }

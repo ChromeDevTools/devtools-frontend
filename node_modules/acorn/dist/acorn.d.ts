@@ -2,17 +2,17 @@ export as namespace acorn
 export = acorn
 
 declare namespace acorn {
-  function parse(input: string, options?: Options): Node
+  function parse(input: string, options: Options): Node
 
-  function parseExpressionAt(input: string, pos?: number, options?: Options): Node
+  function parseExpressionAt(input: string, pos: number, options: Options): Node
 
-  function tokenizer(input: string, options?: Options): {
+  function tokenizer(input: string, options: Options): {
     getToken(): Token
     [Symbol.iterator](): Iterator<Token>
   }
 
   interface Options {
-    ecmaVersion?: 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020
+    ecmaVersion: 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 'latest'
     sourceType?: 'script' | 'module'
     onInsertedSemicolon?: (lastTokEnd: number, lastTokEndLoc?: Position) => void
     onTrailingComma?: (lastTokEnd: number, lastTokEndLoc?: Position) => void
@@ -20,6 +20,7 @@ declare namespace acorn {
     allowReturnOutsideFunction?: boolean
     allowImportExportEverywhere?: boolean
     allowAwaitOutsideFunction?: boolean
+    allowSuperOutsideMethod?: boolean
     allowHashBang?: boolean
     locations?: boolean
     onToken?: ((token: Token) => any) | Token[]
@@ -37,9 +38,9 @@ declare namespace acorn {
   class Parser {
     constructor(options: Options, input: string, startPos?: number)
     parse(this: Parser): Node
-    static parse(this: typeof Parser, input: string, options?: Options): Node
-    static parseExpressionAt(this: typeof Parser, input: string, pos: number, options?: Options): Node
-    static tokenizer(this: typeof Parser, input: string, options?: Options): {
+    static parse(this: typeof Parser, input: string, options: Options): Node
+    static parseExpressionAt(this: typeof Parser, input: string, pos: number, options: Options): Node
+    static tokenizer(this: typeof Parser, input: string, options: Options): {
       getToken(): Token
       [Symbol.iterator](): Iterator<Token>
     }
@@ -88,6 +89,7 @@ declare namespace acorn {
     regexp: TokenType
     string: TokenType
     name: TokenType
+    privateId: TokenType
     eof: TokenType
     bracketL: TokenType
     bracketR: TokenType
@@ -171,6 +173,9 @@ declare namespace acorn {
     p_expr: TokContext
     q_tmpl: TokContext
     f_expr: TokContext
+    f_stat: TokContext
+    f_expr_gen: TokContext
+    f_gen: TokContext
   }
 
   function isIdentifierStart(code: number, astral?: boolean): boolean

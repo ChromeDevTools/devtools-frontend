@@ -6,7 +6,7 @@
 
 "use strict";
 
-/* eslint sort-keys: ["error", "asc"] */
+/* eslint sort-keys: ["error", "asc"] -- More readable for long list */
 
 const { LazyLoadingRuleMap } = require("./utils/lazy-loading-rule-map");
 
@@ -221,6 +221,7 @@ module.exports = new LazyLoadingRuleMap(Object.entries({
     "no-unsafe-optional-chaining": () => require("./no-unsafe-optional-chaining"),
     "no-unused-expressions": () => require("./no-unused-expressions"),
     "no-unused-labels": () => require("./no-unused-labels"),
+    "no-unused-private-class-members": () => require("./no-unused-private-class-members"),
     "no-unused-vars": () => require("./no-unused-vars"),
     "no-use-before-define": () => require("./no-use-before-define"),
     "no-useless-backreference": () => require("./no-useless-backreference"),

@@ -22,7 +22,7 @@ ROOT_DIRECTORY = path.normpath(path.join(CURRENT_DIRECTORY, '..', '..'))
 def main():
     exec_command = [
         devtools_paths.node_path(),
-        path.join(CURRENT_DIRECTORY, 'run_lint_check_js.js'),
+        path.join(CURRENT_DIRECTORY, 'run_lint_check_js.mjs'),
     ]
 
     eslint_proc = Popen(exec_command, cwd=ROOT_DIRECTORY)

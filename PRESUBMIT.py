@@ -240,7 +240,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('JS style check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test',
-                                       'run_lint_check_js.js')
+                                       'run_lint_check_js.mjs')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -273,7 +273,7 @@ def _CheckDevToolsStyleJS(input_api, output_api):
         input_api.os_path.join(scripts_directory, 'test',
                                'run_lint_check_js.py'),
         input_api.os_path.join(scripts_directory, 'test',
-                               'run_lint_check_js.js'),
+                               'run_lint_check_js.mjs'),
         input_api.os_path.join(scripts_directory, '.eslintrc.js'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
     ]

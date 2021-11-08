@@ -2,7 +2,7 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%');
+var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
 if ($gOPD) {
 	try {
 		$gOPD([], 'length');

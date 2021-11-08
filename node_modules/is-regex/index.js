@@ -1,8 +1,7 @@
 'use strict';
 
 var callBound = require('call-bind/callBound');
-var hasSymbols = require('has-symbols/shams')();
-var hasToStringTag = hasSymbols && !!Symbol.toStringTag;
+var hasToStringTag = require('has-tostringtag/shams')();
 var has;
 var $exec;
 var isRegexMarker;

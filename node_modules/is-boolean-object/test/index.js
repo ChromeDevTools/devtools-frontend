@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var isBoolean = require('../');
-var hasSymbols = require('has-symbols/shams')();
+var hasToStringTag = require('has-tostringtag/shams')();
 
 test('not Booleans', function (t) {
 	t.test('primitives', function (st) {
@@ -29,7 +29,7 @@ test('not Booleans', function (t) {
 	t.end();
 });
 
-test('@@toStringTag', { skip: !hasSymbols || !Symbol.toStringTag }, function (t) {
+test('@@toStringTag', { skip: !hasToStringTag }, function (t) {
 	var fakeBoolean = {
 		toString: function () { return 'true'; },
 		valueOf: function () { return true; }

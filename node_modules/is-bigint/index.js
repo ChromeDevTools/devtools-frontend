@@ -1,6 +1,8 @@
 'use strict';
 
-if (typeof BigInt === 'function') {
+var hasBigInts = require('has-bigints')();
+
+if (hasBigInts) {
 	var bigIntValueOf = BigInt.prototype.valueOf;
 	var tryBigInt = function tryBigIntObject(value) {
 		try {

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.6](https://github.com/inspect-js/is-number-object/compare/v1.0.5...v1.0.6) - 2021-08-05
+
+### Commits
+
+- [Tests] run tests with core-js as well [`5177312`](https://github.com/inspect-js/is-number-object/commit/51773120b18e27bfe8a3bd228ef2e21f5802f338)
+- [Refactor] use `has-tostringtag` to behave correctly in the presence of symbol shams [`ca2b31d`](https://github.com/inspect-js/is-number-object/commit/ca2b31d81c5d7d9b11e812dee58cd627a6d634e2)
+- [Dev Deps] update `auto-changelog`, `core-js`, `eslint`, `tape` [`50950f9`](https://github.com/inspect-js/is-number-object/commit/50950f962a4b1188c478f6034194d7eb4314c884)
+
 ## [v1.0.5](https://github.com/inspect-js/is-number-object/compare/v1.0.4...v1.0.5) - 2021-05-07
 
 ### Commits

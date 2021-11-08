@@ -64,7 +64,7 @@ DEPS = {
     "convert-source-map": "1.7.0",
     "escodegen": "2.0.0",
     "eslint": "7.32.0",
-    "eslint-plugin-import": "2.24.2",
+    "eslint-plugin-import": "2.25.2",
     "eslint-plugin-lit-a11y": "2.1.0",
     "eslint-plugin-mocha": "9.0.0",
     "eslint-plugin-rulesdir": "0.2.0",

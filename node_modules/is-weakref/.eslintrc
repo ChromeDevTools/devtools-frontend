@@ -1,0 +1,13 @@
+{
+	"root": true,
+
+	"extends": "@ljharb",
+
+	"globals": {
+		"WeakRef": false,
+	},
+
+	"rules": {
+		"operator-linebreak": [2, "before"],
+	},
+}

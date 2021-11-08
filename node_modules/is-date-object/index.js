@@ -12,7 +12,7 @@ var tryDateObject = function tryDateGetDayCall(value) {
 
 var toStr = Object.prototype.toString;
 var dateClass = '[object Date]';
-var hasToStringTag = typeof Symbol === 'function' && !!Symbol.toStringTag;
+var hasToStringTag = require('has-tostringtag/shams')();
 
 module.exports = function isDateObject(value) {
 	if (typeof value !== 'object' || value === null) {

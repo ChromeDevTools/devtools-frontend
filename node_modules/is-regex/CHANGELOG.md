@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.4](https://github.com/inspect-js/is-regex/compare/v1.1.3...v1.1.4) - 2021-08-05
+
+### Commits
+
+- [Dev Deps] update `auto-changelog`, `core-js`, `eslint`, `tape` [`4b17cad`](https://github.com/inspect-js/is-regex/commit/4b17cad8496b1ae621b18335fa3afe94d0c65e83)
+- [Refactor] use `has-tostringtag` to behave correctly in the presence of symbol shams [`2dad4af`](https://github.com/inspect-js/is-regex/commit/2dad4afffa15f07cbbf7675b77d1f650c92652c4)
+
 ## [v1.1.3](https://github.com/inspect-js/is-regex/compare/v1.1.2...v1.1.3) - 2021-05-07
 
 ### Commits

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.5](https://github.com/ljharb/Object.values/compare/v1.1.4...v1.1.5) - 2021-10-03
+
+### Commits
+
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `tape` [`c397925`](https://github.com/ljharb/Object.values/commit/c3979252140c24514aeebf3d452b422528e36349)
+- [Deps] update `es-abstract` [`f98d0da`](https://github.com/ljharb/Object.values/commit/f98d0da2035bf8396b2544f2e2ac02aec766d36f)
+- [Robustness] use a call-bound `Array.prototype.push` [`72a3213`](https://github.com/ljharb/Object.values/commit/72a32138e91a9a7b3a828fa1f8f02fe361097c51)
+- [meta] npmignore coverage output [`3b0433f`](https://github.com/ljharb/Object.values/commit/3b0433fe3025cb079b0de2373a0a9cfd2e0777b5)
+
 ## [v1.1.4](https://github.com/ljharb/Object.values/compare/v1.1.3...v1.1.4) - 2021-05-26
 
 ### Commits

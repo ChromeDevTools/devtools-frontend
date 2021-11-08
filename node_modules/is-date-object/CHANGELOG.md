@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.5](https://github.com/inspect-js/is-date-object/compare/v1.0.4...v1.0.5) - 2021-08-05
+
+### Commits
+
+- [meta] remove `.jscs.json` [`31c731c`](https://github.com/inspect-js/is-date-object/commit/31c731c5efc5b1b86e6426d904373dc6225b929f)
+- [Fix] use `has-tostringtag` to behave correctly in the presence of symbol shams [`17a6df4`](https://github.com/inspect-js/is-date-object/commit/17a6df4a3ab9bcb1395a638ced14f571f9549427)
+- [Dev Deps] update `eslint`, `auto-changelog`, `tape` [`79db3af`](https://github.com/inspect-js/is-date-object/commit/79db3af1a745042a0a11e03c7dd7db910b5e0d01)
+
 ## [v1.0.4](https://github.com/inspect-js/is-date-object/compare/v1.0.3...v1.0.4) - 2021-05-07
 
 ### Commits

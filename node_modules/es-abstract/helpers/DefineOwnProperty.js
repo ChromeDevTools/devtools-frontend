@@ -13,6 +13,12 @@ if ($defineProperty) {
 	}
 }
 
+// node v0.6 has a bug where array lengths can be Set but not Defined
+var hasArrayLengthDefineBug = Object.defineProperty && Object.defineProperty([], 'length', { value: 1 }).length === 0;
+
+// eslint-disable-next-line global-require
+var isArray = hasArrayLengthDefineBug && require('../2020/IsArray'); // this does not depend on any other AOs.
+
 var callBound = require('call-bind/callBound');
 
 var $isEnumerable = callBound('Object.prototype.propertyIsEnumerable');
@@ -40,6 +46,18 @@ module.exports = function DefineOwnProperty(IsDataDescriptor, SameValue, FromPro
 		O[P] = V; // will use [[Define]]
 		return SameValue(O[P], V);
 	}
+	if (
+		hasArrayLengthDefineBug
+		&& P === 'length'
+		&& '[[Value]]' in desc
+		&& isArray(O)
+		&& O.length !== desc['[[Value]]']
+	) {
+		// eslint-disable-next-line no-param-reassign
+		O.length = desc['[[Value]]'];
+		return O.length === desc['[[Value]]'];
+	}
+
 	$defineProperty(O, P, FromPropertyDescriptor(desc));
 	return true;
 };

@@ -6,7 +6,7 @@ var has = require('has');
 
 var $TypeError = GetIntrinsic('%TypeError%');
 
-var getSymbolDescription = require('../helpers/getSymbolDescription');
+var getSymbolDescription = require('get-symbol-description');
 
 var DefinePropertyOrThrow = require('./DefinePropertyOrThrow');
 var IsExtensible = require('./IsExtensible');

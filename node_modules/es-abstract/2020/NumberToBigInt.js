@@ -4,6 +4,7 @@ var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
 var $RangeError = GetIntrinsic('%RangeError%');
+var $SyntaxError = GetIntrinsic('%SyntaxError%');
 var $TypeError = GetIntrinsic('%TypeError%');
 
 var IsInteger = require('./IsInteger');
@@ -17,6 +18,9 @@ module.exports = function NumberToBigInt(number) {
 	}
 	if (!IsInteger(number)) {
 		throw new $RangeError('The number ' + number + ' cannot be converted to a BigInt because it is not an integer');
+	}
+	if (!$BigInt) {
+		throw new $SyntaxError('BigInts are not supported in this environment');
 	}
 	return $BigInt(number);
 };

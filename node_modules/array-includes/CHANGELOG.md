@@ -1,3 +1,14 @@
+3.1.4 / 2021-10-04
+=================
+  * [Robustness] avoid a runtime `Math.max` call
+  * [readme] add github actions/codecov badges
+  * [readme] fix repo URLs; remove travis badge
+  * [Deps] update `es-abstract`, `is-string`
+  * [meta] use `prepublishOnly` script for npm 7+
+  * [actions] update workflows
+  * [actions] use `node/install` instead of `node/run`; use `codecov` action
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `aud`, `tape`
+
 3.1.3 / 2021-02-20
 =================
   * [Deps] update `call-bind`, `es-abstract`, `get-intrinsic`

@@ -33,7 +33,7 @@ module.exports = function FromPropertyDescriptor(Desc) {
 			enumerable: !!Desc['[[Enumerable]]'],
 			configurable: !!Desc['[[Configurable]]']
 		};
-	} else {
-		throw new $TypeError('FromPropertyDescriptor must be called with a fully populated Property Descriptor');
 	}
+	throw new $TypeError('FromPropertyDescriptor must be called with a fully populated Property Descriptor');
+
 };

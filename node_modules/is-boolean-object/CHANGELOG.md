@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.2](https://github.com/inspect-js/is-boolean-object/compare/v1.1.1...v1.1.2) - 2021-08-05
+
+### Commits
+
+- [Refactor] use `has-tostringtag` to behave correctly in the presence of symbol shams [`6d319ea`](https://github.com/inspect-js/is-boolean-object/commit/6d319eac0ba237f7ba440a1fc4b32d007b1b0cf3)
+- [Dev Deps] update `auto-changelog`, `core-js`, `eslint`, `tape` [`4f85bef`](https://github.com/inspect-js/is-boolean-object/commit/4f85bef244f8fdd9ab99db0afe0b8fa00c853709)
+
 ## [v1.1.1](https://github.com/inspect-js/is-boolean-object/compare/v1.1.0...v1.1.1) - 2021-05-07
 
 ### Commits

@@ -95,6 +95,12 @@ h1 {
   margin-bottom: 24px;
 }
 
+.feedback-prompt .devtools-link {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .resources {
   display: flex;
   flex-direction: row;
@@ -125,7 +131,7 @@ h1 {
   font-weight: bold;
 }
 
-.resources a {
+.resources .devtools-link {
   font-size: 14px;
   line-height: 22px;
   letter-spacing: 0.04em;

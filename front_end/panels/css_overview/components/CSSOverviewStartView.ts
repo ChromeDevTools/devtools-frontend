@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as Legacy from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
@@ -76,14 +77,12 @@ export class OverviewStartRequestedEvent extends Event {
 export class CSSOverviewStartView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-overview-start-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #feedbackLink: HTMLAnchorElement;
+  #feedbackLink: HTMLElement;
 
   constructor() {
     super();
-    this.#feedbackLink = document.createElement('a');
-    this.#feedbackLink.href = FEEDBACK_LINK;
-    this.#feedbackLink.target = '_blank';
-    this.#feedbackLink.innerText = i18nString(UIStrings.feedbackInline);
+    this.#feedbackLink =
+        Legacy.XLink.XLink.create(FEEDBACK_LINK, i18nString(UIStrings.feedbackInline), 'devtools-link');
   }
 
   connectedCallback(): void {
@@ -106,7 +105,6 @@ export class CSSOverviewStartView extends HTMLElement {
   private render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
     render(html`
       <div class="css-overview-start-view">
         <h1 class="summary-header">${i18nString(UIStrings.identifyCSSImprovements)}</h1>
@@ -144,11 +142,11 @@ export class CSSOverviewStartView extends HTMLElement {
             </div>
             <div>
               <h1 class="video-doc-header">${i18nString(UIStrings.videoAndDocumentation)}</h1>
-              <a href=${DOC_LINK} target="_blank">${i18nString(UIStrings.quickStartWithCSSOverview)}</a>
+              <x-link class="devtools-link" href=${DOC_LINK}>${i18nString(UIStrings.quickStartWithCSSOverview)}</x-link>
             </div>
           </div>
         </section>
-        <a class="feedback-standalone" href=${FEEDBACK_LINK} target="_blank">${i18nString(UIStrings.feedbackStandalone)}</a>
+        <x-link class="feedback-standalone" href=${FEEDBACK_LINK}>${i18nString(UIStrings.feedbackStandalone)}</x-link>
       </div>
     `, this.#shadow, {
       host: this,

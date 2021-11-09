@@ -32,6 +32,16 @@ primaryButton.innerText = 'Click me';
 primaryButton.onclick = () => alert('clicked');
 appendButton(primaryButton);
 
+// Primary (forced active)
+const forcedActive = new Buttons.Button.Button();
+forcedActive.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  active: true,
+};
+forcedActive.innerText = 'Forced active';
+forcedActive.onclick = () => alert('clicked');
+appendButton(forcedActive);
+
 // Secondary
 const secondaryButton = new Buttons.Button.Button();
 secondaryButton.innerText = 'Click me';

@@ -80,6 +80,7 @@ button.primary:hover {
   border: 1px solid var(--color-button-primary-background-hovering);
 }
 
+button.primary.active,
 button.primary:active {
   background: var(--color-button-primary-background-pressed);
   border: 1px solid var(--color-button-primary-background-pressed);
@@ -103,6 +104,7 @@ button.secondary:hover {
   background: var(--color-button-secondary-background-hovering);
 }
 
+button.secondary.active,
 button.secondary:active {
   background: var(--color-button-secondary-background-pressed);
   border: 1px solid var(--color-button-secondary-background-pressed);
@@ -120,6 +122,7 @@ button.secondary:disabled:hover {
   cursor: not-allowed;
 }
 
+button.secondary.active:focus-visible,
 button.secondary:active:focus-visible {
   border: 1px solid var(--color-button-secondary-background-pressed);
 }
@@ -128,6 +131,7 @@ button.toolbar:hover {
   background-color: var(--color-button-secondary-background-hovering);
 }
 
+button.toolbar.active,
 button.toolbar:active {
   background-color: var(--color-button-secondary-background-pressed);
 }

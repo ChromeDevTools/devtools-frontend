@@ -30,6 +30,7 @@ interface ButtonState {
   variant?: Variant;
   size?: Size;
   disabled: boolean;
+  active: boolean;
 }
 
 export type ButtonData = {
@@ -37,11 +38,13 @@ export type ButtonData = {
   iconUrl: string,
   size?: Size,
   disabled?: boolean,
+  active?: boolean,
 }|{
   variant: Variant.PRIMARY | Variant.SECONDARY,
   iconUrl?: string,
   size?: Size,
   disabled?: boolean,
+  active?: boolean,
 };
 
 export class Button extends HTMLElement {
@@ -52,6 +55,7 @@ export class Button extends HTMLElement {
   private readonly props: ButtonState = {
     size: Size.MEDIUM,
     disabled: false,
+    active: false,
   };
   private isEmpty = true;
 
@@ -69,6 +73,7 @@ export class Button extends HTMLElement {
     this.props.variant = data.variant;
     this.props.iconUrl = data.iconUrl;
     this.props.size = data.size || Size.MEDIUM;
+    this.props.active = Boolean(data.active);
     this.setDisabledProperty(data.disabled || false);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
@@ -90,6 +95,11 @@ export class Button extends HTMLElement {
 
   set disabled(disabled: boolean) {
     this.setDisabledProperty(disabled);
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+  }
+
+  set active(active: boolean) {
+    this.props.active = active;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
 
@@ -140,6 +150,7 @@ export class Button extends HTMLElement {
       'text-with-icon': Boolean(this.props.iconUrl) && !this.isEmpty,
       'only-icon': Boolean(this.props.iconUrl) && this.isEmpty,
       small: Boolean(this.props.size === Size.SMALL),
+      active: this.props.active,
     };
     // clang-format off
     LitHtml.render(

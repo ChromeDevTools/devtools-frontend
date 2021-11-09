@@ -16,6 +16,6 @@
     "chunk/php.js",
     "chunk/python.js",
     "chunk/wast.js",
-    "chunk/xml.js",
+    "chunk/xml.js"
   ]
 }

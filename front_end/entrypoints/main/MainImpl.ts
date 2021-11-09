@@ -273,8 +273,8 @@ export class MainImpl {
         'keyboardShortcutEditor', 'Enable keyboard shortcut editor', true,
         'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
 
-    // Back-forward cache
-    Root.Runtime.experiments.register('bfcacheDebugging', 'Enable back-forward cache debugging support');
+    // Back-Forward Cache
+    Root.Runtime.experiments.register('bfcacheDebugging', 'Enable Back-Forward Cache debugging support');
 
     // Timeline
     Root.Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');

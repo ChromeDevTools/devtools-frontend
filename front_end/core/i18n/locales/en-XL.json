@@ -2052,7 +2052,7 @@
     "message": "Ŝt́ôṕ r̂éĉór̂d́îńĝ év̂én̂t́ŝ"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé"
+    "message": "B̂áĉḱ-F̂ór̂ẃâŕd̂ Ćâćĥé"
   },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Ĉáĉh́ê Śt̂ór̂áĝé"
@@ -2688,10 +2688,10 @@
     "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŵéb̂X́R̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé"
+    "message": "B̂áĉḱ-F̂ór̂ẃâŕd̂ Ćâćĥé"
   },
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "B̂áĉḱ-f̂ór̂ẃâŕd̂ Ćâćĥé Ŝt́ât́ûś"
+    "message": "B̂áĉḱ-F̂ór̂ẃâŕd̂ Ćâćĥé Ŝt́ât́ûś"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "N̂ót̂ Áĉt́îón̂áb̂ĺê"
@@ -2703,16 +2703,16 @@
     "message": "M̂áîń F̂ŕâḿê"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "N̂ór̂ḿâĺ n̂áv̂íĝát̂íôń (N̂ót̂ ŕêśt̂ór̂éd̂ f́r̂óm̂ b́âćk̂-f́ôŕŵár̂d́ ĉáĉh́ê)"
+    "message": "N̂ór̂ḿâĺ n̂áv̂íĝát̂íôń (N̂ót̂ ŕêśt̂ór̂éd̂ f́r̂óm̂ B́âćk̂-F́ôŕŵár̂d́ Ĉáĉh́ê)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Âćt̂íôńâb́l̂é"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "T̂h́êśê ŕêáŝón̂ś âŕê áĉt́îón̂áb̂ĺê í.ê. t́ĥéŷ ćâń b̂é ĉĺêán̂éd̂ úp̂ t́ô ḿâḱê t́ĥé p̂áĝé êĺîǵîb́l̂é f̂ór̂ b́âćk̂-f́ôŕŵár̂d́ ĉáĉh́ê."
+    "message": "T̂h́êśê ŕêáŝón̂ś âŕê áĉt́îón̂áb̂ĺê í.ê. t́ĥéŷ ćâń b̂é ĉĺêán̂éd̂ úp̂ t́ô ḿâḱê t́ĥé p̂áĝé êĺîǵîb́l̂é f̂ór̂ B́âćk̂-F́ôŕŵár̂d́ Ĉáĉh́ê."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "R̂éŝt́ôŕêd́ f̂ŕôḿ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé"
+    "message": "R̂éŝt́ôŕêd́ f̂ŕôḿ B̂áĉḱ-F̂ór̂ẃâŕd̂ Ćâćĥé"
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
     "message": "R̂ún̂ T́êśt̂"
@@ -2721,7 +2721,7 @@
     "message": "P̂én̂d́îńĝ Śûṕp̂ór̂t́"
   },
   "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Ĉh́r̂óm̂é ŝúp̂ṕôŕt̂ f́ôŕ t̂h́êśê ŕêáŝón̂ś îś p̂én̂d́îńĝ í.ê. t́ĥéŷ ẃîĺl̂ ńôt́ p̂ŕêv́êńt̂ t́ĥé p̂áĝé f̂ŕôḿ b̂éîńĝ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ-f̂ór̂ẃâŕd̂ ćâćĥé îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é."
+    "message": "Ĉh́r̂óm̂é ŝúp̂ṕôŕt̂ f́ôŕ t̂h́êśê ŕêáŝón̂ś îś p̂én̂d́îńĝ í.ê. t́ĥéŷ ẃîĺl̂ ńôt́ p̂ŕêv́êńt̂ t́ĥé p̂áĝé f̂ŕôḿ b̂éîńĝ él̂íĝíb̂ĺê f́ôŕ B̂áĉḱ-F̂ór̂ẃâŕd̂ Ćâćĥé îń â f́ût́ûŕê v́êŕŝíôń ôf́ Ĉh́r̂óm̂é."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ûńâv́âíl̂áb̂ĺê"

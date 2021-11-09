@@ -5387,8 +5387,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Unhide all"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Hide all current {PH1}"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Hide all current Breaking Changes"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Hide all current Improvements"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Hide all current Page Errors"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP Violations"

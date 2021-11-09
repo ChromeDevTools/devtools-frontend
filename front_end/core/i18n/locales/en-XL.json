@@ -5387,8 +5387,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Ûńĥíd̂é âĺl̂"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Ĥíd̂é âĺl̂ ćûŕr̂én̂t́ {PH1}"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Ĥíd̂é âĺl̂ ćûŕr̂én̂t́ B̂ŕêák̂ín̂ǵ Ĉh́âńĝéŝ"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Ĥíd̂é âĺl̂ ćûŕr̂én̂t́ Îḿp̂ŕôv́êḿêńt̂ś"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Ĥíd̂é âĺl̂ ćûŕr̂én̂t́ P̂áĝé Êŕr̂ór̂ś"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ĈŚP̂ V́îól̂át̂íôńŝ"

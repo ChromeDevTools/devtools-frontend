@@ -14,10 +14,17 @@ import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
-    * @description Menu entry for hiding all current issues belonging to a particular kind.
-    * @example {Page Errors} PH1
+    * @description Menu entry for hiding all current Page Errors.
     */
-  hideAllCurrent: 'Hide all current {PH1}',
+  hideAllCurrentPageErrors: 'Hide all current Page Errors',
+  /**
+    * @description Menu entry for hiding all current Breaking Changes.
+    */
+  hideAllCurrentBreakingChanges: 'Hide all current Breaking Changes',
+  /**
+    * @description Menu entry for hiding all current Page Errors.
+    */
+  hideAllCurrentImprovements: 'Hide all current Improvements',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -70,6 +77,17 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     return this.kind;
   }
 
+  getHideAllCurrentKindString(): Common.UIString.LocalizedString {
+    switch (this.kind) {
+      case IssuesManager.Issue.IssueKind.PageError:
+        return i18nString(UIStrings.hideAllCurrentPageErrors);
+      case IssuesManager.Issue.IssueKind.Improvement:
+        return i18nString(UIStrings.hideAllCurrentImprovements);
+      case IssuesManager.Issue.IssueKind.BreakingChange:
+        return i18nString(UIStrings.hideAllCurrentBreakingChanges);
+    }
+  }
+
   private appendHeader(): void {
     const header = document.createElement('div');
     header.classList.add('header');
@@ -93,7 +111,7 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
     hideAvailableIssuesBtn.classList.add('hide-available-issues');
     hideAvailableIssuesBtn.data = {
-      menuItemLabel: i18nString(UIStrings.hideAllCurrent, {PH1: IssuesManager.Issue.getIssueKindName(this.kind)}),
+      menuItemLabel: this.getHideAllCurrentKindString(),
       menuItemAction: (): void => {
         const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
         const values = setting.get();

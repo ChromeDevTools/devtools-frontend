@@ -148,7 +148,10 @@ export class MainImpl {
     this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
 
-    Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SYNC_SETTINGS)) {
+      Host.userMetrics.syncSetting(
+          Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
+    }
 
     this.createAppUI();
   }

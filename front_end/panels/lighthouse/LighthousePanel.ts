@@ -263,7 +263,8 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const reportContainer = this.auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
-    const dom = new LighthouseReport.DOM(this.auditResultsElement.ownerDocument as Document);
+    // @ts-ignore: Second argument will soon be required.
+    const dom = new LighthouseReport.DOM(this.auditResultsElement.ownerDocument as Document, reportContainer);
     const renderer = new LighthouseReportRenderer(dom) as LighthouseReport.ReportRenderer;
 
     const el = renderer.renderReport(lighthouseResult, reportContainer);

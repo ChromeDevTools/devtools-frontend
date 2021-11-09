@@ -221,8 +221,9 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
   }
 
   getDocument(): Document {
-    return this._document;
+    return this._dom.document();
   }
+
   resetUIState(): void {
     this._resetUIState();
   }

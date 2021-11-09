@@ -8,6 +8,7 @@ import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 
 import syncSectionStyles from './syncSection.css.js';
 
@@ -81,21 +82,31 @@ export class SyncSection extends HTMLElement {
   }
 }
 
+/* x-link doesn't work with custom click/keydown handlers */
+/* eslint-disable rulesdir/ban_a_tags_in_lit_html */
+
 function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): LitHtml.TemplateResult {
   if (!syncInfo.isSyncActive) {
-    return LitHtml.html`
-      <span class="warning">
-        ${i18nString(UIStrings.syncDisabled)} <x-link href="chrome://settings/syncSetup" class="link">${
-        i18nString(UIStrings.settings)}</x-link>
-      </span>`;
-  }
-  if (!syncInfo.arePreferencesSynced) {
+    const link = 'chrome://settings/syncSetup';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
       <span class="warning">
-        ${i18nString(UIStrings.preferencesSyncDisabled)} <x-link href="chrome://settings/syncSetup/advanced" class="link">${
-        i18nString(UIStrings.settings)}</x-link>
+        ${i18nString(UIStrings.syncDisabled)} <a href="${link}" class="link" target="_blank"
+          @click=${(e: Event): void => openSettingsTab(link, e)}
+          @keydown=${(e: Event): void => openSettingsTab(link, e)}>${i18nString(UIStrings.settings)}</x-link>
+      </span>`;
+    // clang-format on
+  }
+  if (!syncInfo.arePreferencesSynced) {
+    const link = 'chrome://settings/syncSetup/advanced';
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <span class="warning">
+        ${i18nString(UIStrings.preferencesSyncDisabled)} <a href="${link}" class="link" target="_blank"
+          @click=${(e: Event): void => openSettingsTab(link, e)}
+          @keydown=${(e: Event): void => openSettingsTab(link, e)}>${i18nString(UIStrings.settings)}</x-link>
       </span>`;
     // clang-format on
   }
@@ -107,6 +118,16 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
         <span>${syncInfo.accountEmail}</span>
       </div>
     </div>`;
+}
+
+// Navigating to a chrome:// link via a normal anchor doesn't work, so we "navigate"
+// there using CDP.
+function openSettingsTab(url: string, event: Event): void {
+  if (event.type === 'click' || (event.type === 'keydown' && self.isEnterOrSpaceKey(event))) {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
+    mainTarget && mainTarget.targetAgent().invoke_createTarget({url});
+    event.consume(true);
+  }
 }
 
 ComponentHelpers.CustomElements.defineComponent('devtools-sync-section', SyncSection);

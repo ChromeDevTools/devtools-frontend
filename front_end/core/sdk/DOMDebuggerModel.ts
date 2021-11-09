@@ -830,7 +830,24 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     this.createEventListenerBreakpoints(
         i18nString(UIStrings.keyboard), ['keydown', 'keyup', 'keypress', 'input'], ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.load), ['load', 'beforeunload', 'unload', 'abort', 'error', 'hashchange', 'popstate'],
+        i18nString(UIStrings.load),
+        [
+          'load',
+          'beforeunload',
+          'unload',
+          'abort',
+          'error',
+          'hashchange',
+          'popstate',
+          'navigate',
+          'navigatesuccess',
+          'navigateerror',
+          'currentchange',
+          'navigateto',
+          'navigatefrom',
+          'finish',
+          'dispose',
+        ],
         ['*']);
     this.createEventListenerBreakpoints(
         i18nString(UIStrings.mouse),

@@ -752,6 +752,7 @@ function filterLocalesForSettings(): string[] {
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
   settingName: 'language',
   settingType: Common.Settings.SettingType.ENUM,
   title: i18nLazyString(UIStrings.language),

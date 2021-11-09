@@ -68,7 +68,8 @@ describe('The Console Tab', async () => {
     ]);
   });
 
-  it('shows built-in objects', async () => {
+  // TODO(chromium:1268293) Test disabled to unblock rolling new chrome. To be enabled once the roll passes.
+  it.skip('[crbug.com/1268293] shows built-in objects', async () => {
     const messages = await getConsoleMessages('built-ins', false, () => waitForConsoleMessagesToBeNonEmpty(29));
 
     assert.deepEqual(messages, [
@@ -81,10 +82,10 @@ describe('The Console Tab', async () => {
       'ƒ () {\n    return 2;\n  }',
       'ƒ ( /**/ foo/**/, /*/**/bar,\n  /**/baz) {}',
       'Arguments(2)\xA0[1, \'2\', callee: (...), Symbol(Symbol.iterator): ƒ]',
-      'Uint8Array\xA0[3, buffer: ArrayBuffer(1), byteLength: 1, byteOffset: 0, length: 1]',
+      'Uint8Array\xA0[3, buffer: ArrayBuffer(1), byteLength: 1, byteOffset: 0, length: 1, Symbol(Symbol.toStringTag): \'Uint8Array\']',
       'Uint8Array(400)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]',
       'Uint8Array(400000000)\xA0[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]',
-      'Uint16Array(3)\xA0[1, 2, 3, buffer: ArrayBuffer(6), byteLength: 6, byteOffset: 0, length: 3]',
+      'Uint16Array(3)\xA0[1, 2, 3, buffer: ArrayBuffer(6), byteLength: 6, byteOffset: 0, length: 3, Symbol(Symbol.toStringTag): \'Uint16Array\']',
       'Promise\xA0{<rejected>: -0}',
       'Promise\xA0{<fulfilled>: 1}',
       'Promise\xA0{<pending>}',

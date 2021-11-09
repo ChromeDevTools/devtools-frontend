@@ -47,15 +47,15 @@ Issues in the untriaged queue should receive a meaningful response within a busi
 - Close issues as `Archived` that are valid, but it seems unlikely that we will get there anytime soon.
 - Move issues out of `Platform>DevTools` if they are not DevTools issues (but just reported via the menu item in DevTools), put on the `Hotlist-DevTools-Triaged` and leave the `Untriaged` status as is.
 - Assign regression bugs with bisects to individuals directly and set the status to `Assigned`.  
-  - Put proper `Platform>DevTools>XXX` component(s) on the issue and do an initial check-in regarding the priority.
-  - Put one of the following labels on it and set the status to "Available":
+- Put proper `Platform>DevTools>XXX` component(s) on the issue and do an initial check-in regarding the priority.
+- Put one of the following labels on it and set the status to `Available`:
   - `Hotlist-DevTools-ProductReview` if it's controversial or clear that consensus needs to be built first.
   - `Hotlist-DevTools-BrowserAutomation-Backlog` if it's an issue related to ChromeDriver or puppeteer.
   - `Hotlist-DevTools-Debugging-Backlog` if it's a debugging issue.
   - `Hotlist-DevTools-DesignAccessibility-Backlog` if it's a design or accessibility issue.
   - `Hotlist-DevTools-Performance-Backlog` if the issue is related to our performance tooling (i.e. Performance panel, Lighthouse).
   - `Hotlist-DevTools-Backlog` if it's a general DevTools issue that is not specific to one of the core areas.
-- Also remember to put the Needs-UX label on it, if help from a designer is likely to be required.
+- Also remember to put the `Needs-UX` label on it, if help from a designer is likely to be required.
 
 ### Setting Assigned or Available
 

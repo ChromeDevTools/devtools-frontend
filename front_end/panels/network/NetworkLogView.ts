@@ -1549,6 +1549,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         footerSection.appendItem(i18nString(UIStrings.copyAllAsCurlBash), this.copyAllCurlCommand.bind(this, 'unix'));
       } else {
         footerSection.appendItem(
+            i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request), disableIfBlob);
+        footerSection.appendItem(
             i18nString(UIStrings.copyAsFetch), this.copyFetchCall.bind(this, request, FetchStyle.Browser),
             disableIfBlob);
         footerSection.appendItem(
@@ -1556,6 +1558,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
             disableIfBlob);
         footerSection.appendItem(
             i18nString(UIStrings.copyAsCurl), this.copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
+        footerSection.appendItem(i18nString(UIStrings.copyAllAsPowershell), this.copyAllPowerShellCommand.bind(this));
         footerSection.appendItem(
             i18nString(UIStrings.copyAllAsFetch), this.copyAllFetchCall.bind(this, FetchStyle.Browser));
         footerSection.appendItem(

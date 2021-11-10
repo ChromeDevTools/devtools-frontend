@@ -446,7 +446,7 @@ export class AXBreadcrumb {
       }
     }
 
-    if (this.axNodeInternal.hasOnlyUnloadedChildren()) {
+    if (!this.axNodeInternal.ignored() && this.axNodeInternal.hasOnlyUnloadedChildren()) {
       this.nodeElementInternal.classList.add('children-unloaded');
       UI.ARIAUtils.setExpanded(this.nodeElementInternal, false);
     }

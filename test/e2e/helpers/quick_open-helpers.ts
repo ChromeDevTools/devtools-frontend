@@ -69,6 +69,17 @@ export async function getAvailableSnippets() {
   return snippets;
 }
 
+export async function getMenuItemAtPosition(position: number) {
+  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
+  await waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
+  const itemsHandles = await $$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
+  const item = itemsHandles[position];
+  if (!item) {
+    assert.fail(`Quick open: could not find item at position: ${position}.`);
+  }
+  return item;
+}
+
 export async function getMenuItemTitleAtPosition(position: number) {
   const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
   await waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);

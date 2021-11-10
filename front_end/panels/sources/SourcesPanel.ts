@@ -424,7 +424,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   private debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     const debuggerModel = event.data;
     const details = debuggerModel.debuggerPausedDetails();
-    if (!this.pausedInternal) {
+    if (!this.pausedInternal &&
+        Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
       this.setAsCurrentPanel();
     }
 
@@ -986,6 +987,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private revealDebuggerSidebar(): void {
+    if (!Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
+      return;
+    }
     this.setAsCurrentPanel();
     this.splitWidget.showBoth(true);
   }
@@ -1083,10 +1087,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   setAsCurrentPanel(): Promise<void> {
-    if (Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
-      return UI.ViewManager.ViewManager.instance().showView('sources');
-    }
-    return Promise.resolve();
+    return UI.ViewManager.ViewManager.instance().showView('sources');
   }
 
   private extensionSidebarPaneAdded(
@@ -1207,6 +1208,9 @@ export class DebuggerPausedDetailsRevealer implements Common.Revealer.Revealer {
   }
 
   reveal(_object: Object): Promise<void> {
+    if (!Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
+      return Promise.resolve();
+    }
     return SourcesPanel.instance().setAsCurrentPanel();
   }
 }

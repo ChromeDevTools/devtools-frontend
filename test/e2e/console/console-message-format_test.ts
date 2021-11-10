@@ -68,8 +68,7 @@ describe('The Console Tab', async () => {
     ]);
   });
 
-  // TODO(chromium:1268293) Test disabled to unblock rolling new chrome. To be enabled once the roll passes.
-  it.skip('[crbug.com/1268293] shows built-in objects', async () => {
+  it('shows built-in objects', async () => {
     const messages = await getConsoleMessages('built-ins', false, () => waitForConsoleMessagesToBeNonEmpty(29));
 
     assert.deepEqual(messages, [

@@ -141,6 +141,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.NONE, 'customNetworkConditions', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(
         Common.Settings.SettingCategory.APPEARANCE, 'uiTheme', 'systemPreferred', Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.APPEARANCE, 'language', 'en-US', Common.Settings.SettingType.ENUM),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

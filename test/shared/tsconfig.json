@@ -12,5 +12,5 @@
       "path": "../conductor"
     }
   ],
-  "extends": "../../config/typescript/tsconfig.base.json",
+  "extends": "../../config/typescript/tsconfig.base.json"
 }

@@ -42,6 +42,7 @@
   padding: 3px 7px 3px 8px;
   margin: 0 13px 0 0;
   white-space: nowrap;
+  align-items: center;
 }
 
 .soft-context-menu-item devtools-icon {

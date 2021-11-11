@@ -114,6 +114,14 @@ ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
 };
 
 /**
+ * @param {!Element} messageElement
+ * @return {string}
+ */
+ConsoleTestRunner.prepareConsoleMessageTextTrimmed = function(messageElement) {
+  return ConsoleTestRunner.prepareConsoleMessageText(messageElement).replace(/[ ]+/g, ' ');
+};
+
+/**
  * @param {!Console.ConsoleViewMessage} viewMessage
  * @param {boolean} forceInvalidate
  * @param {!Array<string>} results
@@ -334,15 +342,19 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
 
 /**
  * @param {boolean=} sortMessages
+ * @param {boolean=} trimMessages
  */
-ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages) {
+ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages, trimMessages) {
   const result = [];
   const messageViews = Console.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     const contentElement = messageViews[i].contentElement();
     await TestRunner.waitForPendingLiveLocationUpdates();
-    const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
+    let messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
+    if (trimMessages) {
+      messageText = messageText.replace(/[ ]+/g, ' ');
+    }
     result.push(messageText + ' ' + element.getAttribute('class') + ' > ' + contentElement.getAttribute('class'));
   }
   if (sortMessages) {

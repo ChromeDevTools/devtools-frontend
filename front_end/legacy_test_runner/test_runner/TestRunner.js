@@ -397,6 +397,14 @@ export function textContentWithLineBreaks(node) {
  * @param {!Node} node
  * @return {string}
  */
+export function textContentWithLineBreaksTrimmed(node) {
+  return textContentWithLineBreaks(node).replace(/[ ]+/g, ' ');
+}
+
+/**
+ * @param {!Node} node
+ * @return {string}
+ */
 export function textContentWithoutStyles(node) {
   let buffer = '';
   let currentNode = node;
@@ -1459,6 +1467,7 @@ TestRunner.showPanel = showPanel;
 TestRunner.createKeyEvent = createKeyEvent;
 TestRunner.safeWrap = safeWrap;
 TestRunner.textContentWithLineBreaks = textContentWithLineBreaks;
+TestRunner.textContentWithLineBreaksTrimmed = textContentWithLineBreaksTrimmed;
 TestRunner.textContentWithoutStyles = textContentWithoutStyles;
 TestRunner.evaluateInPagePromise = evaluateInPagePromise;
 TestRunner.callFunctionInPageAsync = callFunctionInPageAsync;

@@ -40,5 +40,6 @@ ts_library("components") {
     "../../helpers",
     "./buttons",
     "./text_editor",
+    "panel_feedback",
   ]
 }

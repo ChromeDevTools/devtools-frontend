@@ -11453,6 +11453,18 @@
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Ôt́ĥér̂"
   },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "P̂ŕêv́îéŵ f́êát̂úr̂é"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Ôúr̂ t́êám̂ íŝ áĉt́îv́êĺŷ ẃôŕk̂ín̂ǵ ôń t̂h́îś f̂éât́ûŕê án̂d́ ŵé ŵóûĺd̂ ĺôv́ê t́ô ḱn̂óŵ ẃĥát̂ ýôú t̂h́îńk̂."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Ŝén̂d́ ûś ŷóûŕ f̂éêd́b̂áĉḱ."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "V̂íd̂éô án̂d́ d̂óĉúm̂én̂t́ât́îón̂"
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Ĉĺîćk̂ t́ô óp̂én̂ t́ĥé n̂ét̂ẃôŕk̂ ṕâńêĺ âńd̂ śĥóŵ ŕêq́ûéŝt́ f̂ór̂ ÚR̂Ĺ: {url}"
   },

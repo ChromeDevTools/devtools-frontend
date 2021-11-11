@@ -153,6 +153,9 @@ devtools_entrypoint("bundle") {
     "../components/data_grid:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
+
+    # Required for x-link
+    "../components/panel_feedback/*",
     "../components/text_editor/*",
   ]
 

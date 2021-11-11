@@ -29,6 +29,7 @@ group("docs") {
     "./markdown_image",
     "./markdown_link",
     "./markdown_view",
+    "./panel_feedback",
     "./perf_piechart",
     "./report",
     "./request_link_icon",

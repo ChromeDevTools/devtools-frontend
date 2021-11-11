@@ -11453,6 +11453,18 @@
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Other"
   },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Preview feature"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Our team is actively working on this feature and we would love to know what you think."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Send us your feedback."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Video and documentation"
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Click to open the network panel and show request for URL: {url}"
   },

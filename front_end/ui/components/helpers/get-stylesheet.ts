@@ -56,4 +56,5 @@ export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'ui/legacy/components/source_frame/jsonView.css',
   'ui/legacy/searchableView.css',
   'ui/legacy/toolbar.css',
+  'ui/legacy/inspectorViewTabbedPane.css',
 ];

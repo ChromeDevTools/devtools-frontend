@@ -346,8 +346,20 @@ export class TimelineModelImpl {
         continue;
       }
       this.legacyCurrentPage = metaEvent.args['data'] && metaEvent.args['data']['page'];
+      // COHERENT BEGIN
+      // If a thread doesn't have a name set from InspectorTracingAgent,
+      // it will be displayed with it's thread id, e.g. Thread 231321511611
+      // so we simply set the thread name to something more meaningful
+      let workedThreadCounter: number = 0;
+      // COHERENT END
       for (const thread of process.sortedThreads()) {
         let workerUrl: null = null;
+        // COHERENT BEGIN
+        if (thread.name() === "") {
+          thread.setName(i18nString(UIStrings.workerS, {PH1: workedThreadCounter}));
+          workedThreadCounter++;
+        }
+        // COHERENT END
         if (thread.name() === TimelineModelImpl.WorkerThreadName ||
             thread.name() === TimelineModelImpl.WorkerThreadNameLegacy) {
           const workerMetaEvent = metadataEvents.workers.find(e => {

@@ -12,6 +12,7 @@ devtools_module("text_editor") {
     "config.ts",
     "cursor_tooltip.ts",
     "javascript.ts",
+    "position.ts",
     "theme.ts",
   ]
 
@@ -19,6 +20,7 @@ devtools_module("text_editor") {
 
   deps = [
     "../../../core/common:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/sdk:bundle",
     "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
@@ -37,6 +39,9 @@ devtools_entrypoint("bundle") {
     "../../../third_party/codemirror.next:bundle",
   ]
 
-  visibility = [ "../../../../test/interactions/text_editor/*" ]
+  visibility = [
+    "../../../../test/interactions/text_editor/*",
+    "../../legacy/components/*",
+  ]
   visibility += default_components_visibility
 }

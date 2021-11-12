@@ -8,7 +8,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
-import {baseConfiguration, dynamicSetting} from './config.js';
+import {baseConfiguration, dynamicSetting, DynamicSetting} from './config.js';
+import {toLineColumn, toOffset} from './position.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -21,6 +22,7 @@ export class TextEditor extends HTMLElement {
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private activeEditor: CodeMirror.EditorView|undefined = undefined;
+  private dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
   private activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
   private pendingState: CodeMirror.EditorState|undefined;
 
@@ -32,15 +34,26 @@ export class TextEditor extends HTMLElement {
 
   private createEditor(): CodeMirror.EditorView {
     this.activeEditor = new CodeMirror.EditorView({
-      state: this.updateDynamicSettings(this.state),
+      state: this.state,
       parent: this.shadow,
       root: this.shadow,
+      dispatch: (tr: CodeMirror.Transaction): void => {
+        this.editor.update([tr]);
+        if (tr.reconfigured) {
+          this.ensureSettingListeners();
+        }
+      },
     });
+    this.ensureSettingListeners();
     return this.activeEditor;
   }
 
   get editor(): CodeMirror.EditorView {
     return this.activeEditor || this.createEditor();
+  }
+
+  dispatch(spec: CodeMirror.TransactionSpec): void {
+    return this.editor.dispatch(spec);
   }
 
   get state(): CodeMirror.EditorState {
@@ -65,7 +78,6 @@ export class TextEditor extends HTMLElement {
     if (!this.activeEditor) {
       this.createEditor();
     }
-    this.registerSettingHandlers();
   }
 
   disconnectedCallback(): void {
@@ -73,63 +85,94 @@ export class TextEditor extends HTMLElement {
       this.pendingState = this.activeEditor.state;
       this.activeEditor.destroy();
       this.activeEditor = undefined;
+      this.ensureSettingListeners();
     }
+  }
+
+  focus(): void {
+    if (this.activeEditor) {
+      this.activeEditor.focus();
+    }
+  }
+
+  private ensureSettingListeners(): void {
+    const dynamicSettings = this.activeEditor ? this.activeEditor.state.facet(dynamicSetting) : DynamicSetting.none;
+    if (dynamicSettings === this.dynamicSettings) {
+      return;
+    }
+    this.dynamicSettings = dynamicSettings;
+
     for (const [setting, listener] of this.activeSettingListeners) {
       setting.removeChangeListener(listener);
     }
     this.activeSettingListeners = [];
-  }
 
-  private updateDynamicSettings(state: CodeMirror.EditorState): CodeMirror.EditorState {
     const settings = Common.Settings.Settings.instance();
-    const changes = [];
-    for (const opt of state.facet(dynamicSetting)) {
-      const mustUpdate = opt.sync(state, settings.moduleSetting(opt.settingName).get());
-      if (mustUpdate) {
-        changes.push(mustUpdate);
-      }
-    }
-    return changes.length ? state.update({effects: changes}).state : state;
-  }
-
-  private registerSettingHandlers(): void {
-    const settings = Common.Settings.Settings.instance();
-    for (const opt of this.state.facet(dynamicSetting)) {
+    for (const dynamicSetting of dynamicSettings) {
       const handler = ({data}: {data: unknown}): void => {
-        const change = opt.sync(this.state, data);
+        const change = dynamicSetting.sync(this.state, data);
         if (change && this.activeEditor) {
           this.activeEditor.dispatch({effects: change});
         }
       };
-      const setting = settings.moduleSetting(opt.settingName);
+      const setting = settings.moduleSetting(dynamicSetting.settingName);
       setting.addChangeListener(handler);
       this.activeSettingListeners.push([setting, handler]);
     }
   }
 
-  revealPosition(position: number): void {
+  revealPosition(selection: CodeMirror.EditorSelection, highlight: boolean = true): void {
     const view = this.activeEditor;
     if (!view) {
       return;
     }
 
-    const line = view.state.doc.lineAt(position);
+    const line = view.state.doc.lineAt(selection.main.head);
+    const effects: CodeMirror.StateEffect<unknown>[] = [];
+    if (highlight) {
+      effects.push(
+          view.state.field(highlightState, false) ?
+              setHighlightLine.of(line.from) :
+              CodeMirror.StateEffect.appendConfig.of(highlightState.init(() => highlightDeco(line.from))));
+    }
+    const editorRect = view.scrollDOM.getBoundingClientRect();
+    const targetPos = view.coordsAtPos(selection.main.head);
+    if (!targetPos || targetPos.top < editorRect.top || targetPos.bottom > editorRect.bottom) {
+      effects.push(CodeMirror.EditorView.centerOn.of(selection.main));
+    }
+
     view.dispatch({
-      selection: CodeMirror.EditorSelection.cursor(position),
-      scrollIntoView: true,
-      effects:
-          [view.state.field(highlightState, false) ?
-               setHighlightLine.of(line.from) :
-               CodeMirror.StateEffect.appendConfig.of(highlightState.init(() => highlightDeco(line.from)))],
+      selection,
+      effects,
+      userEvent: 'select.reveal',
     });
-    const {id} = view.state.field(highlightState);
-    // Reset the highlight state if, after 2 seconds (the animation
-    // duration) it is still showing this highlight.
-    setTimeout(() => {
-      if (view.state.field(highlightState).id === id) {
-        view.dispatch({effects: setHighlightLine.of(null)});
-      }
-    }, 2000);
+    if (highlight) {
+      const {id} = view.state.field(highlightState);
+      // Reset the highlight state if, after 2 seconds (the animation
+      // duration) it is still showing this highlight.
+      setTimeout(() => {
+        if (view.state.field(highlightState).id === id) {
+          view.dispatch({effects: setHighlightLine.of(null)});
+        }
+      }, 2000);
+    }
+  }
+
+  createSelection(head: {lineNumber: number, columnNumber: number}, anchor?: {
+    lineNumber: number,
+    columnNumber: number,
+  }): CodeMirror.EditorSelection {
+    const {doc} = this.state;
+    const headPos = toOffset(doc, head);
+    return CodeMirror.EditorSelection.single(anchor ? toOffset(doc, anchor) : headPos, headPos);
+  }
+
+  toLineColumn(pos: number): {lineNumber: number, columnNumber: number} {
+    return toLineColumn(this.state.doc, pos);
+  }
+
+  toOffset(pos: {lineNumber: number, columnNumber: number}): number {
+    return toOffset(this.state.doc, pos);
   }
 }
 

@@ -142,16 +142,6 @@ export class SourceFormatter {
         await this.scriptMapping.setSourceMappingEnabled(formatData, true);
         await this.styleMapping.setSourceMappingEnabled(formatData, true);
         cacheEntry.formatData = formatData;
-
-        for (const decoration of uiSourceCode.allDecorations()) {
-          const range = decoration.range();
-          const startLocation = formattedMapping.originalToFormatted(range.startLine, range.startColumn);
-          const endLocation = formattedMapping.originalToFormatted(range.endLine, range.endColumn);
-          formattedUISourceCode.addDecoration(
-              new TextUtils.TextRange.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
-              (decoration.type() as string), decoration.data());
-        }
-
         resolve(formatData);
       } catch (e) {
         reject(e);

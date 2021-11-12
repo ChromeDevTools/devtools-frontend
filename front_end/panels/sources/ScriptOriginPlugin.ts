@@ -6,7 +6,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -27,15 +26,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScriptOriginPlugin.ts', UIStrings);
 
 export class ScriptOriginPlugin extends Plugin {
-  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  constructor(
-      textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    super();
-    this.textEditor = textEditor;
-    this.uiSourceCode = uiSourceCode;
-  }
-
   static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.contentType().hasScripts() || Boolean(ScriptOriginPlugin.script(uiSourceCode));
   }

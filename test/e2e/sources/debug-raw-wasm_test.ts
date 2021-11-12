@@ -116,7 +116,7 @@ describe('Sources Tab', async function() {
 
     await step('hover over the $var0 in line No.0x023', async () => {
       const pausedPosition = await waitForFunction(async () => {
-        const element = await $('.cm-variable-2.cm-execution-line-tail');
+        const element = await $('.cm-executionLine .token-variable');
         if (element && await element.evaluate(e => e.isConnected)) {
           return element;
         }
@@ -136,15 +136,15 @@ describe('Sources Tab', async function() {
     const {frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html');
-    assert.deepEqual(await getNonBreakableLines(frontend), [
+    assert.deepEqual(await getNonBreakableLines(), [
       0x000,
       0x020,
       0x04b,
     ]);
-    assert.deepEqual(await getBreakpointDecorators(frontend), []);
+    assert.deepEqual(await getBreakpointDecorators(), []);
     // Line 3 is breakable.
     await addBreakpointForLine(frontend, '0x023');
-    assert.deepEqual(await getBreakpointDecorators(frontend), [0x023]);
+    assert.deepEqual(await getBreakpointDecorators(), [0x023]);
   });
 
   it('is able to step with state', async () => {
@@ -454,7 +454,7 @@ describe('Raw-Wasm', async () => {
     await switchToCallFrame(2);
 
     // Wasm code for function call should be highlighted
-    const codeLine = await waitFor('.cm-execution-line pre');
+    const codeLine = await waitFor('.cm-executionLine');
     const codeText = await codeLine.evaluate(n => n.textContent);
 
     assert.strictEqual(codeText, '    call $bar');

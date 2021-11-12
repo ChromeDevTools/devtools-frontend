@@ -20,12 +20,6 @@ Sources.BreakpointEditDialog._LogpointSuffix = SourcesModule.BreakpointEditDialo
 Sources.BreakpointEditDialog.BreakpointType = SourcesModule.BreakpointEditDialog.BreakpointType;
 
 /** @constructor */
-Sources.CSSPlugin = SourcesModule.CSSPlugin.CSSPlugin;
-
-Sources.CSSPlugin.maxSwatchProcessingLength = SourcesModule.CSSPlugin.maxSwatchProcessingLength;
-Sources.CSSPlugin.SwatchBookmark = SourcesModule.CSSPlugin.SwatchBookmark;
-
-/** @constructor */
 Sources.CallStackSidebarPane = SourcesModule.CallStackSidebarPane.CallStackSidebarPane;
 
 Sources.CallStackSidebarPane._elementSymbol = SourcesModule.CallStackSidebarPane.elementSymbol;

@@ -73,7 +73,7 @@ describe('The row\'s icon bucket', async function() {
 
   it('should display error messages', async () => {
     await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
-    const iconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
+    const iconComponents = await getIconComponents('cm-messageIcon-error');
     const messages: string[] = [];
     const expectedMessages = [
       '[Report Only] Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
@@ -89,7 +89,7 @@ describe('The row\'s icon bucket', async function() {
 
   it('should use the correct error icon', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
-    const bucketIconComponents = await getIconComponents('text-editor-line-decoration-icon-error');
+    const bucketIconComponents = await getIconComponents('cm-messageIcon-error');
     for (const bucketIconComponent of bucketIconComponents) {
       await bucketIconComponent.hover();
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
@@ -103,7 +103,7 @@ describe('The row\'s icon bucket', async function() {
 
   it('should display issue messages', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
-    const issueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+    const issueIconComponents = await getIconComponents('cm-messageIcon-issue');
 
     const issueMessages: string[] = [];
     const expectedIssueMessages = [
@@ -121,7 +121,7 @@ describe('The row\'s icon bucket', async function() {
 
   it('should also mark issues in inline event handlers in HTML documents', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only-in-html.rawresponse');
-    const icons = await getIconComponents('text-editor-line-decoration-icon-issue');
+    const icons = await getIconComponents('cm-messageIcon-issue');
     assert.strictEqual(icons.length, 1);
   });
 
@@ -133,7 +133,7 @@ describe('The row\'s icon bucket', async function() {
     await click(HIDE_DEBUGGER_SELECTOR);
     await click(HIDE_NAVIGATOR_SELECTOR);
 
-    const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+    const bucketIssueIconComponents = await getIconComponents('cm-messageIcon-issue');
     assert.strictEqual(bucketIssueIconComponents.length, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
     await click(issueIconComponent);
@@ -155,7 +155,7 @@ describe('The row\'s icon bucket', async function() {
     await click(HIDE_NAVIGATOR_SELECTOR);
 
     const {issueIcon, issueTitle} = await waitForFunction(async () => {
-      const bucketIssueIconComponents = await getIconComponents('text-editor-line-decoration-icon-issue');
+      const bucketIssueIconComponents = await getIconComponents('cm-messageIcon-issue');
       assert.strictEqual(bucketIssueIconComponents.length, 1);
       const issueIconComponent = bucketIssueIconComponents[0];
       await issueIconComponent.hover();

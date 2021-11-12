@@ -52,6 +52,10 @@ export const editorTheme = CM.EditorView.theme({
     backgroundColor: 'var(--color-background)',
   },
 
+  '.cm-lineNumbers': {
+    overflow: 'visible',
+    minWidth: '40px',
+  },
   '.cm-lineNumbers .cm-gutterElement': {
     color: 'var(--color-line-number)',
     padding: '0 3px 0 9px',
@@ -74,7 +78,7 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-trailingWhitespace': {
-    backgroundColor: 'var(--color-error-text)',
+    backgroundColor: 'var(--color-trailing-whitespace)',
   },
 
   '.cm-highlightedTab': {

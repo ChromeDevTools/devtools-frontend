@@ -481,7 +481,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     } else {
       this.showEditor();
     }
-    this.sourcesViewInternal.showSourceLocation(uiSourceCode, lineNumber, columnNumber, omitFocus);
+    this.sourcesViewInternal.showSourceLocation(
+        uiSourceCode, lineNumber === undefined ? undefined : {lineNumber, columnNumber}, omitFocus);
   }
 
   private showEditor(): void {
@@ -534,8 +535,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
       return;
     }
-    this.sourcesViewInternal.showSourceLocation(
-        uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, undefined, true);
+    this.sourcesViewInternal.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
   }
 
   private lastModificationTimeoutPassedForTest(): void {
@@ -825,7 +825,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (!(target instanceof UISourceCodeFrame)) {
       return;
     }
-    if (target.uiSourceCode().contentType().isFromSourceMap() || target.textEditor.selection().isEmpty()) {
+    if (target.uiSourceCode().contentType().isFromSourceMap() || target.textEditor.state.selection.main.empty) {
       return;
     }
     contextMenu.debugSection().appendAction('debugger.evaluate-selection');
@@ -1312,7 +1312,8 @@ export class DebuggingActionDelegate implements UI.ActionRegistration.ActionDele
       case 'debugger.evaluate-selection': {
         const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
         if (frame) {
-          let text = frame.textEditor.text(frame.textEditor.selection());
+          const {state: editorState} = frame.textEditor;
+          let text = editorState.sliceDoc(editorState.selection.main.from, editorState.selection.main.to);
           const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
           if (executionContext) {
             const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);

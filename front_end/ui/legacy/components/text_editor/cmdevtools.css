@@ -152,7 +152,9 @@
 }
 
 .CodeMirror-cursor {
-  border-left: 1px solid var(--color-background-inverted);
+  border-left:
+    1px solid
+    var(--color-background-inverted);
   border-right: none;
   width: 0;
 }

@@ -13,16 +13,18 @@ export {
 export {closeBrackets, closeBracketsKeymap} from '@codemirror/closebrackets';
 export {
   cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward,
-  indentLess, indentMore, selectMatchingBracket, selectSubwordBackward, selectSubwordForward,
+  indentLess, indentMore, insertNewlineAndIndent, selectMatchingBracket,
+  selectSubwordBackward, selectSubwordForward,
   standardKeymap
 } from '@codemirror/commands';
 export {toggleComment} from '@codemirror/comment';
 export {codeFolding, foldGutter, foldKeymap} from '@codemirror/fold';
-export { gutter, GutterMarker, gutters,lineNumbers} from '@codemirror/gutter';
+export {gutter, GutterMarker, gutters, lineNumberMarkers,lineNumbers} from '@codemirror/gutter';
 export {HighlightStyle, highlightTree, Tag, tags, TagStyle} from '@codemirror/highlight';
 export {history, historyKeymap, redo, redoSelection, undo, undoSelection} from '@codemirror/history';
-export { indentOnInput, indentUnit,Language, LanguageSupport, syntaxTree} from '@codemirror/language';
+export {ensureSyntaxTree, indentOnInput, indentUnit,Language, LanguageSupport, syntaxTree} from '@codemirror/language';
 export {bracketMatching} from '@codemirror/matchbrackets';
+export {Panel, showPanel} from '@codemirror/panel';
 export {Range, RangeSet, RangeSetBuilder} from '@codemirror/rangeset';
 export {selectNextOccurrence} from '@codemirror/search';
 export {
@@ -33,7 +35,7 @@ export {
 } from '@codemirror/state';
 export {StreamLanguage, StreamParser, StringStream} from '@codemirror/stream-parser';
 export {Line, Text, TextIterator} from '@codemirror/text';
-export {hoverTooltip, showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
+export {showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
 export {
   Command, Decoration, DecorationSet, drawSelection, EditorView,
   highlightSpecialChars, KeyBinding, keymap, MatchDecorator, placeholder,

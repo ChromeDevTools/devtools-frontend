@@ -97,8 +97,9 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         this.#goToLineStrings.push(i18nString(UIStrings.typeANumberToGoToThatLine));
         return;
       }
+      const editorState = sourceFrame.textEditor.state;
       const disassembly = sourceFrame.wasmDisassembly;
-      const currentLineNumber = sourceFrame.textEditor.currentLineNumber();
+      const currentLineNumber = editorState.doc.lineAt(editorState.selection.main.head).number - 1;
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
@@ -110,7 +111,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
         }));
         return;
       }
-      const linesCount = sourceFrame.textEditor.linesCount;
+      const linesCount = editorState.doc.lines;
       this.#goToLineStrings.push(
           i18nString(UIStrings.currentLineSTypeALineNumber, {PH1: currentLineNumber + 1, PH2: linesCount}));
       return;
@@ -124,7 +125,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       this.#goToLineStrings.push(i18nString(UIStrings.goToLineSAndColumnS, {PH1: position.line, PH2: position.column}));
       return;
     }
-    if (sourceFrame && position.line > sourceFrame.textEditor.linesCount) {
+    if (sourceFrame && position.line > sourceFrame.textEditor.state.doc.lines) {
       return;
     }
     this.#goToLineStrings.push(i18nString(UIStrings.goToLineS, {PH1: position.line}));

@@ -13,7 +13,7 @@ export const PAUSE_BUTTON = '[aria-label="Pause script execution"]';
 export const RESUME_BUTTON = '[aria-label="Resume script execution"]';
 export const SOURCES_LINES_SELECTOR = '.CodeMirror-code > div';
 export const PAUSE_INDICATOR_SELECTOR = '.paused-status';
-export const CODE_LINE_SELECTOR = '.CodeMirror-code .CodeMirror-linenumber';
+export const CODE_LINE_SELECTOR = '.cm-lineNumbers .cm-gutterElement';
 export const SCOPE_LOCAL_VALUES_SELECTOR = 'li[aria-label="Local"] + ol';
 export const SELECTED_THREAD_SELECTOR = 'div.thread-item.selected > div.thread-item-title';
 export const STEP_OVER_BUTTON = '[aria-label="Step over next function call"]';
@@ -154,8 +154,13 @@ export async function waitForHighlightedLineWhichIncludesText(expectedTextConten
 
 export async function waitForHighlightedLine(lineNumber: number) {
   await waitForFunction(async () => {
-    const selectedLineNumber = await waitFor('.CodeMirror-activeline-gutter > .CodeMirror-linenumber');
-    const text = await selectedLineNumber.evaluate(node => node.textContent);
+    const selectedLine = await waitFor('.cm-highlightedLine');
+    const currentlySelectedLineNumber = await selectedLine.evaluate(line => {
+      return [...line.parentElement?.childNodes || []].indexOf(line);
+    });
+    const lineNumbers = await waitFor('.cm-lineNumbers');
+    const text = await lineNumbers.evaluate(
+        (node, lineNumber) => node.childNodes[lineNumber].textContent, currentlySelectedLineNumber + 1);
     return Number(text) === lineNumber;
   });
 }
@@ -195,8 +200,7 @@ export function sourceLineNumberSelector(lineNumber: number) {
 }
 
 export async function isBreakpointSet(lineNumber: number|string) {
-  const breakpointLineParentClasses =
-      await (await getLineNumberElement(lineNumber))?.evaluate(n => n.parentElement?.className);
+  const breakpointLineParentClasses = await (await getLineNumberElement(lineNumber))?.evaluate(n => n.className);
   return breakpointLineParentClasses?.includes('cm-breakpoint');
 }
 
@@ -211,15 +215,19 @@ export async function checkBreakpointDidNotActivate() {
   });
 }
 
-export async function getBreakpointDecorators(frontend: puppeteer.Page, disabledOnly = false) {
-  const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''} .CodeMirror-linenumber`;
-  return await frontend.$$eval(selector, nodes => nodes.map(n => Number(n.textContent)));
+export async function getBreakpointDecorators(disabledOnly = false) {
+  const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''}`;
+  const breakpointDecorators = await $$(selector);
+  return await Promise.all(
+      breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
 
-export async function getNonBreakableLines(frontend: puppeteer.Page) {
-  const selector = '.cm-non-breakable-line .CodeMirror-linenumber';
+export async function getNonBreakableLines() {
+  const selector = '.cm-nonBreakableLine';
   await waitFor(selector);
-  return await frontend.$$eval(selector, nodes => nodes.map(n => Number(n.textContent)));
+  const unbreakableLines = await $$(selector);
+  return await Promise.all(
+      unbreakableLines.map(unbreakableLine => unbreakableLine.evaluate(n => Number(n.textContent))));
 }
 
 export async function getExecutionLine() {

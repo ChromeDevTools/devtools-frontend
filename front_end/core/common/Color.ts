@@ -662,6 +662,11 @@ export class Color {
   setFormat(format: Format): void {
     this.#formatInternal = format;
   }
+
+  equal(other: Color): boolean {
+    return this.#rgbaInternal.every((v, i) => v === other.#rgbaInternal[i]) &&
+        this.#formatInternal === other.#formatInternal;
+  }
 }
 
 export const Regex: RegExp =

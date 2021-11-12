@@ -60,7 +60,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private nameInternal: string;
   private contentTypeInternal: Common.ResourceType.ResourceType;
   private requestContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>|null;
-  private decorations: Platform.MapUtilities.Multimap<string, LineMarker>|null;
+  private decorations: Map<string, any> = new Map();
   private hasCommitsInternal: boolean;
   private messagesInternal: Set<Message>|null;
   private contentLoadedInternal: boolean;
@@ -94,7 +94,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
     this.contentTypeInternal = contentType;
     this.requestContentPromise = null;
-    this.decorations = null;
     this.hasCommitsInternal = false;
     this.messagesInternal = null;
     this.contentLoadedInternal = false;
@@ -455,45 +454,15 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.messagesInternal = null;
   }
 
-  addLineDecoration(lineNumber: number, type: string, data: any): void {
-    this.addDecoration(TextUtils.TextRange.TextRange.createFromLocation(lineNumber, 0), type, data);
-  }
-
-  addDecoration(range: TextUtils.TextRange.TextRange, type: string, data: any): void {
-    const marker = new LineMarker(range, type, data);
-    if (!this.decorations) {
-      this.decorations = new Platform.MapUtilities.Multimap();
+  setDecorationData(type: string, data: any): void {
+    if (data !== this.decorations.get(type)) {
+      this.decorations.set(type, data);
+      this.dispatchEventToListeners(Events.DecorationChanged, type);
     }
-    this.decorations.set(type, marker);
-    this.dispatchEventToListeners(Events.LineDecorationAdded, marker);
   }
 
-  removeDecorationsForType(type: string): void {
-    if (!this.decorations) {
-      return;
-    }
-    const markers = this.decorations.get(type);
-    this.decorations.deleteAll(type);
-    markers.forEach(marker => {
-      this.dispatchEventToListeners(Events.LineDecorationRemoved, marker);
-    });
-  }
-
-  allDecorations(): LineMarker[] {
-    return this.decorations ? this.decorations.valuesArray() : [];
-  }
-
-  removeAllDecorations(): void {
-    if (!this.decorations) {
-      return;
-    }
-    const decorationList = this.decorations.valuesArray();
-    this.decorations.clear();
-    decorationList.forEach(marker => this.dispatchEventToListeners(Events.LineDecorationRemoved, marker));
-  }
-
-  decorationsForType(type: string): Set<LineMarker>|null {
-    return this.decorations ? this.decorations.get(type) : null;
+  getDecorationData(type: string): any {
+    return this.decorations.get(type);
   }
 
   disableEdit(): void {
@@ -513,8 +482,7 @@ export enum Events {
   TitleChanged = 'TitleChanged',
   MessageAdded = 'MessageAdded',
   MessageRemoved = 'MessageRemoved',
-  LineDecorationAdded = 'LineDecorationAdded',
-  LineDecorationRemoved = 'LineDecorationRemoved',
+  DecorationChanged = 'DecorationChanged',
 }
 
 export interface WorkingCopyCommitedEvent {
@@ -529,8 +497,7 @@ export type EventTypes = {
   [Events.TitleChanged]: UISourceCode,
   [Events.MessageAdded]: Message,
   [Events.MessageRemoved]: Message,
-  [Events.LineDecorationAdded]: LineMarker,
-  [Events.LineDecorationRemoved]: LineMarker,
+  [Events.DecorationChanged]: string,
 };
 
 export class UILocation {

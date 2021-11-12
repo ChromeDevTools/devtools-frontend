@@ -31,24 +31,35 @@ export const dynamicSetting = CM.Facet.define<DynamicSetting<unknown>>();
 
 export class DynamicSetting<T> {
   compartment = new CM.Compartment();
-  extension: CM.Extension;
 
   constructor(
       readonly settingName: string,
-      private readonly getExtension: (value: T, state: CM.EditorState) => CM.Extension,
+      private readonly getExtension: (value: T) => CM.Extension,
   ) {
-    this.extension = [this.compartment.of(empty), dynamicSetting.of(this as DynamicSetting<unknown>)];
+  }
+
+  settingValue(): T {
+    return Common.Settings.Settings.instance().moduleSetting(this.settingName).get() as T;
+  }
+
+  instance(): CM.Extension {
+    return [
+      this.compartment.of(this.getExtension(this.settingValue())),
+      dynamicSetting.of(this as DynamicSetting<unknown>),
+    ];
   }
 
   sync(state: CM.EditorState, value: T): CM.StateEffect<unknown>|null {
     const cur = this.compartment.get(state);
-    const needed = this.getExtension(value, state);
+    const needed = this.getExtension(value);
     return cur === needed ? null : this.compartment.reconfigure(needed);
   }
 
   static bool(name: string, enabled: CM.Extension, disabled: CM.Extension = empty): DynamicSetting<boolean> {
     return new DynamicSetting<boolean>(name, val => val ? enabled : disabled);
   }
+
+  static none: readonly DynamicSetting<unknown>[] = [];
 }
 
 export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.keymap.of([{
@@ -82,23 +93,15 @@ export function guessIndent(doc: CM.Text): string {
     values[space] = (values[space] || 0) + 1;
   }
   const minOccurrence = scanned * 0.05;
-  const sorted = Object.entries(values).filter(e => e[1] > minOccurrence).sort((a, b) => a[1] - b[1]);
-  return sorted.length ? sorted[0][0] : Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
+  const shortest = Object.entries(values).reduce((shortest, [string, count]): string|null => {
+    return count < minOccurrence || shortest && shortest.length < string.length ? shortest : string;
+  }, null as string | null);
+  return shortest ?? Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
 }
 
-const cachedIndentUnit: {[indent: string]: CM.Extension} = Object.create(null);
+const deriveIndentUnit = CM.Prec.highest(CM.indentUnit.compute([], (state: CM.EditorState) => guessIndent(state.doc)));
 
-function getIndentUnit(indent: string): CM.Extension {
-  let value = cachedIndentUnit[indent];
-  if (!value) {
-    value = cachedIndentUnit[indent] = CM.indentUnit.of(indent);
-  }
-  return value;
-}
-
-export const autoDetectIndent = new DynamicSetting<boolean>('textEditorAutoDetectIndent', (on, state) => {
-  return on ? CM.Prec.override(getIndentUnit(guessIndent(state.doc))) : empty;
-});
+export const autoDetectIndent = DynamicSetting.bool('textEditorAutoDetectIndent', deriveIndentUnit);
 
 function matcher(decorator: CM.MatchDecorator): CM.Extension {
   return CM.ViewPlugin.define(
@@ -154,6 +157,16 @@ export const showWhitespace = new DynamicSetting<string>('showWhitespacesInEdito
 
 export const allowScrollPastEof = DynamicSetting.bool('allowScrollPastEof', CM.scrollPastEnd());
 
+const cachedIndentUnit: {[indent: string]: CM.Extension} = Object.create(null);
+
+function getIndentUnit(indent: string): CM.Extension {
+  let value = cachedIndentUnit[indent];
+  if (!value) {
+    value = cachedIndentUnit[indent] = CM.indentUnit.of(indent);
+  }
+  return value;
+}
+
 export const indentUnit = new DynamicSetting<string>('textEditorIndent', getIndentUnit);
 
 export const domWordWrap = DynamicSetting.bool('domWordWrap', CM.EditorView.lineWrapping);
@@ -184,10 +197,13 @@ function themeIsDark(): boolean {
 
 const dummyDarkTheme = CM.EditorView.theme({}, {dark: true});
 
+export function theme(): CM.Extension {
+  return [editorTheme, themeIsDark() ? dummyDarkTheme : []];
+}
+
 export function baseConfiguration(text: string): CM.Extension {
   return [
-    editorTheme,
-    themeIsDark() ? dummyDarkTheme : [],
+    theme(),
     CM.highlightSpecialChars(),
     CM.history(),
     CM.drawSelection(),
@@ -196,10 +212,10 @@ export function baseConfiguration(text: string): CM.Extension {
     CodeHighlighter.CodeHighlighter.getHighlightStyle(CM),
     CM.closeBrackets(),
     baseKeymap,
-    tabMovesFocus,
-    bracketMatching,
-    indentUnit,
-    CM.Prec.fallback(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
+    tabMovesFocus.instance(),
+    bracketMatching.instance(),
+    indentUnit.instance(),
+    CM.Prec.lowest(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     detectLineSeparator(text),
     autocompletion,
     CM.tooltips({parent: getTooltipHost() as unknown as HTMLElement}),

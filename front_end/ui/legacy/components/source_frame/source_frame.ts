@@ -9,7 +9,6 @@ import * as JSONView from './JSONView.js';
 import * as PreviewFactory from './PreviewFactory.js';
 import * as ResourceSourceFrame from './ResourceSourceFrame.js';
 import * as SourceFrame from './SourceFrame.js';
-import * as SourcesTextEditor from './SourcesTextEditor.js';
 import * as XMLView from './XMLView.js';
 
 export {
@@ -20,6 +19,5 @@ export {
   PreviewFactory,
   ResourceSourceFrame,
   SourceFrame,
-  SourcesTextEditor,
   XMLView,
 };

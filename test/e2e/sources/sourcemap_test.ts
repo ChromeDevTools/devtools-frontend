@@ -110,11 +110,11 @@ describe('The Sources Tab', async () => {
   it('updates decorators for removed breakpoints in case of code-splitting (crbug.com/1251675)', async () => {
     const {frontend} = getBrowserAndPages();
     await openSourceCodeEditorForFile('sourcemap-disjoint.js', 'sourcemap-disjoint.html');
-    assert.deepEqual(await getBreakpointDecorators(frontend), []);
+    assert.deepEqual(await getBreakpointDecorators(), []);
     await addBreakpointForLine(frontend, 2);
-    assert.deepEqual(await getBreakpointDecorators(frontend), [2]);
+    assert.deepEqual(await getBreakpointDecorators(), [2]);
     await removeBreakpointForLine(frontend, 2);
-    assert.deepEqual(await getBreakpointDecorators(frontend), []);
+    assert.deepEqual(await getBreakpointDecorators(), []);
   });
 });
 

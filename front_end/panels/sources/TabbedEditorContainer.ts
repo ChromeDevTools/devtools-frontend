@@ -35,6 +35,7 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -220,45 +221,48 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     if (!this.currentView || !(this.currentView instanceof SourceFrame.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this.scrollChanged, this);
-    this.currentView.textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this.selectionChanged, this);
+    this.currentView.addEventListener(SourceFrame.SourceFrame.Events.EditorUpdate, this.onEditorUpdate, this);
+    this.currentView.addEventListener(SourceFrame.SourceFrame.Events.EditorScroll, this.onScrollChanged, this);
   }
 
   private removeViewListeners(): void {
     if (!this.currentView || !(this.currentView instanceof SourceFrame.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.textEditor.removeEventListener(
-        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this.scrollChanged, this);
-    this.currentView.textEditor.removeEventListener(
-        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this.selectionChanged, this);
+    this.currentView.removeEventListener(SourceFrame.SourceFrame.Events.EditorUpdate, this.onEditorUpdate, this);
+    this.currentView.removeEventListener(SourceFrame.SourceFrame.Events.EditorScroll, this.onScrollChanged, this);
   }
 
-  private scrollChanged({data: lineNumber}: Common.EventTarget.EventTargetEvent<number>): void {
-    if (this.scrollTimer) {
-      clearTimeout(this.scrollTimer);
+  private onScrollChanged(): void {
+    if (this.currentView instanceof SourceFrame.SourceFrame.SourceFrameImpl) {
+      if (this.scrollTimer) {
+        clearTimeout(this.scrollTimer);
+      }
+      this.scrollTimer = window.setTimeout(() => this.history.save(this.previouslyViewedFilesSetting), 100);
+      if (this.currentFileInternal) {
+        const {editor} = this.currentView.textEditor;
+        const topBlock = editor.blockAtHeight(editor.scrollDOM.getBoundingClientRect().top);
+        const topLine = editor.state.doc.lineAt(topBlock.from).number - 1;
+        this.history.updateScrollLineNumber(this.currentFileInternal.url(), topLine);
+      }
     }
-    this.scrollTimer = window.setTimeout(saveHistory.bind(this), 100);
-    if (this.currentFileInternal) {
-      this.history.updateScrollLineNumber(this.currentFileInternal.url(), lineNumber);
-    }
+  }
 
-    function saveHistory(this: TabbedEditorContainer): void {
+  private onEditorUpdate({data: update}: Common.EventTarget.EventTargetEvent<CodeMirror.ViewUpdate>): void {
+    if (update.docChanged || update.selectionSet) {
+      const {main} = update.state.selection;
+      const lineFrom = update.state.doc.lineAt(main.from), lineTo = update.state.doc.lineAt(main.to);
+      const range = new TextUtils.TextRange.TextRange(
+          lineFrom.number - 1, main.from - lineFrom.from, lineTo.number - 1, main.to - lineTo.from);
+      if (this.currentFileInternal) {
+        this.history.updateSelectionRange(this.currentFileInternal.url(), range);
+      }
       this.history.save(this.previouslyViewedFilesSetting);
-    }
-  }
 
-  private selectionChanged({data: range}: Common.EventTarget.EventTargetEvent<TextUtils.TextRange.TextRange>): void {
-    if (this.currentFileInternal) {
-      this.history.updateSelectionRange(this.currentFileInternal.url(), range);
-    }
-    this.history.save(this.previouslyViewedFilesSetting);
-
-    if (this.currentFileInternal) {
-      Extensions.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(
-          this.currentFileInternal.url(), range);
+      if (this.currentFileInternal) {
+        Extensions.ExtensionServer.ExtensionServer.instance().sourceSelectionChanged(
+            this.currentFileInternal.url(), range);
+      }
     }
   }
 

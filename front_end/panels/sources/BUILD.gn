@@ -44,6 +44,7 @@ devtools_module("sources") {
     "OpenFileQuickOpen.ts",
     "OutlineQuickOpen.ts",
     "Plugin.ts",
+    "ProfilePlugin.ts",
     "ScopeChainSidebarPane.ts",
     "ScriptFormatterEditorAction.ts",
     "ScriptOriginPlugin.ts",

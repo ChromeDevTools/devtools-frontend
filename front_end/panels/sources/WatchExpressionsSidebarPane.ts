@@ -266,7 +266,8 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     if (!frame) {
       return false;
     }
-    const text = frame.textEditor.text(frame.textEditor.selection());
+    const {state} = frame.textEditor;
+    const text = state.sliceDoc(state.selection.main.from, state.selection.main.to);
     this.focusAndAddExpressionToWatch(text);
     return true;
   }
@@ -278,7 +279,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     }
 
     const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
-    if (!frame || frame.textEditor.selection().isEmpty()) {
+    if (!frame || frame.textEditor.state.selection.main.empty) {
       return;
     }
 

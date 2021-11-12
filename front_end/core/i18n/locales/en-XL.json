@@ -9437,6 +9437,15 @@
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Ôṕêń â J́âv́âŚĉŕîṕt̂ ór̂ ĆŜŚ f̂íl̂é t̂ó ŝéê śŷḿb̂ól̂ś"
   },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "k̂B́"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "M̂B́"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "m̂ś"
+  },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Ĉĺôśûŕê"
   },
@@ -11848,15 +11857,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ŝél̂éĉt́êd́"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "k̂B́"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "M̂B́"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "m̂ś"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Ĥíĝh́"

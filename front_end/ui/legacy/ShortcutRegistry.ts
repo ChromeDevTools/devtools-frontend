@@ -144,27 +144,31 @@ export class ShortcutRegistry {
     return this.devToolsDefaultShortcutActions.has(actionId);
   }
 
-  addShortcutListener(element: Element, handlers: {
-    [x: string]: () => Promise<boolean>,
-  }): (arg0: Event) => void {
+  getShortcutListener(handlers: {[x: string]: () => Promise<boolean>}): (event: KeyboardEvent) => void {
+    const shortcuts = Object.keys(handlers).flatMap(action => [...this.actionToShortcut.get(action)]);
     // We only want keys for these specific actions to get handled this
     // way; all others should be allowed to bubble up.
     const allowlistKeyMap = new ShortcutTreeNode(0, 0);
-    const shortcuts = Object.keys(handlers).flatMap(action => [...this.actionToShortcut.get(action)]);
     shortcuts.forEach(shortcut => {
       allowlistKeyMap.addKeyMapping(shortcut.descriptors.map(descriptor => descriptor.key), shortcut.action);
     });
 
-    const listener = (event: Event): void => {
-      const key = KeyboardShortcut.makeKeyFromEvent((event as KeyboardEvent));
+    return (event: KeyboardEvent): void => {
+      const key = KeyboardShortcut.makeKeyFromEvent(event);
       const keyMap = this.activePrefixKey ? allowlistKeyMap.getNode(this.activePrefixKey.key()) : allowlistKeyMap;
       if (!keyMap) {
         return;
       }
       if (keyMap.getNode(key)) {
-        this.handleShortcut((event as KeyboardEvent), handlers);
+        this.handleShortcut(event, handlers);
       }
     };
+  }
+
+  addShortcutListener(element: Element, handlers: {
+    [x: string]: () => Promise<boolean>,
+  }): (arg0: Event) => void {
+    const listener = this.getShortcutListener(handlers) as (event: Event) => void;
     element.addEventListener('keydown', listener);
     return listener;
   }

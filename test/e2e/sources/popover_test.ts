@@ -16,8 +16,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 5);
 
     const scriptEvaluation = target.evaluate('f1();');
-    const lastElement =
-        await waitFor('div.CodeMirror-code > div:nth-child(5) > pre.CodeMirror-line > span > :last-child');
+    const lastElement = await waitFor('.cm-executionLine > span:last-child');
     await lastElement.hover();
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
@@ -35,8 +34,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 9);
 
     const scriptEvaluation = target.evaluate('f2();');
-    const lastElement =
-        await waitFor('div.CodeMirror-code > div:nth-child(9) > pre.CodeMirror-line > span > :last-child');
+    const lastElement = await waitFor('.cm-executionLine > span:last-child');
     await lastElement.hover();
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');
@@ -54,8 +52,7 @@ describe('Sources Tab', async function() {
     await addBreakpointForLine(frontend, 13);
 
     const scriptEvaluation = target.evaluate('f3(3);');
-    const lastElement =
-        await waitFor('div.CodeMirror-code > div:nth-child(13) > pre.CodeMirror-line > span > :last-child');
+    const lastElement = await waitFor('.cm-executionLine > span:last-child');
     await lastElement.hover();
 
     const popover = await waitFor('[data-stable-name-for-test="object-popover-content"]');

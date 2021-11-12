@@ -1970,13 +1970,13 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     contextMenu.show();
   }
 
-  async revealResource(line?: number, column?: number): Promise<void> {
+  async revealResource(lineNumber?: number, columnNumber?: number): Promise<void> {
     this.revealAndSelect(true);
     const view = await this.panel.scheduleShowView(this.preparePreview());
-    if (!(view instanceof SourceFrame.ResourceSourceFrame.ResourceSourceFrame) || typeof line !== 'number') {
+    if (!(view instanceof SourceFrame.ResourceSourceFrame.ResourceSourceFrame) || typeof lineNumber !== 'number') {
       return;
     }
-    view.revealPosition(line, column, true);
+    view.revealPosition({lineNumber, columnNumber}, true);
   }
 }
 

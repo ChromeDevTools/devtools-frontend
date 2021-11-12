@@ -4,7 +4,6 @@
 
 import type * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import type * as UI from '../../legacy.js';
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
@@ -64,7 +63,7 @@ export class BinaryResourceViewFactory {
     return new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this.contentUrl, this.resourceType, this.base64content),
-        /* autoPrettyPrint */ false, ({lineNumbers: false, lineWrapping: true} as UI.TextEditor.Options));
+        this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: true});
   }
 
   createHexView(): ResourceSourceFrame {
@@ -75,8 +74,7 @@ export class BinaryResourceViewFactory {
           return {content, isEncoded: false};
         });
     return new ResourceSourceFrame(
-        hexViewerContentProvider,
-        /* autoPrettyPrint */ false, ({lineNumbers: false, lineWrapping: false} as UI.TextEditor.Options));
+        hexViewerContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: false});
   }
 
   createUtf8View(): ResourceSourceFrame {
@@ -84,8 +82,7 @@ export class BinaryResourceViewFactory {
     const utf8ContentProvider =
         new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, utf8fn);
     return new ResourceSourceFrame(
-        utf8ContentProvider,
-        /* autoPrettyPrint */ false, ({lineNumbers: true, lineWrapping: true} as UI.TextEditor.Options));
+        utf8ContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
   }
 
   static uint8ArrayToHexString(uint8Array: Uint8Array): string {

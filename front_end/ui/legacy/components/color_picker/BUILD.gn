@@ -44,6 +44,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/css_overview/*",
     "../../../../panels/elements/*",
     "../../../../panels/sources/*",
+    "../../../components/text_editor/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

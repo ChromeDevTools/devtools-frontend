@@ -46,9 +46,7 @@ export class Infobar {
   private readonly closeContainer: HTMLElement;
   private readonly toggleElement: HTMLButtonElement;
   private readonly closeButton: HTMLElement;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private closeCallback: (() => any)|null;
+  private closeCallback: (() => void)|null;
   private parentView?: Widget;
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -160,9 +158,7 @@ export class Infobar {
     this.onResize();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setCloseCallback(callback: (() => any)|null): void {
+  setCloseCallback(callback: (() => void)|null): void {
     this.closeCallback = callback;
   }
 

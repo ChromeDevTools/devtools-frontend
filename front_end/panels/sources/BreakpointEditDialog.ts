@@ -135,8 +135,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
         run: finishIfComplete,
       },
       {
-        ...modCodeMirror.standardKeymap.find(binding => binding.key === 'Enter') as CodeMirror.KeyBinding,
         key: 'Shift-Enter',
+        run: modCodeMirror.insertNewlineAndIndent,
       },
       {
         key: 'Escape',
@@ -185,7 +185,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (type === BreakpointType.Breakpoint) {
       this.finishEditing(true, '');
     } else {
-      this.editor.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
+      this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
       this.updateTooltip();
     }
   }

@@ -5,32 +5,35 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {Plugin} from './Plugin.js';
 
 export class JavaScriptCompilerPlugin extends Plugin {
-  private readonly textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor;
-  private uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  private compiling: boolean;
-  private recompileScheduled: boolean;
-  private timeout: number|null;
-  private message: Workspace.UISourceCode.Message|null;
-  private disposed: boolean;
-  constructor(
-      textEditor: SourceFrame.SourcesTextEditor.SourcesTextEditor, uiSourceCode: Workspace.UISourceCode.UISourceCode) {
-    super();
-    this.textEditor = textEditor;
-    this.uiSourceCode = uiSourceCode;
-    this.compiling = false;
-    this.recompileScheduled = false;
-    this.timeout = null;
-    this.message = null;
-    this.disposed = false;
+  private compiling: boolean = false;
+  private recompileScheduled: boolean = false;
+  private timeout: number|null = null;
+  private message: Workspace.UISourceCode.Message|null = null;
+  private disposed: boolean = false;
+  private editor: TextEditor.TextEditor.TextEditor|null = null;
 
-    this.textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this.scheduleCompile, this);
+  constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
+    super(uiSourceCode);
+  }
+
+  editorExtension(): CodeMirror.Extension {
+    return CodeMirror.EditorView.updateListener.of(update => {
+      if (update.docChanged) {
+        this.scheduleCompile();
+      }
+    });
+  }
+
+  editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
+    this.editor = editor;
     if (this.uiSourceCode.hasCommits() || this.uiSourceCode.isDirty()) {
       this.scheduleCompile();
     }
@@ -78,7 +81,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
 
   private async compile(): Promise<void> {
     const runtimeModel = this.findRuntimeModel();
-    if (!runtimeModel) {
+    if (!runtimeModel || !this.editor) {
       return;
     }
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
@@ -86,11 +89,11 @@ export class JavaScriptCompilerPlugin extends Plugin {
       return;
     }
 
-    const code = this.textEditor.text();
-    if (code.length > 1024 * 100) {
+    if (this.editor.state.doc.length > 1024 * 100) {
       return;
     }
 
+    const code = this.editor.state.doc.toString();
     const scripts =
         Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForResource(this.uiSourceCode);
     const isModule = scripts.reduce((v, s) => v || s.isModule === true, false);
@@ -109,6 +112,7 @@ export class JavaScriptCompilerPlugin extends Plugin {
     }
     if (this.message) {
       this.uiSourceCode.removeMessage(this.message);
+      this.message = null;
     }
     if (this.disposed || !result || !result.exceptionDetails) {
       return;
@@ -125,7 +129,6 @@ export class JavaScriptCompilerPlugin extends Plugin {
   }
 
   dispose(): void {
-    this.textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this.scheduleCompile, this);
     if (this.message) {
       this.uiSourceCode.removeMessage(this.message);
     }

@@ -84,6 +84,7 @@ devtools_entrypoint("bundle") {
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../../../components/docs/color_swatch/*",
+    "../../../components/text_editor/*",
   ]
 
   visibility += devtools_ui_legacy_visibility

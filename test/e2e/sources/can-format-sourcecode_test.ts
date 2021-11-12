@@ -11,29 +11,23 @@ import {addBreakpointForLine, getSelectedSource, listenForSourceFilesLoaded, ope
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print minified-sourcecode.js"]';
 
-function retrieveCodeMirrorEditorContent() {
-  const code = document.querySelector('.CodeMirror-code');
-  if (!code) {
-    assert.fail('Could not find .CodeMirror-code element.');
-  }
-  return code.textContent || '';
+async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
+  const editor = await waitFor('[aria-label="Code editor"]');
+  return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
 async function prettyPrintMinifiedFile(frontend: puppeteer.Page) {
   await listenForSourceFilesLoaded(frontend);
-  const previousTextContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
+  const previousTextContent = await retrieveCodeMirrorEditorContent();
 
   await waitFor(PRETTY_PRINT_BUTTON);
   await click(PRETTY_PRINT_BUTTON);
 
   // A separate editor is opened which shows the formatted file
-  await frontend.waitForFunction((previousTextContent: string) => {
-    const code = document.querySelector('.CodeMirror-code');
-    if (!code) {
-      throw new Error('Could not find .CodeMirror-code element.');
-    }
-    return (code.textContent || '') !== previousTextContent;
-  }, {}, previousTextContent);
+  await waitForFunction(async () => {
+    const currentTextContent = await retrieveCodeMirrorEditorContent();
+    return currentTextContent.join('\n') !== previousTextContent.join('\n');
+  });
 
   const source = await getSelectedSource();
   await waitForSourceLoadedEvent(frontend, source);
@@ -65,16 +59,11 @@ describe('The Sources Tab', async function() {
       '    }',
       '}',
       ';notFormattedFunction();',
-      ​ '\u200B',
+      ​ '',
     ];
-    let expectedTextContent = '';
 
-    for (let i = 0; i < expectedLines.length; i++) {
-      expectedTextContent += `${i + 1}${expectedLines[i]}`;
-    }
-
-    const updatedTextContent = await frontend.evaluate(retrieveCodeMirrorEditorContent);
-    assert.strictEqual(updatedTextContent, expectedTextContent);
+    const updatedTextContent = await retrieveCodeMirrorEditorContent();
+    assert.strictEqual(updatedTextContent.join('\n'), expectedLines.join('\n'));
   });
 
   it('causes the correct line number to show up in the console panel', async () => {

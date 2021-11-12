@@ -307,7 +307,7 @@ export class ConsolePin {
   async focus(): Promise<void> {
     const editor = this.editor || await this.editorPromise;
     editor.editor.focus();
-    editor.editor.dispatch({selection: {anchor: editor.state.doc.length}});
+    editor.dispatch({selection: {anchor: editor.state.doc.length}});
   }
 
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {

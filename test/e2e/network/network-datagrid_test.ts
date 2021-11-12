@@ -89,14 +89,13 @@ describe('The Network Tab', async function() {
     // Open the raw response HTML
     await click('[aria-label="Response"]');
     // Wait for the raw response editor to show up
-    await waitFor('.CodeMirror-code');
+    const codeMirrorEditor = await waitFor('[aria-label="Code editor"]');
 
-    const codeMirrorEditor = await waitFor('.CodeMirror-code');
     const htmlRawResponse = await codeMirrorEditor.evaluate(editor => editor.textContent);
 
     assert.strictEqual(
         htmlRawResponse,
-        '1<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
+        '<html><body>The following word is written using cyrillic letters and should look like "SUCCESS": SU\u0421\u0421\u0415SS.</body></html>');
   });
 
   it('the correct MIME type when resources came from HTTP cache', async () => {

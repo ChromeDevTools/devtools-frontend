@@ -331,7 +331,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     this.splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this.request.url(), Common.ResourceType.resourceTypes.WebSocket, content)));
+            this.request.url(), Common.ResourceType.resourceTypes.WebSocket, content),
+        ''));
   }
 
   private onFrameDeselected(): void {

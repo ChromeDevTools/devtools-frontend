@@ -84,7 +84,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.editorContainer.addEventListener(TabbedEditorContainerEvents.EditorSelected, this.editorSelected, this);
     this.editorContainer.addEventListener(TabbedEditorContainerEvents.EditorClosed, this.editorClosed, this);
 
-    this.historyManager = new EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
+    this.historyManager = new EditingLocationHistoryManager(this);
 
     this.toolbarContainerElementInternal = this.element.createChild('div', 'sources-toolbar');
     if (!Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
@@ -350,15 +350,18 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showSourceLocation(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber?: number, columnNumber?: number,
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: {lineNumber: number, columnNumber?: number}|number,
       omitFocus?: boolean, omitHighlight?: boolean): void {
-    this.historyManager.updateCurrentState();
+    const currentFrame = this.currentSourceFrame();
+    if (currentFrame) {
+      this.historyManager.updateCurrentState(
+          currentFrame.uiSourceCode(), currentFrame.textEditor.state.selection.main.head);
+    }
     this.editorContainer.showFile(uiSourceCode);
     const currentSourceFrame = this.currentSourceFrame();
-    if (currentSourceFrame && typeof lineNumber === 'number') {
-      currentSourceFrame.revealPosition(lineNumber, columnNumber, !omitHighlight);
+    if (currentSourceFrame && location) {
+      currentSourceFrame.revealPosition(location, !omitHighlight);
     }
-    this.historyManager.pushNewState();
     const visibleView = this.visibleView();
     if (!omitFocus && visibleView) {
       visibleView.focus();
@@ -440,8 +443,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       currentSourceFrame.setSearchableView(this.searchableViewInternal);
     }
 
-    this.searchableViewInternal.setReplaceable(
-        Boolean(currentSourceFrame) && (currentSourceFrame ? currentSourceFrame.canEditSource() : false));
+    this.searchableViewInternal.setReplaceable(Boolean(currentSourceFrame?.canEditSource()));
     this.searchableViewInternal.refreshSearch();
     this.updateToolbarChangedListener();
     this.updateScriptViewToolbarItems();

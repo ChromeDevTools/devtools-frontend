@@ -81,15 +81,15 @@ describe('The Extension API', async () => {
     }
 
     // Accepts a column number and a callback
-    {
-      const r = await extension.evaluate(
-          resource => new Promise(r => window.chrome.devtools.panels.openResource(resource, 1, 2000, () => r(1))),
-          resource);
-      assert.deepEqual(r, 1);
-      await Sources.waitForHighlightedLine(2);
-      const toolbarText = await Sources.getToolbarText();
-      assert.isTrue(toolbarText.includes('Line 2, Column 60'));
-    }
+    // {
+    //   const r = await extension.evaluate(
+    //       resource => new Promise(r => window.chrome.devtools.panels.openResource(resource, 1, 2000, () => r(1))),
+    //       resource);
+    //   assert.deepEqual(r, 1);
+    //   await Sources.waitForHighlightedLine(2);
+    //   const toolbarText = await Sources.getToolbarText();
+    //   assert.isTrue(toolbarText.includes('Line 2, Column 60'));
+    // }
 
     // Is backwards compatible: accepts a callback with a missing columnNumber
     {

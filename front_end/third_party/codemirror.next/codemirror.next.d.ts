@@ -280,7 +280,7 @@ A text iterator iterates over a sequence of strings. When
 iterating over a [`Text`](https://codemirror.net/6/docs/ref/#text.Text) document, result values will
 either be lines or line breaks.
 */
-interface TextIterator extends Iterator<string> {
+interface TextIterator extends Iterator<string>, Iterable<string> {
     /**
     Retrieve the next string. Optionally skip a given number of
     positions after the current position. Always returns the object
@@ -361,7 +361,7 @@ declare abstract class Text implements Iterable<string> {
 
     When `from` and `to` are given, they should be 1-based line numbers.
     */
-    iterLines(from?: number, to?: number): LineCursor;
+    iterLines(from?: number, to?: number): TextIterator;
     /**
     Convert the document to an array of lines (which can be
     deserialized again via [`Text.of`](https://codemirror.net/6/docs/ref/#text.Text^of)).
@@ -381,15 +381,6 @@ declare abstract class Text implements Iterable<string> {
     The empty document.
     */
     static empty: Text;
-}
-declare class LineCursor implements TextIterator {
-    readonly inner: TextIterator;
-    afterBreak: boolean;
-    value: string;
-    done: boolean;
-    constructor(inner: TextIterator);
-    next(skip?: number): this;
-    get lineBreak(): boolean;
 }
 /**
 This type describes a line in the document. It is created
@@ -927,21 +918,39 @@ precedence and then by order within each precedence.
 */
 declare const Prec: {
     /**
-    A precedence below the default precedence, which will cause
-    default-precedence extensions to override it even if they are
-    specified later in the extension ordering.
+    The lowest precedence level. Meant for things that should end up
+    near the end of the extension order.
     */
-    fallback: (ext: Extension) => Extension;
+    lowest: (ext: Extension) => Extension;
     /**
-    The regular default precedence.
+    A lower-than-default precedence, for extensions.
+    */
+    low: (ext: Extension) => Extension;
+    /**
+    The default precedence, which is also used for extensions
+    without an explicit precedence.
     */
     default: (ext: Extension) => Extension;
     /**
-    A higher-than-default precedence.
+    A higher-than-default precedence, for extensions that should
+    come before those with default precedence.
+    */
+    high: (ext: Extension) => Extension;
+    /**
+    The highest precedence level, for extensions that should end up
+    near the start of the precedence ordering.
+    */
+    highest: (ext: Extension) => Extension;
+    /**
+    Backwards-compatible synonym for `Prec.lowest`.
+    */
+    fallback: (ext: Extension) => Extension;
+    /**
+    Backwards-compatible synonym for `Prec.high`.
     */
     extend: (ext: Extension) => Extension;
     /**
-    Precedence above the `default` and `extend` precedences.
+    Backwards-compatible synonym for `Prec.highest`.
     */
     override: (ext: Extension) => Extension;
 };
@@ -1201,7 +1210,7 @@ declare class Transaction {
     has `"select.pointer"` as user event, `"select"` and
     `"select.pointer"` will match it.
     */
-    isUserEvent(event: string): boolean | "" | undefined;
+    isUserEvent(event: string): boolean;
     /**
     Annotation used to store transaction timestamps.
     */
@@ -1679,6 +1688,12 @@ incomplete) parse tree of active [language](https://codemirror.net/6/docs/ref/#l
 or the empty tree if there is no language available.
 */
 declare function syntaxTree(state: EditorState): Tree;
+/**
+Try to get a parse tree that spans at least up to `upto`. The
+method will do at most `timeout` milliseconds of work to parse
+up to that point if the tree isn't already available.
+*/
+declare function ensureSyntaxTree(state: EditorState, upto: number, timeout?: number): Tree | null;
 /**
 This class bundles a [language object](https://codemirror.net/6/docs/ref/#language.Language) with an
 optional set of supporting extensions. Language packages are
@@ -2273,7 +2288,8 @@ interface ReplaceDecorationSpec {
     /**
     Whether this range covers the positions on its sides. This
     influences whether new content becomes part of the range and
-    whether the cursor can be drawn on its sides. Defaults to false.
+    whether the cursor can be drawn on its sides. Defaults to false
+    for inline replacements, and true for block replacements.
     */
     inclusive?: boolean;
     /**
@@ -2300,6 +2316,10 @@ interface LineDecorationSpec {
     attributes?: {
         [key: string]: string;
     };
+    /**
+    Shorthand for `{attributes: {class: value}}`.
+    */
+    class?: string;
     /**
     Other properties are allowed.
     */
@@ -2768,7 +2788,9 @@ interface EditorConfig {
     /**
     If the view is going to be mounted in a shadow root or document
     other than the one held by the global variable `document` (the
-    default), you should pass it here.
+    default), you should pass it here. If you provide `parent`, but
+    not this option, the editor will automatically look up a root
+    from the parent.
     */
     root?: Document | ShadowRoot;
     /**
@@ -3019,9 +3041,6 @@ declare class EditorView {
     used.
     */
     moveVertically(start: SelectionRange, forward: boolean, distance?: number): SelectionRange;
-    /**
-    Scroll the given document position into view.
-    */
     scrollPosIntoView(pos: number): void;
     /**
     Find the DOM parent node and offset (child offset if `node` is
@@ -3111,6 +3130,11 @@ declare class EditorView {
     transaction to make it scroll the given range into view.
     */
     static scrollTo: StateEffectType<SelectionRange>;
+    /**
+    Effect that makes the editor scroll the given range to the
+    center of the visible view.
+    */
+    static centerOn: StateEffectType<SelectionRange>;
     /**
     Facet to add a [style
     module](https://github.com/marijnh/style-mod#documentation) to
@@ -3496,7 +3520,8 @@ interface CompletionConfig {
     Override the completion sources used. By default, they will be
     taken from the `"autocomplete"` [language
     data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt) (which should hold
-    [completion sources](https://codemirror.net/6/docs/ref/#autocomplete.CompletionSource)).
+    [completion sources](https://codemirror.net/6/docs/ref/#autocomplete.CompletionSource) or arrays
+    of [completions](https://codemirror.net/6/docs/ref/#autocomplete.Completion)).
     */
     override?: readonly CompletionSource[] | null;
     /**
@@ -3563,7 +3588,9 @@ interface Completion {
     its [label](https://codemirror.net/6/docs/ref/#autocomplete.Completion.label). When this holds a
     string, the completion range is replaced by that string. When it
     is a function, that function is called to perform the
-    completion.
+    completion. If it fires a transaction, it is responsible for
+    adding the [`pickedCompletion`](https://codemirror.net/6/docs/ref/#autocomplete.pickedCompletion)
+    annotation to it.
     */
     apply?: string | ((view: EditorView, completion: Completion, from: number, to: number) => void);
     /**
@@ -4551,6 +4578,14 @@ Move the selection head one group or subword backward.
 */
 declare const selectSubwordBackward: Command;
 /**
+Replace the selection with a newline and indent the newly created
+line(s). If the current line consists only of whitespace, this
+will also delete that whitespace. When the cursor is between
+matching brackets, an additional newline will be inserted after
+the cursor.
+*/
+declare const insertNewlineAndIndent: StateCommand;
+/**
 Add a [unit](https://codemirror.net/6/docs/ref/#language.indentUnit) of indentation to all selected
 lines.
 */
@@ -4613,10 +4648,15 @@ declare const foldKeymap: readonly KeyBinding[];
 interface FoldConfig {
     /**
     A function that creates the DOM element used to indicate the
-    position of folded code. When not given, the `placeholderText`
-    option will be used instead.
+    position of folded code. The `onclick` argument is the default
+    click event handler, which toggles folding on the line that
+    holds the element, and should probably be added as an event
+    handler to the returned element.
+
+    When this option isn't given, the `placeholderText` option will
+    be used to create the placeholder element.
     */
-    placeholderDOM?: (() => HTMLElement) | null;
+    placeholderDOM?: ((view: EditorView, onclick: (event: Event) => void) => HTMLElement) | null;
     /**
     Text to use as placeholder for folded text. Defaults to `"…"`.
     Will be styled with the `"cm-foldPlaceholder"` class.
@@ -4737,6 +4777,10 @@ interface LineNumberConfig {
     */
     domEventHandlers?: Handlers;
 }
+/**
+Facet used to provide markers to the line number gutter.
+*/
+declare const lineNumberMarkers: Facet<RangeSet<GutterMarker>, readonly RangeSet<GutterMarker>[]>;
 /**
 Create a line number gutter extension.
 */
@@ -5366,6 +5410,47 @@ highlighting style is used to indicate this.
 declare function bracketMatching(config?: Config): Extension;
 
 /**
+Object that describes an active panel.
+*/
+interface Panel {
+    /**
+    The element representing this panel. The library will add the
+    `"cm-panel"` DOM class to this.
+    */
+    dom: HTMLElement;
+    /**
+    Optionally called after the panel has been added to the editor.
+    */
+    mount?(): void;
+    /**
+    Update the DOM for a given view update.
+    */
+    update?(update: ViewUpdate): void;
+    /**
+    Whether the panel should be at the top or bottom of the editor.
+    Defaults to false.
+    */
+    top?: boolean;
+    /**
+    An optional number that is used to determine the ordering when
+    there are multiple panels. Those with a lower `pos` value will
+    come first. Defaults to 0.
+    */
+    pos?: number;
+}
+/**
+A function that initializes a panel. Used in
+[`showPanel`](https://codemirror.net/6/docs/ref/#panel.showPanel).
+*/
+declare type PanelConstructor = (view: EditorView) => Panel;
+/**
+Opening a panel is done by providing a constructor function for
+the panel through this facet. (The panel is closed again when its
+constructor is no longer provided.) Values of `null` are ignored.
+*/
+declare const showPanel: Facet<PanelConstructor | null, readonly (PanelConstructor | null)[]>;
+
+/**
 Select next occurrence of the current selection.
 Expand selection to the word when selection range is empty.
 */
@@ -5445,6 +5530,18 @@ interface TooltipView {
     */
     dom: HTMLElement;
     /**
+    Adjust the position of the tooltip relative to its anchor
+    position. A positive `x` value will move the tooltip
+    horizontally along with the text direction (so right in
+    left-to-right context, left in right-to-left). A positive `y`
+    will move the tooltip up when it is above its anchor, and down
+    otherwise.
+    */
+    offset?: {
+        x: number;
+        y: number;
+    };
+    /**
     Called after the tooltip is added to the DOM for the first time.
     */
     mount?(view: EditorView): void;
@@ -5461,22 +5558,6 @@ interface TooltipView {
 Behavior by which an extension can provide a tooltip to be shown.
 */
 declare const showTooltip: Facet<Tooltip | null, readonly (Tooltip | null)[]>;
-/**
-Enable a hover tooltip, which shows up when the pointer hovers
-over ranges of text. The callback is called when the mouse hovers
-over the document text. It should, if there is a tooltip
-associated with position `pos` return the tooltip description
-(either directly or in a promise). The `side` argument indicates
-on which side of the position the pointer is—it will be -1 if the
-pointer is before the position, 1 if after the position.
-
-Note that all hover tooltips are hosted within a single tooltip
-container element. This allows multiple tooltips over the same
-range to be "merged" together without overlapping.
-*/
-declare function hoverTooltip(source: (view: EditorView, pos: number, side: -1 | 1) => Tooltip | null | Promise<Tooltip | null>, options?: {
-    hideOnChange?: boolean;
-}): Extension;
 
 declare function clojure(): Promise<StreamLanguage<unknown>>;
 declare function coffeescript(): Promise<StreamLanguage<unknown>>;
@@ -5493,4 +5574,4 @@ declare function shell(): Promise<StreamLanguage<unknown>>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, codeFolding, coffeescript, completeAnyWord, cpp, css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, hoverTooltip, html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, java, javascript, json, keymap, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, shell, showTooltip, standardKeymap, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, codeFolding, coffeescript, completeAnyWord, cpp, css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, javascript, json, keymap, lineNumberMarkers, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, shell, showPanel, showTooltip, standardKeymap, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };

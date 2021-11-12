@@ -147,10 +147,10 @@ export class ScriptFormatterEditorAction implements EditorAction {
     const sourceFrame = this.sourcesView.viewForFile(uiSourceCode);
     let start: number[]|number[] = [0, 0];
     if (sourceFrame instanceof SourceFrame.SourceFrame.SourceFrameImpl) {
-      const selection = sourceFrame.selection();
-      start = formatData.mapping.originalToFormatted(selection.startLine, selection.startColumn);
+      const selection = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
+      start = formatData.mapping.originalToFormatted(selection.lineNumber, selection.columnNumber);
     }
-    this.sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);
+    this.sourcesView.showSourceLocation(formatData.formattedSourceCode, {lineNumber: start[0], columnNumber: start[1]});
   }
 }
 

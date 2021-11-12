@@ -42,7 +42,7 @@ describeWithEnvironment('TextEditor', () => {
 
     it('can highlight whitespace', () => {
       const editor = new TextEditor.TextEditor.TextEditor(
-          makeState('line1  \n  line2( )\n\tline3  ', TextEditor.Config.showWhitespace));
+          makeState('line1  \n  line2( )\n\tline3  ', TextEditor.Config.showWhitespace.instance()));
       renderElementIntoDOM(editor);
       assert.strictEqual(editor.editor.dom.querySelectorAll('.cm-trailingWhitespace, .cm-highlightedSpaces').length, 0);
       Common.Settings.Settings.instance().moduleSetting('showWhitespacesInEditor').set('all');

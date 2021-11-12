@@ -34,7 +34,6 @@ devtools_module("coverage") {
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
-    "../../ui/legacy/components/source_frame:bundle",
   ]
 }
 

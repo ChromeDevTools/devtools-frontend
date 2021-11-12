@@ -163,9 +163,27 @@
   --color-nonmatching-bracket-background: rgb(255 0 0 / 7%);
   --color-editor-selection: #cfe8fc;
   --color-editor-selection-blurred: #e0e0e0;
+  --color-trailing-whitespace: rgb(255 0 0 / 5%);
   --color-selected-option: #fff;
   --color-selected-option-background: #1a73e8;
   --color-highlighted-line: rgb(255 255 0 / 50%);
+  --color-search-match-border: rgb(128 128 128);
+  --color-selected-search-match: var(--color-text-primary);
+  --color-selected-search-match-background: rgb(241 234 0);
+  --color-coverage-used: #63acbe;
+  --color-execution-line-background: rgb(0 59 255 / 10%);
+  --color-execution-line-outline: rgb(64 115 244);
+  --color-execution-token-background: rgb(15 72 252 / 35%);
+  --color-continue-to-location: rgb(5 65 255 / 10%);
+  --color-continue-to-location-hover: rgb(15 72 252 / 35%);
+  --color-continue-to-location-hover-border: rgb(121 141 254);
+  --color-continue-to-location-async: rgb(58 162 8 / 30%);
+  --color-continue-to-location-async-hover: rgb(75 179 6 / 55%);
+  --color-continue-to-location-async-hover-border: rgb(100 154 100);
+  --color-evaluated-expression: rgb(255 255 11 / 25%);
+  --color-evaluated-expression-border: rgb(163 41 34);
+  --color-variable-values: #ffe3c7;
+  --color-non-breakable-line: rgb(128 128 128 / 40%);
 }
 
 .-theme-with-dark-background {
@@ -285,7 +303,25 @@
   --color-nonmatching-bracket-background: initial;
   --color-editor-selection: hsl(207deg 88% 22%);
   --color-editor-selection-blurred: #454545;
+  --color-trailing-whitespace: rgb(255 0 0 / 5%);
   --color-selected-option: #fff;
   --color-selected-option-background: #0e639c;
   --color-highlighted-line: hsl(133deg 100% 30% / 50%);
+  --color-search-match-border: rgb(128 128 128);
+  --color-selected-search-match: #eee;
+  --color-selected-search-match-background: hsl(133deg 100% 30%);
+  --color-coverage-used: rgb(65 138 156);
+  --color-execution-line-background: rgb(0 154 17 / 30%);
+  --color-execution-line-outline: #33cc6b;
+  --color-execution-token-background: rgb(132 237 78 / 20%);
+  --color-continue-to-location: rgb(0 173 56 / 35%);
+  --color-continue-to-location-hover: rgb(0 173 56 / 35%);
+  --color-continue-to-location-hover-border: #33cc6b;
+  --color-continue-to-location-async: rgb(87 238 0 / 20%);
+  --color-continue-to-location-async-hover: rgb(128 241 48 / 50%);
+  --color-continue-to-location-async-hover-border: rgb(101 155 101);
+  --color-evaluated-expression: rgb(71 70 0 / 75%);
+  --color-evaluated-expression-border: rgb(221 99 92);
+  --color-variable-values: rgb(56 28 0);
+  --color-non-breakable-line: rgb(127 127 127 / 40%);
 }

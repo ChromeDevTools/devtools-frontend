@@ -1051,7 +1051,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         TextEditor.Config.baseConfiguration(initialValue),
         TextEditor.Config.autocompletion,
         html(),
-        TextEditor.Config.domWordWrap,
+        TextEditor.Config.domWordWrap.instance(),
         CodeMirror.EditorView.theme({
           '&.cm-editor': {maxHeight: '300px'},
           '.cm-scroller': {overflowY: 'auto'},

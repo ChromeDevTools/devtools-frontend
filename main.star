@@ -58,6 +58,12 @@ luci.project(
     ],
     bindings = [
         luci.binding(
+            roles = "role/configs.validator",
+            users = [
+                "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com",
+            ],
+        ),
+        luci.binding(
             roles = "role/swarming.poolOwner",
             groups = "mdb/v8-infra",
         ),

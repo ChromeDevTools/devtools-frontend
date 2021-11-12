@@ -36,6 +36,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {WindowChangedWithPositionEvent} from './OverviewGrid.js';
 import {Events as OverviewGridEvents, OverviewGrid} from './OverviewGrid.js';
 import type {Calculator} from './TimelineGrid.js';
+import timelineOverviewInfoStyles from './timelineOverviewInfo.css.js';
 
 export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
@@ -426,7 +427,7 @@ export class OverviewInfo {
     this.visible = false;
     this.element = UI.Utils
                        .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
-                         cssFile: 'ui/legacy/components/perf_ui/timelineOverviewInfo.css',
+                         cssFile: [timelineOverviewInfoStyles],
                          delegatesFocus: undefined,
                        })
                        .createChild('div', 'overview-info');

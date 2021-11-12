@@ -2,7 +2,6 @@
   "dependencies": [
     "ui/legacy",
     "panels/layer_viewer",
-    "ui/legacy/components/perf_ui",
     "panels/profiler"
   ]
 }

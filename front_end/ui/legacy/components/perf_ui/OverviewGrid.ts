@@ -35,6 +35,7 @@ import * as UI from '../../legacy.js';
 
 import type {Calculator} from './TimelineGrid.js';
 import {TimelineGrid} from './TimelineGrid.js';
+import overviewGridStyles from './overviewGrid.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -161,7 +162,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
 
     this.parentElement.addEventListener('wheel', this.onMouseWheel.bind(this), true);
     this.parentElement.addEventListener('dblclick', this.resizeWindowMaximum.bind(this), true);
-    UI.Utils.appendStyle(this.parentElement, 'ui/legacy/components/perf_ui/overviewGrid.css');
+    UI.Utils.appendStyle(this.parentElement, overviewGridStyles);
 
     this.leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
     UI.UIUtils.installDragHandle(

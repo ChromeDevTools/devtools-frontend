@@ -88,7 +88,6 @@ non_autostart_non_remote_modules = [
   "panels/lighthouse/lighthouse_module.js",
   "panels/media/media_module.js",
   "panels/network/network_module.js",
-  "ui/legacy/components/perf_ui/perf_ui_module.js",
   "panels/profiler/profiler_module.js",
   "panels/issues/issues_module.js",
   "panels/application/application_module.js",

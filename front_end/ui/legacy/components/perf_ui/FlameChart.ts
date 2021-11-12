@@ -42,6 +42,7 @@ import type {ChartViewportDelegate} from './ChartViewport.js';
 import {ChartViewport} from './ChartViewport.js';
 import type {Calculator} from './TimelineGrid.js';
 import {TimelineGrid} from './TimelineGrid.js';
+import flameChartStyles from './flameChart.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -157,7 +158,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
       groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/perf_ui/flameChart.css');
+    this.registerRequiredCSS(flameChartStyles);
     this.contentElement.classList.add('flame-chart-main-pane');
     this.groupExpansionSetting = groupExpansionSetting;
     this.groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};

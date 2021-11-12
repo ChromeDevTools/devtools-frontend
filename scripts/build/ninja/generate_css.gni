@@ -18,6 +18,7 @@ template("generate_css") {
 
     args = [
       "$is_debug",
+      "${invoker.legacy}",
       target_name,
       _src,
       _dest,
@@ -26,7 +27,11 @@ template("generate_css") {
 
     outputs = []
     foreach(_input, sources) {
-      outputs += [ "$target_gen_dir/$_input.js" ]
+      _file_name = _input
+      if (invoker.legacy) {
+        _file_name = "$_file_name.legacy"
+      }
+      outputs += [ "$target_gen_dir/$_file_name.js" ]
     }
 
     data = outputs
@@ -37,4 +42,8 @@ template("generate_css") {
       }
     }
   }
+}
+
+set_defaults("generate_css") {
+  legacy = false
 }

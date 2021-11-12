@@ -15,6 +15,10 @@ ruleTester.run('check_css_import', rule, {
       filename: 'scripts/eslint_rules/tests/file.ts',
     },
     {
+      code: 'import styles from \'./check_css_import_test_file.css.legacy.js\';',
+      filename: 'scripts/eslint_rules/tests/file.ts',
+    },
+    {
       code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.js\';',
       filename: 'front_end/ui/components/file.ts',
     },
@@ -24,6 +28,14 @@ ruleTester.run('check_css_import', rule, {
     {
       // Files that do not exist are caught
       code: 'import styles from \'styles.css.js\';',
+      filename: 'front_end/ui/components/component/file.ts',
+      errors: [{
+        message: 'File styles.css does not exist. Check you are importing the correct file.',
+      }],
+    },
+    {
+      // Files that do not exist are caught
+      code: 'import styles from \'styles.css.legacy.js\';',
       filename: 'front_end/ui/components/component/file.ts',
       errors: [{
         message: 'File styles.css does not exist. Check you are importing the correct file.',

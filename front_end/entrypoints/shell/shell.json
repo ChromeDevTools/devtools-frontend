@@ -4,7 +4,6 @@
     { "name": "ui/legacy/components/text_editor", "type": "autostart" },
     { "name": "ui/legacy/components/source_frame", "type": "autostart" },
 
-    { "name": "ui/legacy/components/perf_ui" },
     { "name": "panels/profiler" }
   ]
 }

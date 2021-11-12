@@ -36,6 +36,8 @@ import * as Host from '../../../../core/host/host.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
+import timelineGridStyles from './timelineGrid.css.legacy.js';
+
 const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
 
 export class TimelineGrid {
@@ -47,7 +49,7 @@ export class TimelineGrid {
 
   constructor() {
     this.element = document.createElement('div');
-    UI.Utils.appendStyle(this.element, 'ui/legacy/components/perf_ui/timelineGrid.css');
+    UI.Utils.appendStyle(this.element, timelineGridStyles);
 
     this.dividersElementInternal = this.element.createChild('div', 'resources-dividers');
 

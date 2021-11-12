@@ -9,6 +9,8 @@ import * as Platform from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 
+import filmStripViewStyles from './filmStripView.css.legacy.js';
+
 const UIStrings = {
   /**
   *@description Element title in Film Strip View of the Performance panel
@@ -43,7 +45,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/components/perf_ui/filmStripView.css');
+    this.registerRequiredCSS(filmStripViewStyles);
     this.contentElement.classList.add('film-strip-view');
     this.statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();

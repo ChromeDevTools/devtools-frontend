@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "ui/legacy",
-    "ui/legacy/components/perf_ui"
+    "ui/legacy"
   ]
 }

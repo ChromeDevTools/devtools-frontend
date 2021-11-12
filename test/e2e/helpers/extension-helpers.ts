@@ -56,7 +56,7 @@ export async function loadExtension(name: string, startPage?: string) {
 
     try {
       await frontend.evaluate(extensionInfo => {
-        globalThis.Extensions.ExtensionServer.instance().addExtension(extensionInfo);
+        globalThis.Extensions.extensionServer.addExtension(extensionInfo);
         const extensionIFrames = document.body.querySelectorAll(`[data-devtools-extension="${extensionInfo.name}"]`);
         if (extensionIFrames.length > 1) {
           throw new Error(`Duplicate extension ${extensionInfo.name}`);

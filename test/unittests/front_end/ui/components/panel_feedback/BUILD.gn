@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("panel_feedback") {
   testonly = true
-  sources = [ "panel_feedback_test.ts" ]
+  sources = [
+    "feedback_button_test.ts",
+    "panel_feedback_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/ui/components/panel_feedback:bundle",

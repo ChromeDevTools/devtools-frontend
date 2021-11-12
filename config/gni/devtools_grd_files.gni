@@ -52,6 +52,7 @@ grd_files_release_sources = [
   "front_end/Images/elements_panel_icon.svg",
   "front_end/Images/errorWave.svg",
   "front_end/Images/error_icon.svg",
+  "front_end/Images/feedback_button_icon.svg",
   "front_end/Images/feedback_thin_16x16_icon.svg",
   "front_end/Images/flex-direction-icon.svg",
   "front_end/Images/flex-nowrap-icon.svg",

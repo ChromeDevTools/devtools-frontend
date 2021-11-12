@@ -12,13 +12,17 @@ generate_css("css_files") {
 }
 
 devtools_module("panel_feedback") {
-  sources = [ "PanelFeedback.ts" ]
+  sources = [
+    "FeedbackButton.ts",
+    "PanelFeedback.ts",
+  ]
   deps = [
+    "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit-html:bundle",
-    "../icon_button:bundle",
+    "../buttons:bundle",
   ]
 
   visibility = [ "../../../../test/unittests/front_end/ui/components" ]

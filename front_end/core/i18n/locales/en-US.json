@@ -11453,6 +11453,9 @@
   "ui/components/linear_memory_inspector/ValueInterpreterSettings.ts | otherGroup": {
     "message": "Other"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Feedback"
+  },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
     "message": "Preview feature"
   },

@@ -1206,6 +1206,43 @@ const UIStrings = {
   *@description Text of a DOM element in Timeline UIUtils of the Performance panel
   */
   UnknownNode: '[ unknown node ]',
+
+  // COHERENT BEGIN
+
+  advance: 'Advance',
+  executeScript: 'Execute Script',
+  jsEvent: 'JS Event',
+  synchronizeModels: 'Synchronize Models',
+  bindingsReady: 'Bindings Ready',
+  triggerEvent: 'Trigger Event',
+  recalcVisualStyle: 'Recalc Visual Style',
+  matchElements: 'Match Elements',
+  updateNodeTransforms: 'Update Node Transforms',
+  executeTimers: 'Execute Timers',
+  recordRendering: 'Record Rendering',
+  waitPendingFrame: 'Wait Pending Frame',
+  executeBuffers: 'Execute Buffers',
+  frontEnd: 'Frontend',
+  backEnd: 'Backend',
+  buildDOM: 'Build DOM',
+  customAttributeInit: 'Custom data-bind Attribute Initialization',
+  customAttributeUpdate: 'Custom data-bind Attribute Update',
+  customAttributeDeinit: 'Custom data-bind Attribute Deinitialization',
+
+  eventName: 'Event Name',
+  attributeName: 'Attribute Name',
+  frameId: 'Frame Id',
+  pathCacheMisses: 'Path Cache Misses',
+  shadowCacheMisses: 'Shadow Cache Misses',
+  backdropCacheMisses: 'Backdrop Cache Misses',
+  totalCommandsProcessed: 'Total Commands Processed',
+  totalCommands: 'Total Commands',
+  drawCommands: 'Draw Commands',
+  clearCommands: 'Clear Commands',
+  elementsChangedLayout: 'Elements Changed Layout',
+  styleMatchCacheMisses: 'Style Match Cache Misses',
+
+  // COHERENT END
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1368,6 +1405,33 @@ export class TimelineUIUtils {
 
     eventStyles[type.LayoutShift] = new TimelineRecordStyle(i18nString(UIStrings.layoutShift), experience);
 
+    // COHERENT BEGIN
+    eventStyles[type.Coherent_Advance] = new TimelineRecordStyle(UIStrings.advance, rendering);
+    eventStyles[type.Coherent_ExecuteScript] = new TimelineRecordStyle(UIStrings.executeScript, scripting);
+    eventStyles[type.Coherent_JSEvent] = new TimelineRecordStyle(UIStrings.jsEvent, scripting);
+    eventStyles[type.Coherent_SynchronizeModels] = new TimelineRecordStyle(UIStrings.synchronizeModels, scripting);
+    eventStyles[type.Coherent_BindingsReady] = new TimelineRecordStyle(UIStrings.bindingsReady, scripting);
+    eventStyles[type.Coherent_TriggerEvent] = new TimelineRecordStyle(UIStrings.triggerEvent, scripting);
+    eventStyles[type.Coherent_ScheduleStyleRecalculation] = new TimelineRecordStyle(UIStrings.scheduleStyleRecalculation, rendering);
+    eventStyles[type.Coherent_RecalculateStyles] = new TimelineRecordStyle(UIStrings.recalculateStyle, rendering);
+    eventStyles[type.Coherent_RecalcVisualStyle] = new TimelineRecordStyle(UIStrings.recalcVisualStyle, rendering);
+    eventStyles[type.Coherent_MatchElements] = new TimelineRecordStyle(UIStrings.matchElements, rendering);
+    eventStyles[type.Coherent_UpdateNodeTransforms] = new TimelineRecordStyle(UIStrings.updateNodeTransforms, rendering);
+    eventStyles[type.Coherent_ExecuteTimers] = new TimelineRecordStyle(UIStrings.executeTimers, scripting);
+    eventStyles[type.Coherent_Layout] = new TimelineRecordStyle(UIStrings.layout, rendering);
+    eventStyles[type.Coherent_InvalidateLayout] = new TimelineRecordStyle(UIStrings.invalidateLayout, rendering);
+    eventStyles[type.Coherent_RecordRendering] = new TimelineRecordStyle(UIStrings.recordRendering, painting);
+    eventStyles[type.Coherent_Paint] = new TimelineRecordStyle(UIStrings.paint, painting);
+    eventStyles[type.Coherent_WaitPendingFrame] = new TimelineRecordStyle(UIStrings.waitPendingFrame, rendering);
+    eventStyles[type.Coherent_ExecuteBuffers] = new TimelineRecordStyle(UIStrings.executeBuffers, painting);
+    eventStyles[type.Coherent_Frontend] = new TimelineRecordStyle(UIStrings.frontEnd, painting);
+    eventStyles[type.Coherent_Backend] = new TimelineRecordStyle(UIStrings.backEnd, painting);
+    eventStyles[type.Coherent_GPU] = new TimelineRecordStyle(UIStrings.gpu, categories['gpu']);
+    eventStyles[type.Coherent_BuildDOM] = new TimelineRecordStyle(UIStrings.buildDOM, rendering);
+    eventStyles[type.Coherent_CustomAttributeInit] = new TimelineRecordStyle(UIStrings.customAttributeInit, scripting);
+    eventStyles[type.Coherent_CustomAttributeUpdate] = new TimelineRecordStyle(UIStrings.customAttributeUpdate, scripting);
+    eventStyles[type.Coherent_CustomAttributeDeinit] = new TimelineRecordStyle(UIStrings.customAttributeDeinit, scripting);
+    // COHERENT END
     eventStylesMap = eventStyles;
     return eventStyles;
   }
@@ -2044,6 +2108,9 @@ export class TimelineUIUtils {
     const eventData = event.args['data'];
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
     const initiator = timelineData.initiator();
+    // COHERENT BEGIN
+    const initiators = timelineData.initiators();
+    // COHERENT END
     let url: (string|null)|null = null;
 
     if (timelineData.warning) {
@@ -2404,7 +2471,75 @@ export class TimelineUIUtils {
 
         break;
       }
-
+      // COHERENT BEGIN
+      case recordTypes.Coherent_JSEvent:
+      case recordTypes.Coherent_TriggerEvent: {
+        contentHelper.appendTextRow(UIStrings.eventName, event.args['stringData']);
+        break;
+      }
+      case recordTypes.Coherent_CustomAttributeInit:
+      case recordTypes.Coherent_CustomAttributeUpdate:
+      case recordTypes.Coherent_CustomAttributeDeinit: {
+        contentHelper.appendTextRow(UIStrings.attributeName, event.args['stringData']);
+        break;
+      }
+      case recordTypes.Coherent_Advance:
+      case recordTypes.Coherent_ExecuteTimers:
+      case recordTypes.Coherent_RecalcVisualStyle:
+      case recordTypes.Coherent_UpdateNodeTransforms:
+      case recordTypes.Coherent_Paint:
+      case recordTypes.Coherent_WaitPendingFrame: 
+      case recordTypes.Coherent_MatchElements: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
+        break;
+      }
+      case recordTypes.Coherent_RecordRendering: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.pathCacheMisses, event.args['int1']);
+        contentHelper.appendTextRow(UIStrings.shadowCacheMisses, event.args['int2']);
+        contentHelper.appendTextRow(UIStrings.backdropCacheMisses, event.args['int3']);
+        break;
+      }
+      case recordTypes.Coherent_Layout: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow(
+            UIStrings.nodesThatNeedLayout,
+            i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));
+        break;
+      }
+      case recordTypes.Coherent_ExecuteBuffers:
+      case recordTypes.Coherent_GPU: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['frameId']);
+        break;
+      }
+      case recordTypes.Coherent_Frontend: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.totalCommandsProcessed, event.args['int1']);
+        break;
+      }
+      case recordTypes.Coherent_Backend: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.totalCommands, event.args['int1']);
+        contentHelper.appendTextRow(UIStrings.drawCommands, event.args['int2']);
+        contentHelper.appendTextRow(UIStrings.clearCommands, event.args['int3']);
+        break;
+      }
+      case recordTypes.Coherent_ScheduleStyleRecalculation:
+      case recordTypes.Coherent_InvalidateLayout: {
+        contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
+        let eventTimelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+        if (eventTimelineData.url) {
+            contentHelper.appendLocationRow(UIStrings.stackTrace, eventTimelineData.url, event.args['int2'], event.args['int3']);
+        }
+        break;
+      }
+      case recordTypes.Coherent_RecalculateStyles: {
+        contentHelper.appendTextRow(UIStrings.elementsAffected, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.elementsChangedLayout, event.args['int1']);
+        contentHelper.appendTextRow(UIStrings.styleMatchCacheMisses, event.args['int2']);
+        break;
+      }
+      // COHERENT END
       default: {
         const detailsNode =
             await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
@@ -2437,6 +2572,7 @@ export class TimelineUIUtils {
     }
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
+        (initiators && initiators.length > 0) ||
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
       TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
     }
@@ -2744,6 +2880,32 @@ export class TimelineUIUtils {
           stackLabel || i18nString(UIStrings.stackTrace),
           TimelineUIUtils._stackTraceFromCallFrames(timelineData.stackTrace));
     }
+
+    // COHERENT BEGIN
+    const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiators();
+    if (initiators && initiators.length) {
+      var delay = event.startTime - initiators[0].startTime;
+      contentHelper.appendTextRow(UIStrings.pendingFor, i18n.TimeUtilities.preciseMillisToString(delay, 1));
+
+      for(let i = 0; i < initiators.length; i++) {
+          const link = document.createElement('span');
+          link.classList.add('devtools-link');
+          UI.ARIAUtils.markAsLink(link);
+          link.tabIndex = 0;
+          link.textContent = UIStrings.reveal;
+          link.addEventListener('click', () => {
+            TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiators[i] as SDK.TracingModel.Event)));
+          });
+          link.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+              TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiators[i] as SDK.TracingModel.Event)));
+              event.consume(true);
+            }
+          });
+          contentHelper.appendElementRow(UIStrings.initiator, link);
+    }
+    }
+    // COHERENT END
 
     const initiator = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiator();
     // Indirect causes.

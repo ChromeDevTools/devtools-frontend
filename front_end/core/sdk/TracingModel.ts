@@ -556,6 +556,22 @@ export class Event {
     return event;
   }
 
+  // COHERENT BEGIN
+
+  /**
+ * @param {!SDK.TracingModel.Event} a
+ * @param {!SDK.TracingModel.Event} b
+ * @return {number}
+ */
+  static compareStartAndEndTime(a: Event|null, b: Event|null): number {
+    if (!a || !b) {
+      return 0;
+    }
+    return a.startTime - b.startTime || (b.endTime !== undefined && a.endTime !== undefined && b.endTime - a.endTime) ||
+        0;
+  }
+  // COHERENT END
+
   static compareStartTime(a: Event|null, b: Event|null): number {
     if (!a || !b) {
       return 0;
@@ -740,6 +756,16 @@ class NamedObject {
     this.sortIndex = 0;
   }
 
+  // COHERENT BEGIN
+  // https://github.com/ChromeDevTools/devtools-frontend/blob/7c1cd7bb49bb8c06d11fc1a7e0e64fe5e9d47d8a/front_end/core/sdk/TracingModel.ts#L728
+  // TLDR: Even though we are sending sortIndex, it isn't used and instead, undefineds are compared in Sorter::sort<T>
+  static sort<Item extends NamedObject>(array: Item[]): Item[] {
+    return array.sort((a, b) => {
+      return a.sortIndex !== b.sortIndex ? a.sortIndex - b.sortIndex : a.name().localeCompare(b.name());
+    });
+  }
+  // COHERENT END
+
   setName(name: string): void {
     this.nameInternal = name;
   }
@@ -792,7 +818,11 @@ export class Process extends NamedObject {
   }
 
   sortedThreads(): Thread[] {
-    return Sorter.sort([...this.threads.values()]);
+    // COHERENT BEGIN
+    // More info on the function
+    // return Sorter.sort([...this.threads.values()]);
+    return NamedObject.sort([...this.threads.values()]); 
+    // COHERENT END
   }
 }
 
@@ -811,7 +841,10 @@ export class Thread extends NamedObject {
   }
 
   tracingComplete(): void {
-    this.asyncEventsInternal.sort(Event.compareStartTime);
+    // COHERENT BEGIN
+    // this.asyncEventsInternal.sort(Event.compareStartTime);
+    this.asyncEventsInternal.sort(Event.compareStartAndEndTime);
+    // COHERENT END
     this.eventsInternal.sort(Event.compareStartTime);
     const phases = Phase;
     const stack = [];

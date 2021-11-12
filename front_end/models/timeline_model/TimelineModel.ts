@@ -106,6 +106,12 @@ export class TimelineModelImpl {
   private tracingModelInternal: SDK.TracingModel.TracingModel|null;
   private mainFrameLayerTreeId?: any;
 
+  // COHERENT BEGIN
+  private scheduledStyleRecalculation!: SDK.TracingModel.Event[];
+  private currentLoadedUrls!: string[];
+  private scheduledLayoutInvalidate!: SDK.TracingModel.Event[];
+  // COHERENT END
+
   constructor() {
     this.minimumRecordTimeInternal = 0;
     this.maximumRecordTimeInternal = 0;
@@ -575,6 +581,19 @@ export class TimelineModelImpl {
     this.browserFrameTracking = false;
     this.persistentIds = false;
     this.legacyCurrentPage = null;
+
+    // COHERENT BEGIN
+    this.scheduledStyleRecalculation = [];
+    // We don't want to clear neither of the loaded urls
+    // or scheduled invalidate layout events, since we
+    // have to reuse them between threads
+    if (!this.currentLoadedUrls) {
+      this.currentLoadedUrls = [];
+    }
+    if (!this.scheduledLayoutInvalidate) {
+      this.scheduledLayoutInvalidate = [];
+    }
+    // COHERENT END
   }
 
   private extractCpuProfile(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
@@ -933,6 +952,96 @@ export class TimelineModelImpl {
     }
 
     switch (event.name) {
+      // COHERENT BEGIN
+      case RecordType.Coherent_InitializingURL: {
+        this.currentLoadedUrls.push(event.args['name']);
+        break;
+      }
+      case RecordType.Coherent_ScheduleStyleRecalculation: {
+        let urlIndex = parseInt(event.args['int1']);
+        if (urlIndex != -1) {
+          let scheduleStyleRecalcTimelineData = TimelineData.forEvent(event);
+          scheduleStyleRecalcTimelineData.setUrl(this.currentLoadedUrls[urlIndex]);
+        }
+        // since we have many initiators, some may happen during
+        // style recalculation and they will get processed in the
+        // current style recalculation event
+        if (this.lastRecalculateStylesEvent
+          && this.lastRecalculateStylesEvent.endTime
+          && event.endTime
+          && this.lastRecalculateStylesEvent.startTime < event.startTime
+          && this.lastRecalculateStylesEvent.endTime > event.endTime) {
+            let recalcStylesTimelineData = TimelineData.forEvent(this.lastRecalculateStylesEvent);
+            recalcStylesTimelineData.addInitiator(event);
+        }
+        else {
+          this.scheduledStyleRecalculation.push(event);
+        }
+        this.lastRecalculateStylesEvent = event;
+        break;
+      }
+      case RecordType.Coherent_RecalculateStyles: {
+        if (this.scheduledStyleRecalculation) {
+          let initiators = this.scheduledStyleRecalculation;
+          this.scheduledStyleRecalculation = [];
+          timelineData.setInitiators(initiators);
+        }
+
+        this.lastRecalculateStylesEvent = event;
+        break;
+      }
+      case RecordType.Coherent_InvalidateLayout: {
+        // Coherent: This is chromium comment:
+        // Consider style recalculation as a reason for layout invalidation,
+        // but only if we had no earlier layout invalidation records.
+
+        // Coherent: Since there can be other layout thread, that gets
+        // processed after this thread, we don't check if there are any
+        // existing earlier layout invalidation records, but invalidations
+        // with additional information are priority
+        let urlIndex = parseInt(event.args['int1']);
+        if (urlIndex != -1) {
+          let invalidateLayoutEventTimelineData = TimelineData.forEvent(event);
+          invalidateLayoutEventTimelineData.setUrl(this.currentLoadedUrls[urlIndex])
+          this.scheduledLayoutInvalidate.push(event);
+        } else if (this.lastRecalculateStylesEvent 
+          && this.lastRecalculateStylesEvent.endTime
+          && this.lastRecalculateStylesEvent.endTime > event.startTime) {
+            let recalcInitiators = TimelineData.forEvent(this.lastRecalculateStylesEvent).initiators();
+            if (recalcInitiators) {
+              for (let i = 0; i < recalcInitiators.length; i++) {
+                // sometimes we might schedule layout tasks that were
+                // triggered during recalculate styles, but they will end
+                // here, so no duplicates
+                if (this.scheduledLayoutInvalidate.indexOf(recalcInitiators[i]) == -1) {
+                    this.scheduledLayoutInvalidate.push(recalcInitiators[i]);
+                }
+            }
+            // Coherent: and hide this event since we won't need it on the timeline
+            event.name = RecordType.Coherent_Disabled;
+          }
+            
+        } else {
+            this.scheduledLayoutInvalidate.push(event);
+        }
+        break;
+      }
+      case RecordType.Coherent_Layout: {
+        // This event can be sent from a different thread than the one
+        // creating the initiators, in this case, we need to look up to
+        // certain timeStamp and only the last frame id
+        if (this.scheduledLayoutInvalidate) {
+            var lastInitiatorIndex = this.scheduledLayoutInvalidate.findIndex(initiator =>
+              (initiator.endTime && initiator.endTime > event.startTime || initiator.args['int0'] != event.args['int0']));
+            if (lastInitiatorIndex > 0) {
+                let initiators = this.scheduledLayoutInvalidate.splice(0, lastInitiatorIndex);
+                timelineData.setInitiators(initiators);
+            }
+        }
+        
+        break;
+      }
+      // COHERENT END
       case RecordType.ResourceSendRequest:
       case RecordType.WebSocketCreate: {
         timelineData.setInitiator(eventStack[eventStack.length - 1] || null);
@@ -1581,6 +1690,36 @@ export enum RecordType {
   Profile = 'Profile',
 
   AsyncTask = 'AsyncTask',
+
+  // COHERENT BEGIN
+  Coherent_Advance = 'Coherent_Advance',
+  Coherent_JSEvent = 'Coherent_JSEvent',
+  Coherent_ExecuteScript = 'Coherent_ExecuteScript',
+  Coherent_SynchronizeModels = 'Coherent_SynchronizeModels',
+  Coherent_BindingsReady = 'Coherent_BindingsReady',
+  Coherent_TriggerEvent = 'Coherent_TriggerEvent',
+  Coherent_ScheduleStyleRecalculation = 'Coherent_ScheduleStyleRecalculation',
+  Coherent_RecalculateStyles = 'Coherent_RecalculateStyles',
+  Coherent_RecalcVisualStyle = 'Coherent_RecalcVisualStyle',
+  Coherent_MatchElements = 'Coherent_MatchElements',
+  Coherent_UpdateNodeTransforms = 'Coherent_UpdateNodeTransforms',
+  Coherent_ExecuteTimers = 'Coherent_ExecuteTimers',
+  Coherent_InvalidateLayout = 'Coherent_InvalidateLayout',
+  Coherent_Layout = 'Coherent_Layout',
+  Coherent_RecordRendering = 'Coherent_RecordRendering',
+  Coherent_Paint = 'Coherent_Paint',
+  Coherent_WaitPendingFrame = 'Coherent_WaitPendingFrame',
+  Coherent_ExecuteBuffers = 'Coherent_ExecuteBuffers',
+  Coherent_Frontend = 'Coherent_Frontend',
+  Coherent_Backend = 'Coherent_Backend',
+  Coherent_GPU = 'Coherent_GPU',
+  Coherent_BuildDOM = 'Coherent_BuildDOM',
+  Coherent_InitializingURL = 'Coherent_InitializingURL',
+  Coherent_CustomAttributeInit = 'Coherent_CustomAttributeInit',
+  Coherent_CustomAttributeUpdate = 'Coherent_CustomAttributeUpdate',
+  Coherent_CustomAttributeDeinit = 'Coherent_CustomAttributeDeinit',
+  Coherent_Disabled = 'Coherent_Disabled',
+  // COHERENT END
 }
 
 export namespace TimelineModelImpl {
@@ -2299,6 +2438,9 @@ export class TimelineData {
   private initiatorInternal: SDK.TracingModel.Event|null;
   frameId: string;
   timeWaitingForMainThread?: number;
+  // COHERENT BEGIN
+  private initiatorsInternal: SDK.TracingModel.Event[]|null;
+  // COHERENT END
 
   constructor() {
     this.warning = null;
@@ -2309,8 +2451,35 @@ export class TimelineData {
     this.picture = null;
     this.initiatorInternal = null;
     this.frameId = '';
+
+    // COHERENT BEGIN
+    this.initiatorsInternal = [];
+    // COHERENT END
   }
 
+  // COHERENT BEGIN
+
+  setUrl(url: string): void {
+    this.url = url;
+  }
+
+  addInitiator(initiator: SDK.TracingModel.Event|null): void {
+      if (!initiator || !this.initiatorsInternal) {
+        return;
+      }
+      this.initiatorsInternal.push(initiator);
+  }
+
+  setInitiators(initiators: SDK.TracingModel.Event[]|null): void {
+      this.initiatorsInternal = initiators;
+  }
+
+  initiators(): SDK.TracingModel.Event[]|null {
+      return this.initiatorsInternal;
+  }
+
+  // COHERENT END
+  
   setInitiator(initiator: SDK.TracingModel.Event|null): void {
     this.initiatorInternal = initiator;
     if (!initiator || this.url) {

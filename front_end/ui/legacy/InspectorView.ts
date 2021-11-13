@@ -210,6 +210,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return inspectorViewInstance;
   }
 
+  static maybeGetInspectorViewInstance(): InspectorView|undefined {
+    return inspectorViewInstance;
+  }
+
   wasShown(): void {
     this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
   }

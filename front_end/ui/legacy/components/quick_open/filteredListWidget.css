@@ -113,7 +113,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item .filtered-list-widget-title {
-  flex: auto;
+  flex: initial;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -194,7 +194,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.one-row .filtered-list-widget-title {
-  flex: none;
+  padding-right: 8px;
 }
 
 .filtered-list-widget-item.two-rows {

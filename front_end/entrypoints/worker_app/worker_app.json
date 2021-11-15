@@ -1,7 +1,6 @@
 {
   "modules" : [
     { "name": "panels/layer_viewer" },
-    { "name": "panels/application" },
     { "name": "panels/timeline" }
   ],
   "extends": "shell"

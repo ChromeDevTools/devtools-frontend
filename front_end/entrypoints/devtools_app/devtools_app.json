@@ -6,7 +6,6 @@
     { "name": "emulated_devices" },
     { "name": "panels/layers" },
     { "name": "panels/layer_viewer" },
-    { "name": "panels/application" },
     { "name": "panels/timeline" }
   ],
   "extends": "shell"

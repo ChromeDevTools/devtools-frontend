@@ -122,7 +122,6 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/TwaDigitalAssetLinksFailed.md",
   "front_end/models/issues_manager/descriptions/TwaHttpError.md",
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
-  "front_end/panels/application/module.json",
   "front_end/panels/screencast/module.json",
   "front_end/legacy_test_runner/sdk_test_runner/sdk_test_runner.js",
   "front_end/legacy_test_runner/security_test_runner/security_test_runner.js",

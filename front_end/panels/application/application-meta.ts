@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -47,8 +46,6 @@ let loadedResourcesModule: (typeof Resources|undefined);
 
 async function loadResourcesModule(): Promise<typeof Resources> {
   if (!loadedResourcesModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/application');
     loadedResourcesModule = await import('./application.js');
   }
   return loadedResourcesModule;

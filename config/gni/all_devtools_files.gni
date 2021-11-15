@@ -56,7 +56,6 @@ all_devtools_files = [
   "front_end/entrypoints/inspector/inspector.json",
   "front_end/panels/js_profiler/module.json",
   "front_end/legacy_test_runner/layers_test_runner/layers_test_runner.js",
-  "front_end/panels/layer_viewer/module.json",
   "front_end/panels/layers/module.json",
   "front_end/entrypoints/ndb_app/ndb_app.json",
   "front_end/legacy_test_runner/network_test_runner/network_test_runner.js",

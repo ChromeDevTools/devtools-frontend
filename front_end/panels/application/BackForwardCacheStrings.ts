@@ -16,9 +16,10 @@ const UIStrings = {
       'Back/forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device.',
   /**
       * @description Description text for not restored reason RelatedActiveContentsExist.
+      * Note: "window.open()" is the name of a JavaScript method and should not be translated.
       */
   relatedActiveContentsExist:
-      'The page was opened using `window.open()` and another tab has a reference to it, or the page opened a window.',
+      'The page was opened using \'`window.open()`\' and another tab has a reference to it, or the page opened a window.',
   /**
       * @description Description text for not restored reason HTTPStatusNotOK.
       */
@@ -83,6 +84,7 @@ const UIStrings = {
   sessionRestored: 'Chrome restarted and cleared the back/forward cache entries.',
   /**
       * @description Description text for not restored reason ServiceWorkerPostMessage.
+      * Note: "MessageEvent" should not be translated.
       */
   serviceWorkerPostMessage: 'A service worker attempted to send the page in back/forward cache a `MessageEvent`.',
   /**

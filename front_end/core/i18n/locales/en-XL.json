@@ -2577,7 +2577,7 @@
     "message": "P̂áĝéŝ t́ĥát̂ śĥóŵ Ṕr̂ín̂t́îńĝ ÚÎ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },
   "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "T̂h́ê ṕâǵê ẃâś ôṕêńêd́ ûśîńĝ window.open() án̂d́ âńôt́ĥér̂ t́âb́ ĥáŝ á r̂éf̂ér̂én̂ćê t́ô ít̂, ór̂ t́ĥé p̂áĝé ôṕêńêd́ â ẃîńd̂óŵ."
+    "message": "T̂h́ê ṕâǵê ẃâś ôṕêńêd́ ûśîńĝ 'window.open()' án̂d́ âńôt́ĥér̂ t́âb́ ĥáŝ á r̂éf̂ér̂én̂ćê t́ô ít̂, ór̂ t́ĥé p̂áĝé ôṕêńêd́ â ẃîńd̂óŵ."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
     "message": "T̂h́ê ŕêńd̂ér̂ér̂ ṕr̂óĉéŝś f̂ór̂ t́ĥé p̂áĝé îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé ĉŕâśĥéd̂."

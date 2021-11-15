@@ -2577,7 +2577,7 @@
     "message": "Pages that show Printing UI are not currently eligible for back/forward cache."
   },
   "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "The page was opened using window.open() and another tab has a reference to it, or the page opened a window."
+    "message": "The page was opened using 'window.open()' and another tab has a reference to it, or the page opened a window."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
     "message": "The renderer process for the page in back/forward cache crashed."

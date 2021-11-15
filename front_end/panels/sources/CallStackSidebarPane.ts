@@ -187,7 +187,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       return;
     }
 
-    let debuggerModel: SDK.DebuggerModel.DebuggerModel|null = details.debuggerModel;
     this.notPausedMessageElement.classList.add('hidden');
 
     const itemPromises = [];
@@ -209,32 +208,33 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       UI.Tooltip.Tooltip.install(this.callFrameWarningsElement, Array.from(uniqueWarnings).join('\n'));
     }
 
-    let asyncStackTrace: Protocol.Runtime.StackTrace|null|undefined = details.asyncStackTrace;
-    if (!asyncStackTrace && details.asyncStackTraceId) {
-      if (details.asyncStackTraceId.debuggerId) {
-        debuggerModel = await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(details.asyncStackTraceId.debuggerId);
-      }
-      asyncStackTrace = debuggerModel ? await debuggerModel.fetchAsyncStackTrace(details.asyncStackTraceId) : null;
-    }
+    let debuggerModel = details.debuggerModel;
+    let asyncStackTraceId = details.asyncStackTraceId;
+    let asyncStackTrace: Protocol.Runtime.StackTrace|undefined|null = details.asyncStackTrace;
     let previousStackTrace: Protocol.Runtime.CallFrame[]|SDK.DebuggerModel.CallFrame[] = details.callFrames;
-    let maxAsyncStackChainDepth = this.maxAsyncStackChainDepth;
-    while (asyncStackTrace && maxAsyncStackChainDepth > 0) {
+    for (let {maxAsyncStackChainDepth} = this; maxAsyncStackChainDepth > 0; --maxAsyncStackChainDepth) {
+      if (!asyncStackTrace) {
+        if (!asyncStackTraceId) {
+          break;
+        }
+        if (asyncStackTraceId.debuggerId) {
+          const dm = await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(asyncStackTraceId.debuggerId);
+          if (!dm) {
+            break;
+          }
+          debuggerModel = dm;
+        }
+        asyncStackTrace = await debuggerModel.fetchAsyncStackTrace(asyncStackTraceId);
+        if (!asyncStackTrace) {
+          break;
+        }
+      }
       const title = UI.UIUtils.asyncStackTraceLabel(asyncStackTrace.description, previousStackTrace);
       items.push(...await Item.createItemsForAsyncStack(
           title, debuggerModel, asyncStackTrace.callFrames, this.locationPool, this.refreshItem.bind(this)));
-
-      --maxAsyncStackChainDepth;
       previousStackTrace = asyncStackTrace.callFrames;
-      if (asyncStackTrace.parent) {
-        asyncStackTrace = asyncStackTrace.parent;
-      } else if (asyncStackTrace.parentId) {
-        if (asyncStackTrace.parentId.debuggerId) {
-          debuggerModel = await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(asyncStackTrace.parentId.debuggerId);
-        }
-        asyncStackTrace = debuggerModel ? await debuggerModel.fetchAsyncStackTrace(asyncStackTrace.parentId) : null;
-      } else {
-        asyncStackTrace = null;
-      }
+      asyncStackTraceId = asyncStackTrace.parentId;
+      asyncStackTrace = asyncStackTrace.parent;
     }
     this.showMoreMessageElement.classList.toggle('hidden', !asyncStackTrace);
     this.items.replaceAll(items);
@@ -552,7 +552,7 @@ export class Item {
   }
 
   static async createItemsForAsyncStack(
-      title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel|null, frames: Protocol.Runtime.CallFrame[],
+      title: string, debuggerModel: SDK.DebuggerModel.DebuggerModel, frames: Protocol.Runtime.CallFrame[],
       locationPool: Bindings.LiveLocation.LiveLocationPool, updateDelegate: (arg0: Item) => void): Promise<Item[]> {
     const headerItemToItemsSet = new WeakMap<Item, Set<Item>>();
     const asyncHeaderItem = new Item(title, updateDelegate);
@@ -563,17 +563,11 @@ export class Item {
     const liveLocationPromises = [];
     for (const frame of frames) {
       const item = new Item(UI.UIUtils.beautifyFunctionName(frame.functionName), update);
-      const rawLocation = debuggerModel ?
-          debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber) :
-          null;
-      if (!rawLocation) {
-        item.linkText = (frame.url || '<unknown>') + ':' + (frame.lineNumber + 1);
-        item.updateDelegate(item);
-      } else {
-        liveLocationPromises.push(
-            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
-                rawLocation, item.update.bind(item), locationPool));
-      }
+      const rawLocation =
+          debuggerModel.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber);
+      liveLocationPromises.push(
+          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
+              rawLocation, item.update.bind(item), locationPool));
       asyncFrameItems.push(item);
     }
 

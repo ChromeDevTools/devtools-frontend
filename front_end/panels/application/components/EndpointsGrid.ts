@@ -36,7 +36,7 @@ export class EndpointsGrid extends HTMLElement {
     // clang-format off
     render(html`
       <div class="reporting-container">
-        <div class="reporting-header">Endpoints</div>
+        <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         <div class="reporting-placeholder">
           <div>${i18nString(UIStrings.noEndpointsToDisplay)}</div>
         </div>

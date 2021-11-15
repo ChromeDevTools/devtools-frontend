@@ -136,7 +136,7 @@ export class ReportsGrid extends HTMLElement {
     // clang-format off
     render(html`
       <div class="reporting-container">
-        <div class="reporting-header">Reports</div>
+        <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
         ${this.reports.length > 0 ? html`
           <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
               reportsGridData as DataGrid.DataGridController.DataGridControllerData}>

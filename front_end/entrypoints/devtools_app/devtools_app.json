@@ -8,7 +8,6 @@
     { "name": "panels/layers" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/application" },
-    { "name": "panels/security" },
     { "name": "panels/timeline" }
   ],
   "extends": "shell"

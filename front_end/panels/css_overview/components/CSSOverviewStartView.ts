@@ -5,8 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as Legacy from '../../../ui/legacy/legacy.js';
+import * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
@@ -34,23 +33,6 @@ const UIStrings = {
   */
   locateAffectedElements: 'Locate the affected elements in the Elements panel',
   /**
-  *@description Title of the "Preview feature" reminder box
-  */
-  previewFeature: 'Preview feature',
-  /**
-  *@description Sentence to convey the feature is being actively worked on and we are looking for feedback
-  *@example {https://goo.gle/css-overview-feedback} PH1
-  */
-  activelyWorkingAndLookingForS: 'Our team is actively working on this feature and we are looking for your {PH1}!',
-  /**
-  *@description Link text of the inline anchor to navigate to a feedback page
-  */
-  feedbackInline: 'feedback',
-  /**
-  *@description Title of the section to the quick start video and documentation to CSS Overview panel
-  */
-  videoAndDocumentation: 'Video and documentation',
-  /**
   *@description Title of the link to the quick start video and documentation to CSS Overview panel
   */
   quickStartWithCSSOverview: 'Quick start: get started with the new CSS Overview panel',
@@ -77,13 +59,6 @@ export class OverviewStartRequestedEvent extends Event {
 export class CSSOverviewStartView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-overview-start-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #feedbackLink: HTMLElement;
-
-  constructor() {
-    super();
-    this.#feedbackLink =
-        Legacy.XLink.XLink.create(FEEDBACK_LINK, i18nString(UIStrings.feedbackInline), 'devtools-link');
-  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
@@ -121,31 +96,12 @@ export class CSSOverviewStartView extends HTMLElement {
             ${i18nString(UIStrings.captureOverview)}
           </${Buttons.Button.Button.litTagName}>
         </div>
-        <section class="preview-feature">
-          <h1 class="preview-header">
-            <${IconButton.Icon.Icon.litTagName} class="preview-icon" .data=${{
-                iconName: 'ic_preview_feature',
-                width: '24px',
-                height: '24px',
-                color: 'var(--color-primary)',
-              } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
-              ${i18nString(UIStrings.previewFeature)}
-          </h1>
-          <div class="feedback-prompt">${i18n.i18n.getFormatLocalizedString(str_, UIStrings.activelyWorkingAndLookingForS, {PH1: this.#feedbackLink})}</div>
-          <div class="resources">
-            <div class="thumbnail-wrapper">
-              <${IconButton.Icon.Icon.litTagName} .data=${{
-                iconName: 'preview_feature_video_thumbnail',
-                width: '144px',
-                height: '92px',
-              } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
-            </div>
-            <div>
-              <h1 class="video-doc-header">${i18nString(UIStrings.videoAndDocumentation)}</h1>
-              <x-link class="devtools-link" href=${DOC_LINK}>${i18nString(UIStrings.quickStartWithCSSOverview)}</x-link>
-            </div>
-          </div>
-        </section>
+        <${PanelFeedback.PanelFeedback.PanelFeedback.litTagName} .data=${{
+            feedbackUrl: FEEDBACK_LINK,
+            quickStartUrl: DOC_LINK,
+            quickStartLinkText: i18nString(UIStrings.quickStartWithCSSOverview),
+          } as PanelFeedback.PanelFeedback.PanelFeedbackData}>
+        </${PanelFeedback.PanelFeedback.PanelFeedback.litTagName}>
         <x-link class="feedback-standalone" href=${FEEDBACK_LINK}>${i18nString(UIStrings.feedbackStandalone)}</x-link>
       </div>
     `, this.#shadow, {

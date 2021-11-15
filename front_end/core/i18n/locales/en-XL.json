@@ -4115,17 +4115,11 @@
   "panels/coverage/CoverageView.ts | urlFilter": {
     "message": "ÛŔL̂ f́îĺt̂ér̂"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Ôúr̂ t́êám̂ íŝ áĉt́îv́êĺŷ ẃôŕk̂ín̂ǵ ôń t̂h́îś f̂éât́ûŕê án̂d́ ŵé âŕê ĺôók̂ín̂ǵ f̂ór̂ ýôúr̂ {PH1}!"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Ĉáp̂t́ûŕê óv̂ér̂v́îéŵ"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Ĉáp̂t́ûŕê án̂ óv̂ér̂v́îéŵ óf̂ ýôúr̂ ṕâǵê’ś ĈŚŜ"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "f̂éêd́b̂áĉḱ"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
     "message": "F̂éêd́b̂áĉḱ"
@@ -4139,14 +4133,8 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
     "message": "L̂óĉát̂é t̂h́ê áf̂f́êćt̂éd̂ él̂ém̂én̂t́ŝ ín̂ t́ĥé Êĺêḿêńt̂ś p̂án̂él̂"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "P̂ŕêv́îéŵ f́êát̂úr̂é"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
     "message": "Q̂úîćk̂ śt̂ár̂t́: ĝét̂ śt̂ár̂t́êd́ ŵít̂h́ t̂h́ê ńêẃ ĈŚŜ Óv̂ér̂v́îéŵ ṕâńêĺ"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "V̂íd̂éô án̂d́ d̂óĉúm̂én̂t́ât́îón̂"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "ĈŚŜ Óv̂ér̂v́îéŵ"

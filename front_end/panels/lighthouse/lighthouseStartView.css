@@ -74,6 +74,10 @@ input[type="radio"]:focus {
   outline-width: 2px;
 }
 
+:host-context(.-theme-with-dark-background) input[type="radio"] {
+  accent-color: var(--color-checkbox-accent-color);
+}
+
 .lighthouse-radio-text {
   margin-left: 3px;
 }

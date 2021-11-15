@@ -21,8 +21,6 @@ devtools_image_files = [
   "profileGroupIcon.png",
   "profileIcon.png",
   "profileSmallIcon.png",
-  "radioDot-dark-theme.png",
-  "radioDot.png",
   "resourcesTimeGraphIcon.avif",
   "searchNext.png",
   "searchPrev.png",

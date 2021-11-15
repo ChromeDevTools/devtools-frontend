@@ -35,8 +35,6 @@ let loadedIssuesModule: (typeof Issues|undefined);
 
 async function loadIssuesModule(): Promise<typeof Issues> {
   if (!loadedIssuesModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/issues');
     loadedIssuesModule = await import('./issues.js');
   }
   return loadedIssuesModule;

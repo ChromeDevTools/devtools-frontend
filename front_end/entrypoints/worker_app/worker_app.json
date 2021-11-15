@@ -1,6 +1,5 @@
 {
   "modules" : [
-    { "name": "panels/issues" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/application" },
     { "name": "panels/timeline" }

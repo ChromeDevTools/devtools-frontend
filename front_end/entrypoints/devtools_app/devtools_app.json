@@ -4,7 +4,6 @@
 
     { "name": "panels/lighthouse" },
     { "name": "emulated_devices" },
-    { "name": "panels/issues" },
     { "name": "panels/layers" },
     { "name": "panels/layer_viewer" },
     { "name": "panels/application" },

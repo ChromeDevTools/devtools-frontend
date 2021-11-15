@@ -86,7 +86,6 @@ non_autostart_non_remote_modules = [
   "panels/layer_viewer/layer_viewer_module.js",
   "panels/layers/layers_module.js",
   "panels/lighthouse/lighthouse_module.js",
-  "panels/network/network_module.js",
   "panels/profiler/profiler_module.js",
   "panels/issues/issues_module.js",
   "panels/application/application_module.js",

@@ -396,7 +396,6 @@ grd_files_release_sources = [
   "front_end/panels/network/network-legacy.js",
   "front_end/panels/network/network-meta.js",
   "front_end/panels/network/network.js",
-  "front_end/panels/network/network_module.js",
   "front_end/panels/performance_monitor/performance_monitor-meta.js",
   "front_end/panels/performance_monitor/performance_monitor.js",
   "front_end/panels/profiler/profiler-legacy.js",

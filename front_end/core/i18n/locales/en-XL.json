@@ -4121,9 +4121,6 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Ĉáp̂t́ûŕê án̂ óv̂ér̂v́îéŵ óf̂ ýôúr̂ ṕâǵê’ś ĈŚŜ"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "F̂éêd́b̂áĉḱ"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "Îd́êńt̂íf̂ý p̂ót̂én̂t́îál̂ ĆŜŚ îḿp̂ŕôv́êḿêńt̂ś"
   },

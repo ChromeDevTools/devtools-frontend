@@ -36,10 +36,6 @@ const UIStrings = {
   *@description Title of the link to the quick start video and documentation to CSS Overview panel
   */
   quickStartWithCSSOverview: 'Quick start: get started with the new CSS Overview panel',
-  /**
-  *@description Link text of the standalone button to navigate to a feedback page
-  */
-  feedbackStandalone: 'Feedback',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/components/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -102,7 +98,10 @@ export class CSSOverviewStartView extends HTMLElement {
             quickStartLinkText: i18nString(UIStrings.quickStartWithCSSOverview),
           } as PanelFeedback.PanelFeedback.PanelFeedbackData}>
         </${PanelFeedback.PanelFeedback.PanelFeedback.litTagName}>
-        <x-link class="feedback-standalone" href=${FEEDBACK_LINK}>${i18nString(UIStrings.feedbackStandalone)}</x-link>
+        <${PanelFeedback.FeedbackButton.FeedbackButton.litTagName} .data=${{
+          feedbackUrl: FEEDBACK_LINK,
+          } as PanelFeedback.FeedbackButton.FeedbackButtonData}>
+        </${PanelFeedback.FeedbackButton.FeedbackButton.litTagName}>
       </div>
     `, this.#shadow, {
       host: this,

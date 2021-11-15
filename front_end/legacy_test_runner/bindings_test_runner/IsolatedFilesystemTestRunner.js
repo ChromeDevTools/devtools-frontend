@@ -1,6 +1,7 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -52,8 +53,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
 
     function created(event) {
       const fileSystem = event.data;
-
-      if (fileSystem.path() !== fileSystemPath) {
+      if (fileSystem.path() !== Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystemPath)) {
         return;
       }
 

@@ -43,5 +43,15 @@ describeWithMockConnection('CookieModel', () => {
     assert.isArray(cookies);
     assert.lengthOf(cookies, 1);
     assert.strictEqual(cookies[0].domain(), '.example.com');
+    assert.strictEqual(cookies[0].name(), 'name');
+    assert.strictEqual(cookies[0].path(), '/test');
+    assert.strictEqual(cookies[0].size(), 23);
+    assert.strictEqual(cookies[0].value(), 'value');
+    assert.strictEqual(cookies[0].expires(), 42000);
+    assert.strictEqual(cookies[0].httpOnly(), false);
+    assert.strictEqual(cookies[0].secure(), false);
+    assert.strictEqual(cookies[0].priority(), Protocol.Network.CookiePriority.Medium);
+    assert.strictEqual(cookies[0].sourcePort(), 80);
+    assert.strictEqual(cookies[0].sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
   });
 });

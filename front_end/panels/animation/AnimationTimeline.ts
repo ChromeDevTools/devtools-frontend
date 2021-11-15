@@ -438,15 +438,15 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private togglePause(pause: boolean): void {
-    if (this.#scrubberPlayer) {
-      this.#scrubberPlayer.playbackRate = this.effectivePlaybackRate();
-    }
     if (this.#selectedGroup) {
       this.#selectedGroup.togglePause(pause);
       const preview = this.#previewMap.get(this.#selectedGroup);
       if (preview) {
         preview.element.classList.toggle('paused', pause);
       }
+    }
+    if (this.#scrubberPlayer) {
+      this.#scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     }
     this.updateControlButton();
   }

@@ -15,7 +15,7 @@ describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
   before(async () => {
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
-      src: new URL('../../../../../front_end/Images/feedback_thin_16x16_icon.svg', import.meta.url).toString(),
+      src: new URL('../../../../../front_end/Images/survey_feedback_icon.svg', import.meta.url).toString(),
       width: '16px',
       height: '16px',
       isIcon: true,

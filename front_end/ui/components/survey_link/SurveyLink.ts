@@ -124,7 +124,7 @@ export class SurveyLink extends HTMLElement {
     // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = LitHtml.html`
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
-        <${IconButton.Icon.Icon.litTagName} class="link-icon" .data=${{iconName: 'feedback_thin_16x16_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}><!--
+        <${IconButton.Icon.Icon.litTagName} class="link-icon" .data=${{iconName: 'feedback_button_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}><!--
       -->${linkText}
       </button>
     `;

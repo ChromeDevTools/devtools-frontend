@@ -10,8 +10,7 @@
     { "name": "panels/network" },
     { "name": "panels/application" },
     { "name": "panels/security" },
-    { "name": "panels/timeline" },
-    { "name": "panels/media" }
+    { "name": "panels/timeline" }
   ],
   "extends": "shell"
 }

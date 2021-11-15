@@ -209,7 +209,7 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.drawSelection(),
     CM.EditorState.allowMultipleSelections.of(true),
     CM.indentOnInput(),
-    CodeHighlighter.CodeHighlighter.getHighlightStyle(CM),
+    CodeHighlighter.CodeHighlighter.highlightStyle,
     CM.closeBrackets(),
     baseKeymap,
     tabMovesFocus.instance(),
@@ -237,7 +237,7 @@ function getTooltipHost(): ShadowRoot {
                                extensions: [
                                  editorTheme,
                                  themeIsDark() ? dummyDarkTheme : [],
-                                 CodeHighlighter.CodeHighlighter.getHighlightStyle(CM),
+                                 CodeHighlighter.CodeHighlighter.highlightStyle,
                                  CM.showTooltip.of({
                                    pos: 0,
                                    create() {

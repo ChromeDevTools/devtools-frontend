@@ -5,11 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
-import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import consolePinPaneStyles from './consolePinPane.css.js';
@@ -171,11 +171,10 @@ export class ConsolePin {
   private readonly pinPreview: HTMLElement;
   private lastResult: SDK.RuntimeModel.EvaluationResult|null;
   private lastExecutionContext: SDK.RuntimeModel.ExecutionContext|null;
-  private editor: TextEditor.TextEditor.TextEditor|null;
+  private editor: TextEditor.TextEditor.TextEditor;
   private committedExpression: string;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
-  private readonly editorPromise: Promise<TextEditor.TextEditor.TextEditor>;
   private consolePinNumber: number;
   private deletePinIcon: UI.UIUtils.DevToolsCloseButton;
 
@@ -209,10 +208,10 @@ export class ConsolePin {
 
     this.lastResult = null;
     this.lastExecutionContext = null;
-    this.editor = null;
     this.committedExpression = expression;
     this.hovered = false;
     this.lastNode = null;
+    this.editor = this.createEditor(expression, nameElement);
 
     this.pinPreview.addEventListener('mouseenter', this.setHovered.bind(this, true), false);
     this.pinPreview.addEventListener('mouseleave', this.setHovered.bind(this, false), false);
@@ -229,22 +228,19 @@ export class ConsolePin {
         event.consume();
       }
     });
-    this.editorPromise = this.createEditor(expression, nameElement);
   }
 
-  async createEditor(expression: string, parent: HTMLElement): Promise<TextEditor.TextEditor.TextEditor> {
-    const CM = await import('../../third_party/codemirror.next/codemirror.next.js');
-    const TE = await import('../../ui/components/text_editor/text_editor.js');
-    this.editor = new TE.TextEditor.TextEditor(CM.EditorState.create({
+  createEditor(expression: string, parent: HTMLElement): TextEditor.TextEditor.TextEditor {
+    const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: expression,
       extensions: [
-        CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
-        CM.EditorView.lineWrapping,
-        (await CM.javascript()).javascriptLanguage,
-        await TE.JavaScript.completion(),
-        TE.Config.showCompletionHint,
-        CM.placeholder(i18nString(UIStrings.expression)),
-        CM.keymap.of([
+        CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.liveExpressionEditor)}),
+        CodeMirror.EditorView.lineWrapping,
+        CodeMirror.javascript.javascriptLanguage,
+        TextEditor.JavaScript.completion(),
+        TextEditor.Config.showCompletionHint,
+        CodeMirror.placeholder(i18nString(UIStrings.expression)),
+        CodeMirror.keymap.of([
           {
             key: 'Escape',
             run: (view: CodeMirror.EditorView): boolean => {
@@ -261,13 +257,13 @@ export class ConsolePin {
             },
           },
         ]),
-        CM.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
-        TE.Config.baseConfiguration(expression),
-        TE.Config.autocompletion,
+        CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
+        TextEditor.Config.baseConfiguration(expression),
+        TextEditor.Config.autocompletion,
       ],
     }));
-    parent.appendChild(this.editor);
-    return this.editor;
+    parent.appendChild(editor);
+    return editor;
   }
 
   onBlur(editor: CodeMirror.EditorView): void {
@@ -305,7 +301,7 @@ export class ConsolePin {
   }
 
   async focus(): Promise<void> {
-    const editor = this.editor || await this.editorPromise;
+    const editor = this.editor;
     editor.editor.focus();
     editor.dispatch({selection: {anchor: editor.state.doc.length}});
   }
@@ -322,8 +318,7 @@ export class ConsolePin {
     if (!this.editor) {
       return;
     }
-    const TE = await import('../../ui/components/text_editor/text_editor.js');
-    const text = TE.Config.contentIncludingHint(this.editor.editor);
+    const text = TextEditor.Config.contentIncludingHint(this.editor.editor);
     const isEditing = this.pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this.committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;

@@ -15,10 +15,7 @@ devtools_pre_built("codemirror.next-sources") {
   sources = [
     "chunk/codemirror.js",
     "chunk/cpp.js",
-    "chunk/css.js",
-    "chunk/html.js",
     "chunk/java.js",
-    "chunk/javascript.js",
     "chunk/json.js",
     "chunk/legacy.js",
     "chunk/markdown.js",

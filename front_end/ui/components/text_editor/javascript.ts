@@ -9,9 +9,8 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as UI from '../../legacy/legacy.js';
 import {cursorTooltip} from './cursor_tooltip.js';
 
-export async function completion(): Promise<CodeMirror.Extension> {
-  const {javascriptLanguage} = await CodeMirror.javascript();
-  return javascriptLanguage.data.of({
+export function completion(): CodeMirror.Extension {
+  return CodeMirror.javascript.javascriptLanguage.data.of({
     autocomplete: javascriptCompletionSource,
   });
 }

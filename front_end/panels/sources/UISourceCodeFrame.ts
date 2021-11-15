@@ -113,9 +113,9 @@ export class UISourceCodeFrame extends
     }
   }
 
-  protected editorConfiguration(doc: string, readOnly: boolean): CodeMirror.Extension {
+  protected editorConfiguration(doc: string): CodeMirror.Extension {
     return [
-      super.editorConfiguration(doc, readOnly),
+      super.editorConfiguration(doc),
       rowMessages([...this.allMessages()]),
       pluginCompartment.of(this.plugins.map(plugin => plugin.editorExtension())),
     ];
@@ -275,10 +275,10 @@ export class UISourceCodeFrame extends
     this.muteSourceCodeEvents = false;
   }
 
-  setContent(content: string|null, loadError: string|null): void {
+  async setContent(content: string): Promise<void> {
     this.disposePlugins();
     this.ensurePluginsLoaded();
-    super.setContent(content, loadError);
+    await super.setContent(content);
     Common.EventTarget.fireEvent('source-file-loaded', this.uiSourceCodeInternal.displayName(true));
   }
 
@@ -395,7 +395,7 @@ export class UISourceCodeFrame extends
     this.isSettingContent = true;
     const oldContent = this.textEditor.state.doc.toString();
     if (oldContent !== content) {
-      this.setContent(content, null);
+      this.setContent(content);
     }
     this.isSettingContent = false;
   }

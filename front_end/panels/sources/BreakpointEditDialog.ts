@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
-import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
@@ -60,37 +60,23 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private readonly typeSelector: UI.Toolbar.ToolbarComboBox;
   private placeholderCompartment: CodeMirror.Compartment;
 
-  static async create(
-      editorLineNumber: number,
-      oldCondition: string,
-      preferLogpoint: boolean,
-      onFinish: (arg0: {committed: boolean, condition: string}) => Promise<void>,
-      ): Promise<BreakpointEditDialog> {
-    const TextEditor = await import('../../ui/components/text_editor/text_editor.js');
-    const CodeMirror = await import('../../third_party/codemirror.next/codemirror.next.js');
-    const editorConfig = [
-      (await CodeMirror.javascript()).javascriptLanguage,
-      TextEditor.Config.baseConfiguration(oldCondition || ''),
-      TextEditor.Config.autocompletion,
-      CodeMirror.EditorView.lineWrapping,
-      TextEditor.Config.showCompletionHint,
-      await TextEditor.JavaScript.completion(),
-      TextEditor.JavaScript.argumentHints(),
-    ];
-    return new BreakpointEditDialog(
-        editorLineNumber, oldCondition, preferLogpoint, onFinish, TextEditor, CodeMirror, editorConfig);
-  }
-
   constructor(
       editorLineNumber: number,
       oldCondition: string,
       preferLogpoint: boolean,
       onFinish: (arg0: {committed: boolean, condition: string}) => Promise<void>,
-      modTextEditor: typeof TextEditor,
-      readonly modCodeMirror: typeof CodeMirror,
-      editorConfig: CodeMirror.Extension,
   ) {
     super(true);
+
+    const editorConfig = [
+      CodeMirror.javascript.javascriptLanguage,
+      TextEditor.Config.baseConfiguration(oldCondition || ''),
+      TextEditor.Config.autocompletion,
+      CodeMirror.EditorView.lineWrapping,
+      TextEditor.Config.showCompletionHint,
+      TextEditor.JavaScript.completion(),
+      TextEditor.JavaScript.argumentHints(),
+    ];
 
     this.onFinish = onFinish;
     this.finished = false;
@@ -119,7 +105,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const content = oldCondition || '';
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
-      if (modTextEditor.JavaScript.isExpressionComplete(view.state)) {
+      if (TextEditor.JavaScript.isExpressionComplete(view.state)) {
         this.finishEditing(true, this.editor.state.doc.toString());
         return true;
       }
@@ -136,7 +122,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       },
       {
         key: 'Shift-Enter',
-        run: modCodeMirror.insertNewlineAndIndent,
+        run: CodeMirror.insertNewlineAndIndent,
       },
       {
         key: 'Escape',
@@ -147,17 +133,17 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       },
     ];
 
-    this.placeholderCompartment = new modCodeMirror.Compartment();
+    this.placeholderCompartment = new CodeMirror.Compartment();
 
     const editorWrapper = this.contentElement.appendChild(document.createElement('div'));
     editorWrapper.classList.add('condition-editor');
 
-    this.editor = new modTextEditor.TextEditor.TextEditor(modCodeMirror.EditorState.create({
+    this.editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: content,
       selection: {anchor: 0, head: content.length},
       extensions: [
         this.placeholderCompartment.of(this.getPlaceholder()),
-        modCodeMirror.keymap.of(keymap),
+        CodeMirror.keymap.of(keymap),
         editorConfig,
       ],
     }));
@@ -198,10 +184,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   private getPlaceholder(): CodeMirror.Extension {
     const type = this.breakpointType;
     if (type === BreakpointType.Conditional) {
-      return this.modCodeMirror.placeholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
+      return CodeMirror.placeholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
     }
     if (type === BreakpointType.Logpoint) {
-      return this.modCodeMirror.placeholder(i18nString(UIStrings.logMessageEgXIsX));
+      return CodeMirror.placeholder(i18nString(UIStrings.logMessageEgXIsX));
     }
     return [];
   }

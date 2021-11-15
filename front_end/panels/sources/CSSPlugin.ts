@@ -10,7 +10,6 @@ import * as ColorPicker from '../../ui/legacy/components/color_picker/color_pick
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -27,8 +26,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export async function completion(): Promise<CodeMirror.Extension> {
-  const {cssCompletionSource} = await CodeMirror.css();
+export function completion(): CodeMirror.Extension {
+  const {cssCompletionSource} = CodeMirror.css;
   return CodeMirror.autocompletion({
     override:
         [async(cx: CodeMirror.CompletionContext):
@@ -382,12 +381,6 @@ export class CSSPlugin extends Plugin {
   }
 
   editorExtension(): CodeMirror.Extension {
-    return [cssBindings()];
-  }
-
-  editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
-    completion().then((extension): void => {
-      editor.dispatch({effects: CodeMirror.StateEffect.appendConfig.of([extension, cssSwatches()])});
-    }, console.error);
+    return [cssBindings(), completion(), cssSwatches()];
   }
 }

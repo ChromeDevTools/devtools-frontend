@@ -156,12 +156,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
 
-    this.textEditorInternal = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
-      extensions: [
-        options.lineNumbers !== false ? CodeMirror.lineNumbers() : [],
-        TextEditor.Config.theme(),
-      ],
-    }));
+    this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
     this.element.appendChild(this.textEditorInternal);
 
@@ -191,14 +186,18 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.contentSet = false;
   }
 
-  private editorState(doc: string, readOnly: boolean): CodeMirror.EditorState {
+  private placeholderEditorState(content: string): CodeMirror.EditorState {
     return CodeMirror.EditorState.create({
-      doc,
-      extensions: this.editorConfiguration(doc, readOnly),
+      doc: content,
+      extensions: [
+        CodeMirror.EditorState.readOnly.of(true),
+        this.options.lineNumbers !== false ? CodeMirror.lineNumbers() : [],
+        TextEditor.Config.theme(),
+      ],
     });
   }
 
-  protected editorConfiguration(doc: string, readOnly: boolean): CodeMirror.Extension {
+  protected editorConfiguration(doc: string): CodeMirror.Extension {
     return [
       CodeMirror.EditorView.updateListener.of(update => this.dispatchEventToListeners(Events.EditorUpdate, update)),
       TextEditor.Config.baseConfiguration(doc),
@@ -225,7 +224,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
           },
         },
       }),
-      config.editable.of(readOnly ? CodeMirror.EditorState.readOnly.of(true) : []),
       CodeMirror.EditorView.domEventHandlers({
         focus: () => this.onFocus(),
         blur: () => this.onBlur(),
@@ -325,14 +323,14 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.prettyInternal) {
       const formatInfo = await this.requestFormattedContent();
       this.formattedMap = formatInfo.formattedMapping;
-      this.setContent(formatInfo.formattedContent, null);
+      await this.setContent(formatInfo.formattedContent);
       this.prettyBaseDoc = textEditor.state.doc;
       const start = this.rawToPrettyLocation(startPos.lineNumber, startPos.columnNumber);
       const end = this.rawToPrettyLocation(endPos.lineNumber, endPos.columnNumber);
       newSelection = textEditor.createSelection(
           {lineNumber: start[0], columnNumber: start[1]}, {lineNumber: end[0], columnNumber: end[1]});
     } else {
-      this.setContent(this.rawContent, null);
+      await this.setContent(this.rawContent || '');
       this.baseDoc = textEditor.state.doc;
       const start = this.prettyToRawLocation(startPos.lineNumber, startPos.columnNumber);
       const end = this.prettyToRawLocation(endPos.lineNumber, endPos.columnNumber);
@@ -346,9 +344,9 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.updatePrettyPrintState();
   }
 
-  private updateLineNumberFormatter(): void {
+  private getLineNumberFormatter(): CodeMirror.Extension {
     if (this.options.lineNumbers === false) {
-      return;
+      return [];
     }
     let formatNumber = null;
     if (this.wasmDisassemblyInternal) {
@@ -372,8 +370,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         return '-';
       };
     }
-    this.textEditor.dispatch(
-        {effects: config.lineNumbers.reconfigure(formatNumber ? CodeMirror.lineNumbers({formatNumber}) : [])});
+    return formatNumber ? CodeMirror.lineNumbers({formatNumber}) : [];
+  }
+
+  private updateLineNumberFormatter(): void {
+    this.textEditor.dispatch({effects: config.lineNumbers.reconfigure(this.getLineNumberFormatter())});
   }
 
   private updatePrettyPrintState(): void {
@@ -512,13 +513,14 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.prettyToggle.setEnabled(true);
 
       if (error) {
-        this.setContent(null, error);
+        this.loadError = true;
+        this.textEditor.editor.setState(this.placeholderEditorState(error));
         this.prettyToggle.setEnabled(false);
       } else {
         if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content)) {
           await this.setPretty(true);
         } else {
-          this.setContent(this.rawContent, null);
+          await this.setContent(this.rawContent || '');
         }
       }
       this.contentSet = true;
@@ -673,44 +675,49 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     return mimeType;
   }
 
-  async updateLanguageMode(content: string): Promise<void> {
-    const mime = this.simplifyMimeType(content, this.contentType);
-    if (!mime) {
-      return;
+  protected async getLanguageSupport(content: string): Promise<CodeMirror.Extension> {
+    const mimeType = this.simplifyMimeType(content, this.contentType) || '';
+    const languageDesc = await CodeHighlighter.CodeHighlighter.languageFromMIME(mimeType);
+    if (!languageDesc) {
+      return [];
     }
-    const langExtension = await CodeHighlighter.CodeHighlighter.languageFromMIME(mime);
-    if (langExtension) {
-      const extension: CodeMirror.Extension[] = [langExtension];
-      if (mime === 'text/jsx') {
-        extension.push(langExtension.language.data.of({autocomplete: CodeMirror.completeAnyWord}));
-      }
-      this.textEditor.dispatch({effects: config.language.reconfigure(extension)});
+    if (mimeType === 'text/jsx') {
+      return [
+        languageDesc,
+        CodeMirror.javascript.javascriptLanguage.data.of({autocomplete: CodeMirror.completeAnyWord}),
+      ];
     }
+    return languageDesc;
   }
 
-  setContent(content: string|null, loadError: string|null): void {
+  async updateLanguageMode(content: string): Promise<void> {
+    const langExtension = await this.getLanguageSupport(content);
+    this.textEditor.dispatch({effects: config.language.reconfigure(langExtension)});
+  }
+
+  async setContent(content: string): Promise<void> {
     this.muteChangeEventsForSetContent = true;
     const {textEditor} = this;
-    if (!this.loadedInternal) {
-      this.loadedInternal = true;
-      if (!loadError) {
-        textEditor.editor.setState(this.editorState(content || '', !this.editable));
-        this.baseDoc = this.textEditorInternal.state.doc;
-        this.loadError = false;
-      } else {
-        textEditor.editor.setState(this.editorState(loadError, true));
-        this.loadError = true;
-      }
-      this.updateLanguageMode(content || '').catch(console.error).then(() => {
-        this.editorInitialized();
-      });
-    } else {
-      const scrollTop = textEditor.editor.scrollDOM.scrollTop;
-      this.textEditor.editor.setState(this.editorState(content || '', !this.editable));
+    const wasLoaded = this.loadedInternal;
+    const scrollTop = textEditor.editor.scrollDOM.scrollTop;
+    this.loadedInternal = true;
+
+    const languageSupport = await this.getLanguageSupport(content);
+    const editorState = CodeMirror.EditorState.create({
+      doc: content,
+      extensions: [
+        this.editorConfiguration(content),
+        languageSupport,
+        this.getLineNumberFormatter(),
+        config.editable.of(this.editable ? [] : CodeMirror.EditorState.readOnly.of(true)),
+      ],
+    });
+    this.baseDoc = editorState.doc;
+    textEditor.editor.setState(editorState);
+    if (wasLoaded) {
       textEditor.editor.scrollDOM.scrollTop = scrollTop;
     }
-
-    this.updateLineNumberFormatter();
+    this.editorInitialized();
     this.wasShownOrLoaded();
 
     if (this.delayedFindSearchMatches) {

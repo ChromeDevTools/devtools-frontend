@@ -4197,73 +4197,6 @@ declare namespace _codemirror_lang_json {
 }
 
 /**
-A language provider based on the [Lezer JavaScript
-parser](https://github.com/lezer-parser/javascript), extended with
-highlighting and indentation information.
-*/
-declare const javascriptLanguage: LRLanguage;
-/**
-A language provider for TypeScript.
-*/
-declare const typescriptLanguage: LRLanguage;
-/**
-Language provider for JSX.
-*/
-declare const jsxLanguage: LRLanguage;
-/**
-Language provider for JSX + TypeScript.
-*/
-declare const tsxLanguage: LRLanguage;
-/**
-JavaScript support. Includes [snippet](https://codemirror.net/6/docs/ref/#lang-javascript.snippets)
-completion.
-*/
-declare function javascript$1(config?: {
-    jsx?: boolean;
-    typescript?: boolean;
-}): LanguageSupport;
-
-/**
-A collection of JavaScript-related
-[snippets](https://codemirror.net/6/docs/ref/#autocomplete.snippet).
-*/
-declare const snippets: readonly Completion[];
-
-/**
-Connects an [ESLint](https://eslint.org/) linter to CodeMirror's
-[lint](https://codemirror.net/6/docs/ref/#lint) integration. `eslint` should be an instance of the
-[`Linter`](https://eslint.org/docs/developer-guide/nodejs-api#linter)
-class, and `config` an optional ESLint configuration. The return
-value of this function can be passed to [`linter`](https://codemirror.net/6/docs/ref/#lint.linter)
-to create a JavaScript linting extension.
-
-Note that ESLint targets node, and is tricky to run in the
-browser. The [eslint4b](https://github.com/mysticatea/eslint4b)
-and
-[eslint4b-prebuilt](https://github.com/marijnh/eslint4b-prebuilt/)
-packages may help with that.
-*/
-declare function esLint(eslint: any, config?: any): (view: EditorView) => Diagnostic[];
-
-declare const _codemirror_lang_javascript_esLint: typeof esLint;
-declare const _codemirror_lang_javascript_javascriptLanguage: typeof javascriptLanguage;
-declare const _codemirror_lang_javascript_jsxLanguage: typeof jsxLanguage;
-declare const _codemirror_lang_javascript_snippets: typeof snippets;
-declare const _codemirror_lang_javascript_tsxLanguage: typeof tsxLanguage;
-declare const _codemirror_lang_javascript_typescriptLanguage: typeof typescriptLanguage;
-declare namespace _codemirror_lang_javascript {
-  export {
-    _codemirror_lang_javascript_esLint as esLint,
-    javascript$1 as javascript,
-    _codemirror_lang_javascript_javascriptLanguage as javascriptLanguage,
-    _codemirror_lang_javascript_jsxLanguage as jsxLanguage,
-    _codemirror_lang_javascript_snippets as snippets,
-    _codemirror_lang_javascript_tsxLanguage as tsxLanguage,
-    _codemirror_lang_javascript_typescriptLanguage as typescriptLanguage,
-  };
-}
-
-/**
 A language provider based on the [Lezer Java
 parser](https://github.com/lezer-parser/java), extended with
 highlighting and indentation information.
@@ -4279,88 +4212,6 @@ declare namespace _codemirror_lang_java {
   export {
     java$1 as java,
     _codemirror_lang_java_javaLanguage as javaLanguage,
-  };
-}
-
-/**
-HTML tag completion. Opens and closes tags and attributes in a
-context-aware way.
-*/
-declare function htmlCompletionSource(context: CompletionContext): CompletionResult | null;
-
-/**
-A language provider based on the [Lezer HTML
-parser](https://github.com/lezer-parser/html), extended with the
-JavaScript and CSS parsers to parse the content of `<script>` and
-`<style>` tags.
-*/
-declare const htmlLanguage: LRLanguage;
-declare const htmlCompletion: Extension;
-/**
-Language support for HTML, including
-[`htmlCompletion`](https://codemirror.net/6/docs/ref/#lang-html.htmlCompletion) and JavaScript and
-CSS support extensions.
-*/
-declare function html$1(config?: {
-    /**
-    By default, the syntax tree will highlight mismatched closing
-    tags. Set this to `false` to turn that off (for example when you
-    expect to only be parsing a fragment of HTML text, not a full
-    document).
-    */
-    matchClosingTags?: boolean;
-    /**
-    Determines whether [`autoCloseTags`](https://codemirror.net/6/docs/ref/#lang-html.autoCloseTags)
-    is included in the support extensions. Defaults to true.
-    */
-    autoCloseTags?: boolean;
-}): LanguageSupport;
-/**
-Extension that will automatically insert close tags when a `>` or
-`/` is typed.
-*/
-declare const autoCloseTags: Extension;
-
-declare const _codemirror_lang_html_autoCloseTags: typeof autoCloseTags;
-declare const _codemirror_lang_html_htmlCompletion: typeof htmlCompletion;
-declare const _codemirror_lang_html_htmlCompletionSource: typeof htmlCompletionSource;
-declare const _codemirror_lang_html_htmlLanguage: typeof htmlLanguage;
-declare namespace _codemirror_lang_html {
-  export {
-    _codemirror_lang_html_autoCloseTags as autoCloseTags,
-    html$1 as html,
-    _codemirror_lang_html_htmlCompletion as htmlCompletion,
-    _codemirror_lang_html_htmlCompletionSource as htmlCompletionSource,
-    _codemirror_lang_html_htmlLanguage as htmlLanguage,
-  };
-}
-
-/**
-CSS property and value keyword completion source.
-*/
-declare const cssCompletionSource: CompletionSource;
-
-/**
-A language provider based on the [Lezer CSS
-parser](https://github.com/lezer-parser/css), extended with
-highlighting and indentation information.
-*/
-declare const cssLanguage: LRLanguage;
-declare const cssCompletion: Extension;
-/**
-Language support for CSS.
-*/
-declare function css$1(): LanguageSupport;
-
-declare const _codemirror_lang_css_cssCompletion: typeof cssCompletion;
-declare const _codemirror_lang_css_cssCompletionSource: typeof cssCompletionSource;
-declare const _codemirror_lang_css_cssLanguage: typeof cssLanguage;
-declare namespace _codemirror_lang_css {
-  export {
-    css$1 as css,
-    _codemirror_lang_css_cssCompletion as cssCompletion,
-    _codemirror_lang_css_cssCompletionSource as cssCompletionSource,
-    _codemirror_lang_css_cssLanguage as cssLanguage,
   };
 }
 
@@ -5379,6 +5230,158 @@ Default key bindings for the undo history.
 */
 declare const historyKeymap: readonly KeyBinding[];
 
+/**
+CSS property and value keyword completion source.
+*/
+declare const cssCompletionSource: CompletionSource;
+
+/**
+A language provider based on the [Lezer CSS
+parser](https://github.com/lezer-parser/css), extended with
+highlighting and indentation information.
+*/
+declare const cssLanguage: LRLanguage;
+declare const cssCompletion: Extension;
+/**
+Language support for CSS.
+*/
+declare function css(): LanguageSupport;
+
+declare const index_d$2_css: typeof css;
+declare const index_d$2_cssCompletion: typeof cssCompletion;
+declare const index_d$2_cssCompletionSource: typeof cssCompletionSource;
+declare const index_d$2_cssLanguage: typeof cssLanguage;
+declare namespace index_d$2 {
+  export {
+    index_d$2_css as css,
+    index_d$2_cssCompletion as cssCompletion,
+    index_d$2_cssCompletionSource as cssCompletionSource,
+    index_d$2_cssLanguage as cssLanguage,
+  };
+}
+
+/**
+HTML tag completion. Opens and closes tags and attributes in a
+context-aware way.
+*/
+declare function htmlCompletionSource(context: CompletionContext): CompletionResult | null;
+
+/**
+A language provider based on the [Lezer HTML
+parser](https://github.com/lezer-parser/html), extended with the
+JavaScript and CSS parsers to parse the content of `<script>` and
+`<style>` tags.
+*/
+declare const htmlLanguage: LRLanguage;
+declare const htmlCompletion: Extension;
+/**
+Language support for HTML, including
+[`htmlCompletion`](https://codemirror.net/6/docs/ref/#lang-html.htmlCompletion) and JavaScript and
+CSS support extensions.
+*/
+declare function html(config?: {
+    /**
+    By default, the syntax tree will highlight mismatched closing
+    tags. Set this to `false` to turn that off (for example when you
+    expect to only be parsing a fragment of HTML text, not a full
+    document).
+    */
+    matchClosingTags?: boolean;
+    /**
+    Determines whether [`autoCloseTags`](https://codemirror.net/6/docs/ref/#lang-html.autoCloseTags)
+    is included in the support extensions. Defaults to true.
+    */
+    autoCloseTags?: boolean;
+}): LanguageSupport;
+/**
+Extension that will automatically insert close tags when a `>` or
+`/` is typed.
+*/
+declare const autoCloseTags: Extension;
+
+declare const index_d$1_autoCloseTags: typeof autoCloseTags;
+declare const index_d$1_html: typeof html;
+declare const index_d$1_htmlCompletion: typeof htmlCompletion;
+declare const index_d$1_htmlCompletionSource: typeof htmlCompletionSource;
+declare const index_d$1_htmlLanguage: typeof htmlLanguage;
+declare namespace index_d$1 {
+  export {
+    index_d$1_autoCloseTags as autoCloseTags,
+    index_d$1_html as html,
+    index_d$1_htmlCompletion as htmlCompletion,
+    index_d$1_htmlCompletionSource as htmlCompletionSource,
+    index_d$1_htmlLanguage as htmlLanguage,
+  };
+}
+
+/**
+A language provider based on the [Lezer JavaScript
+parser](https://github.com/lezer-parser/javascript), extended with
+highlighting and indentation information.
+*/
+declare const javascriptLanguage: LRLanguage;
+/**
+A language provider for TypeScript.
+*/
+declare const typescriptLanguage: LRLanguage;
+/**
+Language provider for JSX.
+*/
+declare const jsxLanguage: LRLanguage;
+/**
+Language provider for JSX + TypeScript.
+*/
+declare const tsxLanguage: LRLanguage;
+/**
+JavaScript support. Includes [snippet](https://codemirror.net/6/docs/ref/#lang-javascript.snippets)
+completion.
+*/
+declare function javascript(config?: {
+    jsx?: boolean;
+    typescript?: boolean;
+}): LanguageSupport;
+
+/**
+A collection of JavaScript-related
+[snippets](https://codemirror.net/6/docs/ref/#autocomplete.snippet).
+*/
+declare const snippets: readonly Completion[];
+
+/**
+Connects an [ESLint](https://eslint.org/) linter to CodeMirror's
+[lint](https://codemirror.net/6/docs/ref/#lint) integration. `eslint` should be an instance of the
+[`Linter`](https://eslint.org/docs/developer-guide/nodejs-api#linter)
+class, and `config` an optional ESLint configuration. The return
+value of this function can be passed to [`linter`](https://codemirror.net/6/docs/ref/#lint.linter)
+to create a JavaScript linting extension.
+
+Note that ESLint targets node, and is tricky to run in the
+browser. The [eslint4b](https://github.com/mysticatea/eslint4b)
+and
+[eslint4b-prebuilt](https://github.com/marijnh/eslint4b-prebuilt/)
+packages may help with that.
+*/
+declare function esLint(eslint: any, config?: any): (view: EditorView) => Diagnostic[];
+
+declare const index_d_esLint: typeof esLint;
+declare const index_d_javascript: typeof javascript;
+declare const index_d_javascriptLanguage: typeof javascriptLanguage;
+declare const index_d_jsxLanguage: typeof jsxLanguage;
+declare const index_d_snippets: typeof snippets;
+declare const index_d_tsxLanguage: typeof tsxLanguage;
+declare const index_d_typescriptLanguage: typeof typescriptLanguage;
+declare namespace index_d {
+  export {
+    index_d_esLint as esLint,
+    index_d_javascript as javascript,
+    index_d_javascriptLanguage as javascriptLanguage,
+    index_d_jsxLanguage as jsxLanguage,
+    index_d_snippets as snippets,
+    index_d_tsxLanguage as tsxLanguage,
+    index_d_typescriptLanguage as typescriptLanguage,
+  };
+}
+
 interface Config {
     /**
     Whether the bracket matching should look at the character after
@@ -5562,10 +5565,7 @@ declare const showTooltip: Facet<Tooltip | null, readonly (Tooltip | null)[]>;
 declare function clojure(): Promise<StreamLanguage<unknown>>;
 declare function coffeescript(): Promise<StreamLanguage<unknown>>;
 declare function cpp(): Promise<typeof _codemirror_lang_cpp>;
-declare function css(): Promise<typeof _codemirror_lang_css>;
-declare function html(): Promise<typeof _codemirror_lang_html>;
 declare function java(): Promise<typeof _codemirror_lang_java>;
-declare function javascript(): Promise<typeof _codemirror_lang_javascript>;
 declare function json(): Promise<typeof _codemirror_lang_json>;
 declare function markdown(): Promise<typeof _codemirror_lang_markdown>;
 declare function php(): Promise<typeof _codemirror_lang_php>;
@@ -5574,4 +5574,4 @@ declare function shell(): Promise<StreamLanguage<unknown>>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, codeFolding, coffeescript, completeAnyWord, cpp, css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, javascript, json, keymap, lineNumberMarkers, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, shell, showPanel, showTooltip, standardKeymap, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, codeFolding, coffeescript, completeAnyWord, cpp, index_d$2 as css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, lineNumberMarkers, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, shell, showPanel, showTooltip, standardKeymap, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };

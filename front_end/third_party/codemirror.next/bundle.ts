@@ -22,6 +22,9 @@ export {codeFolding, foldGutter, foldKeymap} from '@codemirror/fold';
 export {gutter, GutterMarker, gutters, lineNumberMarkers,lineNumbers} from '@codemirror/gutter';
 export {HighlightStyle, highlightTree, Tag, tags, TagStyle} from '@codemirror/highlight';
 export {history, historyKeymap, redo, redoSelection, undo, undoSelection} from '@codemirror/history';
+export * as css from '@codemirror/lang-css';
+export * as html from '@codemirror/lang-html';
+export * as javascript from '@codemirror/lang-javascript';
 export {ensureSyntaxTree, indentOnInput, indentUnit,Language, LanguageSupport, syntaxTree} from '@codemirror/language';
 export {bracketMatching} from '@codemirror/matchbrackets';
 export {Panel, showPanel} from '@codemirror/panel';
@@ -56,17 +59,8 @@ export async function coffeescript() {
 export function cpp() {
   return import('@codemirror/lang-cpp');
 }
-export function css() {
-  return import('@codemirror/lang-css');
-}
-export function html() {
-  return import('@codemirror/lang-html');
-}
 export function java() {
   return import('@codemirror/lang-java');
-}
-export function javascript() {
-  return import('@codemirror/lang-javascript');
 }
 export function json() {
   return import('@codemirror/lang-json');

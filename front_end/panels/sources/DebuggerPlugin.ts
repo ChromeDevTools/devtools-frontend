@@ -302,7 +302,7 @@ export class DebuggerPlugin extends Plugin {
         const breakpoint =
             this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
         const isLogpoint = breakpoint ? breakpoint.condition().includes(LogpointPrefix) : false;
-        await this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
+        this.editBreakpointCondition(line, breakpoint, null, isLogpoint);
         return true;
       },
     });
@@ -765,31 +765,30 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  private async editBreakpointCondition(
+  private editBreakpointCondition(
       line: CodeMirror.Line, breakpoint: Bindings.BreakpointManager.Breakpoint|null, location: {
         lineNumber: number,
         columnNumber: number,
       }|null,
-      preferLogpoint?: boolean): Promise<void> {
+      preferLogpoint?: boolean): void {
     const editor = this.editor as TextEditor.TextEditor.TextEditor;
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = document.createElement('div');
     const compartment = new CodeMirror.Compartment();
-    const dialog =
-        await BreakpointEditDialog.create(line.number - 1, oldCondition, Boolean(preferLogpoint), async result => {
-          dialog.detach();
-          editor.dispatch({effects: compartment.reconfigure([])});
-          if (!result.committed) {
-            return;
-          }
-          if (breakpoint) {
-            breakpoint.setCondition(result.condition);
-          } else if (location) {
-            await this.setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
-          } else {
-            await this.createNewBreakpoint(line, result.condition, true);
-          }
-        });
+    const dialog = new BreakpointEditDialog(line.number - 1, oldCondition, Boolean(preferLogpoint), async result => {
+      dialog.detach();
+      editor.dispatch({effects: compartment.reconfigure([])});
+      if (!result.committed) {
+        return;
+      }
+      if (breakpoint) {
+        breakpoint.setCondition(result.condition);
+      } else if (location) {
+        await this.setBreakpoint(location.lineNumber, location.columnNumber, result.condition, true);
+      } else {
+        await this.createNewBreakpoint(line, result.condition, true);
+      }
+    });
     editor.dispatch({
       effects: CodeMirror.StateEffect.appendConfig.of(compartment.of(CodeMirror.EditorView.decorations.of(
           CodeMirror.Decoration.set([CodeMirror.Decoration

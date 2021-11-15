@@ -2,56 +2,50 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
-let highlightStyle: CodeMirror.HighlightStyle|null = null;
+const t = CodeMirror.tags;
 
-function importCM(): Promise<typeof CodeMirror> {
-  return import('../../../third_party/codemirror.next/codemirror.next.js');
-}
+export const highlightStyle: CodeMirror.HighlightStyle = CodeMirror.HighlightStyle.define([
+  {tag: t.variableName, class: 'token-variable'},
+  {tag: t.propertyName, class: 'token-property'},
+  {tag: [t.typeName, t.className, t.namespace, t.macroName], class: 'token-type'},
+  {tag: [t.special(t.name), t.constant(t.className)], class: 'token-variable-special'},
+  {tag: t.definition(t.name), class: 'token-definition'},
+  {tag: t.standard(t.variableName), class: 'token-builtin'},
 
-export function getHighlightStyle(modCM: typeof CodeMirror): CodeMirror.HighlightStyle {
-  if (!highlightStyle) {
-    const t = modCM.tags;
-    highlightStyle = modCM.HighlightStyle.define([
-      {tag: t.variableName, class: 'token-variable'},
-      {tag: t.propertyName, class: 'token-property'},
-      {tag: [t.typeName, t.className, t.namespace, t.macroName], class: 'token-type'},
-      {tag: [t.special(t.name), t.constant(t.className)], class: 'token-variable-special'},
-      {tag: t.definition(t.name), class: 'token-definition'},
-      {tag: t.standard(t.variableName), class: 'token-builtin'},
+  {tag: [t.number, t.literal, t.unit], class: 'token-number'},
+  {tag: t.string, class: 'token-string'},
+  {tag: [t.special(t.string), t.regexp, t.escape], class: 'token-string-special'},
+  {tag: [t.atom, t.labelName, t.bool], class: 'token-atom'},
 
-      {tag: [t.number, t.literal, t.unit], class: 'token-number'},
-      {tag: t.string, class: 'token-string'},
-      {tag: [t.special(t.string), t.regexp, t.escape], class: 'token-string-special'},
-      {tag: [t.atom, t.labelName, t.bool], class: 'token-atom'},
+  {tag: t.keyword, class: 'token-keyword'},
+  {tag: [t.comment, t.quote], class: 'token-comment'},
+  {tag: t.meta, class: 'token-meta'},
+  {tag: t.invalid, class: 'token-invalid'},
 
-      {tag: t.keyword, class: 'token-keyword'},
-      {tag: [t.comment, t.quote], class: 'token-comment'},
-      {tag: t.meta, class: 'token-meta'},
-      {tag: t.invalid, class: 'token-invalid'},
+  {tag: t.tagName, class: 'token-tag'},
+  {tag: t.attributeName, class: 'token-attribute'},
+  {tag: t.attributeValue, class: 'token-attribute-value'},
 
-      {tag: t.tagName, class: 'token-tag'},
-      {tag: t.attributeName, class: 'token-attribute'},
-      {tag: t.attributeValue, class: 'token-attribute-value'},
-
-      {tag: t.inserted, class: 'token-inserted'},
-      {tag: t.deleted, class: 'token-deleted'},
-      {tag: t.heading, class: 'token-heading'},
-      {tag: t.link, class: 'token-link'},
-      {tag: t.strikethrough, class: 'token-strikethrough'},
-      {tag: t.strong, class: 'token-strong'},
-      {tag: t.emphasis, class: 'token-emphasis'},
-    ]);
-  }
-  return highlightStyle;
-}
+  {tag: t.inserted, class: 'token-inserted'},
+  {tag: t.deleted, class: 'token-deleted'},
+  {tag: t.heading, class: 'token-heading'},
+  {tag: t.link, class: 'token-link'},
+  {tag: t.strikethrough, class: 'token-strikethrough'},
+  {tag: t.strong, class: 'token-strong'},
+  {tag: t.emphasis, class: 'token-emphasis'},
+]);
 
 export async function create(code: string, mimeType: string): Promise<CodeHighlighter> {
-  const CM = await importCM();
   const language = await languageFromMIME(mimeType);
-  const tree = language ? language.language.parser.parse(code) : new CM.Tree(CM.NodeType.none, [], [], code.length);
-  return new CodeHighlighter(code, tree, CM);
+  let tree: CodeMirror.Tree;
+  if (language) {
+    tree = language.language.parser.parse(code);
+  } else {
+    tree = new CodeMirror.Tree(CodeMirror.NodeType.none, [], [], code.length);
+  }
+  return new CodeHighlighter(code, tree);
 }
 
 export async function highlightNode(node: Element, mimeType: string): Promise<void> {
@@ -71,57 +65,55 @@ export async function highlightNode(node: Element, mimeType: string): Promise<vo
 }
 
 export async function languageFromMIME(mimeType: string): Promise<CodeMirror.LanguageSupport|null> {
-  const CM = await importCM();
-
   switch (mimeType) {
     case 'text/javascript':
-      return (await CM.javascript()).javascript();
+      return CodeMirror.javascript.javascript();
     case 'text/jsx':
-      return (await CM.javascript()).javascript({jsx: true});
+      return CodeMirror.javascript.javascript({jsx: true});
     case 'text/typescript':
-      return (await CM.javascript()).javascript({typescript: true});
+      return CodeMirror.javascript.javascript({typescript: true});
     case 'text/typescript-jsx':
-      return (await CM.javascript()).javascript({typescript: true, jsx: true});
+      return CodeMirror.javascript.javascript({typescript: true, jsx: true});
 
     case 'text/css':
     case 'text/x-scss':
-      return (await CM.css()).css();
+      return CodeMirror.css.css();
 
     case 'text/html':
-      return (await CM.html()).html();
+      return CodeMirror.html.html();
 
     case 'application/xml':
-      return (await CM.xml()).xml();
+      return (await CodeMirror.xml()).xml();
 
     case 'text/webassembly':
-      return (await CM.wast()).wast();
+      return (await CodeMirror.wast()).wast();
 
     case 'text/x-c++src':
-      return (await CM.cpp()).cpp();
+      return (await CodeMirror.cpp()).cpp();
 
     case 'text/x-java':
-      return (await CM.java()).java();
+      return (await CodeMirror.java()).java();
 
     case 'application/json':
-      return (await CM.json()).json();
+      return (await CodeMirror.json()).json();
 
     case 'application/x-httpd-php':
-      return (await CM.php()).php();
+      return (await CodeMirror.php()).php();
 
     case 'text/x-python':
-      return (await CM.python()).python();
+      return (await CodeMirror.python()).python();
 
     case 'text/markdown':
-      return (await CM.markdown()).markdown();
+      return (await CodeMirror.markdown()).markdown();
 
     case 'text/x-sh':
-      return new CM.LanguageSupport(await CM.shell());
+      return new CodeMirror.LanguageSupport(await CodeMirror.shell());
 
     case 'text/x-coffeescript':
-      return new CM.LanguageSupport(await CM.coffeescript());
+      return new CodeMirror.LanguageSupport(await CodeMirror.coffeescript());
 
     case 'text/x-clojure':
-      return new CM.LanguageSupport(await CM.clojure());
+      return new CodeMirror.LanguageSupport(await CodeMirror.clojure());
 
     default:
       return null;
@@ -129,7 +121,7 @@ export async function languageFromMIME(mimeType: string): Promise<CodeMirror.Lan
 }
 
 export class CodeHighlighter {
-  constructor(readonly code: string, readonly tree: CodeMirror.Tree, private readonly modCM: typeof CodeMirror) {
+  constructor(readonly code: string, readonly tree: CodeMirror.Tree) {
   }
 
   highlight(token: (text: string, style: string) => void): void {
@@ -144,7 +136,7 @@ export class CodeHighlighter {
         pos = to;
       }
     };
-    this.modCM.highlightTree(this.tree, getHighlightStyle(this.modCM).match, (from, to, style) => {
+    CodeMirror.highlightTree(this.tree, highlightStyle.match, (from, to, style) => {
       flush(from, '');
       flush(to, style);
     }, from, to);

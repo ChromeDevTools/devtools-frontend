@@ -38,10 +38,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
-
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
@@ -679,8 +679,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isEditable = this.hasEditableNode();
     // clang-format off
     if (isEditable && !this.editing) {
-      // Eagerly load CodeMirror to avoid a delay when opening the "Edit as HTML" editor when the user actually clicks on it
-      import('../../ui/components/text_editor/text_editor.js');
       contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), this.editAsHTML.bind(this));
     }
     // clang-format on
@@ -1026,9 +1024,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
     });
 
-    const TextEditor = await import('../../ui/components/text_editor/text_editor.js');
-    const CodeMirror = await import('../../third_party/codemirror.next/codemirror.next.js');
-    const {html} = await CodeMirror.html();
     const editor = new TextEditor.TextEditor.TextEditor(CodeMirror.EditorState.create({
       doc: initialValue,
       extensions: [
@@ -1050,7 +1045,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         ]),
         TextEditor.Config.baseConfiguration(initialValue),
         TextEditor.Config.autocompletion,
-        html(),
+        CodeMirror.html.html(),
         TextEditor.Config.domWordWrap.instance(),
         CodeMirror.EditorView.theme({
           '&.cm-editor': {maxHeight: '300px'},

@@ -84,7 +84,7 @@ describeWithEnvironment('TextEditor', () => {
 
   describe('autocompletion', () => {
     it('can complete builtins and keywords', async () => {
-      const state = makeState('c', (await CodeMirror.javascript()).javascriptLanguage);
+      const state = makeState('c', CodeMirror.javascript.javascriptLanguage);
       const result =
           await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
       assert.isNotNull(result);
@@ -100,7 +100,7 @@ describeWithEnvironment('TextEditor', () => {
         range: string = '',
         related?: string,
         ): Promise<void> {
-      const state = makeState(code, (await CodeMirror.javascript()).javascriptLanguage);
+      const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
       const query = TextEditor.JavaScript.getQueryType(CodeMirror.syntaxTree(state), pos);
       if (type === undefined) {
         assert.isNull(query);

@@ -5,6 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.legacy.js';
+
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
 export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
@@ -12,7 +14,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
   private updateId?: number;
   constructor() {
     super(true);
-    this.registerRequiredCSS('panels/emulation/inspectedPagePlaceholder.css');
+    this.registerRequiredCSS(inspectedPagePlaceholderStyles);
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
     this.restoreMinimumSize();
   }

@@ -4,7 +4,19 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
+
+generate_css("legacy_css_files") {
+  sources = [
+    "deviceModeToolbar.css",
+    "deviceModeView.css",
+    "inspectedPagePlaceholder.css",
+    "mediaQueryInspector.css",
+  ]
+
+  legacy = true
+}
 
 devtools_module("emulation") {
   sources = [
@@ -39,19 +51,13 @@ devtools_module("emulation") {
       [ "../../emulated_devices/optimized:optimized_emulated_devices" ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [
-    "deviceModeToolbar.css",
-    "deviceModeView.css",
-    "inspectedPagePlaceholder.css",
-    "mediaQueryInspector.css",
-  ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "emulation.ts"
 
-  deps = [ ":emulation" ]
+  deps = [
+    ":emulation",
+    ":legacy_css_files",
+  ]
 
   visibility = [
     ":*",

@@ -1,6 +1,5 @@
 {
   "dependencies": [
-    "panels/emulation",
     "panels/timeline"
   ],
   "resources": [

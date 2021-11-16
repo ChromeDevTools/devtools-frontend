@@ -11,6 +11,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from './components/components.js';
 
+import deviceModeToolbarStyles from './deviceModeToolbar.css.legacy.js';
+
 const UIStrings = {
   /**
   * @description Title of the device dimensions selection iteam in the Device Mode Toolbar.
@@ -518,7 +520,7 @@ export class DeviceModeToolbar {
   private wrapToolbarItem(element: Element): UI.Toolbar.ToolbarItem {
     const container = document.createElement('div');
     const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
-        container, {cssFile: 'panels/emulation/deviceModeToolbar.css', delegatesFocus: undefined});
+        container, {cssFile: deviceModeToolbarStyles, delegatesFocus: undefined});
     shadowRoot.appendChild(element);
     return new UI.Toolbar.ToolbarItem(container);
   }

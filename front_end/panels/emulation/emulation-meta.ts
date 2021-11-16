@@ -69,8 +69,6 @@ let loadedEmulationModule: (typeof Emulation|undefined);
 
 async function loadEmulationModule(): Promise<typeof Emulation> {
   if (!loadedEmulationModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/emulation');
     loadedEmulationModule = await import('./emulation.js');
   }
   return loadedEmulationModule;

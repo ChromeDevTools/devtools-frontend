@@ -12,6 +12,7 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
+import deviceModeViewStyles from './deviceModeView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -98,7 +99,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
-    this.registerRequiredCSS('panels/emulation/deviceModeView.css');
+    this.registerRequiredCSS(deviceModeViewStyles);
 
     this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.updateUI, this);

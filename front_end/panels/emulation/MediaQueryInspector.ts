@@ -10,6 +10,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import mediaQueryInspectorStyles from './mediaQueryInspector.css.legacy.js';
+
 const UIStrings = {
   /**
   * @description A context menu item/command in the Media Query Inspector of the Device Toolbar.
@@ -32,7 +34,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
 
   constructor(getWidthCallback: () => number, setWidthCallback: (arg0: number) => void) {
     super(true);
-    this.registerRequiredCSS('panels/emulation/mediaQueryInspector.css');
+    this.registerRequiredCSS(mediaQueryInspectorStyles);
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
     this.contentElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);

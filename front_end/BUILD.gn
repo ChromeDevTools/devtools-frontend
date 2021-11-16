@@ -38,7 +38,6 @@ group("legacy_css") {
     "models/persistence:legacy_css",
     "panels/application:legacy_css",
     "panels/elements:legacy_css",
-    "panels/emulation:legacy_css",
     "panels/help:legacy_css",
     "panels/mobile_throttling:legacy_css",
     "panels/protocol_monitor:legacy_css",

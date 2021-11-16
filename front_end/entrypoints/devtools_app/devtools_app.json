@@ -1,7 +1,5 @@
 {
   "modules" : [
-    { "name": "panels/emulation", "type": "autostart" },
-
     { "name": "panels/lighthouse" },
     { "name": "emulated_devices" },
     { "name": "panels/layers" },

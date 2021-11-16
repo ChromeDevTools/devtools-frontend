@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Semua Laporan"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Kategori"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Aksesibilitas"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Praktik Terbaik"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Performa"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressive Web App"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Desktop"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Memahami Laporan Alur Lighthouse"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Memahami Alur"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Gunakan laporan Navigasi untuk ..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Gunakan laporan Snapshot untuk ..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Gunakan laporan Rentang Waktu untuk ..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Mendapatkan skor Performa Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Mengukur metrik Performa pemuatan halaman seperti Largest Contentful Paint dan Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Menilai kemampuan Progressive Web App."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Menemukan masalah aksesibilitas dalam aplikasi web satu halaman atau formulir yang rumit."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Mengevaluasi praktik terbaik menu dan elemen UI yang tersembunyi di balik interaksi."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Mengukur pergeseran tata letak dan waktu eksekusi JavaScript pada serangkaian interaksi."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Menemukan peluang performa guna meningkatkan pengalaman untuk halaman yang dibuka dalam waktu lama dan aplikasi web satu halaman."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Seluler"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Pemuatan halaman"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Laporan Navigasi menganalisis pemuatan satu halaman, persis seperti laporan Lighthouse asli."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Laporan navigasi"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Biasa"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Error"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Buruk"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Baik"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Simpan"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Status halaman yang ditangkap"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Laporan Snapshot menganalisis halaman dalam status tertentu, biasanya setelah interaksi pengguna."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Laporan snapshot"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Ringkasan"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Interaksi pengguna"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Laporan Rentang Waktu menganalisis periode waktu yang arbitrer, biasanya yang berisi interaksi pengguna."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Laporan rentang waktu"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Laporan Alur Pengguna Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Kunci akses memungkinkan pengguna memfokuskan bagian halaman dengan cepat. Untuk navigasi yang tepat, setiap kunci akses harus unik. [Pelajari lebih lanjut](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Dimensi yang ditampilkan"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Gambar lebih besar dari ukuran yang ditampilkan"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Gambar sesuai dengan ukuran yang ditampilkan"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Menayangkan gambar yang berukuran sesuai untuk menghemat kuota dan meningkatkan waktu pemuatan. [Pelajari lebih lanjut](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Menghindari API yang tidak digunakan lagi"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Cache Aplikasi tidak digunakan lagi. [Pelajari lebih lanjut](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Menemukan \"{AppCacheManifest}\""
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Menggunakan Cache Aplikasi"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Menghindari Cache Aplikasi"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Diperlukan deklarasi encoding karakter. Tindakan ini dapat dilakukan dengan tag `<meta>` pada 1024 byte pertama HTML atau di header respons HTTP Jenis Konten. [Pelajari lebih lanjut](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Menghindari ukuran DOM yang berlebihan"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Anchor gagal"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Tambahkan `rel=\"noopener\"` atau `rel=\"noreferrer\"` ke link eksternal mana pun untuk menyempurnakan performa dan mencegah kerentanan keamanan. [Pelajari lebih lanjut](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Link ke tujuan lintas asal tidak aman"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Link ke tujuan lintas asal aman"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Tidak dapat menentukan tujuan untuk anchor ({anchorHTML}). Jika tidak digunakan sebagai hyperlink, sebaiknya hapus target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Pengguna tidak percaya atau bingung dengan situs yang meminta lokasi mereka tanpa konteks. Sebaiknya kaitkan permintaan dengan tindakan pengguna. [Pelajari lebih lanjut](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Hindari peralihan tata letak berukuran besar"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Gambar paruh atas yang dimuat dengan lambat akan dirender nanti di siklus proses halaman, yang dapat menunda Largest Contentful Paint. [Pelajari lebih lanjut](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Gambar Largest Contentful Paint dimuat dengan lambat"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Gambar Largest Contentful Paint tidak dimuat dengan lambat"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Mencantumkan tugas yang berjalan paling lama di thread utama, berguna untuk mengidentifikasi kontributor utama penundaan input. [Pelajari lebih lanjut](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Pramuat gambar Largest Contentful Paint (LCP)"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Jika Anda sudah menyiapkan HTTPS, pastikan mengalihkan semua traffic HTTP ke HTTPS agar dapat menyediakan fitur web yang aman bagi semua pengguna. [Pelajari lebih lanjut](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Tidak mengalihkan traffic HTTP ke HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Mengalihkan traffic HTTP ke HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Pengalihan mencakup penundaan tambahan sebelum halaman dapat dimuat. [Pelajari lebih lanjut](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Halaman memiliki peta sumber yang valid"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Tambahkan tag `<meta name=\"viewport\">` guna mengoptimalkan aplikasi Anda untuk layar perangkat seluler. [Pelajari lebih lanjut](https://web.dev/viewport/)."
+    "message": "`<meta name=\"viewport\">` tidak hanya mengoptimalkan aplikasi untuk ukuran layar perangkat seluler, tetapi juga mencegah [penundaan 300 milidetik pada input pengguna](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Pelajari lebih lanjut](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Tag `<meta name=\"viewport\">` tidak ditemukan"
@@ -1650,7 +1761,7 @@
     "message": "Pemeriksaan ini diperlukan oleh [Checklist PWA](https://developers.google.com/web/progressive-web-apps/checklist) untuk dasar pengukuran tetapi tidak otomatis diperiksa oleh Lighthouse. Pemeriksaan tersebut tidak memengaruhi skor, tetapi penting karena hal ini berarti Anda memverifikasi situs-situs secara manual."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressive Web App"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Dapat Diinstal"
@@ -1659,7 +1770,7 @@
     "message": "PWA yang Dioptimalkan"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Pemeriksaan ini memastikan bahwa halaman Anda dioptimalkan untuk pemeringkatan hasil mesin telusur. Ada faktor lain yang tidak diperiksa Lighthouse yang dapat memengaruhi pemeringkatan penelusuran Anda. [Pelajari lebih lanjut](https://support.google.com/webmasters/answer/35769)."
+    "message": "Pemeriksaan ini memastikan bahwa halaman Anda mengikuti saran pengoptimalan mesin telusur dasar. Ada banyak faktor tambahan yang tidak diperhitungkan oleh Lighthouse di sini yang mungkin memengaruhi peringkat penelusuran Anda, termasuk performa di [Data Web Inti](https://web.dev/learn-web-vitals/). [Pelajari lebih lanjut](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Jalankan validator tambahan ini di situs Anda untuk memeriksa praktik terbaik SEO lainnya."
@@ -1713,7 +1824,7 @@
     "message": "Base-uri yang tidak ada memungkinkan injeksi tag <base> untuk menyetel URL dasar bagi semua URL relatif (misalnya, skrip) ke domain yang dikontrol penyerang. Sebaiknya setel base-uri ke 'none' atau 'self'."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elemen yang dikontrol oleh object-src dianggap sebagai fitur lama. Sebaiknya setel object-src ke 'none' untuk mencegah injeksi plugin yang mengeksekusi skrip yang tidak aman."
+    "message": "object-src yang hilang memungkinkan injeksi plugin yang menjalankan skrip tidak aman. Sebaiknya setel object-src ke 'none', jika memungkinkan."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Perintah script-src tidak ada. Ini dapat mengizinkan eksekusi skrip yang tidak aman."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Nonce harus terdiri dari minimal 8 karakter."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Hindari penggunaan skema URL biasa ({keyword}) dalam perintah ini. Skema URL biasa memungkinkan skrip berasal dari domain yang tidak aman."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Hindari penggunaan karakter pengganti biasa ({keyword}) dalam perintah ini. Karakter pengganti biasa memungkinkan skrip berasal dari domain yang tidak aman."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Tujuan pelaporan hanya dikonfigurasi melalui perintah report-to. Perintah ini hanya didukung di browser berbasis Chromium. Jadi, sebaiknya gunakan juga perintah report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Tidak ada CSP yang mengonfigurasi tujuan pelaporan. Mempertahankan CSP dari waktu ke waktu dan memantau setiap kerusakan menjadi sulit dilakukan."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Daftar host yang diizinkan sering kali dapat diabaikan. Sebaiknya gunakan 'strict-dynamic' bersama dengan nonce atau hash CSP."
+    "message": "Daftar host yang diizinkan sering kali dapat diabaikan. Sebaiknya gunakan nonce atau hash CSP, beserta 'strict-dynamic', jika perlu."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Perintah CSP tidak dikenal."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Tampaknya {keyword} adalah kata kunci yang tidak valid."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' mengizinkan eksekusi skrip dalam halaman dan pengendali peristiwa yang tidak aman. Sebaiknya gunakan nonce atau hash CSP untuk mengizinkan skrip satu per satu."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Sebaiknya tambahkan 'unsafe-inline' (diabaikan oleh browser yang mendukung nonce/hash) agar kompatibel dengan browser versi lama."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "URL yang Anda berikan tampaknya tidak valid."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Semua"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Semua Skrip"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Cakupan"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Modul Duplikat"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Byte Resource"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Nama"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Tampilkan/Sembunyikan Tabel"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Byte yang Tidak Digunakan"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Untuk konten animasi, gunakan [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) untuk meminimalkan penggunaan CPU saat konten tidak berada di layar."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Lihat kalkulator."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigasi Awal"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Error laporan: tidak ada informasi audit"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Laporkan masalah"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Data Lab"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Lulus audit"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Desktop Emulasi"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Throttling CPU"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Saluran"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Perangkat"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Waktu Pengambilan"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Throttling jaringan"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Setelan Runtime"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Agen pengguna (host)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Agen pengguna (jaringan)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Tidak dikenal"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Tampilkan audit yang relevan dengan:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Peringatan: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Semua"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Semua Skrip"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Cakupan"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Modul Duplikat"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Byte Resource"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Nama"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Tampilkan/Sembunyikan Tabel"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Byte yang Tidak Digunakan"
   }
 }

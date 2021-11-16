@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Všetky prehľady"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Kategórie"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Dostupnosť"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Osvedčené postupy"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Výkonnosť"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progresívna webová aplikácia"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Počítač"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Vysvetlenie prehľadu cesty používateľov v službe Lighthouse"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Vysvetlenie cesty používateľov"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Pomocou prehľadov navigácie môžete..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Pomocou prehľadov stavu môžete…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Pomocou prehľadov časového rozsahu môžete..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Získať skóre výkonnosti v nástroji Lighthouse"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Merať metriky výkonnosti načítania stránok, ako sú vykreslenie najväčšieho obsahu a index rýchlosti."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Získať prístup k možnostiam progresívnych webových aplikácií."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Nájsť problémy s dostupnosťou v jednostránkových aplikáciách alebo zložitých formulároch."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Ohodnotiť osvedčené postupy ponúk a prvkov používateľského rozhrania skrytých za interakciou."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Merať posuny rozloženia a čas spustenia kódu JavaScript v rámci radu interakcií."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Objaviť príležitosti na zvýšenie výkonnosti s cieľom zlepšiť prostredie dlhodobých stránok a jednostránkových aplikácií."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Najvyšší vplyv"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} informatívna kontrola}few{{numInformative} informatívne kontroly}many{{numInformative} informative audits}other{{numInformative} informatívnych kontrol}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobilná verzia"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Načítanie stránky"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Prehľady navigácie analyzujú jedno načítanie stránky rovnako ako pôvodné prehľady nástroja Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Prehľad navigácie"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} prehľad navigácie}few{{numNavigation} prehľady navigácie}many{{numNavigation} navigation reports}other{{numNavigation} prehľadov navigácie}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} kontrola, ktorá môže byť úspešná}few{{numPassableAudits} kontroly, ktoré môžu byť úspešné}many{{numPassableAudits} passable audits}other{{numPassableAudits} kontrol, ktoré môže byť úspešné}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{{numPassed} úspešná kontrola}few{{numPassed} úspešné kontroly}many{{numPassed} audits passed}other{{numPassed} úspešných kontrol}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Priemer"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Chyba"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Slabé"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Dobré"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Uložiť"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Zachytený stav stránky"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Prehľady stavu analyzujú stránku v konkrétnom stave, zvyčajne po interakciách používateľov."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Prehľad stavu"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} prehľad stavu}few{{numSnapshot} prehľady stavu}many{{numSnapshot} snapshot reports}other{{numSnapshot} prehľadov stavu}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Súhrn"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Interakcie používateľov"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Prehľady časového rozsahu analyzujú ľubovoľné obdobie zvyčajne obsahujúce interakcie používateľov."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Prehľad časového rozsahu"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} prehľad časového rozsahu}few{{numTimespan} prehľady časového rozsahu}many{{numTimespan} timespan reports}other{{numTimespan} prehľadov časového rozsahu}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Prehľad cesty používateľov v službe Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Prístupové klávesy umožňujú používateľom rýchlejšie vybrať časť stránky. Každý prístupový kláves musí byť jedinečný, aby navigácia správne fungovala. [Ďalšie informácie](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Zobrazené rozmery"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Obrázky boli väčšie než zobrazovaná veľkosť"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Obrázky boli vhodné pre zobrazovanú veľkosť"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Zobrazujte obrázky s primeranou veľkosťou, čím ušetríte mobilné dáta a skrátite čas načítania. [Ďalšie informácie](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Nepoužíva rozhrania API s ukončenou podporou"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Podpora vyrovnávacej pamäte aplikácie je ukončená. [Ďalšie informácie](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Našiel sa prvok {AppCacheManifest}"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Používa vyrovnávaciu pamäť aplikácie"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Nepoužíva vyrovnávaciu pamäť aplikácie"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Vyžaduje sa deklarácia kódovania znakov. Môžete to vykonať pomocou značky `<meta>` v prvých 1 024 bajtoch kódu HTML alebo hlavičke odpovede HTTP Content-Type. [Ďalšie informácie](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Zabráni použitiu nadmerne veľkého prvku DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Zlyhávajúce kotvy"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Ak chcete zlepšiť výkonnosť a zabrániť chybám zabezpečenia, pridajte k ľubovoľným externým odkazom prvok `rel=\"noopener\"` alebo `rel=\"noreferrer\"`. [Ďalšie informácie](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Odkazy na destinácie typu cross origin nie sú bezpečné"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Odkazy na destinácie typu cross origin sú bezpečné"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Nepodarilo sa zistiť cieľ ukotvenia ({anchorHTML}). Ak sa nepoužíva ako hypertextový odkaz, zvážte odstránenie prvku target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Používatelia nedôverujú webom, ktoré požadujú ich polohu bez kontextu, alebo ich považujú za mätúce. Zvážte namiesto toho spojenie žiadosti s akciou používateľa. [Ďalšie informácie](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Nepoužívajte veľké posuny rozloženia"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Lenivo načítané obrázky nad záhybom stránky sa vykreslia v neskoršej fáze životného cyklu stránky, čo môže oneskoriť vykreslenie najväčšieho obsahu. [Ďalšie informácie](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Obrázok s vykreslením najväčšieho obsahu bol lenivo načítaný"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Obrázok s vykreslením najväčšieho obsahu nebol lenivo načítaný"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Sú tu uvedené najdlhšie úlohy hlavného vlákna slúžiace na identifikáciu faktorov, ktoré najväčšou mierou prispievajú k oneskoreniu vstupu. [Ďalšie informácie](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Prednačítajte obrázok vykreslenia najväčšieho obsahu"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ak ste už nastavili HTTPS, zaistite presmerovanie všetkej návštevnosti cez HTTP na HTTPS a poskytnite tak funkcie zabezpečeného webu všetkým používateľom. [Ďalšie informácie](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Nepresmerúva návštevnosť cez HTTP na HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Presmerúva návštevnosť cez HTTP na HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Presmerovania spôsobujú ďalšie oneskorenia pri načítavaní stránky. [Ďalšie informácie](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "Stránka obsahuje platné mapy zdroja"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Ak chcete optimalizovať svoju aplikáciu pre obrazovky mobilných zariadení, pridajte značku `<meta name=\"viewport\">`. [Ďalšie informácie](https://web.dev/viewport/)"
+    "message": "`<meta name=\"viewport\">` nielen optimalizuje vašu aplikáciu pre veľkosti obrazoviek mobilných zariadení, ale zabraňuje aj [300 milisekundovému oneskoreniu vstupu používateľa](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Ďalšie informácie](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nenašla sa žiadna značka `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Tieto kontroly vyžaduje základný [kontrolný zoznam PWA](https://developers.google.com/web/progressive-web-apps/checklist), ale Lighthouse ich automaticky nevykonáva. Nemajú vplyv na vaše skóre, ale je dôležité, aby ste ich overili ručne."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progresívna webová aplikácia"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Inštalovateľné"
@@ -1659,7 +1770,7 @@
     "message": "Optimalizované pre PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Tieto kontroly zaisťujú, že vaša stránka je optimalizovaná pre hodnotenie výsledkov vyhľadávačov. Existujú ďalšie faktory, ktoré Lighthouse nekontroluje a ktoré by mohli ovplyvniť vaše hodnotenie v rámci vyhľadávania. [Ďalšie informácie](https://support.google.com/webmasters/answer/35769)"
+    "message": "Tieto kontroly zaisťujú, že vaša stránka nasleduje radu týkajúcu sa základnej optimalizácie pre vyhľadávače. Vašu pozíciu vo vyhľadávaní vrátane výkonnosti v prehľade [Core Web Vitals](https://web.dev/learn-web-vitals/) môže ovplyvňovať mnoho faktorov, ktoré tu Lighthouse neuvádza. [Ďalšie informácie](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Ak chcete skontrolovať ďalšie osvedčené postupy SEO, spusťte na svojom webe tieto ďalšie nástroje na overenie."
@@ -1713,7 +1824,7 @@
     "message": "Chýbajúci prvok base-uri umožňuje vloženým značkám <base> nastaviť základnú webovú adresu pre všetky relatívne webové adresy (napr. skripty) na doménu ovládanú útočníkom. Prvok base-uri odporúčame nastaviť na „none“ alebo „self“."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Prvky ovládané direktívou object-src sa považujú za staré funkcie. Odporúčame direktívu object-src nastaviť na none, aby ste zabránili vloženiu doplnkov spúšťajúcich nebezpečné skripty."
+    "message": "V prípade chýbajúcej direktívy object-src bude možné vkladať doplnky, ktoré budú spúšťať nebezpečné skripty. Ak je to možné, odporúčame direktívu object-src nastaviť na „none“."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Direktíva script-src chýba. Umožňuje to spustenie nebezpečných skriptov."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Iba raz použiteľné čísla by mali mať aspoň osem miest."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Nepoužívajte v tejto direktíve čisté schémy webovej adresy ({keyword}). Čisté schémy webovej adresy umožňujú získavať skripty z nebezpečnej domény."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Nepoužívajte v tejto direktíve čisté zástupné znaky ({keyword}). Čisté zástupné znaky umožňujú získavať skripty z nebezpečnej domény."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Cieľ prehľadov sa konfiguruje iba prostredníctvom direktívy report-to. Táto direktíva podporovaná iba v prehliadačoch založených na platforme Chromium, takže sa tiež odporúča použiť direktívu report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Žiadne PZO nekonfiguruje cieľ hlásení. Sťažuje to udržiavanie PZO v priebehu času a monitorovanie prípadných porúch."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Zoznamy povolených hostí sa dajú často obísť. Odporúčame použiť direktívu strict-dynamic v kombinácii s iba raz použiteľnými číslami alebo hodnotami hash PZO."
+    "message": "Zoznamy povolených hostiteľov sa dajú často obísť. V rámci PZO odporúčame spolu s direktívou strict-dynamic radšej používať iba raz použiteľné čísla alebo hodnoty hash (ak je to potrebné)."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Neznáma direktíva PZO."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Zdá sa, že {keyword} je neplatné kľúčové slovo."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline umožňuje spustenie nebezpečných stránkových skriptov a obslužných nástrojov udalostí. Odporúčame povoliť skripty individuálne pomocou iba raz použiteľných čísiel alebo hodnôt hash PZO."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Odporúčame pridať direktívu unsafe-inline (ignorovanú prehliadačmi podporujúcimi iba raz použiteľné čísla a hodnoty hash), aby boli pravidlá spätne kompatibilné so staršími prehliadačmi."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Poskytnutá webová adresa je zrejme neplatná."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Všetko"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Všetky skripty"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Pokrytie"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Duplikovať moduly"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Počet bajtov zdroja"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Názov"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Prepnúť tabuľku"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Nepoužité bajty"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "V prípade animovaného obsahu minimalizujete využitie procesora pomocou komponenta [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), keď je tento obsah mimo obrazovky."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Zobraziť kalkulačku"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Zbaliť zobrazenie"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Počiatočná navigácia"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Nahlásenie chyby: žiadne informácie o kontrole"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Rozbaliť zobrazenie"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Nahlásiť problém"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Skryť"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Údaje laboratória"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Absolvované kontroly"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Počiatočné načítanie stránky"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Vlastné obmedzenie toku dát"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulovaná pracovná plocha"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Obmedzenie rýchlosti procesora"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanál"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Zariadenie"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Čas načítania"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Obmedzovanie rýchlosti"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Nastavenia spustenia"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Používateľský agent (hostiteľ)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Používateľský agent (sieť)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Webová adresa"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Načítanie jednej stránky"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "Tieto údaje sú prevzaté z jedného načítania stránky na rozdiel od údajov poľa zhrnujúcich mnoho relácií."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Pomalé obmedzenie toku dát 4G"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Neznáme"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Zobraziť"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Zobraziť kontroly relevantné pre:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Upozornenia: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Všetko"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Všetky skripty"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Pokrytie"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Duplikovať moduly"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Počet bajtov zdroja"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Názov"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Prepnúť tabuľku"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Nepoužité bajty"
   }
 }

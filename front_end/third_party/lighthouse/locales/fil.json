@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Lahat ng Ulat"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Pagiging accessible"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Pinakamahuhusay na Kagawian"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Performance"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressive Web App"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Desktop"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobile"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Pag-load ng page"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Ulat ng pag-navigate"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Average"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Error"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Pangit"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Maganda"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Na-capture na status ng page"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Ulat ng snapshot"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Buod"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Mga pakikipag-ugnayan ng user"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Ulat ng tagal ng panahon"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Ulat ng Daloy ng User ng Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Hinahayaan ng mga access key ang mga user na mabilis na makatuon sa isang bahagi ng page. Para sa maayos na navigation, natatangi dapat ang bawat access key. [Matuto pa](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Mga ipinapakitang dimensyon"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Mas malaki ang mga larawan kaysa sa ipinapakitang laki ng mga ito"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Naaangkop ang mga larawan para sa ipinapakitang laki ng mga ito"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Maghatid ng mga larawang naaangkop ang laki para makatipid sa cellular data at mapabilis ang pag-load. [Matuto pa](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Iniiwasan ang mga hindi na ginagamit na API"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Hindi na ginagamit ang Cache ng Application. [Matuto pa](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Nakita ang \"{AppCacheManifest}\""
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Gumagamit ng Cache ng Application"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Iniiwasan ang Application Cache"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Kailangang mag-declare ng pag-encode ng character. Magagawa ito gamit ang isang `<meta>` tag sa unang 1024 na byte ng HTML o sa header ng sagot ng HTTP na Uri ng Content. [Matuto pa](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Umiiwas sa masyadong malaking DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Mga Hindi Nakapasang Anchor"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Idagdag ang `rel=\"noopener\"` o `rel=\"noreferrer\"` sa anumang external na link para pahusayin ang performance at pigilan ang mga kahinaan sa seguridad. [Matuto pa](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Hindi ligtas ang mga link sa mga cross-origin na destinasyon"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Ligtas ang mga link sa mga cross-origin na destinasyon"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Hindi matukoy ang destinasyon para sa anchor na ({anchorHTML}). Kung hindi ginagamit bilang hyperlink, pag-isipang alisin ang target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Walang tiwala o nalilito ang mga user sa mga site na humihiling ng kanilang lokasyon nang walang konteksto. Sa halip ay pag-isipang iugnay ang kahilingan sa pagkilos ng user. [Matuto pa](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Iwasan ang malalaking pagbabago ng layout"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Sa lifecycle ng page, mas nahuhuling ma-render ang mga larawan sa itaas ng fold na mabagal ang pag-load, at puwede nitong maantala ang largest contentful paint. [Matuto pa](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Mabagal ang pag-load ng Largest Contentful Paint image"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Hindi mabagal ang pag-load ng Largest Contentful Paint image"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Naglilista ng mga pinakamatagal na gawain sa pangunahing thread, na kapaki-pakinabang para sa pagtukoy ng mga pinakanakakapagpatagal ng input delay. [Matuto pa](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "I-preload ang larawan ng Largest Contentful Paint"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Kung na-set up mo na ang HTTPS, tiyaking ire-redirect mo sa HTTPS ang lahat ng trapiko sa HTTP para ma-enable ang mga ligtas na feature sa web para sa lahat ng iyong user. [Matuto pa](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Hindi nire-redirect sa HTTPS ang trapiko sa HTTP"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Nire-redirect sa HTTPS ang trapiko sa HTTP"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Nagpapasimula ang mga pag-redirect ng mga karagdagang pagkaantala bago ma-load ang page. [Matuto pa](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "May mga valid na source map ang page"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Magdagdag ng tag na `<meta name=\"viewport\">` para i-optimize ang iyong app para sa mga screen ng mobile. [Matuto pa](https://web.dev/viewport/)."
+    "message": "Hindi lang ino-optimize ng `<meta name=\"viewport\">` ang iyong app para sa mga laki ng mobile screen, pinipigilan din nito ang [300 millisecond na pagkaantala sa input ng user](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Matuto pa](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Walang nahanap na tag na `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Kinakailangan ang mga pagsusuring ito ng baseline na [Checklist ng PWA ](https://developers.google.com/web/progressive-web-apps/checklist) pero hindi ito awtomatikong sinusuri ng Lighthouse. Hindi nakakaapekto ang mga ito sa iyong score pero mahalagang ma-verify mo ang mga ito nang manual."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressive Web App"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Nai-install"
@@ -1659,7 +1770,7 @@
     "message": "Na-optimize ang PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Tinitiyak ng mga pagsusuring ito na naka-optimize ang iyong page para sa ranking ng mga resulta ng search engine. May mga karagdagang salik na hindi sinusuri ng Lighthouse na puwedeng makaapekto sa iyong ranking sa paghahanap. [Matuto pa](https://support.google.com/webmasters/answer/35769)."
+    "message": "Tinitiyak ng mga pagsusuring ito na nakakasunod ang iyong page sa pangunahing payo sa pag-optimize sa search engine. Marami pang karagdagang salik na hindi minamarkahan ng Lighthouse dito na posibleng makaapekto sa iyong ranking sa paghahanap, kabilang ang performance sa [Core Web Vitals](https://web.dev/learn-web-vitals/). [Matuto pa](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Paganahin ang mga karagdagang validator na ito sa iyong site para tingnan ang karagdagang pinakamahuhusay na kagawian sa SEO."
@@ -1713,7 +1824,7 @@
     "message": "Binibigyang-daan ng nawawalang base-uri ang mga na-inject na <base> na tag na itakda ang base na URL para sa lahat ng relative URL (hal. mga script) sa isang domain na kinokontrol ng attacker. Pag-isipang itakda ang base-uri sa 'none' o 'self.'"
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Itinuturing na mga legacy na feature ang mga element na kinokontrol ng object-src. Pag-isipang itakda ang object-src sa 'none' para maiwasan ang pag-inject ng mga plugin na nagpapatupad ng mga hindi ligtas na script."
+    "message": "Pinapayagan ng kulang na object-src ang pag-inject ng mga plugin na nag-e-execute ng mga hindi ligtas na script. Pag-isipang itakda ang object-src sa 'none' kung magagawa mo."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Walang script-src na direktiba. Puwede nitong bigyang-daan ang pagpapatupad ng mga hindi ligtas na script."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Dapat ay hindi bababa sa 8 character ang haba ng mga nonce."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Iwasang gumamit ng mga plain na URL scheme ({keyword}) sa direktibang ito. Pinapayagan ng mga plain na URL scheme na ma-source ang mga script mula sa hindi ligtas na domain."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Iwasang gumamit ng mga plain na wildcard ({keyword}) sa direktibang ito. Pinapayagan ng mga plain na wildcard na ma-source ang mga script mula sa hindi ligtas na domain."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Nako-configure lang ang destinasyon ng pag-uulat sa pamamagitan ng report-to na direktiba. Sinusuportahan lang ang direktibang ito sa mga browser na batay sa Chromium kung kaya inirerekomendang gumamit din ng report-uri na direktiba."
   },
@@ -1734,13 +1851,16 @@
     "message": "Walang CSP na nagko-configure ng destinasyon ng pag-uulat. Pinapahirap nitong mapanatili ang CSP sa paglipas ng panahon at masubaybayan ang anumang pagkasira."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Puwedeng madalas na ma-bypass ang mga allowlist ng host. Pag-isipang gamitin ang 'strict-dynamic' kasama ng mga CSP nonce o hash."
+    "message": "Puwedeng madalas na ma-bypass ang mga allowlist ng host. Pag-isipang gumamit ng mga CSP nonce o hash sa halip, kasama ng 'strict-dynamic' kung kinakailangan."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Hindi kilalang direktiba ng CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Mukhang invalid na keyword ang {keyword}."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Nagbibigay-daan ang 'unsafe-inline' sa pagpapatupad ng mga hindi ligtas na in-page na script at tagapangasiwa ng event. Pag-isipang gumamit ng mga CSP nonce o hash para indibidwal na payagan ang mga script."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pag-isipang magdagdag ng 'unsafe-inline' (binabalewala ng mga browser na sumusuporta sa mga nonce/hash) para maging backward compatible sa mga lumang browser."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Mukhang invalid ang URL na ibinigay mo."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Lahat"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Lahat ng Script"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Sakop"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Mga Duplicate na Module"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Mga Byte ng Resource"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Pangalan"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "I-toggle ang Talahanayan"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Mga Hindi Nagamit na Byte"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Para sa animated na content, gamitin ang [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) para mabawasan ang paggamit ng CPU kapag offscreen ang content."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Tingnan ang calculator."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Unang Navigation"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Error sa ulat: walang impormasyon sa pag-audit"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Mag-file ng isyu"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Data ng Lab"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Mga pumasang pag-audit"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Na-emulate na Desktop"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Pag-throttle ng CPU"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Channel"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Device"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Oras ng Pagkuha"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Pag-throttle ng network"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Mga Setting ng Runtime"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "User agent (host)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "User agent (network)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Hindi alam"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Ipakita ang mga audit na may kaugnayan sa:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Mga Babala: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Lahat"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Lahat ng Script"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Sakop"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Mga Duplicate na Module"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Mga Byte ng Resource"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Pangalan"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "I-toggle ang Talahanayan"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Mga Hindi Nagamit na Byte"
   }
 }

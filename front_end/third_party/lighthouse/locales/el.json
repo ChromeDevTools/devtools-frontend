@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Όλες οι αναφορές"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Προσβασιμότητα"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Βέλτιστες πρακτικές"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Απόδοση"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Προηγμένη εφαρμογή ιστού"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Υπολογιστής"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Υψηλότερος αντίκτυπος"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} πληροφοριακός έλεγχος}other{{numInformative} πληροφοριακοί έλεγχοι}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Κινητό"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Φόρτωση σελίδας"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Αναφορά πλοήγησης"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} αναφορά πλοήγησης}other{{numNavigation} αναφορές πλοήγησης}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} έλεγχος που μπορεί να ολοκληρωθεί}other{{numPassableAudits} έλεγχοι που μπορούν να ολοκληρωθούν}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{{numPassed} έλεγχος ολοκληρώθηκε}other{{numPassed} έλεγχοι ολοκληρώθηκαν}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Μέτρια"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Σφάλμα"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Χαμηλή"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Καλή"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Καταγεγραμμένη κατάσταση σελίδας"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Αναφορά σύνοψης"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} αναφορά σύνοψης}other{{numSnapshot} αναφορές σύνοψης}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Σύνοψη"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Αλληλεπιδράσεις χρήστη"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Αναφορά χρονικού διαστήματος"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} αναφορά χρονικού διαστήματος}other{{numTimespan} αναφορές χρονικού διαστήματος}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Αναφορά ροής χρήστη Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Τα πλήκτρα πρόσβασης επιτρέπουν στους χρήστες να εστιάσουν γρήγορα σε ένα τμήμα της σελίδας. Για σωστή πλοήγηση, κάθε πλήκτρο πρόσβασης πρέπει να είναι μοναδικό. [Μάθετε περισσότερα](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Διαστάσεις προβολής"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Οι εικόνες ήταν μεγαλύτερες από το εμφανιζόμενο μέγεθός τους"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Οι εικόνες ήταν κατάλληλες για το εμφανιζόμενο μέγεθός τους"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Συνιστάται η προβολή εικόνων κατάλληλου μεγέθους για την εξοικονόμηση δεδομένων κινητής τηλεφωνίας και τη βελτίωση του χρόνου φόρτωσης. [Μάθετε περισσότερα](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Αποφυγή καταργημένων API"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Η κρυφή μνήμη εφαρμογής έχει καταργηθεί. [Μάθετε περισσότερα](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Βρέθηκε \"{AppCacheManifest}\""
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Χρησιμοποιεί προσωρινή μνήμη εφαρμογής"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Αποφυγή προσωρινής μνήμης εφαρμογής"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Απαιτείται δήλωση κωδικοποίησης χαρακτήρων. Μπορεί να πραγματοποιηθεί με μια ετικέτα `<meta>` στα πρώτα 1024 byte του κώδικα HTML ή στην κεφαλίδα απόκρισης HTTP τύπου περιεχομένου. [Μάθετε περισσότερα](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Αποφεύγει τα υπερβολικά μεγάλα μεγέθη DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Αγκυρώσεις που αποτυγχάνουν"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Προσθέστε ένα στοιχείο `rel=\"noopener\"` ή `rel=\"noreferrer\"` στους εξωτερικούς συνδέσμους για να βελτιώσετε την απόδοση και να αποφύγετε τις ευπάθειες ασφάλειας. [Μάθετε περισσότερα](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Οι σύνδεσμοι με προορισμούς διασταυρούμενων προελεύσεων δεν είναι ασφαλείς"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Οι σύνδεσμοι με προορισμούς διασταυρούμενων προελεύσεων είναι ασφαλείς"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Δεν ήταν δυνατός ο προσδιορισμός του προορισμού για την αγκύρωση ({anchorHTML}). Εάν δεν χρησιμοποιείται ως υπερσύνδεσμος, εξετάστε το ενδεχόμενο να καταργήσετε το χαρακτηριστικό target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Οι ιστότοποι που απαιτούν τη γνωστοποίηση τοποθεσίας χωρίς προφανή αιτία προκαλούν σύγχυση ή φαίνονται ύποπτοι στους χρήστες. Συνιστάται τα αιτήματα να συνδέονται με τις ενέργειες των χρηστών. [Μάθετε περισσότερα](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Αποφύγετε τις μεγάλες μετατοπίσεις διάταξης"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Οι εικόνες στο επάνω μέρος που φορτώνονται αργά αποδίδονται αργότερα στον κύκλο ζωής της σελίδας, κάτι που μπορεί να καθυστερήσει τη μεγαλύτερη σχεδίαση με περιεχόμενο. [Μάθετε περισσότερα](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Η εικόνα μεγαλύτερης σχεδίασης με περιεχόμενο φορτώθηκε αργά"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Η εικόνα μεγαλύτερης σχεδίασης με περιεχόμενο δεν φορτώθηκε αργά"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Παραθέτει τις μεγαλύτερες εργασίες στο κύριο νήμα, κάτι που είναι χρήσιμο για τον εντοπισμό των συνεισφερόντων που συμβάλλουν περισσότερο στην καθυστέρηση εισόδου. [Μάθετε περισσότερα](https://web.dev/long-tasks-devtools/)"
   },
@@ -1151,15 +1271,6 @@
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Προφόρτωση εικόνας Μεγαλύτερης σχεδίασης με περιεχόμενο"
   },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Αν έχετε ήδη ρυθμίσει το HTTPS, βεβαιωθείτε ότι ανακατευθύνετε όλη την επισκεψιμότητα HTTP σε HTTPS, προκειμένου να ενεργοποιήσετε ασφαλείς λειτουργίες ιστού για όλους τους χρήστες σας. [Μάθετε περισσότερα](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Δεν ανακατευθύνσει την επισκεψιμότητα HTTP σε HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Ανακατευθύνει την επισκεψιμότητα HTTP σε HTTPS"
-  },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Οι ανακατευθύνσεις προκαλούν πρόσθετες καθυστερήσεις στη φόρτωση της σελίδας. [Μάθετε περισσότερα](https://web.dev/redirects/)."
   },
@@ -1272,10 +1383,10 @@
     "message": "Οι μηχανές αναζήτησης δεν μπορούν να συμπεριλάβουν τις σελίδες σας στα αποτελέσματα αναζήτησης, εάν δεν έχουν άδεια για την εκτέλεση ανίχνευσης σε αυτές. [Μάθετε περισσότερα](https://web.dev/is-crawable/)."
   },
   "lighthouse-core/audits/seo/is-crawlable.js | failureTitle": {
-    "message": "Η σελίδα αποκλείεται από την ευρετηρίαση"
+    "message": "Η σελίδα αποκλείεται από την δημιουργία καταλόγου"
   },
   "lighthouse-core/audits/seo/is-crawlable.js | title": {
-    "message": "Η σελίδα δεν αποκλείεται από την ευρετηρίαση"
+    "message": "Η σελίδα δεν αποκλείεται από την δημιουργία καταλόγου"
   },
   "lighthouse-core/audits/seo/link-text.js | description": {
     "message": "Το περιγραφικό κείμενο συνδέσμων βοηθά τις μηχανές αναζήτησης να κατανοήσουν το περιεχόμενό σας. [Μάθετε περισσότερα](https://web.dev/link-text/)."
@@ -1524,7 +1635,7 @@
     "message": "Η σελίδα έχει έγκυρες αντιστοιχίσεις πηγής"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Προσθέστε μια ετικέτα `<meta name=\"viewport\">` για να βελτιστοποιήσετε την εφαρμογή σας για οθόνες κινητών συσκευών. [Μάθετε περισσότερα](https://web.dev/viewport/)."
+    "message": "Μια μεταετικέτα `<meta name=\"viewport\">` δεν βελτιστοποιεί απλώς την εφαρμογή σας για μεγέθη οθόνης κινητών, αλλά αποτρέπει και [μια καθυστέρηση 300 χιλιοστών του δευτερολέπτου στην εισαγωγή στοιχείων από τους χρήστες](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Μάθετε περισσότερα](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Δεν βρέθηκε ετικέτα `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Αυτοί οι έλεγχοι απαιτούνται από τη [Λίστα ελέγχου PWA](https://developers.google.com/web/progressive-web-apps/checklist) σημείου αναφοράς αλλά δεν ελέγχονται αυτόματα από το Lighthouse. Δεν επηρεάζουν τη βαθμολογία σας αλλά είναι σημαντικό να τους επαληθεύσετε με μη αυτόματο τρόπο."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Προηγμένη εφαρμογή ιστού"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Δυνατότητα εγκατάστασης"
@@ -1659,7 +1770,7 @@
     "message": "Με βελτιστοποίηση PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Αυτοί οι έλεγχοι διασφαλίζουν ότι η σελίδα σας είναι βελτιστοποιημένη για κατάταξη στα αποτελέσματα μηχανών αναζήτησης. Υπάρχουν επιπλέον παράγοντες που δεν ελέγχονται από το Lighthouse και μπορεί να επηρεάσουν την κατάταξη της σελίδας σας στην αναζήτηση. [Μάθετε περισσότερα](https://support.google.com/webmasters/answer/35769)."
+    "message": "Αυτοί οι έλεγχοι διασφαλίζουν ότι η σελίδα σας ακολουθεί τις βασικές συμβουλές βελτιστοποίησης μηχανών αναζήτησης. Υπάρχουν πολλοί επιπλέον παράγοντες τους οποίους το Lighthouse δεν βαθμολογεί εδώ και οι οποίοι ενδέχεται να επηρεάζουν την κατάταξη στην αναζήτηση, συμπεριλαμβανομένης της απόδοσης στο [Core Web Vitals](https://web.dev/learn-web-vitals/). [Μάθετε περισσότερα](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Εκτελέστε αυτά τα πρόσθετα εργαλεία επικύρωσης, για να ελέγξετε περισσότερες βέλτιστες πρακτικές SEO."
@@ -1713,7 +1824,7 @@
     "message": "Το base-uri που λείπει επιτρέπει στις ενσωματωμένες ετικέτες <base> να ορίζουν το βασικό URL για όλα τα σχετικά URL (π.χ. σενάρια) σε έναν τομέα που ελέγχεται από έναν υπεύθυνο επίθεσης. Εξετάστε το ενδεχόμενο ρύθμισης του base-uri στις επιλογές \"none\" ή \"self\"."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Τα στοιχεία που ελέγχονται από το object-src θεωρούνται λειτουργίες παλαιού τύπου. Εξετάστε το ενδεχόμενο ρύθμισης του object-src σε none για να αποτρέψετε την εισαγωγή προσθηκών που εκτελούν μη ασφαλή σενάρια."
+    "message": "Η απουσία object-src επιτρέπει την εισαγωγή προσθηκών που εκτελούν μη ασφαλή σενάρια. Εξετάστε το ενδεχόμενο να ορίσετε το object-src σε none, εφόσον μπορείτε."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Λείπει η οδηγία script-src. Αυτό μπορεί να επιτρέψει την εκτέλεση μη ασφαλών σεναρίων."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Οι αριθμοί nonce πρέπει να αποτελούνται από τουλάχιστον 8 χαρακτήρες."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Αποφύγετε τη χρήση απλών σχημάτων URL ({keyword}) σε αυτήν την οδηγία. Τα απλά σχήματα URL επιτρέπουν την άντληση σεναρίων από μη ασφαλή τομέα."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Αποφύγετε τη χρήση απλών χαρακτήρων μπαλαντέρ ({keyword}) σε αυτήν την οδηγία. Οι απλοί χαρακτήρες μπαλαντέρ επιτρέπουν την άντληση σεναρίων από μη ασφαλή τομέα."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Ο προορισμός αναφοράς διαμορφώνεται μόνο μέσω της οδηγίας report-to. Αυτή η οδηγία υποστηρίζεται μόνο σε προγράμματα περιήγησης που βασίζονται στο Chromium, συνεπώς, συνιστάται επίσης η χρήση μιας οδηγίας report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Δεν υπάρχει CSP που διαμορφώνει προορισμό αναφοράς. Αυτό δυσχεραίνει τη διατήρηση του CSP για μεγάλα διαστήματα και την παρακολούθηση για τυχόν προβλήματα."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Οι λίστες επιτρεπόμενων κεντρικού υπολογιστή μπορούν συχνά να παρακαμφθούν. Εξετάστε το ενδεχόμενο χρήσης του strict-dynamic σε συνδυασμό με αριθμούς nonce ή κατακερματισμούς CSP."
+    "message": "Οι λίστες επιτρεπομένων κεντρικού υπολογιστή μπορούν συχνά να παρακαμφθούν. Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε κατακερματισμούς ή αριθμούς nonce CSP στη θέση τους, μαζί με το strict-dynamic, εφόσον χρειάζεται."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Άγνωστη οδηγία CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Το {keyword} φαίνεται ότι είναι μη έγκυρη λέξη-κλειδί."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Το unsafe-inline επιτρέπει την εκτέλεση μη ασφαλών σεναρίων στη σελίδα και δεικτών χειρισμού συμβάντων. Εξετάστε το ενδεχόμενο χρήσης αριθμών nonce ή κατακερματισμών CSP για να επιτρέπεται μεμονωμένα σενάρια."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Εξετάστε το ενδεχόμενο να προσθέσετε το unsafe-inline (παραβλέπεται από προγράμματα περιήγησης που υποστηρίζουν αριθμούς nonce/κατακερματισμούς) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Το URL που παρείχατε φαίνεται ότι δεν είναι έγκυρο."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Όλα"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Όλες οι γραφές"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Κάλυψη"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Διπλότυπες λειτουργικές μονάδες"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Byte πόρου"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Όνομα"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Εναλλαγή πίνακα"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Byte που δεν χρησιμοποιούνται"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Για περιεχόμενο κινούμενης εικόνας, χρησιμοποιήστε το [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) για να ελαχιστοποιήσετε τη χρήση CPU όταν το περιεχόμενο είναι εκτός οθόνης."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Προβολή αριθμομηχανής."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Σύμπτυξη προβολής"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Αρχική πλοήγηση"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Σφάλμα αναφοράς: Δεν υπάρχουν πληροφορίες ελέγχου"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Ανάπτυξη προβολής"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Υποβολή προβλήματος"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Απόκρυψη"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Εργαστηριακά δεδομένα"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Έλεγχοι που ολοκληρώθηκαν επιτυχώς"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Αρχική φόρτωση σελίδας"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Προσαρμοσμένη ρύθμιση ροής δεδομένων"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Προσομοιωμένη επιφάνεια εργασίας"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Περιορισμός CPU"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Κανάλι"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Συσκευή"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Ώρα ανάκτησης"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Περιορισμός δικτύου"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Ρυθμίσεις χρόνου εκτέλεσης (runtime)"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Παράγοντας χρήστη (κεντρικός υπολογιστής)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Παράγοντας χρήστη (δίκτυο)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Μία φόρτωση σελίδας"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "Αυτά τα δεδομένα λαμβάνονται από μία φόρτωση σελίδας, σε αντίθεση με τα δεδομένα πεδίου που συνοψίζουν πολλές περιόδους λειτουργίας."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Ρύθμιση ροής δεδομένων αργού 4G"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Άγνωστη"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Εμφάνιση"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Εμφάνιση ελέγχων που σχετίζονται με:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Προειδοποιήσεις: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Όλα"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Όλες οι γραφές"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Κάλυψη"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Διπλότυπες λειτουργικές μονάδες"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Byte πόρου"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Όνομα"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Εναλλαγή πίνακα"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Byte που δεν χρησιμοποιούνται"
   }
 }

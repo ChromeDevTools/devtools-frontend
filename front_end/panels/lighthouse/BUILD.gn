@@ -52,7 +52,6 @@ devtools_entrypoint("bundle") {
     ":css_files",
     ":lighthouse",
     "../../third_party/lighthouse",
-    "../../third_party/lighthouse:css_files",
   ]
 
   visibility = [

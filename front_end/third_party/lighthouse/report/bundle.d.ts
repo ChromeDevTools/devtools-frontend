@@ -1,13 +1,14 @@
 
-export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'envItem' | 'footer' | 'fraction' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'metricsToggle' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'topbar' | 'warningsToplevel';
+export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' | 'clump' | 'crc' | 'crcChain' | 'elementScreenshot' | 'footer' | 'fraction' | 'gauge' | 'gaugePwa' | 'heading' | 'metric' | 'opportunity' | 'opportunityHeader' | 'scorescale' | 'scoresWrapper' | 'snippet' | 'snippetContent' | 'snippetHeader' | 'snippetLine' | 'styles' | 'topbar' | 'warningsToplevel';
 export type I18n<T> = any;
+export type DetailsRenderer = any;
 export type CRCSegment = {
-    node: any[string];
+    node: any;
     isLastChild: boolean;
     hasChildren: boolean;
     startTime: number;
     transferSize: number;
-    treeMarkers: Array<boolean>;
+    treeMarkers: boolean[];
 };
 export type LineDetails = {
     content: string;
@@ -35,14 +36,17 @@ export type LineDetails = {
 export class DOM {
     /**
      * @param {Document} document
+     * @param {HTMLElement} rootEl
      */
-    constructor(document: Document);
+    constructor(document: Document, rootEl: HTMLElement);
     /** @type {Document} */
     _document: Document;
     /** @type {string} */
     _lighthouseChannel: string;
     /** @type {Map<string, DocumentFragment>} */
     _componentCache: Map<string, DocumentFragment>;
+    /** @type {HTMLElement} */
+    rootEl: HTMLElement;
     /**
      * @template {string} T
      * @param {T} name
@@ -61,6 +65,11 @@ export class DOM {
      * @return {!DocumentFragment}
      */
     createFragment(): DocumentFragment;
+    /**
+     * @param {string} data
+     * @return {!Node}
+     */
+    createTextNode(data: string): Node;
     /**
      * @template {string} T
      * @param {Element} parentElem
@@ -104,6 +113,8 @@ export class DOM {
      */
     setLighthouseChannel(lighthouseChannel: string): void;
     /**
+     * ONLY use if `dom.rootEl` isn't sufficient for your needs. `dom.rootEl` is preferred
+     * for all scoping, because a document can have multiple reports within it.
      * @return {Document}
      */
     document(): Document;
@@ -135,6 +146,12 @@ export class DOM {
      * @param {*=} detail Custom data to include.
      */
     fireEventOn(name: string, target?: Node | undefined, detail?: any | undefined): void;
+    /**
+     * Downloads a file (blob) using a[download].
+     * @param {Blob|File} blob The file to save.
+     * @param {string} filename
+     */
+    saveFile(blob: Blob | File, filename: string): void;
 }
 /**
  * @license
@@ -162,12 +179,15 @@ export class ReportRenderer {
     constructor(dom: DOM);
     /** @type {DOM} */
     _dom: DOM;
+    /** @type {LH.Renderer.Options} */
+    _opts: any;
     /**
      * @param {LH.Result} lhr
-     * @param {Element} container Parent element to render the report into.
+     * @param {HTMLElement?} rootEl Report root element containing the report
+     * @param {LH.Renderer.Options=} opts
      * @return {!Element}
      */
-    renderReport(lhr: any, container: Element): Element;
+    renderReport(lhr: any, rootEl: HTMLElement | null, opts?: any): Element;
     /**
      * @param {LH.ReportResult} report
      * @return {DocumentFragment}
@@ -182,6 +202,11 @@ export class ReportRenderer {
      * @return {DocumentFragment}
      */
     _renderReportFooter(report: any): DocumentFragment;
+    /**
+     * @param {LH.ReportResult} report
+     * @param {DocumentFragment} footer
+     */
+    _renderMetaBlock(report: any, footer: DocumentFragment): void;
     /**
      * Returns a div with a list of top-level warnings, or an empty div if no warnings.
      * @param {LH.ReportResult} report
@@ -204,14 +229,14 @@ export class ReportRenderer {
 export class ReportUIFeatures {
     /**
      * @param {DOM} dom
+     * @param {LH.Renderer.Options} opts
      */
-    constructor(dom: DOM);
+    constructor(dom: DOM, opts?: any);
     /** @type {LH.Result} */
     json: any;
     /** @type {DOM} */
     _dom: DOM;
-    /** @type {Document} */
-    _document: Document;
+    _opts: any;
     _topbar: TopbarFeatures;
     /**
      * Handle media query change events.
@@ -225,10 +250,9 @@ export class ReportUIFeatures {
      */
     initFeatures(lhr: any): void;
     /**
-     * @param {{container?: Element, text: string, icon?: string, onClick: () => void}} opts
+     * @param {{text: string, icon?: string, onClick: () => void}} opts
      */
     addButton(opts: {
-        container?: Element;
         text: string;
         icon?: string;
         onClick: () => void;
@@ -252,9 +276,9 @@ export class ReportUIFeatures {
     _resetUIState(): void;
     _setupThirdPartyFilter(): void;
     /**
-     * @param {Element} el
+     * @param {Element} rootEl
      */
-    _setupElementScreenshotOverlay(el: Element): void;
+    _setupElementScreenshotOverlay(rootEl: Element): void;
     /**
      * From a table with URL entries, finds the rows containing third-party URLs
      * and returns them.
@@ -264,11 +288,24 @@ export class ReportUIFeatures {
      */
     _getThirdPartyRows(rowEls: HTMLElement[], finalUrl: string): Array<HTMLElement>;
     /**
-     * Downloads a file (blob) using a[download].
-     * @param {Blob|File} blob The file to save.
+     * DevTools uses its own file manager to download files, so it redefines this function.
+     * Wrapper is necessary so DevTools can still override this function.
+     *
+     * @param {Blob|File} blob
      */
     _saveFile(blob: Blob | File): void;
 }
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+/**
+ * @param {LH.Result} lhr
+ * @param {LH.Renderer.Options} opts
+ * @return {HTMLElement}
+ */
+export function renderReport(lhr: any, opts?: any): HTMLElement;
 type LineContentType = number;
 declare namespace LineContentType {
     const CONTENT_NORMAL: number;
@@ -330,6 +367,13 @@ declare class CategoryRenderer {
      */
     populateAuditValues(audit: any, component: DocumentFragment): Element;
     /**
+     * Inject the final screenshot next to the score gauge of the first category (likely Performance)
+     * @param {HTMLElement} categoriesEl
+     * @param {LH.ReportResult['audits']} audits
+     * @param {Element} scoreScaleEl
+     */
+    injectFinalScreenshot(categoriesEl: HTMLElement, audits: any, scoreScaleEl: Element): any;
+    /**
      * @return {Element}
      */
     _createChevron(): Element;
@@ -353,9 +397,9 @@ declare class CategoryRenderer {
      * Renders the group container for a group of audits. Individual audit elements can be added
      * directly to the returned element.
      * @param {LH.Result.ReportGroup} group
-     * @return {Element}
+     * @return {[Element, Element | null]}
      */
-    renderAuditGroup(group: any): Element;
+    renderAuditGroup(group: any): [Element, Element | null];
     /**
      * Takes an array of auditRefs, groups them if requested, then returns an
      * array of audit and audit-group elements.
@@ -451,21 +495,14 @@ declare class CategoryRenderer {
      *   ⋮
      * @param {LH.ReportResult.Category} category
      * @param {Object<string, LH.Result.ReportGroup>=} groupDefinitions
-     * @param {{environment?: 'PSI', gatherMode: LH.Result.GatherMode}=} options
+     * @param {{gatherMode: LH.Result.GatherMode}=} options
      * @return {Element}
      */
     render(category: any, groupDefinitions?: {
         [x: string]: any;
     } | undefined, options?: {
-        environment?: 'PSI';
         gatherMode: any;
     } | undefined): Element;
-    /**
-     * Create a non-semantic span used for hash navigation of categories
-     * @param {Element} element
-     * @param {string} id
-     */
-    createPermalinkSpan(element: Element, id: string): void;
 }
 /**
  * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
@@ -482,16 +519,14 @@ declare class TopbarFeatures {
     lhr: any;
     _reportUIFeatures: ReportUIFeatures;
     _dom: DOM;
-    /** @type {Document} */
-    _document: Document;
     _dropDownMenu: DropDownMenu;
     _copyAttempt: boolean;
     /** @type {HTMLElement} */
     topbarEl: HTMLElement;
     /** @type {HTMLElement} */
-    scoreScaleEl: HTMLElement;
-    /** @type {HTMLElement} */
-    stickyHeaderEl: HTMLElement;
+    categoriesEl: HTMLElement;
+    /** @type {HTMLElement?} */
+    stickyHeaderEl: HTMLElement | null;
     /** @type {HTMLElement} */
     highlightEl: HTMLElement;
     /**
@@ -514,7 +549,6 @@ declare class TopbarFeatures {
      * open a `<details>` element.
      */
     collapseAllDetails(): void;
-    _updateStickyHeaderOnScroll(): void;
     /**
      * @param {LH.Result} lhr
      */
@@ -539,15 +573,19 @@ declare class TopbarFeatures {
     /**
      * Finds the first scrollable ancestor of `element`. Falls back to the document.
      * @param {Element} element
-     * @return {Node}
+     * @return {Element | Document}
      */
-    _getScrollParent(element: Element): Node;
+    _getScrollParent(element: Element): Element | Document;
     /**
      * Sets up listeners to collapse audit `<details>` when the user closes the
      * print dialog, all `<details>` are collapsed.
      */
     _setUpCollapseDetailsAfterPrinting(): void;
-    _setupStickyHeaderElements(): void;
+    _setupStickyHeader(): void;
+    /**
+     * Toggle visibility and update highlighter position
+     */
+    _updateStickyHeader(): void;
 }
 declare class DetailsRenderer {
     /**

@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Svi izveštaji"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Kategorije"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Pristupačnost"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Najbolje prakse"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Učinak"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progresivna veb-aplikacija"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "Optimizacija za pretraživače"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Računar"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Razumevanje izveštaja o toku za Lighthouse"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Razumevanje tokova"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Koristite izveštaje o navigaciji za..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Koristite izveštaje sa pregledom za..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Koristite izveštaje za period za..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Preuzmite Lighthouse ocenu učinka."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Izmerite pokazatelje učinka za učitavanje stranice, kao što su najveće prikazivanje sadržaja i indeks brzine."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Pristupite mogućnostima progresivnih veb-aplikacija."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Pronađite probleme sa pristupačnošću u aplikacijama sa jednom stranicom ili kompleksnim formama."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Procenite najbolje prakse za menije i elemente korisničkog interfejsa sakrivene iza interakcije."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Izmerite vreme izvršavanja prelaza izgleda i JavaScript-a za seriju interakcija."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Otkrijte prilike za učinak da biste poboljšali doživljaj za dugoročne stranice i aplikacije sa jednom stranicom."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobilni uređaj"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Učitavanje stranice"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Izveštaji o navigaciji analiziraju učitavanje pojedinačne stranice, potpuno isto kao originalni Lighthouse izveštaji."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Izveštaj o navigaciji"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Prosek"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Greška"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Slabo"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Dobro"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Sačuvaj"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Snimljeno stanje stranice"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Izveštaji sa pregledom analiziraju stranicu u posebnom stanju, obično posle interakcije sa korisnicima."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Izveštaj sa pregledom"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Rezime"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Korisničke interakcije"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Izveštaji za period analiziraju nasumični period, koji obično sadrži interakcije korisnika."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Izveštaj za period"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Izveštaj o korisničkom toku za Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Tasteri za pristup omogućavaju korisnicima da brzo fokusiraju deo stranice. Da bi navigacija radila ispravno, svaki taster za pristup mora da bude jedinstven. [Saznajte više](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Prikazane dimenzije"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Slike su veće od prikazane veličine"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Slike su odgovarajuće za prikazanu veličinu"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Prikazujte slike odgovarajuće veličine da biste uštedeli mobilne podatke i poboljšali vreme učitavanja. [Saznajte više](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Izbegava zastarele API-je"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Keš aplikacije je zastareo. [Saznajte više](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Pronađeno je „{AppCacheManifest}“"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Koristi keš aplikacije"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Izbegava keš aplikacije"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Utvrđivanje kodiranja znakova je obavezno. To može da se uradi pomoću oznake `<meta>` u prva 1024 bajta HTML-a ili u HTTP zaglavlju odgovora Content-Type. [Saznajte više](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Izbegava preveliku veličinu DOM-a"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Sidra koja nisu prošla proveru"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Dodajte `rel=\"noopener\"` ili`rel=\"noreferrer\"` svim spoljnim linkovima da biste poboljšali učinak i sprečili bezbednosne propuste. [Saznajte više](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Linkovi do odredišta iz drugih izvora nisu bezbedni"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Linkovi do odredišta iz drugih izvora su bezbedni"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Nije moguće odrediti odredište za tekst linka ({anchorHTML}). Ako se ne koristi kao hiperlink, preporučujemo vam da uklonite target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Korisnici nemaju poverenja u sajtove koji traže njihovu lokaciju bez konteksta ili ih takvi sajtovi zbunjuju. Preporučujemo vam da umesto toga povežete zahtev sa radnjom koju obavlja korisnik. [Saznajte više](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Izbegavajte velike promene rasporeda"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Slike iznad preloma koje se sporo učitavaju prikazuju se kasnije u ciklusu stranice, što može da izazove kašnjenje najvećeg prikazivanja sadržaja. [Saznajte više](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Slika najvećeg prikazivanja sadržaja je sporo učitana"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Slika najvećeg prikazivanja sadržaja nije sporo učitana"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Navodi najduže zadatke u glavnoj niti, što je korisno za identifikovanje onih koji najviše doprinose kašnjenju prikaza. [Saznajte više](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Predučitajte sliku sa najvećim prikazivanjem sadržaja"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ako ste već podesili HTTPS, uverite se da preusmeravate sav HTTP saobraćaj na HTTPS da biste omogućili bezbedne veb-funkcije za sve korisnike. [Saznajte više](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Ne preusmerava HTTP saobraćaj na HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Preusmerava HTTP saobraćaj na HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Preusmeravanja dovode do dodatnih kašnjenja pre učitavanja stranice. [Saznajte više](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Stranica ima važeće izvorne mape"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Dodajte oznaku `<meta name=\"viewport\">` da biste optimizovali aplikaciju za ekrane na mobilnim uređajima. [Saznajte više](https://web.dev/viewport/)."
+    "message": "`<meta name=\"viewport\">` optimizuje aplikaciju za veličine ekrana mobilnih telefona, ali i sprečava [kašnjenje od 300 milisekundi pri unosu korisnika](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Saznajte više](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nije pronađena oznaka `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Ove provere zahteva osnovna [Kontrolna lista za progresivne veb-aplikacije](https://developers.google.com/web/progressive-web-apps/checklist), ali ih Lighthouse ne sprovodi automatski. One ne utiču na vaš rezultat, ali je važno da ih ručno potvrdite."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progresivna veb-aplikacija"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Može da se instalira"
@@ -1659,7 +1770,7 @@
     "message": "Optimizovano za PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Zahvaljujući ovim proverama stranica će sigurno biti optimizovana za rangiranje rezultata pretraživača. Ima još nekih faktora koje Lighthouse ne proverava, a koji mogu da utiču na rangiranje u pretrazi. [Saznajte više](https://support.google.com/webmasters/answer/35769)."
+    "message": "Zahvaljujući ovim proverama stranica će sigurno biti u skladu sa osnovnim savetima za optimizaciju za pretraživače. Ima mnogo dodatnih faktora koje Lighthouse ovde ne uzima u obzir, a koji mogu da utiču na rangiranje u pretrazi, uključujući učinak u [Osnovnim pokazateljima za veb](https://web.dev/learn-web-vitals/). [Saznajte više](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Pokrećite ove dodatne validatore na sajtu da biste proverili dodatne najbolje prakse optimizacije za pretraživače."
@@ -1713,7 +1824,7 @@
     "message": "Base-uri koji nedostaje omogućava umetnutim oznakama <base> da podese osnovni URL za sve relativne URL-ove (npr. skripte) do domena koji kontroliše napadač. Savetujemo vam da podesite base-uri na „none“ ili „self“."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elementi koje kontroliše object-src smatraju se zastarelim funkcijama. Savetujemo vam da podesite direktivu object-src na „none“ da biste sprečili umetanje dodatnih komponenti koje izvršavaju nebezbedne skripte."
+    "message": "Ako direktiva object-src nedostaje, dozvoljeno je umetanje dodatnih komponenti koje izvršavaju nebezbedne skripte. Savetujemo vam da podesite direktivu object-src na „none“ ako možete."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Direktiva script-src nedostaje. To može da omogući izvršavanje nebezbednih skripti."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Jednokratni ključevi moraju da imaju bar 8 znakova."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Izbegavajte da koristite obične URL šeme ({keyword}) u ovoj direktivi. Obične URL šeme dozvoljavaju da izvor skripti bude nebezbedan domen."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Izbegavajte da koristite obične džokerske znake ({keyword}) u ovoj direktivi. Obični džokerski znaci omogućavaju da izvor skripti bude nebezbedan domen."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Odredište za izveštaje se konfiguriše samo preko direktive report-to. Ova direktiva je podržana samo u pregledačima zasnovanim na Chromium-u, pa se preporučuje da koristite direktivu report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Nijedan CSP ne konfiguriše odredište za izveštaje. Time se otežava održavanje CSP-a tokom vremena i praćenje otkazivanja."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Liste dozvoljenih hostova često mogu da se zaobiđu. Savetujemo vam da koristite direktivu strict-dynamic u kombinaciji sa CSP jednokratnim ključevima i hešovima."
+    "message": "Liste dozvoljenih hostova često mogu da se zaobiđu. Savetujemo vam da koristite CSP jednokratne ključeve ili heševe, uz „strict-dynamic“ ako je potrebno."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Nepoznata CSP direktiva."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Izgleda da je {keyword} nevažeća ključna reč."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Direktiva unsafe-inline omogućava izvršavanje nebezbednih skripti i obrađivača događaja na stranici. Savetujemo vam da koristite CSP jednokratne ključeve ili heševe da biste pojedinačno dozvoljavali skripte."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Savetujemo vam da dodate direktivu unsafe-inline (koju ignorišu pregledači koji podržavaju jednokratne ključeve/hešove) radi kompatibilnosti unazad sa starijim pregledačima."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Izgleda da je URL koji ste naveli nevažeći."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Sve"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Sve skripte"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Pokrivenost"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Duplirani moduli"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Bajtovi resursa"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Naziv"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Uključi/isključi tabelu"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Neiskorišćeni bajtovi"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Kada je u pitanju animirani sadržaj, koristite [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) da biste smanjili korišćenje procesora kada sadržaj nije na ekranu."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Pogledajte kalkulator."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Početna navigacija"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Prijavljivanje greške: nema informacija o proveri"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Prijavite problem"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Podaci o eksperimentalnim funkcijama"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Provere sa zadovoljavajućom ocenom"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulirani računar"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Ograničavanje procesora"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanal"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Uređaj"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Vreme preuzimanja"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Ograničavanje mreže"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Podešavanja vremena izvršavanja"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Korisnički agent (host)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Korisnički agent (mreža)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nepoznato"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Prikaži revizije relevantne za:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Upozorenja: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Sve"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Sve skripte"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Pokrivenost"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Duplirani moduli"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Bajtovi resursa"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Naziv"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Uključi/isključi tabelu"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Neiskorišćeni bajtovi"
   }
 }

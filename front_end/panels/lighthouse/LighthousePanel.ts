@@ -7,8 +7,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
-/* eslint-disable rulesdir/es_modules_import */
-import reportStyles from '../../third_party/lighthouse/report-assets/report.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
 
@@ -263,7 +261,6 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const reportContainer = this.auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
-    // @ts-ignore: Second argument will soon be required.
     const dom = new LighthouseReport.DOM(this.auditResultsElement.ownerDocument as Document, reportContainer);
     const renderer = new LighthouseReportRenderer(dom) as LighthouseReport.ReportRenderer;
 
@@ -451,8 +448,9 @@ export class LighthousePanel extends UI.Panel.Panel {
     const inspectedURL = await this.controller.getInspectedURL();
     await resourceTreeModel.navigate(inspectedURL);
   }
+
   wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([lighthousePanelStyles, reportStyles]);
+    this.registerCSSFiles([lighthousePanelStyles]);
   }
 }

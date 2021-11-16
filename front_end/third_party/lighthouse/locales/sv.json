@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Alla rapporter"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Tillgänglighet"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Bästa metoder"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Prestanda"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressiv webbapp"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Dator"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Störst effekt"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} informativ granskning}other{{numInformative} informativa granskningar}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobil"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Sidhämtning"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Rapport över navigering"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} rapport över navigering}other{{numNavigation} rapporter över navigering}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} granskning som kan godkännas}other{{numPassableAudits} granskningar som kan godkännas}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{{numPassed} godkänd granskning}other{{numPassed} godkända granskningar}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Genomsnittlig"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Fel"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Dålig"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Bra"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Sidans status vid en viss tidpunkt"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Rapport med ögonblicksbild"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} rapporter med ögonblicksbild}other{{numSnapshot} rapporter med ögonblicksbilder}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Översikt"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Användarinteraktioner"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Rapport över tidsperiod"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} rapport över tidsperiod}other{{numTimespan} rapporter över tidsperioder}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Rapport över användarflöde i Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Med åtkomsttangenter kan användaren snabbt flytta fokus till en viss del av sidan. Ingen åtkomsttangent får användas flera gånger om navigeringen ska fungera ordentligt. [Läs mer](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Visade mått"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Bilderna var större än visad storlek"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Bilderna matchade visad storlek"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Minska mobildataförbrukningen och förbättra inläsningstiden genom att skicka bilder i rätt storlek. [Läs mer](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Utfasade API:er undviks"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Programmets cacheminne är utfasat. [Läs mer](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "{AppCacheManifest} hittades"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Använder programmets cacheminne"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Undviker programcache"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "En deklaration av teckenkodning krävs. Den kan lämnas med en `<meta>`-tagg i HTML-kodens första 1 024 byte eller i HTTP-svarshuvudet för Content-Type. [Läs mer](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Undviker ett onödigt stort DOM-träd"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Ankare med fel"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Lägg till `rel=\"noopener\"` eller `rel=\"noreferrer\"` i alla externa länkar för att förbättra prestanda och säkerhet. [Läs mer](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Länkar till mål med korsursprung är osäkra"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Länkar till mål med korsursprung är säkra"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Det går inte att fastställa målet för ankaret ({anchorHTML}). Det kan vara bra att ta bort target=_blank om det inte används som hyperlänk."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Användare blir misstänksamma eller förvirrade av webbplatser som ber om åtkomst till deras plats utan sammanhang. Det kan vara bättre att koppla förfrågan till något användaren gör. [Läs mer](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Undvik större layoutförskjutningar"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Bilder ovanför mitten med uppskjuten inläsning renderas senare än sidans livscykel, vilket kan fördröja den största uppritningen av innehåll. [Läs mer](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Bildinläsningen var uppskjuten vid största uppritningen av innehåll"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Bildinläsningen var inte uppskjuten vid största uppritningen av innehåll"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Visar de uppgifter i huvudtråden som har körts under längst tid, vilket kan ringa in de viktigaste flaskhalsarna som fördröjer inmatningen. [Läs mer](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Läs in bilden i förväg för största uppritningen av innehåll"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Om du redan har konfigurerat HTTPS ska du omdirigera all HTTP-trafik till HTTPS för att se till att webbfunktionerna är säkra för alla användare. [Läs mer](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Omdirigerar inte HTTP-trafik till HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Omdirigerar HTTP-trafik till HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Omdirigeringar medför en ytterligare fördröjning innan sidan kan läsas in. [Läs mer](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Sidan har giltiga källkartor"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Lägg till en `<meta name=\"viewport\">`-tagg för att optimera appen för mobilskärmar. [Läs mer](https://web.dev/viewport/)."
+    "message": "En `<meta name=\"viewport\">` optimerar appen för mobila skärmstorlekar och förhindrar även [en fördröjning på 300 millisekunder vid indata från användare](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Läs mer](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Ingen `<meta name=\"viewport\">`-tagg hittades"
@@ -1650,7 +1761,7 @@
     "message": "Dessa kontroller krävs enligt [checklistan för progressiva webbappar](https://developers.google.com/web/progressive-web-apps/checklist) som används som baslinje, men de kontrolleras inte automatiskt av Lighthouse. De påverkar inte resultatet, men det är viktigt att du verifierar dem manuellt."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressiv webbapp"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Kan installeras"
@@ -1659,7 +1770,7 @@
     "message": "Optimerad för progressiv webbapp"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Dessa kontroller ser till att din sida är optimerad för rankning i sökmotorresultat. Det finns fler faktorer som Lighthouse inte kontrollerar som kan påverka rankningen i sökresultat. [Läs mer](https://support.google.com/webmasters/answer/35769)."
+    "message": "Dessa kontroller ser till att din sida följer de grundläggande råden för sökmotoroptimering. Det finns fler faktorer som Lighthouse inte bedömer här som kan påverka rankningen i sökresultat, däribland resultat på [Viktiga webbvärden](https://web.dev/learn-web-vitals/). [Läs mer](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kontrollera att fler av de bästa metoderna för sökmotoroptimering följs på din webbplats genom att köra dessa extra valideringar."
@@ -1713,7 +1824,7 @@
     "message": "Om base-uri saknas går det att använda <base>-taggar för att ställa in baswebbadressen för alla relativa webbadresser (t.ex. skript) till en domän som styrs av en angripare. Du kan ställa in base-uri på none eller self."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Element som styrs av object-src anses vara äldre funktioner. Du kan ställa in object-src på none för att förhindra användningen av pluginprogram som kör osäkra skript."
+    "message": "Om object-src saknas går det att använda plugins som kör osäkra skript. Du kan ställa in object-src på none."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Direktivet script-src saknas. Detta kan möjliggöra att osäkra skript körs."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Noncevärden måste bestå av minst åtta tecken."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Undvik att använda vanliga webbadresscheman ({keyword}) i det här direktivet. Vanliga webbadresscheman gör det möjligt att hämta skript från en osäker domän."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Undvik att använda vanliga jokertecken ({keyword}) i det här direktivet. Vanliga jokertecken gör det möjligt att hämta skript från en osäker domän."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Rapporteringsdestinationen konfigureras enbart via direktivet report-to. Direktivet stöds endast i Chromium-baserade webbläsare och vi rekommenderar därför att du även använder direktivet report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Det finns ingen CPS som konfigurerar en rapporteringsdestination. Detta gör det svårt att bevara CSP med tiden och övervaka eventuella intrång."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Värdens godkännandelistor kan ofta passeras. Du kan använda strict-dynamic i kombination med CSP-noncevärden eller -hashvärden."
+    "message": "Värdens godkännandelistor kan ofta passeras. Du kan i stället använda CSP-noncevärden eller hashvärden i kombination med strict-dynamic vid behov."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Okänt CSP-direktiv."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} verkar vara ett ogiltigt sökord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline möjliggör att osäkra skript och händelsehanterare körs på sidan. Du kan använda CSP-noncevärden eller -hashvärden om du vill godkänna skript separat."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Du kan lägga till unsafe-inline (ignoreras av webbläsare med stöd för noncevärden/hashvärden) för bakåtkompatibilitet med äldre webbläsare."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Den angivna webbadressen verkar vara ogiltig."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Alla"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Alla skript"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Täckning"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Moduldubbletter"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Resursstorlek i byte"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Namn"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Aktivera och inaktivera tabell"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Byte som inte används"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "För animerat innehåll använder du [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) till att minimera CPU-användningen när innehållet inte visas på skärmen."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Visa kalkylator."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Komprimera vy"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Första navigering"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Rapportfel: ingen granskningsinformation"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Utöka vy"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Rapportera ett problem"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Dölj"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Labbdata"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Godkända granskningar"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Första sidhämtningen"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Anpassad begränsning"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulerat skrivbord"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "CPU-begränsning"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanal"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Enhet"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Tidpunkt för hämtning"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Nätverksbegränsning"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Körtidsinställningar"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Användaragent (värd)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Användaragent (nätverk)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Webbadress"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Enskild sidhämtning"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "Denna data kommer från en enskild sidhämtning, till skillnad från fältdata som sammanfattar flera sessioner."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Långsam 4G-begränsning"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Okänd"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Visa"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Visa granskningar som är relevanta för:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Varningar: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Alla"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Alla skript"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Täckning"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Moduldubbletter"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Resursstorlek i byte"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Namn"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Aktivera och inaktivera tabell"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Byte som inte används"
   }
 }

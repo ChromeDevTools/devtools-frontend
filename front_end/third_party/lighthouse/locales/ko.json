@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "모든 보고서"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "카테고리"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "접근성"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "권장사항"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "성능"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "프로그레시브 웹 앱"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "검색엔진 최적화"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "데스크톱"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Lighthouse 플로우 보고서 이해"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "플로우 이해"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "탐색 보고서 사용 용도…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "스냅샷 보고서 사용 용도…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "기간 보고서 사용 용도…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Lighthouse 성능 점수를 받습니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "최대 콘텐츠 렌더링 시간 및 속도 색인과 같은 페이지 로드 성능 측정항목을 측정합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "프로그레시브 웹 앱 기능을 평가합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "단일 페이지 애플리케이션 또는 복잡한 양식에서 접근성 문제를 찾습니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "상호작용 뒤에 숨겨진 메뉴 및 UI 요소 관련 권장사항을 평가합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "일련의 상호작용에서 레이아웃 이동 및 자바스크립트 실행 시간을 측정합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "장기 지속되는 페이지 및 단일 페이지 애플리케이션 관련 경험을 개선할 수 있는 성능 기회를 탐색합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "모바일"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "페이지 로드"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "탐색 보고서는 기존 Lighthouse 보고서와 완전히 동일하게 단일 페이지 로드를 분석합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "탐색 보고서"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "평균"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "오류"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "나쁨"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "좋음"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "저장"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "캡처된 페이지 상태"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "스냅샷 보고서는 특정 상태의 페이지, 특히 사용자 상호작용 후 페이지를 분석합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "스냅샷 보고서"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "요약"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "사용자 상호작용"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "기간 보고서는 일반적으로 사용자 상호작용을 포함하는 임의 기간을 분석합니다."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "기간 보고서"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthouse 사용자 플로우 보고서"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "액세스 키를 사용하면 사용자가 페이지의 특정 부분에 신속하게 포커스를 맞출 수 있습니다. 정상적으로 탐색하려면 모든 액세스 키가 고유해야 합니다. [자세히 알아보기](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "표시된 크기"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "이미지가 표시된 크기보다 큽니다"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "이미지가 표시된 크기에 적합합니다"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "적절한 크기의 이미지를 게재하여 모바일 데이터를 절약하고 로드 시간을 단축하세요. [자세히 알아보기](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "지원 중단 API 사용하지 않기"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "애플리케이션 캐시는 지원이 중단되었습니다. [자세히 알아보기](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "검색된 ‘{AppCacheManifest}’"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "애플리케이션 캐시 사용"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "애플리케이션 캐시 사용하지 않기"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "문자 인코딩 선언이 필요합니다. HTML의 첫 1,024바이트 또는 Content-Type HTTP 응답 헤더에서 `<meta>` 태그를 사용하여 선언할 수 있습니다. [자세히 알아보기](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "과도한 DOM 크기 지양하기"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "통과하지 못한 앵커"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "성능을 개선하고 보안 취약점을 예방하려면 `rel=\"noopener\"` 또는 `rel=\"noreferrer\"`을(를) 외부 링크에 추가합니다. [자세히 알아보기](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "교차 도메인 대상 링크가 안전하지 않음"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "교차 도메인 대상 링크가 안전함"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "앵커({anchorHTML})의 대상을 확인하지 못했습니다. 하이퍼링크로 사용되지 않는 경우 target=_blank를 삭제하는 것이 좋습니다."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "사용자가 컨텍스트 없이 위치 정보를 요청한 사이트를 신뢰할 수 없거나 이로 인해 혼란스러운 상태입니다. 대신 사용자 작업 요청 입력을 고려해 보세요. [자세히 알아보기](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "대규모 레이아웃 변경 피하기"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "스크롤 없이 볼 수 있는 이미지가 지연 로드되면 페이지 수명 주기 후반에 렌더링되므로 최대 콘텐츠 렌더링 시간이 늘어날 수 있습니다. [자세히 알아보기](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "최대 콘텐츠 렌더링 시간 이미지가 지연 로드되었습니다"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "최대 콘텐츠 렌더링 시간 이미지가 지연 로드되지 않았습니다"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "기본 스레드의 가장 긴 작업을 열거합니다. 입력 지연을 가장 많이 유발하는 작업을 찾을 때 용이합니다. [자세히 알아보기](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "콘텐츠가 포함된 최대 페인트 이미지 미리 로드"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "HTTPS를 이미 설정한 경우 모든 사용자가 안전한 웹 기능을 사용하기 위해서는 모든 HTTP 트래픽이 HTTPS로 리디렉션되어야 합니다. [자세히 알아보기](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "HTTP 트래픽을 HTTPS로 리디렉션하지 않음"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "HTTP 트래픽을 HTTPS로 리디렉션함"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "리디렉션을 사용하면 페이지가 로드되기 전 추가적인 지연이 발생합니다. [자세히 알아보기](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "페이지에 유효한 소스 맵이 있음"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "휴대기기 화면에 앱을 최적화하려면 `<meta name=\"viewport\">` 태그를 추가합니다. [자세히 알아보기](https://web.dev/viewport/)"
+    "message": "`<meta name=\"viewport\">`는 앱을 모바일 화면 크기에 최적화할 뿐만 아니라 [사용자 입력 300밀리초 지연](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away)도 방지합니다. [자세히 알아보기](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">` 태그 없음"
@@ -1650,7 +1761,7 @@
     "message": "이 검사는 기준 [PWA 체크리스트](https://developers.google.com/web/progressive-web-apps/checklist)의 필수 항목이지만 Lighthouse에서 자동으로 확인되지는 않습니다. 점수에 영향을 미치지는 않지만 직접 확인하는 것이 중요합니다."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "프로그레시브 웹 앱"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "설치 가능"
@@ -1659,7 +1770,7 @@
     "message": "PWA 최적화됨"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "이와 같은 검사를 통해 페이지가 검색엔진 결과 순위에 최적화되도록 할 수 있습니다. Lighthouse에서 점검하지 않는 추가적인 요소가 검색 순위에 영향을 줄 수도 있습니다. [자세히 알아보기](https://support.google.com/webmasters/answer/35769)"
+    "message": "페이지가 기본 검색엔진 최적화 권고를 따르는지 확인하는 검사입니다. 이 외에도 여기에서 Lighthouse가 고려하지는 않지만 검색 순위에 영향을 줄 수 있는 요소(예: [코어 웹 바이탈](https://web.dev/learn-web-vitals/) 실적)도 많이 있습니다. [자세히 알아보기](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "사이트에서 이러한 추가 검증 도구를 실행하여 추가적인 검색엔진 최적화 권장사항을 확인합니다."
@@ -1713,7 +1824,7 @@
     "message": "base-uri가 없으면 삽입된 <base> 태그로 인해 모든 상대 URL(예: 스크립트)에 대한 기본 URL이 공격자가 관리하는 도메인으로 설정될 수 있습니다. base-uri를 'none' 또는 'self'로 설정하는 것을 고려하세요."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "object-src에 의해 제어되는 요소는 레거시 기능으로 간주됩니다. object-src를 'none'으로 설정하여 안전하지 않은 스크립트를 실행하는 플러그인이 삽입되지 않도록 하는 것이 좋습니다."
+    "message": "object-src가 누락되면 안전하지 않은 스크립트를 실행하는 플러그인이 삽입될 수 있습니다. 가능하면 object-src를 'none'으로 설정해 보세요."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "script-src 명령어가 누락되었습니다. 이렇게 되면 안전하지 않은 스크립트의 실행이 허용됩니다."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "nonce는 8자 이상이어야 합니다."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "이 지시어에서는 플레인 URL 스킴({keyword})을 사용하지 않는 것이 좋습니다. 플레인 URL 스킴을 사용하면 안전하지 않은 도메인에서 스크립트를 가져올 수 있습니다."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "이 지시어에서는 플레인 와일드 카드({keyword})를 사용하지 않는 것이 좋습니다. 플레인 와일드카드를 사용하면 안전하지 않은 도메인에서 스크립트를 가져올 수 있습니다."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "보고 도착지는 report-to 명령어로만 구성할 수 있습니다. 이 명령어는 Chromium 기반 브라우저에서만 지원되므로 report-uri 명령어도 사용하는 것이 좋습니다."
   },
@@ -1734,13 +1851,16 @@
     "message": "보고 도착지를 구성하는 CSP가 없습니다. 이렇게 되면 시간이 지날수록 CSP를 유지 관리하고 손상 여부를 모니터링하기가 어려워집니다."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "호스트 허용 목록은 자주 우회될 수 있습니다. CSP nonce 또는 hash와 'strict-dynamic'을 함께 사용하는 것이 좋습니다."
+    "message": "호스트 허용 목록을 우회하는 경우가 많아질 수 있습니다. 필요하면 'strict-dynamic'과 함께 CSP nonce 또는 hash를 대신 사용하는 것이 좋습니다."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "알 수 없는 CSP 명령어입니다."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword}은(는) 잘못된 키워드인 것 같습니다."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline'은 안전하지 않은 인페이지 스크립트 및 이벤트 핸들러의 실행을 허용합니다. CSP nonce 또는 hash를 사용해 스크립트를 개별적으로 허용하는 것이 좋습니다."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "기존 브라우저와의 하위 호환성을 위하여 'unsafe-inline(nonce/hash를 지원하는 브라우저에서 무시됨)'을 추가하는 것이 좋습니다."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "사용자가 제공한 URL이 잘못되었습니다."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "전체"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "모든 스크립트"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "범위"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "중복 모듈"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "리소스 바이트"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "이름"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "표 전환"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "사용하지 않은 바이트"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "애니메이션 콘텐츠의 경우 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)을 사용하여 콘텐츠가 화면에 표시되지 않을 때 CPU 사용량을 최소화하세요."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "계산기 보기"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "초기 탐색"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "보고 오류: 감사 정보 없음"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "문제 신고"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "실험실 데이터"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "통과한 감사"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "에뮬레이션된 데스크톱"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "CPU 제한"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "채널"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "기기"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "가져온 시간"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "네트워크 제한"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "런타임 설정"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "사용자 에이전트(호스트)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "사용자 에이전트(네트워크)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "알 수 없음"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "다음과 관련된 감사 표시:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "경고: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "전체"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "모든 스크립트"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "범위"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "중복 모듈"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "리소스 바이트"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "이름"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "표 전환"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "사용하지 않은 바이트"
   }
 }

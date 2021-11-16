@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Kaikki raportit"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Esteettömyys"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Parhaat käytännöt"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Tehokkuus"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressiivinen web-sovellus"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "Hakukoneoptimointi"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Tietokone"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobiili"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Sivun lataaminen"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Navigointiraportti"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Keskimääräinen"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Virhe"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Huono"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Hyvä"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Sivun kuvakaappaustila"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Tilannekuvaraportti"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Yhteenveto"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Käyttäjän toiminta"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Aikaväliraportti"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthousen käyttökulkuraportti"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Pääsyavaimien avulla käyttäjät voivat nopeasti kohdistaa tiettyyn sivun osaan. Jotta sivulla siirtyminen onnistuu, jokaisen pääsyavaimen on oltava yksilöllinen. [Lue lisää](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Ilmoitetut mitat"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Kuvat olivat näytettyä kokoa suurempia"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Kuvat olivat näytettyyn kokoon nähden sopivia"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Näytä sopivan kokoisia kuvia, jotta voit vähentää mobiilidatan kulutusta ja lyhentää latausaikoja. [Lue lisää](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Välttää käytöstä poistettuja sovellusliittymiä"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Sovellusvälimuisti on poistettu käytöstä. [Lue lisää](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Löydetty {AppCacheManifest}"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Käyttää sovellusvälimuistia"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Välttää sovellusvälimuistia"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Merkistökoodausilmoitus vaaditaan. Sen voi tehdä `<meta>`-tagilla HTML:n ensimmäisen 1 024 tavun sisällä tai HTTP:n vastauksen otsikon sisältötyyppi-kohdassa. [Lue lisää](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Välttää liian suurta DOM:ää"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Hylätyt ankkurit"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Lisää ulkoisiin linkkeihin `rel=\"noopener\"` tai `rel=\"noreferrer\"` parantaaksesi tehokkuutta ja estääksesi tietoturvahaavoittuvuuksia. [Lue lisää](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Eri lähteisiin johtavat linkit eivät ole turvallisia"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Eri lähteisiin johtavat linkit ovat turvallisia"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Ankkurin ({anchorHTML}) kohteen määritys epäonnistui. Sinun kannattaa ehkä poistaa target=_blank, jos sitä ei käytetä linkkinä."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Sivustot, jotka pyytävät sijainnin käyttöoikeutta ilman asiayhteyttä, saavat käyttäjät epäluuloisiksi tai hämmentävät heitä. Kokeile sen sijaan yhdistää pyyntö käyttäjätoimintoon. [Lue lisää](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Vältä suuria asettelun muutoksia"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Laiskasti latautuvat sivun yläosan kuvat renderöidään sivulla myöhemmin, mikä voi viivästyttää sivun latautumisaikaa. [Lue lisää](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Sivun latautumisajan kuva latautui laiskasti"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Sivun latautumisajan kuva ei latautunut laiskasti"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Näyttää pääsäikeen pitkäkestoisimmat tehtävät, mistä on apua syöttöviiveen pahimpien aiheuttajien tunnistamisessa. [Lue lisää](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Esilataa sivun latautumisajan kuva"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Jos määritit jo HTTPS:n, varmista että ohjaat kaiken HTTP-liikenteen HTTPS:ään, jotta kaikki käyttäjät saavat turvalliset verkko-ominaisuudet. [Lue lisää](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Ei uudelleenohjaa HTTP-liikennettä HTTPS:ään"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Uudelleenohjaa HTTP-liikennettä HTTPS:ään"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Uudelleenohjaukset viivästyttävät sivun lataamista. [Lue lisää](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Sivulla on kelvollisia lähdekarttoja"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Lisää `<meta name=\"viewport\">`-tagi optimoidaksesi sovelluksen mobiilinäytöille. [Lue lisää](https://web.dev/viewport/)."
+    "message": "`<meta name=\"viewport\">` optimoi sovelluksesi mobiilinäyttöjen kokoja varten ja lisäksi estää [käyttäjän syötteen 300 millisekunnin viiveen](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Lue lisää](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">`-tagia ei löytynyt"
@@ -1650,7 +1761,7 @@
     "message": "Normaali [PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist) sisältää nämä kohdat, mutta Lighthouse ei tarkista niitä automaattisesti. Ne eivät vaikuta tulokseesi, mutta on tärkeää, että tarkistat kohdat manuaalisesti."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressiivinen web-sovellus"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Asennettavissa"
@@ -1659,7 +1770,7 @@
     "message": "PWA optimoitu"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Näillä tarkistuksilla varmistetaan, että sivusi optimoidaan hakukoneiden tulossijoituksia varten. Hakusijoitukseesi voivat vaikuttaa myös muut tekijät, joita Lighthouse ei tarkista. [Lue lisää](https://support.google.com/webmasters/answer/35769)."
+    "message": "Näillä testeillä varmistetaan, että sivusi seuraa hakukoneoptimoinnin perusneuvoja. On myös monia muita tekijöitä, joita Lighthouse ei ota täällä huomioon mutta jotka voivat vaikuttaa hakusijoitukseesi, esim. [Sivuston suorituskyky](https://web.dev/learn-web-vitals/) ‑tulokset. [Lue lisää](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Käytä näitä lisätarkistustyökaluja sivustollasi tarkistaaksesi kaikki hakukoneoptimoinnin parhaat käytännöt."
@@ -1713,7 +1824,7 @@
     "message": "Puuttuva base-uri sallii injektoitujen <base>-tagien määrittää kaikkien suhteellisten URL-osoitteiden (esim. skriptien) pohja-URL-osoitteen hyökkääjän hallitsemaan verkkotunnukseen. Sinun kannattaa valita base-urin arvoksi \"none\" tai \"self\"."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "object-srcin ohjaamat elementit ovat vanhoja ominaisuuksia. Määritä object-srcin arvoksi \"none\" estääksesi vaarallisten skriptejä suorittavien liitännäisten injektointi."
+    "message": "Puuttuva object-src sallii riskialttiita skriptejä suorittavien liitännäisten injektoinnin. Sinun kannattaa määrittää object-src:n arvoksi \"none\", jos mahdollista."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "script-src-sääntö puuttuu. Tämä mahdollistaa vaarallisten skriptien suorittamisen."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Noncesien on oltava vähintään kahdeksan merkkiä."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Vältä tavallisten URL-mallien ({keyword}) käyttämistä tässä säännössä. Tavalliset URL-mallit sallivat skriptit, jotka ovat peräisin riskialttiista verkkotunnuksista."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Vältä tavallisten jokerimerkkien ({keyword}) käyttämistä tässä säännössä. Tavalliset jokerimerkit sallivat skriptit, jotka ovat peräisin riskialttiista verkkotunnuksista."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Raportointimääränpään voi määrittää vain report-to-säännön kautta. Vain Chromium-pohjaiset selaimet tukevat kyseistä sääntöä, joten on suositeltavaa käyttää myös report-uri-sääntöä."
   },
@@ -1734,13 +1851,16 @@
     "message": "Raportointimääränpäätä määrittävää CSP:tä ei ole. Tämän takia on hankala säilyttää CSP:tä ajan mittaa ja seurata vaurioita."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Isännän sallitut luettelot ovat usein ohitettavissa. Harkitse \"strict-dynamicin\" käyttöä CSP-noncesien tai ‑hashien kanssa."
+    "message": "Isännän sallitut luettelot ovat usein ohitettavissa. Sinun kannattaa ehkä käyttää kertakäyttöisiä CSP-nonceja tai ‑hasheja \"strict-dynamic\"-koodin lisäksi."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Tuntematon CSP-sääntö."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Näyttää siltä, että {keyword} on virheellinen avainsana."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "\"unsafe-inlinen\" avulla voidaan suorittaa vaarallisia sivun sisäisiä skriptejä ja tapahtumien käsittelijöitä. Harkitse skriptien salliminen yksitellen käyttämällä CSP-nonceja tai ‑hasheja."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Harkitse \"unsafe-inlinen\" (jonka nonceja/hasheja tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Kirjoittamasi URL-osoite näyttää olevan virheellinen."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Kaikki"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Kaikki skriptit"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Kattavuus"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Moduulien kaksoiskappaleet"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Resurssin tavut"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Nimi"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Näytä/piilota taulukko"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Käyttämättömät tavut"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Käytä animoidun sisällön kanssa [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)-ominaisuutta, joka minimoi suoritinkäytön, kun sisältö ei ole näytöllä."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Katso laskin."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Ensimmäinen navigointi"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Raporttivirhe: ei tarkastustietoja"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Ilmoita ongelmasta"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratoriodata"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Hyväksytyt tarkastukset"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emuloitu työpöytä"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Suorittimen rajoittaminen"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanava"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Laite"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Noutoaika"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Verkon hidastaminen"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Suoritusajan asetukset"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Käyttäjäagentti (isäntä)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Käyttäjäagentti (verkko)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL-osoite"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ei tietoa"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Näytä tähän liittyvät tarkastukset:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Varoitukset: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Kaikki"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Kaikki skriptit"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Kattavuus"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Moduulien kaksoiskappaleet"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Resurssin tavut"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Nimi"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Näytä/piilota taulukko"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Käyttämättömät tavut"
   }
 }

@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Всички отчети"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Достъпност"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Най-добри практики"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Ефективност"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Прогресивно уеб приложение (PWA)"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Настолни компютри"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "С най-голямо въздействие"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} информативна проверка}other{{numInformative} информативни проверки}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Мобилни устройства"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Зареждане на страницата"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Отчет за навигирането"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} отчет за навигирането}other{{numNavigation} отчета за навигирането}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} проверка, която може да бъде премината успешно}other{{numPassableAudits} проверки, които могат да бъдат преминати успешно}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{{numPassed} успешна проверка}other{{numPassed} успешни проверки}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Средна"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Грешка"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Лоша"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Добра"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Моментно състояние на страницата"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Отчет за моментното състояние"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} отчет за моментната снимка}other{{numSnapshot} отчета за моментната снимка}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Обобщена информация"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Потребителски взаимодействия"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Отчет за периода от време"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} отчет за периода от време}other{{numTimespan} отчета за периода от време}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Отчет на Lighthouse за потребителската навигация"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Клавишите за достъп дават възможност на потребителите бързо да преместят фокуса към определена част от страницата. За правилно навигиране всеки клавиш за достъп трябва да е уникален. [Научете повече](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Показани размери"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Изображенията бяха по-големи от размера за показване"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Изображенията бяха подходящи за размера за показване"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Показвайте правилно оразмерени изображения, за да пестите мобилни данни и да ускорите зареждането. [Научете повече](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Избягва оттеглени API"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Кешът на приложенията е оттеглен. [Научете повече](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Намерихме {AppCacheManifest}"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Използва кеша на приложенията"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Избягва кеша на приложенията"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Трябва да декларирате система за кодиране на знаците. За целта можете да използвате маркер `<meta>` в първите 1024 байта на HTML кода или в заглавката Content-Type за HTTP отговор. [Научете повече](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Не се използва DOM с твърде голям размер"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Anchor маркери с грешки"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Добавете `rel=\"noopener\"` или `rel=\"noreferrer\"` към връзките към външни сайтове, за да подобрите ефективността и да избегнете уязвимости в сигурността. [Научете повече](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Връзките към външни дестинации не са безопасни"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Връзките към външни дестинации са безопасни"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Не можахме да определим дестинацията за котвата ({anchorHTML}). Ако не се използва като хипервръзка, бихте могли да премахнете target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Потребителите се объркват или нямат доверие на сайтове, които искат да узнаят местоположението им без контекст. Вместо това бихте могли да обвържете заявката към действие на потребителя. [Научете повече](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Избягвайте големи промени в оформлението"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Забавено заредените изображения на видимата на екрана част от страницата се рендерират на по-късен етап от жизнения ѝ цикъл. Това може да доведе до забавяне при изобразяване на най-голямото съдържание (LPC). [Научете повече](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Изображението, рендерирано при изобразяване на най-голямото съдържание (LPC), бе заредено със забавяне"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Изображението, рендерирано при изобразяване на най-голямото съдържание (LPC), бе заредено без забавяне"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Посочва най-продължителните задачи в основната нишка и ви помага да идентифицирате главните причинители на забавяне при взаимодействие. [Научете повече](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Предварително зареждане на изображението, рендерирано при изобразяване на най-голямото съдържание (LPC)"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ако вече сте настроили HTTPS, целият HTTP трафик трябва да се пренасочва към HTTPS, така че функциите за сигурност в мрежата да са активирани за всичките ви потребители. [Научете повече](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "HTTP трафикът не се пренасочва към HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "HTTP трафикът се пренасочва към HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Пренасочванията водят до допълнително забавяне на зареждането на страницата. [Научете повече](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Страницата има валидни карти на изходния код"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Добавете маркер `<meta name=\"viewport\">`, за да оптимизирате приложението си за мобилни екрани. [Научете повече](https://web.dev/viewport/)."
+    "message": "Мета маркерът `<meta name=\"viewport\">` не само оптимизира приложението ви за различни размери екрани на мобилни устройства, но и предотвратява [забавянето от 300 милисекунди за входящите данни от действие на потребител](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Научете повече](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Не бе намерен маркер `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Тези проверки са задължителни според отправния [контролен списък за PWA](https://developers.google.com/web/progressive-web-apps/checklist), но не се извършват автоматично от Lighthouse. Те не се отразяват на резултата ви, но е важно да ги потвърдите ръчно."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Прогресивно уеб приложение (PWA)"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Възможност за инсталиране"
@@ -1659,7 +1770,7 @@
     "message": "Оптимизиране за PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Тези проверки показват дали страницата ви е оптимизирана така, че да се класира в резултатите от търсещите машини. Lighthouse не проверява някои допълнителни фактори, които може да повлияят на класирането в резултатите от търсенето. [Научете повече](https://support.google.com/webmasters/answer/35769)."
+    "message": "Тези проверки показват дали страницата ви следва съвета за основно оптимизиране за търсещи машини. Има много допълнителни фактори, които тук не са взети под внимание от Lighthouse. Те може да повлияят на класирането на резултатите от търсенето, включително на ефективността според [основните показатели за мрежата](https://web.dev/learn-web-vitals/). [Научете повече](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Стартирайте тези допълнителни инструменти на сайта си, за да проверите дали е съобразен с други най-добри практики за SEO."
@@ -1713,7 +1824,7 @@
     "message": "Липсата на base-uri дава възможност за инжектиране на маркери <base> с цел задаване на базовия URL адрес за всички относителни URL адреси (напр. скриптове), така че да бъде от домейн, контролиран от хакера. Обмислете дали да не зададете base-uri на none или self."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Елементите, контролирани от object-src, се смятат за наследени функции. Обмислете дали да не зададете object-src на none, за да предотвратите инжектирането на приставки, които изпълняват опасни скриптове."
+    "message": "Липсата на object-src разрешава инжектиране на приставки, които изпълняват опасни скриптове. Препоръчваме да зададете object-src на none, ако е възможно."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Липсва директива script-src. Това може да позволи изпълнението на опасни скриптове."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Nonce трябва да са с дължина поне 8 знака."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Избягвайте употребата на неформатирани схеми на URL адреси ({keyword}) в тази директива. Те разрешават извличането на скриптове от опасни домейни."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Избягвайте употребата на неформатирани заместващи знаци ({keyword}) в тази директива. Те разрешават извличането на скриптове от опасни домейни."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Дестинацията за отчитане се конфигурира само през директивата report-to. Тази директива се поддържа само в браузъри, базирани на Chromium, затова се препоръчва да използвате и директивата report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Няма CSP с конфигурирана дестинация за отчитане. Това затруднява поддръжката на CSP в течение на времето и наблюдението за проблеми при функционирането."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Списъците с разрешения при хоста често може да бъдат заобиколени. Обмислете дали да не използвате strict-dynamic в комбинация с nonce или хешове в CSP."
+    "message": "Списъците с разрешения при хоста често може да бъдат заобиколени. Обмислете дали вместо това да не използвате nonce или хешове в CSP заедно със strict-dynamic, ако е необходимо."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Неизвестна CSP директива."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Изглежда, че {keyword} е невалидна ключова дума."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline позволява изпълнението на опасни скриптове в страницата и манипулатори на събитието. Обмислете дали да не използвате nonce или хешове в CSP, за да разрешавате скриптове поотделно."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Обмислете дали да не добавите unsafe-inline (пренебрегва се от браузъри, които поддържат nonce и хешове), за да се обезпечи обратна съвместимост с по-стари браузъри."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Предоставеният от вас URL адрес изглежда невалиден."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Всички"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Всички скриптове"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Обхват"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Дублиращи се модули"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Байтове на ресурсите"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Име"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Превключване на таблицата"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Неизползвани байтове"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "При анимирано съдържание използвайте маркера [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), за да намалите използването на процесора, когато съдържанието е извън екрана."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Вижте калкулатора."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Свиване на изгледа"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Първоначална навигация"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Грешка в отчета: няма информация за проверката"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Разгъване на изгледа"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Добавяне на проблем"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Скриване"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Данни от контролиран тест"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Успешно преминати проверки"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Първоначално зареждане на страницата"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Персонализирано ограничаване на потока на данни"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Емулиран компютър"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Ограничаване на процесора"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Канал"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Устройство"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Час на извличането"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Ограничаване на мрежата"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Настройки за времето на изпълнение"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Потребителски агент (хост)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Потребителски агент (мрежа)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL адрес"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "При едно зареждане на страницата"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "Тези данни са генерирани от едно зареждане на страницата за разлика от данните от реалното ползване, които обобщават голям брой сесии."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Ограничаване до бавна 4G връзка"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Неизвестно"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Показване"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Показване на проверките, уместни за:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Предупреждения: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Всички"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Всички скриптове"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Обхват"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Дублиращи се модули"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Байтове на ресурсите"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Име"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Превключване на таблицата"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Неизползвани байтове"
   }
 }

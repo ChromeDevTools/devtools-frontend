@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Tous les rapports"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Catégories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Accessibilité"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Bonnes pratiques"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Performances"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressive web app"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Bureau"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Comprendre le rapport Lighthouse sur les flux"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Comprendre les flux"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Utiliser les rapports sur la navigation pour…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Utiliser les rapports sur un instantané pour…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Utiliser les rapports sur la période pour…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtenir un score de performances Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Mesurer les métriques liées aux performances de chargement des pages comme Largest Contentful Paint et Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Évaluer les fonctionnalités des progressive web apps."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Identifier des problèmes d'accessibilité dans les applis monopages ou les formulaires complexes."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Évaluer les bonnes pratiques concernant les menus et les éléments d'UI cachés derrière l'interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Mesurer les décalages de mise en page et le délai d'exécution de JavaScript dans une série d'interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Découvrir des opportunités de performances pour améliorer l'expérience utilisateur concernant les pages de longue durée et les applis Web monopages."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobile"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Chargement de page"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "À l'instar des rapports Lighthouse d'origine, les rapports sur la navigation analysent le chargement d'une seule page."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Rapport sur la navigation"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Moyenne"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Erreur"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Mauvaise"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Bonne"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Enregistrer"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "État capturé de la page"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Les rapports sur un instantané analysent la page à un moment donné, généralement après des interactions d'utilisateurs."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Rapport sur un instantané"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Résumé"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Interactions des utilisateurs"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Les rapports sur la période analysent une période arbitraire, contenant généralement des interactions d'utilisateurs."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Rapport sur la période"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Rapport sur le flux d'utilisateurs Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Les clés d'accès permettent aux utilisateurs de positionner rapidement le curseur dans une partie spécifique de la page. Pour les aider à naviguer correctement, pensez à définir des clés d'accès uniques. [En savoir plus](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Dimensions affichées"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Images plus grandes que leur taille affichée"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Images appropriées pour leur taille affichée"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Diffusez des images de taille appropriée afin d'économiser des données mobiles et de réduire le temps de chargement. [En savoir plus](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "La page n'utilise pas d'API obsolètes"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "L'API Application Cache est obsolète. [En savoir plus](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "\"{AppCacheManifest}\" trouvé"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "API Application Cache utilisée"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "API Application Cache non utilisée"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "La déclaration d'encodage des caractères est obligatoire. Elle peut être effectuée avec une balise `<meta>` dans les 1 024 premiers octets du code HTML, ou dans l'en-tête de réponse HTTP Content-Type. [En savoir plus](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Éviter une taille excessive de DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Ancres non conformes"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Ajoutez les attributs `rel=\"noopener\"` ou `rel=\"noreferrer\"` à tous les liens externes pour améliorer les performances et prévenir les failles de sécurité. [En savoir plus](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Les liens vers les destinations multi-domaines sont dangereux"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Les liens vers les destinations multi-domaines sont sûrs"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Impossible de déterminer la destination de l'ancrage ({anchorHTML}). S'il n'est pas utilisé comme lien hypertexte, envisagez de supprimer target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Les utilisateurs se méfient des sites qui demandent leur position sans contexte. Envisagez plutôt d'associer la demande à des actions de l'utilisateur. [En savoir plus](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Éviter les changements de mise en page importants"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Les images de la partie au-dessus de la ligne de flottaison qui ont un chargement différé sont rendues plus tard dans le cycle de vie de la page, ce qui peut retarder Largest Contentful Paint. [En savoir plus](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "L'image Largest Contentful Paint a eu un chargement différé"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "L'image Largest Contentful Paint n'a pas eu de chargement différé"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Indique les tâches les plus longues du thread principal, ce qui est utile pour identifier celles qui entraînent le plus de retard. [En savoir plus](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Précharger l'image Largest Contentful Paint"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Si vous avez déjà configuré le protocole HTTPS, veillez à rediriger tout le trafic HTTP vers HTTPS afin de proposer des fonctionnalités Web sûres à tous vos utilisateurs. [Découvrez-en davantage](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Ne redirige pas le trafic HTTP vers HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Trafic HTTP redirigé vers HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Les redirections entraînent des retards supplémentaires avant que la page ne puisse être chargée. [En savoir plus](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "La page contient des mappages source valides"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Ajoutez une balise `<meta name=\"viewport\">` afin d'optimiser votre application pour les écrans mobiles. [Découvrez-en davantage](https://web.dev/viewport/)."
+    "message": "Un `<meta name=\"viewport\">` optimise votre appli pour les tailles d'écrans de mobiles, mais empêche aussi un [délai d'entrée utilisateur de 300 millisecondes](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [En savoir plus](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Aucune balise `<meta name=\"viewport\">` trouvée"
@@ -1650,7 +1761,7 @@
     "message": "Ces contrôles font partie des [vérifications de base de la checklist PWA](https://developers.google.com/web/progressive-web-apps/checklist), mais ne sont pas exécutés automatiquement par Lighthouse. Même s'ils n'ont pas d'influence sur votre score, il est important de les effectuer manuellement."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressive web app"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Possibilités d'installation"
@@ -1659,7 +1770,7 @@
     "message": "Optimisation PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Ces vérifications vous permettent de vous assurer que votre page est optimisée pour le classement dans les résultats sur les moteurs de recherche. Lighthouse ne vérifie pas certains facteurs supplémentaires susceptibles d'avoir un impact sur votre classement dans les moteurs de recherche. [En savoir plus](https://support.google.com/webmasters/answer/35769)"
+    "message": "Ces vérifications confirment que votre page suit les conseils de base concernant le référencement naturel. De nombreux facteurs supplémentaires ne sont pas comptés par Lighthouse ici, mais peuvent affecter votre classement dans les résultats de recherche, y compris vos performances sur [Signaux Web essentiels](https://web.dev/learn-web-vitals/). [En savoir plus](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Exécutez ces outils de validation supplémentaires sur votre site pour vérifier les bonnes pratiques de SEO complémentaires."
@@ -1713,7 +1824,7 @@
     "message": "L'absence de directive base-uri permet aux balises <base> injectées de définir l'URL de base pour toutes les URL relatives (scripts, par exemple) en tant que domaine contrôlé par un pirate informatique. Envisagez de définir base-uri sur \"none\" ou \"self\"."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Les éléments contrôlés par object-src sont considérés comme des anciennes fonctionnalités. Pensez à définir object-src sur 'none' pour empêcher l'injection de plug-ins qui exécutent des scripts non sécurisés."
+    "message": "L'absence de object-src rend possible l'injection de plug-ins qui exécutent des scripts non sécurisés. Envisagez de définir object-src sur \"none\" si vous le pouvez."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Directive script-src manquante. Elle permet d'exécuter des scripts non sécurisés."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Les nonces doivent comporter au moins huit caractères."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Évitez d'utiliser des schémas d'URL simples ({keyword}) dans cette directive. Ces schémas permettent aux scripts de provenir d'un domaine non sécurisé."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Évitez d'utiliser des caractères génériques simples ({keyword}) dans cette directive. Ces caractères génériques permettent aux scripts de provenir d'un domaine non sécurisé."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "La destination de rapport est configurée uniquement via la directive report-to qui n'est compatible qu'avec les navigateurs basés sur Chromium. Il est donc recommandé d'utiliser aussi une directive report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Aucune CSP ne configure de destination de rapport. Il est donc difficile de respecter la CSP au fil du temps et de surveiller les éventuelles failles."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Les listes d'autorisation des hôtes peuvent souvent être contournées. Pensez à utiliser la valeur 'strict-dynamic' et à l'associer à des nonces ou des hachages CSP."
+    "message": "Les listes d'autorisation des hôtes peuvent souvent être contournées. Envisagez d'utiliser des nonces ou des hachages CSP à la place, ainsi que strict-dynamic, si nécessaire."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Directive CSP inconnue."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} semble être un mot clé non valide."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' permet d'exécuter des gestionnaires d'événements et des scripts non sécurisés sur la page. Pensez à utiliser des nonces ou des hachages CSP pour autoriser les scripts un à un."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pensez à ajouter la commande 'unsafe-inline' (ignorée par les navigateurs prenant en charge les nonces/hachages) pour assurer la rétrocompatibilité avec les anciens navigateurs."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "L'URL que vous avez fournie ne semble pas valide."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Tout"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Tous les scripts"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Couverture"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Modules en double"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Octets de la ressource"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Nom"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Activer/Désactiver le tableau"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Octets inutilisés"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Pour le contenu animé, utilisez [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) afin que le processeur soit sollicité le moins possible lorsque le contenu se situe hors écran."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Affichez la calculatrice."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigation initiale"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Erreur de rapport : pas d'information d'audit"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Signaler un problème"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Données de test"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Audits réussis"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Émulation (ordinateur)"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Limitation du processeur"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Version"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Appareil"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Heure d'exécution"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Limitation de bande passante réseau"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Paramètres d'exécution"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "User-agent (hôte)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "User-agent (réseau)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Inconnu"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Afficher les audits pertinents pour :"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Avertissements : "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Tout"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Tous les scripts"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Couverture"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Modules en double"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Octets de la ressource"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Nom"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Activer/Désactiver le tableau"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Octets inutilisés"
   }
 }

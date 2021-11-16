@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "كل التقارير"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "إمكانية الوصول"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "أفضل الممارسات"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "الأداء"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "تطبيق الويب التقدّمي"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "تحسين محركات البحث"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "سطح المكتب"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "عمليات التدقيق الأعلى تأثيرًا"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{تدقيق واحد ({numInformative}) مفيد}zero{{numInformative} تدقيق مفيد}two{تدقيقان ({numInformative}) مفيدان}few{{numInformative} عمليات تدقيق مفيدة}many{{numInformative} تدقيقًا مفيدًا}other{{numInformative} تدقيق مفيد}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "الأجهزة الجوّالة"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "تحميل الصفحة"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "تقرير التنقُّل في الصفحة"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{تقرير تنقُّل واحد ({numNavigation}) في الصفحة}zero{{numNavigation} تقرير تنقُّل في الصفحة}two{تقريرا تنقُّل ({numNavigation}) في الصفحة}few{{numNavigation} تقارير تنقُّل في الصفحة}many{{numNavigation} تقرير تنقُّل في الصفحة}other{{numNavigation} تقرير تنقُّل في الصفحة}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{تدقيق واحد ({numPassableAudits}) يمكن اجتيازه}zero{{numPassableAudits} تدقيق يمكن اجتيازه}two{تدقيقان ({numPassableAudits}) يمكن اجتيازهما}few{{numPassableAudits} عمليات تدقيق يمكن اجتيازها}many{{numPassableAudits} تدقيقًا يمكن اجتيازه}other{{numPassableAudits} تدقيق يمكن اجتيازه}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{تم اجتياز تدقيق واحد ({numPassed})}zero{تم اجتياز {numPassed} تدقيق}two{تم اجتياز تدقيقَين ({numPassed})}few{تم اجتياز {numPassed} عمليات تدقيق}many{تم اجتياز {numPassed} تدقيقًا}other{تم اجتياز {numPassed} تدقيق}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "متوسط"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "حدث خطأ"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "غير جيد"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "جيد"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "الحالة التي تم تسجيلها للصفحة"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "التقرير الخاص بالصفحة في لحظة معيَّنة"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{تقرير واحد ({numSnapshot}) لتقييم الصفحة في لحظة معيَّنة}zero{{numSnapshot} تقرير لتقييم الصفحة في لحظة معيَّنة}two{تقريران ({numSnapshot}) لتقييم الصفحة في لحظة معيَّنة}few{{numSnapshot} تقارير لتقييم الصفحة في لحظة معيَّنة}many{{numSnapshot} تقريرًا لتقييم الصفحة في لحظة معيَّنة}other{{numSnapshot} تقرير لتقييم الصفحة في لحظة معيَّنة}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "ملخّص"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "تفاعلات المستخدمين"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "تقرير الإطار الزمني"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{تقرير واحد ({numTimespan}) لتقييم الصفحة خلال فترة زمنية}zero{{numTimespan} تقرير لتقييم الصفحة خلال فترة زمنية}two{تقريران ({numTimespan}) لتقييم الصفحة خلال فترة زمنية}few{{numTimespan} تقارير لتقييم الصفحة خلال فترة زمنية}many{{numTimespan} تقريرًا لتقييم الصفحة خلال فترة زمنية}other{{numTimespan} تقرير لتقييم الصفحة خلال فترة زمنية}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "تقرير تدفق المستخدمين في أداة Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "تتيح مفاتيح الوصول للمستخدمين التركيز بسرعة على جزء من الصفحة. للانتقال إلى الموضع الصحيح من الصفحة، يجب أن يكون كل مفتاح وصول فريدًا. [مزيد من المعلومات](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "الأبعاد المعروضة"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "كانت الصور أكبر من حجمها المعروض"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "كانت الصور مناسبة لحجمها المعروض"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "يمكنك عرض صور بحجم مناسب لحفظ بيانات شبكة الجوّال وتحسين وقت التحميل. [مزيد من المعلومات](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "يتم تجنّب واجهات برمجة التطبيقات المتوقفة"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "تم إيقاف ذاكرة التخزين المؤقت للتطبيق. [مزيد من المعلومات](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "تم العثور على \"{AppCacheManifest}\""
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "يتم استخدام ذاكرة التخزين المؤقت للتطبيق"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "يتم تجنُب ذاكرة التخزين المؤقت للتطبيق"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "تعريف ترميز الأحرف مطلوب. ويمكن إجراء ذلك باستخدام علامة `<meta>` في أول 1024 وحدة بايت من عنوان HTML أو في عنوان الاستجابة Content-Type في HTTP. [مزيد من المعلومات](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "تجنُب حجم DOM الزائد"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "علامات الارتساء التي تعذّرت مراجعتها"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "يمكنك إضافة `rel=\"noopener\"` أو `rel=\"noreferrer\"` إلى أي روابط خارجية لتحسين الأداء ومنع الثغرات الأمنية. [مزيد من المعلومات](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "الروابط إلى وجهات مشتركة المصدر هي غير آمنة"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "الروابط إلى وجهات مشتركة المصدر هي آمنة"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "يتعذّر تحديد الوجهة لإعلان ثابت {anchorHTML}). في حال عدم استخدامه كرابط تشعبي، يمكنك إزالة target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "لا يثق المستخدمون في المواقع الإلكترونية التي تطلب مواقعهم الجغرافية بدون سياق أو قد يؤدي ذلك إلى إرباكهم. يمكنك ربط الطلب بإجراء المستخدم بدلاً من ذلك. [مزيد من المعلومات](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "تجنُّب متغيّرات التصميم الكبيرة"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "تُعرَض لاحقًا الصور التي تم تحميلها ببطء في الجزء المرئي من الصفحة، ما يتسبب في تأخير سرعة عرض أكبر جزء من المحتوى على الصفحة. [مزيد من المعلومات](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة غير مناسبة"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "تم عرض أكبر صورة ظاهرة في الصفحة بسرعة مناسبة"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "يتم إدراج أطول المهام في سلسلة المحادثات الرئيسية، ما يساعد في تحديد أكثر الأشخاص الذين يسببون تأخير في عملية الإدخال. [مزيد من المعلومات](https://web.dev/long-tasks-devtools/)"
   },
@@ -1146,19 +1266,10 @@
     "message": "تم تحميل الخطوط التي استخدمت `font-display: optional` مُسبَقًا"
   },
   "lighthouse-core/audits/preload-lcp-image.js | description": {
-    "message": "Preload the image used by the LCP element in order to improve your LCP time. [Learn more](https://web.dev/optimize-lcp/#preload-important-resources)."
+    "message": "يُرجى إجراء تحميل مُسبَق للصورة التي يستخدمها عنصر المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\" (LCP)، وذلك لتحسين وقت المقياس. [مزيد من المعلومات](https://web.dev/optimize-lcp/#preload-important-resources)"
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
-    "message": "Preload Largest Contentful Paint image"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "في حال أعددت HTTPS مسبقًا، تأكّد من إعادة توجيه جميع زيارات HTTP إلى HTTPS من أجل تفعيل ميزات الويب الآمنة لجميع المستخدمين. [مزيد من المعلومات](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "عدم إعادة توجيه زيارات HTTP إلى HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "إعادة توجيه زيارات HTTP إلى HTTPS"
+    "message": "التحميل المُسبَق لصورة المقياس \"سرعة عرض أكبر جزء من المحتوى على الصفحة\""
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "تؤدي عمليات إعادة التوجيه إلى حدوث تأخيرات إضافية قبل أن يتم تحميل الصفحة. [مزيد من المعلومات](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "تحتوي الصفحة على خرائط مصدر صالحة"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "يُرجى إضافة علامة `<meta name=\"viewport\">` لتحسين تطبيقك لشاشات الجوّال. [مزيد من المعلومات](https://web.dev/viewport/)"
+    "message": "لا يساعد `<meta name=\"viewport\">` على تحسين تطبيقك ليناسب أحجام شاشات الأجهزة الجوّالة فحسب، بل يمنع أيضًا [تأخّر البيانات التي يدخلها المستخدم بمقدار 300 ملي ثانية](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [مزيد من المعلومات](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "لم يتم العثور على علامة `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "يُطلب إجراء عمليات التحقّق هذه من خلال المرجع [قائمة التحقق PWA](https://developers.google.com/web/progressive-web-apps/checklist)، ولكن لم يتم التحقُّق منها تلقائيًا من خلال Lighthouse. لا تؤثر عمليات التحقق هذه في نتيجتك، ولكن من المهم أنك تتحقق منها يدويًا."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "تطبيق الويب التقدّمي"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "القسم القابل للتثبيت"
@@ -1659,7 +1770,7 @@
     "message": "تحسين PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "تضمن عمليات التحقّق هذه تحسين أداء صفحتك لتظهر في ترتيب نتائج محرّك البحث. هناك عوامل إضافية لا يتحقّق منها Lighthouse قد تؤثر في ترتيب نتائج البحث. [مزيد من المعلومات](https://support.google.com/webmasters/answer/35769)"
+    "message": "تضمن عمليات التحقّق هذه اتّباع صفحتك للنصائح الأساسية الخاصة بتحسين محركات البحث. هناك العديد من العوامل الإضافية التي تتسبب في عدم تحقيق أداة Lighthouse لأي نقاط هنا والتي قد تؤثر في ترتيب نتائج البحث، بما في ذلك الأداء في ما يخص [مؤشرات أداء الويب الأساسية](https://web.dev/learn-web-vitals/). [مزيد من المعلومات](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "تشغيل أدوات التحقُّق الإضافية هذه على موقعك الإلكتروني للتحقُّق من أفضل ممارسات تحسين محركات البحث الإضافية."
@@ -1713,7 +1824,7 @@
     "message": "يسمح عدم توفُّر base-uri بأن تضبط علامات <base> التي تم إدراجها عنوان URL الأساسي لجميع عناوين URL النسبية (على سبيل المثال، النصوص البرمجية) على نطاق يتحكّم فيه مهاجم. ننصحك بضبط base-uri على \"none\" أو \"self\"."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "تُعتبر العناصر التي يتم التحكُّم فيها بواسطة object-src ميزات قديمة. ننصحك بضبط object-src على 'none' لمنع إدخال المكوّنات الإضافية التي تنفِّذ نصوصًا برمجية غير آمنة."
+    "message": "إنّ عدم توفّر الأمر object-src يسمح بإدخال المكوّنات الإضافية التي تنفِّذ نصوصًا برمجية غير آمنة، ولذلك ننصحك بضبط object-src على 'none' إذا أمكن."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "الأمر التوجيهي script-src غير متوفّر. يمكن أن يسمح ذلك بتنفيذ نصوص برمجية غير آمنة."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "يجب ألّا تقل الأرقام الخاصة عن 8 أحرف."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "تجنَّب استخدام المخطّطات العادية لعناوين URL ({keyword}) في هذا الأمر لأنّها تسمح بجلب النصوص البرمجية من نطاق غير آمن."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "تجنَّب استخدام أحرف البدل العادية ({keyword}) في هذا الأمر لأنّها تسمح بجلب النصوص البرمجية من نطاق غير آمن."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "يتم ضبط وجهة إعداد التقارير من خلال الأمر التوجيهي report-to فقط. يتوافق هذا الأمر التوجيهي مع المتصفِّحات المستنِدة إلى Chromium فقط، ولذلك نقترح استخدام الأمر التوجيهي report-uri أيضًا."
   },
@@ -1734,13 +1851,16 @@
     "message": "لا توفّر سياسة CSP أي وجهة إعداد تقارير، ما يجعل من الصعب الحفاظ على هذه السياسة بمرور الوقت ورصد أي خلل فيها."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "قد يتم تجاوز قائمة المضيفين المسموح بها بشكل متكرّر. ننصحك باستخدام 'strict-dynamic' مع أرقام CSP الخاصة أو أجزائها."
+    "message": "قد يتم تجاوز قائمة المضيفين المسموح بها بشكل متكرّر. ننصحك باستخدام الأرقام الخاصة لسياسة أمان المحتوى (CSP) أو أجزائها بدلاً من ذلك، بالإضافة إلى 'strict-dynamic' إذا لزم الأمر."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "أمر CSP توجيهي غير معروف."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "الكلمة الرئيسية {keyword} غير صالحة."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "يسمح 'unsafe-inline' بتنفيذ نصوص برمجية ومعالجات أحداث غير آمنة في الصفحة. ننصحك باستخدام أرقام CSP الخاصة أو أجزائها للسماح بالنصوص البرمجية كل على حدة."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "ننصحك بإضافة الأمر التوجيهي 'unsafe-inline' (الذي تتجاهله المتصفِّحات المتوافقة مع nonces/hashes) لجعل CSP متوافقة مع أنظمة المتصفِّحات القديمة."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "يبدو أن عنوان URL الذي قدمته غير صحيح."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "الكل"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "جميع النصوص البرمجية"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "التغطية"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "الوحدات المكرَّرة"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "حجم الموارد بوحدة البايت"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "الاسم"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "تبديل الجدول"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "وحدات بايت غير المستخدمة"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "بالنسبة إلى المحتوى الذي يتضمن صورًا متحركة، يمكنك استخدام [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) لتقليل استخدام وحدة المعالجة المركزية (CPU) عندما يكون المحتوى خارج الشاشة."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "اطّلِع على الآلة الحاسبة."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "تصغير العرض"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "التنقل الأوّلي"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "الإبلاغ عن خطأ: لا تتوفَّر معلومات تدقيق"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "توسيع العرض"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "الإبلاغ عن مشكلة"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "إخفاء"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "بيانات المختبَر"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "اجتياز عمليات التدقيق بنجاح"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "التحميل الأولي للصفحة"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "تقييد مخصَّص لتحميل الصفحة"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "محاكاة سطح المكتب"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "تقييد وحدة المعالجة المركزية (CPU)"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "قناة"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "جهاز"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "وقت الإجراء"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "ضبط الحد الأقصى المسموح لعرض نطاق الشبكة"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "إعدادات وقت التشغيل"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "وكيل المستخدم (مضيف)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "وكيل المستخدم (شبكة)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "عنوان URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "تحميل صفحة واحدة"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "هذه البيانات مأخوذة من صفحة واحدة تم تحميلها، على عكس بيانات الحقول التي تلخِّص العديد من الجلسات."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "التقييد البطيء لتحميل الصفحة في شبكة الجيل الرابع"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "غير معروف"
+  },
+  "report/renderer/util.js | show": {
+    "message": "عرض"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "عرض عمليات التدقيق المرتبطة بالمقاييس:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "التحذيرات: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "الكل"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "جميع النصوص البرمجية"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "التغطية"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "الوحدات المكرَّرة"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "حجم الموارد بوحدة البايت"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "الاسم"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "تبديل الجدول"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "وحدات بايت غير المستخدمة"
   }
 }

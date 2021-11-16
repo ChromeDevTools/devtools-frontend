@@ -23,7 +23,7 @@ const cachedResources = globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE
 // is going to be OK.
 module.exports = {
   get REPORT_CSS() {
-    return cachedResources.get('third_party/lighthouse/report-assets/report.css');
+    return '';
   },
   get REPORT_JAVASCRIPT() {
     return cachedResources.get('third_party/lighthouse/report-assets/report.js');
@@ -91,7 +91,6 @@ class ReportGenerator {
     return ReportGenerator.replaceStrings(htmlReportAssets.REPORT_TEMPLATE, [
       {search: '%%LIGHTHOUSE_JSON%%', replacement: sanitizedJson},
       {search: '%%LIGHTHOUSE_JAVASCRIPT%%', replacement: sanitizedJavascript},
-      {search: '/*%%LIGHTHOUSE_CSS%%*/', replacement: htmlReportAssets.REPORT_CSS},
     ]);
   }
 

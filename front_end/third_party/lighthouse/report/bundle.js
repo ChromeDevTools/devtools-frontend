@@ -38,6 +38,10 @@ const listOfTlds = [
 ];
 
 class Util {
+  /** @type {I18n<typeof UIStrings>} */
+  // @ts-expect-error: Is set in report renderer.
+  static i18n = null;
+
   static get PASS_THRESHOLD() {
     return PASS_THRESHOLD;
   }
@@ -103,6 +107,23 @@ class Util {
     /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
     const relevantAuditToMetricsMap = new Map();
 
+    // This backcompat converts old LHRs (<9.0.0) to use the new "hidden" group.
+    // Old LHRs used "no group" to identify audits that should be hidden in performance instead of the "hidden" group.
+    // Newer LHRs use "no group" to identify opportunities and diagnostics whose groups are assigned by details type.
+    const [majorVersion] = clone.lighthouseVersion.split('.').map(Number);
+    const perfCategory = clone.categories['performance'];
+    if (majorVersion < 9 && perfCategory) {
+      if (!clone.categoryGroups) clone.categoryGroups = {};
+      clone.categoryGroups['hidden'] = {title: ''};
+      for (const auditRef of perfCategory.auditRefs) {
+        if (!auditRef.group) {
+          auditRef.group = 'hidden';
+        } else if (['load-opportunities', 'diagnostics'].includes(auditRef.group)) {
+          delete auditRef.group;
+        }
+      }
+    }
+
     for (const category of Object.values(clone.categories)) {
       // Make basic lookup table for relevantAudits
       category.auditRefs.forEach(metricRef => {
@@ -166,6 +187,8 @@ class Util {
 
   /**
    * Convert a score to a rating label.
+   * TODO: Return `'error'` for `score === null && !scoreDisplayMode`.
+   *
    * @param {number|null} score
    * @param {string=} scoreDisplayMode
    * @return {string}
@@ -386,43 +409,21 @@ class Util {
     return hostname.split('.').slice(-splitTld.length).join('.');
   }
 
-  /**
-   * @param {LH.Result['configSettings']} settings
-   * @return {!Array<{name: string, description: string}>}
-   */
-  static getEnvironmentDisplayValues(settings) {
-    const emulationDesc = Util.getEmulationDescriptions(settings);
-
-    return [
-      {
-        name: Util.i18n.strings.runtimeSettingsDevice,
-        description: emulationDesc.deviceEmulation,
-      },
-      {
-        name: Util.i18n.strings.runtimeSettingsNetworkThrottling,
-        description: emulationDesc.networkThrottling,
-      },
-      {
-        name: Util.i18n.strings.runtimeSettingsCPUThrottling,
-        description: emulationDesc.cpuThrottling,
-      },
-    ];
-  }
 
   /**
    * @param {LH.Result['configSettings']} settings
-   * @return {{deviceEmulation: string, networkThrottling: string, cpuThrottling: string}}
+   * @return {!{deviceEmulation: string, networkThrottling: string, cpuThrottling: string, summary: string}}
    */
   static getEmulationDescriptions(settings) {
     let cpuThrottling;
     let networkThrottling;
+    let summary;
 
     const throttling = settings.throttling;
 
     switch (settings.throttlingMethod) {
       case 'provided':
-        cpuThrottling = Util.i18n.strings.throttlingProvided;
-        networkThrottling = Util.i18n.strings.throttlingProvided;
+        summary = networkThrottling = cpuThrottling = Util.i18n.strings.throttlingProvided;
         break;
       case 'devtools': {
         const {cpuSlowdownMultiplier, requestLatencyMs} = throttling;
@@ -430,6 +431,13 @@ class Util {
         networkThrottling = `${Util.i18n.formatNumber(requestLatencyMs)}${NBSP}ms HTTP RTT, ` +
           `${Util.i18n.formatNumber(throttling.downloadThroughputKbps)}${NBSP}Kbps down, ` +
           `${Util.i18n.formatNumber(throttling.uploadThroughputKbps)}${NBSP}Kbps up (DevTools)`;
+
+        const isSlow4G = () => {
+          return requestLatencyMs === 150 * 3.75 &&
+            throttling.downloadThroughputKbps === 1.6 * 1024 * 0.9 &&
+            throttling.uploadThroughputKbps === 750 * 0.9;
+        };
+        summary = isSlow4G() ? Util.i18n.strings.runtimeSlow4g : Util.i18n.strings.runtimeCustom;
         break;
       }
       case 'simulate': {
@@ -437,11 +445,15 @@ class Util {
         cpuThrottling = `${Util.i18n.formatNumber(cpuSlowdownMultiplier)}x slowdown (Simulated)`;
         networkThrottling = `${Util.i18n.formatNumber(rttMs)}${NBSP}ms TCP RTT, ` +
           `${Util.i18n.formatNumber(throughputKbps)}${NBSP}Kbps throughput (Simulated)`;
+
+        const isSlow4G = () => {
+          return rttMs === 150 && throughputKbps === 1.6 * 1024;
+        };
+        summary = isSlow4G() ? Util.i18n.strings.runtimeSlow4g : Util.i18n.strings.runtimeCustom;
         break;
       }
       default:
-        cpuThrottling = Util.i18n.strings.runtimeUnknown;
-        networkThrottling = Util.i18n.strings.runtimeUnknown;
+        summary = cpuThrottling = networkThrottling = Util.i18n.strings.runtimeUnknown;
     }
 
     // TODO(paulirish): revise Runtime Settings strings: https://github.com/GoogleChrome/lighthouse/pull/11796
@@ -454,6 +466,7 @@ class Util {
       deviceEmulation,
       cpuThrottling,
       networkThrottling,
+      summary,
     };
   }
 
@@ -505,6 +518,43 @@ class Util {
   static isPluginCategory(categoryId) {
     return categoryId.startsWith('lighthouse-plugin-');
   }
+
+  /**
+   * @param {LH.Result.GatherMode} gatherMode
+   */
+  static shouldDisplayAsFraction(gatherMode) {
+    return gatherMode === 'timespan' || gatherMode === 'snapshot';
+  }
+
+  /**
+   * @param {LH.ReportResult.Category} category
+   */
+  static calculateCategoryFraction(category) {
+    let numPassableAudits = 0;
+    let numPassed = 0;
+    let numInformative = 0;
+    let totalWeight = 0;
+    for (const auditRef of category.auditRefs) {
+      const auditPassed = Util.showAsPassed(auditRef.result);
+
+      // Don't count the audit if it's manual, N/A, or isn't displayed.
+      if (auditRef.group === 'hidden' ||
+          auditRef.result.scoreDisplayMode === 'manual' ||
+          auditRef.result.scoreDisplayMode === 'notApplicable') {
+        continue;
+      } else if (auditRef.result.scoreDisplayMode === 'informative') {
+        if (!auditPassed) {
+          ++numInformative;
+        }
+        continue;
+      }
+
+      ++numPassableAudits;
+      totalWeight += auditRef.weight;
+      if (auditPassed) numPassed++;
+    }
+    return {numPassed, numPassableAudits, numInformative, totalWeight};
+  }
 }
 
 /**
@@ -524,14 +574,10 @@ Util.getUniqueSuffix = (() => {
   };
 })();
 
-/** @type {I18n<typeof Util['UIStrings']>} */
-// @ts-expect-error: Is set in report renderer.
-Util.i18n = null;
-
 /**
  * Report-renderer-specific strings.
  */
-Util.UIStrings = {
+const UIStrings = {
   /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
   varianceDisclaimer: 'Values are estimated and may vary. The [performance score is calculated](https://web.dev/performance-scoring/) directly from these metrics.',
   /** Text link pointing to an interactive calculator that explains Lighthouse scoring. The link text should be fairly short. */
@@ -598,22 +644,12 @@ Util.UIStrings = {
   /** Option in a dropdown menu that toggles the themeing of the report between Light(default) and Dark themes. */
   dropdownDarkTheme: 'Toggle Dark Theme',
 
-  /** Title of the Runtime settings table in a Lighthouse report.  Runtime settings are the environment configurations that a specific report used at auditing time. */
-  runtimeSettingsTitle: 'Runtime Settings',
-  /** Label for a row in a table that shows the URL that was audited during a Lighthouse run. */
-  runtimeSettingsUrl: 'URL',
-  /** Label for a row in a table that shows the time at which a Lighthouse run was conducted; formatted as a timestamp, e.g. Jan 1, 1970 12:00 AM UTC. */
-  runtimeSettingsFetchTime: 'Fetch Time',
   /** Label for a row in a table that describes the kind of device that was emulated for the Lighthouse run.  Example values for row elements: 'No Emulation', 'Emulated Desktop', etc. */
   runtimeSettingsDevice: 'Device',
   /** Label for a row in a table that describes the network throttling conditions that were used during a Lighthouse run, if any. */
   runtimeSettingsNetworkThrottling: 'Network throttling',
   /** Label for a row in a table that describes the CPU throttling conditions that were used during a Lighthouse run, if any.*/
   runtimeSettingsCPUThrottling: 'CPU throttling',
-  /** Label for a row in a table that shows in what tool Lighthouse is being run (e.g. The lighthouse CLI, Chrome DevTools, Lightrider, WebPageTest, etc). */
-  runtimeSettingsChannel: 'Channel',
-  /** Label for a row in a table that shows the User Agent that was detected on the Host machine that ran Lighthouse. */
-  runtimeSettingsUA: 'User agent (host)',
   /** Label for a row in a table that shows the User Agent that was used to send out all network requests during the Lighthouse run. */
   runtimeSettingsUANetwork: 'User agent (network)',
   /** Label for a row in a table that shows the estimated CPU power of the machine running Lighthouse. Example row values: 532, 1492, 783. */
@@ -632,12 +668,29 @@ Util.UIStrings = {
   runtimeDesktopEmulation: 'Emulated Desktop',
   /** Descriptive explanation for a runtime setting that is set to an unknown value. */
   runtimeUnknown: 'Unknown',
+  /** Descriptive label that this analysis run was from a single pageload of a browser (not a summary of hundreds of loads) */
+  runtimeSingleLoad: 'Single page load',
+  /** Descriptive label that this analysis only considers the initial load of the page, and no interaction beyond when the page had "fully loaded" */
+  runtimeAnalysisWindow: 'Initial page load',
+  /** Descriptive explanation that this analysis run was from a single pageload of a browser, whereas field data often summarizes hundreds+ of page loads */
+  runtimeSingleLoadTooltip: 'This data is taken from a single page load, as opposed to field data summarizing many sessions.', // eslint-disable-line max-len
 
   /** Descriptive explanation for environment throttling that was provided by the runtime environment instead of provided by Lighthouse throttling. */
   throttlingProvided: 'Provided by environment',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
+  show: 'Show',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Show' and 'Hide'. */
+  hide: 'Hide',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
+  expandView: 'Expand view',
+  /** Label for an interactive control that will reveal or hide a group of content. This control toggles between the text 'Expand view' and 'Collapse view'. */
+  collapseView: 'Collapse view',
+  /** Label indicating that Lighthouse throttled the page to emulate a slow 4G network connection. */
+  runtimeSlow4g: 'Slow 4G throttling',
+  /** Label indicating that Lighthouse throttled the page using custom throttling settings. */
+  runtimeCustom: 'Custom throttling',
 };
-
-Util.UIStrings;
+Util.UIStrings = UIStrings;
 
 // auto-generated by build/build-report-components.js
 
@@ -650,9 +703,9 @@ Util.UIStrings;
  * @param {DOM} dom
  */
 function create3pFilterComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
-  el1.append('\n    .lh-3p-filter {\n      background-color: var(--table-higlight-background-color);\n      color: var(--color-gray-600);\n      float: right;\n      padding: 6px;\n    }\n    .lh-3p-filter-label, .lh-3p-filter-input {\n      vertical-align: middle;\n      user-select: none;\n    }\n    .lh-3p-filter-input:disabled + .lh-3p-ui-string {\n      text-decoration: line-through;\n    }\n  ');
+  el1.append('\n    .lh-3p-filter {\n      color: var(--color-gray-600);\n      float: right;\n      padding: 6px var(--stackpack-padding-horizontal);\n    }\n    .lh-3p-filter-label, .lh-3p-filter-input {\n      vertical-align: middle;\n      user-select: none;\n    }\n    .lh-3p-filter-input:disabled + .lh-3p-ui-string {\n      text-decoration: line-through;\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('div', 'lh-3p-filter');
   const el3 = dom.createElement('label', 'lh-3p-filter-label');
@@ -672,7 +725,7 @@ function create3pFilterComponent(dom) {
  * @param {DOM} dom
  */
 function createAuditComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-audit');
   const el2 = dom.createElement('details', 'lh-expandable-details');
   const el3 = dom.createElement('summary');
@@ -697,7 +750,7 @@ function createAuditComponent(dom) {
  * @param {DOM} dom
  */
 function createCategoryHeaderComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-category-header');
   const el2 = dom.createElement('div', 'lh-score__gauge');
   el2.setAttribute('role', 'heading');
@@ -712,7 +765,7 @@ function createCategoryHeaderComponent(dom) {
  * @param {DOM} dom
  */
 function createChevronComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-chevron');
   el1.setAttribute('viewBox', '0 0 100 100');
   const el2 = dom.createElementNS('http://www.w3.org/2000/svg', 'g', 'lh-chevron__lines');
@@ -730,17 +783,23 @@ function createChevronComponent(dom) {
  * @param {DOM} dom
  */
 function createClumpComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
-  const el1 = dom.createElement('details', 'lh-clump lh-audit-group');
-  const el2 = dom.createElement('summary');
-  const el3 = dom.createElement('div', 'lh-audit-group__summary');
-  const el4 = dom.createElement('div', 'lh-audit-group__header');
-  const el5 = dom.createElement('span', 'lh-audit-group__title');
-  const el6 = dom.createElement('span', 'lh-audit-group__itemcount');
-  el4.append(' ', el5, ' ', el6, ' ', ' ', ' ');
+  const el0 = dom.createFragment();
+  const el1 = dom.createElement('div', 'lh-audit-group');
+  const el2 = dom.createElement('details', 'lh-clump');
+  const el3 = dom.createElement('summary');
+  const el4 = dom.createElement('div', 'lh-audit-group__summary');
+  const el5 = dom.createElement('div', 'lh-audit-group__header');
+  const el6 = dom.createElement('span', 'lh-audit-group__title');
+  const el7 = dom.createElement('span', 'lh-audit-group__itemcount');
+  el5.append(' ', el6, ' ', el7, ' ', ' ', ' ');
+  const el8 = dom.createElement('div', 'lh-clump-toggle');
+  const el9 = dom.createElement('span', 'lh-clump-toggletext--show');
+  const el10 = dom.createElement('span', 'lh-clump-toggletext--hide');
+  el8.append(' ', el9, ' ', el10, ' ');
+  el4.append(' ', el5, ' ', el8, ' ');
   el3.append(' ', el4, ' ');
   el2.append(' ', el3, ' ');
-  el1.append(' ', el2, ' ');
+  el1.append(' ', ' ', el2, ' ');
   el0.append(el1);
   return el0;
 }
@@ -749,7 +808,7 @@ function createClumpComponent(dom) {
  * @param {DOM} dom
  */
 function createCrcComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-crc-container');
   const el2 = dom.createElement('style');
   el2.append('\n      .lh-crc .lh-tree-marker {\n        width: 12px;\n        height: 26px;\n        display: block;\n        float: left;\n        background-position: top left;\n      }\n      .lh-crc .lh-horiz-down {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><g fill="%23D8D8D8" fill-rule="evenodd"><path d="M16 12v2H-2v-2z"/><path d="M9 12v14H7V12z"/></g></svg>\');\n      }\n      .lh-crc .lh-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M16 12v2H0v-2z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-up-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v14H7zm2 12h7v2H9z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-vert-right {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v27H7zm2 12h7v2H9z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-vert {\n        background: url(\'data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v26H7z" fill="%23D8D8D8" fill-rule="evenodd"/></svg>\');\n      }\n      .lh-crc .lh-crc-tree {\n        font-size: 14px;\n        width: 100%;\n        overflow-x: auto;\n      }\n      .lh-crc .lh-crc-node {\n        height: 26px;\n        line-height: 26px;\n        white-space: nowrap;\n      }\n      .lh-crc .lh-crc-node__tree-value {\n        margin-left: 10px;\n      }\n      .lh-crc .lh-crc-node__tree-value div {\n        display: inline;\n      }\n      .lh-crc .lh-crc-node__chain-duration {\n        font-weight: 700;\n      }\n      .lh-crc .lh-crc-initial-nav {\n        color: #595959;\n        font-style: italic;\n      }\n      .lh-crc__summary-value {\n        margin-bottom: 10px;\n      }\n    ');
@@ -771,7 +830,7 @@ function createCrcComponent(dom) {
  * @param {DOM} dom
  */
 function createCrcChainComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-crc-node');
   const el2 = dom.createElement('span', 'lh-crc-node__tree-marker');
   const el3 = dom.createElement('span', 'lh-crc-node__tree-value');
@@ -784,7 +843,7 @@ function createCrcChainComponent(dom) {
  * @param {DOM} dom
  */
 function createElementScreenshotComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-element-screenshot');
   const el2 = dom.createElement('div', 'lh-element-screenshot__content');
   const el3 = dom.createElement('div', 'lh-element-screenshot__mask');
@@ -808,42 +867,25 @@ function createElementScreenshotComponent(dom) {
 /**
  * @param {DOM} dom
  */
-function createEnvItemComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
-  const el1 = dom.createElement('li', 'lh-env__item');
-  const el2 = dom.createElement('span', 'lh-env__name');
-  const el3 = dom.createElement('span', 'lh-env__description');
-  el1.append(' ', el2, ' ', el3, ' ');
-  el0.append(el1);
-  return el0;
-}
-
-/**
- * @param {DOM} dom
- */
 function createFooterComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
-  el1.append('\n    .lh-footer {\n      padding: var(--footer-padding-vertical) calc(var(--default-padding) * 2);\n      max-width: var(--report-width);\n      margin: 0 auto;\n    }\n    .lh-footer .lh-generated {\n      text-align: center;\n    }\n    .lh-env__title {\n      font-size: var(--env-item-font-size-big);\n      line-height: var(--env-item-line-height-big);\n      text-align: center;\n      padding: var(--score-container-padding);\n    }\n    .lh-env {\n      padding: var(--default-padding) 0;\n    }\n    .lh-env__items {\n      padding-left: 16px;\n      margin: 0 0 var(--audits-margin-bottom);\n      padding: 0;\n    }\n    .lh-env__items .lh-env__item:nth-child(2n) {\n      background-color: var(--env-item-background-color);\n    }\n    .lh-env__item {\n      display: flex;\n      padding: var(--env-item-padding);\n      position: relative;\n    }\n    span.lh-env__name {\n      font-weight: bold;\n      min-width: var(--env-name-min-width);\n      flex: 0.5;\n      padding: 0 8px;\n    }\n    span.lh-env__description {\n      text-align: left;\n      flex: 1;\n    }\n  ');
+  el1.append('\n    .lh-footer {\n      padding: var(--footer-padding-vertical) calc(var(--default-padding) * 2);\n      max-width: var(--report-content-width);\n      margin: 0 auto;\n    }\n    .lh-footer .lh-generated {\n      text-align: center;\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('footer', 'lh-footer');
-  const el3 = dom.createElement('div', 'lh-env');
-  const el4 = dom.createElement('div', 'lh-env__title');
-  el4.append('Runtime Settings');
-  const el5 = dom.createElement('ul', 'lh-env__items');
-  el5.append(' ', ' ');
-  el3.append(' ', el4, ' ', el5, ' ');
-  const el6 = dom.createElement('div', 'lh-generated');
-  const el7 = dom.createElement('b');
-  el7.append('Lighthouse');
-  const el8 = dom.createElement('span', 'lh-footer__version');
-  const el9 = dom.createElement('a', 'lh-footer__version_issue');
-  el9.setAttribute('href', 'https://github.com/GoogleChrome/Lighthouse/issues');
-  el9.setAttribute('target', '_blank');
-  el9.setAttribute('rel', 'noopener');
-  el9.append('File an issue');
-  el6.append(' ', ' Generated by ', el7, ' ', el8, ' | ', el9, ' ');
-  el2.append(' ', ' ', el3, ' ', el6, ' ');
+  const el3 = dom.createElement('ul', 'lh-meta__items');
+  el3.append(' ');
+  const el4 = dom.createElement('div', 'lh-generated');
+  const el5 = dom.createElement('b');
+  el5.append('Lighthouse');
+  const el6 = dom.createElement('span', 'lh-footer__version');
+  const el7 = dom.createElement('a', 'lh-footer__version_issue');
+  el7.setAttribute('href', 'https://github.com/GoogleChrome/Lighthouse/issues');
+  el7.setAttribute('target', '_blank');
+  el7.setAttribute('rel', 'noopener');
+  el7.append('File an issue');
+  el4.append(' ', ' Generated by ', el5, ' ', el6, ' | ', el7, ' ');
+  el2.append(' ', el3, ' ', el4, ' ');
   el0.append(el2);
   return el0;
 }
@@ -852,9 +894,8 @@ function createFooterComponent(dom) {
  * @param {DOM} dom
  */
 function createFractionComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('a', 'lh-fraction__wrapper');
-  el1.setAttribute('href', '#');
   const el2 = dom.createElement('div', 'lh-fraction__content-wrapper');
   const el3 = dom.createElement('div', 'lh-fraction__content');
   const el4 = dom.createElement('div', 'lh-fraction__background');
@@ -870,9 +911,8 @@ function createFractionComponent(dom) {
  * @param {DOM} dom
  */
 function createGaugeComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('a', 'lh-gauge__wrapper');
-  el1.setAttribute('href', '#');
   const el2 = dom.createElement('div', 'lh-gauge__svg-wrapper');
   const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-gauge');
   el3.setAttribute('viewBox', '0 0 120 120');
@@ -899,12 +939,11 @@ function createGaugeComponent(dom) {
  * @param {DOM} dom
  */
 function createGaugePwaComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
   el1.append('\n    .lh-gauge--pwa .lh-gauge--pwa__component {\n      display: none;\n    }\n    .lh-gauge--pwa__wrapper:not(.lh-badged--all) .lh-gauge--pwa__logo > path {\n      /* Gray logo unless everything is passing. */\n      fill: #B0B0B0;\n    }\n\n    .lh-gauge--pwa__disc {\n      fill: var(--color-gray-200);\n    }\n\n    .lh-gauge--pwa__logo--primary-color {\n      fill: #304FFE;\n    }\n\n    .lh-gauge--pwa__logo--secondary-color {\n      fill: #3D3D3D;\n    }\n    .lh-dark .lh-gauge--pwa__logo--secondary-color {\n      fill: #D8B6B6;\n    }\n\n    /* No passing groups. */\n    .lh-gauge--pwa__wrapper:not([class*=\'lh-badged--\']) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n    /* Just optimized. Same n/a line as no passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-optimized:not(.lh-badged--pwa-installable) .lh-gauge--pwa__na-line {\n      display: inline;\n    }\n\n    /* Just installable. */\n    .lh-gauge--pwa__wrapper.lh-badged--pwa-installable .lh-gauge--pwa__installable-badge {\n      display: inline;\n    }\n\n    /* All passing groups. */\n    .lh-gauge--pwa__wrapper.lh-badged--all .lh-gauge--pwa__check-circle {\n      display: inline;\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('a', 'lh-gauge__wrapper lh-gauge--pwa__wrapper');
-  el2.setAttribute('href', '#');
   const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-gauge lh-gauge--pwa');
   el3.setAttribute('viewBox', '0 0 60 60');
   const el4 = dom.createElementNS('http://www.w3.org/2000/svg', 'defs');
@@ -1000,7 +1039,7 @@ function createGaugePwaComponent(dom) {
  * @param {DOM} dom
  */
 function createHeadingComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
   el1.append('\n    /* CSS Fireworks. Originally by Eddie Lin\n       https://codepen.io/paulirish/pen/yEVMbP\n    */\n    .lh-pyro {\n      display: none;\n      z-index: 1;\n      pointer-events: none;\n    }\n    .lh-score100 .lh-pyro {\n      display: block;\n    }\n    .lh-score100 .lh-lighthouse stop:first-child {\n      stop-color: hsla(200, 12%, 95%, 0);\n    }\n    .lh-score100 .lh-lighthouse stop:last-child {\n      stop-color: hsla(65, 81%, 76%, 1);\n    }\n\n    .lh-pyro > .lh-pyro-before, .lh-pyro > .lh-pyro-after {\n      position: absolute;\n      width: 5px;\n      height: 5px;\n      border-radius: 2.5px;\n      box-shadow: 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff, 0 0 #fff;\n      animation: 1s bang ease-out infinite backwards,  1s gravity ease-in infinite backwards,  5s position linear infinite backwards;\n      animation-delay: 1s, 1s, 1s;\n    }\n\n    .lh-pyro > .lh-pyro-after {\n      animation-delay: 2.25s, 2.25s, 2.25s;\n      animation-duration: 1.25s, 1.25s, 6.25s;\n    }\n    .lh-fireworks-paused .lh-pyro > div {\n      animation-play-state: paused;\n    }\n\n    @keyframes bang {\n      to {\n        box-shadow: -70px -115.67px #47ebbc, -28px -99.67px #eb47a4, 58px -31.67px #7eeb47, 13px -141.67px #eb47c5, -19px 6.33px #7347eb, -2px -74.67px #ebd247, 24px -151.67px #eb47e0, 57px -138.67px #b4eb47, -51px -104.67px #479eeb, 62px 8.33px #ebcf47, -93px 0.33px #d547eb, -16px -118.67px #47bfeb, 53px -84.67px #47eb83, 66px -57.67px #eb47bf, -93px -65.67px #91eb47, 30px -13.67px #86eb47, -2px -59.67px #83eb47, -44px 1.33px #eb47eb, 61px -58.67px #47eb73, 5px -22.67px #47e8eb, -66px -28.67px #ebe247, 42px -123.67px #eb5547, -75px 26.33px #7beb47, 15px -52.67px #a147eb, 36px -51.67px #eb8347, -38px -12.67px #eb5547, -46px -59.67px #47eb81, 78px -114.67px #eb47ba, 15px -156.67px #eb47bf, -36px 1.33px #eb4783, -72px -86.67px #eba147, 31px -46.67px #ebe247, -68px 29.33px #47e2eb, -55px 19.33px #ebe047, -56px 27.33px #4776eb, -13px -91.67px #eb5547, -47px -138.67px #47ebc7, -18px -96.67px #eb47ac, 11px -88.67px #4783eb, -67px -28.67px #47baeb, 53px 10.33px #ba47eb, 11px 19.33px #5247eb, -5px -11.67px #eb4791, -68px -4.67px #47eba7, 95px -37.67px #eb478b, -67px -162.67px #eb5d47, -54px -120.67px #eb6847, 49px -12.67px #ebe047, 88px 8.33px #47ebda, 97px 33.33px #eb8147, 6px -71.67px #ebbc47;\n      }\n    }\n    @keyframes gravity {\n      to {\n        transform: translateY(80px);\n        opacity: 0;\n      }\n    }\n    @keyframes position {\n      0%, 19.9% {\n        margin-top: 4%;\n        margin-left: 47%;\n      }\n      20%, 39.9% {\n        margin-top: 7%;\n        margin-left: 30%;\n      }\n      40%, 59.9% {\n        margin-top: 6%;\n        margin-left: 70%;\n      }\n      60%, 79.9% {\n        margin-top: 3%;\n        margin-left: 20%;\n      }\n      80%, 99.9% {\n        margin-top: 3%;\n        margin-left: 80%;\n      }\n    }\n  ');
   el0.append(el1);
@@ -1015,7 +1054,7 @@ function createHeadingComponent(dom) {
  * @param {DOM} dom
  */
 function createMetricComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-metric');
   const el2 = dom.createElement('div', 'lh-metric__innerwrap');
   const el3 = dom.createElement('div', 'lh-metric__icon');
@@ -1031,50 +1070,12 @@ function createMetricComponent(dom) {
 /**
  * @param {DOM} dom
  */
-function createMetricsToggleComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
-  const el1 = dom.createElement('div', 'lh-metrics-toggle');
-  const el2 = dom.createElement('input', 'lh-metrics-toggle__input');
-  el2.setAttribute('type', 'checkbox');
-  el2.setAttribute('id', 'toggle-metric-descriptions');
-  el2.setAttribute('aria-label', 'Toggle the display of metric descriptions');
-  const el3 = dom.createElement('label', 'lh-metrics-toggle__label');
-  el3.setAttribute('for', 'toggle-metric-descriptions');
-  const el4 = dom.createElement('div', 'lh-metrics-toggle__icon lh-metrics-toggle__icon--less');
-  el4.setAttribute('aria-hidden', 'true');
-  const el5 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el5.setAttribute('width', '24');
-  el5.setAttribute('height', '24');
-  el5.setAttribute('viewBox', '0 0 24 24');
-  const el6 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-metrics-toggle__lines');
-  el6.setAttribute('d', 'M4 9h16v2H4zm0 4h10v2H4z');
-  el5.append(' ', el6, ' ');
-  el4.append(' ', el5, ' ');
-  const el7 = dom.createElement('div', 'lh-metrics-toggle__icon lh-metrics-toggle__icon--more');
-  el7.setAttribute('aria-hidden', 'true');
-  const el8 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el8.setAttribute('width', '24');
-  el8.setAttribute('height', '24');
-  el8.setAttribute('viewBox', '0 0 24 24');
-  const el9 = dom.createElementNS('http://www.w3.org/2000/svg', 'path', 'lh-metrics-toggle__lines');
-  el9.setAttribute('d', 'M3 18h12v-2H3v2zM3 6v2h18V6H3zm0 7h18v-2H3v2z');
-  el8.append(' ', el9, ' ');
-  el7.append(' ', el8, ' ');
-  el3.append(' ', el4, ' ', el7, ' ');
-  el1.append(' ', el2, ' ', el3, ' ');
-  el0.append(el1);
-  return el0;
-}
-
-/**
- * @param {DOM} dom
- */
 function createOpportunityComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-audit lh-audit--load-opportunity');
   const el2 = dom.createElement('details', 'lh-expandable-details');
   const el3 = dom.createElement('summary');
-  const el4 = dom.createElement('div', 'lh-audit__header lh-expandable-details__summary');
+  const el4 = dom.createElement('div', 'lh-audit__header');
   const el5 = dom.createElement('div', 'lh-load-opportunity__cols');
   const el6 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--one');
   const el7 = dom.createElement('span', 'lh-audit__score-icon');
@@ -1104,7 +1105,7 @@ function createOpportunityComponent(dom) {
  * @param {DOM} dom
  */
 function createOpportunityHeaderComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-load-opportunity__header lh-load-opportunity__cols');
   const el2 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--one');
   const el3 = dom.createElement('div', 'lh-load-opportunity__col lh-load-opportunity__col--two');
@@ -1117,7 +1118,7 @@ function createOpportunityHeaderComponent(dom) {
  * @param {DOM} dom
  */
 function createScorescaleComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-scorescale');
   const el2 = dom.createElement('span', 'lh-scorescale-range lh-scorescale-range--fail');
   el2.append('0–49');
@@ -1134,9 +1135,9 @@ function createScorescaleComponent(dom) {
  * @param {DOM} dom
  */
 function createScoresWrapperComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
-  el1.append('\n    .lh-scores-container {\n      display: flex;\n      flex-direction: column;\n      padding: var(--scores-container-padding);\n      position: relative;\n      width: 100%;\n    }\n\n    .lh-sticky-header {\n      --gauge-circle-size: 36px;\n      --plugin-badge-size: 18px;\n      --plugin-icon-size: 75%;\n      --gauge-wrapper-width: 60px;\n      --gauge-percentage-font-size: 13px;\n      position: fixed;\n      left: 0;\n      right: 0;\n      top: var(--topbar-height);\n      font-weight: 700;\n      display: none;\n      justify-content: center;\n      background-color: var(--sticky-header-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n      padding-top: var(--score-container-padding);\n      padding-bottom: 4px;\n      z-index: 1;\n      pointer-events: none;\n    }\n\n    .lh-devtools .lh-sticky-header {\n      /* The report within DevTools is placed in a container with overflow, which changes the placement of this header unless we change `position` to `sticky.` */\n      position: sticky;\n    }\n\n    .lh-sticky-header--visible {\n      display: grid;\n      grid-auto-flow: column;\n      pointer-events: auto;\n    }\n\n    /* Disable the gauge arc animation for the sticky header, so toggling display: none\n       does not play the animation. */\n    .lh-sticky-header .lh-gauge-arc {\n      animation: none;\n    }\n\n    .lh-sticky-header .lh-gauge__label {\n      display: none;\n    }\n\n    .lh-highlighter {\n      width: var(--gauge-wrapper-width);\n      height: 1px;\n      background-color: var(--highlighter-background-color);\n      /* Position at bottom of first gauge in sticky header. */\n      position: absolute;\n      grid-column: 1;\n      bottom: -1px;\n    }\n\n    .lh-gauge__wrapper:first-of-type {\n      contain: none;\n    }\n  ');
+  el1.append('\n    .lh-scores-container {\n      display: flex;\n      flex-direction: column;\n      padding: var(--default-padding) 0;\n      position: relative;\n      width: 100%;\n    }\n\n    .lh-sticky-header {\n      --gauge-circle-size: var(--gauge-circle-size-sm);\n      --plugin-badge-size: 16px;\n      --plugin-icon-size: 75%;\n      --gauge-wrapper-width: 60px;\n      --gauge-percentage-font-size: 13px;\n      position: fixed;\n      left: 0;\n      right: 0;\n      top: var(--topbar-height);\n      font-weight: 500;\n      display: none;\n      justify-content: center;\n      background-color: var(--sticky-header-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n      padding-top: var(--score-container-padding);\n      padding-bottom: 4px;\n      z-index: 1;\n      pointer-events: none;\n    }\n\n    .lh-devtools .lh-sticky-header {\n      /* The report within DevTools is placed in a container with overflow, which changes the placement of this header unless we change `position` to `sticky.` */\n      position: sticky;\n    }\n\n    .lh-sticky-header--visible {\n      display: grid;\n      grid-auto-flow: column;\n      pointer-events: auto;\n    }\n\n    /* Disable the gauge arc animation for the sticky header, so toggling display: none\n       does not play the animation. */\n    .lh-sticky-header .lh-gauge-arc {\n      animation: none;\n    }\n\n    .lh-sticky-header .lh-gauge__label {\n      display: none;\n    }\n\n    .lh-highlighter {\n      width: var(--gauge-wrapper-width);\n      height: 1px;\n      background-color: var(--highlighter-background-color);\n      /* Position at bottom of first gauge in sticky header. */\n      position: absolute;\n      grid-column: 1;\n      bottom: -1px;\n    }\n\n    .lh-gauge__wrapper:first-of-type {\n      contain: none;\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('div', 'lh-scores-wrapper');
   const el3 = dom.createElement('div', 'lh-scores-container');
@@ -1154,7 +1155,7 @@ function createScoresWrapperComponent(dom) {
  * @param {DOM} dom
  */
 function createSnippetComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-snippet');
   const el2 = dom.createElement('style');
   el2.append('\n          :root {\n            --snippet-highlight-light: #fbf1f2;\n            --snippet-highlight-dark: #ffd6d8;\n          }\n\n         .lh-snippet__header {\n          position: relative;\n          overflow: hidden;\n          padding: 10px;\n          border-bottom: none;\n          color: var(--snippet-color);\n          background-color: var(--snippet-background-color);\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        .lh-snippet__title {\n          font-weight: bold;\n          float: left;\n        }\n        .lh-snippet__node {\n          float: left;\n          margin-left: 4px;\n        }\n        .lh-snippet__toggle-expand {\n          padding: 1px 7px;\n          margin-top: -1px;\n          margin-right: -7px;\n          float: right;\n          background: transparent;\n          border: none;\n          cursor: pointer;\n          font-size: 14px;\n          color: #0c50c7;\n        }\n\n        .lh-snippet__snippet {\n          overflow: auto;\n          border: 1px solid var(--report-border-color-secondary);\n        }\n        /* Container needed so that all children grow to the width of the scroll container */\n        .lh-snippet__snippet-inner {\n          display: inline-block;\n          min-width: 100%;\n        }\n\n        .lh-snippet:not(.lh-snippet--expanded) .lh-snippet__show-if-expanded {\n          display: none;\n        }\n        .lh-snippet.lh-snippet--expanded .lh-snippet__show-if-collapsed {\n          display: none;\n        }\n\n        .lh-snippet__line {\n          background: white;\n          white-space: pre;\n          display: flex;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):first-child {\n          padding-top: 4px;\n        }\n        .lh-snippet__line:not(.lh-snippet__line--message):last-child {\n          padding-bottom: 4px;\n        }\n        .lh-snippet__line--content-highlighted {\n          background: var(--snippet-highlight-dark);\n        }\n        .lh-snippet__line--message {\n          background: var(--snippet-highlight-light);\n        }\n        .lh-snippet__line--message .lh-snippet__line-number {\n          padding-top: 10px;\n          padding-bottom: 10px;\n        }\n        .lh-snippet__line--message code {\n          padding: 10px;\n          padding-left: 5px;\n          color: var(--color-fail);\n          font-family: var(--report-font-family);\n        }\n        .lh-snippet__line--message code {\n          white-space: normal;\n        }\n        .lh-snippet__line-icon {\n          padding-top: 10px;\n          display: none;\n        }\n        .lh-snippet__line--message .lh-snippet__line-icon {\n          display: block;\n        }\n        .lh-snippet__line-icon:before {\n          content: "";\n          display: inline-block;\n          vertical-align: middle;\n          margin-right: 4px;\n          width: var(--score-icon-size);\n          height: var(--score-icon-size);\n          background-image: var(--fail-icon-url);\n        }\n        .lh-snippet__line-number {\n          flex-shrink: 0;\n          width: 40px;\n          text-align: right;\n          font-family: monospace;\n          padding-right: 5px;\n          margin-right: 5px;\n          color: var(--color-gray-600);\n          user-select: none;\n        }\n    ');
@@ -1167,7 +1168,7 @@ function createSnippetComponent(dom) {
  * @param {DOM} dom
  */
 function createSnippetContentComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-snippet__snippet');
   const el2 = dom.createElement('div', 'lh-snippet__snippet-inner');
   el1.append(' ', el2, ' ');
@@ -1179,7 +1180,7 @@ function createSnippetContentComponent(dom) {
  * @param {DOM} dom
  */
 function createSnippetHeaderComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-snippet__header');
   const el2 = dom.createElement('div', 'lh-snippet__title');
   const el3 = dom.createElement('div', 'lh-snippet__node');
@@ -1196,7 +1197,7 @@ function createSnippetHeaderComponent(dom) {
  * @param {DOM} dom
  */
 function createSnippetLineComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-snippet__line');
   const el2 = dom.createElement('div', 'lh-snippet__line-number');
   const el3 = dom.createElement('div', 'lh-snippet__line-icon');
@@ -1209,10 +1210,21 @@ function createSnippetLineComponent(dom) {
 /**
  * @param {DOM} dom
  */
-function createTopbarComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+function createStylesComponent(dom) {
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('style');
-  el1.append('\n    .lh-topbar {\n      position: sticky;\n      top: 0;\n      left: 0;\n      right: 0;\n      z-index: 1000;\n      display: flex;\n      align-items: center;\n      height: var(--topbar-height);\n      background-color: var(--topbar-background-color);\n      padding: var(--topbar-padding);\n    }\n\n    .lh-topbar__logo {\n      width: var(--topbar-logo-size);\n      height: var(--topbar-logo-size);\n      user-select: none;\n      flex: none;\n    }\n\n    .lh-topbar__url {\n      margin: var(--topbar-padding);\n      text-decoration: none;\n      color: var(--report-text-color);\n      text-overflow: ellipsis;\n      overflow: hidden;\n      white-space: nowrap;\n    }\n\n    .lh-tools {\n      margin-left: auto;\n      will-change: transform;\n      min-width: var(--report-icon-size);\n    }\n    .lh-tools__button {\n      width: var(--report-icon-size);\n      height: var(--report-icon-size);\n      cursor: pointer;\n      margin-right: 5px;\n      /* This is actually a button element, but we want to style it like a transparent div. */\n      display: flex;\n      background: none;\n      color: inherit;\n      border: none;\n      padding: 0;\n      font: inherit;\n      outline: inherit;\n    }\n    .lh-tools__button svg {\n      fill: var(--tools-icon-color);\n    }\n    .lh-dark .lh-tools__button svg {\n      filter: invert(1);\n    }\n    .lh-tools__button.lh-active + .lh-tools__dropdown {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n    }\n    .lh-tools__dropdown {\n      position: absolute;\n      background-color: var(--report-background-color);\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      visibility: hidden;\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-tools__dropdown a {\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 12px;\n      line-height: 2;\n    }\n    .lh-tools__dropdown a:hover,\n    .lh-tools__dropdown a:focus {\n      background-color: var(--color-gray-200);\n      outline: none;\n    }\n    /* save-gist option hidden in report. */\n    .lh-tools__dropdown a[data-action=\'save-gist\'] {\n      display: none;\n    }\n\n    @media screen and (max-width: 964px) {\n      .lh-tools__dropdown {\n        right: 0;\n        left: initial;\n      }\n    }\n    @media print {\n      .lh-topbar {\n        position: static;\n        margin-left: 0;\n      }\n\n      .lh-tools__dropdown {\n        display: none;\n      }\n    }\n  ');
+  el1.append('/**\n * @license\n * Copyright 2017 The Lighthouse Authors. All Rights Reserved.\n *\n * Licensed under the Apache License, Version 2.0 (the "License");\n * you may not use this file except in compliance with the License.\n * You may obtain a copy of the License at\n *\n *      http://www.apache.org/licenses/LICENSE-2.0\n *\n * Unless required by applicable law or agreed to in writing, software\n * distributed under the License is distributed on an "AS-IS" BASIS,\n * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n * See the License for the specific language governing permissions and\n * limitations under the License.\n */\n\n/*\n  Naming convention:\n\n  If a variable is used for a specific component: --{component}-{property name}-{modifier}\n\n  Both {component} and {property name} should be kebab-case. If the target is the entire page,\n  use \'report\' for the component. The property name should not be abbreviated. Use the\n  property name the variable is intended for - if it\'s used for multiple, a common descriptor\n  is fine (ex: \'size\' for a variable applied to \'width\' and \'height\'). If a variable is shared\n  across multiple components, either create more variables or just drop the "{component}-"\n  part of the name. Append any modifiers at the end (ex: \'big\', \'dark\').\n\n  For colors: --color-{hue}-{intensity}\n\n  {intensity} is the Material Design tag - 700, A700, etc.\n*/\n.lh-vars {\n  /* Palette using Material Design Colors\n   * https://www.materialui.co/colors */\n  --color-amber-50: #FFF8E1;\n  --color-blue-200: #90CAF9;\n  --color-blue-900: #0D47A1;\n  --color-blue-A700: #2962FF;\n  --color-blue-primary: #06f;\n  --color-cyan-500: #00BCD4;\n  --color-gray-100: #F5F5F5;\n  --color-gray-300: #CFCFCF;\n  --color-gray-200: #E0E0E0;\n  --color-gray-400: #BDBDBD;\n  --color-gray-50: #FAFAFA;\n  --color-gray-500: #9E9E9E;\n  --color-gray-600: #757575;\n  --color-gray-700: #616161;\n  --color-gray-800: #424242;\n  --color-gray-900: #212121;\n  --color-gray: #000000;\n  --color-green-700: #080;\n  --color-green: #0c6;\n  --color-lime-400: #D3E156;\n  --color-orange-50: #FFF3E0;\n  --color-orange-700: #C33300;\n  --color-orange: #fa3;\n  --color-red-700: #c00;\n  --color-red: #f33;\n  --color-teal-600: #00897B;\n  --color-white: #FFFFFF;\n\n  /* Context-specific colors */\n  --color-average-secondary: var(--color-orange-700);\n  --color-average: var(--color-orange);\n  --color-fail-secondary: var(--color-red-700);\n  --color-fail: var(--color-red);\n  --color-hover: var(--color-gray-50);\n  --color-informative: var(--color-blue-900);\n  --color-pass-secondary: var(--color-green-700);\n  --color-pass: var(--color-green);\n  --color-not-applicable: var(--color-gray-600);\n\n  /* Component variables */\n  --audit-description-padding-left: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right));\n  --audit-explanation-line-height: 16px;\n  --audit-group-margin-bottom: calc(var(--default-padding) * 6);\n  --audit-group-padding-vertical: 8px;\n  --audit-margin-horizontal: 5px;\n  --audit-padding-vertical: 8px;\n  --category-padding: calc(var(--default-padding) * 6) calc(var(--default-padding) * 4) calc(var(--default-padding) * 4);\n  --chevron-line-stroke: var(--color-gray-600);\n  --chevron-size: 12px;\n  --default-padding: 8px;\n  --env-item-background-color: var(--color-gray-100);\n  --env-item-font-size: 28px;\n  --env-item-line-height: 36px;\n  --env-item-padding: 10px 0px;\n  --env-name-min-width: 220px;\n  --footer-padding-vertical: 16px;\n  --gauge-circle-size-big: 96px;\n  --gauge-circle-size: 48px;\n  --gauge-circle-size-sm: 32px;\n  --gauge-label-font-size-big: 18px;\n  --gauge-label-font-size: var(--report-font-size-secondary);\n  --gauge-label-line-height-big: 24px;\n  --gauge-label-line-height: var(--report-line-height-secondary);\n  --gauge-percentage-font-size-big: 38px;\n  --gauge-percentage-font-size: var(--report-font-size-secondary);\n  --gauge-wrapper-width: 120px;\n  --header-line-height: 24px;\n  --highlighter-background-color: var(--report-text-color);\n  --icon-square-size: calc(var(--score-icon-size) * 0.88);\n  --image-preview-size: 48px;\n  --link-color: var(--color-blue-primary);\n  --locale-selector-background-color: var(--color-white);\n  --metric-toggle-lines-fill: #7F7F7F;\n  --metric-value-font-size: calc(var(--report-font-size) * 1.8);\n  --metrics-toggle-background-color: var(--color-gray-200);\n  --plugin-badge-background-color: var(--color-white);\n  --plugin-badge-size-big: calc(var(--gauge-circle-size-big) / 2.7);\n  --plugin-badge-size: calc(var(--gauge-circle-size) / 2.7);\n  --plugin-icon-size: 65%;\n  --pwa-icon-margin: 0 var(--default-padding);\n  --pwa-icon-size: var(--topbar-logo-size);\n  --report-background-color: #fff;\n  --report-border-color-secondary: #ebebeb;\n  --report-font-family-monospace: \'Roboto Mono\', \'Menlo\', \'dejavu sans mono\', \'Consolas\', \'Lucida Console\', monospace;\n  --report-font-family: Roboto, Helvetica, Arial, sans-serif;\n  --report-font-size: 14px;\n  --report-font-size-secondary: 12px;\n  --report-icon-size: var(--score-icon-background-size);\n  --report-line-height: 24px;\n  --report-line-height-secondary: 20px;\n  --report-min-width: 360px;\n  --report-monospace-font-size: calc(var(--report-font-size) * 0.85);\n  --report-text-color-secondary: var(--color-gray-800);\n  --report-text-color: var(--color-gray-900);\n  --report-content-width: calc(60 * var(--report-font-size)); /* defaults to 840px */\n  --score-container-padding: 8px;\n  --score-icon-background-size: 24px;\n  --score-icon-margin-left: 6px;\n  --score-icon-margin-right: 14px;\n  --score-icon-margin: 0 var(--score-icon-margin-right) 0 var(--score-icon-margin-left);\n  --score-icon-size: 12px;\n  --score-icon-size-big: 16px;\n  --screenshot-overlay-background: rgba(0, 0, 0, 0.3);\n  --section-padding-vertical: calc(var(--default-padding) * 6);\n  --snippet-background-color: var(--color-gray-50);\n  --snippet-color: #0938C2;\n  --sparkline-height: 5px;\n  --stackpack-padding-horizontal: 10px;\n  --sticky-header-background-color: var(--report-background-color);\n  --table-higlight-background-color: hsla(210, 17%, 77%, 0.1);\n  --tools-icon-color: var(--color-gray-600);\n  --topbar-background-color: var(--color-white);\n  --topbar-height: 32px;\n  --topbar-logo-size: 24px;\n  --topbar-padding: 0 8px;\n  --toplevel-warning-background-color: hsla(30, 100%, 75%, 10%);\n  --toplevel-warning-message-text-color: var(--color-average-secondary);\n  --toplevel-warning-padding: 18px;\n  --toplevel-warning-text-color: var(--report-text-color);\n\n  /* SVGs */\n  --plugin-icon-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="%23FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>\');\n  --plugin-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" fill="%23757575"><path d="M0 0h24v24H0z" fill="none"/><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg>\');\n\n  --pass-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>check</title><path fill="%23178239" d="M24 4C12.95 4 4 12.95 4 24c0 11.04 8.95 20 20 20 11.04 0 20-8.96 20-20 0-11.05-8.96-20-20-20zm-4 30L10 24l2.83-2.83L20 28.34l15.17-15.17L38 16 20 34z"/></svg>\');\n  --average-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>info</title><path fill="%23E67700" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm2 30h-4V22h4v12zm0-16h-4v-4h4v4z"/></svg>\');\n  --fail-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><title>warn</title><path fill="%23C7221F" d="M2 42h44L24 4 2 42zm24-6h-4v-4h4v4zm0-8h-4v-8h4v8z"/></svg>\');\n\n  --pwa-installable-gray-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="nonzero"><circle fill="%23DAE0E3" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-gray-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%23DAE0E3" width="24" height="24" rx="12"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/><path d="M5 5h14v14H5z"/></g></svg>\');\n\n  --pwa-installable-gray-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="nonzero"><circle fill="%23424242" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-gray-url-dark: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%23424242" width="24" height="24" rx="12"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/><path d="M5 5h14v14H5z"/></g></svg>\');\n\n  --pwa-installable-color-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill-rule="nonzero" fill="none"><circle fill="%230CCE6B" cx="12" cy="12" r="12"/><path d="M12 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm3.5 7.7h-2.8v2.8h-1.4v-2.8H8.5v-1.4h2.8V8.5h1.4v2.8h2.8v1.4z" fill="%23FFF"/></g></svg>\');\n  --pwa-optimized-color-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect fill="%230CCE6B" width="24" height="24" rx="12"/><path d="M5 5h14v14H5z"/><path fill="%23FFF" d="M12 15.07l3.6 2.18-.95-4.1 3.18-2.76-4.2-.36L12 6.17l-1.64 3.86-4.2.36 3.2 2.76-.96 4.1z"/></g></svg>\');\n\n  --swap-locale-icon-url: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>\');\n}\n\n@media not print {\n  .lh-dark {\n    /* Pallete */\n    --color-gray-200: var(--color-gray-800);\n    --color-gray-300: #616161;\n    --color-gray-400: var(--color-gray-600);\n    --color-gray-700: var(--color-gray-400);\n    --color-gray-50: #757575;\n    --color-gray-600: var(--color-gray-500);\n    --color-green-700: var(--color-green);\n    --color-orange-700: var(--color-orange);\n    --color-red-700: var(--color-red);\n    --color-teal-600: var(--color-cyan-500);\n\n    /* Context-specific colors */\n    --color-hover: rgba(0, 0, 0, 0.2);\n    --color-informative: var(--color-blue-200);\n\n    /* Component variables */\n    --env-item-background-color: #393535;\n    --link-color: var(--color-blue-200);\n    --locale-selector-background-color: var(--color-gray-200);\n    --plugin-badge-background-color: var(--color-gray-800);\n    --report-background-color: var(--color-gray-900);\n    --report-border-color-secondary: var(--color-gray-200);\n    --report-text-color-secondary: var(--color-gray-400);\n    --report-text-color: var(--color-gray-100);\n    --snippet-color: var(--color-cyan-500);\n    --topbar-background-color: var(--color-gray);\n    --toplevel-warning-background-color: hsl(33deg 14% 18%);\n    --toplevel-warning-message-text-color: var(--color-orange-700);\n    --toplevel-warning-text-color: var(--color-gray-100);\n\n    /* SVGs */\n    --plugin-icon-url: var(--plugin-icon-url-dark);\n    --pwa-installable-gray-url: var(--pwa-installable-gray-url-dark);\n    --pwa-optimized-gray-url: var(--pwa-optimized-gray-url-dark);\n  }\n}\n\n@media only screen and (max-width: 480px) {\n  .lh-vars {\n    --audit-group-margin-bottom: 20px;\n    --category-padding: 12px;\n    --env-name-min-width: 120px;\n    --gauge-circle-size-big: 96px;\n    --gauge-circle-size: 72px;\n    --gauge-label-font-size-big: 22px;\n    --gauge-label-font-size: 14px;\n    --gauge-label-line-height-big: 26px;\n    --gauge-label-line-height: 20px;\n    --gauge-percentage-font-size-big: 34px;\n    --gauge-percentage-font-size: 26px;\n    --gauge-wrapper-width: 112px;\n    --header-padding: 16px 0 16px 0;\n    --image-preview-size: 24px;\n    --plugin-icon-size: 75%;\n    --pwa-icon-margin: 0 7px 0 -3px;\n    --report-font-size: 14px;\n    --report-line-height: 20px;\n    --score-icon-margin-left: 2px;\n    --score-icon-size: 10px;\n    --topbar-height: 28px;\n    --topbar-logo-size: 20px;\n  }\n\n  /* Not enough space to adequately show the relative savings bars. */\n  .lh-sparkline {\n    display: none;\n  }\n}\n\n.lh-vars.lh-devtools {\n  --audit-explanation-line-height: 14px;\n  --audit-group-margin-bottom: 20px;\n  --audit-group-padding-vertical: 12px;\n  --audit-padding-vertical: 4px;\n  --category-padding: 12px;\n  --default-padding: 12px;\n  --env-name-min-width: 120px;\n  --footer-padding-vertical: 8px;\n  --gauge-circle-size-big: 72px;\n  --gauge-circle-size: 64px;\n  --gauge-label-font-size-big: 22px;\n  --gauge-label-font-size: 14px;\n  --gauge-label-line-height-big: 26px;\n  --gauge-label-line-height: 20px;\n  --gauge-percentage-font-size-big: 34px;\n  --gauge-percentage-font-size: 26px;\n  --gauge-wrapper-width: 97px;\n  --header-line-height: 20px;\n  --header-padding: 16px 0 16px 0;\n  --screenshot-overlay-background: transparent;\n  --plugin-icon-size: 75%;\n  --pwa-icon-margin: 0 7px 0 -3px;\n  --report-font-family-monospace: \'Menlo\', \'dejavu sans mono\', \'Consolas\', \'Lucida Console\', monospace;\n  --report-font-family: \'.SFNSDisplay-Regular\', \'Helvetica Neue\', \'Lucida Grande\', sans-serif;\n  --report-font-size: 12px;\n  --report-line-height: 20px;\n  --score-icon-margin-left: 2px;\n  --score-icon-size: 10px;\n  --section-padding-vertical: 8px;\n}\n\n.lh-devtools.lh-root {\n  height: 100%;\n}\n.lh-devtools.lh-root img {\n  /* Override devtools default \'min-width: 0\' so svg without size in a flexbox isn\'t collapsed. */\n  min-width: auto;\n}\n.lh-devtools .lh-container {\n  overflow-y: scroll;\n  height: calc(100% - var(--topbar-height));\n}\n@media print {\n  .lh-devtools .lh-container {\n    overflow: unset;\n  }\n}\n.lh-devtools .lh-sticky-header {\n  /* This is normally the height of the topbar, but we want it to stick to the top of our scroll container .lh-container` */\n  top: 0;\n}\n\n@keyframes fadeIn {\n  0% { opacity: 0;}\n  100% { opacity: 0.6;}\n}\n\n.lh-root *, .lh-root *::before, .lh-root *::after {\n  box-sizing: border-box;\n}\n\n.lh-root {\n  font-family: var(--report-font-family);\n  font-size: var(--report-font-size);\n  margin: 0;\n  line-height: var(--report-line-height);\n  background: var(--report-background-color);\n  color: var(--report-text-color);\n}\n\n.lh-root :focus {\n    outline: -webkit-focus-ring-color auto 3px;\n}\n.lh-root summary:focus {\n    outline: none;\n    box-shadow: 0 0 0 1px hsl(217, 89%, 61%);\n}\n\n.lh-root [hidden] {\n  display: none !important;\n}\n\n.lh-root pre {\n  margin: 0;\n}\n\n.lh-root details > summary {\n  cursor: pointer;\n}\n\n.lh-hidden {\n  display: none !important;\n}\n\n.lh-container {\n  /*\n  Text wrapping in the report is so much FUN!\n  We have a `word-break: break-word;` globally here to prevent a few common scenarios, namely\n  long non-breakable text (usually URLs) found in:\n    1. The footer\n    2. .lh-node (outerHTML)\n    3. .lh-code\n\n  With that sorted, the next challenge is appropriate column sizing and text wrapping inside our\n  .lh-details tables. Even more fun.\n    * We don\'t want table headers ("Potential Savings (ms)") to wrap or their column values, but\n    we\'d be happy for the URL column to wrap if the URLs are particularly long.\n    * We want the narrow columns to remain narrow, providing the most column width for URL\n    * We don\'t want the table to extend past 100% width.\n    * Long URLs in the URL column can wrap. Util.getURLDisplayName maxes them out at 64 characters,\n      but they do not get any overflow:ellipsis treatment.\n  */\n  word-break: break-word;\n}\n\n.lh-audit-group a,\n.lh-category-header__description a,\n.lh-audit__description a,\n.lh-warnings a,\n.lh-footer a,\n.lh-table-column--link a {\n  color: var(--link-color);\n}\n\n.lh-audit__description, .lh-audit__stackpack {\n  --inner-audit-padding-right: var(--stackpack-padding-horizontal);\n  padding-left: var(--audit-description-padding-left);\n  padding-right: var(--inner-audit-padding-right);\n  padding-top: 8px;\n  padding-bottom: 8px;\n}\n\n.lh-details {\n  margin-top: var(--default-padding);\n  margin-bottom: var(--default-padding);\n  margin-left: var(--audit-description-padding-left);\n  /* whatever the .lh-details side margins are */\n  width: 100%;\n}\n\n.lh-audit__stackpack {\n  display: flex;\n  align-items: center;\n}\n\n.lh-audit__stackpack__img {\n  max-width: 30px;\n  margin-right: var(--default-padding)\n}\n\n/* Report header */\n\n.lh-report-icon {\n  display: flex;\n  align-items: center;\n  padding: 10px 12px;\n  cursor: pointer;\n}\n.lh-report-icon[disabled] {\n  opacity: 0.3;\n  pointer-events: none;\n}\n\n.lh-report-icon::before {\n  content: "";\n  margin: 4px;\n  background-repeat: no-repeat;\n  width: var(--report-icon-size);\n  height: var(--report-icon-size);\n  opacity: 0.7;\n  display: inline-block;\n  vertical-align: middle;\n}\n.lh-report-icon:hover::before {\n  opacity: 1;\n}\n.lh-dark .lh-report-icon::before {\n  filter: invert(1);\n}\n.lh-report-icon--print::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/><path fill="none" d="M0 0h24v24H0z"/></svg>\');\n}\n.lh-report-icon--copy::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>\');\n}\n.lh-report-icon--open::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z"/></svg>\');\n}\n.lh-report-icon--download::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>\');\n}\n.lh-report-icon--dark::before {\n  background-image:url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 100 125"><path d="M50 23.587c-16.27 0-22.799 12.574-22.799 21.417 0 12.917 10.117 22.451 12.436 32.471h20.726c2.32-10.02 12.436-19.554 12.436-32.471 0-8.843-6.528-21.417-22.799-21.417zM39.637 87.161c0 3.001 1.18 4.181 4.181 4.181h.426l.41 1.231C45.278 94.449 46.042 95 48.019 95h3.963c1.978 0 2.74-.551 3.365-2.427l.409-1.231h.427c3.002 0 4.18-1.18 4.18-4.181V80.91H39.637v6.251zM50 18.265c1.26 0 2.072-.814 2.072-2.073v-9.12C52.072 5.813 51.26 5 50 5c-1.259 0-2.072.813-2.072 2.073v9.12c0 1.259.813 2.072 2.072 2.072zM68.313 23.727c.994.774 2.135.634 2.91-.357l5.614-7.187c.776-.992.636-2.135-.356-2.909-.992-.776-2.135-.636-2.91.357l-5.613 7.186c-.778.993-.636 2.135.355 2.91zM91.157 36.373c-.306-1.222-1.291-1.815-2.513-1.51l-8.85 2.207c-1.222.305-1.814 1.29-1.51 2.512.305 1.223 1.291 1.814 2.513 1.51l8.849-2.206c1.223-.305 1.816-1.291 1.511-2.513zM86.757 60.48l-8.331-3.709c-1.15-.512-2.225-.099-2.736 1.052-.512 1.151-.1 2.224 1.051 2.737l8.33 3.707c1.15.514 2.225.101 2.736-1.05.513-1.149.1-2.223-1.05-2.737zM28.779 23.37c.775.992 1.917 1.131 2.909.357.992-.776 1.132-1.917.357-2.91l-5.615-7.186c-.775-.992-1.917-1.132-2.909-.357s-1.131 1.917-.356 2.909l5.614 7.187zM21.715 39.583c.305-1.223-.288-2.208-1.51-2.513l-8.849-2.207c-1.222-.303-2.208.289-2.513 1.511-.303 1.222.288 2.207 1.511 2.512l8.848 2.206c1.222.304 2.208-.287 2.513-1.509zM21.575 56.771l-8.331 3.711c-1.151.511-1.563 1.586-1.05 2.735.511 1.151 1.586 1.563 2.736 1.052l8.331-3.711c1.151-.511 1.563-1.586 1.05-2.735-.512-1.15-1.585-1.562-2.736-1.052z"/></svg>\');\n}\n.lh-report-icon--treemap::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="black"><path d="M3 5v14h19V5H3zm2 2h15v4H5V7zm0 10v-4h4v4H5zm6 0v-4h9v4h-9z"/></svg>\');\n}\n.lh-report-icon--date::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 11h2v2H7v-2zm14-5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6c0-1.1.9-2 2-2h1V2h2v2h8V2h2v2h1a2 2 0 012 2zM5 8h14V6H5v2zm14 12V10H5v10h14zm-4-7h2v-2h-2v2zm-4 0h2v-2h-2v2z"/></svg>\');\n}\n.lh-report-icon--devices::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h18V4H4a2 2 0 00-2 2v11H0v3h14v-3H4V6zm19 2h-6a1 1 0 00-1 1v10c0 .6.5 1 1 1h6c.6 0 1-.5 1-1V9c0-.6-.5-1-1-1zm-1 9h-4v-7h4v7z"/></svg>\');\n}\n.lh-report-icon--world::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm7 6h-3c-.3-1.3-.8-2.5-1.4-3.6A8 8 0 0 1 18.9 8zm-7-4a14 14 0 0 1 2 4h-4a14 14 0 0 1 2-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.3a16.5 16.5 0 0 0 0 4H4.3zm.8 2h3a14 14 0 0 0 1.3 3.6A8 8 0 0 1 5.1 16zm3-8H5a8 8 0 0 1 4.3-3.6L8 8zM12 20a14 14 0 0 1-2-4h4a14 14 0 0 1-2 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.6 14.6 0 0 1 0 4zm.3 5.6c.6-1.2 1-2.4 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.8-5.6a16.5 16.5 0 0 0 0-4h3.3a8.2 8.2 0 0 1 0 4h-3.3z"/></svg>\');\n}\n.lh-report-icon--stopwatch::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.1-6.6L20.5 6l-1.4-1.4L17.7 6A9 9 0 0 0 3 13a9 9 0 1 0 16-5.6zm-7 12.6a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>\');\n}\n.lh-report-icon--networkspeed::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.9 5c-.2 0-.3 0-.4.2v.2L10.1 17a2 2 0 0 0-.2 1 2 2 0 0 0 4 .4l2.4-12.9c0-.3-.2-.5-.5-.5zM1 9l2 2c2.9-2.9 6.8-4 10.5-3.6l1.2-2.7C10 3.8 4.7 5.3 1 9zm20 2 2-2a15.4 15.4 0 0 0-5.6-3.6L17 8.2c1.5.7 2.9 1.6 4.1 2.8zm-4 4 2-2a9.9 9.9 0 0 0-2.7-1.9l-.5 3 1.2.9zM5 13l2 2a7.1 7.1 0 0 1 4-2l1.3-2.9C9.7 10.1 7 11 5 13z"/></svg>\');\n}\n.lh-report-icon--samples-one::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="7" cy="14" r="3"/><path d="M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>\');\n}\n.lh-report-icon--samples-many::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 18a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4-2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm5.6 17.6a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/><circle cx="7" cy="14" r="3"/><circle cx="11" cy="6" r="3"/></svg>\');\n}\n.lh-report-icon--chrome::before {\n  background-image: url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 562 562"><path d="M256 25.6v25.6a204 204 0 0 1 144.8 60 204 204 0 0 1 60 144.8 204 204 0 0 1-60 144.8 204 204 0 0 1-144.8 60 204 204 0 0 1-144.8-60 204 204 0 0 1-60-144.8 204 204 0 0 1 60-144.8 204 204 0 0 1 144.8-60V0a256 256 0 1 0 0 512 256 256 0 0 0 0-512v25.6z"/><path d="M256 179.2v25.6a51.3 51.3 0 0 1 0 102.4 51.3 51.3 0 0 1 0-102.4v-51.2a102.3 102.3 0 1 0-.1 204.7 102.3 102.3 0 0 0 .1-204.7v25.6z"/><path d="M256 204.8h217.6a25.6 25.6 0 0 0 0-51.2H256a25.6 25.6 0 0 0 0 51.2m44.3 76.8L191.5 470.1a25.6 25.6 0 1 0 44.4 25.6l108.8-188.5a25.6 25.6 0 1 0-44.4-25.6m-88.6 0L102.9 93.2a25.7 25.7 0 0 0-35-9.4 25.7 25.7 0 0 0-9.4 35l108.8 188.5a25.7 25.7 0 0 0 35 9.4 25.9 25.9 0 0 0 9.4-35.1"/></svg>\');\n}\n\n\n\n.lh-buttons {\n  display: flex;\n  flex-wrap: wrap;\n  margin: var(--default-padding) 0;\n}\n.lh-button {\n  height: 32px;\n  border: 1px solid var(--report-border-color-secondary);\n  border-radius: 3px;\n  color: var(--link-color);\n  background-color: var(--report-background-color);\n  margin: 5px;\n}\n\n.lh-button:first-of-type {\n  margin-left: 0;\n}\n\n/* Node */\n.lh-node__snippet {\n  font-family: var(--report-font-family-monospace);\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n  line-height: 20px;\n}\n\n/* Score */\n\n.lh-audit__score-icon {\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n}\n\n.lh-audit--pass .lh-audit__display-text {\n  color: var(--color-pass-secondary);\n}\n.lh-audit--pass .lh-audit__score-icon,\n.lh-scorescale-range--pass::before {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-audit__display-text {\n  color: var(--color-average-secondary);\n}\n.lh-audit--average .lh-audit__score-icon,\n.lh-scorescale-range--average::before {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-audit--fail .lh-audit__display-text {\n  color: var(--color-fail-secondary);\n}\n.lh-audit--fail .lh-audit__score-icon,\n.lh-audit--error .lh-audit__score-icon,\n.lh-scorescale-range--fail::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-audit--manual .lh-audit__display-text,\n.lh-audit--notapplicable .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n.lh-audit--manual .lh-audit__score-icon,\n.lh-audit--notapplicable .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n  background: none;\n}\n\n.lh-audit--informative .lh-audit__display-text {\n  color: var(--color-gray-600);\n}\n\n.lh-audit--informative .lh-audit__score-icon {\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-400);\n  border-radius: 100%;\n}\n\n.lh-audit__description,\n.lh-audit__stackpack {\n  color: var(--report-text-color-secondary);\n}\n.lh-audit__adorn {\n  border: 1px solid slategray;\n  border-radius: 3px;\n  margin: 0 3px;\n  padding: 0 2px;\n  line-height: 1.1;\n  display: inline-block;\n  font-size: 90%;\n}\n\n.lh-category-header__description  {\n  text-align: center;\n  color: var(--color-gray-700);\n  margin: 0px auto;\n  max-width: 400px;\n}\n\n\n.lh-audit__display-text,\n.lh-load-opportunity__sparkline,\n.lh-chevron-container {\n  margin: 0 var(--audit-margin-horizontal);\n}\n.lh-chevron-container {\n  margin-right: 0;\n}\n\n.lh-audit__title-and-text {\n  flex: 1;\n}\n\n.lh-audit__title-and-text code {\n  color: var(--snippet-color);\n  font-size: var(--report-monospace-font-size);\n}\n\n/* Prepend display text with em dash separator. But not in Opportunities. */\n.lh-audit__display-text:not(:empty):before {\n  content: \'—\';\n  margin-right: var(--audit-margin-horizontal);\n}\n.lh-audit-group.lh-audit-group--load-opportunities .lh-audit__display-text:not(:empty):before {\n  display: none;\n}\n\n/* Expandable Details (Audit Groups, Audits) */\n.lh-audit__header {\n  display: flex;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-audit--load-opportunity .lh-audit__header {\n  display: block;\n}\n\n\n.lh-metricfilter {\n  display: grid;\n  justify-content: end;\n  align-items: center;\n  grid-auto-flow: column;\n  gap: 4px;\n  color: var(--color-gray-700);\n}\n\n.lh-metricfilter__radio {\n  position: absolute;\n  left: -9999px;\n}\n.lh-metricfilter input[type=\'radio\']:focus-visible + label {\n  outline: -webkit-focus-ring-color auto 1px;\n}\n\n.lh-metricfilter__label {\n  display: inline-flex;\n  padding: 0 4px;\n  height: 16px;\n  text-decoration: underline;\n  align-items: center;\n  cursor: pointer;\n  font-size: 90%;\n}\n\n.lh-metricfilter__label--active {\n  background: var(--color-blue-primary);\n  color: var(--color-white);\n  border-radius: 3px;\n  text-decoration: none;\n}\n/* Give the \'All\' choice a more muted display */\n.lh-metricfilter__label--active[for="metric-All"] {\n  background-color: var(--color-blue-200) !important;\n  color: black !important;\n}\n\n.lh-metricfilter__text {\n  margin-right: 8px;\n}\n\n/* If audits are filtered, hide the itemcount for Passed Audits… */\n.lh-category--filtered .lh-audit-group .lh-audit-group__itemcount {\n  display: none;\n}\n\n\n.lh-audit__header:hover {\n  background-color: var(--color-hover);\n}\n\n/* We want to hide the browser\'s default arrow marker on summary elements. Admittedly, it\'s complicated. */\n.lh-root details > summary {\n  /* Blink 89+ and Firefox will hide the arrow when display is changed from (new) default of `list-item` to block.  https://chromestatus.com/feature/6730096436051968*/\n  display: block;\n}\n/* Safari and Blink <=88 require using the -webkit-details-marker selector */\n.lh-root details > summary::-webkit-details-marker {\n  display: none;\n}\n\n/* Perf Metric */\n\n.lh-metrics-container {\n  display: grid;\n  grid-auto-rows: 1fr;\n  grid-template-columns: 1fr 1fr;\n  grid-column-gap: var(--report-line-height);\n}\n\n.lh-metric {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n\n.lh-metric:nth-last-child(-n+2) {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n\n.lh-metric__innerwrap {\n  display: grid;\n  /**\n   * Icon -- Metric Name\n   *      -- Metric Value\n   */\n  grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 1fr;\n  align-items: center;\n  padding: var(--default-padding);\n}\n\n.lh-metric__details {\n  order: -1;\n}\n\n.lh-metric__title {\n  flex: 1;\n}\n\n.lh-calclink {\n  padding-left: calc(1ex / 3);\n}\n\n.lh-metric__description {\n  display: none;\n  grid-column-start: 2;\n  grid-column-end: 4;\n  color: var(--report-text-color-secondary);\n}\n\n.lh-metric__value {\n  font-size: var(--metric-value-font-size);\n  margin: calc(var(--default-padding) / 2) 0;\n  white-space: nowrap; /* No wrapping between metric value and the icon */\n  grid-column-start: 2;\n}\n\n\n@media screen and (max-width: 535px) {\n  .lh-metrics-container {\n    display: block;\n  }\n\n  .lh-metric {\n    border-bottom: none !important;\n  }\n  .lh-metric:nth-last-child(1) {\n    border-bottom: 1px solid var(--report-border-color-secondary) !important;\n  }\n\n  /* Change the grid to 3 columns for narrow viewport. */\n  .lh-metric__innerwrap {\n  /**\n   * Icon -- Metric Name -- Metric Value\n   */\n    grid-template-columns: calc(var(--score-icon-size) + var(--score-icon-margin-left) + var(--score-icon-margin-right)) 2fr 1fr;\n  }\n  .lh-metric__value {\n    justify-self: end;\n    grid-column-start: unset;\n  }\n}\n\n/* No-JS toggle switch */\n/* Keep this selector sync\'d w/ `magicSelector` in report-ui-features-test.js */\n .lh-metrics-toggle__input:checked ~ .lh-metrics-container .lh-metric__description {\n  display: block;\n}\n\n/* TODO get rid of the SVGS and clean up these some more */\n.lh-metrics-toggle__input {\n  opacity: 0;\n  position: absolute;\n  right: 0;\n  top: 0px;\n}\n\n.lh-metrics-toggle__input + div > label > .lh-metrics-toggle__labeltext--hide,\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--show {\n  display: none;\n}\n.lh-metrics-toggle__input:checked + div > label > .lh-metrics-toggle__labeltext--hide {\n  display: inline;\n}\n.lh-metrics-toggle__input:focus + div > label {\n  outline: -webkit-focus-ring-color auto 3px;\n}\n\n.lh-metrics-toggle__label {\n  cursor: pointer;\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n/* Pushes the metric description toggle button to the right. */\n.lh-audit-group--metrics .lh-audit-group__header {\n  display: flex;\n  justify-content: space-between;\n}\n\n.lh-metric__icon,\n.lh-scorescale-range::before {\n  content: \'\';\n  width: var(--score-icon-size);\n  height: var(--score-icon-size);\n  display: inline-block;\n  margin: var(--score-icon-margin);\n}\n\n.lh-metric--pass .lh-metric__value {\n  color: var(--color-pass-secondary);\n}\n.lh-metric--pass .lh-metric__icon {\n  border-radius: 100%;\n  background: var(--color-pass);\n}\n\n.lh-metric--average .lh-metric__value {\n  color: var(--color-average-secondary);\n}\n.lh-metric--average .lh-metric__icon {\n  background: var(--color-average);\n  width: var(--icon-square-size);\n  height: var(--icon-square-size);\n}\n\n.lh-metric--fail .lh-metric__value {\n  color: var(--color-fail-secondary);\n}\n.lh-metric--fail .lh-metric__icon,\n.lh-metric--error .lh-metric__icon {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n\n.lh-metric--error .lh-metric__value,\n.lh-metric--error .lh-metric__description {\n  color: var(--color-fail-secondary);\n}\n\n/* Perf load opportunity */\n\n.lh-load-opportunity__cols {\n  display: flex;\n  align-items: flex-start;\n}\n\n.lh-load-opportunity__header .lh-load-opportunity__col {\n  color: var(--color-gray-600);\n  display: unset;\n  line-height: calc(2.3 * var(--report-font-size));\n}\n\n.lh-load-opportunity__col {\n  display: flex;\n}\n\n.lh-load-opportunity__col--one {\n  flex: 5;\n  align-items: center;\n  margin-right: 2px;\n}\n.lh-load-opportunity__col--two {\n  flex: 4;\n  text-align: right;\n}\n\n.lh-audit--load-opportunity .lh-audit__display-text {\n  text-align: right;\n  flex: 0 0 calc(3 * var(--report-font-size));\n}\n\n\n/* Sparkline */\n\n.lh-load-opportunity__sparkline {\n  flex: 1;\n  margin-top: calc((var(--report-line-height) - var(--sparkline-height)) / 2);\n}\n\n.lh-sparkline {\n  height: var(--sparkline-height);\n  width: 100%;\n}\n\n.lh-sparkline__bar {\n  height: 100%;\n  float: right;\n}\n\n.lh-audit--pass .lh-sparkline__bar {\n  background: var(--color-pass);\n}\n\n.lh-audit--average .lh-sparkline__bar {\n  background: var(--color-average);\n}\n\n.lh-audit--fail .lh-sparkline__bar {\n  background: var(--color-fail);\n}\n\n/* Filmstrip */\n\n.lh-filmstrip-container {\n  /* smaller gap between metrics and filmstrip */\n  margin: -8px auto 0 auto;\n}\n\n.lh-filmstrip {\n  display: grid;\n  justify-content: space-between;\n  padding-bottom: var(--default-padding);\n  width: 100%;\n  grid-template-columns: repeat(auto-fit, 60px);\n}\n\n.lh-filmstrip__frame {\n  text-align: right;\n  position: relative;\n}\n\n.lh-filmstrip__thumbnail {\n  border: 1px solid var(--report-border-color-secondary);\n  max-height: 100px;\n  max-width: 60px;\n}\n\n/* Audit */\n\n.lh-audit {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\n\n/* Apply border-top to just the first audit. */\n.lh-audit {\n  border-top: 1px solid var(--report-border-color-secondary);\n}\n.lh-audit ~ .lh-audit {\n  border-top: none;\n}\n\n\n.lh-audit--error .lh-audit__display-text {\n  color: var(--color-fail);\n}\n\n/* Audit Group */\n\n.lh-audit-group {\n  margin-bottom: var(--audit-group-margin-bottom);\n  position: relative;\n}\n.lh-audit-group--metrics {\n  margin-bottom: calc(var(--audit-group-margin-bottom) / 2);\n}\n\n.lh-audit-group__header::before {\n  /* By default, groups don\'t get an icon */\n  content: none;\n  width: var(--pwa-icon-size);\n  height: var(--pwa-icon-size);\n  margin: var(--pwa-icon-margin);\n  display: inline-block;\n  vertical-align: middle;\n}\n\n/* Style the "over budget" columns red. */\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(4),\n.lh-audit-group--budgets #performance-budget tbody tr td:nth-child(5),\n.lh-audit-group--budgets #timing-budget tbody tr td:nth-child(3) {\n  color: var(--color-red-700);\n}\n\n/* Align the "over budget request count" text to be close to the "over budget bytes" column. */\n.lh-audit-group--budgets .lh-table tbody tr td:nth-child(4){\n  text-align: right;\n}\n\n.lh-audit-group--budgets .lh-details--budget {\n  width: 100%;\n  margin: 0 0 var(--default-padding);\n}\n\n.lh-audit-group--pwa-installable .lh-audit-group__header::before {\n  content: \'\';\n  background-image: var(--pwa-installable-gray-url);\n}\n.lh-audit-group--pwa-optimized .lh-audit-group__header::before {\n  content: \'\';\n  background-image: var(--pwa-optimized-gray-url);\n}\n.lh-audit-group--pwa-installable.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-installable-color-url);\n}\n.lh-audit-group--pwa-optimized.lh-badged .lh-audit-group__header::before {\n  background-image: var(--pwa-optimized-color-url);\n}\n\n.lh-audit-group--metrics .lh-audit-group__summary {\n  margin-top: 0;\n  margin-bottom: 0;\n}\n\n.lh-audit-group__summary {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}\n\n.lh-audit-group__header .lh-chevron {\n  margin-top: calc((var(--report-line-height) - 5px) / 2);\n}\n\n.lh-audit-group__header {\n  letter-spacing: 0.8px;\n  padding: var(--default-padding);\n  padding-left: 0;\n}\n\n.lh-audit-group__header, .lh-audit-group__summary {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n  color: var(--color-gray-700);\n}\n\n.lh-audit-group__title {\n  text-transform: uppercase;\n  font-weight: 500;\n}\n\n.lh-audit-group__itemcount {\n  color: var(--color-gray-600);\n}\n\n.lh-audit-group__footer {\n  color: var(--color-gray-600);\n  display: block;\n  margin-top: var(--default-padding);\n}\n\n.lh-details,\n.lh-category-header__description,\n.lh-load-opportunity__header,\n.lh-audit-group__footer {\n  font-size: var(--report-font-size-secondary);\n  line-height: var(--report-line-height-secondary);\n}\n\n.lh-audit-explanation {\n  margin: var(--audit-padding-vertical) 0 calc(var(--audit-padding-vertical) / 2) var(--audit-margin-horizontal);\n  line-height: var(--audit-explanation-line-height);\n  display: inline-block;\n}\n\n.lh-audit--fail .lh-audit-explanation {\n  color: var(--color-fail);\n}\n\n/* Report */\n.lh-list > div:not(:last-child) {\n  padding-bottom: 20px;\n}\n\n.lh-header-container {\n  display: block;\n  margin: 0 auto;\n  position: relative;\n  word-wrap: break-word;\n}\n\n.lh-report {\n  min-width: var(--report-min-width);\n}\n\n.lh-exception {\n  font-size: large;\n}\n\n.lh-code {\n  white-space: normal;\n  margin-top: 0;\n  font-size: var(--report-monospace-font-size);\n}\n\n.lh-warnings {\n  --item-margin: calc(var(--report-line-height) / 6);\n  color: var(--color-average-secondary);\n  margin: var(--audit-padding-vertical) 0;\n  padding: var(--default-padding)\n    var(--default-padding)\n    var(--default-padding)\n    calc(var(--audit-description-padding-left));\n  background-color: var(--toplevel-warning-background-color);\n}\n.lh-warnings span {\n  font-weight: bold;\n}\n\n.lh-warnings--toplevel {\n  --item-margin: calc(var(--header-line-height) / 4);\n  color: var(--toplevel-warning-text-color);\n  margin-left: auto;\n  margin-right: auto;\n  --content-width-minus-category-padding-sides: calc(var(--report-content-width) - calc(var(--default-padding) * 4) * 2);\n  max-width: var(--content-width-minus-category-padding-sides);\n  padding: var(--toplevel-warning-padding);\n  border-radius: 8px;\n}\n\n.lh-warnings__msg {\n  color: var(--toplevel-warning-message-text-color);\n  margin: 0;\n}\n\n.lh-warnings ul {\n  margin: 0;\n}\n.lh-warnings li {\n  margin: var(--item-margin) 0;\n}\n.lh-warnings li:last-of-type {\n  margin-bottom: 0;\n}\n\n.lh-scores-header {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n.lh-scores-header__solo {\n  padding: 0;\n  border: 0;\n}\n\n/* Gauge */\n\n.lh-gauge__wrapper--pass {\n  color: var(--color-pass-secondary);\n  fill: var(--color-pass);\n  stroke: var(--color-pass);\n}\n\n.lh-gauge__wrapper--average {\n  color: var(--color-average-secondary);\n  fill: var(--color-average);\n  stroke: var(--color-average);\n}\n\n.lh-gauge__wrapper--fail {\n  color: var(--color-fail-secondary);\n  fill: var(--color-fail);\n  stroke: var(--color-fail);\n}\n\n.lh-gauge__wrapper--not-applicable {\n  color: var(--color-not-applicable);\n  fill: var(--color-not-applicable);\n  stroke: var(--color-not-applicable);\n}\n\n.lh-fraction__wrapper .lh-fraction__content::before {\n  content: \'\';\n  height: var(--score-icon-size);\n  width: var(--score-icon-size);\n  margin: var(--score-icon-margin);\n  display: inline-block;\n}\n.lh-fraction__wrapper--pass .lh-fraction__content {\n  color: var(--color-pass-secondary);\n}\n.lh-fraction__wrapper--pass .lh-fraction__background {\n  background-color: var(--color-pass);\n}\n.lh-fraction__wrapper--pass .lh-fraction__content::before {\n  background-color: var(--color-pass);\n  border-radius: 50%;\n}\n.lh-fraction__wrapper--average .lh-fraction__content {\n  color: var(--color-average-secondary);\n}\n.lh-fraction__wrapper--average .lh-fraction__background,\n.lh-fraction__wrapper--average .lh-fraction__content::before {\n  background-color: var(--color-average);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content {\n  color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__background {\n  background-color: var(--color-fail);\n}\n.lh-fraction__wrapper--fail .lh-fraction__content::before {\n  border-left: calc(var(--score-icon-size) / 2) solid transparent;\n  border-right: calc(var(--score-icon-size) / 2) solid transparent;\n  border-bottom: var(--score-icon-size) solid var(--color-fail);\n}\n.lh-fraction__wrapper--null .lh-fraction__content {\n  color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__background {\n  background-color: var(--color-gray-700);\n}\n.lh-fraction__wrapper--null .lh-fraction__content::before {\n  border-radius: 50%;\n  border: calc(0.2 * var(--score-icon-size)) solid var(--color-gray-700);\n}\n\n.lh-fraction__background {\n  position: absolute;\n  height: 100%;\n  width: 100%;\n  border-radius: calc(var(--gauge-circle-size) / 2);\n  opacity: 0.1;\n  z-index: -1;\n}\n\n.lh-fraction__content-wrapper {\n  height: var(--gauge-circle-size);\n  display: flex;\n  align-items: center;\n}\n\n.lh-fraction__content {\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(0.3 * var(--gauge-circle-size));\n  line-height: calc(0.4 * var(--gauge-circle-size));\n  width: max-content;\n  min-width: calc(1.5 * var(--gauge-circle-size));\n  padding: calc(0.1 * var(--gauge-circle-size)) calc(0.2 * var(--gauge-circle-size));\n  --score-icon-size: calc(0.21 * var(--gauge-circle-size));\n  --score-icon-margin: 0 calc(0.15 * var(--gauge-circle-size)) 0 0;\n}\n\n.lh-gauge {\n  stroke-linecap: round;\n  width: var(--gauge-circle-size);\n  height: var(--gauge-circle-size);\n}\n\n.lh-category .lh-gauge {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n.lh-gauge-base {\n  opacity: 0.1;\n}\n\n.lh-gauge-arc {\n  fill: none;\n  transform-origin: 50% 50%;\n  animation: load-gauge var(--transition-length) ease forwards;\n  animation-delay: 250ms;\n}\n\n.lh-gauge__svg-wrapper {\n  position: relative;\n  height: var(--gauge-circle-size);\n}\n.lh-category .lh-gauge__svg-wrapper,\n.lh-category .lh-fraction__wrapper {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n}\n\n/* The plugin badge overlay */\n.lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size);\n  height: var(--plugin-badge-size);\n  background-color: var(--plugin-badge-background-color);\n  background-image: var(--plugin-icon-url);\n  background-repeat: no-repeat;\n  background-size: var(--plugin-icon-size);\n  background-position: 58% 50%;\n  content: "";\n  position: absolute;\n  right: -6px;\n  bottom: 0px;\n  display: block;\n  z-index: 100;\n  box-shadow: 0 0 4px rgba(0,0,0,.2);\n  border-radius: 25%;\n}\n.lh-category .lh-gauge__wrapper--plugin .lh-gauge__svg-wrapper::before {\n  width: var(--plugin-badge-size-big);\n  height: var(--plugin-badge-size-big);\n}\n\n@keyframes load-gauge {\n  from { stroke-dasharray: 0 352; }\n}\n\n.lh-gauge__percentage {\n  width: 100%;\n  height: var(--gauge-circle-size);\n  position: absolute;\n  font-family: var(--report-font-family-monospace);\n  font-size: calc(var(--gauge-circle-size) * 0.34 + 1.3px);\n  line-height: 0;\n  text-align: center;\n  top: calc(var(--score-container-padding) + var(--gauge-circle-size) / 2);\n}\n\n.lh-category .lh-gauge__percentage {\n  --gauge-circle-size: var(--gauge-circle-size-big);\n  --gauge-percentage-font-size: var(--gauge-percentage-font-size-big);\n}\n\n.lh-gauge__wrapper,\n.lh-fraction__wrapper {\n  position: relative;\n  display: flex;\n  align-items: center;\n  flex-direction: column;\n  text-decoration: none;\n  padding: var(--score-container-padding);\n\n  --transition-length: 1s;\n\n  /* Contain the layout style paint & layers during animation*/\n  contain: content;\n  will-change: opacity; /* Only using for layer promotion */\n}\n\n.lh-gauge__label,\n.lh-fraction__label {\n  font-size: var(--gauge-label-font-size);\n  font-weight: 500;\n  line-height: var(--gauge-label-line-height);\n  margin-top: 10px;\n  text-align: center;\n  color: var(--report-text-color);\n  word-break: keep-all;\n}\n\n/* TODO(#8185) use more BEM (.lh-gauge__label--big) instead of relying on descendant selector */\n.lh-category .lh-gauge__label,\n.lh-category .lh-fraction__label {\n  --gauge-label-font-size: var(--gauge-label-font-size-big);\n  --gauge-label-line-height: var(--gauge-label-line-height-big);\n  margin-top: 14px;\n}\n\n.lh-scores-header .lh-gauge__wrapper,\n.lh-scores-header .lh-fraction__wrapper,\n.lh-scores-header .lh-gauge--pwa__wrapper,\n.lh-sticky-header .lh-gauge__wrapper,\n.lh-sticky-header .lh-fraction__wrapper,\n.lh-sticky-header .lh-gauge--pwa__wrapper {\n  width: var(--gauge-wrapper-width);\n}\n\n.lh-scorescale {\n  display: inline-flex;\n\n  gap: calc(var(--default-padding) * 4);\n  margin: 16px auto 0 auto;\n  font-size: var(--report-font-size-secondary);\n  color: var(--color-gray-700);\n\n}\n\n.lh-scorescale-range {\n  display: flex;\n  align-items: center;\n  font-family: var(--report-font-family-monospace);\n  white-space: nowrap;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale {\n  border: 0;\n  display: flex;\n  justify-content: center;\n}\n\n.lh-category-header__finalscreenshot .lh-scorescale-range {\n  font-family: unset;\n  font-size: 12px;\n}\n\n.lh-scorescale-wrap {\n  display: contents;\n}\n\n/* Hide category score gauages if it\'s a single category report */\n.lh-header--solo-category .lh-scores-wrapper {\n  display: none;\n}\n\n\n.lh-categories {\n  width: 100%;\n  overflow: hidden;\n}\n\n.lh-category {\n  padding: var(--category-padding);\n  max-width: var(--report-content-width);\n  margin: 0 auto;\n\n  --sticky-header-height: calc(var(--gauge-circle-size-sm) + var(--score-container-padding) * 2);\n  --topbar-plus-sticky-header: calc(var(--topbar-height) + var(--sticky-header-height));\n  scroll-margin-top: var(--topbar-plus-sticky-header);\n\n  /* Faster recalc style & layout of the report. https://web.dev/content-visibility/ */\n  content-visibility: auto;\n  contain-intrinsic-size: 1000px;\n}\n\n.lh-category-wrapper {\n  border-bottom: 1px solid var(--color-gray-200);\n}\n\n.lh-category-wrapper:first-of-type {\n  border-top: 1px solid var(--color-gray-200);\n}\n\n.lh-category-header {\n  margin-bottom: var(--section-padding-vertical);\n}\n\n.lh-category-header .lh-score__gauge {\n  max-width: 400px;\n  width: auto;\n  margin: 0px auto;\n}\n\n.lh-category-header__finalscreenshot {\n  display: grid;\n  grid-template: none / 1fr 1px 1fr;\n  justify-items: center;\n  align-items: center;\n  gap: var(--report-line-height);\n  min-height: 288px;\n  margin-bottom: var(--default-padding);\n}\n\n.lh-final-ss-image {\n  /* constrain the size of the image to not be too large */\n  max-height: calc(var(--gauge-circle-size-big) * 2.8);\n  max-width: calc(var(--gauge-circle-size-big) * 3.5);\n  border: 1px solid var(--color-gray-200);\n  padding: 4px;\n  border-radius: 3px;\n  display: block;\n}\n\n.lh-category-headercol--separator {\n  background: var(--color-gray-200);\n  width: 1px;\n  height: var(--gauge-circle-size-big);\n}\n\n@media screen and (max-width: 780px) {\n  .lh-category-header__finalscreenshot {\n    grid-template: 1fr 1fr / none\n  }\n  .lh-category-headercol--separator {\n    display: none;\n  }\n}\n\n\n/* 964 fits the min-width of the filmstrip */\n@media screen and (max-width: 964px) {\n  .lh-report {\n    margin-left: 0;\n    width: 100%;\n  }\n}\n\n@media print {\n  body {\n    -webkit-print-color-adjust: exact; /* print background colors */\n  }\n  .lh-container {\n    display: block;\n  }\n  .lh-report {\n    margin-left: 0;\n    padding-top: 0;\n  }\n  .lh-categories {\n    margin-top: 0;\n  }\n}\n\n.lh-table {\n  border-collapse: collapse;\n  /* Can\'t assign padding to table, so shorten the width instead. */\n  width: calc(100% - var(--audit-description-padding-left) - var(--stackpack-padding-horizontal));\n  border: 1px solid var(--report-border-color-secondary);\n\n}\n\n.lh-table thead th {\n  font-weight: normal;\n  color: var(--color-gray-600);\n  /* See text-wrapping comment on .lh-container. */\n  word-break: normal;\n}\n\n.lh-row--even {\n  background-color: var(--table-higlight-background-color);\n}\n.lh-row--hidden {\n  display: none;\n}\n\n.lh-table th,\n.lh-table td {\n  padding: var(--default-padding);\n}\n\n.lh-table tr {\n  vertical-align: middle;\n}\n\n/* Looks unnecessary, but mostly for keeping the <th>s left-aligned */\n.lh-table-column--text,\n.lh-table-column--source-location,\n.lh-table-column--url,\n/* .lh-table-column--thumbnail, */\n/* .lh-table-column--empty,*/\n.lh-table-column--code,\n.lh-table-column--node {\n  text-align: left;\n}\n\n.lh-table-column--code {\n  min-width: 100px;\n}\n\n.lh-table-column--bytes,\n.lh-table-column--timespanMs,\n.lh-table-column--ms,\n.lh-table-column--numeric {\n  text-align: right;\n  word-break: normal;\n}\n\n\n\n.lh-table .lh-table-column--thumbnail {\n  width: var(--image-preview-size);\n}\n\n.lh-table-column--url {\n  min-width: 250px;\n}\n\n.lh-table-column--text {\n  min-width: 80px;\n}\n\n/* Keep columns narrow if they follow the URL column */\n/* 12% was determined to be a decent narrow width, but wide enough for column headings */\n.lh-table-column--url + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--ms,\n.lh-table-column--url + .lh-table-column--ms + th.lh-table-column--bytes,\n.lh-table-column--url + .lh-table-column--bytes + th.lh-table-column--timespanMs {\n  width: 12%;\n}\n\n.lh-text__url-host {\n  display: inline;\n}\n\n.lh-text__url-host {\n  margin-left: calc(var(--report-font-size) / 2);\n  opacity: 0.6;\n  font-size: 90%\n}\n\n.lh-thumbnail {\n  object-fit: cover;\n  width: var(--image-preview-size);\n  height: var(--image-preview-size);\n  display: block;\n}\n\n.lh-unknown pre {\n  overflow: scroll;\n  border: solid 1px var(--color-gray-200);\n}\n\n.lh-text__url > a {\n  color: inherit;\n  text-decoration: none;\n}\n\n.lh-text__url > a:hover {\n  text-decoration: underline dotted #999;\n}\n\n.lh-sub-item-row {\n  margin-left: 20px;\n  margin-bottom: 0;\n  color: var(--color-gray-700);\n}\n.lh-sub-item-row td {\n  padding-top: 4px;\n  padding-bottom: 4px;\n  padding-left: 20px;\n}\n\n/* Chevron\n   https://codepen.io/paulirish/pen/LmzEmK\n */\n.lh-chevron {\n  --chevron-angle: 42deg;\n  /* Edge doesn\'t support transform: rotate(calc(...)), so we define it here */\n  --chevron-angle-right: -42deg;\n  width: var(--chevron-size);\n  height: var(--chevron-size);\n  margin-top: calc((var(--report-line-height) - 12px) / 2);\n}\n\n.lh-chevron__lines {\n  transition: transform 0.4s;\n  transform: translateY(var(--report-line-height));\n}\n.lh-chevron__line {\n stroke: var(--chevron-line-stroke);\n stroke-width: var(--chevron-size);\n stroke-linecap: square;\n transform-origin: 50%;\n transform: rotate(var(--chevron-angle));\n transition: transform 300ms, stroke 300ms;\n}\n\n.lh-expandable-details .lh-chevron__line-right,\n.lh-expandable-details[open] .lh-chevron__line-left {\n transform: rotate(var(--chevron-angle-right));\n}\n\n.lh-expandable-details[open] .lh-chevron__line-right {\n  transform: rotate(var(--chevron-angle));\n}\n\n\n.lh-expandable-details[open]  .lh-chevron__lines {\n transform: translateY(calc(var(--chevron-size) * -1));\n}\n\n.lh-expandable-details[open] {\n  animation: 300ms openDetails forwards;\n  padding-bottom: var(--default-padding);\n}\n\n@keyframes openDetails {\n  from {\n    outline: 1px solid var(--report-background-color);\n  }\n  to {\n   outline: 1px solid;\n   box-shadow: 0 2px 4px rgba(0, 0, 0, .24);\n  }\n}\n\n@media screen and (max-width: 780px) {\n  /* no black outline if we\'re not confident the entire table can be displayed within bounds */\n  .lh-expandable-details[open] {\n    animation: none;\n  }\n}\n\n.lh-expandable-details[open] summary, details.lh-clump > summary {\n  border-bottom: 1px solid var(--report-border-color-secondary);\n}\ndetails.lh-clump[open] > summary {\n  border-bottom-width: 0;\n}\n\n\n\ndetails .lh-clump-toggletext--hide,\ndetails[open] .lh-clump-toggletext--show { display: none; }\ndetails[open] .lh-clump-toggletext--hide { display: block;}\n\n\n/* Tooltip */\n.lh-tooltip-boundary {\n  position: relative;\n}\n\n.lh-tooltip {\n  position: absolute;\n  display: none; /* Don\'t retain these layers when not needed */\n  opacity: 0;\n  background: #ffffff;\n  white-space: pre-line; /* Render newlines in the text */\n  min-width: 246px;\n  max-width: 275px;\n  padding: 15px;\n  border-radius: 5px;\n  text-align: initial;\n  line-height: 1.4;\n}\n/* shrink tooltips to not be cutoff on left edge of narrow viewports\n   45vw is chosen to be ~= width of the left column of metrics\n*/\n@media screen and (max-width: 535px) {\n  .lh-tooltip {\n    min-width: 45vw;\n    padding: 3vw;\n  }\n}\n\n.lh-tooltip-boundary:hover .lh-tooltip {\n  display: block;\n  animation: fadeInTooltip 250ms;\n  animation-fill-mode: forwards;\n  animation-delay: 850ms;\n  bottom: 100%;\n  z-index: 1;\n  will-change: opacity;\n  right: 0;\n  pointer-events: none;\n}\n\n.lh-tooltip::before {\n  content: "";\n  border: solid transparent;\n  border-bottom-color: #fff;\n  border-width: 10px;\n  position: absolute;\n  bottom: -20px;\n  right: 6px;\n  transform: rotate(180deg);\n  pointer-events: none;\n}\n\n@keyframes fadeInTooltip {\n  0% { opacity: 0; }\n  75% { opacity: 1; }\n  100% { opacity: 1;  filter: drop-shadow(1px 0px 1px #aaa) drop-shadow(0px 2px 4px hsla(206, 6%, 25%, 0.15)); pointer-events: auto; }\n}\n\n/* Element screenshot */\n.lh-element-screenshot {\n  position: relative;\n  overflow: hidden;\n  float: left;\n  margin-right: 20px;\n}\n.lh-element-screenshot__content {\n  overflow: hidden;\n}\n.lh-element-screenshot__image {\n  /* Set by ElementScreenshotRenderer.installFullPageScreenshotCssVariable */\n  background-image: var(--element-screenshot-url);\n  outline: 2px solid #777;\n  background-color: white;\n  background-repeat: no-repeat;\n}\n.lh-element-screenshot__mask {\n  position: absolute;\n  background: #555;\n  opacity: 0.8;\n}\n.lh-element-screenshot__element-marker {\n  position: absolute;\n  outline: 2px solid var(--color-lime-400);\n}\n.lh-element-screenshot__overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 2000; /* .lh-topbar is 1000 */\n  background: var(--screenshot-overlay-background);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: zoom-out;\n}\n\n.lh-element-screenshot__overlay .lh-element-screenshot {\n  margin-right: 0; /* clearing margin used in thumbnail case */\n  outline: 1px solid var(--color-gray-700);\n}\n\n.lh-screenshot-overlay--enabled .lh-element-screenshot {\n  cursor: zoom-out;\n}\n.lh-screenshot-overlay--enabled .lh-node .lh-element-screenshot {\n  cursor: zoom-in;\n}\n\n\n.lh-meta__items {\n  --meta-icon-size: calc(var(--report-icon-size) * 0.667);\n  padding: var(--default-padding);\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  background-color: var(--env-item-background-color);\n  border-radius: 3px;\n  margin: 0 0 var(--default-padding) 0;\n  font-size: 12px;\n  column-gap: var(--default-padding);\n  color: var(--color-gray-700);\n}\n\n.lh-meta__item {\n  display: block;\n  list-style-type: none;\n  position: relative;\n  padding: 0 0 0 calc(var(--meta-icon-size) + var(--default-padding) * 2);\n  cursor: unset; /* disable pointer cursor from report-icon */\n}\n\n.lh-meta__item.lh-tooltip-boundary {\n  text-decoration: dotted underline var(--color-gray-500);\n  cursor: help;\n}\n\n.lh-meta__item.lh-report-icon::before {\n  position: absolute;\n  left: var(--default-padding);\n  width: var(--meta-icon-size);\n  height: var(--meta-icon-size);\n}\n\n.lh-meta__item.lh-report-icon:hover::before {\n  opacity: 0.7;\n}\n\n.lh-meta__item .lh-tooltip {\n  color: var(--color-gray-800);\n}\n\n.lh-meta__item .lh-tooltip::before {\n  right: auto; /* Set the tooltip arrow to the leftside */\n  left: 6px;\n}\n\n/* Change the grid for narrow viewport. */\n@media screen and (max-width: 640px) {\n  .lh-meta__items {\n    grid-template-columns: 1fr 1fr;\n  }\n}\n@media screen and (max-width: 535px) {\n  .lh-meta__items {\n    display: block;\n  }\n}\n\n\n/*# sourceURL=report-styles.css */\n');
+  el0.append(el1);
+  return el0;
+}
+
+/**
+ * @param {DOM} dom
+ */
+function createTopbarComponent(dom) {
+  const el0 = dom.createFragment();
+  const el1 = dom.createElement('style');
+  el1.append('\n    .lh-topbar {\n      position: sticky;\n      top: 0;\n      left: 0;\n      right: 0;\n      z-index: 1000;\n      display: flex;\n      align-items: center;\n      height: var(--topbar-height);\n      padding: var(--topbar-padding);\n      font-size: var(--report-font-size-secondary);\n      background-color: var(--topbar-background-color);\n      border-bottom: 1px solid var(--color-gray-200);\n    }\n\n    .lh-topbar__logo {\n      width: var(--topbar-logo-size);\n      height: var(--topbar-logo-size);\n      user-select: none;\n      flex: none;\n    }\n\n    .lh-topbar__url {\n      margin: var(--topbar-padding);\n      text-decoration: none;\n      color: var(--report-text-color);\n      text-overflow: ellipsis;\n      overflow: hidden;\n      white-space: nowrap;\n    }\n\n    .lh-tools {\n      display: flex;\n      align-items: center;\n      margin-left: auto;\n      will-change: transform;\n      min-width: var(--report-icon-size);\n    }\n    .lh-tools__button {\n      width: var(--report-icon-size);\n      min-width: 24px;\n      height: var(--report-icon-size);\n      cursor: pointer;\n      margin-right: 5px;\n      /* This is actually a button element, but we want to style it like a transparent div. */\n      display: flex;\n      background: none;\n      color: inherit;\n      border: none;\n      padding: 0;\n      font: inherit;\n      outline: inherit;\n    }\n    .lh-tools__button svg {\n      fill: var(--tools-icon-color);\n    }\n    .lh-dark .lh-tools__button svg {\n      filter: invert(1);\n    }\n    .lh-tools__button.lh-active + .lh-tools__dropdown {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n    }\n    .lh-tools__dropdown {\n      position: absolute;\n      background-color: var(--report-background-color);\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      visibility: hidden;\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-tools__dropdown a {\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 6px;\n      line-height: 2;\n    }\n    .lh-tools__dropdown a:hover,\n    .lh-tools__dropdown a:focus {\n      background-color: var(--color-gray-200);\n      outline: none;\n    }\n    /* save-gist option hidden in report. */\n    .lh-tools__dropdown a[data-action=\'save-gist\'] {\n      display: none;\n    }\n\n    .lh-locale-selector {\n      width: 100%;\n      color: var(--report-text-color);\n      background-color: var(--locale-selector-background-color);\n      padding: 2px;\n    }\n    .lh-tools-locale {\n      display: flex;\n      align-items: center;\n      flex-direction: row-reverse;\n    }\n    .lh-tools-locale__selector-wrapper {\n      transition: opacity 0.15s;\n      opacity: 0;\n      max-width: 200px;\n    }\n    .lh-button.lh-tool-locale__button {\n      height: var(--topbar-height);\n      color: var(--tools-icon-color);\n      padding: calc(var(--default-padding) / 2);\n    }\n    .lh-tool-locale__button.lh-active + .lh-tools-locale__selector-wrapper {\n      opacity: 1;\n      clip: rect(-1px, 194px, 242px, -3px);\n      visibility: visible;\n      margin: 0 4px;\n    }\n\n    @media screen and (max-width: 964px) {\n      .lh-tools__dropdown {\n        right: 0;\n        left: initial;\n      }\n    }\n    @media print {\n      .lh-topbar {\n        position: static;\n        margin-left: 0;\n      }\n\n      .lh-tools__dropdown {\n        display: none;\n      }\n    }\n  ');
   el0.append(el1);
   const el2 = dom.createElement('div', 'lh-topbar');
   const el3 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg', 'lh-topbar__logo');
@@ -1319,78 +1331,105 @@ function createTopbarComponent(dom) {
   el25.setAttribute('target', '_blank');
   el25.setAttribute('rel', 'noopener');
   const el26 = dom.createElement('div', 'lh-tools');
-  const el27 = dom.createElement('button', 'lh-tools__button');
-  el27.setAttribute('id', 'lh-tools-button');
-  el27.setAttribute('title', 'Tools menu');
-  el27.setAttribute('aria-label', 'Toggle report tools menu');
-  el27.setAttribute('aria-haspopup', 'menu');
-  el27.setAttribute('aria-expanded', 'false');
-  el27.setAttribute('aria-controls', 'lh-tools-dropdown');
-  const el28 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  el28.setAttribute('width', '100%');
-  el28.setAttribute('height', '100%');
-  el28.setAttribute('viewBox', '0 0 24 24');
-  const el29 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el29.setAttribute('d', 'M0 0h24v24H0z');
-  el29.setAttribute('fill', 'none');
+  const el27 = dom.createElement('div', 'lh-tools-locale lh-hidden');
+  const el28 = dom.createElement('button', 'lh-button lh-tool-locale__button');
+  el28.setAttribute('id', 'lh-button__swap-locales');
+  el28.setAttribute('title', 'Show Language Picker');
+  el28.setAttribute('aria-label', 'Toggle language picker');
+  el28.setAttribute('aria-haspopup', 'menu');
+  el28.setAttribute('aria-expanded', 'false');
+  el28.setAttribute('aria-controls', 'lh-tools-locale__selector-wrapper');
+  const el29 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  el29.setAttribute('width', '20px');
+  el29.setAttribute('height', '20px');
+  el29.setAttribute('viewBox', '0 0 24 24');
+  el29.setAttribute('fill', 'currentColor');
   const el30 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
-  el30.setAttribute('d', 'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z');
-  el28.append(' ', el29, ' ', el30, ' ');
-  el27.append(' ', el28, ' ');
-  const el31 = dom.createElement('div', 'lh-tools__dropdown');
-  el31.setAttribute('id', 'lh-tools-dropdown');
-  el31.setAttribute('role', 'menu');
-  el31.setAttribute('aria-labelledby', 'lh-tools-button');
-  const el32 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
-  el32.setAttribute('role', 'menuitem');
-  el32.setAttribute('tabindex', '-1');
-  el32.setAttribute('href', '#');
-  el32.setAttribute('data-i18n', 'dropdownPrintSummary');
-  el32.setAttribute('data-action', 'print-summary');
-  const el33 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
-  el33.setAttribute('role', 'menuitem');
-  el33.setAttribute('tabindex', '-1');
-  el33.setAttribute('href', '#');
-  el33.setAttribute('data-i18n', 'dropdownPrintExpanded');
-  el33.setAttribute('data-action', 'print-expanded');
-  const el34 = dom.createElement('a', 'lh-report-icon lh-report-icon--copy');
-  el34.setAttribute('role', 'menuitem');
-  el34.setAttribute('tabindex', '-1');
-  el34.setAttribute('href', '#');
-  el34.setAttribute('data-i18n', 'dropdownCopyJSON');
-  el34.setAttribute('data-action', 'copy');
-  const el35 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
-  el35.setAttribute('role', 'menuitem');
-  el35.setAttribute('tabindex', '-1');
-  el35.setAttribute('href', '#');
-  el35.setAttribute('data-i18n', 'dropdownSaveHTML');
-  el35.setAttribute('data-action', 'save-html');
-  const el36 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
-  el36.setAttribute('role', 'menuitem');
-  el36.setAttribute('tabindex', '-1');
-  el36.setAttribute('href', '#');
-  el36.setAttribute('data-i18n', 'dropdownSaveJSON');
-  el36.setAttribute('data-action', 'save-json');
-  const el37 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
-  el37.setAttribute('role', 'menuitem');
-  el37.setAttribute('tabindex', '-1');
-  el37.setAttribute('href', '#');
-  el37.setAttribute('data-i18n', 'dropdownViewer');
-  el37.setAttribute('data-action', 'open-viewer');
-  const el38 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
+  el30.setAttribute('d', 'M0 0h24v24H0V0z');
+  el30.setAttribute('fill', 'none');
+  const el31 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  el31.setAttribute('d', 'M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z');
+  el29.append(el30, el31);
+  el28.append(' ', el29, ' ');
+  const el32 = dom.createElement('div', 'lh-tools-locale__selector-wrapper');
+  el32.setAttribute('id', 'lh-tools-locale__selector-wrapper');
+  el32.setAttribute('role', 'menu');
+  el32.setAttribute('aria-labelledby', 'lh-button__swap-locales');
+  el32.setAttribute('aria-hidden', 'true');
+  el32.append(' ', ' ');
+  el27.append(' ', el28, ' ', el32, ' ');
+  const el33 = dom.createElement('button', 'lh-tools__button');
+  el33.setAttribute('id', 'lh-tools-button');
+  el33.setAttribute('title', 'Tools menu');
+  el33.setAttribute('aria-label', 'Toggle report tools menu');
+  el33.setAttribute('aria-haspopup', 'menu');
+  el33.setAttribute('aria-expanded', 'false');
+  el33.setAttribute('aria-controls', 'lh-tools-dropdown');
+  const el34 = dom.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  el34.setAttribute('width', '100%');
+  el34.setAttribute('height', '100%');
+  el34.setAttribute('viewBox', '0 0 24 24');
+  const el35 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  el35.setAttribute('d', 'M0 0h24v24H0z');
+  el35.setAttribute('fill', 'none');
+  const el36 = dom.createElementNS('http://www.w3.org/2000/svg', 'path');
+  el36.setAttribute('d', 'M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z');
+  el34.append(' ', el35, ' ', el36, ' ');
+  el33.append(' ', el34, ' ');
+  const el37 = dom.createElement('div', 'lh-tools__dropdown');
+  el37.setAttribute('id', 'lh-tools-dropdown');
+  el37.setAttribute('role', 'menu');
+  el37.setAttribute('aria-labelledby', 'lh-tools-button');
+  const el38 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
   el38.setAttribute('role', 'menuitem');
   el38.setAttribute('tabindex', '-1');
   el38.setAttribute('href', '#');
-  el38.setAttribute('data-i18n', 'dropdownSaveGist');
-  el38.setAttribute('data-action', 'save-gist');
-  const el39 = dom.createElement('a', 'lh-report-icon lh-report-icon--dark');
+  el38.setAttribute('data-i18n', 'dropdownPrintSummary');
+  el38.setAttribute('data-action', 'print-summary');
+  const el39 = dom.createElement('a', 'lh-report-icon lh-report-icon--print');
   el39.setAttribute('role', 'menuitem');
   el39.setAttribute('tabindex', '-1');
   el39.setAttribute('href', '#');
-  el39.setAttribute('data-i18n', 'dropdownDarkTheme');
-  el39.setAttribute('data-action', 'toggle-dark');
-  el31.append(' ', el32, ' ', el33, ' ', el34, ' ', el35, ' ', el36, ' ', el37, ' ', el38, ' ', el39, ' ');
-  el26.append(' ', el27, ' ', el31, ' ');
+  el39.setAttribute('data-i18n', 'dropdownPrintExpanded');
+  el39.setAttribute('data-action', 'print-expanded');
+  const el40 = dom.createElement('a', 'lh-report-icon lh-report-icon--copy');
+  el40.setAttribute('role', 'menuitem');
+  el40.setAttribute('tabindex', '-1');
+  el40.setAttribute('href', '#');
+  el40.setAttribute('data-i18n', 'dropdownCopyJSON');
+  el40.setAttribute('data-action', 'copy');
+  const el41 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
+  el41.setAttribute('role', 'menuitem');
+  el41.setAttribute('tabindex', '-1');
+  el41.setAttribute('href', '#');
+  el41.setAttribute('data-i18n', 'dropdownSaveHTML');
+  el41.setAttribute('data-action', 'save-html');
+  const el42 = dom.createElement('a', 'lh-report-icon lh-report-icon--download');
+  el42.setAttribute('role', 'menuitem');
+  el42.setAttribute('tabindex', '-1');
+  el42.setAttribute('href', '#');
+  el42.setAttribute('data-i18n', 'dropdownSaveJSON');
+  el42.setAttribute('data-action', 'save-json');
+  const el43 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
+  el43.setAttribute('role', 'menuitem');
+  el43.setAttribute('tabindex', '-1');
+  el43.setAttribute('href', '#');
+  el43.setAttribute('data-i18n', 'dropdownViewer');
+  el43.setAttribute('data-action', 'open-viewer');
+  const el44 = dom.createElement('a', 'lh-report-icon lh-report-icon--open');
+  el44.setAttribute('role', 'menuitem');
+  el44.setAttribute('tabindex', '-1');
+  el44.setAttribute('href', '#');
+  el44.setAttribute('data-i18n', 'dropdownSaveGist');
+  el44.setAttribute('data-action', 'save-gist');
+  const el45 = dom.createElement('a', 'lh-report-icon lh-report-icon--dark');
+  el45.setAttribute('role', 'menuitem');
+  el45.setAttribute('tabindex', '-1');
+  el45.setAttribute('href', '#');
+  el45.setAttribute('data-i18n', 'dropdownDarkTheme');
+  el45.setAttribute('data-action', 'toggle-dark');
+  el37.append(' ', el38, ' ', el39, ' ', el40, ' ', el41, ' ', el42, ' ', el43, ' ', el44, ' ', el45, ' ');
+  el26.append(' ', el27, ' ', el33, ' ', el37, ' ');
   el2.append(' ', ' ', el3, ' ', el25, ' ', el26, ' ');
   el0.append(el2);
   return el0;
@@ -1400,7 +1439,7 @@ function createTopbarComponent(dom) {
  * @param {DOM} dom
  */
 function createWarningsToplevelComponent(dom) {
-  const el0 = dom.document().createDocumentFragment();
+  const el0 = dom.createFragment();
   const el1 = dom.createElement('div', 'lh-warnings lh-warnings--toplevel');
   const el2 = dom.createElement('p', 'lh-warnings__msg');
   const el3 = dom.createElement('ul');
@@ -1410,7 +1449,7 @@ function createWarningsToplevelComponent(dom) {
 }
 
 
-/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'envItem'|'footer'|'fraction'|'gauge'|'gaugePwa'|'heading'|'metric'|'metricsToggle'|'opportunity'|'opportunityHeader'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'topbar'|'warningsToplevel'} ComponentName */
+/** @typedef {'3pFilter'|'audit'|'categoryHeader'|'chevron'|'clump'|'crc'|'crcChain'|'elementScreenshot'|'footer'|'fraction'|'gauge'|'gaugePwa'|'heading'|'metric'|'opportunity'|'opportunityHeader'|'scorescale'|'scoresWrapper'|'snippet'|'snippetContent'|'snippetHeader'|'snippetLine'|'styles'|'topbar'|'warningsToplevel'} ComponentName */
 /**
  * @param {DOM} dom
  * @param {ComponentName} componentName
@@ -1426,14 +1465,12 @@ function createComponent(dom, componentName) {
     case 'crc': return createCrcComponent(dom);
     case 'crcChain': return createCrcChainComponent(dom);
     case 'elementScreenshot': return createElementScreenshotComponent(dom);
-    case 'envItem': return createEnvItemComponent(dom);
     case 'footer': return createFooterComponent(dom);
     case 'fraction': return createFractionComponent(dom);
     case 'gauge': return createGaugeComponent(dom);
     case 'gaugePwa': return createGaugePwaComponent(dom);
     case 'heading': return createHeadingComponent(dom);
     case 'metric': return createMetricComponent(dom);
-    case 'metricsToggle': return createMetricsToggleComponent(dom);
     case 'opportunity': return createOpportunityComponent(dom);
     case 'opportunityHeader': return createOpportunityHeaderComponent(dom);
     case 'scorescale': return createScorescaleComponent(dom);
@@ -1442,6 +1479,7 @@ function createComponent(dom, componentName) {
     case 'snippetContent': return createSnippetContentComponent(dom);
     case 'snippetHeader': return createSnippetHeaderComponent(dom);
     case 'snippetLine': return createSnippetLineComponent(dom);
+    case 'styles': return createStylesComponent(dom);
     case 'topbar': return createTopbarComponent(dom);
     case 'warningsToplevel': return createWarningsToplevelComponent(dom);
   }
@@ -1468,14 +1506,18 @@ function createComponent(dom, componentName) {
 class DOM {
   /**
    * @param {Document} document
+   * @param {HTMLElement} rootEl
    */
-  constructor(document) {
+  constructor(document, rootEl) {
     /** @type {Document} */
     this._document = document;
     /** @type {string} */
     this._lighthouseChannel = 'unknown';
     /** @type {Map<string, DocumentFragment>} */
     this._componentCache = new Map();
+    /** @type {HTMLElement} */
+    // For legacy Report API users, this'll be undefined, but set in renderReport
+    this.rootEl = rootEl;
   }
 
   /**
@@ -1516,6 +1558,15 @@ class DOM {
   createFragment() {
     return this._document.createDocumentFragment();
   }
+
+  /**
+   * @param {string} data
+   * @return {!Node}
+   */
+  createTextNode(data) {
+    return this._document.createTextNode(data);
+  }
+
 
   /**
    * @template {string} T
@@ -1657,6 +1708,8 @@ class DOM {
   }
 
   /**
+   * ONLY use if `dom.rootEl` isn't sufficient for your needs. `dom.rootEl` is preferred
+   * for all scoping, because a document can have multiple reports within it.
    * @return {Document}
    */
   document() {
@@ -1711,6 +1764,25 @@ class DOM {
   fireEventOn(name, target = this._document, detail) {
     const event = new CustomEvent(name, detail ? {detail} : undefined);
     target.dispatchEvent(event);
+  }
+
+  /**
+   * Downloads a file (blob) using a[download].
+   * @param {Blob|File} blob The file to save.
+   * @param {string} filename
+   */
+  saveFile(blob, filename) {
+    const ext = blob.type.match('json') ? '.json' : '.html';
+
+    const a = this.createElement('a');
+    a.download = `${filename}${ext}`;
+    this.safelySetBlobHref(a, blob);
+    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
+    a.click();
+
+    // cleanup.
+    this._document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
   }
 }
 
@@ -1841,7 +1913,7 @@ class CategoryRenderer {
     const warningsEl = this.dom.createChildOf(summaryEl, 'div', 'lh-warnings');
     this.dom.createChildOf(warningsEl, 'span').textContent = strings.warningHeader;
     if (warnings.length === 1) {
-      warningsEl.appendChild(this.dom.document().createTextNode(warnings.join('')));
+      warningsEl.appendChild(this.dom.createTextNode(warnings.join('')));
     } else {
       const warningsUl = this.dom.createChildOf(warningsEl, 'ul');
       for (const warning of warnings) {
@@ -1850,6 +1922,35 @@ class CategoryRenderer {
       }
     }
     return auditEl;
+  }
+
+  /**
+   * Inject the final screenshot next to the score gauge of the first category (likely Performance)
+   * @param {HTMLElement} categoriesEl
+   * @param {LH.ReportResult['audits']} audits
+   * @param {Element} scoreScaleEl
+   */
+  injectFinalScreenshot(categoriesEl, audits, scoreScaleEl) {
+    const audit = audits['final-screenshot'];
+    if (!audit || audit.scoreDisplayMode === 'error') return null;
+    if (!audit.details || audit.details.type !== 'screenshot') return null;
+
+    const imgEl = this.dom.createElement('img', 'lh-final-ss-image');
+    const finalScreenshotDataUri = audit.details.data;
+    imgEl.src = finalScreenshotDataUri;
+    imgEl.alt = audit.title;
+
+    const firstCatHeaderEl = this.dom.find('.lh-category .lh-category-header', categoriesEl);
+    const leftColEl = this.dom.createElement('div', 'lh-category-headercol');
+    const separatorEl = this.dom.createElement('div',
+        'lh-category-headercol lh-category-headercol--separator');
+    const rightColEl = this.dom.createElement('div', 'lh-category-headercol');
+
+    leftColEl.append(...firstCatHeaderEl.childNodes);
+    leftColEl.append(scoreScaleEl);
+    rightColEl.append(imgEl);
+    firstCatHeaderEl.append(leftColEl, separatorEl, rightColEl);
+    firstCatHeaderEl.classList.add('lh-category-header__finalscreenshot');
   }
 
   /**
@@ -1901,7 +2002,7 @@ class CategoryRenderer {
    * Renders the group container for a group of audits. Individual audit elements can be added
    * directly to the returned element.
    * @param {LH.Result.ReportGroup} group
-   * @return {Element}
+   * @return {[Element, Element | null]}
    */
   renderAuditGroup(group) {
     const groupEl = this.dom.createElement('div', 'lh-audit-group');
@@ -1910,14 +2011,16 @@ class CategoryRenderer {
 
     this.dom.createChildOf(auditGroupHeader, 'span', 'lh-audit-group__title')
       .textContent = group.title;
-    if (group.description) {
-      const descriptionEl = this.dom.convertMarkdownLinkSnippets(group.description);
-      descriptionEl.classList.add('lh-audit-group__description');
-      auditGroupHeader.appendChild(descriptionEl);
-    }
     groupEl.appendChild(auditGroupHeader);
 
-    return groupEl;
+    let footerEl = null;
+    if (group.description) {
+      footerEl = this.dom.convertMarkdownLinkSnippets(group.description);
+      footerEl.classList.add('lh-audit-group__description', 'lh-audit-group__footer');
+      groupEl.appendChild(footerEl);
+    }
+
+    return [groupEl, footerEl];
   }
 
   /**
@@ -1957,9 +2060,9 @@ class CategoryRenderer {
 
       // Push grouped audits as a group.
       const groupDef = groupDefinitions[groupId];
-      const auditGroupElem = this.renderAuditGroup(groupDef);
+      const [auditGroupElem, auditGroupFooterEl] = this.renderAuditGroup(groupDef);
       for (const auditRef of groupAuditRefs) {
-        auditGroupElem.appendChild(this.renderAudit(auditRef));
+        auditGroupElem.insertBefore(this.renderAudit(auditRef), auditGroupFooterEl);
       }
       auditGroupElem.classList.add(`lh-audit-group--${groupId}`);
       auditElements.push(auditGroupElem);
@@ -1997,17 +2100,9 @@ class CategoryRenderer {
       clumpElement.setAttribute('open', '');
     }
 
-    const summaryInnerEl = this.dom.find('div.lh-audit-group__summary', clumpElement);
-    summaryInnerEl.appendChild(this._createChevron());
-
     const headerEl = this.dom.find('.lh-audit-group__header', clumpElement);
     const title = this._clumpTitles[clumpId];
     this.dom.find('.lh-audit-group__title', headerEl).textContent = title;
-    if (description) {
-      const descriptionEl = this.dom.convertMarkdownLinkSnippets(description);
-      descriptionEl.classList.add('lh-audit-group__description');
-      headerEl.appendChild(descriptionEl);
-    }
 
     const itemCountEl = this.dom.find('.lh-audit-group__itemcount', clumpElement);
     itemCountEl.textContent = `(${auditRefs.length})`;
@@ -2016,8 +2111,18 @@ class CategoryRenderer {
     const auditElements = auditRefs.map(this.renderAudit.bind(this));
     clumpElement.append(...auditElements);
 
+    const el = this.dom.find('.lh-audit-group', clumpComponent);
+    if (description) {
+      const descriptionEl = this.dom.convertMarkdownLinkSnippets(description);
+      descriptionEl.classList.add('lh-audit-group__description', 'lh-audit-group__footer');
+      el.appendChild(descriptionEl);
+    }
+
+    this.dom.find('.lh-clump-toggletext--show', el).textContent = Util.i18n.strings.show;
+    this.dom.find('.lh-clump-toggletext--hide', el).textContent = Util.i18n.strings.hide;
+
     clumpElement.classList.add(`lh-clump--${clumpId.toLowerCase()}`);
-    return clumpElement;
+    return el;
   }
 
   /**
@@ -2027,7 +2132,7 @@ class CategoryRenderer {
    * @return {DocumentFragment}
    */
   renderCategoryScore(category, groupDefinitions, options) {
-    if (options && (options.gatherMode === 'snapshot' || options.gatherMode === 'timespan')) {
+    if (options && Util.shouldDisplayAsFraction(options.gatherMode)) {
       return this.renderCategoryFraction(category);
     }
     return this.renderScoreGauge(category, groupDefinitions);
@@ -2041,7 +2146,6 @@ class CategoryRenderer {
   renderScoreGauge(category, groupDefinitions) { // eslint-disable-line no-unused-vars
     const tmpl = this.dom.createComponent('gauge');
     const wrapper = this.dom.find('a.lh-gauge__wrapper', tmpl);
-    this.dom.safelySetHref(wrapper, `#${category.id}`);
 
     if (Util.isPluginCategory(category.id)) {
       wrapper.classList.add('lh-gauge__wrapper--plugin');
@@ -2082,21 +2186,13 @@ class CategoryRenderer {
   renderCategoryFraction(category) {
     const tmpl = this.dom.createComponent('fraction');
     const wrapper = this.dom.find('a.lh-fraction__wrapper', tmpl);
-    this.dom.safelySetHref(wrapper, `#${category.id}`);
 
-    const numAudits = category.auditRefs.length;
+    const {numPassed, numPassableAudits, totalWeight} = Util.calculateCategoryFraction(category);
 
-    let numPassed = 0;
-    let totalWeight = 0;
-    for (const auditRef of category.auditRefs) {
-      totalWeight += auditRef.weight;
-      if (Util.showAsPassed(auditRef.result)) numPassed++;
-    }
-
-    const fraction = numPassed / numAudits;
+    const fraction = numPassed / numPassableAudits;
     const content = this.dom.find('.lh-fraction__content', tmpl);
     const text = this.dom.createElement('span');
-    text.textContent = `${numPassed}/${numAudits}`;
+    text.textContent = `${numPassed}/${numPassableAudits}`;
     content.appendChild(text);
 
     let rating = Util.calculateRating(fraction);
@@ -2195,12 +2291,12 @@ class CategoryRenderer {
    *   ⋮
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>=} groupDefinitions
-   * @param {{environment?: 'PSI', gatherMode: LH.Result.GatherMode}=} options
+   * @param {{gatherMode: LH.Result.GatherMode}=} options
    * @return {Element}
    */
   render(category, groupDefinitions = {}, options) {
     const element = this.dom.createElement('div', 'lh-category');
-    this.createPermalinkSpan(element, category.id);
+    element.id = category.id;
     element.appendChild(this.renderCategoryHeader(category, groupDefinitions, options));
 
     // Top level clumps for audits, in order they will appear in the report.
@@ -2218,6 +2314,13 @@ class CategoryRenderer {
       const clump = /** @type {Array<LH.ReportResult.AuditRef>} */ (clumps.get(clumpId)); // already defined
       clump.push(auditRef);
       clumps.set(clumpId, clump);
+    }
+
+    // Sort audits by weight.
+    for (const auditRefs of clumps.values()) {
+      auditRefs.sort((a, b) => {
+        return b.weight - a.weight;
+      });
     }
 
     // Render each clump.
@@ -2238,16 +2341,6 @@ class CategoryRenderer {
 
     return element;
   }
-
-  /**
-   * Create a non-semantic span used for hash navigation of categories
-   * @param {Element} element
-   * @param {string} id
-   */
-  createPermalinkSpan(element, id) {
-    const permalinkEl = this.dom.createChildOf(element, 'span', 'lh-permalink');
-    permalinkEl.id = id;
-  }
 }
 
 /**
@@ -2265,6 +2358,18 @@ class CategoryRenderer {
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/** @typedef {import('./dom.js').DOM} DOM */
+/** @typedef {import('./details-renderer.js').DetailsRenderer} DetailsRenderer */
+/**
+ * @typedef CRCSegment
+ * @property {LH.Audit.Details.SimpleCriticalRequestNode[string]} node
+ * @property {boolean} isLastChild
+ * @property {boolean} hasChildren
+ * @property {number} startTime
+ * @property {number} transferSize
+ * @property {boolean[]} treeMarkers
  */
 
 class CriticalRequestChainRenderer {
@@ -2431,16 +2536,6 @@ class CriticalRequestChainRenderer {
 
 // Alias b/c the name is really long.
 const CRCRenderer = CriticalRequestChainRenderer;
-
-/** @typedef {{
-      node: LH.Audit.Details.SimpleCriticalRequestNode[string],
-      isLastChild: boolean,
-      hasChildren: boolean,
-      startTime: number,
-      transferSize: number,
-      treeMarkers: Array<boolean>
-  }} CRCSegment
- */
 
 /**
  * @license Copyright 2019 The Lighthouse Authors. All Rights Reserved.
@@ -2824,7 +2919,7 @@ function clamp(value, min, max) {
 /**
  * @param {Rect} rect
  */
-function getRectCenterPoint(rect) {
+function getElementRectCenterPoint(rect) {
   return {
     x: rect.left + rect.width / 2,
     y: rect.top + rect.height / 2,
@@ -2841,7 +2936,7 @@ class ElementScreenshotRenderer {
    * @param {Size} screenshotSize
    */
   static getScreenshotPositions(elementRectSC, elementPreviewSizeSC, screenshotSize) {
-    const elementRectCenter = getRectCenterPoint(elementRectSC);
+    const elementRectCenter = getElementRectCenterPoint(elementRectSC);
 
     // Try to center clipped region.
     const screenshotLeftVisibleEdge = clamp(
@@ -2908,7 +3003,7 @@ class ElementScreenshotRenderer {
    * @param {LH.Audit.Details.FullPageScreenshot['screenshot']} screenshot
    */
   static installFullPageScreenshot(el, screenshot) {
-    el.style.setProperty('--element-screenshot-url', `url(${screenshot.data})`);
+    el.style.setProperty('--element-screenshot-url', `url('${screenshot.data}')`);
   }
 
   /**
@@ -2916,14 +3011,14 @@ class ElementScreenshotRenderer {
    * @param {InstallOverlayFeatureParams} opts
    */
   static installOverlayFeature(opts) {
-    const {dom, reportEl, overlayContainerEl, fullPageScreenshot} = opts;
+    const {dom, rootEl, overlayContainerEl, fullPageScreenshot} = opts;
     const screenshotOverlayClass = 'lh-screenshot-overlay--enabled';
     // Don't install the feature more than once.
-    if (reportEl.classList.contains(screenshotOverlayClass)) return;
-    reportEl.classList.add(screenshotOverlayClass);
+    if (rootEl.classList.contains(screenshotOverlayClass)) return;
+    rootEl.classList.add(screenshotOverlayClass);
 
     // Add a single listener to the provided element to handle all clicks within (event delegation).
-    reportEl.addEventListener('click', e => {
+    rootEl.addEventListener('click', e => {
       const target = /** @type {?HTMLElement} */ (e.target);
       if (!target) return;
       // Only activate the overlay for clicks on the screenshot *preview* of an element, not the full-size too.
@@ -3995,52 +4090,74 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
+   * For performance, audits with no group should be a diagnostic or opportunity.
+   * The audit details type will determine which of the two groups an audit is in.
+   *
+   * @param {LH.ReportResult.AuditRef} audit
+   * @return {'load-opportunity'|'diagnostic'|null}
+   */
+  _classifyPerformanceAudit(audit) {
+    if (audit.group) return null;
+    if (audit.result.details && audit.result.details.type === 'opportunity') {
+      return 'load-opportunity';
+    }
+    return 'diagnostic';
+  }
+
+  /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} groups
-   * @param {{gatherMode: LH.Result.GatherMode, environment?: 'PSI'}=} options
+   * @param {{gatherMode: LH.Result.GatherMode}=} options
    * @return {Element}
    * @override
    */
   render(category, groups, options) {
     const strings = Util.i18n.strings;
     const element = this.dom.createElement('div', 'lh-category');
-    if (options && options.environment === 'PSI') {
-      const gaugeEl = this.dom.createElement('div', 'lh-score__gauge');
-      gaugeEl.appendChild(this.renderCategoryScore(category, groups, options));
-      element.appendChild(gaugeEl);
-    } else {
-      this.createPermalinkSpan(element, category.id);
-      element.appendChild(this.renderCategoryHeader(category, groups, options));
-    }
+    element.id = category.id;
+    element.appendChild(this.renderCategoryHeader(category, groups, options));
 
     // Metrics.
-    const metricAuditsEl = this.renderAuditGroup(groups.metrics);
-
-    // Metric descriptions toggle.
-    const toggleTmpl = this.dom.createComponent('metricsToggle');
-    const _toggleEl = this.dom.find('.lh-metrics-toggle', toggleTmpl);
-    metricAuditsEl.append(..._toggleEl.childNodes);
-
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
-    const metricsBoxesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics-container');
+    if (metricAudits.length) {
+      const [metricsGroupEl, metricsFooterEl] = this.renderAuditGroup(groups.metrics);
 
-    metricAudits.forEach(item => {
-      metricsBoxesEl.appendChild(this._renderMetric(item));
-    });
+      // Metric descriptions toggle.
+      const checkboxEl = this.dom.createElement('input', 'lh-metrics-toggle__input');
+      const checkboxId = `lh-metrics-toggle${Util.getUniqueSuffix()}`;
+      checkboxEl.setAttribute('aria-label', 'Toggle the display of metric descriptions');
+      checkboxEl.type = 'checkbox';
+      checkboxEl.id = checkboxId;
+      metricsGroupEl.prepend(checkboxEl);
+      const metricHeaderEl = this.dom.find('.lh-audit-group__header', metricsGroupEl);
+      const labelEl = this.dom.createChildOf(metricHeaderEl, 'label', 'lh-metrics-toggle__label');
+      labelEl.htmlFor = checkboxId;
+      const showEl = this.dom.createChildOf(labelEl, 'span', 'lh-metrics-toggle__labeltext--show');
+      const hideEl = this.dom.createChildOf(labelEl, 'span', 'lh-metrics-toggle__labeltext--hide');
+      showEl.textContent = Util.i18n.strings.expandView;
+      hideEl.textContent = Util.i18n.strings.collapseView;
 
-    const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
-    const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
-    estValuesEl.appendChild(disclaimerEl);
+      const metricsBoxesEl = this.dom.createElement('div', 'lh-metrics-container');
+      metricsGroupEl.insertBefore(metricsBoxesEl, metricsFooterEl);
+      metricAudits.forEach(item => {
+        metricsBoxesEl.appendChild(this._renderMetric(item));
+      });
 
-    // Add link to score calculator.
-    const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
-    calculatorLink.target = '_blank';
-    calculatorLink.textContent = strings.calculatorLink;
-    this.dom.safelySetHref(calculatorLink, this._getScoringCalculatorHref(category.auditRefs));
+      const descriptionEl = this.dom.find('.lh-category-header__description', element);
+      const estValuesEl = this.dom.createChildOf(descriptionEl, 'div', 'lh-metrics__disclaimer');
+      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(strings.varianceDisclaimer);
+      estValuesEl.appendChild(disclaimerEl);
+
+      // Add link to score calculator.
+      const calculatorLink = this.dom.createChildOf(estValuesEl, 'a', 'lh-calclink');
+      calculatorLink.target = '_blank';
+      calculatorLink.textContent = strings.calculatorLink;
+      this.dom.safelySetHref(calculatorLink, this._getScoringCalculatorHref(category.auditRefs));
 
 
-    metricAuditsEl.classList.add('lh-audit-group--metrics');
-    element.appendChild(metricAuditsEl);
+      metricsGroupEl.classList.add('lh-audit-group--metrics');
+      element.appendChild(metricsGroupEl);
+    }
 
     // Filmstrip
     const timelineEl = this.dom.createChildOf(element, 'div', 'lh-filmstrip-container');
@@ -4054,9 +4171,9 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
     // Opportunities
     const opportunityAudits = category.auditRefs
-        .filter(audit => audit.group === 'load-opportunities' && !Util.showAsPassed(audit.result))
+        .filter(audit => this._classifyPerformanceAudit(audit) === 'load-opportunity')
+        .filter(audit => !Util.showAsPassed(audit.result))
         .sort((auditA, auditB) => this._getWastedMs(auditB) - this._getWastedMs(auditA));
-
 
     const filterableMetrics = metricAudits.filter(a => !!a.relevantAudits);
     // TODO: only add if there are opportunities & diagnostics rendered.
@@ -4070,7 +4187,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const wastedMsValues = opportunityAudits.map(audit => this._getWastedMs(audit));
       const maxWaste = Math.max(...wastedMsValues);
       const scale = Math.max(Math.ceil(maxWaste / 1000) * 1000, minimumScale);
-      const groupEl = this.renderAuditGroup(groups['load-opportunities']);
+      const [groupEl, footerEl] = this.renderAuditGroup(groups['load-opportunities']);
       const tmpl = this.dom.createComponent('opportunityHeader');
 
       this.dom.find('.lh-load-opportunity__col--one', tmpl).textContent =
@@ -4079,15 +4196,17 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         strings.opportunitySavingsColumnLabel;
 
       const headerEl = this.dom.find('.lh-load-opportunity__header', tmpl);
-      groupEl.appendChild(headerEl);
-      opportunityAudits.forEach(item => groupEl.appendChild(this._renderOpportunity(item, scale)));
+      groupEl.insertBefore(headerEl, footerEl);
+      opportunityAudits.forEach(item =>
+        groupEl.insertBefore(this._renderOpportunity(item, scale), footerEl));
       groupEl.classList.add('lh-audit-group--load-opportunities');
       element.appendChild(groupEl);
     }
 
     // Diagnostics
     const diagnosticAudits = category.auditRefs
-        .filter(audit => audit.group === 'diagnostics' && !Util.showAsPassed(audit.result))
+        .filter(audit => this._classifyPerformanceAudit(audit) === 'diagnostic')
+        .filter(audit => !Util.showAsPassed(audit.result))
         .sort((a, b) => {
           const scoreA = a.result.scoreDisplayMode === 'informative' ? 100 : Number(a.result.score);
           const scoreB = b.result.scoreDisplayMode === 'informative' ? 100 : Number(b.result.score);
@@ -4095,16 +4214,15 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         });
 
     if (diagnosticAudits.length) {
-      const groupEl = this.renderAuditGroup(groups['diagnostics']);
-      diagnosticAudits.forEach(item => groupEl.appendChild(this.renderAudit(item)));
+      const [groupEl, footerEl] = this.renderAuditGroup(groups['diagnostics']);
+      diagnosticAudits.forEach(item => groupEl.insertBefore(this.renderAudit(item), footerEl));
       groupEl.classList.add('lh-audit-group--diagnostics');
       element.appendChild(groupEl);
     }
 
     // Passed audits
     const passedAudits = category.auditRefs
-        .filter(audit => (audit.group === 'load-opportunities' || audit.group === 'diagnostics') &&
-            Util.showAsPassed(audit.result));
+        .filter(audit => this._classifyPerformanceAudit(audit) && Util.showAsPassed(audit.result));
 
     if (!passedAudits.length) return element;
 
@@ -4124,16 +4242,16 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         const table = this.detailsRenderer.render(audit.result.details);
         if (table) {
           table.id = id;
-          table.classList.add('lh-audit');
+          table.classList.add('lh-details', 'lh-details--budget', 'lh-audit');
           budgetTableEls.push(table);
         }
       }
     });
     if (budgetTableEls.length > 0) {
-      const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
-      budgetTableEls.forEach(table => budgetsGroupEl.appendChild(table));
-      budgetsGroupEl.classList.add('lh-audit-group--budgets');
-      element.appendChild(budgetsGroupEl);
+      const [groupEl, footerEl] = this.renderAuditGroup(groups.budgets);
+      budgetTableEls.forEach(table => groupEl.insertBefore(table, footerEl));
+      groupEl.classList.add('lh-audit-group--budgets');
+      element.appendChild(groupEl);
     }
 
     return element;
@@ -4232,7 +4350,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
    */
   render(category, groupDefinitions = {}) {
     const categoryElem = this.dom.createElement('div', 'lh-category');
-    this.createPermalinkSpan(categoryElem, category.id);
+    categoryElem.id = category.id;
     categoryElem.appendChild(this.renderCategoryHeader(category, groupDefinitions));
 
     const auditRefs = category.auditRefs;
@@ -4253,16 +4371,6 @@ class PwaCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * Alias for backcompat.
-   * @param {LH.ReportResult.Category} category
-   * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
-   * @return {DocumentFragment}
-   */
-  renderScoreGauge(category, groupDefinitions) {
-    return this.renderCategoryScore(category, groupDefinitions);
-  }
-
-  /**
    * @param {LH.ReportResult.Category} category
    * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
@@ -4275,7 +4383,6 @@ class PwaCategoryRenderer extends CategoryRenderer {
 
     const tmpl = this.dom.createComponent('gaugePwa');
     const wrapper = this.dom.find('a.lh-gauge--pwa__wrapper', tmpl);
-    this.dom.safelySetHref(wrapper, `#${category.id}`);
 
     // Correct IDs in case multiple instances end up in the page.
     const svgRoot = tmpl.querySelector('svg');
@@ -4428,22 +4535,43 @@ class ReportRenderer {
   constructor(dom) {
     /** @type {DOM} */
     this._dom = dom;
+    /** @type {LH.Renderer.Options} */
+    this._opts = {};
   }
 
   /**
    * @param {LH.Result} lhr
-   * @param {Element} container Parent element to render the report into.
+   * @param {HTMLElement?} rootEl Report root element containing the report
+   * @param {LH.Renderer.Options=} opts
    * @return {!Element}
    */
-  renderReport(lhr, container) {
+  renderReport(lhr, rootEl, opts) {
+    // Allow legacy report rendering API
+    if (!this._dom.rootEl && rootEl) {
+      console.warn('Please adopt the new report API in renderer/api.js.');
+      const closestRoot = rootEl.closest('.lh-root');
+      if (closestRoot) {
+        this._dom.rootEl = /** @type {HTMLElement} */ (closestRoot);
+      } else {
+        rootEl.classList.add('lh-root', 'lh-vars');
+        this._dom.rootEl = rootEl;
+      }
+    } else if (this._dom.rootEl && rootEl) {
+      // Handle legacy flow-report case
+      this._dom.rootEl = rootEl;
+    }
+    if (opts) {
+      this._opts = opts;
+    }
+
     this._dom.setLighthouseChannel(lhr.configSettings.channel || 'unknown');
 
     const report = Util.prepareReportResult(lhr);
 
-    container.textContent = ''; // Remove previous report.
-    container.appendChild(this._renderReport(report));
+    this._dom.rootEl.textContent = ''; // Remove previous report.
+    this._dom.rootEl.appendChild(this._renderReport(report));
 
-    return container;
+    return this._dom.rootEl;
   }
 
   /**
@@ -4477,42 +4605,62 @@ class ReportRenderer {
   _renderReportFooter(report) {
     const footer = this._dom.createComponent('footer');
 
-    const env = this._dom.find('.lh-env__items', footer);
-    env.id = 'runtime-settings';
-    this._dom.find('.lh-env__title', footer).textContent = Util.i18n.strings.runtimeSettingsTitle;
-
-    const envValues = Util.getEnvironmentDisplayValues(report.configSettings || {});
-    const runtimeValues = [
-      {name: Util.i18n.strings.runtimeSettingsUrl, description: report.finalUrl},
-      {name: Util.i18n.strings.runtimeSettingsFetchTime,
-        description: Util.i18n.formatDateTime(report.fetchTime)},
-      ...envValues,
-      {name: Util.i18n.strings.runtimeSettingsChannel, description: report.configSettings.channel},
-      {name: Util.i18n.strings.runtimeSettingsUA, description: report.userAgent},
-      {name: Util.i18n.strings.runtimeSettingsUANetwork, description: report.environment &&
-        report.environment.networkUserAgent},
-      {name: Util.i18n.strings.runtimeSettingsBenchmark, description: report.environment &&
-        report.environment.benchmarkIndex.toFixed(0)},
-    ];
-    if (report.environment.credits && report.environment.credits['axe-core']) {
-      runtimeValues.push({
-        name: Util.i18n.strings.runtimeSettingsAxeVersion,
-        description: report.environment.credits['axe-core'],
-      });
-    }
-
-    for (const runtime of runtimeValues) {
-      if (!runtime.description) continue;
-
-      const item = this._dom.createComponent('envItem');
-      this._dom.find('.lh-env__name', item).textContent = runtime.name;
-      this._dom.find('.lh-env__description', item).textContent = runtime.description;
-      env.appendChild(item);
-    }
+    this._renderMetaBlock(report, footer);
 
     this._dom.find('.lh-footer__version_issue', footer).textContent = Util.i18n.strings.footerIssue;
     this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;
     return footer;
+  }
+
+  /**
+   * @param {LH.ReportResult} report
+   * @param {DocumentFragment} footer
+   */
+  _renderMetaBlock(report, footer) {
+    const envValues = Util.getEmulationDescriptions(report.configSettings || {});
+
+
+    const match = report.userAgent.match(/(\w*Chrome\/[\d.]+)/); // \w* to include 'HeadlessChrome'
+    const chromeVer = Array.isArray(match)
+      ? match[1].replace('/', ' ').replace('Chrome', 'Chromium')
+      : 'Chromium';
+    const channel = report.configSettings.channel;
+    const benchmarkIndex = report.environment.benchmarkIndex.toFixed(0);
+    const axeVersion = report.environment.credits?.['axe-core'];
+
+    // [CSS icon class, textContent, tooltipText]
+    const metaItems = [
+      ['date',
+        `Captured at ${Util.i18n.formatDateTime(report.fetchTime)}`],
+      ['devices',
+        `${envValues.deviceEmulation} with Lighthouse ${report.lighthouseVersion}`,
+        `${Util.i18n.strings.runtimeSettingsBenchmark}: ${benchmarkIndex}` +
+            `\n${Util.i18n.strings.runtimeSettingsCPUThrottling}: ${envValues.cpuThrottling}` +
+            (axeVersion ? `\n${Util.i18n.strings.runtimeSettingsAxeVersion}: ${axeVersion}` : '')],
+      ['samples-one',
+        Util.i18n.strings.runtimeSingleLoad,
+        Util.i18n.strings.runtimeSingleLoadTooltip],
+      ['stopwatch',
+        Util.i18n.strings.runtimeAnalysisWindow],
+      ['networkspeed',
+        `${envValues.summary}`,
+        `${Util.i18n.strings.runtimeSettingsNetworkThrottling}: ${envValues.networkThrottling}`],
+      ['chrome',
+        `Using ${chromeVer}` + (channel ? ` with ${channel}` : ''),
+        `${Util.i18n.strings.runtimeSettingsUANetwork}: "${report.environment.networkUserAgent}"`],
+    ];
+
+    const metaItemsEl = this._dom.find('.lh-meta__items', footer);
+    for (const [iconname, text, tooltip] of metaItems) {
+      const itemEl = this._dom.createChildOf(metaItemsEl, 'li', 'lh-meta__item');
+      itemEl.textContent = text;
+      if (tooltip) {
+        itemEl.classList.add('lh-tooltip-boundary');
+        const tooltipEl = this._dom.createChildOf(itemEl, 'div', 'lh-tooltip');
+        tooltipEl.textContent = tooltip;
+      }
+      itemEl.classList.add('lh-report-icon', `lh-report-icon--${iconname}`);
+    }
   }
 
   /**
@@ -4558,13 +4706,33 @@ class ReportRenderer {
         {gatherMode: report.gatherMode}
       );
 
+      const gaugeWrapperEl = this._dom.find('a.lh-gauge__wrapper, a.lh-fraction__wrapper',
+        categoryGauge);
+      if (gaugeWrapperEl) {
+        this._dom.safelySetHref(gaugeWrapperEl, `#${category.id}`);
+        // Handle navigation clicks by scrolling to target without changing the page's URL.
+        // Why? Some report embedding clients have their own routing and updating the location.hash
+        // can introduce problems. Others may have an unpredictable `<base>` URL which ensures
+        // navigation to `${baseURL}#categoryid` will be unintended.
+        gaugeWrapperEl.addEventListener('click', e => {
+          if (!gaugeWrapperEl.matches('[href^="#"]')) return;
+          const selector = gaugeWrapperEl.getAttribute('href');
+          const reportRoot = this._dom.rootEl;
+          if (!selector || !reportRoot) return;
+          const destEl = this._dom.find(selector, reportRoot);
+          e.preventDefault();
+          destEl.scrollIntoView();
+        });
+      }
+
+
       if (Util.isPluginCategory(category.id)) {
         pluginGauges.push(categoryGauge);
       } else if (renderer.renderCategoryScore === categoryRenderer.renderCategoryScore) {
         // The renderer for default categories is just the default CategoryRenderer.
         // If the functions are equal, then renderer is an instance of CategoryRenderer.
         // For example, the PWA category uses PwaCategoryRenderer, which overrides
-        // CategoryRenderer.renderScoreGauge, so it would fail this check and be placed
+        // CategoryRenderer.renderCategoryScore, so it would fail this check and be placed
         // in the customGauges bucket.
         defaultGauges.push(categoryGauge);
       } else {
@@ -4619,8 +4787,10 @@ class ReportRenderer {
       headerContainer.classList.add('lh-header--solo-category');
     }
 
+    const scoreScale = this._dom.createElement('div');
+    scoreScale.classList.add('lh-scorescale-wrap');
+    scoreScale.append(this._dom.createComponent('scorescale'));
     if (scoreHeader) {
-      const scoreScale = this._dom.createComponent('scorescale');
       const scoresContainer = this._dom.find('.lh-scores-container', headerContainer);
       scoreHeader.append(
         ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
@@ -4638,7 +4808,7 @@ class ReportRenderer {
     for (const category of Object.values(report.categories)) {
       const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
       // .lh-category-wrapper is full-width and provides horizontal rules between categories.
-      // .lh-category within has the max-width: var(--report-width);
+      // .lh-category within has the max-width: var(--report-content-width);
       const wrapper = renderer.dom.createChildOf(categories, 'div', 'lh-category-wrapper');
       wrapper.appendChild(renderer.render(
         category,
@@ -4647,10 +4817,15 @@ class ReportRenderer {
       ));
     }
 
-    const reportFragment = this._dom.createFragment();
-    const topbarDocumentFragment = this._renderReportTopbar(report);
+    categoryRenderer.injectFinalScreenshot(categories, report.audits, scoreScale);
 
-    reportFragment.appendChild(topbarDocumentFragment);
+    const reportFragment = this._dom.createFragment();
+    reportFragment.append(this._dom.createComponent('styles'));
+
+    if (!this._opts.omitTopbar) {
+      reportFragment.appendChild(this._renderReportTopbar(report));
+    }
+
     reportFragment.appendChild(reportContainer);
     reportContainer.appendChild(headerContainer);
     reportContainer.appendChild(reportSection);
@@ -4658,7 +4833,7 @@ class ReportRenderer {
 
     if (fullPageScreenshot) {
       ElementScreenshotRenderer.installFullPageScreenshot(
-        reportContainer, fullPageScreenshot.screenshot);
+        this._dom.rootEl, fullPageScreenshot.screenshot);
     }
 
     return reportFragment;
@@ -4680,7 +4855,7 @@ class ReportRenderer {
  * @param {boolean} [force]
  */
 function toggleDarkTheme(dom, force) {
-  const el = dom.find('.lh-vars', dom.document());
+  const el = dom.rootEl;
   // This seems unnecessary, but in DevTools, passing "undefined" as the second
   // parameter acts like passing "false".
   // https://github.com/ChromeDevTools/devtools-frontend/blob/dd6a6d4153647c2a4203c327c595692c5e0a4256/front_end/dom_extension/DOMExtension.js#L809-L819
@@ -4937,11 +5112,11 @@ class DropDownMenu {
    * @param {function(MouseEvent): any} menuClickHandler
    */
   setup(menuClickHandler) {
-    this._toggleEl = this._dom.find('button.lh-tools__button', this._dom.document());
+    this._toggleEl = this._dom.find('.lh-topbar button.lh-tools__button', this._dom.rootEl);
     this._toggleEl.addEventListener('click', this.onToggleClick);
     this._toggleEl.addEventListener('keydown', this.onToggleKeydown);
 
-    this._menuEl = this._dom.find('div.lh-tools__dropdown', this._dom.document());
+    this._menuEl = this._dom.find('.lh-topbar div.lh-tools__dropdown', this._dom.rootEl);
     this._menuEl.addEventListener('keydown', this.onMenuKeydown);
     this._menuEl.addEventListener('click', menuClickHandler);
   }
@@ -5129,15 +5304,13 @@ class TopbarFeatures {
     this.lhr; // eslint-disable-line no-unused-expressions
     this._reportUIFeatures = reportUIFeatures;
     this._dom = dom;
-    /** @type {Document} */
-    this._document = this._dom.document();
     this._dropDownMenu = new DropDownMenu(this._dom);
     this._copyAttempt = false;
     /** @type {HTMLElement} */
     this.topbarEl; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
-    this.scoreScaleEl; // eslint-disable-line no-unused-expressions
-    /** @type {HTMLElement} */
+    this.categoriesEl; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement?} */
     this.stickyHeaderEl; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
     this.highlightEl; // eslint-disable-line no-unused-expressions
@@ -5145,7 +5318,6 @@ class TopbarFeatures {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onCopy = this.onCopy.bind(this);
     this.collapseAllDetails = this.collapseAllDetails.bind(this);
-    this._updateStickyHeaderOnScroll = this._updateStickyHeaderOnScroll.bind(this);
   }
 
   /**
@@ -5153,33 +5325,15 @@ class TopbarFeatures {
    */
   enable(lhr) {
     this.lhr = lhr;
-    this._document.addEventListener('keyup', this.onKeyUp);
-    this._document.addEventListener('copy', this.onCopy);
+    this._dom.rootEl.addEventListener('keyup', this.onKeyUp);
+    this._dom.document().addEventListener('copy', this.onCopy);
     this._dropDownMenu.setup(this.onDropDownMenuClick);
     this._setUpCollapseDetailsAfterPrinting();
 
-    const topbarLogo = this._dom.find('.lh-topbar__logo', this._document);
+    const topbarLogo = this._dom.find('.lh-topbar__logo', this._dom.rootEl);
     topbarLogo.addEventListener('click', () => toggleDarkTheme(this._dom));
 
-    // There is only a sticky header when at least 2 categories are present.
-    if (Object.keys(this.lhr.categories).length >= 2) {
-      this._setupStickyHeaderElements();
-      const containerEl = this._dom.find('.lh-container', this._document);
-      const elToAddScrollListener = this._getScrollParent(containerEl);
-      elToAddScrollListener.addEventListener('scroll', this._updateStickyHeaderOnScroll);
-
-      // Use ResizeObserver where available.
-      // TODO: there is an issue with incorrect position numbers and, as a result, performance
-      // issues due to layout thrashing.
-      // See https://github.com/GoogleChrome/lighthouse/pull/9023/files#r288822287 for details.
-      // For now, limit to DevTools.
-      if (this._dom.isDevTools()) {
-        const resizeObserver = new window.ResizeObserver(this._updateStickyHeaderOnScroll);
-        resizeObserver.observe(containerEl);
-      } else {
-        window.addEventListener('resize', this._updateStickyHeaderOnScroll);
-      }
-    }
+    this._setupStickyHeader();
   }
 
   /**
@@ -5217,7 +5371,7 @@ class TopbarFeatures {
         try {
           this._reportUIFeatures._saveFile(new Blob([htmlStr], {type: 'text/html'}));
         } catch (e) {
-          this._dom.fireEventOn('lh-log', this._document, {
+          this._dom.fireEventOn('lh-log', this._dom.document(), {
             cmd: 'error', msg: 'Could not export as HTML. ' + e.message,
           });
         }
@@ -5257,7 +5411,7 @@ class TopbarFeatures {
       e.preventDefault();
       e.clipboardData.setData('text/plain', JSON.stringify(this.lhr, null, 2));
 
-      this._dom.fireEventOn('lh-log', this._document, {
+      this._dom.fireEventOn('lh-log', this._dom.document(), {
         cmd: 'log', msg: 'Report JSON copied to clipboard',
       });
     }
@@ -5269,28 +5423,28 @@ class TopbarFeatures {
    * Copies the report JSON to the clipboard (if supported by the browser).
    */
   onCopyButtonClick() {
-    this._dom.fireEventOn('lh-analytics', this._document, {
+    this._dom.fireEventOn('lh-analytics', this._dom.document(), {
       cmd: 'send',
       fields: {hitType: 'event', eventCategory: 'report', eventAction: 'copy'},
     });
 
     try {
-      if (this._document.queryCommandSupported('copy')) {
+      if (this._dom.document().queryCommandSupported('copy')) {
         this._copyAttempt = true;
 
         // Note: In Safari 10.0.1, execCommand('copy') returns true if there's
         // a valid text selection on the page. See http://caniuse.com/#feat=clipboard.
-        if (!this._document.execCommand('copy')) {
+        if (!this._dom.document().execCommand('copy')) {
           this._copyAttempt = false; // Prevent event handler from seeing this as a copy attempt.
 
-          this._dom.fireEventOn('lh-log', this._document, {
+          this._dom.fireEventOn('lh-log', this._dom.document(), {
             cmd: 'warn', msg: 'Your browser does not support copy to clipboard.',
           });
         }
       }
     } catch (e) {
       this._copyAttempt = false;
-      this._dom.fireEventOn('lh-log', this._document, {cmd: 'log', msg: e.message});
+      this._dom.fireEventOn('lh-log', this._dom.document(), {cmd: 'log', msg: e.message});
     }
   }
 
@@ -5311,7 +5465,7 @@ class TopbarFeatures {
    * open a `<details>` element.
    */
   expandAllDetails() {
-    const details = this._dom.findAll('.lh-categories details', this._document);
+    const details = this._dom.findAll('.lh-categories details', this._dom.rootEl);
     details.map(detail => detail.open = true);
   }
 
@@ -5320,7 +5474,7 @@ class TopbarFeatures {
    * open a `<details>` element.
    */
   collapseAllDetails() {
-    const details = this._dom.findAll('.lh-categories details', this._document);
+    const details = this._dom.findAll('.lh-categories details', this._dom.rootEl);
     details.map(detail => detail.open = false);
   }
 
@@ -5340,7 +5494,7 @@ class TopbarFeatures {
   /**
    * Finds the first scrollable ancestor of `element`. Falls back to the document.
    * @param {Element} element
-   * @return {Node}
+   * @return {Element | Document}
    */
   _getScrollParent(element) {
     const {overflowY} = window.getComputedStyle(element);
@@ -5378,24 +5532,50 @@ class TopbarFeatures {
     }
   }
 
-  _setupStickyHeaderElements() {
-    this.topbarEl = this._dom.find('div.lh-topbar', this._document);
-    this.scoreScaleEl = this._dom.find('div.lh-scorescale', this._document);
-    this.stickyHeaderEl = this._dom.find('div.lh-sticky-header', this._document);
+  _setupStickyHeader() {
+    // Cache these elements to avoid qSA on each onscroll.
+    this.topbarEl = this._dom.find('div.lh-topbar', this._dom.rootEl);
+    this.categoriesEl = this._dom.find('div.lh-categories', this._dom.rootEl);
 
-    // Highlighter will be absolutely positioned at first gauge, then transformed on scroll.
-    this.highlightEl = this._dom.createChildOf(this.stickyHeaderEl, 'div', 'lh-highlighter');
+    // Defer behind rAF to avoid forcing layout.
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+      // Only present in the DOM if it'll be used (>=2 categories)
+      try {
+        this.stickyHeaderEl = this._dom.find('div.lh-sticky-header', this._dom.rootEl);
+      } catch {
+        return;
+      }
+
+      // Highlighter will be absolutely positioned at first gauge, then transformed on scroll.
+      this.highlightEl = this._dom.createChildOf(this.stickyHeaderEl, 'div', 'lh-highlighter');
+
+      // Update sticky header visibility and highlight when page scrolls/resizes.
+      const scrollParent = this._getScrollParent(
+        this._dom.find('.lh-container', this._dom.rootEl));
+      // The 'scroll' handler must be should be on {Element | Document}...
+      scrollParent.addEventListener('scroll', () => this._updateStickyHeader());
+      // However resizeObserver needs an element, *not* the document.
+      const resizeTarget = scrollParent instanceof window.Document
+        ? document.documentElement
+        : scrollParent;
+      new window.ResizeObserver(() => this._updateStickyHeader()).observe(resizeTarget);
+    }));
   }
 
-  _updateStickyHeaderOnScroll() {
-    // Show sticky header when the score scale begins to go underneath the topbar.
+  /**
+   * Toggle visibility and update highlighter position
+   */
+  _updateStickyHeader() {
+    if (!this.stickyHeaderEl) return;
+
+    // Show sticky header when the main 5 gauges clear the topbar.
     const topbarBottom = this.topbarEl.getBoundingClientRect().bottom;
-    const scoreScaleTop = this.scoreScaleEl.getBoundingClientRect().top;
-    const showStickyHeader = topbarBottom >= scoreScaleTop;
+    const categoriesTop = this.categoriesEl.getBoundingClientRect().top;
+    const showStickyHeader = topbarBottom >= categoriesTop;
 
     // Highlight mini gauge when section is in view.
     // In view = the last category that starts above the middle of the window.
-    const categoryEls = Array.from(this._document.querySelectorAll('.lh-category'));
+    const categoryEls = Array.from(this._dom.rootEl.querySelectorAll('.lh-category'));
     const categoriesAboveTheMiddle =
       categoryEls.filter(el => el.getBoundingClientRect().top - window.innerHeight / 2 < 0);
     const highlightIndex =
@@ -5425,15 +5605,14 @@ class TopbarFeatures {
  */
 
 /**
- * Generate a filenamePrefix of hostname_YYYY-MM-DD_HH-MM-SS
+ * Generate a filenamePrefix of name_YYYY-MM-DD_HH-MM-SS
  * Date/time uses the local timezone, however Node has unreliable ICU
  * support, so we must construct a YYYY-MM-DD date format manually. :/
- * @param {{finalUrl: string, fetchTime: string}} lhr
- * @return {string}
+ * @param {string} name
+ * @param {string|undefined} fetchTime
  */
-function getFilenamePrefix(lhr) {
-  const hostname = new URL(lhr.finalUrl).hostname;
-  const date = (lhr.fetchTime && new Date(lhr.fetchTime)) || new Date();
+function getFilenamePrefix(name, fetchTime) {
+  const date = fetchTime ? new Date(fetchTime) : new Date();
 
   const timeStr = date.toLocaleTimeString('en-US', {hour12: false});
   const dateParts = date.toLocaleDateString('en-US', {
@@ -5443,13 +5622,22 @@ function getFilenamePrefix(lhr) {
   dateParts.unshift(dateParts.pop());
   const dateStr = dateParts.join('-');
 
-  const filenamePrefix = `${hostname}_${dateStr}_${timeStr}`;
+  const filenamePrefix = `${name}_${dateStr}_${timeStr}`;
   // replace characters that are unfriendly to filenames
   return filenamePrefix.replace(/[/?<>\\:*|"]/g, '-');
 }
 
-var fileNamer = {getFilenamePrefix};
-var fileNamer_1 = fileNamer.getFilenamePrefix;
+/**
+ * Generate a filenamePrefix of hostname_YYYY-MM-DD_HH-MM-SS.
+ * @param {{finalUrl: string, fetchTime: string}} lhr
+ * @return {string}
+ */
+function getLhrFilenamePrefix(lhr) {
+  const hostname = new URL(lhr.finalUrl).hostname;
+  return getFilenamePrefix(hostname, lhr.fetchTime);
+}
+
+var fileNamer = {getLhrFilenamePrefix, getFilenamePrefix};
 
 /**
  * @license
@@ -5478,16 +5666,17 @@ function getTableRows(tableEl) {
 class ReportUIFeatures {
   /**
    * @param {DOM} dom
+   * @param {LH.Renderer.Options} opts
    */
-  constructor(dom) {
+  constructor(dom, opts = {}) {
     /** @type {LH.Result} */
     this.json; // eslint-disable-line no-unused-expressions
     /** @type {DOM} */
     this._dom = dom;
-    /** @type {Document} */
-    this._document = this._dom.document();
-    this._topbar = new TopbarFeatures(this, dom);
 
+    this._opts = opts;
+
+    this._topbar = opts.omitTopbar ? null : new TopbarFeatures(this, dom);
     this.onMediaQueryChange = this.onMediaQueryChange.bind(this);
   }
 
@@ -5499,16 +5688,19 @@ class ReportUIFeatures {
   initFeatures(lhr) {
     this.json = lhr;
 
-    this._topbar.enable(lhr);
-    this._topbar.resetUIState();
+    if (this._topbar) {
+      this._topbar.enable(lhr);
+      this._topbar.resetUIState();
+    }
     this._setupMediaQueryListeners();
     this._setupThirdPartyFilter();
-    this._setupElementScreenshotOverlay(this._dom.find('.lh-container', this._document));
+    this._setupElementScreenshotOverlay(this._dom.rootEl);
 
     let turnOffTheLights = false;
     // Do not query the system preferences for DevTools - DevTools should only apply dark theme
     // if dark is selected in the settings panel.
-    if (!this._dom.isDevTools() && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    const disableDarkMode = this._dom.isDevTools() || this._opts.disableAutoDarkModeAndFireworks;
+    if (!disableDarkMode && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       turnOffTheLights = true;
     }
 
@@ -5532,7 +5724,7 @@ class ReportUIFeatures {
     const hasMetricError = lhr.categories.performance && lhr.categories.performance.auditRefs
       .some(audit => Boolean(audit.group === 'metrics' && lhr.audits[audit.id].errorMessage));
     if (hasMetricError) {
-      const toggleInputEl = this._dom.find('input.lh-metrics-toggle__input', this._document);
+      const toggleInputEl = this._dom.find('input.lh-metrics-toggle__input', this._dom.rootEl);
       toggleInputEl.checked = true;
     }
 
@@ -5547,7 +5739,7 @@ class ReportUIFeatures {
     }
 
     // Fill in all i18n data.
-    for (const node of this._dom.findAll('[data-i18n]', this._dom.document())) {
+    for (const node of this._dom.findAll('[data-i18n]', this._dom.rootEl)) {
       // These strings are guaranteed to (at least) have a default English string in Util.UIStrings,
       // so this cannot be undefined as long as `report-ui-features.data-i18n` test passes.
       const i18nKey = node.getAttribute('data-i18n');
@@ -5557,18 +5749,15 @@ class ReportUIFeatures {
   }
 
   /**
-   * @param {{container?: Element, text: string, icon?: string, onClick: () => void}} opts
+   * @param {{text: string, icon?: string, onClick: () => void}} opts
    */
   addButton(opts) {
-    // report-ui-features doesn't have a reference to the root report el, and PSI has
-    // 2 reports on the page (and not even attached to DOM when installFeatures is called..)
-    // so we need a container option to specify where the element should go.
-    const metricsEl = this._document.querySelector('.lh-audit-group--metrics');
-    const containerEl = opts.container || metricsEl;
-    if (!containerEl) return;
+    // Use qSA directly to as we don't want to throw (if this element is missing).
+    const metricsEl = this._dom.rootEl.querySelector('.lh-audit-group--metrics');
+    if (!metricsEl) return;
 
-    let buttonsEl = containerEl.querySelector('.lh-buttons');
-    if (!buttonsEl) buttonsEl = this._dom.createChildOf(containerEl, 'div', 'lh-buttons');
+    let buttonsEl = metricsEl.querySelector('.lh-buttons');
+    if (!buttonsEl) buttonsEl = this._dom.createChildOf(metricsEl, 'div', 'lh-buttons');
 
     const classes = [
       'lh-button',
@@ -5588,8 +5777,10 @@ class ReportUIFeatures {
    * @return {string}
    */
   getReportHtml() {
-    this._topbar.resetUIState();
-    return this._document.documentElement.outerHTML;
+    if (this._topbar) {
+      this._topbar.resetUIState();
+    }
+    return `<!doctype html><body>${this._dom.rootEl.outerHTML}`;
   }
 
   /**
@@ -5601,7 +5792,7 @@ class ReportUIFeatures {
   }
 
   _enableFireworks() {
-    const scoresContainer = this._dom.find('.lh-scores-container', this._document);
+    const scoresContainer = this._dom.find('.lh-scores-container', this._dom.rootEl);
     scoresContainer.classList.add('lh-score100');
     scoresContainer.addEventListener('click', _ => {
       scoresContainer.classList.toggle('lh-fireworks-paused');
@@ -5621,7 +5812,9 @@ class ReportUIFeatures {
    * be in their closed state (not opened) and the templates should be unstamped.
    */
   _resetUIState() {
-    this._topbar.resetUIState();
+    if (this._topbar) {
+      this._topbar.resetUIState();
+    }
   }
 
   /**
@@ -5629,8 +5822,7 @@ class ReportUIFeatures {
    * @param {MediaQueryList|MediaQueryListEvent} mql
    */
   onMediaQueryChange(mql) {
-    const root = this._dom.find('.lh-root', this._document);
-    root.classList.toggle('lh-narrow', mql.matches);
+    this._dom.rootEl.classList.toggle('lh-narrow', mql.matches);
   }
 
   _setupThirdPartyFilter() {
@@ -5647,7 +5839,7 @@ class ReportUIFeatures {
     ];
 
     // Get all tables with a text url column.
-    const tables = Array.from(this._document.querySelectorAll('table.lh-table'));
+    const tables = Array.from(this._dom.rootEl.querySelectorAll('table.lh-table'));
     const tablesWithUrls = tables
       .filter(el =>
         el.querySelector('td.lh-table-column--url, td.lh-table-column--source-location'))
@@ -5694,10 +5886,9 @@ class ReportUIFeatures {
       const allThirdParty = thirdPartyRows.length === rowEls.length;
       const allFirstParty = !thirdPartyRows.length;
 
-      // If all or none of the rows are 3rd party, disable the checkbox.
+      // If all or none of the rows are 3rd party, hide the control.
       if (allThirdParty || allFirstParty) {
-        filterInput.disabled = true;
-        filterInput.checked = allThirdParty;
+        this._dom.find('div.lh-3p-filter', filterTemplate).hidden = true;
       }
 
       // Add checkbox to the DOM.
@@ -5714,9 +5905,9 @@ class ReportUIFeatures {
   }
 
   /**
-   * @param {Element} el
+   * @param {Element} rootEl
    */
-  _setupElementScreenshotOverlay(el) {
+  _setupElementScreenshotOverlay(rootEl) {
     const fullPageScreenshot =
       this.json.audits['full-page-screenshot'] &&
       this.json.audits['full-page-screenshot'].details &&
@@ -5726,8 +5917,8 @@ class ReportUIFeatures {
 
     ElementScreenshotRenderer.installOverlayFeature({
       dom: this._dom,
-      reportEl: el,
-      overlayContainerEl: el,
+      rootEl: rootEl,
+      overlayContainerEl: rootEl,
       fullPageScreenshot,
     });
   }
@@ -5762,27 +5953,42 @@ class ReportUIFeatures {
   }
 
   /**
-   * Downloads a file (blob) using a[download].
-   * @param {Blob|File} blob The file to save.
+   * DevTools uses its own file manager to download files, so it redefines this function.
+   * Wrapper is necessary so DevTools can still override this function.
+   *
+   * @param {Blob|File} blob
    */
   _saveFile(blob) {
-    const filename = fileNamer_1({
-      finalUrl: this.json.finalUrl,
-      fetchTime: this.json.fetchTime,
-    });
-
-    const ext = blob.type.match('json') ? '.json' : '.html';
-
-    const a = this._dom.createElement('a');
-    a.download = `${filename}${ext}`;
-    this._dom.safelySetBlobHref(a, blob);
-    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
-    a.click();
-
-    // cleanup.
-    this._document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+    const filename = fileNamer.getLhrFilenamePrefix(this.json);
+    this._dom.saveFile(blob, filename);
   }
 }
 
-export { DOM, ReportRenderer, ReportUIFeatures };
+/**
+ * @license Copyright 2021 The Lighthouse Authors. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+
+/**
+ * @param {LH.Result} lhr
+ * @param {LH.Renderer.Options} opts
+ * @return {HTMLElement}
+ */
+function renderReport(lhr, opts = {}) {
+  const rootEl = document.createElement('article');
+  rootEl.classList.add('lh-root', 'lh-vars');
+
+  const dom = new DOM(rootEl.ownerDocument, rootEl);
+  const renderer = new ReportRenderer(dom);
+
+  renderer.renderReport(lhr, rootEl, opts);
+
+  // Hook in JS features and page-level event listeners after the report
+  // is in the document.
+  const features = new ReportUIFeatures(dom, opts);
+  features.initFeatures(lhr);
+  return rootEl;
+}
+
+export { DOM, ReportRenderer, ReportUIFeatures, renderReport };

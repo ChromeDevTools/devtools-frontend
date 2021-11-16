@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "所有报告"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "类别"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "无障碍"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "最佳做法"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "性能"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "渐进式 Web 应用"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "桌面版"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "了解 Lighthouse 流程报告"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "了解流程"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "使用导航报告可以…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "使用快照报告可以…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "使用时间跨度报告可以…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "获取 Lighthouse 给出的性能得分。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "衡量网页加载性能指标，例如 Largest Contentful Paint 和 Speed Index。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "评估渐进式 Web 应用的功能。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "查找单页应用或复杂表单中的无障碍功能方面的问题。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "评估互动背后隐藏的菜单和界面元素的最佳做法。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "衡量一系列互动的布局偏移和 JavaScript 执行用时。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "发掘性能提升机会，以便改进长期网页和单页应用的用户体验。"
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "影响力最大"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} 项参考性评估}other{{numInformative} 项参考性评估}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "移动版"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "网页加载"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "导航报告旨在分析单个网页的加载情况，与最初的 Lighthouse 报告完全一样。"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "导航报告"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} 份导航报告}other{{numNavigation} 份导航报告}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} 项有望通过的评估}other{{numPassableAudits} 项有望通过的评估}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{通过了 {numPassed} 项评估}other{通过了 {numPassed} 项评估}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "一般"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "出错了"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "较差"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "良好"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "保存"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "捕获到的网页状态"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "快照报告旨在分析处于特定状态的网页（通常是在用户互动之后）。"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "快照报告"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} 份快照报告}other{{numSnapshot} 份快照报告}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "摘要"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "用户互动"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "时间跨度报告旨在分析任意时间段（通常包含用户互动）。"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "时间跨度报告"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} 份时间跨度报告}other{{numTimespan} 份时间跨度报告}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthouse 用户流报告"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "快捷键可让用户快速转到页面的某个部分。为确保正确进行导航，每个快捷键都必须是独一无二的。[了解详情](https://web.dev/accesskeys/)。"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "显示时的尺寸"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "图片大于其显示时的尺寸"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "图片适合其显示时的尺寸"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "提供大小合适的图片可节省移动数据网络流量并缩短加载用时。[了解详情](https://web.dev/uses-responsive-images/)。"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "请勿使用已弃用的 API"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "应用缓存已被弃用。[了解详情](https://web.dev/appcache-manifest/)。"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "发现了“{AppCacheManifest}”"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "使用了应用缓存"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "请勿使用应用缓存"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "必须声明字符编码。您可以在 HTML 的前 1024 个字节中使用 `<meta>` 标记来声明，也可以在 HTTP 响应标头 Content-Type 中进行声明。[了解详情](https://web.dev/charset/)。"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "避免 DOM 规模过大"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "未通过审核的锚点"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "向任何外部链接添加 `rel=\"noopener\"` 或 `rel=\"noreferrer\"`，可提高性能并减少安全漏洞。[了解详情](https://web.dev/external-anchors-use-rel-noopener/)。"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "指向跨域目的地的链接不安全"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "指向跨域目的地的链接安全"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "无法确定锚点 ({anchorHTML}) 的目的地。如果不用作超链接，建议移除 target=_blank。"
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "如果网站在缺少上下文的情况下请求位置，会导致用户不信任网站或感到困惑。建议将请求与用户操作进行绑定。[了解详情](https://web.dev/geolocation-on-start/)。"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "请避免出现大幅度的布局偏移"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "被延迟加载的首屏图片会在页面生命周期内的较晚时间呈现，这可能会致使系统延迟渲染最大内容元素。[了解详情](https://web.dev/lcp-lazy-loading/)。"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Largest Contentful Paint 所对应的图片被延迟加载了"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Largest Contentful Paint 所对应的图片未被延迟加载"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "列出了主线程中运行时间最长的任务，有助于识别出导致输入延迟的最主要原因。[了解详情](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "预加载 LCP 元素所用图片"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "如果您已设置 HTTPS，请确保将所有 HTTP 流量重定向到 HTTPS，以便让所有用户都能使用安全的网络功能。[了解详情](https://web.dev/redirects-http/)。"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "未将 HTTP 流量重定向到 HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "将 HTTP 流量重定向到 HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "重定向会在网页可加载前引入更多延迟。[了解详情](https://web.dev/redirects/)。"
@@ -1524,7 +1635,7 @@
     "message": "页面包含有效的源代码映射"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "添加 `<meta name=\"viewport\">` 标记以针对移动设备屏幕优化您的应用。[了解详情](https://web.dev/viewport/)。"
+    "message": "`<meta name=\"viewport\">` 不仅会针对移动设备屏幕尺寸优化您的应用，还会阻止[系统在响应用户输入前出现 300 毫秒的延迟](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away)。[了解详情](https://web.dev/viewport/)。"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "未找到任何 `<meta name=\"viewport\">` 标记"
@@ -1650,7 +1761,7 @@
     "message": "基准 [PWA 核对清单](https://developers.google.com/web/progressive-web-apps/checklist)要求必须进行此类检查，但 Lighthouse 不会自动进行此类检查。它们不会影响您的得分，但您必须手动对其进行验证。"
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "渐进式 Web 应用"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "可安装"
@@ -1659,7 +1770,7 @@
     "message": "优化 PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "这些检查可确保您的页面已经过优化，有利于其在搜索引擎结果中的排名。不在 Lighthouse 检查范围内的其他因素可能会影响您的搜索排名。[了解详情](https://support.google.com/webmasters/answer/35769)。"
+    "message": "这些检查可确保您的网页遵循了基本的搜索引擎优化建议。还有很多其他因素可能会影响您的网页在搜索引擎结果中的排名，但未被 Lighthouse 纳入此处的评估范围，其中包括[核心网页指标](https://web.dev/learn-web-vitals/)衡量结果。[了解详情](https://support.google.com/webmasters/answer/35769)。"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "请在您的网站上运行这些额外的验证程序，以检查其他 SEO 最佳做法。"
@@ -1713,7 +1824,7 @@
     "message": "缺少 base-uri 意味着允许使用注入的 <base> 标记将所有相对网址（例如脚本）的基准网址设为一个受攻击者控制的网域。建议您将 base-uri 设为“none”或“self”。"
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "由 object-src 控制的元素会被视为旧版功能。建议您将 object-src 设为“none”，以防止不良之徒注入会执行不安全脚本的插件。"
+    "message": "如果缺少 object-src，便无法防止不良之徒注入会执行不安全脚本的插件。建议您将 object-src 设为“none”（如果可以的话）。"
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "缺少 script-src 指令。这意味着允许执行不安全的脚本。"
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Nonces 应包含至少 8 个字符。"
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "请避免在这条指令中仅仅使用网址架构 ({keyword})。如果仅仅使用网址架构，便无法防止脚本来自不安全的网域。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "请避免在这条指令中仅仅使用通配符 ({keyword})。如果仅仅使用通配符，便无法防止脚本来自不安全的网域。"
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "报告目的地只能通过 report-to 指令进行配置。此指令仅适用于基于 Chromium 的浏览器，因此我们建议您同时也使用 report-uri 指令。"
   },
@@ -1734,13 +1851,16 @@
     "message": "任何 CSP 都未配置报告目的地。这会导致系统很难持续维护 CSP 以及监控故障。"
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "主机许可名单经常会被绕过。建议您将“strict-dynamic”与 CSP nonces 或 hashes 结合使用。"
+    "message": "主机许可名单经常会被绕过。建议您改用 CSP nonces 或 hashes（以及“strict-dynamic”，若有必要）。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "CSP 指令不明。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword}似乎是无效关键字。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "“unsafe-inline”允许执行不安全的页内脚本和事件处理脚本。建议您使用 CSP nonces 或 hashes 来逐一允许各个脚本。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建议您添加“unsafe-inline”（会被支持 nonces/hashes 的浏览器忽略），以便向后兼容旧版浏览器。"
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "您提供的网址似乎无效。"
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "全部"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "所有脚本"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "覆盖率"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "重复的模块"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "资源字节数"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "名称"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "显示/隐藏表格"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "未使用的字节数"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "对于动画内容，请使用 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) 尽量减少当内容在屏幕外时的 CPU 使用量。"
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "查看计算器。"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "收起视图"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "初始导航"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "报告错误：没有任何审核信息"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "展开视图"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "提交问题"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "隐藏"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "实验室数据"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "已通过的审核"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "初始网页加载"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "自定义节流"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "模拟桌面设备"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "CPU 节流"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "所用工具"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "设备"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "提取时间"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "网络节流"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "运行时设置"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "用户代理（主机）"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "用户代理（网络）"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "网址"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "单次网页加载"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "此数据是取自单次网页加载，现场数据则是汇总了许多次网页加载。"
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "低速 4G 节流"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "不明"
+  },
+  "report/renderer/util.js | show": {
+    "message": "显示"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "显示与所选指标相关的评估结果："
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "警告： "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "全部"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "所有脚本"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "覆盖率"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "重复的模块"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "资源字节数"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "名称"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "显示/隐藏表格"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "未使用的字节数"
   }
 }

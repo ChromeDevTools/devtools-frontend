@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "すべてのレポート"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "カテゴリ"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "ユーザー補助"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "おすすめの方法"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "パフォーマンス"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "プログレッシブ ウェブアプリ"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "パソコン"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Lighthouse フローレポートについて"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "フローの詳細"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "ナビゲーション レポートの使用例"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "スナップショット レポートの使用例"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "期間レポートの使用例"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Lighthouse のパフォーマンス スコアを取得する。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Largest Contentful Paint（最大コンテンツの描画時間）、Speed Index（速度インデックス）などのページ読み込みに関するパフォーマンス指標を測定する。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "プログレッシブ ウェブアプリの機能を評価する。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "シングルページ アプリケーションや複雑なフォームでユーザー補助機能の問題がないか調べる。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "操作の背後に隠れてしまうメニューや UI 要素のおすすめの方法を検討する。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "一連の操作におけるレイアウトの移動と JavaScript の実行時間を測定する。"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "長期使用のページやシングルページ アプリケーションでパフォーマンスの利便性を改善できる余地を見つける。"
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "モバイル"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "ページの読み込み"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "ナビゲーション レポートでは、Lighthouse のオリジナルのレポートとまったく同じように単一ページの読み込みについて分析できます。"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "ナビゲーション レポート"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "普通"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "エラー"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "低"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "高"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "保存"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "取得したページの状態"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "スナップショット レポートでは、特定の状態（通常はユーザー操作後）のページを分析できます。"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "スナップショット レポート"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "概要"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "ユーザー操作"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "期間レポートでは、任意の期間（ユーザーの操作が見込まれる期間など）を分析できます。"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "期間レポート"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthouse ユーザーフロー レポート"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "アクセスキーは、ユーザーがページの特定の部分にすばやくフォーカスを移動するときに使います。正しく操作できるよう、各アクセスキーは一意にする必要があります。[詳細](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "表示サイズ"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "画像は表示サイズより大きいサイズとなっています"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "画像は表示サイズに合ったサイズとなっています"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "適切なサイズの画像を配信して、モバイルデータ量を節約し読み込み時間を短縮してください。[詳細](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "サポートを終了した API は使用されていません"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "アプリケーション キャッシュはサポートを終了しました。[詳細](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "「{AppCacheManifest}」が見つかりました"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "アプリケーション キャッシュを使用しています"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "アプリケーション キャッシュは使用していません"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "文字エンコードの宣言が必要です。これには、HTML の最初の 1,024 バイトか Content-Type HTTP レスポンス ヘッダーの中で `<meta>` タグを使用します。[詳細](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "過大な DOM サイズの回避"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "問題のあるアンカー"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "パフォーマンスを向上し、セキュリティの脆弱性が生じないようにするには、`rel=\"noopener\"` または `rel=\"noreferrer\"` を外部リンクに追加します。[詳細](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "クロスオリジンへのリンクは安全ではありません"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "クロスオリジンへのリンクは安全です"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "アンカー（{anchorHTML}）のリンク先を特定できません。ハイパーリンクとして使用していない場合は、target=_blank を削除することをご検討ください。"
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "サイトから脈絡なしに位置情報の許可を求められると、ユーザーは不信感を抱き、困惑します。リクエストはユーザーの操作と関連付けて行うようにしてください。[詳細](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "レイアウトが大きく変わらないようにする"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "スクロールせずに見える範囲にある画像が遅延読み込みによってページのライフサイクルの後半にレンダリングされると、Largest Contentful Paint の遅延につながります。[詳細](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Largest Contentful Paint の画像が遅延読み込みされています"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Largest Contentful Paint の画像は遅延読み込みされていません"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "メインスレッドで長時間実行されているタスクを表示します。入力の遅延に最も影響しているタスクを特定する際に役立ちます。[詳細](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Largest Contentful Paint の画像のプリロード"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "HTTPS を設定済みの場合は、すべてのユーザーに安全なウェブ機能を提供できるように、すべての HTTP トラフィックが HTTPS にリダイレクトされることを確認してください。[詳細](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "HTTP トラフィックは HTTPS にリダイレクトされません"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "HTTP トラフィックは HTTPS にリダイレクトされます"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "リダイレクトを行うと、ページの読み込みにさらに時間がかかる可能性があります。[詳細](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "ページで有効なソースマップが使用されています"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "モバイル画面用にアプリを最適化するには、`<meta name=\"viewport\">` タグを追加してください。[詳細](https://web.dev/viewport/)"
+    "message": "`<meta name=\"viewport\">` を使用すると、モバイル画面サイズ向けにアプリを最適化できるほか、[ユーザー入力の遅延を 300 ミリ秒](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away)短縮できます。[詳細](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "`<meta name=\"viewport\">` タグが見つかりません"
@@ -1650,7 +1761,7 @@
     "message": "これらのチェック項目は基本の [PWA チェックリスト](https://developers.google.com/web/progressive-web-apps/checklist)で必須とされていますが、Lighthouse では自動的にチェックされません。スコアには影響しませんが、手動で確認することが重要です。"
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "プログレッシブ ウェブアプリ"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "インストール対応"
@@ -1659,7 +1770,7 @@
     "message": "PWA の最適化"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "これらのチェックを実行することで、ページが検索エンジンの検索結果ランキングに対し最適化されていることを確認できます。Lighthouse ではチェックされない、検索結果ランキングに影響する可能性がある他の要因もあります。[詳細](https://support.google.com/webmasters/answer/35769)"
+    "message": "これらのチェックを行うことで、ページが検索エンジン最適化の基本的な推奨事項に沿っていることを確認できます。検索ランキングに影響する可能性のある要素には、Lighthouse で考慮されている要素以外に、[ウェブに関する主な指標](https://web.dev/learn-web-vitals/)のスコアなどもあります。[詳細](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "サイトでこれらの他の検証ツールを実行し、SEO のその他のおすすめの方法をご確認ください。"
@@ -1713,7 +1824,7 @@
     "message": "base-uri を指定しないと、挿入された <base> タグによって、すべての相対 URL（スクリプトなど）のベース URL が攻撃者の管理ドメインに設定される可能性があります。base-uri を 'none' か 'self' に設定することをご検討ください。"
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "object-src で制御される要素は、古い機能とみなされます。安全でないスクリプトを実行するプラグインが挿入されないよう、object-src を 'none' に設定することを検討してください。"
+    "message": "object-src が設定されていない場合、安全でないスクリプトを実行するプラグインが挿入される恐れがあります。可能な場合は、object-src を 'none' に設定することを検討してください。"
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "script-src ディレクティブが指定されていません。このため、安全でないスクリプトを実行できる状態になっています。"
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "nonce は 8 文字以上である必要があります。"
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "このディレクティブでは、プレーンな URL スキーム（{keyword}）を使用しないでください。プレーンな URL スキームを使用すると、安全でないドメインからスクリプトが挿入される恐れがあります。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "このディレクティブでは、プレーンなワイルドカード（{keyword}）を使用しないでください。プレーンなワイルドカードを使用すると、安全でないドメインからスクリプトが挿入される恐れがあります。"
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "報告先が report-to ディレクティブ経由でのみ設定されています。このディレクティブは、Chromium ベースのブラウザでしかサポートされていないため、report-uri ディレクティブも使用することをおすすめします。"
   },
@@ -1734,13 +1851,16 @@
     "message": "CSP で報告先が設定されていません。CSP の動作状況や問題が発生した場合の確認が難しくなります。"
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "ホストの許可リストが頻繁に回避されています。'strict-dynamic' と CSP nonce または hash を組み合わせて使用することを検討してください。"
+    "message": "ホストの許可リストが頻繁に回避されています。必要な場合は、代わりに CSP nonce または hash と 'strict-dynamic' を使用することを検討してください。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "不明な CSP ディレクティブです。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} は無効なキーワードのようです。"
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "'unsafe-inline' が指定されているため、安全でないページ内スクリプトやイベント ハンドラを実行できる状態になっています。CSP nonce または hash を使用して、スクリプトを個別に許可することを検討してください。"
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "古いブラウザとの下位互換性を保つため、'unsafe-inline' を追加することを検討してください（nonce / hash をサポートしているブラウザでは無視されます）。"
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "指定した URL は無効の可能性があります。"
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "すべて"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "すべてのスクリプト"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "カバレッジ"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "重複モジュール"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "リソースのサイズ（バイト）"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "名前"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "表を切り替える"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "使用していないバイト"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "アニメーション コンテンツの場合は、[`amp-anim`](https://amp.dev/documentation/components/amp-anim/) を使用して、コンテンツが画面外にあるときの CPU 使用量を最小限に抑えることができます。"
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "計算ツールはこちら。"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "最初の移動先"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "レポートエラー: 監査情報はありません"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "問題を提出"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "ラボデータ"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "合格した監査"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "デスクトップのエミュレーション"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "CPU スロットリング"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "チャネル"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "デバイス"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "取得日時"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "ネットワーク スロットリング"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "ランタイム設定"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "ユーザー エージェント（ホスト）"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "ユーザー エージェント（ネットワーク）"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "不明"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "次に関連する監査を表示:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "警告: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "すべて"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "すべてのスクリプト"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "カバレッジ"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "重複モジュール"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "リソースのサイズ（バイト）"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "名前"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "表を切り替える"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "使用していないバイト"
   }
 }

@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Toate rapoartele"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categorii"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Accesibilitate"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Cele mai bune practici"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Performanță"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Aplicație web progresivă"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Computer"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Înțelegerea Raportului privind fluxul Lighthouse"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Înțelegerea fluxurilor"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Folosește Rapoartele privind navigarea pentru..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Folosește Rapoartele privind instantaneele pentru..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Folosește Rapoartele privind perioada pentru..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obține un scor de performanță pentru Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Măsoară valorile de performanță pentru încărcarea paginii, cum ar fi Largest Contentful Paint și indicele de viteză."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Evaluează funcțiile aplicațiilor web progresive."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Identifică problemele legate de accesibilitate în aplicații cu o singură pagină sau formulare complexe."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluează recomandările pentru meniuri și elemente IU din spatele interacțiunilor."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Măsoară modificările de aspect și timpul de execuție JavaScript pentru o serie de interacțiuni."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Descoperă oportunități de performanță pentru a îmbunătăți experiența în paginile vechi și aplicațiile cu o singură pagină."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Cel mai mare impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative,plural, =1{{numInformative} audit informativ}few{{numInformative} audituri informative}other{{numInformative} de audituri informative}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobil"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Încărcarea paginii"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Rapoartele privind navigarea analizează încărcarea unei singure pagini, exact ca rapoartele Lighthouse inițiale."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Raport privind navigarea"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation,plural, =1{{numNavigation} raport privind navigarea}few{{numNavigation} rapoarte privind navigarea}other{{numNavigation} de rapoarte privind navigarea}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} audit care poate fi trecut}few{{numPassableAudits} audituri care pot fi trecute}other{{numPassableAudits} de audituri care pot fi trecute}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed,plural, =1{{numPassed} audit trecut}few{{numPassed} audituri trecute}other{{numPassed} de audituri trecute}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Medie"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Eroare"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Slabă"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Bună"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Salvează"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Starea înregistrată a paginii"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Rapoartele privind instantaneele analizează pagina într-o anumită stare, de obicei după interacțiunile cu utilizatorul."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Raport instantaneu"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot,plural, =1{{numSnapshot} raport instantaneu}few{{numSnapshot} rapoarte instantanee}other{{numSnapshot} de rapoarte instantanee}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Rezumat"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Interacțiunile utilizatorilor"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Rapoartele privind perioada analizează o perioadă arbitrară, care conține de obicei interacțiuni cu utilizatorul."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Raport privind perioada de timp"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan,plural, =1{{numTimespan} raport privind perioada de timp}few{{numTimespan} rapoarte privind perioada de timp}other{{numTimespan} de rapoarte privind perioada de timp}}"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Raport privind fluxul pentru utilizatori Lighthouse"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Tastele de acces permit utilizatorilor să focalizeze rapid o parte a paginii. Pentru o navigare corectă, fiecare tastă de acces trebuie să fie unică. [Află mai multe](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Dimensiunile afișate"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Imaginile erau mai mari decât dimensiunea afișată"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Imaginile erau potrivite pentru dimensiunea afișată"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Difuzează imagini de dimensiuni corespunzătoare ca să economisești date mobile și să obții o încărcare mai rapidă. [Află mai multe](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Evită API-urile învechite"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Memoria cache a aplicației este învechită. [Află mai multe](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Am găsit „{AppCacheManifest}”"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Folosește memoria cache de aplicație"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Evită memoria cache a aplicației"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Este necesară o declarație privind codificarea caracterelor. Aceasta se poate face folosind o etichetă `<meta>` în primii 1.024 de byți din HTML sau în antetul de răspuns Content-Type din HTTP. [Află mai multe](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Evită o dimensiune DOM excesivă"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Ancore cu probleme"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Adaugă `rel=\"noopener\"` sau `rel=\"noreferrer\"` la orice linkuri externe pentru a îmbunătăți rezultatele și a preveni vulnerabilitățile de securitate. [Află mai multe](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Linkurile spre destinații cu mai multe origini sunt nesigure"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Linkurile spre destinații cu mai multe origini sunt sigure"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Nu se poate determina destinația pentru ancora ({anchorHTML}). Dacă nu se folosește ca hyperlink, elimină target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Utilizatorii nu au încredere sau sunt derutați de site-urile care le solicită locația fără context. Asociază solicitarea cu o acțiune a utilizatorilor. [Află mai multe](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Evită schimbările majore ale aspectului"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Imaginile din partea superioară a paginii care se încarcă asincron sunt redate mai târziu în ciclul de viață al paginii, ceea ce poate întârzia redarea Largest Contentful Paint. [Află mai multe](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Imaginea Largest Contentful Paint s-a încărcat asincron"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Imaginea Largest Contentful Paint nu s-a încărcat asincron"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Afișează cele mai îndelungate activități din firul principal, ceea ce este util pentru identificarea elementelor care contribuie cel mai mult la întârziere. [Află mai multe](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Preîncarcă imaginea Largest Contentful Paint"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Dacă ai configurat deja HTTPS, redirecționează tot traficul HTTP spre HTTPS, ca să activezi funcțiile web sigure pentru toți utilizatorii. [Află mai multe](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Nu redirecționează traficul HTTP spre HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Redirecționează traficul HTTP spre HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Redirecționările introduc întârzieri suplimentare înainte ca pagina să se poată încărca. [Află mai multe](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Pagina are hărți sursă valide"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Adaugă o etichetă `<meta name=\"viewport\">` ca să-ți optimizezi aplicația pentru ecranele mobile. [Află mai multe](https://web.dev/viewport/)."
+    "message": "Pe lângă faptul că `<meta name=\"viewport\">` optimizează aplicația pentru dimensiunile ecranelor de dispozitive mobile, împiedică [o întârziere de 300 milisecunde a intrării de la utilizator](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Află mai multe](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nu s-a găsit nicio etichetă `<meta name=\"viewport\">`"
@@ -1650,7 +1761,7 @@
     "message": "Aceste verificări sunt impuse de [Lista de verificare PWA](https://developers.google.com/web/progressive-web-apps/checklist) de referință, dar nu sunt verificate automat de Lighthouse. Ele nu-ți afectează scorul, dar e important să fie făcute manual."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Aplicație web progresivă"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Poate fi instalat"
@@ -1659,7 +1770,7 @@
     "message": "Optimizat pentru PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Aceste verificări asigură că pagina este optimizată pentru poziționarea în rezultatele motorului de căutare. Există alți factori pe care Lighthouse nu îi verifică și care pot afecta poziția în rezultatele căutării. [Află mai multe](https://support.google.com/webmasters/answer/35769)."
+    "message": "Aceste verificări asigură faptul că pagina urmează recomandările de bază privind optimizarea pentru motoarele de căutare. Există mulți alți factori de care Lighthouse nu ține cont care îți pot afecta poziționarea în rețeaua de căutare, inclusiv performanța în [Detaliile de funcționare de bază pentru web](https://web.dev/learn-web-vitals/). [Află mai multe](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Rulează acești validatori suplimentari pe site pentru a căuta alte recomandări SEO."
@@ -1713,7 +1824,7 @@
     "message": "Lipsa directivei base-uri permite etichetelor <base> injectate să seteze adresa URL de bază pentru toate adresele URL relative (de ex., cu scripturi) ale unui domeniu controlat de atacatori. Îți recomandăm să setezi base-uri la none sau self."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elementele controlate prin object-src sunt considerate funcții moștenite. Îți recomandăm să setezi object-src la none pentru a preveni injectarea de pluginuri care execută scripturi nesigure."
+    "message": "Întrucât object-src lipsește, se permite injectarea de pluginuri care execută scripturi nesigure. Îți recomandăm să setezi object-src la „none”, dacă poți."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Directiva script-src lipsește. Astfel, se pot executa scripturi nesigure."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Valorile nonce trebuie să aibă minimum 8 caractere."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Evită să folosești scheme simple pentru adresa URL ({keyword}) în această directivă. Schemele simple pentru adresa URL permit ca scripturile să provină dintr-un domeniu nesigur."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Evită să folosești metacaractere ({keyword}) în această directivă. Metacaracterele simple pentru adresa URL permit ca scripturile să provină dintr-un domeniu nesigur."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Destinația de raportare se configurează numai prin directiva report-to. Această directivă este acceptată doar în browserele bazate pe Chromium, prin urmare îți recomandăm să folosești și o directivă report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Nicio politică CSP nu configurează o destinație de raportare. De aceea, este dificilă menținerea CSP de-a lungul timpului și monitorizarea eventualelor încălcări."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Listele gazdă cu acces permis pot fi ocolite frecvent. Îți recomandăm să folosești strict-dynamic în combinație cu valori nonce sau hash pentru CSP."
+    "message": "Listele gazdă cu acces permis pot fi ocolite frecvent. Îți recomandăm să folosești codurile hash sau valorile nonce CSP, împreună cu „strict-dynamic”, dacă este necesar."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Directivă CSP necunoscută."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} pare un cuvânt cheie nevalid."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "unsafe-inline permite executarea de scripturi în pagină și handlere pentru evenimente nesigure. Îți recomandăm să folosești valori nonce sau hash pentru CSP pentru a accepta scripturile individual."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Îți recomandăm să adaugi opțiunea unsafe-inline (ignorată de browserele care acceptă valori nonce/hash) pentru retrocompatibilitatea cu browsere mai vechi."
@@ -1797,7 +1917,7 @@
     "message": "Dimensiunea transferului"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnURL": {
-    "message": "Adresă URL"
+    "message": "Adresa URL"
   },
   "lighthouse-core/lib/i18n/i18n.js | columnWastedBytes": {
     "message": "Economii potențiale"
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Adresa URL furnizată pare să fie nevalidă."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Toate"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Toate scripturile"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Acoperire"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Module dublate"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Byți resursă"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Nume"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Activează / dezactivează tabelul"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Byți nefolosiți"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Pentru conținut animat, folosește [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) ca să minimizezi utilizarea CPU în timp ce conținutul rămâne în afara ecranului."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Accesează calculatorul."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Restrânge vizualizarea"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigare inițială"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Eroare de raport: nu există informații de auditare"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Extinde vizualizarea"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Raportează o problemă"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Ascunde"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Datele testului"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Auditări trecute"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Încărcarea inițială a paginii"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Limitare personalizată"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Computer simulat"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Limitarea CPU"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Canal"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Dispozitiv"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Momentul preluării"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Limitarea rețelei"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Setări pentru execuție"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "User Agent (gazdă)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "User Agent (rețea)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Adresă URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "O singură încărcare a paginii"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "Datele se preiau dintr-o singură încărcare a paginii, spre deosebire de datele de pe teren care rezumă mai multe sesiuni."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Limitare 4G lentă"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Necunoscută"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Afișează"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Vezi audituri relevante pentru:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Avertismente: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Toate"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Toate scripturile"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Acoperire"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Module dublate"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Byți resursă"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Nume"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Activează / dezactivează tabelul"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Byți nefolosiți"
   }
 }

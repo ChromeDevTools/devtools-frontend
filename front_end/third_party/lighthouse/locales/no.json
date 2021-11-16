@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Alle rapporter"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Categories"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Tilgjengelighet"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Gode fremgangsmåter"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Resultater"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progressivt nettprogram"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "SEO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Datamaskin"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Understanding the Lighthouse Flow Report"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Understanding Flows"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Use Navigation reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Use Snapshot reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Use Timespan reports to..."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Obtain a Lighthouse Performance score."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Assess Progressive Web App capabilities."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Find accessibility issues in single page applications or complex forms."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobil"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Sideinnlasting"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Navigasjonsrapport"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Gjennomsnitt"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Feil"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Dårlig"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "God"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Save"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Registrert sidetilstand"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Øyeblikksbilde-rapport"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Sammendrag"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Brukerinteraksjoner"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Tidsspennrapport"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthouse-rapport over brukerflyt"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Med tilgangsnøkler kan brukere raskt fokusere på deler av siden. Hver tilgangsnøkkel må være unik for at navigeringen skal fungere riktig. [Finn ut mer](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Viste dimensjoner"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Bildene var større enn visningsstørrelsen"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Bildene var passende for visningsstørrelsen"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Vis bilder som har passende størrelse, for å spare mobildata og redusere innlastingstiden. [Finn ut mer](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Unngår å bruke avviklede API-er"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Programbufferen er avviklet. [Finn ut mer](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Fant «{AppCacheManifest}»"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Bruker programbufferen"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Unngår å bruke programbufferen"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "En tegnkodingsdeklarasjon kreves. Dette kan gjøres med en `<meta>`-tagg i de første 1024 bytene av HTML-koden eller i HTTP-svarhodet «Content-Type». [Finn ut mer](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Unngå for stor DOM-struktur"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "a-tagger som ikke besto kontrollen"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Legg til `rel=\"noopener\"` eller `rel=\"noreferrer\"` i eksterne linker for å øke ytelsen og forhindre sikkerhetssårbarheter. [Finn ut mer](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Linker til opphavsuavhengige destinasjoner er utrygge"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Linker til opphavsuavhengige destinasjoner er trygge"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Kunne ikke avgjøre destinasjonen for ankeret ({anchorHTML}). Hvis ankeret ikke brukes som hyperlink, vurder å fjerne target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Brukere er mistroiske overfor eller blir forvirret av nettsteder som spør om posisjonen deres uten kontekst. Vurder å knytte forespørselen opp mot en brukerhandling i stedet. [Finn ut mer](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Unngå store utseendeforskyvninger"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Bilder på den synlige delen av nettsiden som lastes inn utsatt, gjengis senere i sidens livssyklus, noe som kan forsinke den største innholdsrike opptegningen (LCP). [Finn ut mer](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Bildet med største innholdsrike opptegning (LCP) ble lastet inn utsatt"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Bildet med største innholdsrike opptegning (LCP) ble ikke lastet inn utsatt"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Viser de lengste oppgavene på hovedtråden. Dette er nyttig for å finne ut hvilke oppgaver som bidrar mest til inndataforsinkelser. [Finn ut mer](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Forhåndslast bildet med største innholdsrike opptegning"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Hvis du allerede har satt opp HTTPS, må du sørge for at du viderekobler all HTTP-trafikk til HTTPS, slik at du gir alle brukerne dine tilgang til sikker nettfunksjonalitet. [Finn ut mer](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Viderekobler ikke HTTP-trafikk til HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Viderekobler HTTP-trafikk til HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Viderekoblinger fører til flere forsinkelser før siden kan lastes inn. [Finn ut mer](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Siden har gyldige kildekart"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Legg til en `<meta name=\"viewport\">`-tag for å optimalisere appen for mobilskjermer. [Finn ut mer](https://web.dev/viewport/)."
+    "message": "`<meta name=\"viewport\">`-taggen optimaliserer ikke bare appen din for mobilskjermstørrelser, men forhindrer også [at inndata fra brukerne blir forsinket i 300 millisekunder](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Finn ut mer](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Fant ingen `<meta name=\"viewport\">`-tag"
@@ -1650,7 +1761,7 @@
     "message": "Disse kontrollene kreves av den grunnleggende [sjekklisten for progressive nettprogrammer](https://developers.google.com/web/progressive-web-apps/checklist), men kontrolleres ikke automatisk av Lighthouse. De påvirker ikke poengsummen din, men det er viktig at du verifiserer dem manuelt."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progressivt nettprogram"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Kan installeres"
@@ -1659,7 +1770,7 @@
     "message": "PWA-optimalisert"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Disse kontrollene sørger for at siden din er optimalisert for god rangering i resultatene fra søkemotorer. Det finnes flere faktorer som Lighthouse ikke kontrollerer, men som kan påvirke søkerangeringen. [Finn ut mer](https://support.google.com/webmasters/answer/35769)."
+    "message": "Disse kontrollene sørger for at siden din følger grunnleggende råd for søkemotoroptimalisering. Det finnes mange tilleggsfaktorer som Lighthouse ikke evaluerer her, men som kan påvirke søkerangeringen din, inkludert ytelse på [Kjernestatistikk for nett](https://web.dev/learn-web-vitals/). [Finn ut mer](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Kjør disse tilleggsvalideringene på nettstedet ditt for å sjekke flere anbefalte fremgangsmåter for SEO."
@@ -1713,7 +1824,7 @@
     "message": "Når base-uri mangler, kan injiserte <base>-tagger sette grunn-nettadressen for alle relative nettadresser (f.eks. skript) til et domene som en angriper kontrollerer. Vurder å sette base-uri til «none» eller «self»."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elementer som kontrolleres av object-src, anses som foreldede funksjoner. Vurder å sette object-src til «none» for å forhindre injisering av programtillegg som kjører utrygge skript."
+    "message": "Manglende object-src muliggjør injisering av programtillegg som kjører utrygge skript. Vurder å sette object-src til «none» om du kan."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Direktivet script-src mangler. Dette kan gjøre det mulig å kjøre utrygge skript."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Engangsverdier må være på minst åtte tegn."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Unngå bruk av enkle nettadresseordninger ({keyword}) i dette direktivet. Med enkle nettadresseordninger kan skript ha utrygge domener som kilde."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Unngå bruk av enkle jokertegn ({keyword}) i dette direktivet. Med enkle jokertegn kan skript ha utrygge domener som kilde."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Rapporteringsdestinasjonen er bare konfigurert via direktivet report-to. Dette direktivet støttes kun i Chromium-baserte nettlesere, så det anbefales at du også bruker direktivet report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Det er ingen CSP som konfigurerer en rapporteringsdestinasjon. Dette gjør det vanskelig å vedlikeholde CSP-en over tid og følge med på om noe slutter å virke."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Godkjenningslister for verter kan ofte forbigås. Vurder å bruke «strict-dynamic» i kombinasjon med CSP-engangsverdier eller -hasher."
+    "message": "Godkjenningslister for verter kan ofte forbigås. Vurder å bruke CSP-engangsverdier eller -hasher i stedet, samt «strict-dynamic» om nødvendig."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Ukjent CSP-direktiv."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} ser ut til å være et ugyldig nøkkelord."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "«unsafe-inline» muliggjør kjøring av utrygge skript og hendelsesbehandlere på siden. Vurder å bruke CSP-engangsverdier eller -hasher for å la skript kjøre individuelt."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Vurder å legge til «unsafe-inline» (ignoreres av nettlesere som støtter engangsverdier eller hasher) for bakoverkompatibilitet med eldre nettlesere."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Nettadressen du oppga, ser ut til å være ugyldig."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Alt"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Alle skript"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Dekning"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Duplikatmoduler"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Ressursstørrelse i byte"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Navn"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Slå av/på tabell"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Ubrukte byte"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "For animert innhold, bruk [`amp-anim`‏](https://amp.dev/documentation/components/amp-anim/) for å minimere prosessorbruken når innholdet er utenfor skjermen."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Se kalkulatoren."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigasjonsstart"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Rapportfeil: ingen revisjonsinformasjon"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Opprett sak"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Prøvefunksjonsdata"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Beståtte revisjoner"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulert skrivebord"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Prosessorstruping"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanal"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Enhet"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Tidspunkt for henting"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Struping av nettverkshastighet"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Kjøringsinnstillinger"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Brukeragent (vert)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Brukeragent (nettverk)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "Nettadresse"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ukjent"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Vis revisjoner som er relevant for:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Advarsler: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Alt"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Alle skript"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Dekning"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Duplikatmoduler"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Ressursstørrelse i byte"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Navn"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Slå av/på tabell"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Ubrukte byte"
   }
 }

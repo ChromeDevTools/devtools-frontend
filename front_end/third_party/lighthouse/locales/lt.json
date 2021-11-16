@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Visos ataskaitos"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Kategorijos"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Pritaikomumas"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Geriausios praktikos pavyzdžiai"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Našumas"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Laipsniškoji žiniatinklio programa"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "PVO"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Staliniams kompiuteriams"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Apie „Lighthouse“ srauto ataskaitą"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Apie srautus"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Naudokite naršymo ataskaitas, kad galėtumėte…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Naudokite dienos apžvalgos ataskaitas, kad galėtumėte…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Naudokite laikotarpio ataskaitas, kad galėtumėte…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Gauti „Lighthouse“ našumo balą."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Įvertinti puslapio įkėlimo našumo metriką, pavyzdžiui, didžiausio turiningo žymėjimo ir spartos rodiklio."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Įvertinti laipsniškųjų žiniatinklio programų galimybes."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Aptikti pritaikomumo problemas atskiro puslapio programose ar sudėtingose formose."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Įvertinti už sąveikų slypinčių meniu ir NS elementų geriausią praktiką."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Įvertinti išdėstymo poslinkius ir „JavaScript“ sąveikų serijų vykdymo laiką."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Atrasti našumo galimybes ir pagerinti ilgai veikiančių puslapių bei atskiro puslapio programų funkcijas."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobiliesiems"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Puslapio įkėlimas"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "Naršymo ataskaitose analizuojamas kiekvienas puslapio įkėlimas, visiškai taip pat, kaip ir originaliose „Lighthouse“ ataskaitose."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Naršymo ataskaita"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Vidutiniška"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Klaida"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Prasta"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Gera"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Išsaugoti"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Užfiksuota puslapio būsena"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "Dienos apžvalgos ataskaitose analizuojamas tam tikros būsenos puslapis, paprastai po naudotojų sąveikų."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Momentinė ataskaita"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Suvestinė"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Naudotojo sąveikos"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Laikotarpio ataskaitose analizuojamas tam tikras laikotarpis, paprastai tas, per kurį vyko sąveikų."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Laikotarpio ataskaita"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "„Lighthouse“ naudotojų srauto ataskaita"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Naudodami prieigos raktus naudotojai gali greitai suaktyvinti puslapio dalį. Kad naršymas veiktų tinkamai, kiekvienas prieigos raktas turi būti unikalus. [Sužinokite daugiau](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Rodomi matmenys"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Vaizdai buvo didesni nei nurodyti dydžiai"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Vaizdai atitiko nurodytus dydžius"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Teikite tinkamo dydžio vaizdus, kad būtų taupomi mobiliojo ryšio duomenys ir puslapis būtų įkeliamas greičiau. [Sužinokite daugiau](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Vengiama nebenaudojamų API"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Programos talpykla nebenaudojama. [Sužinokite daugiau](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Rastas elementas „{AppCacheManifest}“"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Naudojama programos talpykla"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Vengiama naudoti programos talpyklą"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Reikalinga ženklų koduotės deklaracija. Tai galima atlikti naudojant žymą „`<meta>`“ pirmuose 1 024 HTML baituose arba turinio tipo HTTP atsako antraštėje. [Sužinokite daugiau](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Išvengiama per didelių DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Netinkami prieraišai"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Pridėkite fragmentus „`rel=\"noopener\"`“ arba „`rel=\"noreferrer\"`“ prie bet kurių išorinių nuorodų, kad pagerintumėte našumą ir išvengtumėte saugos pažeidimų. [Sužinokite daugiau](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Nuorodos į mišrios kilmės paskirties vietas yra nesaugios"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Nuorodos į mišrios kilmės paskirties vietas yra saugios"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Nepavyko nustatyti prieraišo ({anchorHTML}) paskirties vietos. Jei jo nenaudojate kaip hipersaito, apsvarstykite galimybę pašalinti atributą „target=_blank“."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Naudotojai gali būti įtarūs arba sumišę, jei svetainėse bus prašoma suteikti leidimą pasiekti vietovės duomenis be jokio konteksto. Apsvarstykite galimybę susieti užklausą su naudotojų veiksmu. [Sužinokite daugiau](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Venkite didelių išdėstymo poslinkių"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Virš matomos ribos esantys vaizdai, kurie įkeliami asinchroniškai, pateikiami puslapio veiklos cikle vėliau, o tai gali lemti didžiausio turiningo žymėjimo delsą. [Sužinokite daugiau](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Didžiausio turiningo žymėjimo vaizdas įkeltas asinchroniškai"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Didžiausio turiningo žymėjimo vaizdas nebuvo įkeltas asinchroniškai"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Sudaromas ilgiausių pagrindinės grupės užduočių sąrašas, naudingas siekiant nustatyti, kas labiausiai prisideda prie įvesties delsos. [Sužinokite daugiau](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Iš anksto įkelkite didžiausio turiningo žymėjimo vaizdą"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Jei jau nustatėte HTTPS, būtinai peradresuokite visą HTTP srautą į HTTPS, kad visi naudotojai galėtų naudotis saugiomis žiniatinklio funkcijomis. [Sužinokite daugiau](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Nenukreipia HTTP srauto į HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Nukreipia HTTP srautą į HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Peradresuojant puslapio įkėlimo delsos laikas dar labiau pailgėja. [Sužinokite daugiau](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Puslapyje yra galiojančių šaltinio žemėlapių"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Pridedama žyma `<meta name=\"viewport\">`, siekiant optimizuoti programą mobiliųjų ekranams. [Sužinokite daugiau](https://web.dev/viewport/)"
+    "message": "„`<meta name=\"viewport\">`“ ne tik optimizuoja programą pagal mobiliojo įrenginio ekrano dydį, bet taip pat padeda išvengti [300 milisekundžių naudotojo įvesties delsos](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Sužinokite daugiau](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Žyma `<meta name=\"viewport\">` nerasta"
@@ -1650,7 +1761,7 @@
     "message": "Šios patikros būtinos pagal pradinį [LŽP kontrolinį sąrašą](https://developers.google.com/web/progressive-web-apps/checklist), tačiau „Lighthouse“ jų neatlieka automatiškai. Jos neturi įtakos jūsų rezultatui, tačiau svarbu, kad patvirtintumėte patys."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Laipsniškoji žiniatinklio programa"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Galima įdiegti"
@@ -1659,7 +1770,7 @@
     "message": "Optimizuota PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Šios patikros užtikrina, kad jūsų puslapis optimizuotas paieškos variklio rezultatams reitinguoti. Yra papildomų veiksnių, galinčių paveikti paieškos reitingavimą, kurių „Lighthouse“ netikrina. [Sužinokite daugiau](https://support.google.com/webmasters/answer/35769)."
+    "message": "Šios patikros užtikrina, kad puslapyje laikomasi pagrindinių paieškos variklio optimizavimo rekomendacijų. Yra daugybė veiksnių, į kuriuos „Lighthouse“ neatsižvelgia ir kurie gali turėti įtakos paieškos reitingavimui, įskaitant našumą pagal [svarbiausią žiniatinklio „Vitals“ metriką](https://web.dev/learn-web-vitals/). [Sužinokite daugiau](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Paleiskite šias papildomas patvirtinimo priemones svetainėje, kad patikrintumėte papildomus PVO geriausios praktikos metodus."
@@ -1713,7 +1824,7 @@
     "message": "Jei nėra direktyvos „base-uri“, galima įterpti žymas <base>. Jas naudojant galima nustatyti visų susijusių URL (pvz., scenarijų) pagrindinį URL kaip atakos vykdytojo kontroliuojamą domeną. Apsvarstykite galimybę nustatyti direktyvos „base-uri“ vertę „none“ arba „self“."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Elementai, kuriuos kontroliuoja direktyva „object-src“, laikomi pasenusiomis funkcijomis. Apsvarstykite galimybę nustatyti direktyvos „object-src“ vertę „none“, kad nebūtų leidžiama įterpti papildinių, vykdančių nesaugius scenarijus."
+    "message": "Kai nėra direktyvos „object-src“, leidžiama įterpti papildinių, vykdančių nesaugius scenarijus. Apsvarstykite galimybę nustatyti direktyvos „object-src“ vertę „none“, jei galite."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Nėra direktyvos „script-src“. Gali būti leidžiama vykdyti nesaugius scenarijus."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Vertės „nonce“ turi būti bent 8 simbolių ilgio."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Venkite naudoti trumpų URL schemas ({keyword}) šioje direktyvoje. Naudojant trumpų URL schemas, scenarijai gali būti pateikiami iš nesaugaus domeno."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Venkite naudoti grynuosius pakaitos simbolius ({keyword}) šioje direktyvoje. Naudojant grynuosius pakaitos simbolius, scenarijai gali būti pateikiami iš nesaugaus domeno."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Ataskaitų teikimo paskirties vietą galima sukonfigūruoti tik naudojant direktyvą „report-to“. Ši direktyva palaikoma tik „Chromium“ pagrindo naršyklėse, todėl taip pat rekomenduojama naudoti direktyvą „report-uri“."
   },
@@ -1734,13 +1851,16 @@
     "message": "Jokioje CSP nesukonfigūruota ataskaitų teikimo paskirties vieta. Tai apsunkins tolesnę CSP priežiūrą ir problemų stebėjimo procesą."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Prieglobos leidžiamųjų sąrašus neretai galima apeiti. Apsvarstykite galimybę naudoti raktinį žodį „strict-dynamic“ kartu su CSP vertėmis „nonce“ ar „hash“."
+    "message": "Prieglobos leidžiamųjų sąrašus neretai galima apeiti. Apsvarstykite galimybę naudoti CSP vertes „nonce“ arba „hash“ su „strict-dynamic“, jei reikia."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Nežinoma CSP direktyva."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Panašu, kad „{keyword}“ yra netinkamas raktinis žodis."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Raktinis žodis „unsafe-inline“ leidžia vykdyti nesaugius puslapio scenarijus ir įvykių dorokles. Apsvarstykite galimybę naudoti CSP vertes „nonce“ arba „hash“, kad scenarijų vykdymas būtų leidžiamas atskirai."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Apsvarstykite galimybę pridėti raktinį žodį „unsafe-inline“ (nepaisoma naršyklėse, palaikančiose vertes „nonce“ / „hash“), kad būtų užtikrintas atgalinis suderinamumas su senesnėmis naršyklėmis."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Panašu, kad pateiktas URL netinkamas."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Viskas"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Visi scenarijai"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Aprėptis"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Tikslios modulių kopijos"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Šaltinių baitai"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Pavadinimas"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Perjungti lentelę"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Nenaudojami baitai"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Jei teikiate animuotą turinį, naudokite [„`amp-anim`“](https://amp.dev/documentation/components/amp-anim/), kad būtų naudojama mažiau centrinio procesoriaus galios, kai turinys nerodomas ekrane."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Žr. skaičiuotuvą."
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Pradinis naršymas"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Ataskaitos klaida: nėra patikros informacijos"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Pateikti problemą"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratorijos duomenys"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Sėkmingos patikros"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emuliuotas stalinis kompiuteris"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Centrinio procesoriaus pralaidumo ribojimas"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Kanalas"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Įrenginys"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Gavimo laikas"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Tinklo pralaidumo ribojimas"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Vykdymo laiko nustatymai"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Naudotojo priemonė (priegloba)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Naudotojo priemonė (tinklas)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nežinoma"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Rodyti patikras, aktualias:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Įspėjimai: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Viskas"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Visi scenarijai"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Aprėptis"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Tikslios modulių kopijos"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Šaltinių baitai"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Pavadinimas"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Perjungti lentelę"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Nenaudojami baitai"
   }
 }

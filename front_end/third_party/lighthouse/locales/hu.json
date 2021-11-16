@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Az összes jelentés"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Kategóriák"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Kisegítő lehetőségek"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Bevált módszerek"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Teljesítmény"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Progresszív webes alkalmazás"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "Keresőoptimalizálás"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Asztali"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "A Lighthouse-folyamatjelentés értelmezése"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "A folyamatok értelmezése"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "A navigációs jelentések használatával a következőket teheti:…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "A pillanatkép-jelentések használatával a következőket teheti:…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Az időtartam-jelentések használatával a következőket teheti:…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "pontszámot kaphat a Lighthouse-teljesítményre vonatkozóan;"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "mérheti az oldalbetöltési teljesítménnyel kapcsolatos mutatókat (például a legnagyobb vizuális tartalomválaszt és a sebességindexet)."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "értékelheti a progresszív webes alkalmazások képességeit;"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "megtalálhatja a kisegítő lehetőségekkel kapcsolatos problémákat az egyoldalas alkalmazásokban vagy az összetettebb űrlapokon"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "értékelheti az interakciók mögötti rejtett menükkel és UI-elemekkel kapcsolatos bevált módszereket;"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "különböző interakciók esetében mérheti az elrendezésmozgást és a JavaScript végrehajtási idejét."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "teljesítményre vonatkozó lehetőségeket fedezhet fel a hosszú életű oldalak és az egyoldalas alkalmazásokkal kapcsolatos élmények javítása érdekében;"
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Mobil"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Oldalbetöltés"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "A navigációs jelentések (pontosan úgy, ahogy az eredeti Lighthouse-jelentések is) az egyes oldalak betöltését elemzik."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Navigációs jelentés"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Átlagos"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Hiba"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Gyenge"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Jó"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "mentés;"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Az oldal rögzített állapota"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "A pillanatkép-jelentés az oldalt adott állapotában, jellemzően a felhasználói interakciókat követően elemzi."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Pillanatkép-jelentés"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Összegzés"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Felhasználói interakciók"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "Az időtartam-jelentések a tetszőleges, jellemzően felhasználó interakciókat tartalmazó időtartamokat elemzik."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Időtartam-jelentés"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Lighthouse felhasználóimunkafolyamat-jelentés"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "A hozzáférési kulcsok segítségével a felhasználók gyorsan fókuszálhatnak az oldal adott részére. A megfelelő navigáció érdekében az összes hozzáférési kulcsnak egyedinek kell lennie. [További információ](https://web.dev/accesskeys/)."
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Megjelenített méretek"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "A képek nagyobbak voltak a megjelenített méretüknél"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "A képek megfelelők voltak a megjelenített méretükhöz"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Használjon olyan képeket, amelyek megfelelő méretükkel elősegítik a mobiladat-forgalom csökkentését és a betöltési idő javulását. [További információ](https://web.dev/uses-responsive-images/)."
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Kerüli az elavult API-kat"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Az alkalmazás-gyorsítótár elavult. [További információ](https://web.dev/appcache-manifest/)."
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "A(z) „{AppCacheManifest}” van használatban"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Alkalmazás-gyorsítótárat használ"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Kerüli az alkalmazás-gyorsítótárat"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Kötelező deklarálnia a karakterkódolást. Megteheti a `<meta>` címkében, ha a HTML első 1024 bájtjába kerül, vagy a HTTP-válasz Content-Type fejlécében. [További információ](https://web.dev/charset/)."
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Kerüli a túlzó DOM-méretet"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Hibás horgonyok"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Adjon `rel=\"noopener\"` vagy `rel=\"noreferrer\"` címkét a külső linkekhez, hogy javíthassa a teljesítményt és elkerülhesse a sebezhetőségeket. [További információ](https://web.dev/external-anchors-use-rel-noopener/)."
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Az eredetközi célokra mutató linkek nem biztonságosak"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Az eredetközi célokra mutató linkek biztonságosak"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "A horgony célpontja nem meghatározható ({anchorHTML}). Ha nem hiperlinkről van szó, érdemes eltávolítania a target=_blank részt."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "A tartózkodási helyre vonatkozó engedély váratlan kérése bizalmatlanságra adhat okot, valamint összezavarhatja a felhasználókat. Érdemes inkább felhasználói műveletekhez kötni a kérést. [További információ](https://web.dev/geolocation-on-start/)."
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Az elrendezés nagy mértékű mozgásának elkerülése"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "A késleltetve betöltött hajtás feletti képek az oldal életciklusában később jelennek meg, ami késleltetheti a legnagyobb vizuális tartalomválaszt. [További információ](https://web.dev/lcp-lazy-loading/)."
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "A legnagyobb vizuális tartalomválasz késleltetve lett betöltve"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "A legnagyobb vizuális tartalomválasz nem késleltetve lett betöltve"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "A fő szál leghosszabb feladatait listázza. Hasznos az interakciótól számított késéshez legnagyobb mértékben hozzájáruló elemek azonosításához. [További információ](https://web.dev/long-tasks-devtools/)."
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "A legnagyobb vizuális tartalomválasz képének előtöltése"
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Ha már beállította a HTTPS protokollt, gondoskodjon a teljes HTTP-forgalom HTTPS-re történő átirányításáról, hogy a biztonságos webes funkciók az összes felhasználó számára rendelkezésre álljanak. [További információ](https://web.dev/redirects-http/)."
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Nem irányítja át a HTTP-forgalmat HTTPS-re"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Átirányítja a HTTP-forgalmat HTTPS-re"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Az átirányítások további késlekedéssel hosszabbítják meg az oldalbetöltéshez szükséges időt. [További információ](https://web.dev/redirects/)."
@@ -1524,7 +1635,7 @@
     "message": "Az oldal érvényes forrás-hozzárendelésekkel rendelkezik"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Adjon hozzá `<meta name=\"viewport\">` címkét, amellyel mobilképernyőkre optimalizálhatja az alkalmazást. [További információ](https://web.dev/viewport/)."
+    "message": "A(z) `<meta name=\"viewport\">` nem csupán optimalizálja az alkalmazást a mobilképernyő-méretekre, hanem meg is akadályozza [a 300 ezredmásodperces késleltetést a felhasználói bevitelnél](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [További információ](https://web.dev/viewport/)."
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Nem található `<meta name=\"viewport\">` címke"
@@ -1650,7 +1761,7 @@
     "message": "Ezek az ellenőrzések kötelezők a [progresszív webes alkalmazások alapvető ellenőrzőlistáján](https://developers.google.com/web/progressive-web-apps/checklist), de a Lighthouse nem végzi el őket automatikusan. Az ellenőrzések a kapott pontszámot nem befolyásolják, de fontos a manuális végrehajtásuk."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Progresszív webes alkalmazás"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Telepíthető"
@@ -1659,7 +1770,7 @@
     "message": "PWA-optimalizálás"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Ezekkel az ellenőrzésekkel győződhet meg arról, hogy oldala megfelelően optimalizált-e a keresőmotorok találati rangsorolásához. Vannak olyan egyéb, a Lighthouse által nem ellenőrzött tényezők is, amelyek befolyásolhatják a keresésekben elért helyezést. [További információ](https://support.google.com/webmasters/answer/35769)."
+    "message": "Ezekkel az ellenőrzésekkel győződhet meg arról, hogy oldala követi a keresőoptimalizálásra vonatkozó alapvető tanácsokat. Számos olyan, a Lighthouse által itt nem értékelt tényező van még, amely hatással lehet a keresésbeli rangsorolásra, beleértve az [Alapvető webes vitals-mutatók](https://web.dev/learn-web-vitals/) teljesítményét is. [További információ](https://support.google.com/webmasters/answer/35769)."
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Ha ezeket a további érvényesítőket is futtatja webhelyén, egyéb bevált SEO-módszereket is ellenőrizhet."
@@ -1713,7 +1824,7 @@
     "message": "A hiányzó base-uri lehetővé teszi az injektált <base> címkéknek alap-URL-ek beállítását minden relatív URL-nél (pl. szkripttel) a támadó által irányított domainre. Állítsa a base-uri direktívát „none” vagy „self” értékre."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Az object-src által vezérelt elemek régi funkcióknak minősülnek. Fontolja meg az object-src beállítását a „none” értékre, hogy megakadályozza nem biztonságos szkriptek végrehajtását lehetővé tévő beépülő modulok beszúrását."
+    "message": "Az object-src hiánya olyan beépülő modulok beszúrását teszi lehetővé, amelyek nem biztonságos szkripteket futtatnak. Fontolja meg az object-ocr beállítását a „none” értékre, ha teheti."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Hiányzik a script-src utasítás. Ez lehetővé teheti nem biztonságos szkriptek futtatását."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "A nonce-nak legalább nyolc karakterből kell állnia."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Kerülje az egyszerű URL-sémák ({keyword}) használatát ebben az utasításban. Az egyszerű URL-sémák nem biztonságos domainről származó szkriptek megjelenését idézhetik elő."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Kerülje az egyszerű helyettesítő karakterek ({keyword}) használatát ebben az utasításban. Az egyszerű helyettesítő karakterek nem biztonságos domainről származó szkriptek megjelenését idézhetik elő."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "A jelentés célhelye csak a report-to utasítással van beállítva. Ezt az utasítást csak a Chromium-alapú böngészők támogatják, ezért ajánlott a report-uri utasítás használata is."
   },
@@ -1734,13 +1851,16 @@
     "message": "A jelentési célt nem állítja be CSP. Ez később megnehezíti a CSP karbantartását, illetve a sebezhetőségek figyelemmel kísérését."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "A gazdagépek engedélyezőlistáit gyakran meg lehet kerülni. Fontolja meg a „strict-dynamic” kulcsszó és CSP nonce-ok vagy hashek együttes használatát."
+    "message": "A gazdagépek engedélyezőlistái gyakran megkerülhetők. Fontolja meg CSP nonce-ok vagy hashek használatát, és a „strict-dynamic” kulcsszó beállítását, ha szükséges."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Ismeretlen CSP-utasítás."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "Úgy tűnik, hogy a(z) {keyword} érvénytelen kulcsszó."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Az „unsafe-inline” lehetővé teszi nem biztonságos oldalon belüli szkriptek és eseménykezelők végrehajtását. A szkriptek egyenként történő engedélyezése érdekében fontolja meg CSP nonce-ok vagy hashek használatát."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "A régebbi böngészőkkel való kompatibilitás érdekében használhatja az „unsafe-inline” kulcsszót (a nonce-t/hasht támogató böngészők figyelmen kívül hagyják)."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Úgy tűnik, a megadott URL érvénytelen."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Összes"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Minden szkript"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Lefedettség"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Ismétlődő modulok"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Forrásfájl mérete bájtokban"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Név"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Táblázat elrejtése/megjelenítése"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Fel nem használt bájtok"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Animált tartalmak esetében csökkentheti a processzorhasználatot az [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) segítségével, amikor a tartalom nem látható a képernyőn."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Számológép megtekintése"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Kezdeti navigáció"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Jelentési hiba: nincs ellenőrzési információ"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Probléma beküldése"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboradatok"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Sikeresen teljesített ellenőrzések"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulált asztal"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "CPU-korlátozás"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Csatorna"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Eszköz"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Lekérdezési idő"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Hálózatkorlátozás"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Futási időre vonatkozó beállítások"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Felhasználói ügynök (gazdagép)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Felhasználói ügynök (hálózat)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ismeretlen"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "A következővel kapcsolatos naplóbejegyzések megjelenítése:"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Figyelmeztetések: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Összes"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Minden szkript"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Lefedettség"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Ismétlődő modulok"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Forrásfájl mérete bájtokban"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Név"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Táblázat elrejtése/megjelenítése"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Fel nem használt bájtok"
   }
 }

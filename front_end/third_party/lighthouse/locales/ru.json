@@ -1,4 +1,136 @@
 {
+  "flow-report/src/i18n/ui-strings.js | allReports": {
+    "message": "Все отчеты"
+  },
+  "flow-report/src/i18n/ui-strings.js | categories": {
+    "message": "Категории"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
+    "message": "Специальные возможности"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryBestPractices": {
+    "message": "Рекомендации"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryPerformance": {
+    "message": "Производительность"
+  },
+  "flow-report/src/i18n/ui-strings.js | categoryProgressiveWebApp": {
+    "message": "Современное веб-приложение"
+  },
+  "flow-report/src/i18n/ui-strings.js | categorySeo": {
+    "message": "Поисковая оптимизация"
+  },
+  "flow-report/src/i18n/ui-strings.js | desktop": {
+    "message": "Версия для компьютера"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
+    "message": "Интерпретация отчета Lighthouse о пути пользователя"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpLabel": {
+    "message": "Узнать о путях"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
+    "message": "Использовать отчеты о навигации, чтобы…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
+    "message": "Использовать отчеты о состоянии страницы на определенный момент времени, чтобы…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
+    "message": "Использовать отчеты о промежутке времени, чтобы…"
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
+    "message": "Получить показатель производительности Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
+    "message": "Измерить показатели загрузки страницы, например время отрисовки самого крупного контента и индекс скорости загрузки."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
+    "message": "Оценить возможности современного веб-приложения."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
+    "message": "Обнаружить проблемы доступности в одностраничных приложениях и сложных формах."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
+    "message": "Оценить рекомендации в отношении меню и элементов интерфейса, участвующих во взаимодействии."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
+    "message": "Измерить смещения макета и время выполнения JavaScript в ходе серии взаимодействий."
+  },
+  "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
+    "message": "Узнать возможности для улучшения взаимодействия со страницами, которые используются в течение длительного времени, и одностраничными приложениями."
+  },
+  "flow-report/src/i18n/ui-strings.js | highestImpact": {
+    "message": "Highest impact"
+  },
+  "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
+    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | mobile": {
+    "message": "Мобильная версия"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationDescription": {
+    "message": "Загрузка страницы"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
+    "message": "В отчетах о навигации представлен анализ загрузки одной страницы, в точности как в исходных отчетах Lighthouse."
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReport": {
+    "message": "Отчет о навигации"
+  },
+  "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
+    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
+    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
+    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingAverage": {
+    "message": "Средне"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingError": {
+    "message": "Ошибка"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingFail": {
+    "message": "Плохо"
+  },
+  "flow-report/src/i18n/ui-strings.js | ratingPass": {
+    "message": "Хорошо"
+  },
+  "flow-report/src/i18n/ui-strings.js | save": {
+    "message": "Сохранить"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
+    "message": "Зарегистрированное состояние страницы"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
+    "message": "В отчетах о состоянии страницы на определенный момент времени представлен анализ конкретного состояния страницы (обычно после взаимодействия с пользователем)."
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReport": {
+    "message": "Отчет о состоянии страницы на определенный момент времени"
+  },
+  "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
+    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | summary": {
+    "message": "Сводка"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanDescription": {
+    "message": "Взаимодействие пользователя"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
+    "message": "В отчетах о промежутке времени представлен анализ произвольного периода. Обычно он затрагивает взаимодействие с пользователем."
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReport": {
+    "message": "Отчет о промежутке времени"
+  },
+  "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
+    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+  },
+  "flow-report/src/i18n/ui-strings.js | title": {
+    "message": "Отчет Lighthouse о пути пользователя"
+  },
   "lighthouse-core/audits/accessibility/accesskeys.js | description": {
     "message": "Ключи доступа позволяют быстро перейти к нужной части страницы. Каждый из них должен быть уникальным. [Подробнее…](https://web.dev/accesskeys/)"
   },
@@ -554,6 +686,12 @@
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | columnDisplayedDimensions": {
     "message": "Отображаемые размеры"
   },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | failureTitle": {
+    "message": "Размеры изображений больше отображаемых"
+  },
+  "lighthouse-core/audits/byte-efficiency/uses-responsive-images-snapshot.js | title": {
+    "message": "Размеры изображений соответствует отображаемым"
+  },
   "lighthouse-core/audits/byte-efficiency/uses-responsive-images.js | description": {
     "message": "Чтобы сэкономить мобильный трафик и ускорить загрузку страницы, следите за тем, чтобы размеры ваших изображений соответствовали требованиям. [Подробнее…](https://web.dev/uses-responsive-images/)"
   },
@@ -626,18 +764,6 @@
   "lighthouse-core/audits/deprecations.js | title": {
     "message": "Устаревшие API не используются"
   },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | description": {
-    "message": "Application Cache больше не поддерживается. [Подробнее…](https://web.dev/appcache-manifest/)"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | displayValue": {
-    "message": "Обнаружен манифест {AppCacheManifest}"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | failureTitle": {
-    "message": "Используется Application Cache"
-  },
-  "lighthouse-core/audits/dobetterweb/appcache-manifest.js | title": {
-    "message": "Application Cache не используется"
-  },
   "lighthouse-core/audits/dobetterweb/charset.js | description": {
     "message": "Требуется задать кодировку символов. Это можно сделать с помощью тега `<meta>` в первых 1024 байтах HTML-страницы или в заголовке ответа HTTP Content-Type. [Подробнее…](https://web.dev/charset/)"
   },
@@ -694,21 +820,6 @@
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | title": {
     "message": "Сокращение размера структуры DOM"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | columnFailingAnchors": {
-    "message": "Анкеры, не прошедшие проверку"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | description": {
-    "message": "Добавьте атрибут `rel=\"noopener\"` или `rel=\"noreferrer\"` ко всем внешним ссылкам, чтобы повысить производительность и избежать уязвимостей в защите. [Подробнее…](https://web.dev/external-anchors-use-rel-noopener/)"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | failureTitle": {
-    "message": "Ссылки на сторонние ресурсы небезопасны"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | title": {
-    "message": "Ссылки на сторонние ресурсы безопасны"
-  },
-  "lighthouse-core/audits/dobetterweb/external-anchors-use-rel-noopener.js | warning": {
-    "message": "Не удалось определить целевой якорь ({anchorHTML}). Если элемент не используется в качестве гиперссылки, попробуйте удалить атрибут target=_blank."
   },
   "lighthouse-core/audits/dobetterweb/geolocation-on-start.js | description": {
     "message": "Пользователи с подозрением относятся к сайтам, которые беспричинно запрашивают доступ к их местоположению. Мы рекомендуем связать этот запрос с определенными действиями пользователя. [Подробнее…](https://web.dev/geolocation-on-start/)"
@@ -1007,6 +1118,15 @@
   "lighthouse-core/audits/layout-shift-elements.js | title": {
     "message": "Устраните большие смещения макета"
   },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | description": {
+    "message": "Отложенная загрузка изображений в видимой части страницы приводит к тому, что они позже отображаются. Это может замедлить отрисовку самого крупного контента. [Подробнее…](https://web.dev/lcp-lazy-loading/)"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | failureTitle": {
+    "message": "Изображение, которое отображается при отрисовке самого крупного контента, загружено с задержкой"
+  },
+  "lighthouse-core/audits/lcp-lazy-loaded.js | title": {
+    "message": "Изображение, которое отображается при отрисовке самого крупного контента, загружено без задержки"
+  },
   "lighthouse-core/audits/long-tasks.js | description": {
     "message": "Для основного потока создается список самых длительных задач. Это позволяет выявлять главные факторы, которые приводят к задержкам после ввода. [Подробнее…](https://web.dev/long-tasks-devtools/)"
   },
@@ -1150,15 +1270,6 @@
   },
   "lighthouse-core/audits/preload-lcp-image.js | title": {
     "message": "Предзагрузите изображение для элемента \"Отрисовка самого крупного контента\""
-  },
-  "lighthouse-core/audits/redirects-http.js | description": {
-    "message": "Если у вас уже настроен протокол HTTPS, убедитесь, что весь трафик перенаправляется с HTTP на HTTPS, чтобы обеспечить безопасность для всех своих пользователей. [Подробнее…](https://web.dev/redirects-http/)"
-  },
-  "lighthouse-core/audits/redirects-http.js | failureTitle": {
-    "message": "Не перенаправляет трафик с HTTP на HTTPS"
-  },
-  "lighthouse-core/audits/redirects-http.js | title": {
-    "message": "Перенаправляет трафик с HTTP на HTTPS"
   },
   "lighthouse-core/audits/redirects.js | description": {
     "message": "Переадресации могут стать причиной дополнительных задержек при загрузке страницы. [Подробнее…](https://web.dev/redirects/)"
@@ -1524,7 +1635,7 @@
     "message": "У страницы правильные карты исходного кода"
   },
   "lighthouse-core/audits/viewport.js | description": {
-    "message": "Добавьте метатег `<meta name=\"viewport\">`, чтобы оптимизировать приложение для экранов мобильных устройств. [Подробнее…](https://web.dev/viewport/)"
+    "message": "С помощью метатега `<meta name=\"viewport\">` можно не только оптимизировать приложение для мобильных устройств с экранами разных размеров, но и предотвратить [задержку длительностью 300 мс при вводе данных пользователем](https://developers.google.com/web/updates/2013/12/300ms-tap-delay-gone-away). [Подробнее…](https://web.dev/viewport/)"
   },
   "lighthouse-core/audits/viewport.js | explanationNoTag": {
     "message": "Метатег `<meta name=\"viewport\">` не найден."
@@ -1650,7 +1761,7 @@
     "message": "Lighthouse не проверяет эти пункты автоматически, но они необходимы для соответствия базовому [контрольному списку современных веб-приложений](https://developers.google.com/web/progressive-web-apps/checklist). Они не влияют на показатель приложения, однако их следует проверить вручную."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "Современное веб-приложение"
+    "message": "PWA"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Возможность установки"
@@ -1659,7 +1770,7 @@
     "message": "Соответствие рекомендациям для PWA"
   },
   "lighthouse-core/config/default-config.js | seoCategoryDescription": {
-    "message": "Эти проверки позволяют оптимизировать сайт для успешной индексации поисковыми системами. Lighthouse проверяет не все факторы, которые могут повлиять на позицию сайта в результатах поиска. [Подробнее…](https://support.google.com/webmasters/answer/35769)"
+    "message": "Эти проверки позволяют узнать, соответствует ли страница основным рекомендациям к поисковой оптимизации. Lighthouse оценивает не все факторы, которые могут повлиять на позицию сайта в результатах поиска (например, производительность по [основным интернет-показателям](https://web.dev/learn-web-vitals/)). [Подробнее…](https://support.google.com/webmasters/answer/35769)"
   },
   "lighthouse-core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Проверьте, соответствует ли ваш сайт рекомендациям по поисковой оптимизации (SEO), с помощью этих дополнительных сервисов."
@@ -1713,7 +1824,7 @@
     "message": "Отсутствие директивы base-uri позволяет внедрять теги <base>. С их помощью в качестве базового URL для всех относительных URL (например, скриптов) можно установить домен, контролируемый злоумышленником. Задайте для base-uri значение none или self."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Элементы, управляемые директивой object-src, считаются устаревшими. Присвойте ей значение none, чтобы не допустить внедрения плагинов, исполняющих небезопасные скрипты."
+    "message": "Отсутствие директивы object-src допускает внедрение плагинов, исполняющих небезопасные скрипты. По возможности присвойте ей значение none."
   },
   "lighthouse-core/lib/csp-evaluator.js | missingScriptSrc": {
     "message": "Отсутствует директива script-src. Это позволяет выполнять небезопасные скрипты."
@@ -1727,6 +1838,12 @@
   "lighthouse-core/lib/csp-evaluator.js | nonceLength": {
     "message": "Длина nonce должна составлять не менее 8 символов."
   },
+  "lighthouse-core/lib/csp-evaluator.js | plainUrlScheme": {
+    "message": "Не используйте простые схемы URL ({keyword}) в этой директиве. Они допускают получение скриптов от небезопасного домена."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | plainWildcards": {
+    "message": "Не используйте простые подстановочные знаки ({keyword}) в этой директиве. Они допускают получение скриптов от небезопасного домена."
+  },
   "lighthouse-core/lib/csp-evaluator.js | reportToOnly": {
     "message": "Место назначения для отчетов задано только директивой report-to. Она поддерживается только в браузерах на основе Chromium, поэтому рекомендуется также использовать директиву report-uri."
   },
@@ -1734,13 +1851,16 @@
     "message": "Ни в одной политике CSP не задано место назначения для отчетов. Это усложняет управление политикой CSP и мониторинг сбоев."
   },
   "lighthouse-core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Злоумышленники часто обходят белые списки хостов. Используйте директиву strict-dynamic вместе с nonce или hash политики CSP."
+    "message": "Злоумышленники часто обходят белые списки хостов. При необходимости используйте вместо них директиву strict-dynamic вместе с nonce или hash политики CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Неизвестная директива CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unknownKeyword": {
     "message": "{keyword} — недопустимое ключевое слово."
+  },
+  "lighthouse-core/lib/csp-evaluator.js | unsafeInline": {
+    "message": "Директива unsafe-inline позволяет выполнять небезопасные скрипты и обработчики событий на странице. Чтобы разрешать отдельные скрипты, используйте nonce или hash в политике CSP."
   },
   "lighthouse-core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Чтобы обеспечить обратную совместимость со старыми браузерами, добавьте директиву unsafe-inline (игнорируется браузерами, которые поддерживают nonce или hash)."
@@ -1942,30 +2062,6 @@
   },
   "lighthouse-core/lib/lh-error.js | urlInvalid": {
     "message": "Недействительный URL."
-  },
-  "lighthouse-treemap/app/src/util.js | allLabel": {
-    "message": "Все"
-  },
-  "lighthouse-treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "Все скрипты"
-  },
-  "lighthouse-treemap/app/src/util.js | coverageColumnName": {
-    "message": "Доля использования"
-  },
-  "lighthouse-treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Повторяющиеся модули"
-  },
-  "lighthouse-treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Размер в байтах"
-  },
-  "lighthouse-treemap/app/src/util.js | tableColumnName": {
-    "message": "Название"
-  },
-  "lighthouse-treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Показать/скрыть таблицу"
-  },
-  "lighthouse-treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Неиспользуемые байты"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Если на странице есть анимированный контент, используйте [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), чтобы уменьшить нагрузку на процессор, когда контент не отображается на экране."
@@ -2234,6 +2330,9 @@
   "report/renderer/util.js | calculatorLink": {
     "message": "Показать калькулятор"
   },
+  "report/renderer/util.js | collapseView": {
+    "message": "Collapse view"
+  },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Начальная навигация"
   },
@@ -2270,8 +2369,14 @@
   "report/renderer/util.js | errorMissingAuditInfo": {
     "message": "Ошибка отчета: информация аудита отсутствует"
   },
+  "report/renderer/util.js | expandView": {
+    "message": "Expand view"
+  },
   "report/renderer/util.js | footerIssue": {
     "message": "Сообщить о проблеме"
+  },
+  "report/renderer/util.js | hide": {
+    "message": "Hide"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Имитация загрузки страницы"
@@ -2294,6 +2399,12 @@
   "report/renderer/util.js | passedAuditsGroupTitle": {
     "message": "Успешные аудиты"
   },
+  "report/renderer/util.js | runtimeAnalysisWindow": {
+    "message": "Initial page load"
+  },
+  "report/renderer/util.js | runtimeCustom": {
+    "message": "Custom throttling"
+  },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Эмуляция компьютера"
   },
@@ -2312,32 +2423,29 @@
   "report/renderer/util.js | runtimeSettingsCPUThrottling": {
     "message": "Ограничение пропускной способности ЦП"
   },
-  "report/renderer/util.js | runtimeSettingsChannel": {
-    "message": "Канал"
-  },
   "report/renderer/util.js | runtimeSettingsDevice": {
     "message": "Устройство"
-  },
-  "report/renderer/util.js | runtimeSettingsFetchTime": {
-    "message": "Время запуска"
   },
   "report/renderer/util.js | runtimeSettingsNetworkThrottling": {
     "message": "Ограничение пропускной способности сети"
   },
-  "report/renderer/util.js | runtimeSettingsTitle": {
-    "message": "Настройки среды выполнения"
-  },
-  "report/renderer/util.js | runtimeSettingsUA": {
-    "message": "Агент пользователя (хост)"
-  },
   "report/renderer/util.js | runtimeSettingsUANetwork": {
     "message": "Агент пользователя (сеть)"
   },
-  "report/renderer/util.js | runtimeSettingsUrl": {
-    "message": "URL"
+  "report/renderer/util.js | runtimeSingleLoad": {
+    "message": "Single page load"
+  },
+  "report/renderer/util.js | runtimeSingleLoadTooltip": {
+    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+  },
+  "report/renderer/util.js | runtimeSlow4g": {
+    "message": "Slow 4G throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Неизвестно"
+  },
+  "report/renderer/util.js | show": {
+    "message": "Show"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Показать аудиты"
@@ -2368,5 +2476,29 @@
   },
   "report/renderer/util.js | warningHeader": {
     "message": "Предупреждения: "
+  },
+  "treemap/app/src/util.js | allLabel": {
+    "message": "Все"
+  },
+  "treemap/app/src/util.js | allScriptsDropdownLabel": {
+    "message": "Все скрипты"
+  },
+  "treemap/app/src/util.js | coverageColumnName": {
+    "message": "Доля использования"
+  },
+  "treemap/app/src/util.js | duplicateModulesLabel": {
+    "message": "Повторяющиеся модули"
+  },
+  "treemap/app/src/util.js | resourceBytesLabel": {
+    "message": "Размер в байтах"
+  },
+  "treemap/app/src/util.js | tableColumnName": {
+    "message": "Название"
+  },
+  "treemap/app/src/util.js | toggleTableButtonLabel": {
+    "message": "Показать/скрыть таблицу"
+  },
+  "treemap/app/src/util.js | unusedBytesLabel": {
+    "message": "Неиспользуемые байты"
   }
 }

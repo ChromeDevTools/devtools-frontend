@@ -197,6 +197,8 @@ export const FlexboxEditableProperties = [
     propertyValues: [
       'row',
       'column',
+      'row-reverse',
+      'column-reverse',
     ],
   },
   {

@@ -815,20 +815,10 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   createRawLocationsByStackTrace(stackTrace: Protocol.Runtime.StackTrace): Location[] {
-    const frames = [];
-    let current: (Protocol.Runtime.StackTrace|undefined)|Protocol.Runtime.StackTrace = stackTrace;
-    while (current) {
-      for (const frame of current.callFrames) {
-        frames.push(frame);
-      }
-      current = current.parent;
-    }
-
-    const rawLocations = [];
-    for (const frame of frames) {
-      const rawLocation = this.createRawLocationByScriptId(frame.scriptId, frame.lineNumber, frame.columnNumber);
-      if (rawLocation) {
-        rawLocations.push(rawLocation);
+    const rawLocations: Location[] = [];
+    for (let current: Protocol.Runtime.StackTrace|undefined = stackTrace; current; current = current.parent) {
+      for (const {scriptId, lineNumber, columnNumber} of current.callFrames) {
+        rawLocations.push(this.createRawLocationByScriptId(scriptId, lineNumber, columnNumber));
       }
     }
     return rawLocations;

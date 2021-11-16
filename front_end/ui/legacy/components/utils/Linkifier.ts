@@ -227,21 +227,13 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return fallbackAnchor;
     }
 
-    let rawLocation;
-    if (scriptId) {
-      rawLocation = debuggerModel.createRawLocationByScriptId(
-          scriptId, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex);
-    }
-    // The function createRawLocationByScriptId will always return a raw location. Normally
-    // we rely on the live location that is created from it to update missing information
-    // to create the link. If we, however, already have a similar script with the same source url,
-    // use that one.
-    if (!rawLocation?.script()) {
-      rawLocation = debuggerModel.createRawLocationByURL(
-                        sourceURL, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex) ||
-          rawLocation;
-    }
-
+    // Prefer createRawLocationByScriptId() here, since it will always produce a correct
+    // link, since the script ID is unique. Only fall back to createRawLocationByURL()
+    // when all we have is an URL, which is not guaranteed to be unique.
+    const rawLocation = scriptId ? debuggerModel.createRawLocationByScriptId(
+                                       scriptId, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex) :
+                                   debuggerModel.createRawLocationByURL(
+                                       sourceURL, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex);
     if (!rawLocation) {
       return fallbackAnchor;
     }

@@ -37,6 +37,7 @@ import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBe
 import {Icon} from './Icon.js';
 import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
+import softContextMenuStyles from './softContextMenu.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -101,7 +102,7 @@ export class SoftContextMenu {
     this.glassPane = new GlassPane();
     this.glassPane.setPointerEventsBehavior(
         this.parentMenu ? PointerEventsBehavior.PierceGlassPane : PointerEventsBehavior.BlockedByGlassPane);
-    this.glassPane.registerRequiredCSS('ui/legacy/softContextMenu.css');
+    this.glassPane.registerRequiredCSS(softContextMenuStyles);
     this.glassPane.setContentAnchorBox(anchorBox);
     this.glassPane.setSizeBehavior(SizeBehavior.MeasureContent);
     this.glassPane.setMarginBehavior(MarginBehavior.NoMargin);

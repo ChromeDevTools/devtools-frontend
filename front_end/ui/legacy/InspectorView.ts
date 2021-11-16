@@ -52,6 +52,7 @@ import {ViewManager} from './ViewManager.js';
 import type {Widget} from './Widget.js';
 import {VBox, WidgetFocusRestorer} from './Widget.js';
 import * as ARIAUtils from './ARIAUtils.js';
+import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -167,7 +168,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add('main-tabbed-pane');
-    this.tabbedPane.registerRequiredCSS('ui/legacy/inspectorViewTabbedPane.css');
+    this.tabbedPane.registerRequiredCSS(inspectorViewTabbedPaneStyles);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);

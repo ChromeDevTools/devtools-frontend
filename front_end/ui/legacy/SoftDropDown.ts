@@ -14,6 +14,8 @@ import type {ListDelegate} from './ListControl.js';
 import {ListControl, ListMode} from './ListControl.js';
 import type {ItemsReplacedEvent, ListModel} from './ListModel.js';
 import {Events as ListModelEvents} from './ListModel.js';
+import softDropDownStyles from './softDropDown.css.legacy.js';
+import softDropDownButtonStyles from './softDropDownButton.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -46,7 +48,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
 
     this.element = document.createElement('button');
     this.element.classList.add('soft-dropdown');
-    Utils.appendStyle(this.element, 'ui/legacy/softDropDownButton.css');
+    Utils.appendStyle(this.element, softDropDownButtonStyles);
     this.titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
     this.element.appendChild(dropdownArrowIcon);
@@ -63,7 +65,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.width = 315;
     Utils
         .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
-          cssFile: 'ui/legacy/softDropDown.css',
+          cssFile: softDropDownStyles,
           delegatesFocus: undefined,
         })
         .appendChild(this.list.element);

@@ -43,6 +43,7 @@ import {ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
 import {HBox} from './Widget.js';
+import filterStyles from './filter.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -79,7 +80,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
 
   constructor(name: string, visibleByDefault?: boolean) {
     super();
-    this.registerRequiredCSS('ui/legacy/filter.css');
+    this.registerRequiredCSS(filterStyles);
     this.enabled = true;
     this.element.classList.add('filter-bar');
 

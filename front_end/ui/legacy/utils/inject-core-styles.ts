@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import inspectorCommonStyles from '../inspectorCommon.css.legacy.js';
+import textButtonStyles from '../textButton.css.legacy.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
+import themeColorsStyles from '../themeColors.css.legacy.js';
+
 import {appendStyle} from './append-style.js';
 
 export function injectCoreStyles(root: Element|ShadowRoot): void {
-  // TODO: Migrate inspectorCommpon.css last https://crbug.com/1222666
-  appendStyle(root, 'ui/legacy/inspectorCommon.css');
-  appendStyle(root, 'ui/legacy/textButton.css');
-  appendStyle(root, 'ui/legacy/themeColors.css');
+  appendStyle(root, inspectorCommonStyles);
+  appendStyle(root, textButtonStyles);
+  appendStyle(root, themeColorsStyles);
 
   ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(root);
   ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(root);

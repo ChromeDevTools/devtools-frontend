@@ -29,6 +29,7 @@
  */
 
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
+import popoverStyles from './popover.css.legacy.js';
 
 export class PopoverHelper {
   private disableOnClick: boolean;
@@ -189,7 +190,7 @@ export class PopoverHelper {
 
   private showPopover(document: Document): void {
     const popover = new GlassPane();
-    popover.registerRequiredCSS('ui/legacy/popover.css');
+    popover.registerRequiredCSS(popoverStyles);
     popover.setSizeBehavior(SizeBehavior.MeasureContent);
     popover.setMarginBehavior(MarginBehavior.Arrow);
     const request = this.scheduledRequest;

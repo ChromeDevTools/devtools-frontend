@@ -43,7 +43,6 @@ group("legacy_css") {
     "panels/mobile_throttling:legacy_css",
     "panels/protocol_monitor:legacy_css",
     "third_party/codemirror:legacy_css",
-    "ui/legacy:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
     "ui/legacy/components/source_frame:legacy_css",
     "ui/legacy/components/text_editor:legacy_css",

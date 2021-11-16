@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import listWidgetStyles from './listWidget.css.legacy.js';
 import {Toolbar, ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
@@ -49,7 +50,7 @@ export class ListWidget<T> extends VBox {
   private emptyPlaceholder: Element|null;
   constructor(delegate: Delegate<T>, delegatesFocus: boolean|undefined = true) {
     super(true, delegatesFocus);
-    this.registerRequiredCSS('ui/legacy/listWidget.css');
+    this.registerRequiredCSS(listWidgetStyles);
     this.delegate = delegate;
 
     this.list = this.contentElement.createChild('div', 'list');

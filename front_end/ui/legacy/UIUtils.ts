@@ -53,6 +53,13 @@ import type {ToolbarButton} from './Toolbar.js';
 import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import type {TreeOutline} from './Treeoutline.js';
+import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
+import closeButtonStyles from './closeButton.css.legacy.js';
+import confirmDialogStyles from './confirmDialog.css.legacy.js';
+import inlineButtonStyles from './inlineButton.css.legacy.js';
+import radioButtonStyles from './radioButton.css.legacy.js';
+import sliderStyles from './slider.css.legacy.js';
+import smallBubbleStyles from './smallBubble.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -1186,8 +1193,8 @@ export class CheckboxLabel extends HTMLSpanElement {
     super();
     CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
-    this.shadowRootInternal = Utils.createShadowRootWithCoreStyles(
-        this, {cssFile: 'ui/legacy/checkboxTextLabel.css', delegatesFocus: undefined});
+    this.shadowRootInternal =
+        Utils.createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles, delegatesFocus: undefined});
     this.checkboxElement = (this.shadowRootInternal.createChild('input') as HTMLInputElement);
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
@@ -1268,8 +1275,7 @@ export class DevToolsRadioButton extends HTMLSpanElement {
     this.radioElement.id = id;
     this.radioElement.type = 'radio';
     this.labelElement.htmlFor = id;
-    const root =
-        Utils.createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/radioButton.css', delegatesFocus: undefined});
+    const root = Utils.createShadowRootWithCoreStyles(this, {cssFile: radioButtonStyles, delegatesFocus: undefined});
     root.createChild('slot');
     this.addEventListener('click', this.radioClickHandler.bind(this), false);
   }
@@ -1291,8 +1297,7 @@ export class DevToolsSlider extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root =
-        Utils.createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/slider.css', delegatesFocus: undefined});
+    const root = Utils.createShadowRootWithCoreStyles(this, {cssFile: sliderStyles, delegatesFocus: undefined});
     this.sliderElement = document.createElement('input');
     this.sliderElement.classList.add('dt-range-input');
     this.sliderElement.type = 'range';
@@ -1315,8 +1320,7 @@ export class DevToolsSmallBubble extends HTMLSpanElement {
 
   constructor() {
     super();
-    const root =
-        Utils.createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/smallBubble.css', delegatesFocus: undefined});
+    const root = Utils.createShadowRootWithCoreStyles(this, {cssFile: smallBubbleStyles, delegatesFocus: undefined});
     this.textElement = root.createChild('div');
     this.textElement.className = 'info';
     this.textElement.createChild('slot');
@@ -1336,8 +1340,7 @@ export class DevToolsCloseButton extends HTMLDivElement {
 
   constructor() {
     super();
-    const root =
-        Utils.createShadowRootWithCoreStyles(this, {cssFile: 'ui/legacy/closeButton.css', delegatesFocus: undefined});
+    const root = Utils.createShadowRootWithCoreStyles(this, {cssFile: closeButtonStyles, delegatesFocus: undefined});
     this.buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
     Tooltip.install(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.setAccessibleName(this.buttonElement, i18nString(UIStrings.close));
@@ -1566,7 +1569,7 @@ export class MessageDialog {
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
     const shadowRoot = Utils.createShadowRootWithCoreStyles(
-        dialog.contentElement, {cssFile: 'ui/legacy/confirmDialog.css', delegatesFocus: undefined});
+        dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
       const okButton = createTextButton(i18nString(UIStrings.ok), resolve, '', true);
@@ -1590,7 +1593,7 @@ export class ConfirmDialog {
     dialog.setDimmed(true);
     ARIAUtils.setAccessibleName(dialog.contentElement, message);
     const shadowRoot = Utils.createShadowRootWithCoreStyles(
-        dialog.contentElement, {cssFile: 'ui/legacy/confirmDialog.css', delegatesFocus: undefined});
+        dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
@@ -1615,7 +1618,7 @@ export class ConfirmDialog {
 export function createInlineButton(toolbarButton: ToolbarButton): Element {
   const element = document.createElement('span');
   const shadowRoot =
-      Utils.createShadowRootWithCoreStyles(element, {cssFile: 'ui/legacy/inlineButton.css', delegatesFocus: undefined});
+      Utils.createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles, delegatesFocus: undefined});
   element.classList.add('inline-button');
   const toolbar = new Toolbar('');
   toolbar.appendToolbarItem(toolbarButton);

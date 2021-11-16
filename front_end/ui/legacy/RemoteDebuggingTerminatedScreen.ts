@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
+import remoteDebuggingTerminatedScreenStyles from './remoteDebuggingTerminatedScreen.css.legacy.js';
 import {createTextButton, formatLocalized} from './UIUtils.js';
 import {VBox} from './Widget.js';
 
@@ -30,7 +31,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteDebuggingTerminatedScreen extends VBox {
   constructor(reason: string) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/remoteDebuggingTerminatedScreen.css');
+    this.registerRequiredCSS(remoteDebuggingTerminatedScreenStyles);
     const message = this.contentElement.createChild('div', 'message');
     const reasonElement = message.createChild('span', 'reason');
     reasonElement.textContent = reason;

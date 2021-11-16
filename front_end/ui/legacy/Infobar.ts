@@ -10,6 +10,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createTextButton} from './UIUtils.js';
 import type {Widget} from './Widget.js';
+import infobarStyles from './infobar.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -54,8 +55,8 @@ export class Infobar {
   constructor(type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>) {
     this.element = document.createElement('div');
     this.element.classList.add('flex-none');
-    this.shadowRoot = Utils.createShadowRootWithCoreStyles(
-        this.element, {cssFile: 'ui/legacy/infobar.css', delegatesFocus: undefined});
+    this.shadowRoot =
+        Utils.createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles, delegatesFocus: undefined});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type) as HTMLDivElement;
 

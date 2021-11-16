@@ -30,6 +30,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Utils from './utils/utils.js';
+import progressIndicatorStyles from './progressIndicator.css.legacy.js';
 
 export class ProgressIndicator implements Common.Progress.Progress {
   element: HTMLDivElement;
@@ -46,7 +47,7 @@ export class ProgressIndicator implements Common.Progress.Progress {
     this.element = document.createElement('div');
     this.element.classList.add('progress-indicator');
     this.shadowRoot = Utils.createShadowRootWithCoreStyles(
-        this.element, {cssFile: 'ui/legacy/progressIndicator.css', delegatesFocus: undefined});
+        this.element, {cssFile: progressIndicatorStyles, delegatesFocus: undefined});
     this.contentElement = this.shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 
     this.labelElement = this.contentElement.createChild('div', 'title');

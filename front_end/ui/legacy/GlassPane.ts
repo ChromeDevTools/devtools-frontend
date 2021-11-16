@@ -10,6 +10,7 @@ import {Icon} from './Icon.js';
 import {deepElementFromEvent} from './UIUtils.js';
 import type {WidgetElement} from './Widget.js';
 import {Widget} from './Widget.js';
+import glassPaneStyles from './glassPane.css.legacy.js';
 
 export class GlassPane {
   private readonly widgetInternal: Widget;
@@ -36,7 +37,7 @@ export class GlassPane {
       this.element.shadowRoot.appendChild(this.arrowElement);
     }
 
-    this.registerRequiredCSS('ui/legacy/glassPane.css');
+    this.registerRequiredCSS(glassPaneStyles);
     this.setPointerEventsBehavior(PointerEventsBehavior.PierceGlassPane);
 
     this.onMouseDownBound = this.onMouseDown.bind(this);
@@ -54,7 +55,7 @@ export class GlassPane {
     return this.widgetInternal.isShowing();
   }
 
-  registerRequiredCSS(cssFile: string): void {
+  registerRequiredCSS(cssFile: string|{cssContent: string}): void {
     this.widgetInternal.registerRequiredCSS(cssFile);
   }
 

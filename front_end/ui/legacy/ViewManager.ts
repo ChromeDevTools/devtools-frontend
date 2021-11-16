@@ -18,6 +18,7 @@ import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from 
 import {getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, ViewLocationCategoryValues, ViewLocationValues, ViewPersistence, ViewRegistration} from './ViewRegistration.js';
 import type {Widget, WidgetElement} from './Widget.js';
 import {VBox} from './Widget.js';
+import viewContainersStyles from './viewContainers.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -418,7 +419,7 @@ export class _ExpandableContainerWidget extends VBox {
   constructor(view: View) {
     super(true);
     this.element.classList.add('flex-none');
-    this.registerRequiredCSS('ui/legacy/viewContainers.css');
+    this.registerRequiredCSS(viewContainersStyles);
 
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');

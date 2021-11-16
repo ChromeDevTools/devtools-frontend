@@ -39,6 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
 import {InspectorView} from './InspectorView.js';
+import searchableViewStyles from './searchableView.css.legacy.js';
 import {Toolbar, ToolbarButton, ToolbarToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {createTextButton} from './UIUtils.js';
@@ -123,7 +124,7 @@ export class SearchableView extends VBox {
 
   constructor(searchable: Searchable, replaceable: Replaceable|null, settingName?: string) {
     super(true);
-    this.registerRequiredCSS('ui/legacy/searchableView.css');
+    this.registerRequiredCSS(searchableViewStyles);
     searchableViewsByElement.set(this.element, this);
 
     this.searchProvider = searchable;

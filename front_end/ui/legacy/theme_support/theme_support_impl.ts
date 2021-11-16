@@ -35,7 +35,9 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
+
+import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.legacy.js';
+import inspectorSyntaxHighlightDarkStyles from '../inspectorSyntaxHighlightDark.css.legacy.js';
 
 let themeSupportInstance: ThemeSupport;
 
@@ -112,9 +114,9 @@ export class ThemeSupport {
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
     this.injectingStyleSheet = true;
-    this.appendStyle(element, 'ui/legacy/inspectorSyntaxHighlight.css');
+    this.appendStyle(element, inspectorSyntaxHighlightStyles);
     if (this.themeNameInternal === 'dark') {
-      this.appendStyle(element, 'ui/legacy/inspectorSyntaxHighlightDark.css');
+      this.appendStyle(element, inspectorSyntaxHighlightDarkStyles);
     }
     this.injectingStyleSheet = false;
   }
@@ -123,13 +125,9 @@ export class ThemeSupport {
    * Note: this is a duplicate of the function in ui/utils. It exists here
    * so there is no circular dependency between ui/utils and theme_support.
    */
-  private appendStyle(node: Node, cssFile: string): void {
-    const content = Root.Runtime.cachedResources.get(cssFile) || '';
-    if (!content) {
-      console.error(cssFile + ' not preloaded. Check module.json');
-    }
+  private appendStyle(node: Node, {cssContent}: {cssContent: string}): void {
     const styleElement = document.createElement('style');
-    styleElement.textContent = content;
+    styleElement.textContent = cssContent;
     node.appendChild(styleElement);
   }
 

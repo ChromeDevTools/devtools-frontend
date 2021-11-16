@@ -43,6 +43,7 @@ import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import type {Widget} from './Widget.js';
 import {VBox} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
+import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -110,7 +111,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/legacy/tabbedPane.css');
+    this.registerRequiredCSS(tabbedPaneStyles);
     this.element.classList.add('tabbed-pane');
     this.contentElement.classList.add('tabbed-pane-shadow');
     this.contentElement.tabIndex = -1;

@@ -37,6 +37,7 @@ import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidge
 import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
+import splitWidgetStyles from './splitWidget.css.legacy.js';
 
 export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
   private sidebarElementInternal: HTMLElement;
@@ -77,7 +78,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       defaultSidebarHeight?: number, constraintsInDip?: boolean) {
     super(true);
     this.element.classList.add('split-widget');
-    this.registerRequiredCSS('ui/legacy/splitWidget.css');
+    this.registerRequiredCSS(splitWidgetStyles);
 
     this.contentElement.classList.add('shadow-split-widget');
     this.sidebarElementInternal =

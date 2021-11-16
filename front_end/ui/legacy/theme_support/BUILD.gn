@@ -18,7 +18,10 @@ devtools_module("theme_support") {
 devtools_entrypoint("bundle") {
   entrypoint = "theme_support.ts"
 
-  deps = [ ":theme_support" ]
+  deps = [
+    ":theme_support",
+    "../:legacy_css_files",
+  ]
 
   visibility = [
     "../*",

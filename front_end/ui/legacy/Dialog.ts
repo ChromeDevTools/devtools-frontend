@@ -39,6 +39,8 @@ import type {DevToolsCloseButton} from './UIUtils.js';
 import type {WidgetElement} from './Widget.js';
 import {WidgetFocusRestorer} from './Widget.js';
 
+import dialogStyles from './dialog.css.legacy.js';
+
 export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
   private tabIndexBehavior: OutsideTabIndexBehavior;
   private tabIndexMap: Map<HTMLElement, number>;
@@ -50,7 +52,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
 
   constructor() {
     super();
-    this.registerRequiredCSS('ui/legacy/dialog.css');
+    this.registerRequiredCSS(dialogStyles);
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     this.widget().setDefaultFocusedElement(this.contentElement);

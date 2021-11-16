@@ -30,6 +30,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 
+import emptyWidgetStyles from './emptyWidget.css.legacy.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
@@ -47,7 +48,7 @@ export class EmptyWidget extends VBox {
 
   constructor(text: string) {
     super();
-    this.registerRequiredCSS('ui/legacy/emptyWidget.css');
+    this.registerRequiredCSS(emptyWidgetStyles);
     this.element.classList.add('empty-view-scroller');
     this.contentElement = this.element.createChild('div', 'empty-view') as HTMLDivElement;
     this.textElement = this.contentElement.createChild('div', 'empty-bold-text');

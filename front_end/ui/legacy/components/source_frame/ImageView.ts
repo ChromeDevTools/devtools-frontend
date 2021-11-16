@@ -96,6 +96,7 @@ export class ImageView extends UI.View.SimpleView {
   private cachedContent?: string|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('ui/legacy/components/source_frame/imageView.css');
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');

@@ -56,6 +56,7 @@ export class GlassPane {
   }
 
   registerRequiredCSS(cssFile: string|{cssContent: string}): void {
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.widgetInternal.registerRequiredCSS(cssFile);
   }
 

@@ -54,6 +54,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   constructor(parsedJSON: ParsedJSON, startCollapsed?: boolean) {
     super();
     this.initialized = false;
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('ui/legacy/components/source_frame/jsonView.css');
     this.parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);

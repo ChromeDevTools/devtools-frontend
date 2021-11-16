@@ -25,9 +25,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 
   constructor(parsedXML: Document) {
     super(true);
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('ui/legacy/components/source_frame/xmlView.css');
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.treeOutline.registerRequiredCSS('ui/legacy/components/source_frame/xmlTree.css');
     this.contentElement.appendChild(this.treeOutline.element);
     this.currentSearchFocusIndex = 0;

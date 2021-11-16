@@ -59,6 +59,7 @@ export class FontView extends UI.View.SimpleView {
   private inResize!: boolean|null;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.font));
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('ui/legacy/components/source_frame/fontView.css');
     this.element.classList.add('font-view');
     this.url = contentProvider.contentURL();

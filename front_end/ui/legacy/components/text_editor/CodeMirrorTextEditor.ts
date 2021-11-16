@@ -93,7 +93,9 @@ export class CodeMirrorTextEditor extends
     super();
     this.options = options;
 
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('third_party/codemirror/codemirror.css');
+    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS('ui/legacy/components/text_editor/cmdevtools.css');
 
     const {indentWithTabs, indentUnit} = CodeMirrorTextEditor.getIndentation(

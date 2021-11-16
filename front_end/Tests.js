@@ -1454,38 +1454,6 @@
     this.releaseControl();
   };
 
-  TestSuite.prototype.testInputDispatchEventsToCorrectTarget = async function() {
-    this.takeControl();
-
-    const mainTarget = self.SDK.targetManager.mainTarget();
-    const otherTarget = await createIsolatedTarget('about:blank');
-
-    const setupLogging = `
-      window.logs = [];
-      ['dragenter', 'keydown', 'mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup',
-       'click', 'touchcancel', 'touchend', 'touchmove', 'touchstart',
-      ].forEach((event) => window.addEventListener(event, (e) => logs.push(e.type)));`;
-    await evalCode(mainTarget, setupLogging);
-    await evalCode(otherTarget, setupLogging);
-
-    const inputAgent = mainTarget.inputAgent();
-    await inputAgent.invoke_dispatchMouseEvent({type: 'mousePressed', button: 'left', clickCount: 1, x: 100, y: 250});
-    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 110, y: 270});
-    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 110, y: 270});
-    await inputAgent.invoke_dispatchDragEvent(
-        {type: 'dragEnter', x: 100, y: 250, data: {items: [], dragOperationsMask: 1}});
-    await inputAgent.invoke_synthesizeTapGesture({x: 100, y: 250});
-    await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
-
-    const mainTargetEvents = await evalCode(mainTarget, ' logs.join(\' \')');
-    const otherTargetEvents = await evalCode(otherTarget, 'logs.join(\' \')');
-    this.assertEquals(
-        'mainTargetEvents: mouseover mousedown mousemove mouseup click dragenter keydown; otherTargetEvents: ',
-        `mainTargetEvents: ${mainTargetEvents}; otherTargetEvents: ${otherTargetEvents}`);
-
-    this.releaseControl();
-  };
-
   TestSuite.prototype.testLoadResourceForFrontend = async function(baseURL, fileURL) {
     const test = this;
     const loggedHeaders = new Set(['cache-control', 'pragma']);

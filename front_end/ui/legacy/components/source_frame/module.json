@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "ui/legacy"
-  ],
     "resources": [
     "fontView.css",
     "imageView.css",

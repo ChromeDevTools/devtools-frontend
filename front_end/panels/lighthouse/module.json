@@ -1,8 +1,7 @@
 {
   "dependencies": [
     "panels/emulation",
-    "panels/timeline",
-    "ui/legacy"
+    "panels/timeline"
   ],
   "resources": [
     "../../third_party/lighthouse/report-assets/standalone-template.html",

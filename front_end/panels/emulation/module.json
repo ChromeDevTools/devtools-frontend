@@ -1,7 +1,5 @@
 {
-  "dependencies": [
-    "ui/legacy"
-  ],
+  "dependencies": [],
     "resources": [
     "deviceModeToolbar.css",
     "deviceModeView.css",

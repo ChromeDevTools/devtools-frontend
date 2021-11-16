@@ -43,9 +43,13 @@ const UIStrings = {
   */
   captureAsyncStackTraces: 'Capture async stack traces',
   /**
-  *@description Text to show the measuring rulers on the target
+  *@description Text of a setting that  turn on the measuring rulers when hover over a target
   */
-  showRulers: 'Show rulers',
+  showRulersOnHover: 'Show rulers on hover',
+  /**
+  *@description Text of a setting that do turn off the measuring rulers when hover over a target
+  */
+  doNotShowRulersOnHover: 'Do not show rulers on hover',
   /**
   *@description Title of a setting that turns on grid area name labels
   */
@@ -436,9 +440,19 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.showRulers),
+  title: i18nLazyString(UIStrings.showRulersOnHover),
   settingName: 'showMetricsRulers',
   settingType: Common.Settings.SettingType.BOOLEAN,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRulersOnHover),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotShowRulersOnHover),
+    },
+  ],
   defaultValue: false,
 });
 

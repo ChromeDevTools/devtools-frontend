@@ -632,6 +632,9 @@
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Do not show grid track sizes"
   },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Do not show rulers on hover"
+  },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Emulate achromatopsia"
   },
@@ -785,8 +788,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Show paint flashing rectangles"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Show rulers"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Show rulers on hover"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Show scroll performance bottlenecks"
@@ -4980,7 +4983,7 @@
     "message": "Hide media queries"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Hide rulers"
+    "message": "Hide rulers in the Device Mode toolbar"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Show device frame"
@@ -4989,7 +4992,7 @@
     "message": "Show media queries"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Show rulers"
+    "message": "Show rulers in the Device Mode toolbar"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Toggle device toolbar"

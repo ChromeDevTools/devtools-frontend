@@ -632,6 +632,9 @@
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "D̂ó n̂ót̂ śĥóŵ ǵr̂íd̂ t́r̂áĉḱ ŝíẑéŝ"
   },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "D̂ó n̂ót̂ śĥóŵ ŕûĺêŕŝ ón̂ h́ôv́êŕ"
+  },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
     "message": "Êḿûĺât́ê áĉh́r̂óm̂át̂óp̂śîá"
   },
@@ -785,8 +788,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Ŝh́ôẃ p̂áîńt̂ f́l̂áŝh́îńĝ ŕêćt̂án̂ǵl̂éŝ"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Ŝh́ôẃ r̂úl̂ér̂ś ôń ĥóv̂ér̂"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Ŝh́ôẃ ŝćr̂ól̂ĺ p̂ér̂f́ôŕm̂án̂ćê b́ôt́t̂ĺêńêćk̂ś"
@@ -4980,7 +4983,7 @@
     "message": "Ĥíd̂é m̂éd̂íâ q́ûér̂íêś"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Ĥíd̂é r̂úl̂ér̂ś"
+    "message": "Ĥíd̂é r̂úl̂ér̂ś îń t̂h́ê D́êv́îćê Ḿôd́ê t́ôól̂b́âŕ"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Ŝh́ôẃ d̂év̂íĉé f̂ŕâḿê"
@@ -4989,7 +4992,7 @@
     "message": "Ŝh́ôẃ m̂éd̂íâ q́ûér̂íêś"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Ŝh́ôẃ r̂úl̂ér̂ś"
+    "message": "Ŝh́ôẃ r̂úl̂ér̂ś îń t̂h́ê D́êv́îćê Ḿôd́ê t́ôól̂b́âŕ"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "T̂óĝǵl̂é d̂év̂íĉé t̂óôĺb̂ár̂"

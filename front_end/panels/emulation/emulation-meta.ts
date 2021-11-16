@@ -47,11 +47,11 @@ const UIStrings = {
   /**
   *@description Command that shows measuring rulers next to the emulated device.
   */
-  showRulers: 'Show rulers',
+  showRulers: 'Show rulers in the Device Mode toolbar',
   /**
   *@description Command that hides measuring rulers next to the emulated device.
   */
-  hideRulers: 'Hide rulers',
+  hideRulers: 'Hide rulers in the Device Mode toolbar',
   /**
   *@description Command that shows a frame (like a picture frame) around the emulated device.
   */

@@ -398,7 +398,9 @@ export function textContentWithLineBreaks(node) {
  * @return {string}
  */
 export function textContentWithLineBreaksTrimmed(node) {
-  return textContentWithLineBreaks(node).replace(/[ ]+/g, ' ');
+  // We want to allow single empty lines (2 white space characters), but
+  // compress occurences of 3 or more whitespaces.
+  return textContentWithLineBreaks(node).replace(/\s{3,}/g, ' ');
 }
 
 /**

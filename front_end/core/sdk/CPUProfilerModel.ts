@@ -29,7 +29,6 @@
  */
 
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -57,6 +56,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   #preciseCoverageDeltaUpdateCallback:
       ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => void)|null;
   readonly #debuggerModelInternal: DebuggerModel;
+  readonly registeredConsoleProfileMessages: ProfileFinishedData[] = [];
 
   constructor(target: Target) {
     super(target);
@@ -92,14 +92,12 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
       title = this.#anonymousConsoleProfileIdToTitle.get(id);
       this.#anonymousConsoleProfileIdToTitle.delete(id);
     }
-    // Make sure ProfilesPanel is initialized and CPUProfileType is created.
-    Root.Runtime.Runtime.instance().loadModulePromise('profiler').then(() => {
-      const eventData: ProfileFinishedData = {
-        ...this.createEventDataFrom(id, location, title),
-        cpuProfile: profile,
-      };
-      this.dispatchEventToListeners(Events.ConsoleProfileFinished, eventData);
-    });
+    const eventData: ProfileFinishedData = {
+      ...this.createEventDataFrom(id, location, title),
+      cpuProfile: profile,
+    };
+    this.registeredConsoleProfileMessages.push(eventData);
+    this.dispatchEventToListeners(Events.ConsoleProfileFinished, eventData);
   }
 
   private createEventDataFrom(id: string, scriptLocation: Protocol.Debugger.Location, title?: string): EventData {

@@ -17,67 +17,67 @@ import backForwardCacheViewStyles from './backForwardCacheView.css.js';
 
 const UIStrings = {
   /**
-   * @description Title text in Back-Forward Cache view of the Application panel
+   * @description Title text in back/forward cache view of the Application panel
    */
   mainFrame: 'Main Frame',
   /**
-   * @description Title text in Back-Forward Cache view of the Application panel
+   * @description Title text in back/forward cache view of the Application panel
    */
-  backForwardCacheTitle: 'Back-Forward Cache',
+  backForwardCacheTitle: 'Back/forward cache',
   /**
    * @description Status text for the status of the main frame
    */
   unavailable: 'unavailable',
   /**
-   * @description Entry name text in the Back-Forward Cache view of the Application panel
+   * @description Entry name text in the back/forward cache view of the Application panel
    */
   url: 'URL',
   /**
-   * @description Entry name text in the Back-Forward Cache view of the Application panel
+   * @description Entry name text in the back/forward cache view of the Application panel
    */
-  bfcacheStatus: 'Back-Forward Cache Status',
+  bfcacheStatus: 'Back/forward cache Status',
   /**
-   * @description Status text for the status of the Back-Forward Cache status
+   * @description Status text for the status of the back/forward cache status
    */
   unknown: 'unknown',
   /**
-   * @description Status text for the status of the Back-Forward Cache status indicating that
-   * the Back-Forward Cache was not used and a normal navigation occured instead.
+   * @description Status text for the status of the back/forward cache status indicating that
+   * the back/forward cache was not used and a normal navigation occured instead.
    */
-  normalNavigation: 'Normal navigation (Not restored from Back-Forward Cache)',
+  normalNavigation: 'Normal navigation (Not restored from back/forward cache)',
   /**
-   * @description Status text for the status of the Back-Forward Cache status indicating that
-   * the Back-Forward Cache was used to restore the page instead of reloading it.
+   * @description Status text for the status of the back/forward cache status indicating that
+   * the back/forward cache was used to restore the page instead of reloading it.
    */
-  restoredFromBFCache: 'Restored from Back-Forward Cache',
+  restoredFromBFCache: 'Restored from back/forward cache',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
-   * Back-Forward Cache. These reasons are actionable i.e. they can be cleaned up to make the
-   * page eligible for Back-Forward Cache.
+   * back/forward cache. These reasons are actionable i.e. they can be cleaned up to make the
+   * page eligible for back/forward cache.
    */
   pageSupportNeeded: 'Actionable',
   /**
    * @description Explanation for actionable items which prevent the page from being eligible
-   * for Back-Forward Cache.
+   * for back/forward cache.
    */
   pageSupportNeededExplanation:
-      'These reasons are actionable i.e. they can be cleaned up to make the page eligible for Back-Forward Cache.',
+      'These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache.',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
-   * Back-Forward Cache. These reasons are circumstantial / not actionable i.e. they cannot be
-   * cleaned up by developers to make the page eligible for Back-Forward Cache.
+   * back/forward cache. These reasons are circumstantial / not actionable i.e. they cannot be
+   * cleaned up by developers to make the page eligible for back/forward cache.
    */
   circumstantial: 'Not Actionable',
   /**
    * @description Explanation for circumstantial/non-actionable items which prevent the page from being eligible
-   * for Back-Forward Cache.
+   * for back/forward cache.
    */
   circumstantialExplanation:
       'These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page.',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
-   * Back-Forward Cache. These reasons are pending support by chrome i.e. in a future version
-   * of chrome they will not prevent Back-Forward Cache usage anymore.
+   * back/forward cache. These reasons are pending support by chrome i.e. in a future version
+   * of chrome they will not prevent back/forward cache usage anymore.
    */
   supportPending: 'Pending Support',
   /**
@@ -86,10 +86,10 @@ const UIStrings = {
   runTest: 'Run Test',
   /**
    * @description Explanation for 'pending support' items which prevent the page from being eligible
-   * for Back-Forward Cache.
+   * for back/forward cache.
    */
   supportPendingExplanation:
-      'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for Back-Forward Cache in a future version of Chrome.',
+      'Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

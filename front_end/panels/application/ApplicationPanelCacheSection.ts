@@ -20,7 +20,7 @@ const UIStrings = {
   /**
   *@description Text in Application Panel Sidebar of the Application panel
   */
-  backForwardCache: 'Back-Forward Cache',
+  backForwardCache: 'Back/forward cache',
   /**
   *@description A context menu item in the Application Panel Sidebar of the Application panel
   */

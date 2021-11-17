@@ -2055,7 +2055,7 @@
     "message": "Stop recording events"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Back-Forward Cache"
+    "message": "Back/forward cache"
   },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Cache Storage"
@@ -2691,10 +2691,10 @@
     "message": "Pages that use WebXR are not currently eligible for back/forward cache."
   },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Back-Forward Cache"
+    "message": "Back/forward cache"
   },
   "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Back-Forward Cache Status"
+    "message": "Back/forward cache Status"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Not Actionable"
@@ -2706,16 +2706,16 @@
     "message": "Main Frame"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from Back-Forward Cache)"
+    "message": "Normal navigation (Not restored from back/forward cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Actionable"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "These reasons are actionable i.e. they can be cleaned up to make the page eligible for Back-Forward Cache."
+    "message": "These reasons are actionable i.e. they can be cleaned up to make the page eligible for back/forward cache."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Restored from Back-Forward Cache"
+    "message": "Restored from back/forward cache"
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
     "message": "Run Test"
@@ -2724,7 +2724,7 @@
     "message": "Pending Support"
   },
   "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for Back-Forward Cache in a future version of Chrome."
+    "message": "Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back/forward cache in a future version of Chrome."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "unavailable"

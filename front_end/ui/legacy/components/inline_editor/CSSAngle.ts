@@ -222,8 +222,7 @@ export class CSSAngle extends HTMLElement {
             .data=${{
               angle: this.angle,
             } as CSSAngleSwatchData}>
-          </${CSSAngleSwatch.litTagName}><slot></slot>
-        </div>
+          </${CSSAngleSwatch.litTagName}><slot></slot></div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
     `, this.shadow, {

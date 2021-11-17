@@ -22,3 +22,7 @@ devtools-css-angle-editor {
   position: fixed;
   z-index: 2;
 }
+
+.preview {
+  display: inline-block;
+}

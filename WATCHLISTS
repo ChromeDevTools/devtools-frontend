@@ -14,7 +14,7 @@
       'filepath': '.',
     },
     'chromedriver': {
-      'filepath': 'front_end/emulated_devices/module.json',
+      'filepath': 'front_end/emulated_devices/',
     },
     'lighthouse': {
       'filepath': '[Ll]ighthouse',

@@ -42,7 +42,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/elements_test_runner/ElementsTestRunner.js",
   "front_end/legacy_test_runner/elements_test_runner/SetOuterHTMLTestRunner.js",
   "front_end/legacy_test_runner/elements_test_runner/StylesUpdateLinksTestRunner.js",
-  "front_end/emulated_devices/module.json",
   "front_end/legacy_test_runner/extensions_test_runner/extensions_test_runner.js",
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/legacy_test_runner/extensions_test_runner/ExtensionsTestRunner.js",

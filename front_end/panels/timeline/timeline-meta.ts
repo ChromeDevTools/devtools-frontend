@@ -103,8 +103,6 @@ async function loadTimelineModule(): Promise<typeof Timeline> {
 
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('profiler');
     loadedProfilerModule = await import('../profiler/profiler.js');
   }
   return loadedProfilerModule;

@@ -58,7 +58,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/performance_test_runner/performance_test_runner.js",
   "front_end/legacy_test_runner/performance_test_runner/TimelineDataTestRunner.js",
   "front_end/legacy_test_runner/performance_test_runner/TimelineTestRunner.js",
-  "front_end/panels/profiler/module.json",
   "front_end/models/issues_manager/descriptions/arAttributionEventSourceTriggerDataTooLarge.md",
   "front_end/models/issues_manager/descriptions/arAttributionSourceUntrustworthyFrameOrigin.md",
   "front_end/models/issues_manager/descriptions/arAttributionSourceUntrustworthyOrigin.md",

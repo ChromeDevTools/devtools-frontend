@@ -1,8 +1,6 @@
 {
   "modules": [
     { "name": "ui/legacy/components/text_editor", "type": "autostart" },
-    { "name": "ui/legacy/components/source_frame", "type": "autostart" },
-
-    { "name": "panels/profiler" }
+    { "name": "ui/legacy/components/source_frame", "type": "autostart" }
   ]
 }

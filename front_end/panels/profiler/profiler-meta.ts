@@ -57,8 +57,6 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 async function loadProfilerModule(): Promise<typeof Profiler> {
   if (!loadedProfilerModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/profiler');
     loadedProfilerModule = await import('./profiler.js');
   }
   return loadedProfilerModule;

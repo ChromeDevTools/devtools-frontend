@@ -8,7 +8,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
-import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -1566,9 +1565,7 @@ UI.ContextMenu.registerProvider({
 
 UI.ContextMenu.registerProvider({
   contextTypes() {
-    return [
-      TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditor,
-    ];
+    return maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]);
   },
   async loadProvider() {
     const Sources = await loadSourcesModule();

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -13,8 +12,6 @@ let loadedScreencastModule: (typeof Screencast|undefined);
 
 async function loadScreencastModule(): Promise<typeof Screencast> {
   if (!loadedScreencastModule) {
-    // Side-effect import rescreencast in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/screencast');
     loadedScreencastModule = await import('./screencast.js');
   }
   return loadedScreencastModule;

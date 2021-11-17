@@ -18,40 +18,6 @@ const gnFile = fs.readFileSync(gnPath, 'utf-8');
 const gnLines = gnFile.split('\n');
 
 /**
- * Ensures that generated module files are in the right list in BUILD.gn.
- * This is primarily to avoid remote modules from accidentally getting
- * bundled with the main Chrome binary.
- */
-function checkNonAutostartNonRemoteModules() {
-  const errors = [];
-  const gnVariable = 'non_autostart_non_remote_modules';
-  const lines = selectGNLines(`${gnVariable} = [`, ']');
-  if (!lines.length) {
-    return [
-      'Could not identify non-autostart non-remote modules in gn file',
-      'Please look at: ' + __filename,
-    ];
-  }
-  const text = lines.join('\n');
-  const modules = manifestModules.filter(m => m.type !== 'autostart').map(m => m.name);
-
-  const missingModules = modules.filter(m => !text.includes(`${m}/${path.basename(m)}_module.js`));
-  if (missingModules.length) {
-    errors.push(`Check that you've included [${missingModules.join(', ')}] modules in: ` + gnVariable);
-  }
-
-  // e.g. "lighthouse/lighthouse_module.js" => "lighthouse"
-  const mapLineToModuleName = line => path.dirname(line.substring(1));
-
-  const extraneousModules = lines.map(mapLineToModuleName).filter(module => !modules.includes(module));
-  if (extraneousModules.length) {
-    errors.push(`Found extraneous modules [${extraneousModules.join(', ')}] in: ` + gnVariable);
-  }
-
-  return errors;
-}
-
-/**
  * Ensures that all source files (according to the various module.json files) are
  * listed in BUILD.gn.
  */
@@ -139,7 +105,6 @@ function selectGNLines(startLine, endLine, linesToCheck = gnLines) {
 
 function main() {
   const errors = [
-    ...checkNonAutostartNonRemoteModules(),
     ...checkAllDevToolsFiles(),
   ];
   if (errors.length) {

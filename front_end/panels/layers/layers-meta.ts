@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Layers from './layers.js';
@@ -25,8 +24,6 @@ let loadedLayersModule: (typeof Layers|undefined);
 
 async function loadLayersModule(): Promise<typeof Layers> {
   if (!loadedLayersModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('panels/layers');
     loadedLayersModule = await import('./layers.js');
   }
   return loadedLayersModule;

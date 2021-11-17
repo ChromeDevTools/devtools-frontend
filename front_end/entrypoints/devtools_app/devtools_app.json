@@ -1,7 +1,6 @@
 {
   "modules" : [
-    { "name": "panels/lighthouse" },
-    { "name": "panels/layers" }
+    { "name": "panels/lighthouse" }
   ],
   "extends": "shell"
 }

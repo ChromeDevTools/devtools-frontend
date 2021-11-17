@@ -491,6 +491,30 @@ function areAffectedResourcesEquivalent(a?: AffectedResources, b?: AffectedResou
   return a?.requestId === b?.requestId;
 }
 
+function areStackTracesEquivalent(
+    stackTrace1?: Protocol.Runtime.StackTrace, stackTrace2?: Protocol.Runtime.StackTrace): boolean {
+  if (!stackTrace1 !== !stackTrace2) {
+    return false;
+  }
+  if (!stackTrace1 || !stackTrace2) {
+    return true;
+  }
+  const callFrames1 = stackTrace1.callFrames;
+  const callFrames2 = stackTrace2.callFrames;
+  if (callFrames1.length !== callFrames2.length) {
+    return false;
+  }
+  for (let i = 0, n = callFrames1.length; i < n; ++i) {
+    if (callFrames1[i].scriptId !== callFrames2[i].scriptId ||
+        callFrames1[i].functionName !== callFrames2[i].functionName ||
+        callFrames1[i].lineNumber !== callFrames2[i].lineNumber ||
+        callFrames1[i].columnNumber !== callFrames2[i].columnNumber) {
+      return false;
+    }
+  }
+  return areStackTracesEquivalent(stackTrace1.parent, stackTrace2.parent);
+}
+
 export interface ConsoleMessageDetails {
   type?: MessageType;
   url?: string;
@@ -659,10 +683,6 @@ export class ConsoleMessage {
       return false;
     }
 
-    if (!this.isEqualStackTraces(this.stackTrace, msg.stackTrace)) {
-      return false;
-    }
-
     if (this.parameters) {
       if (!msg.parameters || this.parameters.length !== msg.parameters.length) {
         return false;
@@ -695,30 +715,8 @@ export class ConsoleMessage {
         (this.level === msg.level) && (this.line === msg.line) && (this.url === msg.url) &&
         (bothAreWatchExpressions || this.scriptId === msg.scriptId) && (this.messageText === msg.messageText) &&
         (this.#executionContextId === msg.#executionContextId) &&
-        areAffectedResourcesEquivalent(this.#affectedResources, msg.#affectedResources);
-  }
-
-  private isEqualStackTraces(
-      stackTrace1: Protocol.Runtime.StackTrace|undefined, stackTrace2: Protocol.Runtime.StackTrace|undefined): boolean {
-    if (!stackTrace1 !== !stackTrace2) {
-      return false;
-    }
-    if (!stackTrace1 || !stackTrace2) {
-      return true;
-    }
-    const callFrames1 = stackTrace1.callFrames;
-    const callFrames2 = stackTrace2.callFrames;
-    if (callFrames1.length !== callFrames2.length) {
-      return false;
-    }
-    for (let i = 0, n = callFrames1.length; i < n; ++i) {
-      if (callFrames1[i].url !== callFrames2[i].url || callFrames1[i].functionName !== callFrames2[i].functionName ||
-          callFrames1[i].lineNumber !== callFrames2[i].lineNumber ||
-          callFrames1[i].columnNumber !== callFrames2[i].columnNumber) {
-        return false;
-      }
-    }
-    return this.isEqualStackTraces(stackTrace1.parent, stackTrace2.parent);
+        areAffectedResourcesEquivalent(this.#affectedResources, msg.#affectedResources) &&
+        areStackTracesEquivalent(this.stackTrace, msg.stackTrace);
   }
 }
 

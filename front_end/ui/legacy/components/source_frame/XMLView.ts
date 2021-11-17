@@ -7,6 +7,9 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
+import xmlTreeStyles from './xmlTree.css.legacy.js';
+import xmlViewStyles from './xmlView.css.legacy.js';
+
 const UIStrings = {
   /**
   *@description Text to find an item
@@ -26,11 +29,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
   constructor(parsedXML: Document) {
     super(true);
     // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
-    this.registerRequiredCSS('ui/legacy/components/source_frame/xmlView.css');
+    this.registerRequiredCSS(xmlViewStyles);
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
-    this.treeOutline.registerRequiredCSS('ui/legacy/components/source_frame/xmlTree.css');
+    this.treeOutline.registerRequiredCSS(xmlTreeStyles);
     this.contentElement.appendChild(this.treeOutline.element);
     this.currentSearchFocusIndex = 0;
     this.currentSearchTreeElements = [];

@@ -37,6 +37,7 @@ import * as UI from '../../legacy.js';
 
 import type {SourceFrameOptions} from './SourceFrame.js';
 import {SourceFrameImpl} from './SourceFrame.js';
+import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -84,7 +85,7 @@ export class SearchableContainer extends UI.Widget.VBox {
   constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, autoPrettyPrint?: boolean) {
     super(true);
     // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
-    this.registerRequiredCSS('ui/legacy/components/source_frame/resourceSourceFrame.css');
+    this.registerRequiredCSS(resourceSourceFrameStyles);
     const sourceFrame = new ResourceSourceFrame(resource, contentType);
     this.sourceFrame = sourceFrame;
     const canPrettyPrint =

@@ -42,5 +42,4 @@ export function legacyGetStyleSheets(path: string): CSSStyleSheet[] {
  */
 export const CSS_RESOURCES_TO_LOAD_INTO_RUNTIME = [
   'panels/application/serviceWorkerUpdateCycleView.css',
-  'ui/legacy/components/source_frame/jsonView.css',
 ];

@@ -399,7 +399,7 @@ export class TreeOutlineInShadow extends TreeOutline {
     this.renderSelection = true;
   }
 
-  registerRequiredCSS(cssFile: string): void {
+  registerRequiredCSS(cssFile: string|{cssContent: string}): void {
     Utils.appendStyle(this.shadowRoot, cssFile);
   }
 

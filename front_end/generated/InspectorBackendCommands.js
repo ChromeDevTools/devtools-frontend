@@ -98,6 +98,8 @@ export function registerCommands(inspectorBackend) {
     Labelledby: 'labelledby',
     Owns: 'owns'
   });
+  inspectorBackend.registerEvent('Accessibility.loadComplete', ['root']);
+  inspectorBackend.registerEvent('Accessibility.nodesUpdated', ['nodes']);
   inspectorBackend.registerCommand('Accessibility.disable', [], []);
   inspectorBackend.registerCommand('Accessibility.enable', [], []);
   inspectorBackend.registerCommand(
@@ -115,6 +117,16 @@ export function registerCommands(inspectorBackend) {
         {'name': 'depth', 'type': 'number', 'optional': true},
         {'name': 'max_depth', 'type': 'number', 'optional': true},
         {'name': 'frameId', 'type': 'string', 'optional': true}
+      ],
+      ['nodes']);
+  inspectorBackend.registerCommand(
+      'Accessibility.getRootAXNode', [{'name': 'frameId', 'type': 'string', 'optional': true}], ['node']);
+  inspectorBackend.registerCommand(
+      'Accessibility.getAXNodeAndAncestors',
+      [
+        {'name': 'nodeId', 'type': 'number', 'optional': true},
+        {'name': 'backendNodeId', 'type': 'number', 'optional': true},
+        {'name': 'objectId', 'type': 'string', 'optional': true}
       ],
       ['nodes']);
   inspectorBackend.registerCommand(
@@ -1994,6 +2006,7 @@ export function registerCommands(inspectorBackend) {
     Hid: 'hid',
     IdleDetection: 'idle-detection',
     InterestCohort: 'interest-cohort',
+    JoinAdInterestGroup: 'join-ad-interest-group',
     KeyboardMap: 'keyboard-map',
     Magnetometer: 'magnetometer',
     Microphone: 'microphone',
@@ -2002,6 +2015,7 @@ export function registerCommands(inspectorBackend) {
     Payment: 'payment',
     PictureInPicture: 'picture-in-picture',
     PublickeyCredentialsGet: 'publickey-credentials-get',
+    RunAdAuction: 'run-ad-auction',
     ScreenWakeLock: 'screen-wake-lock',
     Serial: 'serial',
     SharedAutofill: 'shared-autofill',
@@ -2453,6 +2467,10 @@ export function registerCommands(inspectorBackend) {
       [{'name': 'url', 'type': 'string', 'optional': false}, {'name': 'data', 'type': 'string', 'optional': false}],
       []);
   inspectorBackend.registerCommand('Page.clearCompilationCache', [], []);
+  inspectorBackend.registerEnum(
+      'Page.SetSPCTransactionModeRequestMode', {None: 'none', Autoaccept: 'autoaccept', Autoreject: 'autoreject'});
+  inspectorBackend.registerCommand(
+      'Page.setSPCTransactionMode', [{'name': 'mode', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Page.generateTestReport',
       [{'name': 'message', 'type': 'string', 'optional': false}, {'name': 'group', 'type': 'string', 'optional': true}],

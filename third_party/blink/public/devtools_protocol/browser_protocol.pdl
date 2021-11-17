@@ -176,10 +176,14 @@ experimental domain Accessibility
       optional AXValue value
       # All other properties
       optional array of AXProperty properties
+      # ID for this node's parent.
+      optional AXNodeId parentId
       # IDs for each of this node's child nodes.
       optional array of AXNodeId childIds
       # The backend ID for the associated DOM node, if any.
       optional DOM.BackendNodeId backendDOMNodeId
+      # The frame ID for the frame associated with this nodes document.
+      optional Page.FrameId frameId
 
   # Disables the accessibility domain.
   command disable
@@ -218,6 +222,29 @@ experimental domain Accessibility
     returns
       array of AXNode nodes
 
+  # Fetches the root node.
+  # Requires `enable()` to have been called previously.
+  experimental command getRootAXNode
+    parameters
+      # The frame in whose document the node resides.
+      # If omitted, the root frame is used.
+      optional Page.FrameId frameId
+    returns
+      AXNode node
+
+  # Fetches a node and all ancestors up to and including the root.
+  # Requires `enable()` to have been called previously.
+  experimental command getAXNodeAndAncestors
+    parameters
+      # Identifier of the node to get.
+      optional DOM.NodeId nodeId
+      # Identifier of the backend node to get.
+      optional DOM.BackendNodeId backendNodeId
+      # JavaScript object id of the node wrapper to get.
+      optional Runtime.RemoteObjectId objectId
+    returns
+      array of AXNode nodes
+
   # Fetches a particular accessibility node by AXNodeId.
   # Requires `enable()` to have been called previously.
   experimental command getChildAXNodes
@@ -249,6 +276,19 @@ experimental domain Accessibility
     returns
       # A list of `Accessibility.AXNode` matching the specified attributes,
       # including nodes that are ignored for accessibility.
+      array of AXNode nodes
+
+  # The loadComplete event mirrors the load complete event sent by the browser to assistive
+  # technology when the web page has finished loading.
+  experimental event loadComplete
+    parameters
+      # New document root node.
+      AXNode root
+
+  # The nodesUpdated event is sent every time a previously requested node has changed the in tree.
+  experimental event nodesUpdated
+    parameters
+      # Updated node data.
       array of AXNode nodes
 
 experimental domain Animation
@@ -3356,8 +3396,8 @@ domain Emulation
   experimental type UserAgentMetadata extends object
     properties
       optional array of UserAgentBrandVersion brands
-      deprecated optional string fullVersion
       optional array of UserAgentBrandVersion fullVersionList
+      deprecated optional string fullVersion
       string platform
       string platformVersion
       string architecture
@@ -4785,8 +4825,9 @@ domain Network
       string logDescription
       # Log ID.
       string logId
-      # Issuance date.
-      TimeSinceEpoch timestamp
+      # Issuance date. Unlike TimeSinceEpoch, this contains the number of
+      # milliseconds since January 1, 1970, UTC, not the number of seconds.
+      number timestamp
       # Hash algorithm.
       string hashAlgorithm
       # Signature algorithm.
@@ -6739,7 +6780,6 @@ domain Page
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
-      # Soon to be deprecated, using ch-ua-full-version-list instead
       ch-ua-full-version
       ch-ua-full-version-list
       ch-ua-platform-version
@@ -6765,6 +6805,7 @@ domain Page
       hid
       idle-detection
       interest-cohort
+      join-ad-interest-group
       keyboard-map
       magnetometer
       microphone
@@ -6773,6 +6814,7 @@ domain Page
       payment
       picture-in-picture
       publickey-credentials-get
+      run-ad-auction
       screen-wake-lock
       serial
       shared-autofill
@@ -7647,6 +7689,15 @@ domain Page
   # Clears seeded compilation cache.
   experimental command clearCompilationCache
 
+  # Sets the Secure Payment Confirmation transaction mode.
+  # https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+  experimental command setSPCTransactionMode
+    parameters
+      enum mode
+        none
+        autoaccept
+        autoreject
+
   # Generates a report for testing.
   experimental command generateTestReport
     parameters
@@ -8338,20 +8389,20 @@ domain Security
       # Security state information about the page.
       VisibleSecurityState visibleSecurityState
 
-  # The security state of the page changed.
-  event securityStateChanged
+  # The security state of the page changed. No longer being sent.
+  deprecated event securityStateChanged
     parameters
       # Security state.
       SecurityState securityState
       # True if the page was loaded over cryptographic transport such as HTTPS.
       deprecated boolean schemeIsCryptographic
-      # List of explanations for the security state. If the overall security state is `insecure` or
-      # `warning`, at least one corresponding explanation should be included.
-      array of SecurityStateExplanation explanations
+      # Previously a list of explanations for the security state. Now always
+      # empty.
+      deprecated array of SecurityStateExplanation explanations
       # Information about insecure content on the page.
       deprecated InsecureContentStatus insecureContentStatus
-      # Overrides user-visible description of the state.
-      optional string summary
+      # Overrides user-visible description of the state. Always omitted.
+      deprecated optional string summary
 
 experimental domain ServiceWorker
   depends on Target

@@ -2,8 +2,7 @@
   "modules" : [
     { "name": "panels/lighthouse" },
     { "name": "emulated_devices" },
-    { "name": "panels/layers" },
-    { "name": "panels/timeline" }
+    { "name": "panels/layers" }
   ],
   "extends": "shell"
 }

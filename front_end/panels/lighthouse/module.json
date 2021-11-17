@@ -1,7 +1,4 @@
 {
-  "dependencies": [
-    "panels/timeline"
-  ],
   "resources": [
     "../../third_party/lighthouse/report-assets/standalone-template.html",
     "../../third_party/lighthouse/report-assets/report.js"

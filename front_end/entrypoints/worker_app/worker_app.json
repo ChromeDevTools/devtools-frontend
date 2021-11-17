@@ -1,6 +1,4 @@
 {
-  "modules" : [
-    { "name": "panels/timeline" }
-  ],
+  "modules" : [],
   "extends": "shell"
 }

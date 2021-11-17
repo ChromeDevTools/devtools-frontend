@@ -51,8 +51,6 @@ let loadedPerfUIModule: (typeof PerfUI|undefined);
 
 async function loadPerfUIModule(): Promise<typeof PerfUI> {
   if (!loadedPerfUIModule) {
-    // Side-effect import resources in module.json
-    await Root.Runtime.Runtime.instance().loadModulePromise('perf_ui');
     loadedPerfUIModule = await import('./perf_ui.js');
   }
   return loadedPerfUIModule;

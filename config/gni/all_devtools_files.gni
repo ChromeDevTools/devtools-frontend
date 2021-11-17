@@ -139,7 +139,6 @@ all_devtools_files = [
   "front_end/ui/legacy/components/text_editor/module.json",
   "front_end/third_party/lighthouse/report-assets/report.js",
   "front_end/third_party/lighthouse/report-assets/standalone-template.html",
-  "front_end/panels/timeline/module.json",
 ]
 
 lighthouse_locale_files = [

@@ -90,7 +90,7 @@ export const enum QueryType {
   PropertyExpression = 2,
 }
 
-export function getQueryType(tree: CodeMirror.Tree, pos: number): {
+export function getQueryType(tree: CodeMirror.Tree, pos: number, doc: CodeMirror.Text): {
   type: QueryType,
   from?: number,
   relatedNode?: CodeMirror.SyntaxNode,
@@ -101,12 +101,14 @@ export function getQueryType(tree: CodeMirror.Tree, pos: number): {
     return null;
   }
 
-  if (node.name === 'VariableName') {
-    return {type: QueryType.Expression, from: node.from};
-  }
   if (node.name === 'PropertyName') {
     return parent?.name !== 'MemberExpression' ? null :
                                                  {type: QueryType.PropertyName, from: node.from, relatedNode: parent};
+  }
+  if (node.name === 'VariableName' ||
+      // Treat alphabetic keywords as variables
+      !node.firstChild && node.to - node.from < 20 && !/[^a-z]/.test(doc.sliceString(node.from, node.to))) {
+    return {type: QueryType.Expression, from: node.from};
   }
   if (node.name === 'String') {
     const parent = node.parent;
@@ -134,8 +136,8 @@ export function getQueryType(tree: CodeMirror.Tree, pos: number): {
 
 export async function javascriptCompletionSource(cx: CodeMirror.CompletionContext):
     Promise<CodeMirror.CompletionResult|null> {
-  const query = getQueryType(CodeMirror.syntaxTree(cx.state), cx.pos);
-  if (!query || query.from === undefined && !cx.explicit) {
+  const query = getQueryType(CodeMirror.syntaxTree(cx.state), cx.pos, cx.state.doc);
+  if (!query || query.from === undefined && !cx.explicit && query.type === QueryType.Expression) {
     return null;
   }
 
@@ -162,7 +164,8 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
     if (!objectExpr) {
       return null;
     }
-    result = await completeProperties(cx.state.sliceDoc(objectExpr.from, objectExpr.to), quote);
+    result = await completeProperties(
+        cx.state.sliceDoc(objectExpr.from, objectExpr.to), quote, cx.state.sliceDoc(cx.pos, cx.pos + 1) === ']');
   } else {
     return null;
   }
@@ -250,6 +253,7 @@ class PropertyCache {
 async function completeProperties(
     expression: string,
     quoted?: string,
+    hasBracket: boolean = false,
     ): Promise<CompletionSet> {
   const cache = PropertyCache.instance();
   if (!quoted) {
@@ -262,7 +266,7 @@ async function completeProperties(
   if (!context) {
     return new CompletionSet();
   }
-  const result = completePropertiesInner(expression, context, quoted);
+  const result = completePropertiesInner(expression, context, quoted, hasBracket);
   if (!quoted) {
     cache.set(expression, result);
   }
@@ -275,6 +279,7 @@ async function completePropertiesInner(
     expression: string,
     context: SDK.RuntimeModel.ExecutionContext,
     quoted?: string,
+    hasBracket: boolean = false,
     ): Promise<CompletionSet> {
   const result = new CompletionSet();
   if (!context) {
@@ -313,7 +318,7 @@ async function completePropertiesInner(
           label,
           type: prop.value?.type === 'function' ? functionType : otherType,
         };
-        if (quoted) {
+        if (quoted && !hasBracket) {
           completion.apply = label + ']';
         }
         if (!prop.isOwn) {

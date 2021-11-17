@@ -4,7 +4,7 @@
 
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Console Tab', async () => {
@@ -33,15 +33,15 @@ describe('The Console Tab', async () => {
   async function objectAutocompleteTest(textAfterObject: string) {
     const {frontend} = getBrowserAndPages();
 
-    const appearPromise = waitFor('.suggest-box');
+    const appearPromise = waitFor(CONSOLE_TOOLTIP_SELECTOR);
     await typeText('object');
     await appearPromise;
 
-    const disappearPromise = waitForNone('.suggest-box');
+    const disappearPromise = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
     await frontend.keyboard.press('Escape');
     await disappearPromise;
 
-    const appearPromise2 = waitFor('.suggest-box');
+    const appearPromise2 = waitFor(CONSOLE_TOOLTIP_SELECTOR);
     await typeText(textAfterObject);
     await appearPromise2;
 

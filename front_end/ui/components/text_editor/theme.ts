@@ -18,7 +18,7 @@ export const editorTheme = CM.EditorView.theme({
     fontSize: 'var(--source-code-font-size)',
   },
 
-  '.cm-panels, .cm-tooltip': {
+  '.cm-panels': {
     backgroundColor: 'var(--color-background-elevation-1)',
   },
 
@@ -110,23 +110,48 @@ export const editorTheme = CM.EditorView.theme({
     color: 'var(--color-text-secondary)',
   },
 
+  '.cm-tooltip': {
+    boxShadow: 'var(--drop-shadow)',
+    backgroundColor: 'var(--color-background-elevation-1)',
+  },
+
   '.cm-argumentHints': {
     pointerEvents: 'none',
     padding: '0 4px',
     whiteSpace: 'nowrap',
     lineHeight: '20px',
     marginBottom: '4px',
-    boxShadow: 'var(--drop-shadow)',
-    backgroundColor: 'var(--color-background)',
     width: 'fit-content',
   },
 
   '.cm-tooltip.cm-tooltip-autocomplete > ul': {
+    backgroundColor: 'var(--color-background)',
     minWidth: '16em',
+    '& > li.cm-secondaryCompletion': {
+      display: 'flex',
+      backgroundColor: 'var(--color-background-elevation-1)',
+      justifyContent: 'space-between',
+      '&::before': {
+        content: '">"',
+        fontWeight: 'bold',
+        color: 'var(--color-primary-variant)',
+        marginRight: '5px',
+      },
+    },
+    '& > li:hover': {
+      backgroundColor: 'var(--item-hover-color)',
+    },
     '& > li[aria-selected]': {
       backgroundColor: 'var(--color-selected-option-background)',
-      color: 'var(--color-selected-option)',
+      '&, &.cm-secondaryCompletion::before': {
+        color: 'var(--color-selected-option)',
+      },
     },
+  },
+
+  '.cm-completionMatchedText': {
+    textDecoration: 'none',
+    fontWeight: 'bold',
   },
 
   '.cm-highlightedLine': {

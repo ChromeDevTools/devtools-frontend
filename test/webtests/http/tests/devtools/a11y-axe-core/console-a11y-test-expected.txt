@@ -1,4 +1,23 @@
 Tests accessibility in the console using the axe-core linter.
-aXe violations: []
+aXe violations: [
+  {
+    "ruleDescription": "Ensures ARIA attributes are allowed for an element's role",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/3.3/aria-allowed-attr?application=axeAPI",
+    "ruleId": "aria-allowed-attr",
+    "impact": "critical",
+    "failedNodes": [
+      {
+        "target": [
+          [
+            "devtools-text-editor",
+            ".cm-content"
+          ]
+        ],
+        "html": "<div spellcheck=\"false\" autocorrect=\"off\" autocapitalize=\"off\" translate=\"no\" contenteditable=\"true\" class=\"cm-content cm-lineWrapping\" style=\"tab-size: 4\" role=\"textbox\" aria-multiline=\"true\" aria-label=\"Console prompt\" aria-autocomplete=\"list\" aria-expanded=\"false\">",
+        "failureSummary": "Fix any of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\""
+      }
+    ]
+  }
+]
 
 

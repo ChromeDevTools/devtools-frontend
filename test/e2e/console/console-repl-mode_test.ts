@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async function() {
   // The tests in this suite are particularly slow, as they perform a lot of actions
@@ -32,11 +32,11 @@ describe('The Console Tab', async function() {
     //   4. Hit enter
     //   5. Wait for the results to show up and verify them.
 
-    const appearPromise = waitFor('.suggest-box');
+    const appearPromise = waitFor(CONSOLE_TOOLTIP_SELECTOR);
     await typeText('let');
     await appearPromise;
 
-    const disappearPromise = waitForNone('.suggest-box');
+    const disappearPromise = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
     await frontend.keyboard.press('Escape');
     await disappearPromise;
 
@@ -46,11 +46,11 @@ describe('The Console Tab', async function() {
       return document.querySelectorAll('.console-user-command-result').length === 1;
     });
 
-    const appearPromise2 = waitFor('.suggest-box');
+    const appearPromise2 = waitFor(CONSOLE_TOOLTIP_SELECTOR);
     await typeText('let');
     await appearPromise2;
 
-    const disappearPromise2 = waitForNone('.suggest-box');
+    const disappearPromise2 = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
     await frontend.keyboard.press('Escape');
     await disappearPromise2;
 
@@ -60,11 +60,11 @@ describe('The Console Tab', async function() {
       return document.querySelectorAll('.console-user-command-result').length === 2;
     });
 
-    const appearPromise3 = waitFor('.suggest-box');
+    const appearPromise3 = waitFor(CONSOLE_TOOLTIP_SELECTOR);
     await typeText('x');
     await appearPromise3;
 
-    const disappearPromise3 = waitForNone('.suggest-box');
+    const disappearPromise3 = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
     await frontend.keyboard.press('Escape');
     await disappearPromise3;
 

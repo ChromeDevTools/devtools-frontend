@@ -68,7 +68,10 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.k
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
-export const autocompletion = CM.autocompletion({icons: false});
+export const autocompletion = CM.autocompletion({
+  icons: false,
+  optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+});
 
 export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);
 
@@ -287,12 +290,12 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
   }
 
   topCompletion(state: CM.EditorState): string|null {
-    const completions = CM.currentCompletions(state);
-    if (!completions.length) {
+    const completion = CM.selectedCompletion(state);
+    if (!completion) {
       return null;
     }
-    const {label} = completions[0];
-    if (label.length > 100 || label.indexOf('\n') > -1) {
+    const {label, type} = completion;
+    if (label.length > 100 || label.indexOf('\n') > -1 || type === 'secondary') {
       return null;
     }
     const pos = state.selection.main.head;

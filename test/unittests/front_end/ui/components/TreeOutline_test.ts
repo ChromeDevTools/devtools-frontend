@@ -14,10 +14,12 @@ const {assert} = chai;
 async function renderTreeOutline<TreeNodeDataType>({
   tree,
   defaultRenderer,
+  filter,
 }: {
   tree: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType>['tree'],
   // defaultRenderer is required usually but here we make it optinal and provide a default one as part of renderTreeOutline, to save duplication in every single test where we want to use a simple string renderer.
   defaultRenderer?: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType>['defaultRenderer'],
+  filter?: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType>['filter'],
 }): Promise<{
   component: TreeOutline.TreeOutline.TreeOutline<TreeNodeDataType>,
   shadowRoot: ShadowRoot,
@@ -27,6 +29,7 @@ async function renderTreeOutline<TreeNodeDataType>({
     tree,
     defaultRenderer: defaultRenderer ||
         ((node: TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => LitHtml.html`${node.treeNodeData}`),
+    filter,
   };
   component.data = data;
   renderElementIntoDOM(component);
@@ -206,6 +209,7 @@ interface VisibleTreeNodeFromDOM {
   renderedKey: string;
   children?: VisibleTreeNodeFromDOM[];
 }
+
 /**
  * Converts the nodes into a tree structure that we can assert against.
  */
@@ -1359,5 +1363,33 @@ describe('TreeOutlineUtils', () => {
       const path = await TreeOutline.TreeOutlineUtils.getPathToTreeNode(basicTreeData, '-1');
       assert.strictEqual(path, null);
     });
+  });
+});
+
+describe('TreeOutlineFiltering', () => {
+  it('can flatten nodes', async () => {
+    const {component, shadowRoot} = await renderTreeOutline({
+      tree: [nodeAustralia],
+      filter: node => node === 'SA' || node === 'NSW' || node === 'Adelaide' ?
+          TreeOutline.TreeOutline.FilterOption.FLATTEN :
+          TreeOutline.TreeOutline.FilterOption.SHOW,
+    });
+
+    await component.expandRecursively();
+    await coordinator.done();
+    await waitForRenderedTreeNodeCount(shadowRoot, 7);
+    const visibleTree = visibleNodesToTree(shadowRoot);
+
+    assert.deepEqual(visibleTree, [{
+                       renderedKey: 'Australia',
+                       children: [
+                         {renderedKey: 'Toorak Gardens'},
+                         {renderedKey: 'Woodville South'},
+                         {renderedKey: 'Gawler'},
+                         {renderedKey: 'Glebe'},
+                         {renderedKey: 'Newtown'},
+                         {renderedKey: 'Camperdown'},
+                       ],
+                     }]);
   });
 });

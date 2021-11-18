@@ -24,6 +24,7 @@ export interface TreeOutlineData<TreeNodeDataType> {
    * cause issues in the TreeOutline.
    */
   tree: readonly TreeNode<TreeNodeDataType>[];
+  filter?: (node: TreeNodeDataType) => FilterOption;
 }
 
 export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult {
@@ -66,6 +67,19 @@ export class ItemMouseOutEvent<TreeNodeDataType> extends Event {
   }
 }
 
+/**
+ *
+ * The tree can be filtered by providing a custom filter function.
+ * The filter is applied on every node when constructing the tree
+ * and proceeds as follows:
+ * - If the filter return SHOW for a node, the node is included in the tree.
+ * - If the filter returns FLATTEN, the node is ignored but its subtree is included.
+ */
+export const enum FilterOption {
+  SHOW = 'SHOW',
+  FLATTEN = 'FLATTEN',
+}
+
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-tree-outline`;
   private readonly shadow = this.attachShadow({mode: 'open'});
@@ -91,6 +105,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         }
         return LitHtml.html`${String(node.treeNodeData)}`;
       };
+  private nodeFilter?: ((node: TreeNodeDataType) => FilterOption);
 
   /**
    * scheduledRender = render() has been called and scheduled a render.
@@ -134,6 +149,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   set data(data: TreeOutlineData<TreeNodeDataType>) {
     this.defaultRenderer = data.defaultRenderer;
     this.treeData = data.tree;
+    this.nodeFilter = data.filter;
     if (!this.hasRenderedAtLeastOnce) {
       this.selectedTreeNode = this.treeData[0];
     }
@@ -231,7 +247,22 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   private async fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
-    return getNodeChildren(node);
+    const children = await getNodeChildren(node);
+    if (!this.nodeFilter) {
+      return children;
+    }
+    const filteredChildren = [];
+    for (const child of children) {
+      const filtering = this.nodeFilter(child.treeNodeData);
+      // We always include the selected node in the tree, regardless of its filtering status.
+      if (filtering === FilterOption.SHOW || this.isSelectedNode(child) || child.id === this.nodeIdPendingFocus) {
+        filteredChildren.push(child);
+      } else if (filtering === FilterOption.FLATTEN && isExpandableNode(child)) {
+        const grandChildren = await this.fetchNodeChildren(child);
+        filteredChildren.push(...grandChildren);
+      }
+    }
+    return filteredChildren;
   }
 
   private setNodeExpandedState(node: TreeNode<TreeNodeDataType>, newExpandedState: boolean): void {

@@ -30,6 +30,8 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   private section?: StylePropertiesSection;
   private editorContainer: HTMLElement;
 
+  #propertyIndex = -1;
+
   constructor() {
     super(true);
     this.contentElement.tabIndex = 0;
@@ -71,6 +73,14 @@ export class StyleEditorWidget extends UI.Widget.VBox {
     this.editor?.addEventListener('propertydeselected', this.onPropertyDeselected);
   }
 
+  setPropertyIndex(value: number): void {
+    this.#propertyIndex = value;
+  }
+
+  getPropertyIndex(): number {
+    return this.#propertyIndex;
+  }
+
   unbindContext(): void {
     this.pane = undefined;
     this.section = undefined;
@@ -105,8 +115,8 @@ export class StyleEditorWidget extends UI.Widget.VBox {
   }
 
   static createTriggerButton(
-      pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor},
-      buttonTitle: string): HTMLElement {
+      pane: StylesSidebarPane, section: StylePropertiesSection, editorClass: {new(): Editor}, buttonTitle: string,
+      propertyIndex: number): HTMLElement {
     const triggerButton = createButton(buttonTitle);
 
     triggerButton.onclick = async(event): Promise<void> => {
@@ -115,6 +125,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
       const widget = StyleEditorWidget.instance();
       widget.setEditor(editorClass);
       widget.bindContext(pane, section);
+      widget.setPropertyIndex(propertyIndex);
       await widget.render();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass('style-panes-wrapper');
       const onScroll = (): void => {

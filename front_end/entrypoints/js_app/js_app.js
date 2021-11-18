@@ -4,6 +4,6 @@
 import '../shell/shell.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import './JsMain.js';
-import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Startup from '../startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('js_app');

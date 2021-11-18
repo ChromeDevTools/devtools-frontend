@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as WasmParserWorker from './wasmparser_worker.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as WasmParserWorker from './wasmparser_worker.js';
 
 self.onmessage = (event: {data: {method: string, params: {content: string}}}): void => {
   const method = event.data.method;

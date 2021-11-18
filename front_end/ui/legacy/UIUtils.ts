@@ -46,7 +46,7 @@ import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
-import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as ThemeSupport from './theme_support/theme_support.js';
 import * as Utils from './utils/utils.js';
 
 import type {ToolbarButton} from './Toolbar.js';

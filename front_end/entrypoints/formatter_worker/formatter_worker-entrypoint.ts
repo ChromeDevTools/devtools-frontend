@@ -8,7 +8,7 @@ import '../../third_party/codemirror/package/mode/xml/xml.js';
 import '../../third_party/codemirror/package/mode/javascript/javascript.js';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as FormatterWorker from './formatter_worker.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as FormatterWorker from './formatter_worker.js';
 
 import {FormatterActions} from './FormatterActions.js';
 

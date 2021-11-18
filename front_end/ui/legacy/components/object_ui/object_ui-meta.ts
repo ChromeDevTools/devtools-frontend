@@ -5,7 +5,6 @@
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as ObjectUI from './object_ui.js';
 
 let loadedObjectUIModule: (typeof ObjectUI|undefined);

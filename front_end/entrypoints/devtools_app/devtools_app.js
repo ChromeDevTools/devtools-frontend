@@ -3,6 +3,6 @@
 // found in the LICENSE file.
 import '../shell/shell.js';
 import './devtools_app-meta-files.js';
-import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Startup from '../startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('devtools_app');

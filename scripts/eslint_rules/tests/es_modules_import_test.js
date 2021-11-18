@@ -106,6 +106,14 @@ ruleTester.run('es_modules_import', rule, {
       code: 'import * as ConsoleCounters from \'../console_counters/console_counters.js\';',
       filename: 'front_end/panels/console/ConsoleView.ts',
     },
+    {
+      code: 'import * as Elements from \'./elements.js\';',
+      filename: 'front_end/panels/elements/elements-meta.ts',
+    },
+    {
+      code: 'import * as Elements from \'./elements.js\';',
+      filename: 'front_end/panels/elements/elements-entrypoint.ts',
+    },
     // Tests are allowed to import from front_end
     {
       code: 'import * as UI from \'../../../front_end/ui/ui.js\';',

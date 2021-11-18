@@ -5,7 +5,7 @@ import '../shell/shell.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import '../node_main/node_main-meta.js';
 import './node_app-meta.js';
-import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Startup from '../startup/startup.js';
 
 // Side-effect start the `node_main` module, which implements runnables in
 // the NodeMain class

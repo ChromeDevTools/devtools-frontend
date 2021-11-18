@@ -13,6 +13,6 @@ import '../../panels/network/network-meta.js';
 import '../../panels/application/application-meta.js';
 import '../../panels/timeline/timeline-meta.js';
 import './WorkerMain.js';
-import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Startup from '../startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('worker_app');

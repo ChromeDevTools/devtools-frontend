@@ -5,7 +5,7 @@
 import '../../core/dom_extension/dom_extension.js';
 import '../../Images/Images.js';
 
-import * as Platform from '../../core/platform/platform.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Platform from '../../core/platform/platform.js';
 
 Platform.runOnWindowLoad(() => {
   if (!window.opener) {

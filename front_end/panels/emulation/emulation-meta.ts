@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as Emulation from './emulation.js';
 
 import * as i18n from '../../core/i18n/i18n.js';

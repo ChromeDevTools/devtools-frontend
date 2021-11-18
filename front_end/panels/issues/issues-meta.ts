@@ -7,7 +7,6 @@ import * as Root from '../../core/root/root.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as Issues from './issues.js';
 
 import * as i18n from '../../core/i18n/i18n.js';

@@ -6,6 +6,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import type * as InspectorMain from './inspector_main.js';
+
 const UIStrings = {
   /**
   * @description Title of the Rendering tool. The rendering tool is a collection of settings that
@@ -100,9 +102,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/inspector_main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-// eslint-disable-next-line rulesdir/es_modules_import
-import type * as InspectorMain from './inspector_main.js';
 
 let loadedInspectorMainModule: (typeof InspectorMain|undefined);
 

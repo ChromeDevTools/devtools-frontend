@@ -3,6 +3,6 @@
 // found in the LICENSE file.
 import '../devtools_app/devtools_app.js';
 import '../../panels/screencast/screencast-meta.js';
-import * as Startup from '../startup/startup.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Startup from '../startup/startup.js';
 
 Startup.RuntimeInstantiator.startApplication('inspector');

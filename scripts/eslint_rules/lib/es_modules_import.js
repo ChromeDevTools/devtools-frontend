@@ -90,14 +90,21 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
   const invalidCrossFolderUsage = !isSameFolder && !isModuleEntrypoint(exportingFileName);
 
   if (invalidSameFolderUsage) {
-    context.report({
-      node,
-      message:
-          'Incorrect same-namespace import: "{{importPathForErrorMessage}}". Use "import { Symbol } from \'./relative-file.js\';" instead.',
-      data: {
-        importPathForErrorMessage,
-      },
-    });
+    // Meta files import their entrypoints and are considered separate entrypoints.
+    // Additionally, any file ending with `-entrypoint.ts` is considered an entrypoint as well.
+    // Therefore, they are allowed to import using a same-namespace star-import.
+    const importingFileIsEntrypoint =
+        importingFileName.endsWith('-entrypoint.ts') || importingFileName.endsWith('-meta.ts');
+    if (!importingFileIsEntrypoint) {
+      context.report({
+        node,
+        message:
+            'Incorrect same-namespace import: "{{importPathForErrorMessage}}". Use "import { Symbol } from \'./relative-file.js\';" instead.',
+        data: {
+          importPathForErrorMessage,
+        },
+      });
+    }
   }
 
   if (invalidCrossFolderUsage) {

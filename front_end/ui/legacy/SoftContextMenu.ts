@@ -35,7 +35,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
-import * as ThemeSupport from './theme_support/theme_support.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 import softContextMenuStyles from './softContextMenu.css.legacy.js';
 

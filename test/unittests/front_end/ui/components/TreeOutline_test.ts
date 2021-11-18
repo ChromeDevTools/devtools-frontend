@@ -549,6 +549,25 @@ describe('TreeOutline', () => {
     ]);
   });
 
+  it('can collapse all nodes', async () => {
+    const {component, shadowRoot} = await renderTreeOutline({
+      tree: basicTreeData,
+    });
+    await component.expandRecursively(Number.POSITIVE_INFINITY);
+    await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
+    await component.collapseAllNodes();
+    await waitForRenderedTreeNodeCount(shadowRoot, 2);
+    const visibleTree = visibleNodesToTree(shadowRoot);
+    assert.deepEqual(visibleTree, [
+      {
+        renderedKey: 'Offices',
+      },
+      {
+        renderedKey: 'Products',
+      },
+    ]);
+  });
+
   it('caches async child nodes and only fetches them once', async () => {
     const fetchChildrenSpy = sinon.spy<() => Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]>>(() => {
       return Promise.resolve([

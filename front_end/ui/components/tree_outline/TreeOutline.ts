@@ -167,6 +167,14 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   /**
+   * Collapses all nodes in the tree.
+   */
+  async collapseAllNodes(): Promise<void> {
+    this.nodeExpandedMap.clear();
+    await this.render();
+  }
+
+  /**
    * Takes a TreeNode, expands the outline to reveal it, and focuses it.
    */
   async expandToAndSelectTreeNode(targetTreeNode: TreeNode<TreeNodeDataType>): Promise<void> {

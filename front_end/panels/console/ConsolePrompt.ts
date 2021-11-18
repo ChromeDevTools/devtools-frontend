@@ -6,9 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
+import * as TextEditor from '../../ui/legacy/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
@@ -27,7 +27,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private addCompletionsFromHistory: boolean;
   private historyInternal: ConsoleHistoryManager;
   private initialText: string;
-  private editor: TextEditor.TextEditor.TextEditor;
+  private editor: UI.TextEditor.TextEditor|null;
   private readonly eagerPreviewElement: HTMLDivElement;
   private textChangeThrottler: Common.Throttler.Throttler;
   private readonly formatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
@@ -37,6 +37,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private readonly iconThrottler: Common.Throttler.Throttler;
   private readonly eagerEvalSetting: Common.Settings.Setting<boolean>;
   private previewRequestForTest: Promise<void>|null;
+  private defaultAutocompleteConfig: UI.TextEditor.AutocompleteConfig|null;
   private highlightingNode: boolean;
 
   constructor() {
@@ -45,6 +46,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.historyInternal = new ConsoleHistoryManager();
 
     this.initialText = '';
+    this.editor = null;
     this.eagerPreviewElement = document.createElement('div');
     this.eagerPreviewElement.classList.add('console-eager-preview');
     this.textChangeThrottler = new Common.Throttler.Throttler(150);
@@ -66,41 +68,41 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     this.element.tabIndex = 0;
     this.previewRequestForTest = null;
+
+    this.defaultAutocompleteConfig = null;
+
     this.highlightingNode = false;
 
-    const editorState = CodeMirror.EditorState.create({
-      doc: this.initialText,
-      extensions: [
-        CodeMirror.keymap.of(this.editorKeymap()),
-        CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
-        TextEditor.JavaScript.argumentHints(),
-        TextEditor.JavaScript.completion(),
-        TextEditor.Config.showCompletionHint,
-        CodeMirror.javascript.javascript(),
-        TextEditor.Config.baseConfiguration(this.initialText),
-        TextEditor.Config.autocompletion,
-        CodeMirror.javascript.javascriptLanguage.data.of({
-          autocomplete: (context: CodeMirror.CompletionContext): CodeMirror.CompletionResult | null =>
-              this.historyCompletions(context),
-        }),
-        CodeMirror.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.consolePrompt)}),
-        CodeMirror.EditorView.lineWrapping,
-        CodeMirror.autocompletion({aboveCursor: true}),
-      ],
-    });
+    const factory = TextEditor.CodeMirrorTextEditor.CodeMirrorTextEditorFactory.instance();
 
-    this.editor = new TextEditor.TextEditor.TextEditor(editorState);
-    this.editor.addEventListener('keydown', (event): void => {
-      if (event.defaultPrevented) {
-        event.stopPropagation();
-      }
-    });
-    editorContainerElement.appendChild(this.editor);
+    const options = {
+      devtoolsAccessibleName: (i18nString(UIStrings.consolePrompt) as string),
+      lineNumbers: false,
+      lineWrapping: true,
+      mimeType: 'javascript',
+      autoHeight: true,
+    };
+    this.editor = factory.createEditor((options as UI.TextEditor.Options));
 
+    this.defaultAutocompleteConfig =
+        ObjectUI.JavaScriptAutocomplete.JavaScriptAutocompleteConfig.createConfigForEditor(this.editor);
+    this.editor.configureAutocomplete(Object.assign({}, this.defaultAutocompleteConfig, {
+      suggestionsCallback: this.wordsWithQuery.bind(this),
+      anchorBehavior: UI.GlassPane.AnchorBehavior.PreferTop,
+    }));
+    this.editor.widget().element.addEventListener('keydown', this.editorKeyDown.bind(this), true);
+    this.editor.widget().show(editorContainerElement);
+    this.editor.addEventListener(UI.TextEditor.Events.CursorChanged, this.updatePromptIcon, this);
+    this.editor.addEventListener(UI.TextEditor.Events.TextChanged, this.onTextChanged, this);
+    this.editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this.onTextChanged, this);
+
+    this.setText(this.initialText);
+    this.initialText = '';
     if (this.hasFocus()) {
       this.focus();
     }
     this.element.removeAttribute('tabindex');
+    this.editor.widget().element.tabIndex = -1;
 
     this.editorSetForTest();
 
@@ -124,7 +126,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
     if (this.eagerEvalSetting.get()) {
-      const asSoonAsPossible = !TextEditor.Config.contentIncludingHint(this.editor.editor);
+      const asSoonAsPossible = !this.editor || !this.editor.textWithCurrentSuggestion();
       this.previewRequestForTest = this.textChangeThrottler.schedule(this.requestPreviewBound, asSoonAsPossible);
     }
     this.updatePromptIcon();
@@ -132,12 +134,15 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private async requestPreview(): Promise<void> {
-    const text = TextEditor.Config.contentIncludingHint(this.editor.editor).trim();
+    if (!this.editor) {
+      return;
+    }
+    const text = this.editor.textWithCurrentSuggestion().trim();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         text, true /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
     this.innerPreviewElement.removeChildren();
-    if (preview.deepTextContent() !== TextEditor.Config.contentIncludingHint(this.editor.editor).trim()) {
+    if (preview.deepTextContent() !== this.editor.textWithCurrentSuggestion().trim()) {
       this.innerPreviewElement.appendChild(preview);
     }
     if (result && 'object' in result && result.object && result.object.subtype === 'node') {
@@ -169,102 +174,149 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   clearAutocomplete(): void {
-    CodeMirror.closeCompletion(this.editor.editor);
+    if (this.editor) {
+      this.editor.clearAutocomplete();
+    }
   }
 
   private isCaretAtEndOfPrompt(): boolean {
-    return this.editor.state.selection.main.head === this.editor.state.doc.length;
+    return this.editor !== null &&
+        this.editor.selection().collapseToEnd().equal(this.editor.fullRange().collapseToEnd());
   }
 
   moveCaretToEndOfPrompt(): void {
-    this.editor.dispatch({
-      selection: CodeMirror.EditorSelection.cursor(this.editor.state.doc.length),
-    });
+    if (this.editor) {
+      this.editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(Infinity, Infinity));
+    }
   }
 
-  clear(): void {
-    this.editor.dispatch({
-      changes: {from: 0, to: this.editor.state.doc.length},
-    });
+  setText(text: string): void {
+    if (this.editor) {
+      this.editor.setText(text);
+    } else {
+      this.initialText = text;
+    }
+    this.dispatchEventToListeners(Events.TextChanged);
   }
 
   text(): string {
-    return this.editor.state.doc.toString();
+    return this.editor ? this.editor.text() : this.initialText;
   }
 
   setAddCompletionsFromHistory(value: boolean): void {
     this.addCompletionsFromHistory = value;
   }
 
-  private editorKeymap(): readonly CodeMirror.KeyBinding[] {
-    return [
-      {key: 'ArrowUp', run: (): boolean => this.moveHistory(-1)},
-      {key: 'ArrowDown', run: (): boolean => this.moveHistory(1)},
-      {mac: 'Ctrl-p', run: (): boolean => this.moveHistory(-1, true)},
-      {mac: 'Ctrl-n', run: (): boolean => this.moveHistory(1, true)},
-      {key: 'Enter', run: (): boolean => this.evaluate(), shift: CodeMirror.insertNewlineAndIndent},
-    ];
-  }
+  private editorKeyDown(event: Event): void {
+    if (!this.editor) {
+      return;
+    }
+    const keyboardEvent = (event as KeyboardEvent);
+    let newText;
+    let isPrevious;
+    // Check against visual coordinates in case lines wrap.
+    const selection = this.editor.selection();
+    const cursorY = this.editor.visualCoordinates(selection.endLine, selection.endColumn).y;
 
-  private moveHistory(dir: -1|1, force = false): boolean {
-    const {editor} = this.editor, {main} = editor.state.selection;
-    if (!force) {
-      if (!main.empty) {
-        return false;
+    switch (keyboardEvent.keyCode) {
+      case UI.KeyboardShortcut.Keys.Up.code: {
+        const startY = this.editor.visualCoordinates(0, 0).y;
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== startY) {
+          break;
+        }
+        newText = this.historyInternal.previous(this.text());
+        isPrevious = true;
+        break;
       }
-      const cursorCoords = editor.coordsAtPos(main.head);
-      const endCoords = editor.coordsAtPos(dir < 0 ? 0 : editor.state.doc.length);
-      // Check if there are wrapped lines in this direction, and let
-      // the cursor move normally if there are.
-      if (cursorCoords && endCoords &&
-          (dir < 0 ? cursorCoords.top > endCoords.top + 5 : cursorCoords.bottom < endCoords.bottom - 5)) {
-        return false;
+      case UI.KeyboardShortcut.Keys.Down.code: {
+        const fullRange = this.editor.fullRange();
+        const endY = this.editor.visualCoordinates(fullRange.endLine, fullRange.endColumn).y;
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== endY) {
+          break;
+        }
+        newText = this.historyInternal.next();
+        break;
+      }
+      case UI.KeyboardShortcut.Keys.P.code: {  // Ctrl+P = Previous
+        if (Host.Platform.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
+            !keyboardEvent.shiftKey) {
+          newText = this.historyInternal.previous(this.text());
+          isPrevious = true;
+        }
+        break;
+      }
+      case UI.KeyboardShortcut.Keys.N.code: {  // Ctrl+N = Next
+        if (Host.Platform.isMac() && keyboardEvent.ctrlKey && !keyboardEvent.metaKey && !keyboardEvent.altKey &&
+            !keyboardEvent.shiftKey) {
+          newText = this.historyInternal.next();
+        }
+        break;
+      }
+      case UI.KeyboardShortcut.Keys.Enter.code: {
+        this.enterKeyPressed(keyboardEvent);
+        break;
+      }
+      case UI.KeyboardShortcut.Keys.Tab.code: {
+        if (!this.text()) {
+          keyboardEvent.consume();
+        }
+        break;
       }
     }
 
-    const history = this.historyInternal;
-    const newText = dir < 0 ? history.previous(this.text()) : history.next();
     if (newText === undefined) {
-      return false;
+      return;
     }
+    keyboardEvent.consume(true);
+    this.setText(newText);
 
-    const cursorPos = dir < 0 ? newText.search(/\n|$/) : newText.length;
-    this.editor.dispatch({
-      changes: {from: 0, to: this.editor.state.doc.length, insert: newText},
-      selection: CodeMirror.EditorSelection.cursor(cursorPos),
-      scrollIntoView: true,
-    });
-    return true;
-  }
-
-  private enterWillEvaluate(): boolean {
-    const {state} = this.editor;
-    return state.doc.length > 0 && TextEditor.JavaScript.isExpressionComplete(state);
-  }
-
-  private evaluate(): boolean {
-    if (this.enterWillEvaluate()) {
-      this.appendCommand(this.text(), true);
-      this.editor.dispatch({
-        changes: {from: 0, to: this.editor.state.doc.length},
-        scrollIntoView: true,
-      });
-    } else if (this.editor.state.doc.length) {
-      return CodeMirror.insertNewlineAndIndent(this.editor.editor);
+    if (isPrevious) {
+      this.editor.setSelection(TextUtils.TextRange.TextRange.createFromLocation(0, Infinity));
     } else {
-      this.editor.dispatch({scrollIntoView: true});
+      this.moveCaretToEndOfPrompt();
     }
-    this.enterProcessedForTest();
-    return true;
+  }
+
+  private async enterWillEvaluate(): Promise<boolean> {
+    if (!this.isCaretAtEndOfPrompt()) {
+      return true;
+    }
+    return await ObjectUI.JavaScriptAutocomplete.JavaScriptAutocomplete.isExpressionComplete(this.text());
   }
 
   private updatePromptIcon(): void {
     this.iconThrottler.schedule(async () => {
-      this.promptIcon.classList.toggle('console-prompt-incomplete', !this.enterWillEvaluate());
+      const canComplete = await this.enterWillEvaluate();
+      this.promptIcon.classList.toggle('console-prompt-incomplete', !canComplete);
     });
   }
 
-  private appendCommand(text: string, useCommandLineAPI: boolean): void {
+  private async enterKeyPressed(event: KeyboardEvent): Promise<void> {
+    if (event.altKey || event.ctrlKey || event.shiftKey) {
+      return;
+    }
+
+    event.consume(true);
+
+    // Since we prevent default, manually emulate the native "scroll on key input" behavior.
+    this.element.scrollIntoView();
+    this.clearAutocomplete();
+
+    const str = this.text();
+    if (!str.length) {
+      return;
+    }
+
+    if (await this.enterWillEvaluate()) {
+      await this.appendCommand(str, true);
+    } else if (this.editor) {
+      this.editor.newlineAndIndent();
+    }
+    this.enterProcessedForTest();
+  }
+
+  private async appendCommand(text: string, useCommandLineAPI: boolean): Promise<void> {
+    this.setText('');
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
@@ -281,19 +333,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private enterProcessedForTest(): void {
   }
 
-  private editorUpdate(update: CodeMirror.ViewUpdate): void {
-    if (update.docChanged) {
-      this.onTextChanged();
-      if (update.selectionSet) {
-        this.updatePromptIcon();
-      }
-    }
-  }
-
-  private historyCompletions(context: CodeMirror.CompletionContext): CodeMirror.CompletionResult|null {
+  private historyCompletions(prefix: string, force?: boolean): UI.SuggestBox.Suggestions {
     const text = this.text();
-    if (!this.addCompletionsFromHistory || !this.isCaretAtEndOfPrompt() || (!text.length && !context.explicit)) {
-      return null;
+    if (!this.addCompletionsFromHistory || !this.isCaretAtEndOfPrompt() || (!text && !force)) {
+      return [];
     }
     const result = [];
     const set = new Set<string>();
@@ -307,18 +350,30 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         continue;
       }
       set.add(item);
-      result.push({label: item, type: 'secondary', boost: -1e5});
+      result.push(
+          {text: item.substring(text.length - prefix.length), iconType: 'smallicon-text-prompt', isSecondary: true});
     }
-    return result.length ? {
-      from: 0,
-      to: text.length,
-      options: result,
-    } :
-                           null;
+    return result as UI.SuggestBox.Suggestions;
   }
 
   focus(): void {
-    this.editor.focus();
+    if (this.editor) {
+      this.editor.widget().focus();
+    } else {
+      this.element.focus();
+    }
+  }
+
+  private async wordsWithQuery(
+      queryRange: TextUtils.TextRange.TextRange, substituteRange: TextUtils.TextRange.TextRange,
+      force?: boolean): Promise<UI.SuggestBox.Suggestions> {
+    if (!this.editor || !this.defaultAutocompleteConfig || !this.defaultAutocompleteConfig.suggestionsCallback) {
+      return [];
+    }
+    const query = this.editor.text(queryRange);
+    const words = await this.defaultAutocompleteConfig.suggestionsCallback(queryRange, substituteRange, force);
+    const historyWords = this.historyCompletions(query, force);
+    return words ? words.concat(historyWords) : historyWords;
   }
 
   private editorSetForTest(): void {

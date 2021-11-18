@@ -1218,7 +1218,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   private clearPromptBackwards(): void {
-    this.prompt.clear();
+    this.prompt.setText('');
   }
 
   private promptKeyDown(event: Event): void {

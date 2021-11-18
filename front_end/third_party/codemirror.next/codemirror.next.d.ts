@@ -3537,12 +3537,6 @@ interface CompletionConfig {
     */
     defaultKeymap?: boolean;
     /**
-    By default, completions are shown below the cursor when there is
-    space. Setting this to true will make the extension put the
-    completions above the cursor when possible.
-    */
-    aboveCursor?: boolean;
-    /**
     This can be used to add additional CSS classes to completion
     options.
     */
@@ -3745,14 +3739,6 @@ interface CompletionResult {
 Accept the current completion.
 */
 declare const acceptCompletion: Command;
-/**
-Explicitly start autocompletion.
-*/
-declare const startCompletion: Command;
-/**
-Close the currently active completion.
-*/
-declare const closeCompletion: Command;
 
 /**
 A completion source that will scan the document for words (using a
@@ -3769,10 +3755,6 @@ declare function autocompletion(config?: CompletionConfig): Extension;
 Returns the available completions as an array.
 */
 declare function currentCompletions(state: EditorState): readonly Completion[];
-/**
-Return the currently selected completion, if any.
-*/
-declare function selectedCompletion(state: EditorState): Completion | null;
 
 /**
 Describes an element in your XML document schema.
@@ -5592,4 +5574,4 @@ declare function shell(): Promise<StreamLanguage<unknown>>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, cpp, index_d$2 as css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, lineNumberMarkers, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, selectedCompletion, shell, showPanel, showTooltip, standardKeymap, startCompletion, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, codeFolding, coffeescript, completeAnyWord, cpp, index_d$2 as css, currentCompletions, cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, gutter, gutters, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, lineNumberMarkers, lineNumbers, markdown, php, placeholder, python, redo, redoSelection, scrollPastEnd, selectMatchingBracket, selectNextOccurrence, selectSubwordBackward, selectSubwordForward, shell, showPanel, showTooltip, standardKeymap, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, wast, xml };

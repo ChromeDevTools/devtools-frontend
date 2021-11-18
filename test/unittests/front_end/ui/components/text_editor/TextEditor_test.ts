@@ -101,7 +101,7 @@ describeWithEnvironment('TextEditor', () => {
         related?: string,
         ): Promise<void> {
       const state = makeState(code, CodeMirror.javascript.javascriptLanguage);
-      const query = TextEditor.JavaScript.getQueryType(CodeMirror.syntaxTree(state), pos, state.doc);
+      const query = TextEditor.JavaScript.getQueryType(CodeMirror.syntaxTree(state), pos);
       if (type === undefined) {
         assert.isNull(query);
       } else {
@@ -117,7 +117,6 @@ describeWithEnvironment('TextEditor', () => {
     it('recognizes expression queries', async () => {
       await testQueryType('foo', 3, TextEditor.JavaScript.QueryType.Expression, 'foo');
       await testQueryType('foo ', 4, TextEditor.JavaScript.QueryType.Expression, '');
-      await testQueryType('let', 3, TextEditor.JavaScript.QueryType.Expression, 'let');
     });
 
     it('recognizes propery name queries', async () => {

@@ -10,7 +10,7 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import treeOutlineStyles from './treeOutline.css.js';
 
-import type {TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
+import type {TreeNodeId, TreeNode, TreeNodeWithChildren} from './TreeOutlineUtils.js';
 import {findNextNodeForTreeOutlineKeyboardNavigation, getNodeChildren, getPathToTreeNode, isExpandableNode, trackDOMNodeToTreeNode} from './TreeOutlineUtils.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -79,7 +79,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    * know for sure when that node will be rendered. This variable tracks the
    * node that we want focused but may not yet have been rendered.
    */
-  private nodePendingFocus: TreeNode<TreeNodeDataType>|null = null;
+  private nodeIdPendingFocus: TreeNodeId|null = null;
   private selectedTreeNode: TreeNode<TreeNodeDataType>|null = null;
   private defaultRenderer =
       (node: TreeNode<TreeNodeDataType>, _state: {isExpanded: boolean}): LitHtml.TemplateResult => {
@@ -154,10 +154,17 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    * Takes a TreeNode, expands the outline to reveal it, and focuses it.
    */
   async expandToAndSelectTreeNode(targetTreeNode: TreeNode<TreeNodeDataType>): Promise<void> {
-    const pathToTreeNode = await getPathToTreeNode(this.treeData, targetTreeNode);
+    return this.expandToAndSelectTreeNodeId(targetTreeNode.id);
+  }
+
+  /**
+   * Takes a TreeNode ID, expands the outline to reveal it, and focuses it.
+   */
+  async expandToAndSelectTreeNodeId(targetTreeNodeId: TreeNodeId): Promise<void> {
+    const pathToTreeNode = await getPathToTreeNode(this.treeData, targetTreeNodeId);
 
     if (pathToTreeNode === null) {
-      throw new Error(`Could not find node with id ${targetTreeNode.id} in the tree.`);
+      throw new Error(`Could not find node with id ${targetTreeNodeId} in the tree.`);
     }
     pathToTreeNode.forEach((node, index) => {
       // We don't expand the very last node, which was the target node.
@@ -167,8 +174,24 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     });
 
     // Mark the node as pending focus so when it is rendered into the DOM we can focus it
-    this.nodePendingFocus = targetTreeNode;
+    this.nodeIdPendingFocus = targetTreeNodeId;
     await this.render();
+  }
+
+  /**
+   * Takes a list of TreeNode IDs and expands the corresponding nodes.
+   */
+  expandNodeIds(nodeIds: TreeNodeId[]): Promise<void> {
+    nodeIds.forEach(id => this.nodeExpandedMap.set(id, true));
+    return this.render();
+  }
+
+  /**
+   * Takes a TreeNode ID and focuses the corresponding node.
+   */
+  focusNodeId(nodeId: TreeNodeId): Promise<void> {
+    this.nodeIdPendingFocus = nodeId;
+    return this.render();
   }
 
   async collapseChildrenOfNode(domNode: HTMLLIElement): Promise<void> {
@@ -337,7 +360,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   private focusPendingNode(domNode: HTMLLIElement): void {
-    this.nodePendingFocus = null;
+    this.nodeIdPendingFocus = null;
     this.focusTreeNode(domNode);
   }
 
@@ -411,7 +434,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
             return;
           }
 
-          if (this.nodePendingFocus && node.id === this.nodePendingFocus.id) {
+          if (this.nodeIdPendingFocus && node.id === this.nodeIdPendingFocus) {
             this.focusPendingNode(domNode);
           }
         })}
@@ -433,6 +456,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     `;
     // clang-format on
   }
+
   private async render(): Promise<void> {
     if (this.scheduledRender) {
       // If we are already rendering, don't render again immediately, but

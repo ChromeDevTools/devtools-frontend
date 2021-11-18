@@ -4,10 +4,12 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
+export type TreeNodeId = string;
+
 interface BaseTreeNode<TreeNodeDataType> {
   treeNodeData: TreeNodeDataType;
   renderer?: (node: TreeNode<TreeNodeDataType>, state: {isExpanded: boolean}) => LitHtml.TemplateResult;
-  id: string;
+  id: TreeNodeId;
 }
 
 export interface TreeNodeWithChildren<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
@@ -196,10 +198,10 @@ export const getNodeChildren =
  * And you look for F, you'll get back [A, D, F]
  */
 export const getPathToTreeNode =
-    async<TreeNodeDataType>(tree: readonly TreeNode<TreeNodeDataType>[], nodeToFind: TreeNode<TreeNodeDataType>):
+    async<TreeNodeDataType>(tree: readonly TreeNode<TreeNodeDataType>[], nodeIdToFind: TreeNodeId):
         Promise<TreeNode<TreeNodeDataType>[]|null> => {
           for (const rootNode of tree) {
-            const foundPathOrNull = await getPathToTreeNodeRecursively(rootNode, nodeToFind, [rootNode]);
+            const foundPathOrNull = await getPathToTreeNodeRecursively(rootNode, nodeIdToFind, [rootNode]);
             if (foundPathOrNull !== null) {
               return foundPathOrNull;
             }
@@ -208,16 +210,16 @@ export const getPathToTreeNode =
         };
 
 const getPathToTreeNodeRecursively = async<TreeNodeDataType>(
-    currentNode: TreeNode<TreeNodeDataType>, nodeToFind: TreeNode<TreeNodeDataType>,
+    currentNode: TreeNode<TreeNodeDataType>, nodeIdToFind: TreeNodeId,
     pathToNode: TreeNode<TreeNodeDataType>[]): Promise<TreeNode<TreeNodeDataType>[]|null> => {
-  if (currentNode.id === nodeToFind.id) {
+  if (currentNode.id === nodeIdToFind) {
     return pathToNode;
   }
 
   if (currentNode.children) {
     const children = await getNodeChildren(currentNode);
     for (const child of children) {
-      const foundPathOrNull = await getPathToTreeNodeRecursively(child, nodeToFind, [...pathToNode, child]);
+      const foundPathOrNull = await getPathToTreeNodeRecursively(child, nodeIdToFind, [...pathToNode, child]);
       if (foundPathOrNull !== null) {
         return foundPathOrNull;
       }

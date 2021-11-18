@@ -707,13 +707,9 @@ export class ConsoleMessage {
       }
     }
 
-    const watchExpressionRegex = /^watch-expression-\d+.devtools$/;
-    const bothAreWatchExpressions =
-        watchExpressionRegex.test(this.url || '') && watchExpressionRegex.test(msg.url || '');
-
     return (this.runtimeModel() === msg.runtimeModel()) && (this.source === msg.source) && (this.type === msg.type) &&
         (this.level === msg.level) && (this.line === msg.line) && (this.url === msg.url) &&
-        (bothAreWatchExpressions || this.scriptId === msg.scriptId) && (this.messageText === msg.messageText) &&
+        (this.scriptId === msg.scriptId) && (this.messageText === msg.messageText) &&
         (this.#executionContextId === msg.#executionContextId) &&
         areAffectedResourcesEquivalent(this.#affectedResources, msg.#affectedResources) &&
         areStackTracesEquivalent(this.stackTrace, msg.stackTrace);

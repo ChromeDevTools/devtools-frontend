@@ -36,7 +36,7 @@ export class JavaScriptREPL {
 
   static async evaluateAndBuildPreview(
       text: string, throwOnSideEffect: boolean, replMode: boolean, timeout?: number, allowErrors?: boolean,
-      objectGroup?: string): Promise<{
+      objectGroup?: string, awaitPromise: boolean = false): Promise<{
     preview: DocumentFragment,
     result: SDK.RuntimeModel.EvaluationResult|null,
   }> {
@@ -60,7 +60,7 @@ export class JavaScriptREPL {
       returnByValue: undefined,
       allowUnsafeEvalBlockedByCSP: undefined,
     };
-    const result = await executionContext.evaluate(options, false /* userGesture */, false /* awaitPromise */);
+    const result = await executionContext.evaluate(options, false /* userGesture */, awaitPromise);
     const preview = JavaScriptREPL.buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }

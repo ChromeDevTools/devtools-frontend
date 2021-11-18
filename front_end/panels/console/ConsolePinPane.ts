@@ -164,8 +164,6 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   }
 }
 
-let consolePinNumber = 0;
-
 export class ConsolePin {
   private readonly pinElement: Element;
   private readonly pinPreview: HTMLElement;
@@ -175,11 +173,9 @@ export class ConsolePin {
   private committedExpression: string;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
-  private consolePinNumber: number;
   private deletePinIcon: UI.UIUtils.DevToolsCloseButton;
 
   constructor(expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void) {
-    this.consolePinNumber = ++consolePinNumber;
     this.deletePinIcon = document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton;
     this.deletePinIcon.gray = true;
     this.deletePinIcon.classList.add('close-button');
@@ -325,8 +321,8 @@ export class ConsolePin {
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const preprocessedExpression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        `${preprocessedExpression}\n//# sourceURL=watch-expression-${this.consolePinNumber}.devtools`,
-        throwOnSideEffect, false /* replMode */, timeout, !isEditing /* allowErrors */, 'console');
+        preprocessedExpression, throwOnSideEffect, false /* replMode */, timeout, !isEditing /* allowErrors */,
+        'console', true /* awaitPromise */);
     if (this.lastResult && this.lastExecutionContext) {
       this.lastExecutionContext.runtimeModel.releaseEvaluationResult(this.lastResult);
     }

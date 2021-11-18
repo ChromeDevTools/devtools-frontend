@@ -77,22 +77,6 @@ describe('ConsoleMessage', () => {
     assert.isFalse(c.isEqual(e));
   });
 
-  it('compares ignoring script id for the same watch expressions', () => {
-    const a = newMessage({executionContextId: 5, scriptId: scriptId1});
-    a.url = 'watch-expression-1.devtools';
-    const b = newMessage({executionContextId: 5, scriptId: scriptId2});
-    b.url = 'watch-expression-1.devtools';
-    assert.isTrue(a.isEqual(b));
-  });
-
-  it('compares using script id for different watch expressions', () => {
-    const a = newMessage({executionContextId: 5, scriptId: scriptId1});
-    a.url = 'watch-expression-1.devtools';
-    const b = newMessage({executionContextId: 5, scriptId: scriptId2});
-    b.url = 'watch-expression-2.devtools';
-    assert.isFalse(a.isEqual(b));
-  });
-
   it('compares using script ids in stack traces', () => {
     const functionName = 'foo';
     const url = 'http://localhost/foo.js';

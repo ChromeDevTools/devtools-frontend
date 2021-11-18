@@ -12,3 +12,17 @@ import * as ToggleFonts from './toggle_fonts.js';
 ToggleDarkMode.init();
 CreateBreadcrumbs.init();
 ToggleFonts.init();
+
+// This can be used by tests to hide the UI elements that are part of the component docs interface.
+// E.g., this is useful for screenshot tests.
+window.addEventListener('hidecomponentdocsui', () => {
+  for (const node of document.querySelectorAll('.component-docs-ui')) {
+    (node as HTMLElement).style.display = 'none';
+  }
+});
+
+window.addEventListener('showcomponentdocsui', () => {
+  for (const node of document.querySelectorAll('.component-docs-ui')) {
+    (node as HTMLElement).style.display = '';
+  }
+});

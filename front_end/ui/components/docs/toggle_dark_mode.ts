@@ -16,6 +16,7 @@ export function init(): void {
   window.addEventListener('load', () => {
     const button = document.createElement('button');
     button.innerText = 'Toggle light/dark mode';
+    button.className = 'component-docs-ui';
 
     button.style.position = 'fixed';
     button.style.bottom = '10px';

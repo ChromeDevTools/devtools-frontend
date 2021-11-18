@@ -123,7 +123,11 @@ ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidat
   if (forceInvalidate) {
     Console.ConsoleView.instance().viewport.invalidate();
   }
-  const table = viewMessage.element();
+  const formattedTable = viewMessage.element().querySelector('.console-message-formatted-table');
+  if (!formattedTable) {
+    return false;
+  }
+  const table = formattedTable.querySelector('span').shadowRoot;
   const headers = table.querySelectorAll('th > div:first-child');
   if (!headers.length) {
     return false;

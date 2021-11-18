@@ -50,9 +50,12 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+// eslint-disable-next-line rulesdir/es_modules_import
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
+import consoleViewStyles from './consoleView.css.js';
 
 const UIStrings = {
   /**
@@ -2067,7 +2070,11 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
         const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
         const dataGridContainer = tableElement.createChild('span');
         tableElement.appendChild(this.formatParameter(actualTable, true, false));
-        dataGridContainer.appendChild(this.dataGrid.element);
+        const shadowRoot = dataGridContainer.attachShadow({mode: 'open'});
+        const dataGridWidget = this.dataGrid.asWidget();
+        dataGridWidget.markAsRoot();
+        dataGridWidget.show(shadowRoot as unknown as Element);
+        dataGridWidget.registerCSSFiles([consoleViewStyles, objectValueStyles]);
         formattedMessage.appendChild(formattedResult);
         this.dataGrid.renderInline();
       }

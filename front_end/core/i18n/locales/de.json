@@ -4533,7 +4533,7 @@
     "message": "Auf Standardeinstellungen zurücksetzen"
   },
   "panels/emulation/DeviceModeToolbar.ts | responsive": {
-    "message": "Reagiert schnell"
+    "message": "Responsive"
   },
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Drehen"

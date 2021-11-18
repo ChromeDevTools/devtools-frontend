@@ -26,3 +26,11 @@
 .ignore-list-link {
   opacity: 60%;
 }
+
+.link,
+.devtools-link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 2px 0; /* adjust focus ring size */
+}

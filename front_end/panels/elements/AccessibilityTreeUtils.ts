@@ -44,7 +44,7 @@ export function sdkNodeToAXTreeNode(sdkNode: SDK.AccessibilityModel.Accessibilit
         let localRoot = axmodel.axNodeForDOMNode(document);
         if (!localRoot && frameId) {
           // Request the root node of the iframe document:
-          localRoot = await axmodel.requestRootNode(1, frameId) || null;
+          localRoot = await axmodel.requestRootNode(frameId) || null;
         }
         if (!localRoot) {
           throw new Error('Could not find root node');

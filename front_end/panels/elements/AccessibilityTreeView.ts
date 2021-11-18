@@ -104,7 +104,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
 
   async update(node: SDK.DOMModel.DOMNode): Promise<void> {
     const axModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-    await axModel?.updateSubtreeAndAncestors(node.backendNodeId());
+    await axModel?.requestAndLoadSubTreeToNode(node);
     this.renderTree();
   }
 
@@ -140,7 +140,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
 
   async refreshAccessibilityTree(accessibilityModel: SDK.AccessibilityModel.AccessibilityModel): Promise<void> {
     // We always expand the root node so we might as well fetch one level of children immediately.
-    const root = await accessibilityModel.requestRootNode(1);
+    const root = await accessibilityModel.requestRootNode();
     if (!root) {
       return;
     }
@@ -169,7 +169,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     //     E
     // Where only A is already loaded into the model, calling requestAndLoadSubTreeToNode(C) will
     // load [A, B, D, C] into the model, and return C.
-    const inspectedAXNode = await this.accessibilityModel.requestAndLoadSubTreeToNode(selectedNode);
+    await this.accessibilityModel.requestAndLoadSubTreeToNode(selectedNode);
+    const inspectedAXNode = this.accessibilityModel.axNodeForDOMNode(selectedNode);
     if (!inspectedAXNode) {
       return;
     }

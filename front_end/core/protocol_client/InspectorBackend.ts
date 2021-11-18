@@ -764,6 +764,10 @@ export class TargetBase {
     manager.removeDomainDispatcher(dispatcher);
   }
 
+  registerAccessibilityDispatcher(dispatcher: ProtocolProxyApi.AccessibilityDispatcher): void {
+    this.registerDispatcher('Accessibility', dispatcher);
+  }
+
   registerAnimationDispatcher(dispatcher: ProtocolProxyApi.AnimationDispatcher): void {
     this.registerDispatcher('Animation', dispatcher);
   }

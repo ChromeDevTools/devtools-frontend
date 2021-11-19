@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site এবং Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "ইউজার এজেন্ট স্ট্রিং রিডাকশন"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "পোর্টাল - একই উৎস থেকে উৎপন্ন কমিউনিকেশন চ্যানেল"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ভারি বিজ্ঞাপনে হস্তক্ষেপ সামলানো"
@@ -1344,25 +1341,28 @@
     "message": "ব্রেকিং পরিবর্তন সংক্রান্ত সমস্যা: Chrome-এর পরবর্তী কোনও ভার্সনে পৃষ্ঠা কাজ নাও করতে পারে"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "ব্রেকিং পরিবর্তন"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "উন্নতি সংক্রান্ত সমস্যা: পৃষ্ঠা উন্নত করার একটি সুযোগ আছে"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "উন্নতি"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "পৃষ্ঠা সংক্রান্ত সমস্যা: পৃষ্ঠাটি সঠিকভাবে কাজ করছে না"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "পৃষ্ঠা সংক্রান্ত সমস্যা"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "রঙ ও কনট্রাস্ট অ্যাক্সেসিবিলিটি"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "মিক্স কন্টেন্ট আটকানো হচ্ছে"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "ইউজার এজেন্ট স্ট্রিং রিডাকশন"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ডকুমেন্টের কম্প্যাটিবিলিটি মোড"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "caption থেকে"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description থেকে"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "label থেকে"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "অ্যাট্রিবিউট থেকে নেওয়া মান।"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description এলিমেন্ট থেকে প্রাপ্ত মান।"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "এলিমেন্ট কন্টেন্ট থেকে নেওয়া মান।"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ওয়ার্কার"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "শুধু GET অনুরোধের মাধ্যমে লোড করা পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায়।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "শুধু 2XX স্ট্যাটাস কোড সহ পৃষ্ঠা ক্যাশে করা যায়।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome, ক্যাশেতে থাকাকালীন জাভাস্ক্রিপ্ট এক্সিকিউট করার চেষ্টা শনাক্ত করেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner-এর অনুরোধ করেছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "chrome://flags-এ ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে। এই ডিভাইসে স্থানীয়ভাবে চালু করতে chrome://flags/#back-forward-cache লিঙ্ক দেখুন।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "কমান্ড লাইন ব্যবহার করে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "মেমরিতে যথেষ্ট জায়গা নেই বলে ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ডেলিগেটে ব্যাক-ফরোয়ার্ড ক্যাশে কাজ করে না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "প্রিরেন্ডারিংয়ের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "পৃষ্ঠাটিতে রেজিস্টার করা শ্রোতা সহ BroadcastChannel ইন্সট্যান্স আছে বলে সেটি ক্যাশে করা যাবে না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "'cache-control:no-store' হেডার সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ক্যাশে ইচ্ছাকৃতভাবে পরিষ্কার করা হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "প্লাগ-ইন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ফাইল সিস্টেম অ্যাক্সেস API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "মিডিয়া ডিভাইস ডিস্প্যাচার ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার সময় মিডিয়া প্লেয়ার চলছিল।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API ব্যবহার এবং প্লেব্যাক স্টেট সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API ব্যবহার এবং অ্যাকশন হ্যান্ডলার সেট করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে ডকুমেন্টটি সম্পূর্ণ লোড হয়নি।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার চালু করা হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "অন্য একটি পৃষ্ঠা ক্যাশেতে সেভ করার জন্য এই পৃষ্ঠাটিকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "মিডিয়া স্ট্রিম কন্টেন্টে অ্যাক্সেস দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "খোলা Indexed DB কানেকশন সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "অনুপযুক্ত API ব্যবহার করা হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "এক্সটেনশনের ইঞ্জেক্ট করা জাভাস্ক্রিপ্ট সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "এক্সটেনশনের ইঞ্জেক্ট করা StyleSheet সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "অভ্যন্তরীণ সমস্যা।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "কীবোর্ড লক ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "পৃষ্ঠা ছেড়ে যাওয়ার আগে সেটি সম্পূর্ণ লোড হয়নি।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "'cache-control:no-cache' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "'cache-control:no-store' আছে এমন প্রধান রিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে পৃষ্ঠা রিস্টোর করার আগে নেভিগেশন বাতিল করা হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "কোনও অ্যাক্টিভ নেটওয়ার্ক কানেকশনের মাধ্যমে পৃষ্ঠাটিতে অনেক ডেটা পাঠানো হয়েছে, তাই ক্যাশে থেকে সেটি সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কত ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ইন-ফ্লাইট fetch() বা XHR আছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "অ্যাক্টিভ নেটওয়ার্কের অনুরোধ রিডাইরেক্ট করা হয়েছে বলে ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "কোনও নেটওয়ার্ক কানেকশন অনেকক্ষণ খোলা ছিল বলে পৃষ্ঠাটি ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে। ক্যাশেতে থাকাকালীন কোনও পৃষ্ঠা কতক্ষণ ডেটা পেতে পারে সেটির উপর Chrome সীমাবদ্ধতা আরোপ করে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "সঠিক প্রতিক্রিয়ার হেডার নেই এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "মেন ফ্রেম ছাড়া অন্য ফ্রেমে নেভিগেশন হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে অপ্ট-ইন করার হেডার ছাড়াই পৃষ্ঠাতে আনলোড হ্যান্ডলার আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Indexed DB ট্রানজ্যাকশন চলছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ইন-ফ্লাইট ফেচ নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ইন-ফ্লাইট নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ইন-ফ্লাইট XHR নেটওয়ার্কের অনুমতি চায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ছবির-মধ্যে-ছবি ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "পোর্টাল ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "প্রিন্টিং UI দেখায় এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "window.open() ব্যবহার করে পৃষ্ঠাটি খোলা হয়েছিল এবং অন্য ট্যাব সেটি রেফারেন্স করে অথবা পৃষ্ঠাটি একটি উইন্ডো খুলেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস ক্র্যাশ করেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে পৃষ্ঠা রেন্ডার করার প্রসেস বন্ধ করে দেওয়া হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "অডিও রেকর্ড করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "সেন্সর অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ব্যাকগ্রাউন্ড সিঙ্ক বা ফেচের জন্য অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI ডিভাইস অ্যাক্সেস করার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "বিজ্ঞপ্তি সংক্রান্ত অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "স্টোরেজ অ্যাক্সেসের অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ভিডিও তোলার অনুমতি চেয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "শুধু HTTP / HTTPS স্কিমের URL আছে এমন পৃষ্ঠা ক্যাশে করা যাবে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন পৃষ্ঠাটি কোনও সার্ভিস ওয়ার্কার দাবি করেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে যে পৃষ্ঠাটি রয়েছে, সার্ভিস ওয়ার্কার সেটিকে MessageEvent পাঠানোর চেষ্টা করেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "কোনও পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে থাকাকালীন সার্ভিস ওয়ার্কার আনরেজিস্টার করা হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "সার্ভিস ওয়ার্কার চালু হওয়ার ফলে পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে সরিয়ে দেওয়া হয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome রিস্টার্ট হওয়ার পরে ব্যাক-ফরোয়ার্ড ক্যাশের সব এন্ট্রি মুছে দিয়েছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "পৃষ্ঠাতে কোনও iframe নেভিগেশন শুরু হলেও সম্পূর্ণ হয়নি।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "'cache-control:no-cache' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "'cache-control:no-store' আছে এমন সাবরিসোর্স সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশেতে সর্বাধিক সময়ের সীমা ছাড়িয়ে গেছে এবং সেটি আর রিস্টোর করা হয়নি।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করার সময় পৃষ্ঠাটি টাইম-আউট হয়ে গেছে (খুব সম্ভবত অনেকক্ষণ ধরে pagehide হ্যান্ডলার রান করছিল বলে)।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "মেন ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "সাব-ফ্রেমে পৃষ্ঠাটির আনলোড হ্যান্ডলার আছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ব্রাউজার ইউজার এজেন্ট ওভাররাইড হেডার পরিবর্তন করেছে।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ভিডিও বা অডিও রেকর্ড করার জন্য অ্যাক্সেসের অনুমতি দেওয়া হয়েছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport সহ পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে রাখা যায় না।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে"
   },
@@ -2316,25 +2655,34 @@
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে স্ট্যাটাস"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "অ্যাকশন নেওয়া যাবে না"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "সর্বশেষ মেন ফ্রেম নেভিগেশন"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে না, অর্থাৎ সরাসরি পৃষ্ঠার নিয়ন্ত্রণাধীন নয় এমন বাইরের এন্টিটি ক্যাশে করতে বাধা দিয়েছে।"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "প্রধান ফ্রেম"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "সাধারণ নেভিগেশন (ব্যাক-ফরোয়ার্ড ক্যাশে থেকে ফিরিয়ে আনা হয়নি)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "অ্যাকশন নিতে হবে"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "এই আইটেমগুলির উপর ব্যবস্থা নেওয়া যাবে, অর্থাৎ সেগুলি পরিষ্কার করা হলে পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশের জন্য উপযুক্ত হিসেবে বিবেচিত হবে।"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ব্যাক-ফরোয়ার্ড ক্যাশে থেকে রিস্টোর করা হয়েছে"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "টেস্ট রান করুন"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "সহায়তা বাকি আছে"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "এই আইটেমগুলি এখনও Chrome-এ কাজ করে না, অর্থাৎ সেগুলি ভবিষ্যতের কোনও Chrome ভার্সনে ব্যাক-ফরোয়ার্ড ক্যাশের জন্য পৃষ্ঠাটিকে উপযুক্ত হিসেবে বিবেচিত হতে বাধা দেবে না।"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "উপলভ্য নেই"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1}টি টোকেন"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ট্রায়াল নাম"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ব্যবহার সম্পর্কিত সীমাবদ্ধতা"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (সোর্স ম্যাপ থেকে)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "যোগ করা:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "মোছা:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … মিলছে এমন {PH1}টি লাইন এড়িয়ে যাওয়া হচ্ছে … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "বাইনারি ডেটা"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "পার্থক্য দেখার ভিউয়ার পরিবর্তন করে"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "কোনও পরিবর্তন নেই"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ওভারভিউ মুছুন"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ওভারভিউ ক্যাপচার করুন"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "এক নজরে CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom দেখানো মান এমন এলিমেন্টের সাথে প্রয়োগ করা হয়েছে যা স্থির আছে"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "ইনলাইন এলিমেন্টে Width প্রযুক্ত হয়েছে"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "আমাদের টিম এই ফিচার নিয়ে সক্রিয়ভাবে কাজ করছে এবং আমরা আপনার {PH1} জানতে ইচ্ছুক!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ওভারভিউ ক্যাপচার করুন"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "একনজরে আপনার পৃষ্ঠার CSS দেখুন"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "মতামত জানান"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "মতামত"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "CSS-এ সম্ভাব্য উন্নতি শনাক্ত করুন"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "CSS-এ সম্ভাব্য উন্নতি শনাক্ত করুন (যেমন কম কন্ট্রাস্টের সমস্যা, অব্যবহৃত ডিক্লারেশন, কালার বা ফন্টে অমিল)।"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "'এলিমেন্ট' প্যানেল থেকে প্রভাবিত এলিমেন্টগুলি খুঁজে দেখুন"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "প্রিভিউ ফিচার"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "দ্রুত শুরু করা: নতুন একনজরে CSS প্যানেল ব্যবহার করা শুরু করুন"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ভিডিও ও ডকুমেন্টেশন"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "এক নজরে CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector কপি করুন"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS প্রপার্টির নাম"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS প্রপার্টির মান"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS সিলেক্টর"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ফিল্টার করুন"
   },
@@ -4353,7 +4728,10 @@
     "message": "(টেক্সট)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "এই এলিমেন্টের জন্য ওভারলে রঙ বেছে নিন"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "কালার পিকার খোলা হয়েছে।"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "সতর্কতা"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ফ্রেম"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{#টি রিসোর্স}one{#টি রিসোর্স}other{#টি রিসোর্স}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "সব দেখান"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "সব বর্তমান {PH1} লুকান"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "প্রভাবিত রিসোর্স"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "ব্লক করা হয়েছে"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "এই ধরনের সমস্যা লুকান"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "আরও জানুন: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "বিধিনিষেধের স্ট্যাটাস"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "এই ধরনের সমস্যা দেখুন"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "সতর্ক করা হয়েছে"
@@ -5028,19 +5415,19 @@
     "message": "ক্রস অরিজিন এম্বেডার পলিসি"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "সাধারণ"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "বিভাগ অনুযায়ী গ্রুপ করুন"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "সমস্যার প্রকার অনুযায়ী গ্রুপ করুন"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "আনুষঙ্গিক ক্যাটেগরি অনুযায়ী গ্রুপ সমস্যাগুলি ডিসপ্লে করেছে"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "গ্রুপে সমস্যাগুলিকে 'পৃষ্ঠা সংক্রান্ত সমস্যা', 'ব্রেকিং পরিবর্তন' এবং 'উন্নতি' হিসেবে দেখানো হয়েছে"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "অতিরিক্ত রিসোর্স খরচ করে এমন বিজ্ঞাপন"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm মডিউলের URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "এই ধরনের সমস্যা দেখুন"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "এই ধরনের সমস্যা লুকান"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "সমস্যা দেখায় সেইসব মেনু লুকান"
+    "message": "সমস্যাগুলি লুকান"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP লঙ্ঘন"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "সাইন্ড-এক্সচেঞ্জ"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "লেটেন্সি (প্রতিক্রিয়া পাওয়ার সময় - শুরুর সময়)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(অজানা)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "সতর্কতা:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "এই সেটিং চালু করতে, আপনাকে প্রথমে Chrome-এ সেটিংস সিঙ্ক করা চালু করতে হবে।"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "সেটিংসে যান"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome-এ এই ইমেল আইডি ব্যবহার করে সাইন-ইন করে আছেন:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "এই সেটিং চালু করতে, আপনাকে Chrome সিঙ্ক চালু করতে হবে।"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "কাস্টম ডিভাইস যোগ করুন..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "উপেক্ষা তালিকায় স্ক্রিপ্ট যোগ করুন"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "কিছু কল ফ্রেমে সতর্কতা আছে"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "কল স্ট্যাক"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "এটি অনুযায়ী সাজান"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … মিলছে এমন {PH1}টি লাইন এড়িয়ে যাওয়া হচ্ছে … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "যোগ করা হয়েছে:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "পার্থক্য দেখার ভিউয়ার পরিবর্তন করে"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "মুছে দেওয়া হয়েছে:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{#টি ব্রেকিং পরিবর্তন}one{#টি ব্রেকিং পরিবর্তন}other{#টি ব্রেকিং পরিবর্তন}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "আরও ট্যাব"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "প্রিভিউ ফিচার"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "পৃষ্ঠা থেকে DevTools ডিসকানেক্ট হয়ে গেছে।"

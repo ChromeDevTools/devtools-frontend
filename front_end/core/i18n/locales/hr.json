@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Ista web-lokacija i isti izvor"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Redukcija niza korisničkog agenta"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portali – komunikacijski kanali s istim izvorom"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Upravljanje intervencijama povezanim s velikim oglasima"
@@ -1344,25 +1341,28 @@
     "message": "Problem potencijalno štetne izmjene: stranica može prestati funkcionirati u novijoj verziji Chromea"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Potencijalno štetne izmjene"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Problem s poboljšanjem: dostupna je prilika za poboljšanje stranice"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Poboljšanja"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Pogreška stranice: stranica ne radi ispravno"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Pogreške na stranici"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Pristupačnost za boju i kontrast"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Sprečavanje miješanog sadržaja"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Redukcija niza korisničkog agenta"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Način kompatibilnosti dokumenta"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Izvor: caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Izvor: description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Izvor: label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Vrijednost iz atributa."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Vrijednost iz elementa description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Vrijednost iz sadržaja elementa."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "alat"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Samo stranice koje su učitane putem GET zahtjeva ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Jedino se stranice sa šifrom statusa 2XX mogu predmemorirati."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome je otkrio pokušaj izvršavanja JavaScripta dok je u predmemoriji."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Stranice koje su zatražile AppBanner trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Oznake onemogućuju predmemoriranje cijele stranice. Otvorite chrome://flags/#back-forward-cache da biste ga lokalno omogućili na ovom uređaju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Naredbeni redak onemogućio je predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je zbog nedovoljno memorije."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Ovlaštenje ne podržava predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Predučitavač je onemogućio predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Stranica se ne može predmemorirati jer ima instancu BroadcastChannel s registriranim slušateljima."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Stranice sa zaglavljem cache-control:no-store ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Predmemorija je namjerno izbrisana."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Stranica je izbačena iz predmemorije kako bi se omogućilo predmemoriranje druge stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Stranice koje sadrže dodatke trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Stranice koje koriste FileChooser API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Stranice koje koriste File System Access API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Stranice koje koriste otpremnik za medijski uređaj ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Tijekom napuštanja stranice u tijeku je bila reprodukcija Media Playera."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Stranice koje koriste MediaSession API i postave stanje reprodukcije ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Stranice koje koriste MediaSession API i postave rukovatelje radnjom ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Stranice koje koriste SecurityHandler ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Stranice koje koriste Serial API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Stranice koje koriste WebAuthetication API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Stranice koje koriste WebBluetooth API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Stranice koje koriste WebUSB API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Stranice koje koriste predviđeni alat ili radni zadatak trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokument nije završio s učitavanjem prije napuštanja stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Uslužni alat aktiviran je dok je u tijeku bilo predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Stranica je izbačena iz predmemorije kako bi se omogućilo predmemoriranje druge stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Stranice koje su odobrile pristup streamanju medijskih sadržaja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Stranice koje koriste portale trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Stranice koje koriste IdleManager trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Stranice koje imaju otvorenu IndexedDB vezu trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Korišteni su API-ji koji ne ispunjavaju kriterije."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Stranice u koje je JavaScript ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Stranice u koje je StyleSheet ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interna pogreška."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Stranice koje koriste zaključavanje tipkovnice trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Stranica nije završila s učitavanjem prije napuštanja stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Stranice čiji glavni resurs ima cache-control:no-cache ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Stranice čiji glavni izvor ima cache-control:no-store ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Kretanje je otkazano prije nego što se stranica mogla vratiti iz predmemoriranja cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Stranica je izbačena iz predmemorije jer je aktivna mrežna veza primila previše podataka. Chrome ograničava količinu podataka koje stranica može primiti tijekom predmemoriranja."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Stranice koje imaju dohvaćanje ili XHR u tijeku trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Stranica je izbačena iz predmemoriranja cijele stranice jer je aktivni zahtjev za mrežu uključivao preusmjeravanje."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Stranica je izbačena iz predmemorije jer je mrežna veza bila predugo otvorena. Chrome ograničava količinu vremena tijekom kojeg stranica može primiti podatke za vrijeme predmemoriranja."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Stranice koje nemaju važeći odgovor ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Kretanje se dogodilo u okviru koji nije glavni."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Stranica ima unload rukovatelj sa zaglavljem za uključivanje predmemoriranja cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Stranice s indeksiranim DB transakcijama trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Stranice sa zahtjevom za mrežu u tijeku trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Stranice sa zahtjevom za dohvaćanje mreže u tijeku trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Stranice sa zahtjevom za mrežu u tijeku trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Stranice s XHR zahtjevom za mrežu u tijeku trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Stranice koje koriste PaymentManager trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Stranice koje koriste sliku u slici trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Stranice koje koriste portale trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Stranice koje prikazuju korisničko sučelje za ispisivanje trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Stranica je otvorena pomoću window.open(), a druga kartica referencira na nju ili je stranica otvorila prozor."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Proces generiranja za stranicu u predmemoriranju cijele stranice se srušio."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Postupak generiranja za stranicu u predmemoriranju cijele stranice je prekinut."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Stranice koje su zatražile dopuštenja za snimanje zvučnih zapisa trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Stranice koje su zatražile dopuštenja za senzor trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Stranice koje su zatražile pozadinsku sinkronizaciju ili dopuštenja za dohvaćanje trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Stranice koje su zatražile dopuštenja za MIDI trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Stranice koje su zatražile dopuštenja za obavijesti trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Stranice koje su zatražite pristup pohrani trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Stranice koje su zatražile dopuštenja za snimanje videozapisa trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Jedino se stranice čija je shema URL-a HTTP/HTTPS mogu predmemorirati."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Stranicu je preuzeo uslužni alat dok je u predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Uslužni alat pokušao je stranici kod koje je u tijeku predmemoriranje cijele stranice poslati MessageEvent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Otkazana je registracija za ServiceWorker dok je u tijeku bilo predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Stranica je izbačena iz predmemoriranja cijele stranice zbog aktivacije uslužnog alata."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome se ponovno pokrenuo i izbrisao unose predmemoriranja cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Stranice koje koriste SharedWorker trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Stranice koje koriste SpeechRecognizer trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Stranice koje koriste SpeechSynthesis trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Iframe na stranici pokrenuo je kretanje koje nije dovršeno."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Stranice čiji podresurs ima cache-control:no-cache ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Stranice čiji podresurs ima cache-control:no-store ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Stranica je premašila maksimalno vrijeme u predmemoriranju cijele stranice i istekla je."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Isteklo je pristupanje predmemoriranju cijele stranice (vjerojatno zbog rukovatelja sakrivanjem stranice koji su bili dugo pokrenuti)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Stranica ima unload rukovatelj u glavnom okviru."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Stranica ima unload rukovatelj u podokviru."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Preglednik je promijenio zaglavlje nadjačavanja korisničkog agenta."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Stranice koje su odobrile pristup snimanju videozapisa ili audiozapisa trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Stranice koje koriste WebDatabase trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Stranice koje koriste WebHID trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Stranice koje koriste WebLocks trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Stranice koje koriste WebNfc trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Stranice koje koriste WebOTPService trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Stranice s WebRTC-om ne mogu pristupiti predmemoriranju cijele stranice"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Stranice koje koriste WebShare trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Stranice s WebSocketom ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Stranice s WebTransportom ne mogu pristupiti predmemoriranju cijele stranice."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Stranice koje koriste WebXR trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Predmemoriranje cijele stranice"
   },
@@ -2316,25 +2655,34 @@
     "message": "Status predmemoriranja cijele stranice"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Ne omogućuje poduzimanje radnje"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Navigacija posljednjeg glavnog okvira"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Ti razlozi nisu namijenjeni za izvršenje radnje, odnosno sprječavanje predmemoriranja uzrokovano je nečim što nije pod izravnom kontrolom stranice."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Glavni okvir"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Normalno kretanje (nije vraćeno iz predmemoriranja cijele stranice)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Omogućuje poduzimanje radnje"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Ti su razlozi namijenjeni za izvršenje radnje, odnosno mogu se izbrisati kako bi stranica ispunjavala kriterije za predmemoriranje cijele stranice."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Vraćeno iz predmemoriranja cijele stranice"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Pokreni test"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Na čekanju za podršku"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chromeova podrška za navedene razloge je u tijeku, odnosno razlozi neće spriječiti da stranica ispunjava kriterije za predmemoriranje cijele stranice u budućoj verziji Chromea."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "nedostupno"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "Oznake: {PH1}"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Testni naziv"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ograničenje upotrebe"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (iz karte izvora)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Dodatak: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Brisanje: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Preskače se {PH1} podudarnih redaka … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binarni podaci"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Preglednik promjena za alat Izmjene"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Nema promjena"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Izbriši pregled"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Pregled snimke"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Pregled CSS-a"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom primijenjen je na statički postavljen element"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width primijenjena na ugrađeni element"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Naš tim aktivno radi na ovoj značajci i od vas tražimo {PH1}!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Pregled snimke"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Snimite pregled CSS-a svoje stranice"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "povratne informacije"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Komentar"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Identificirajte potencijalna poboljšanja CSS-a"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Utvrdite potencijalna poboljšanja CSS-a (primjerice poteškoće s niskim kontrastom, neiskorištene izjave, nepodudaranja boja ili fontova)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Locirajte zahvaćene elemente na ploči Elementi."
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Značajka za pregled"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Brzi početak: započnite s novom pločom Pregled CSS-a"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Videozapis i dokumentacija"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Pregled CSS-a"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopiraj selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Naziv entiteta CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Vrijednost objekta CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Alat za odabir CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtar"
   },
@@ -4353,7 +4728,10 @@
     "message": "(tekst)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Odaberite boju preklapanja za ovaj element"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Otvoren je alat za odabir boja."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "upozorenje"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Okvir"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resurs}one{# resurs}few{# resursa}other{# resursa}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Otkrij sve"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Sakrijte sve trenutačne {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Zahvaćeni resursi"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "blokiran"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Sakrij poteškoće poput ove"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Saznajte više: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Status ograničenja"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Otkrij poteškoće poput ove"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Upozoren"
@@ -5028,19 +5415,19 @@
     "message": "Pravila ugraditelja o različitim izvorima"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Opće"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Grupiraj po kategoriji"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Grupiraj po vrsti"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Grupa prikazuje poteškoće pod povezanim kategorijama"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Poteškoće prikazane po grupama kao što su Pogreške na stranici, Potencijalno štetne izmjene i Poboljšanja"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Oglasi koji troše previše resursa"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL Wasm modula"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Otkrij poteškoće poput ove"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Sakrij poteškoće poput ove"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Izbornik Skrivanje poteškoća"
+    "message": "Sakrij poteškoće"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Kršenja CSP-a"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "potpisana razmjena"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latencija (vrijeme primanja odgovora – vrijeme početka)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(nepoznato)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "UPOZORENJE:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Da biste uključili tu postavku, prvo morate omogućiti sinkronizaciju postavki u Chromeu."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Otvori postavke"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Prijavljen u Chrome kao:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Da biste uključili tu postavku, morate omogućiti Chrome sinkronizaciju."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Dodaj prilagođeni uređaj..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Dodajte skriptu da biste zanemarili popis"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Neki okviri poziva sadrže upozorenja"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Stog poziva"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Poredaj po"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Preskače se {PH1} podudarnih redaka … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Dodatak:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Preglednik promjena za alat Izmjene"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Brisanje:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# potencijalno štetna izmjena}one{# potencijalno štetna izmjena}few{# potencijalno štetne izmjene}other{# potencijalno štetnih izmjena}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Više kartica"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Značajka za pregled"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Prekinuta je veza Razvojnih alata sa stranicom."

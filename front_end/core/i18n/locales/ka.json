@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site და Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "User-Agent ფრაზის შემცირება"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "პორტალები — საკომუნიკაციო არხები ერთი და იგივე წყაროდან"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "რეკლამის ჩარევის მძიმე შემთხვევებთან გამკლავება"
@@ -1344,25 +1341,28 @@
     "message": "კრიტიკული ცვლილების შეცდომა: შესაძლოა, გვერდმა არ იმუშაოს Chrome-ის მომდევნო ვერსიაში"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "კრიტიკული ცვლილებები"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "გაუმჯობესების პრობლემა: არსებობს გვერდის გაუმჯობესების შესაძლებლობა"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "გაუმჯობესებები"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "შეცდომა გვერდზე: გვერდი არ მუშაობს გამართულად"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "გვერდის შეცდომები"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ფერისა და კონტრასტის მისაწვდომობა"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ხელშემშლელი შერეული კონტენტი"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "User-Agent ფრაზის შემცირება"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "დოკუმენტთა თავსებადობის რეჟიმი"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "წყარო: caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "წყარო: description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "წყარო: label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "მნიშვნელობა ატრიბუტიდან."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "მნიშვნელობა description ელემენტიდან."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "მნიშვნელობა ელემენტის შიგთავსიდან."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "დამმუშავებელი"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "მხოლოდ GET მოთხოვნის მეშვეობით ჩატვირთული გვერდები შეძლებენ უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "შესაძლებელია მხოლოდ იმ გვერდების ქეშირება, რომელთაც გააჩნიათ სტატუსის კოდი 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome-მა ქეშში მყოფ გვერდზე JavaScript-ის შესრულების მცდელობა აღმოაჩინა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "გვერდები, რომლებმაც მოითხოვეს AppBanner, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია ალმის სასარგებლოდ. ამ მოწყობილობაზე ადგილობრივად მის ჩასართავად გადადით მისამართზე chrome://flags/#back-forward-cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია ბრძანებათა სტრიქონის მიერ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "არასაკმარისი მეხსიერების გამო უკან-წინ გადასვლის ქეში გათიშულია."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "უკან-წინ გადასვლის ქეში მხარდაჭერილი არ არის მინდობილი პირის მიერ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "უკან-წინ გადასვლის ქეში გათიშულია წინასწარი ჩამტვირთველისთვის."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "გვერდის ქეშირება შეუძლებელია, რადგან მას აქვს BroadcastChannel-ის ეგზემპლარი რეგისტრირებული მსმენელისთვის."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "გვერდები, რომელთაც აქვთ cache-control:no-store სათაური, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ქეში საგანგებოდ გაიწმინდა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "გვერდი წაიშალა ქეშიდან, სხვა გვერდის ქეშირების მიზნით."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "გვერდები, რომელთაც აქვს დანამატები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "გვერდები, რომლებიც იყენებს FileChooser API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "გვერდები, რომლებიც იყენებს File System Access API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "გვერდები, რომლებიც იყენებს Media Device Dispatcher-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "მედია დამკვრელი უკრავდა სხვა გვერდზე გადასვლისას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "გვერდები, რომლებიც იყენებს MediaSession API-ს და რომლებსაც არჩეული აქვს დაკვრის მდგომარეობა, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "გვერდები, რომლებიც იყენებს MediaSession API-ს და დაყენებული აქვს მოქმედების დამმუშავებლები, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "გვერდები, რომლებიც იყენებს SecurityHandler-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "გვერდები, რომლებიც იყენებს Serial API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "გვერდები, რომლებიც იყენებს WebAuthetication API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "გვერდები, რომლებიც იყენებს WebBluetooth API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "გვერდები, რომლებიც იყენებს WebUSB API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "გვერდები, რომლებიც იყენებს Dedicated Worker-ს ან Worklet-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "გვერდის ჩატვირთვა არ დასრულებულა მისგან გამოსვლამდე."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "სერვისის დამმუშავებელი გააქტიურდა გვერდის უკან-წინ გადასვლის ქეშშში ყოფნისას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "გვერდი წაიშალა ქეშიდან, სხვა გვერდის ქეშირების მიზნით."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "გვერდები, რომლებმაც მედია ნაკადზე წვდომა მიიღო, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "გვერდები, რომლებიც იყენებს პორტალებს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "გვერდები, რომლებიც იყენებს IdleManager-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "გვერდები, რომელთაც აქვს ღია IndexedDB კავშირი, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "გამოყენებულ იქნა შეუსაბამო API-ები."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "IPage-ები, რომლებშიც გაფართოებებმა ჩასვეს JavaScript, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "გვერდები, რომლებშიც StyleSheet ინერგება გაფართოებების მიხედვით, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "შიდა შეცდომა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "გვერდები, რომლებიც იყენებს კლავიატურის ჩაკეტვის შესაძლებლობას, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "გვერდის ჩატვირთვა არ დასრულებულა მისგან გამოსვლამდე."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "გვერდები, რომელთა მთავარ რესურსს აქვს cache-control:no-cache, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "გვერდები, რომელთა მთავარ წყაროს გააჩნია cache-control:no-store, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ნავიგაცია გაუქმდა უკან-წინ გადასვლის ქეშიდან გვერდის აღდგენამდე."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "გვერდი ამოღებულია ქეშიდან, რადგან ქსელთან მოქმედმა კავშირმა ძალიან ბევრი მონაცემი მიიღო. Chrome ზღუდავს მონაცემთა რაოდენობას, რომლის მიღებაც ქეშირებულ გვერდს შეუძლია."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "fetch-ზე ან XHR-ზე მოთხოვნის მქონე გვერდები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "გვერდი წაიშალა უკან-წინ გადასვლის ქეშიდან, რადგან ქსელის აქტიური მოთხოვნა საჭიროებდა გადამისამართებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "გვერდი წაიშალა ქეშიდან, რადგან ქსელთან დაკავშირება დიდხანს გაგრძელდა. Chrome ზღუდავს დროს, რომლის განმავლობაშიც გვერდმა შეიძლება მიიღოს მონაცემები ქეშირების დროს."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "გვერდები, რომელთაც არ აქვს პასუხის მოქმედი სათაური, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ნავიგაცია განხორციელდა არამთავარ ფრეიმში."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "გვერდს აქვს განტვირთვის დამმუშავებელი უკან-წინ გადასვლის ქეშის თანხმობის კოლონტიტულის გარეშე."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "გვერდი, რომელსაც აქვს DB-ს მიმდინარე ინდექსირებული ტრანსაქციები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "გვერდები, რომლებმაც ქსელზე მოთხოვნა გააგზავნა, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "fetch ქსელზე მოთხოვნის მქონე გვერდები ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "გვერდები, რომლებმაც ქსელზე მოთხოვნა გააგზავნა, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "XHR ქსელში გაგზავნილი მოთხოვნების მქონე გვერდები ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "გვერდები, რომლებიც იყენებს PaymentManager-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "გვერდები, რომლებიც იყენებს ფუნქციას „ეკრანი ეკრანში“, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "გვერდები, რომლებიც იყენებს პორტალებს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "გვერდები, რომლებზეც აისახება ბეჭდვის ინტერფეისი, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "გვერდი გაიხსნა window.open()-ის გამოყენებით, ხოლო სხვა ჩანართს აქვს მასზე მითითება, ან გვერდის მეშვეობით გაიხსნა ფანჯარა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "უკან-წინ გადასვლის ქეშში გვერდის დამუშავების პროცესში ის გაიჭედა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "უკან-წინ გადასვლის ქეშში ამ გვერდის დამუშავების პროცესი დასრულდა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "გვერდები, რომლებმაც მოითხოვა აუდიოს აღბეჭდვის ნებართვები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "გვერდები, რომლებმაც მოითხოვეს სენსორის ნებართვები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "გვერდები, რომლებმაც მოითხოვა ფონურ რეჟიმში სინქრონიზაცია ან მონაცემთა მიღება, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "გვერდები, რომლებმაც მოითხოვა MIDI-ნებართვები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "გვერდები, რომლებმაც მოითხოვა MIDI-შეტყობინებები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "გვერდები, რომლებმაც მოითხოვა მეხსიერებაზე წვდომა, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "გვერდები, რომლებმაც მოითხოვა ვიდეოს აღბეჭდვის ნებართვები, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "მხოლოდ იმ გვერდების ქეშირება არის შესაძლებელი, რომელთა URL სქემაც არის: HTTP / HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ამ გვერდზე პრეტენზია გამოაცხადა სერვისის დამმუშავებელმა, ის კი უკან-წინ გადასვლის ქეშშია დამატებული."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "სერვისის დამმუშავებელი შეეცადა, გვერდი უკან-წინ გადასვლის ქეშში გაეგზავნა MessageEvent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker-ის რეგისტრაცია გაუქმდა გვერდის უკან-წინ გადასვლის ქეშში ყოფნისას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "გვერდი ამოღებულია უკან-წინ გადასვლის ქეშიდან, სერვისის დამმუშავებლის გააქტიურების გამო."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome გადაიტვირთა და უკან-წინ გადასვლის ქეშის ჩანაწერები წაშალა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "გვერდები, რომლებიც იყენებს SharedWorker-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "გვერდები, რომლებიც იყენებს SpeechRecognizer-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "გვერდები, რომლებიც იყენებს SpeechSynthesis-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe-მა დაიწყო ნავიგაცია გვერდზე, რომელიც ჯერ ვერ დასრულდა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "გვერდები, რომელთა ქვერესურსს აქვს cache-control:no-cache, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "გვერდები, რომელთა ქვერესურსსაც აქვს cache-control:no-store, ვერ დაემატება უკან-წინ გადასვლის ქეშში."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "გვერდმა გადააჭარბა უკან-წინ გადასვლის ქეშში ყოფნის ზღვრულ დროს და მოქმედების ვადა ამოეწურა."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "უკან-წინ გადასვლის ქეშში გვერდის დამატებისას მოლოდინის დრო ამოიწურა (სავარაუდოდ, გვერდის დამალვის დამმუშავებლების ხანგრძლივი მუშაობის გამო)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "გვერდს მთავარ ფრეიმში გააჩნია განტვირთვის დამმუშავებელი."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "გვერდს ქვეფრეიმში აქვს განტვირთვის დამმუშავებელი."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ბრაუზერმა შეცვალა User Agent-ის უგულებელყოფის სათაური."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "გვერდები, რომელთაც მინიჭებული აქვს წვდომა ვიდეოს ან აუდიოს ჩაწერაზე, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "გვერდები, რომლებიც იყენებს WebDatabase-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "გვერდები, რომლებიც იყენებს WebHID-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "გვერდები, რომლებიც იყენებს WebLocks-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "გვერდები, რომლებიც იყენებს WebNfc-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "გვერდები, რომლებიც იყენებს WebOTPService-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC-ის მქონე გვერდების უკან-წინ გადასვლის ქეშში დამატება ვერ მოხერხდება."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "გვერდები, რომლებიც იყენებს WebShare-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket-ის გვერდების უკან-წინ გადასვლის ქეშში დამატება შეუძლებელია."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport-ის მქონე გვერდები ვერ მოხვდება უკან-წინ გადასვლის ქეშში."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "გვერდები, რომლებიც იყენებს WebXR-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "უკან-წინ გადასვლის ქეში"
   },
@@ -2316,25 +2655,34 @@
     "message": "უკან-წინ გადასვლის ქეშის სტატუსი"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "არაგანხორციელებადი"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "ბოლო ძირითადი ფრეიმის ნავიგაცია"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ეს მიზეზები არაგანხორციელებადია, ანუ ქეშირებას ხელი შეუშალა მიზეზმა, რომელიც უშუალოდ არ უკავშირდება გვერდის კონტროლს."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "ძირითადი ფრეიმი"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ჩვეულებრივი ნავიგაცია (უკან-წინ გადასვლის ქეშიდან აღდგენის გარეშე)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "განხორციელებადი"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ამიტომაც შესაძლებელია ამ მოქმედებების შესრულება, ან მათი გაწმენდა, რომ ისინი ხელმისაწვდომი გახდეს უკან-წინ გადასვლის ქეშში."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "აღდგენილია უკან-წინ გადასვლის ქეშიდან"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "ტესტის გაშვება"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "მხარდაჭერის მოლოდინში"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "სწორედ ამიტომ, Chrome-ის მხარდაჭერა მოლოდინის რეჟიმშია, ანუ ისინი ხელს არ შეუშლის გვერდს უკან-წინ გადასვლის ქეშის გამოყენებას Chrome-ის მომავალ ვერსიაში."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "მიუწვდომელი"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ჟეტონი"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "საცდელი სახელი"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "გამოყენების შეზღუდვა"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (წყაროს რუკიდან)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "დამატება: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "წაშლა: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( …{PH1} შესატყვისი სტრიქონი გამოტოვებული იქნება… )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ორობითი მონაცემები"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "ცვლილებებში სხვაობის მნახველი"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ცვლილებები არ არის"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "მიმოხილვის გასუფთავება"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "მიმოხილვის აღბეჭდვა"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS მიმოხილვა"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom ესადაგება სტატიკურად პოზიცირებულ ელემენტს"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width მიესადაგა ჩართულ ელემენტს"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ჩვენი გუნდი აქტიურად მუშაობს ამ ფუნქციაზე და ველით, რომ გამოგვიგზავნოთ {PH1}!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "მიმოხილვის აღბეჭდვა"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "მიმოიხილეთ თქვენი გვერდის CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "გამოხმაურება"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "გამოხმაურება"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "განსაზღვრეთ CSS-ის პოტენციური გაუმჯობესებები"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "განსაზღვრეთ CSS-ის პოტენციური გაუმჯობესებები (მაგ., დაბალ კონტრასტულობასთან დაკავშირებული საკითხები, გამოუყენებელი განცხადებები, ფერის ან შრიფტის შეუსაბამობა)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "მოძებნეთ დაზიანებული ელემენტები ელემენტების პანელზე"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "გადახედვის ფუნქცია"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "სწრაფი გაშვება: დაიწყეთ CSS-ის მიმოხილვის ახალი პანელით"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ვიდეო და დოკუმენტი"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS მიმოხილვა"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "დაკოპირდეს selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "რესურსის სახელი CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "რესურსის მნიშვნელობა CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS-ის ამომრჩევი"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "გაფილტვრა"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ტექსტი)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "აირჩიეთ გადაფარვის ფერი ამ ელემენტისთვის"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "ფერის ამომრჩევი გახსნილია."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "გაფრთხილება"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ფრეიმი"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# რესურსი}other{# რესურსი}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "ყველას გამოჩენა"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "ყველა მიმდინარე {PH1}-ის დამალვა"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "რესურსები, რომლებსაც შეეხო"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "დაბლოკილი"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "მსგავსი პრობლემების დამალვა"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "შეიტყვეთ მეტი: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "შეზღუდვის სტატუსი"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "მსგავსი პრობლემების გამოჩენა"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "გაფრთხილებული"
@@ -5028,19 +5415,19 @@
     "message": "ჯვარედინი წარმოშობის ჩამშენებლის წესები"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "ზოგადი"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "დაჯგუფება კატეგორიის მიხედვით"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "დაჯგუფება ტიპის მიხედვით"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ნაჩვენები პრობლემების დაჯგუფება დაკავშირებული კატეგორიების მიხედვით"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "ნაჩვენები პრობლემების დაჯგუფება გვერდის შეცდომების, კრიტიკული ცვლილებებისა და გაუმჯობესებების სახით"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "მძიმე რეკლამა"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm-მოდულის URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "მსგავსი პრობლემების გამოჩენა"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "მსგავსი პრობლემების დამალვა"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "პრობლემების მენიუს დამალვა"
+    "message": "პრობლემების დამალვა"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP დარღვევები"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "რეაგირების დრო (პასუხის მიღების დრო — დაწყების დრო)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(უცნობი)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "გაფრთხილება:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "ამ პარამეტრის გასააქტიურებლად ჯერ უნდა ჩართოთ პარამეტრების სინქრონიზაცია Chrome-ში."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "პარამეტრებზე გადასვლა"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "შესული ხართ Chrome-ში, როგორც:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "ამ პარამეტრის გასააქტიურებლად ჩართეთ Chrome სინქი."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "მორგებული მოწყობილობის დამატება…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "სცენარის დამატება იგნორირებულთა სიაში"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "გამოძახების ზოგიერთი ფრეიმი შეიცავს გაფრთხილებებს"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "გამოძახებათა დასტა"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "დალაგება კრიტერიუმით:"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( …{PH1} შესატყვისი სტრიქონი გამოტოვებული იქნება… )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "დამატება:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "ცვლილებებში სხვაობის მნახველი"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "წაშლა:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# კრიტიკული ცვლილება}other{# კრიტიკული ცვლილება}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "სხვა ჩანართები"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "გადახედვის ფუნქცია"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools გაითიშა გვერდიდან."

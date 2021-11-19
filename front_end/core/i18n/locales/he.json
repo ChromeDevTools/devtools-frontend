@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "אותו אתר ואותו מקור"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "הפחתת המחרוזות של הסוכן המשתמש"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "פורטלים – ערוצי תקשורת מאותו מקור"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "איך לטפל בבעיות של מודעות כבדות"
@@ -1344,25 +1341,28 @@
     "message": "בעיית שינוי תוכנה שעלול לגרום לכשל: ייתכן שהדף יפסיק לפעול בגרסה עתידית של Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "שינויי תוכנה שעלולים לגרום לכשלים"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "בעיה בנוגע לשיפור: יש הזדמנות לשפר את הדף"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "שיפורים"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "בעיית שגיאה בדף: הדף לא פועל כראוי"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "שגיאות בדפים"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "נגישות של הצבע והניגודיות"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "מניעת תוכן מעורב"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "הפחתת המחרוזות של הסוכן המשתמש"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "מצב תאימות למסמך"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "מcaption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "מdescription"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "מlabel"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "ערך ממאפיין."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "ערך מרכיב description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "ערך מתוכן הרכיב."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "רק דפים שהטעינה שלהם נעשית באמצעות בקשת GET מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "אפשר לשמור במטמון רק דפים עם קוד סטטוס של 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "מערכת Chrome זיהתה ניסיון להפעיל JavaScript בזמן שהדף היה במטמון."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "בשלב זה, דפים שנשלחה מהם בקשה ל-AppBanner לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "הפיצ'ר 'מטמון לדף הקודם/הבא' הושבת על ידי תכונות ניסיוניות. צריך לעבור לכתובת chrome://flags/#back-forward-cache כדי להפעיל אותו באופן מקומי במכשיר הזה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "הפיצ'ר מטמון לדף הקודם/הבא הושבת על ידי שורת הפקודה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "הפיצ'ר 'מטמון לדף הקודם/הבא' הושבת כי אין מספיק זיכרון."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "הפיצ'ר 'מטמון לדף הקודם/הבא' לא נתמך על ידי בעל גישה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "הפיצ'ר מטמון לדף הקודם/הבא הושבת בשביל כלי עיבוד מקדים."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "אי אפשר לשמור את הדף במטמון כי יש בו מופע של BroadcastChannel עם אירועי listener רשומים."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "אי אפשר להוסיף למטמון לדף הקודם/הבא דפים שיש להם כותרת cache-control:no-store."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "המטמון נוקה באופן מכוון."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "הדף הוצא מהמטמון כדי לאפשר שמירה במטמון של דף אחר."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "בשלב זה, דפים שמכילים יישומי פלאגין לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "דפים שנעשה בהם שימוש ב-FileChooser API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "דפים שנעשה בהם שימוש ב-File System Access API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "דפים שנעשה בהם שימוש ב-Dispatcher של מכשירים לאחסון מדיה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Media Player היה פעיל ביציאה מהדף."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש בממשק MediaSession API ושהוגדר בהם מצב הפעלה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "דפים שנעשה בהם שימוש ב-MediaSession API, אשר מגדירים מופעי handler של פעולות, לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "דפים שנעשה בהם שימוש ב-SecurityHandler לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "דפים שמשתמשים ב-Serial API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "דפים שנעשה בהם שימוש ב-WebAuthetication API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "דפים שנעשה בהם שימוש ב-WebBluetooth API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "דפים שמשתמשים ב-WebUSB API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-worker או ב-worklet ייעודיים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "טעינת המסמך לא הסתיימה לפני היציאה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "קובץ שירות (service worker) הופעל בזמן שהדף היה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "הדף הוצא מהמטמון כדי לאפשר שמירה במטמון של דף אחר."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "בשלב זה, דפים שנתנו אישור גישה לסטרימינג של מדיה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש בפורטלים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-IdleManager לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "בשלב זה, דפים שיש בהם חיבור IndexedDB פתוח לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "נעשה שימוש בממשקי API לא מתאימים."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "בשלב זה, IPages ש-JavaScript מוחדר אליהם באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "בשלב זה, דפים שאליהם מוחדר גיליון סגנונות על ידי תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "שגיאה פנימית."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש בנעילת מקלדת לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "טעינת הדף לא הסתיימה לפני היציאה מהפעולה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "אי אפשר להוסיף למטמון לדף הקודם/הבא דפים שבמשאב העיקרי שלהם מופיע cache-control:no-cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "אי אפשר להוסיף למטמון לדף הקודם/הבא דפים שבמשאב העיקרי שלהם מופיע cache-control:no-store."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "הניווט בוטל לפני שנעשה לדף שחזור מהמטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "הדף הוצא מהמטמון כי חיבור פעיל לרשת קיבל יותר מדי נתונים. יש הגבלה של Chrome על כמות הנתונים שדף מסוים יכול לקבל כשהוא שמור במטמון."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "בשלב זה, דפים שמכילים XHR או פונקציית fetch()‎ פעילה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "הדף הוצא מהמטמון לדף הקודם/הבא כי בקשה פעילה לרשת כללה הפניה אוטומטית."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "הדף הוצא מהמטמון כי החיבור לרשת היה פתוח יותר מדי זמן. יש הגבלה של Chrome בנוגע למשך הזמן שדף יכול לקבל נתונים כשהוא שמור במטמון."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "אי אפשר להוסיף למטמון לדף הקודם/הבא דפים שאין להם כותרת תגובה תקינה."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "הניווט התרחש במסגרת שאינה המסגרת הראשית."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "בדף יש handler של הסרת נתונים שנטענו, ללא כותרת של הבעת הסכמה להפעלת התכונה 'מטמון לדף הקודם/הבא'."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "בשלב זה, דפים עם טרנזקציות פעילות של IndexedDB לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "בשלב זה, דפים עם בקשת רשת פעילה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "בשלב זה, דפים עם בקשת רשת פעילה לאחזור לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "בשלב זה, דפים עם בקשת רשת פעילה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "בשלב זה, דפים עם בקשת רשת XHR פעילה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-PaymentManager לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "בשלב זה, דפים שבהם נעשה שימוש ב'תמונה בתוך תמונה' לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש בפורטלים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "בשלב זה, דפים שמוצגים בהם רכיבי ממשק משתמש של הדפסה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "הדף נפתח תוך שימוש ב-window.open() ולכרטיסייה נוספת יש הפניה לזה, או שנפתח חלון על ידי הדף."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "תהליך הרינדור קרס לדף הזה שבמטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "תהליך הרינדור הופסק לדף הזה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה להרשאות להקלטת אודיו לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה להרשאות חיישן לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה לסנכרון ברקע או להרשאות אחזור לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה להרשאות MIDI לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה להרשאות לגבי התראות לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשת גישה לאחסון לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "בשלב זה, דפים שהתקבלה מהם בקשה להרשאות לצילום סרטון לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "אפשר לשמור במטמון רק דפים שהסכמה של כתובת ה-URL שלהם היא HTTP / HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "על הדף נתבעה בעלות על ידי קובץ שירות (service worker) בזמן שהוא נמצא במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "נעשה ניסיון של קובץ שירות (service worker) לשלוח MessageEvent לדף שנמצא במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "בוטל הרישום של ServiceWorker כשדף היה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "הדף הוצא מהמטמון לדף הקודם/הבא עקב הפעלה של קובץ שירות (service worker)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome הופעל מחדש וניקה את הרשומות של המטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-SharedWorker לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-SpeechRecognizer לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-SpeechSynthesis לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "החל ניווט מצד iframe בדף שלא הסתיים."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "אי אפשר להוסיף למטמון לדף הקודם/הבא דפים שבמשאב המשנה שלהם מופיע cache-control:no-cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "לא ניתן להעביר למטמון לדף הקודם/הבא דפים שבמשאב המשנה שלהם מופיע cache-control:no-store."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "הדף חרג ממגבלת הזמן המקסימלית בפיצ'ר מטמון לדף הקודם/הבא והתוקף שלו פג."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "פג הזמן הקצוב של הדף להוספה למטמון לדף הקודם/הבא (ככל הנראה עקב מופעי handler לפעולות ממושכות של הסתרת דפים)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "לדף יש handler של הסרת הנתונים שנטענו במסגרת הראשית."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "לדף יש handler של הסרת הנתונים שנטענו במסגרת המשנית."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "הכותרת של השינוי מברירת המחדל של סוכן המשתמש שונתה על ידי הדפדפן."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "בשלב זה, דפים שנתנו הרשאת גישה לצילום סרטונים או להקלטת אודיו לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebDatabase לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebHID לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebLocks לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebNfc לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebOTPService לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "אי אפשר לשמור דפים עם WebRTC במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebShare לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "דפים עם WebSocket לא יכולים לעבור למטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "אי אפשר להוסיף דפים עם WebTransport למטמון לדף הקודם/הבא."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "בשלב זה, דפים שנעשה בהם שימוש ב-WebXR לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "מטמון לדף הקודם/הבא"
   },
@@ -2316,25 +2655,34 @@
     "message": "הסטטוס של המטמון לדף הבא/הקודם"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "לא ניתן לנקוט פעולה"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "ניווט למסגרת הראשית האחרונה"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "לא ניתן לבצע פעולות שיפתרו את הבעיות האלה. כלומר, היה גורם שמנע שמירה במטמון, ולדף אין שליטה ישירה על הגורם הזה."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "המסגרת הראשית"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ניווט רגיל (לא משוחזר ממטמון לדף הקודם/הבא)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "ניתן לנקוט פעולה"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "אפשר לבצע פעולות שיפתרו את הבעיות האלה, כדי שניתן יהיה לשמור את הדף במטמון לדף הקודם/הבא."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "שוחזר מהמטמון לדף הקודם/הבא"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "הפעלת הבדיקה"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "בהמתנה לתמיכה"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "התמיכה של Chrome לגבי הבעיות האלה נמצאת בהמתנה. כלומר, הן לא ימנעו אפשרות לשמירת הדף במטמון לדף הקודם/הבא בגרסה עתידית של Chrome."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "לא זמין"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} אסימונים"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "שם הבדיקה"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "הגבלת שימוש"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ממפת המקור)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "תוספת: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "מחיקה: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … מתבצע דילוג על {PH1} שורות תואמות … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "נתונים בינאריים"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "כלי להצגת תוכנית להשוואת נתוני שינויים"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ללא שינוי"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ניקוי סקירה כללית"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "תיעוד דיגיטלי של סקירה כללית"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "סקירה כללית של CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "ערכי Bottom חלים על רכיב שמיקומו סטטי"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width חל על רכיב בתוך השורה"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "הצוות שלנו עובד על הפיצ'ר הזה ואנחנו מצפים ל{PH1} שלך!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "תיעוד דיגיטלי של סקירה כללית"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "צילום מסך של סקירה כללית של ה-CSS של הדף"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "משוב"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "משוב"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "זיהוי של שיפורי CSS פוטנציאליים"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "זיהוי של שיפורי CSS פוטנציאליים (למשל, בעיות של יחס ניגודיות נמוך, הצהרות שאינן בשימוש, חוסר התאמה של צבעים או גופנים)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "איתור הרכיבים שהושפעו בחלונית הרכיבים"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "תכונה בגרסת טרום-השקה (Preview)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "התחלה מהירה: תחילת העבודה עם החלונית החדשה לסקירה כללית של CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "סרטונים ותיעוד"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "סקירה כללית של CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector של עותקים"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "שם נכס CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "ערך הנכס CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "דף CSS של הבורר"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "סינון"
   },
@@ -4353,7 +4728,10 @@
     "message": "(טקסט)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "בחירת צבע הפריסה של הרכיב הזה"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "בוחר הצבעים נפתח."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "אזהרה"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "מסגרת"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{משאב אחד}two{# משאבים}many{# משאבים}other{# משאבים}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "ביטול ההסתרה של הכול"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "הסתרת כל הרישומים הנוכחים של {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "מקורות המידע שהושפעו"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "נחסם"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "הסתרה של בעיות כאלה"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "מידע נוסף: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "סטטוס ההגבלה"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "ביטול ההסתרה של בעיות כאלה"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "קיבלה אזהרה"
@@ -5028,19 +5415,19 @@
     "message": "מדיניות הטמעה ממקורות שונים"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "גנרית"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "קיבוץ לפי קטגוריה"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "חלוקה לקבוצות לפי סוג הבעיה"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "בעיות שמוצגות בקבוצות בקטגוריות משויכות"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "בקבוצה היו בעיות כמו שגיאות בדפים, שיפורים ושינויי תוכנה שעלולים לגרום לכשלים"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "מודעות כבדות"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "כתובת URL של מודול Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "ביטול ההסתרה של בעיות כאלה"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "הסתרה של בעיות כאלה"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "הסתרה של תפריט הבעיות"
+    "message": "הסתרת הבעיות"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "הפרות של CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "זמן אחזור (זמן קבלת התשובה - שעת ההתחלה)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(לא ידוע)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "אזהרה:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "כדי להפעיל את ההגדרה הזו, עליך להפעיל תחילה את הסנכרון של ההגדרות ב-Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "להגדרות"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "נכנסת ל-Chrome בתור:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "צריך להפעיל את סנכרון Chrome כדי להפעיל את ההגדרה הזאת."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "הוספת מכשיר מותאם אישית..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "הוספה של סקריפט לרשימת הפריטים להתעלמות"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "לחלק ממסגרות הקריאה יש אזהרות"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Call Stack"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "מיון לפי"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … מתבצע דילוג על {PH1} שורות תואמות … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "תוספת:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "כלי להצגת תוכנית להשוואת נתוני שינויים"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "מחיקה:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{שינוי תוכנה אחד שעלול לגרום לכשל}two{# שינויי תוכנה שעלולים לגרום לכשלים}many{# שינויי תוכנה שעלולים לגרום לכשלים}other{# שינויי תוכנה שעלולים לגרום לכשלים}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "כרטיסיות נוספות"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "תכונה בגרסת טרום-השקה (Preview)"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "כלי הפיתוח נותקו מהדף."

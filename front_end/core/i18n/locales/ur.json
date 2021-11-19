@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site اور Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "صارف کے ایجنٹ اسٹرنگ میں تخفیف"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "پورٹلز - مماثل اوریجن کے مواصلاتی چینلز"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "اشتہار کی بہت زیادہ مداخلت سے نمٹنا"
@@ -1344,25 +1341,28 @@
     "message": "خلل انگیز تبدیلی کا مسئلہ: صفحہ Chrome کے آئندہ ورژن میں کام کرنا بند کر سکتا ہے"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "خلل انگیز تبدیلیاں"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "بہتری کا مسئلہ: صفحہ بہتر کیا جا سکتا ہے"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "بہتریاں"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "صفحہ کی خرابی کا مسئلہ: صفحہ ٹھیک سے کام نہیں کر رہا ہے"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "صفحے میں خرابیاں"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "رنگ اور تناسب امتزاج کی ایکسیسبیلٹی"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "مخلوط مواد سے بچنا"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "صارف کے ایجنٹ اسٹرنگ میں تخفیف"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "دستاویز موافقت پذیری وضع"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "caption سے"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description سے"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "label سے"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "انتساب سے قدر۔"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description عنصر سے قدر۔"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "عنصر کے مواد سے قدر۔"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "کارکن"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "صرف GET درخواست کے ذریعے لوڈ کردہ صفحات ہی بیک/فارورڈ کیش کیلئے اہل ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "صرف 2XX کے اسٹیٹس کوڈ والے صفحات ہی کیش کئے جا سکتے ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome کو JavaScript کے کیش میں رہتے ہوئے اسے رو بہ عمل لانے کی کوشش کا پتا چلا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "جھنڈوں نے بیک/فارورڈ کیش کو غیر فعال کر دیا ہے۔ اس آلے پر اسے مقامی طور پر فعال کرنے کیلئے chrome://flags/#back-forward-cache ملاحظہ کریں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "کمانڈ لائن نے بیک/فارورڈ کیش کو غیر فعال کر دیا ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ناکافی میموری ہونے کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "بیک/فارورڈ کیش ڈیلیگیٹ کے ذریعے تعاون یافتہ نہیں ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "پری رینڈرر کیلئے بیک/فارورڈ کیش غیر فعال ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "صفحے کو کیش نہیں کیا جا سکتا کیونکہ اس میں رجسٹرڈ سامعین والا ایک BroadcastChannel نمونہ موجود ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store ہیڈر کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "کیش کو جان بوجھ کر صاف کیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "دوسرے صفحے کو کیش ہونے کی اجازت دینے کی غرض سے صفحہ بے دخل ہو گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "پلگ انز پر مشتمل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "فائل سسٹم ایکسیس API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "میڈیا آلہ ڈسپیچر استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "صفحے سے دور نیویگیٹ کرنے پر ایک میڈیا پلیئر چل رہا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API استعمال کرنے اور پلے بیک اسٹیٹ سیٹ کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API استعمال کرنے اور ایکشن ہینڈلر سیٹ کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ایک وقف کردہ ورکر یا ورک لیٹ استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "صفحے سے دور نیویگیٹ کرنے سے پہلے دستاویز کے لوڈ ہونے کا عمل پورا نہیں ہوا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "صفحے کے بیک/فارورڈ کیش میں ہونے کے دوران ایک سروس ورکر فعال کیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "دوسرے صفحے کو کیش ہونے کی اجازت دینے کی غرض سے صفحہ بے دخل ہو گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "میڈیا کے سلسلے تک رسائی فراہم کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "پورٹلز استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "اوپن IndexedDB کنکشن کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "نااہل APIs کا استعمال کیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ایسے صفحات جن میں ایکسٹینشنز کے ذریعے JavaScript انجیکٹ کیا گیا ہے، وہ فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ایسے صفحات جن میں ایکسٹینشنز کے ذریعے StyleSheet انجیکٹ کیا گیا ہے، وہ فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "داخلی خرابی۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "کی بورڈ لاک استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "صفحے سے دور نیویگیٹ کرنے سے پہلے صفحے کے لوڈ ہونے کا عمل پورا نہیں ہوا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ایسے صفحات جن کے مرکزی وسائل میں cache-control:no-cache ہے، وہ بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ایسے صفحات جن کے مرکزی وسائل میں cache-control:no-store ہے، وہ بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "قبل اس کے کہ صفحے کو بیک/فارورڈ کیش سے بحال کیا جائے، نیویگیشن کو منسوخ کر دیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ایک فعال نیٹ ورک کنکشن کے ڈھیر سارا ڈیٹا وصول کرنے کی وجہ سے صفحہ کیش سے بے دخل ہو گیا تھا۔ Chrome اس بات کو محدود کرتا ہے کہ ایک صفحہ کیشڈ ہونے کے دوران کتنا ڈیٹا وصول کر سکتا ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "اِن فلائٹ ‎Fetch()‎ یا XHR کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ایک فعال نیٹ ورک کی درخواست میں ری ڈائریکٹ شامل ہونے کی وجہ سے صفحہ بیک/فارورڈ کیش سے بے دخل ہو گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ایک نیٹ ورک کنکشن کے زیادہ دیر تک کھلے رہنے کی وجہ سے صفحہ کیش سے بے دخل ہو گیا تھا۔ ایک صفحہ کیشڈ ہونے کے دوران کتنے وقت تک ڈیٹا وصول کر سکتا ہے، Chrome اس وقت کو محدود کرتا ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ایسے صفحات جن کے پاس درست ریسپانس ہیڈ نہیں ہے، وہ بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "نیویگیشن کا عمل مرکزی فریم کے علاوہ کسی دوسرے فریم میں واقع ہوا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "صفحے میں بغیر بیک/فارورڈ کیش آپٹ ان ہیڈر والا ان لوڈ ہینڈلر ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "جاری انڈیکسڈ DB ٹرانزیکشنز کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "اِن فلائٹ نیٹ ورک کی درخواست کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "اِن فلائٹ Fetch نیٹ ورک کی درخواست کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "اِن فلائٹ نیٹ ورک کی درخواست کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "اِن فلائٹ XHR نیٹ ورک کی درخواست کے حامل صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "'تصویر میں تصویر' استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "پورٹلز استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "پرنٹنگ UI دکھانے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "صفحے کو window.open() کا استعمال کر کے کھولا گیا تھا اور دوسرے ٹیب میں اس کا حوالہ موجود تھا یا صفحے نے کوئی ونڈو کھولی تھی۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "بیک/فارورڈ کیش میں صفحے کیلئے رینڈرر کا پروسیس ناکام ہو گیا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "بیک/فارورڈ کیش میں صفحے کیلئے رینڈرر کے پروسیس کو ختم کر دیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ایسے صفحات جنہوں نے آڈیو کیپچر کرنے کی اجازتوں کی درخواست کی ہے، وہ فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "سینسر کی اجازتوں کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ایسے صفحات جنہوں نے پس منظر سِنک یا اجازتیں حاصل کرنے کی درخواست دی ہے، وہ فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI کی اجازتوں کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "اطلاعات کی اجازتوں کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "اسٹوریج تک رسائی کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ایسے صفحات جنہوں نے ویڈیو کیپچر کرنے کی اجازتوں کی درخواست کی ہے، وہ فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "صرف ایسے صفحات کو کیش کیا جا سکتا ہے جن کی URL اسکیم HTTP / HTTPS ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "کسی سروس ورکر نے اس صفحے پر اس وقت دعوی کیا تھا جب یہ بیک/فارورڈ کیش میں تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ایک سروس ورکر نے MessageEvent کو ایک ایسے صفحے پر بھیجنے کی کوشش کی جو بیک/فارورڈ کیش میں ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ایک صفحے کے بیک/فارورڈ کیش میں رہنے کے دوران ServiceWorker کا رجسٹریشن ختم کر دیا گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ایک سروس ورکر کی فعالیت کی وجہ سے صفحہ بیک/فارورڈ کیش سے بے دخل ہو گیا تھا۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome دوبارہ شروع ہوا اور اس نے بیک/فارورڈ کیش کی مندرجات صاف کر دئے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "صفحے پر موجود iframe نے ایک ایسی نیویگیشن شروع کی جو مکمل نہیں ہوئی۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ایسے صفحات جن کے ذیلی وسائل میں cache-control:no-cache ہے، وہ بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ایسے صفحات جن کے ذیلی وسائل میں cache-control:no-store ہے، وہ بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "صفحہ بیک/فارورڈ کیش میں زیادہ سے زیادہ وقت سے تجاوز کر گیا اور اس کی میعاد ختم ہو گئی تھی۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "بیک/فارورڈ کیش درج کرتے وقت صفحہ ٹائم آؤٹ ہو گیا (ممکنہ طور پر ایسا دیر تک چلنے والے پیج ہائیڈ ہینڈلرز کی وجہ سے ہوا ہو)۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "صفحے کے مرکزی فریم میں ایک ان لوڈ ہینڈلر ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "صفحے کے ذیلی فریم میں ایک ان لوڈ ہینڈلر ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "براؤزر نے صارف کے ایجنٹ کے اوور رائیڈ ہیڈر کو تبدیل کر دیا ہے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ویڈیو یا آڈیو ریکارڈ کرنے کی سہولت تک رسائی فراہم کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService استعمال کرنے والے صفحات فی الوقت bfcache کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport کے حامل صفحات بیک/فارورڈ کیش درج نہیں کر سکتے۔"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "بیک فارورڈ کیش"
   },
@@ -2316,25 +2655,34 @@
     "message": "بیک فارورڈ کیش کا اسٹیٹس"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "قابل کارروائی نہیں ہے"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "آخری مین فریم نیویگیشن"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "یہ وجوہات قابل کارروائی نہیں ہیں، یعنی کیشنگ کو کسی ایسی چیز کے ذریعے روکا گیا جو صفحے کے براہ راست کنٹرول سے باہر تھا۔"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "مین فریم"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "عام نیویگیشن (بیک فارورڈ کیش سے بحال نہیں ہوا)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "قابل کارروائی"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "یہ وجوہات قابل کارروائی ہیں، یعنی صفحے کو بیک/فارورڈ کیش کیلئے اہل بنانے کی خاطر انہیں صاف کیا جا سکتا ہے۔"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "بیک فارورڈ کیش سے بحال کردہ"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "ٹیسٹ چلائیں"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "سپورٹ کے منتظر"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ان وجوہات کی بناء پر Chrome سپورٹ زیر التواء ہے، یعنی یہ Chrome کے مستقبل کے کسی ورژن میں صفحے کو بیک فارورڈ کیش کی خاطر اہل کئے جانے سے نہیں روکیں گے۔"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "دستیاب نہیں"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ٹوکنز"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ٹرائل کا نام"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "استعمال سے متعلق پابندی"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ماخذ نقشہ سے)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "اضافہ:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "حذف کرنا:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … {PH1} مماثل لائنز نظر انداز کی جا رہی ہیں … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "بائنری ڈیٹا"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "تبدیلیوں کے فرق کا ویور"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "کوئی تبدیلی نہیں"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "مجموعی جائزہ صاف کریں"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "مجموعی جائزہ کیپچر کریں"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS کا مجموعی جائزہ"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "جامد طور پر وضع قائم کردہ عنصر پر Bottom حصہ لاگو کیا گيا"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width کو ایک ان لائن عنصر پر لاگو کیا گیا"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ہماری ٹیم اس خصوصیت پر فعال طور پر کام کر رہی ہے اور ہم آپ کے {PH1} تلاش کر رہے ہیں!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "مجموعی جائزہ کیپچر کریں"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "اپنے صفحے کی CSS کا مجموعی جائزہ کیپچر کریں"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "تاثرات"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "تاثرات"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "CSS کی ممکنہ بہتریوں کی شناخت کریں"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "CSS کی ممکنہ بہتریوں کی شناخت کریں (جیسے، کم کنٹراسٹ والے مسائل، غیر استعمال شدہ اعلامیے، رنگ یا فونٹ کی عدم مماثلتیں)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "عناصر کے پینل میں متاثرہ عناصر کا پتا لگائیں"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "پیش منظر کی خصوصیت"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "فوری شروعات: CSS کے مجموعی جائزے کے نئے پینل کے ساتھ شروعات کریں"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ویڈیو اور دستاویزات"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS کا مجموعی جائزہ"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector کاپی کریں"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS پراپرٹی کا نام"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS پراپرٹی کی قدر"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS منتخب کنندہ"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "فلٹر"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ٹیکسٹ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "اس عنصر کے لیے اوورلے رنگ منتخب کریں"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "رنگ منتخب کنندہ کھل گیا۔"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "وارننگ"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "فریم"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# وسیلہ}other{# وسائل}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "سبھی مسائل کی پوشیدگی ختم کریں"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "تمام موجودہ {PH1} چھپائیں"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "متاثرہ وسائل"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "مسدود کردہ"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "اس جیسے مسائل کو چھپائیں"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "مزید جانیں: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "پابندی کی صورتحال"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "اس جیسے مسائل کی پوشیدگی ختم کریں"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "وارننگ دی گئی"
@@ -5028,19 +5415,19 @@
     "message": "کراس اوریجن ایمبیڈر پالیسی"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "عمومی"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "زمرہ کے لحاظ سے گروپ بندی کریں"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "مسئلے کی قسم کے لحاظ سے گروپ بنائیں"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "گروپ نے وابستہ زمروں کے تحت وسائل ڈسپلے کیے"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "مسائل کو گروپ میں صفحے کی خرابیوں، خلل انگیز تبدیلیوں اور بہتریوں کے طور پر ڈسپلے کیا گیا"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "بھاری اشتہارات"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm ماڈیول کا URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "اس جیسے مسائل کی پوشیدگی ختم کریں"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "اس جیسے مسائل کو چھپائیں"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "مسائل کے مینو کو چھپائیں"
+    "message": "مسائل چھپائیں"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP کی خلاف ورزیاں"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "تاخیر (جواب موصول ہونے کا وقت - وقت آغاز)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(نامعلوم)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "انتباہ:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "اس ترتیب کو آن کرنے کیلئے، آپ کو پہلے Chrome میں ترتیبات کی مطابقت پذیری کو آن کرنا ہوگا۔"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ترتیبات پر جائیں"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome میں سائن ان ہیں بطور:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "اس ترتیب کو آن کرنے کیلئے، آپ کو Chrome سِنک کو آن کرنا ہوگا۔"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "حسب ضرورت آلہ شامل کریں..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "نظر انداز کی فہرست میں اسکرپٹ شامل کریں"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "کچھ کال فریمز میں وارننگز ہوتی ہیں"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "کال اسٹیک"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ترتیب دیں بلحاظ"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … {PH1} مماثل لائنز نظر انداز کی جا رہی ہیں … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "اضافہ:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "تبدیلیوں کے فرق کا ویور"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "حذف کرنا:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# خلل انگیز تبدیلی}other{# خلل انگیز تبدیلیاں}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "مزید ٹیبز"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "پیش منظر کی خصوصیت"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools صفحے سے منقطع ہو گیا تھا۔"

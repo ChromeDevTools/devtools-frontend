@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site և Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Գործակալ ծրագրի տողի կրճատում"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Պորտալներ – նույն աղբյուրի կապուղիներ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ինչպես գործ ունենալ ծանր գովազդների միջամտությունների հետ"
@@ -1344,25 +1341,28 @@
     "message": "Վտանգավոր փոփոխության խնդիր՝ էջը կարող է դադարել աշխատել Chrome-ի հաջորդ տարբերակում"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Վտանգավոր փոփոխություններ"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Բարելավման խնդիր՝ էջը կարելի է բարելավել"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Բարելավումներ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Էջի խնդիր՝ էջը ճիշտ չի աշխատում"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "էջերի սխալներ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Գույների և կոնտրաստի հատուկ գործառույթներ"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Խառը բովանդակության կանխում"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Գործակալ ծրագրի տողի կրճատում"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Փաստաթղթերի համատեղելիության ռեժիմ"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Աղբյուրը՝ caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Աղբյուրը՝ description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Աղբյուրը՝ label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Արժեք հատկանիշից։"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Արժեք description տարրից։"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Արժեք տարրի բովանդակությունից։"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "մշակող"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Ամբողջությամբ հնարավոր է քեշավորել միայն այն էջերը, որոնք բեռնվել են GET հարցման միջոցով։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Միայն 2XX կարգավիճակի կոդով էջերն է հնարավոր քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome-ը հայտնաբերել է JavaScript կոդը քեշում աշխատեցնելու փորձ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Էջերը, որոնք հայցել են AppBanner, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Ամբողջ էջի քեշավորումն անջատված է Chrome-ի փորձնական գործառույթների բաժնում։ Քեշն այս սարքում միացնելու համար անցեք chrome://flags/#back-forward-cache էջ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Ամբողջ էջի քեշավորումն անջատված է հրամանատողի միջոցով։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Ամբողջ էջի քեշավորումն անջատված է անբավարար հիշողության պատճառով։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Ամբողջ էջի քեշավորումը չի աջակցվում պատվիրակի կողմից։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Ամբողջ էջի քեշավորումն անջատված է նախացուցադրման համակարգի համար։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Էջը հնարավոր չէ քեշավորել, քանի որ այն ունի BroadcastChannel նմուշ՝ գրանցված ունկնդիրներով։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Էջերը, որոնք ունեն cache-control:no-store վերնագիրը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Քեշը դիտավորյալ մաքրվել է։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Էջը հեռացվել է քեշից, որպեսզի հնարավոր լինի քեշավորել մեկ այլ էջ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Փլագիններ պարունակող Էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Էջերը, որոնք օգտագործում են FileChooser API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Էջերը, որոնք օգտագործում են File System Access API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Էջերը, որոնք օգտագործում են Media Device Dispatcher, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Մեդիա նվագարկիչը բովանդակություն էր նվագարկում ելքի ժամանակ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Էջերը, որոնք օգտագործում են MediaSession API-ը և որոնց համար ընտրված է նվագարկման կագավիճակ, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Էջերը, որոնք օգտագործում են MediaSession API-ը և որոնց համար կարգավորված են գործողությունների մշակիչներ, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Էջերը, որոնք օգտագործում են SecurityHandler, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Էջերը, որոնք օգտագործում են Serial API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Էջերը, որոնք օգտագործում են WebAuthetication API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Էջերը, որոնք օգտագործում են WebBluetooth API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Էջերը, որոնք օգտագործում են WebUSB API-ը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Էջերը, որոնք օգտագործում են Dedicated Worker կամ Worklet, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Դուք դուրս եք եկել փաստաթղթից, նախքան այն կբեռնվեր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Service Worker սկրիպտն ակտիվացվել է, երբ էջը ամբողջությամբ քեշավորված էր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Էջը հեռացվել է քեշից, որպեսզի հնարավոր լինի քեշավորել մեկ այլ էջ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Էջերը, որոնք տրամադրել են մեդիա հեռարձակման թույլտվություն, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Էջերը, որոնք օգտագործում են պորտալներ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Էջերը, որոնք օգտագործում են IdleManager, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Բաց IndexedDB միացումով Էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Օգտագործվել են չաջակցվող API-ներ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Էջերը, որոնցում ընդլայնումների միջոցով ներդրված է JavaScript կոդ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Էջերը, որոնցում ընդլայնումների միջոցով տեղադրված է ոճերի աղյուսակ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Ներքին սխալ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Էջերը, որոնք օգտագործում են ստեղնաշարի կողպում, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Դուք դուրս եք եկել էջից, նախքան այն կբեռնվեր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Էջերը, որոնց հիմնական ռեսուրսում առկա է cache-control:no-cache վերնագիրը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Էջերը, որոնց հիմնական ռեսուրսում առկա է cache-control:no-store վերնագիրը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Չհաջողվեց մինչև ելքի չեղարկումը վերականգնել էջը ամբողջական քեշավորումից։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Էջը հեռացվել է քեշից, քանի որ ակտիվ ցանցային կապի միջոցով ստացվել են չափից շատ տվյալներ։ Chrome-ը սահմանափակում է քեշավորված էջերին փոխանցվող տվյալների ծավալը։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Էջերը, որոնք ունեն fetch() կամ XHR ուղարկված հարցումներ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Էջը հեռացվել է ամբողջական քեշավորումից, քանի որ ակտիվ ցանցային հարցումը կատարվել էր վերաուղղորդմամբ։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Էջը հեռացվել է քեշից, քանի որ ցանցային կապը երկար ժամանակ բաց էր։ Chrome-ը սահմանափակում է քեշավորված էջերին տվյալների փոխանցման ժամանակը։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Էջերը, որոնք չունեն պատասխանի վավեր վերնագիր, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Անցումը կատարվել է ոչ հիմնական շրջանակում։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Էջն ունի ապաբեռնման մշակիչ, որը չունի ամբողջ էջի քեշավորումը միացնելու վերնագիր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Էջերը, որոնցում կատարվում են ինդեքսավորված տվյալների շտեմարանների գործարքներ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Ակտիվ ցանցային հարցումով էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Ցանցային fetch հարցումով էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Ակտիվ ցանցային հարցումով էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "XHR ակտիվ ցանցային հարցումով էջերը դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Էջերը, որոնք օգտագործում են PaymentManager, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Էջերը, որոնք օգտագործում են «Նկար նկարի մեջ» գործառույթը, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Էջերը, որոնք օգտագործում են պորտալներ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Էջերը, որոնցում ցուցադրված է տպման միջերես, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Էջը բացվել է window.open()-ի օգնությամբ, իսկ մեկ այլ ներդիր հղվում է դրան, կամ էջն է պատուհան բացել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Էջի արտապատկերման գործընթացը ամբողջական քեշում խափանված է։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Էջի արտապատկերման գործընթացը ամբողջական քեշում դադարեցված է։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Էջերը, որոնք հայցել են ձայնագրման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Էջերը, որոնք հայցել են տվիչների օգտագործման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Էջերը, որոնք հայցել են ֆոնային համաժամացման կամ տվյալների բեռնման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Էջերը, որոնք հայցել են MIDI սարքերի օգտագործման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Էջերը, որոնք հայցել են ծանուցումների օգտագործման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Էջերը, որոնք հայցել են հիշողության օգտագործման թույլտվություն, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Էջերը, որոնք հայցել են տեսագրման թույլտվություններ, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Հնարավոր է քեշավորել միայն HTTP/HTTPS սխեմայով URL ունեցող էջերը։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Էջը հայցվել է Service Worker սկրիպտի կողմից, երբ ամբողջությամբ քեշավորված էր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service Worker սկրիպտը փորձել է ուղարկել MessageEvent հատկանիշը ամբողջությամբ քեշավորված էջին։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Service Worker-ի գրանցումը չեղարկվել է, երբ էջը ամբողջությամբ քեշավորված էր։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Էջը հեռացվել է ամբողջական քեշավորումից Service Worker-ի ակտիվացման պատճառով։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome-ը վերագործարկվել է։ Ամբողջ էջի քեշավորման բոլոր գրառումները մաքրվել են։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Էջերը, որոնք օգտագործում են SharedWorker, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Էջերը, որոնք օգտագործում են SpeechRecognizer, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Էջերը, որոնք օգտագործում են SpeechSynthesis, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe պատուհանը էջում գործարկել է անցում, որը չի ավարտվել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Էջերը, որոնց ենթառեսուրսում առկա է cache-control:no-cache վերնագիրը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Էջերը, որոնց ենթառեսուրսում առկա է cache-control:no-store վերնագիրը, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Էջը գերազանցել է ամբողջական քեշում գտնվելու առավելագույն ժամանակը, և դրա ժամկետը սպառվել է։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Էջը ամբողջական քեշում ավելացնելու ժամանակը սպառվել է (հնարավոր է՝ pagehide իրադարձությունների մշակիչները երկար են աշխատում)։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Էջն ունի ապաբեռնման մշակիչ հիմնական շրջանակում։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Էջն ունի ապաբեռնման մշակիչ ենթաշրջանակում։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Դիտարկիչը փոխել է գործակալ ծրագրի փոխարինման վերնագիրը։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Էջերը, որոնք տրամադրել են տեսագրման կամ ձայնագրման թույլտվություն, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Էջերը, որոնք օգտագործում են WebDatabase, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Էջերը, որոնք օգտագործում են WebHID, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Էջերը, որոնք օգտագործում են WebLocks, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Էջերը, որոնք օգտագործում են WebNFC, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Էջերը, որոնք օգտագործում են WebOTPService, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC-ով էջերին հասանելի չէ ամբողջ էջի քեշավորումը։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Էջերը, որոնք օգտագործում են WebShare, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Էջերը, որոնք օգտագործում են WebSocket միջերես, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Էջերը, որոնք օգտագործում են WebTransport, հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Էջերը, որոնք օգտագործում են WebXR, դեռևս հնարավոր չէ ամբողջությամբ քեշավորել։"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Ամբողջ էջի քեշավորում"
   },
@@ -2316,25 +2655,34 @@
     "message": "Ամբողջ էջի քեշավորման կարգավիճակ"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Հնարավոր չէ լուծել"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Նավիգացիա վերջին հիմնական շրջանակում"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Քեշավորումը կանխող պատճառները հնարավոր չէ վերացնել, ինչը նշանակում է, որ դրանք դուրս են էջի ուղղակի վերահսկողությունից։"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Գլխավոր շրջանակ"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Սովորական նավիգացիա (չի վերականգնվել ամբողջ էջի քեշավորումից)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Հնարավոր է լուծել"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Դուք կարող եք վերացնել այս պատճառները, որպեսզի էջը հնարավոր լինի ամբողջությամբ քեշավորել։"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Վերականգնվել է ամբողջ էջի քեշավորումից"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Ստուգել"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Աջակցման կենտրոնի չմշակված հարցումներ"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Սրանք ժամանակավոր պատճառներ են, ինչը նշանակում է, որ Chrome-ի հետագա տարբերակներում դրանք չեն կանխի էջերի ամբողջական քեշավորումը։"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "անհասանելի է"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} թոքեն"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Փորձնական տարբերակի անվանումը"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Օգտագործման սահմանափակում"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (աղբյուրի քարտեզից)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Լրացում՝ {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Ջնջում․ {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Բաց է թողնվում համընկնող {PH1} տող … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Բինարային տվյալներ"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Փոփոխությունների դիտում"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Փոփոխություններ չկան"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Ջնջել ընդհանուր տեղեկությունները"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Ընդհանուր տեղեկություններ նկարահանման մասին"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Ընդհանուր տեղեկություններ CSS-ի վերաբերյալ"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom՝ կիրառվում են ստատիկ տարրի համար"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width հատկանիշը կիրառվել է ներտող տարրի նկատմամբ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Մեր մասնագետներն ակտիվորեն աշխատում են այս գործառույթի վրա և ուզում են իմանալ ձեր {PH1}ը"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Ընդհանուր տեղեկություններ նկարահանման մասին"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Ստացեք ընդհանուր տեղեկություններ էջի CSS-ի մասին"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "կարծիք"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Կարծիք հայտնել"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Գտեք CSS-ի բարելավման հնարավորություններ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Գտեք CSS-ի բարելավման հնարավորություններ (օր․՝ կոնտրաստի խնդիրներ, չօգտագործվող հայտարարագրեր, գույների կամ տառատեսակների անհամապատասխանություն)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Գտեք ազդեցություն կրած տարրերը «Տարրեր» վահանակում"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Փորձնական գործառույթ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Հակիրճ ուղեցույց․ սկսեք աշխատանքը «CSS-ի համատեսք» նոր վահանակով"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Տեսանյութ և փաստաթղթեր"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Ընդհանուր տեղեկություններ CSS-ի վերաբերյալ"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Պատճենել՝ selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS հատկանիշի անվանումը"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS հատկության արժեքը"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS-ի ընտրիչ"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Զտիչ"
   },
@@ -4353,7 +4728,10 @@
     "message": "(տեքստ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Ընտրեք վրադրվող գույն այս տարրի համար"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Գույնի ընտրիչը բացված է։"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "նախազգուշացում"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Շրջանակ"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ռեսուրս}one{# ռեսուրս}other{# ռեսուրս}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Ցույց տալ բոլորը"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Թաքցնել բոլոր ընթացիկ {PH1}ը"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Փոփոխված ռեսուրսներ"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "արգելափակված է"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Թաքցնել նման խնդիրները"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Իմանալ ավելին՝ {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Սահմանափակման կարգավիճակը"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Ցուցադրել նման խնդիրները"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ստացվել է նախազգուշացում"
@@ -5028,19 +5415,19 @@
     "message": "Տարբեր աղբյուրներից զետեղման կանոններ"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Ընդհանուր"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Խմբավորել ըստ կատեգորիաների"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Խմբավորել ըստ տեսակի"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Խմբավորել ցուցադրվող խնդիրներն ըստ կապակցված կատեգորիաների"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Խմբավորել ցուցադրված խնդիրները որպես «Էջերի սխալներ», «Վտանգավոր փոփոխություններ» և «Բարելավումներ»"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Ծանր գովազդներ"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm մոդուլի URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Ցուցադրել նման խնդիրները"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Թաքցնել նման խնդիրները"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Թաքցնել խնդիրների ընտրացանկը"
+    "message": "Թաքցնել խնդիրները"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP խախտումներ"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Հապաղում (պատասխանի ստացման ժամանակը – հարցման ուղարկման ժամանակը)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(անհայտ)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ԶԳՈՒՇԱՑՈՒՄ․"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Այս կարգավորումը միացնելու համար նախ անհրաժեշտ է միացնել կարգավորումների համաժամացումը Chrome-ում։"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Բացել կարգավորումները"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome-ում օգտագործվող հաշիվը՝"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Այս կարգավորումը միացնելու համար անհրաժեշտ է միացնել Chrome-ի համաժամացումը։"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Ավելացնել հատուկ սարք…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Ավելացնել սկրիպտը անտեսվածների ցուցակում"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Զանգերի որոշ շրջանակներ ունեն նախազգուշացումներ"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Կանչերի սթեք"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Տեսակավորել ըստ"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Բաց է թողնվում համընկնող {PH1} տող … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Լրացում՝"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Փոփոխությունների դիտում"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Ջնջում՝"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# վտանգավոր փոփոխություն}one{# վտանգավոր փոփոխություն}other{# վտանգավոր փոփոխություն}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Այլ ներդիրներ"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Փորձնական գործառույթ"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Մշակողի գործիքներն անջատվել են էջից։"

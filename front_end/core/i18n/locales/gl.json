@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site e Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Redución de información da cadea do axente de usuario"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portais: canles de comunicación coa mesma orixe"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Controlar intervencións de anuncios que consomen moitos recursos"
@@ -1344,25 +1341,28 @@
     "message": "Un problema de cambio que pode provocar fallos: a páxina pode deixar de funcionar nunha próxima versión de Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Cambios que poden provocar fallos"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Hai un problema que se pode solucionar: a páxina pódese mellorar"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Melloras"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Erro na páxina: a páxina non funciona correctamente"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Erros de páxinas"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Accesibilidade de cor e contraste"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Evitar contido mixto"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Redución de información da cadea do axente de usuario"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modo de compatibilidade de documentos"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "De caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "De description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "De label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Valor do atributo."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Valor do elemento description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Valor dos contidos do elemento."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "traballador"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Só cumpren os requisitos para almacenarse na memoria caché de páxinas anteriores e seguintes aquelas que se carguen a través dunha solicitude GET."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Só poden almacenarse na memoria caché as páxinas que teñan un código de estado de 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome detectou un intento de executar JavaScript mentres estaba na memoria caché."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Nestes momentos, as páxinas que solicitaron un AppBanner non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "En chrome://flags está desactivada a memoria caché de páxinas anteriores e seguintes. Para activala de forma local neste dispositivo, vai a chrome://flags/#back-forward-cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "A liña de comandos desactivou a memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "A memoria caché de páxinas anteriores e seguintes está desactivada porque non hai suficiente espazo de almacenamento."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "A memoria caché de páxinas anteriores e seguintes non é compatible co delegado."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Desactivouse a memoria caché de páxinas anteriores e seguintes para o prerrenderizador."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "A páxina non pode almacenarse na memoria caché porque ten unha instancia BroadcastChannel con detectores rexistrados."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "As páxinas coa cabeceira cache-control:no-store non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "A memoria caché borrouse de forma intencionada."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Expulsouse esta páxina da memoria caché para que puidese almacenarse nela outra páxina."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Nestes momentos, as páxinas que conteñen complementos non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "As páxinas que usan FileChooser API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "As páxinas que usan File System Access API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "As páxinas que usan o distribuidor de dispositivos multimedia non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Cando se abandonou a páxina, estaba executándose un reprodutor de contido multimedia."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "As páxinas que usan MediaSession API e establecen un estado de reprodución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "As páxinas que usan MediaSession API e establecen controladores de accións non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "As páxinas que usan SecurityHandler non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "As páxinas que usan Serial API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "As páxinas que usan WebAuthetication API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "As páxinas que usan WebBluetooth API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "As páxinas que usan WebUSB API non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Nestes momentos, as páxinas que usan un worklet ou un worker dedicado non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Abandonouse o documento antes de que rematase de cargar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Activouse un service worker mentres a páxina estaba almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Expulsouse esta páxina da memoria caché para que puidese almacenarse nela outra páxina."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Nestes momentos, as páxinas que concederon acceso á reprodución de contido multimedia en tempo real non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Nestes momentos, as páxinas que usan portais non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Nestes momentos, as páxinas que usan IdleManager non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Nestes momentos, as páxinas que teñen unha conexión IndexedDB aberta non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Utilizáronse API que non cumpren os requisitos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Nestes momentos, as páxinas nas que se incorpora JavaScript a través de extensións non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Nestes momentos, as páxinas nas que se incorpora StyleSheet a través de extensións non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Produciuse un erro interno."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Nestes momentos, as páxinas que usan o bloqueo do teclado non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Abandonouse a páxina antes de que rematase de cargar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "As páxinas cuxo principal recurso ten cache-control:no-cache non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "As páxinas cuxo principal recurso ten cache-control:no-store non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Cancelouse a navegación antes de que a páxina puidese restaurarse desde a memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Expulsouse esta páxina da memoria caché porque se recibían demasiados datos a través dunha conexión de rede activa. Chrome limita a cantidade de datos que pode recibir unha páxina mentres está almacenada na memoria caché."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Nestes momentos, as páxinas que teñen solicitudes fetch() ou XHR en execución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Expulsouse esta páxina da memoria caché de páxinas anteriores e seguintes porque se produciu unha redirección como consecuencia dunha solicitude de rede activa."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Expulsouse esta páxina da memoria caché porque houbo unha conexión de rede que permaneceu aberta demasiado tempo. Chrome limita a cantidade de tempo na que unha páxina pode recibir datos mentres está almacenada na memoria caché."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "As páxinas que non teñen unha cabeceira de resposta válida non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Levouse a cabo un proceso de navegación nun marco distinto do principal."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "A páxina ten un controlador de cancelación de carga sen a cabeceira de activación da memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Nestes momentos, as páxinas con transaccións de IndexedDB en curso non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede en execución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede de recuperación en execución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede en execución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Nestes momentos, as páxinas cunha solicitude de rede XHR en execución non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Nestes momentos, as páxinas que usan PaymentManager non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Nestes momentos, as páxinas que usan a pantalla superposta non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Nestes momentos, as páxinas que usan portais non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Nestes momentos, as páxinas nas que se mostra a interface de impresión non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "A páxina abriuse mediante window.open() e hai outra pestana cunha referencia a ela, ou ben a páxina abriu unha ventá."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Produciuse un fallo co proceso do renderizador na páxina almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Pechouse o proceso do renderizador na páxina almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos para gravar audio non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso a sensores non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de recuperación ou sincronización en segundo plano non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso a dispositivos MIDI non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos de acceso ás notificacións non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Nestes momentos, as páxinas que solicitaron acceso ao almacenamento non cumpren os requisitos para gardarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Nestes momentos, as páxinas que solicitaron permisos para gravar vídeo non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Só poden almacenarse na memoria caché as páxinas cuxo URL utilice os protocolos HTTP ou HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Un service worker reclamou a páxina mentres estaba almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Un service worker tentou enviarlle un MessageEvent á páxina almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Cancelouse o rexistro de ServiceWorker mentres unha páxina estaba almacenada na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Expulsouse esta páxina da memoria caché de páxinas anteriores e seguintes debido a unha activación dun service worker."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome reiniciou a memoria caché de páxinas anteriores e seguintes, ademais de borrar as súas entradas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Nestes momentos, as páxinas que usan SharedWorker non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Nestes momentos, as páxinas que usan SpeechRecognizer non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Nestes momentos, as páxinas que usan SpeechSynthesis non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Un iframe da páxina iniciou un proceso de navegación que non se completou."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "As páxinas cuxo subrecurso ten cache-control:no-cache non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "As páxinas cuxo subrecurso ten cache-control:no-store non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "A páxina superou o tempo máximo de almacenamento na memoria caché de páxinas anteriores e seguintes, polo que caducou."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Esgotouse o tempo de espera para que a páxina se almacenase na memoria caché de páxinas anteriores e seguintes (probablemente debido á longa duración dos procesos dos controladores de eventos pagehide)"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "A páxina ten un controlador de cancelación de carga no marco principal."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "A páxina ten un controlador de cancelación de carga nun marco secundario."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "O navegador cambiou a cabeceira de omisión do axente de usuario."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Nestes momentos, as páxinas que concederon acceso para gravar vídeo ou audio non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Nestes momentos, as páxinas que usan WebDatabase non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Nestes momentos, as páxinas que usan WebHID non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Nestes momentos, as páxinas que usan WebLocks non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Nestes momentos, as páxinas que usan WebNfc non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Nestes momentos, as páxinas que usan WebOTPService non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "As páxinas con WebRTC non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Nestes momentos, as páxinas que usan WebShare non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "As páxinas con WebSocket non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "As páxinas con WebTransport non poden almacenarse na memoria caché de páxinas anteriores e seguintes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Nestes momentos, as páxinas que usan WebXR non se gardan correctamente na memoria caché de páxinas anteriores e seguintes."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Memoria caché de páxinas anteriores e seguintes"
   },
@@ -2316,25 +2655,34 @@
     "message": "Estado da memoria caché de páxinas anteriores e seguintes"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Ningunha acción posible"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Última navegación no marco principal"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Non se pode actuar sobre estes motivos; é dicir, algo que escapa ao control directo da páxina impediu que esta se almacenase na memoria caché."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Marco principal"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Navegación normal (sen restauración da memoria caché de páxinas anteriores e seguintes)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Accións posibles"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Pode actuarse sobre estes motivos; é dicir, poden solucionarse os problemas existentes a fin de que a páxina se garde correctamente na memoria caché de páxinas anteriores e seguintes."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restaurado cos datos da memoria caché de páxinas anteriores e seguintes"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Executar proba"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Pendente de asistencia"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Está pendente que Chrome facilite algún tipo de asistencia con respecto a estes problemas; é dicir, nunha versión futura de Chrome, estes motivos non impedirán que a páxina poida almacenarse na memoria caché de páxinas anteriores e seguintes."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "non dispoñible"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} tokens"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Nome da proba"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Restrición do uso"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (do mapa de orixe)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Engadiuse o seguinte: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Eliminación: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "(omitindo {PH1} liñas coincidentes…)"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Datos binarios"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Visor de diferenzas nos cambios"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Non hai cambios"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Borrar vista xeral"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Vista xeral da captura"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Visión xeral de CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Aplicouse o valor Bottom a un elemento cunha posición estática"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width aplicado a un elemento inserido"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "O noso equipo está traballando de maneira activa nesta función e gustaríanos recibir a túa opinión ({PH1})."
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Vista xeral da captura"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Rexistrar unha vista xeral de CSS da túa páxina"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "comentarios"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Comentarios"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Identificar posibles melloras de CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Identificar posibles melloras de CSS (por exemplo, problemas de baixo contraste, declaracións sen usar, problemas de coincidencia da cor ou do tipo de letra…)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Localizar os elementos afectados no panel Elementos"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Función de vista previa"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Inicio rápido: comeza a utilizar o novo panel xeral de CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Vídeo e documentación"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Visión xeral de CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Copiar selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Nome da propiedade (CSS)"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Valor da propiedade (CSS)"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Selector de CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrar"
   },
@@ -4353,7 +4728,10 @@
     "message": "(texto)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Escoller a cor de superposición deste elemento"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "O selector de cor está aberto."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "advertencia"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Marco"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# recurso}other{# recursos}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Mostrar todo"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Ocultar todos estes problemas actuais: {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Recursos afectados"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "bloqueouse"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Ocultar problemas coma este"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Máis información: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Estado de restricións"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Mostrar problemas coma este"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Advertiuse do anuncio"
@@ -5028,19 +5415,19 @@
     "message": "Política de método de inserción de orixe cruzada"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Xenérico"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Agrupar por categoría"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Agrupar por tipo"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Agrupar en categorías asociadas os problemas mostrados"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Agrupar por tipo (Erros de páxinas, Cambios que poden provocar fallos e Melloras) os problemas mostrados"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Anuncios que consomen moitos recursos"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL de módulo Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Mostrar problemas coma este"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Ocultar problemas coma este"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Menú Ocultar problemas"
+    "message": "Ocultar problemas"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Infraccións de CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "intercambio asinado"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latencia (hora de recepción da resposta - hora de inicio)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(descoñecido)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ADVERTENCIA:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Para activar esta opción de configuración, primeiro debes habilitar a sincronización da configuración en Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Ir a Configuración"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Sesión iniciada en Chrome como:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Para activar esta opción de configuración, debes habilitar a sincronización de Chrome."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Engadir dispositivo personalizado…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Engadir script para ignorar a lista"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Algúns marcos de chamada teñen advertencias"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Pilla de chamadas"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Ordenar por"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "(omitindo {PH1} liñas coincidentes…)"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Engadiuse o seguinte:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Visor de diferenzas nos cambios"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Eliminouse o seguinte:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# cambio que pode provocar fallos}other{# cambios que poden provocar fallos}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Máis pestanas"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Función de vista previa"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools desconectouse da páxina."

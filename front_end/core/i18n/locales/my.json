@@ -309,7 +309,7 @@
     "message": "ခွဲခြမ်းစိတ်ဖြာရန်"
   },
   "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "တစ်ခုပေါ်တစ်ခုထပ်၍ ဖွင့်ခြင်း"
+    "message": "နှစ်ခုထပ်၍ကြည့်ခြင်း"
   },
   "core/sdk/DOMDebuggerModel.ts | pointer": {
     "message": "ညွှန်းမြား"
@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်းနှင့် ဇာစ်မြစ်တစ်ခုတည်း"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "အသုံးပြုသူ အေးဂျင့်လိုင်း လျှော့ချခြင်း"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "ပေါ်တယ်များ - ဇစ်မြစ်တစ်ခုထဲဖြစ်သော ဆက်သွယ်ရေး ချန်နယ်များ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ကြီးမားသော ကြော်ငြာကြားဝင်မှုများ စီမံခြင်း"
@@ -1344,25 +1341,28 @@
     "message": "အားလုံးရပ်တန့်သွားစေနိုင်သည့် အပြောင်းအလဲ ပြဿနာ- လာမည့် Chrome ဗားရှင်းတွင် စာမျက်နှာအလုပ်လုပ်ခြင်း ရပ်သွားနိုင်သည်"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "အားလုံးရပ်တန့်သွားစေနိုင်သည့် အပြောင်းအလဲများ"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "မွမ်းမံမှုပြဿနာ- စာမျက်နှာ ပိုမိုကောင်းမွန်ရန် အခွင့်အလမ်းရှိသည်"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "မွမ်းမံမှုများ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "စာမျက်နှာအမှားအယွင်း ပြဿနာ- စာမျက်နှာ မှန်ကန်စွာအလုပ်မလုပ်ပါ"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "စာမျက်နှာအမှားများ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "အရောင်နှင့် အလင်းအမှောင် အများသုံးစွဲနိုင်မှု"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "အကြောင်းအရာ အရောအနှောကို တားမြစ်ထားသည်"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "အသုံးပြုသူ အေးဂျင့်လိုင်း လျှော့ချခြင်း"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "မှတ်တမ်းနှင့် တွဲဖက်သုံးနိုင်သောမုဒ်"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "caption မှ"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description မှ"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "label မှ"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "ရည်ညွှန်းချက်မှ တန်ဖိုး။"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description အစိတ်အပိုင်းမှ တန်ဖိုး။"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "အစိတ်အပိုင်းပါ အကြောင်းအရာများမှ တန်ဖိုး။"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "လုပ်သား"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "GET တောင်းဆိုချက်မှတစ်ဆင့် ဖွင့်ထားသောစာမျက်နှာများသာ ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးဝင်ပါသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "အခြေအနေပြကုတ် 2XX ပါသော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "ကက်ရှ်သိမ်းနေစဉ် Chrome သည် JavaScript စီမံဆောင်ရွက်ရန် ကြိုးပမ်းမှုတစ်ခု တွေ့ရှိသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို အလံပြခြင်းများက ပိတ်လိုက်သည်။ Chrome://flags/#back-forward-cache သို့ ဝင်ကြည့်ပြီး ဤစက်ပေါ်တွင် ဖွင့်လိုက်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို ကွန်မန်းလိုင်းက ပိတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "မှတ်ဉာဏ်မလုံလောက်သဖြင့် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ကို မြှုပ်သွင်းခြင်းအတွက် မပံ့ပိုးပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "အကြိုပုံဖော်ခြင်းအတွက် ရှေ့-နောက် ကက်ရှ်ကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "မှတ်ပုံတင်ထားသော နားထောင်သူများပါသည့် BroadcastChannel ဖြစ်ရပ် ရှိသဖြင့် စာမျက်နှာကို ကက်ရှ်သိမ်း၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "ခေါင်းစီး cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ဤကက်ရှ်ကို ရည်ရွယ်ချက်ရှိရှိ ရှင်းထုတ်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ပလတ်အင်များပါဝင်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "File System Access API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "‘မီဒီယာ စက်ပစ္စည်း ဆက်သွယ်စနစ်’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ထွက်သွားချိန်တွင် မီဒီယာ ပလေယာကို ဖွင့်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API သုံးပြီး ဖွင့်ရန်အခြေအနေ သတ်မှတ်သော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API သုံးပြီး လုပ်ဆောင်ချက်စီမံသူများ သတ်မှတ်ထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "သတ်မှတ်ထားသော လုပ်သား (သို့) လုပ်ဆောင်စရာနေရာ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "မှတ်တမ်းသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker ကို စတင်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "စာမျက်နှာနောက်တစ်ခု ကက်ရှ်သိမ်းခွင့်ပြုရန် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "မီဒီယာထုတ်လွှင့်ခွင့် ပေးထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ဖွင့်ထားသော IndexedDB ချိတ်ဆက်မှုရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "အကျုံးမဝင်သော API များ သုံးထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "နောက်ဆက်တွဲများက JavaScript ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "နောက်ဆက်တွဲများက StyleSheet ထည့်သွင်းထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "အတွင်းပိုင်း အမှား။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ကီးဘုတ်လော့ခ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "စာမျက်နှာသည် ထွက်သွားချိန်အထိ ဖွင့်၍မပြီးသေးပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ပင်မရင်းမြစ်တွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ရှေ့-နောက် ကက်ရှ်မှ စာမျက်နှာကို ပြန်မယူနိုင်မီ ထွက်သွားခြင်းကို ရပ်ဆိုင်းလိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ဖွင့်ထားသော ကွန်ရက်ချိတ်ဆက်မှုသည် ဒေတာအများအပြား လက်ခံနေသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော ဒေတာပမာဏကို Chrome က ကန့်သတ်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "လုပ်ဆောင်ဆဲ fetch() (သို့) XHR ရှိသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "လက်ရှိ ကွန်ရက်တောင်းဆိုချက်တွင် တစ်ဆင့်ပြန်ညွှန်ပြခြင်း ပါဝင်နေသောကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ကွန်ရက်ချိတ်ဆက်မှု အလွန်ကြာရှည်စွာ ဖွင့်ထားသောကြောင့် ဤစာမျက်နှာကို ကက်ရှ်မှထုတ်လိုက်သည်။ ကက်ရှ်သိမ်းစဉ် စာမျက်နှာတစ်ခု လက်ခံနိုင်သော အချိန်ပမာဏကို Chrome က ကန့်သတ်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "မှန်ကန်သောတုံ့ပြန်မှု ခေါင်းစီးမရှိသည့် စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "လမ်းညွှန်ခြင်းသည် ပင်မဖရိမ်ထက် ဖရိမ်တစ်ခုတွင် ဖြစ်ပေါ်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "စာမျက်နှာတွင် ခေါင်းစီး၌ ရှေ့-နောက် ကက်ရှ်မပါသော ဖယ်ရှားမှုစီမံသူ ရှိသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "လက်ရှိအက္ခရာစဉ် DB လွှဲပြောင်းမှုများပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "လုပ်ဆောင်ဆဲ fetch ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "လုပ်ဆောင်ဆဲ ကွန်ရက်တောင်းဆိုချက်ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "လုပ်ဆောင်ဆဲ XHR ကွန်ရက်တောင်းဆိုချက် ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "‘နှစ်ခုထပ်၍ ကြည့်ခြင်း’ သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "ပေါ်တယ်သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "‘ပုံနှိပ်ထုတ်ယူမှု UI’ ပြသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "စာမျက်နှာကို window.open() သုံး၍ ဖွင့်ထားပြီး တဘ်နောက်တစ်ခုတွင် ၎င်းသို့ ရည်ညွှန်းချက်ပါရှိသည် (သို့) စာမျက်နှာက ဝင်းဒိုးတစ်ခု ဖွင့်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ် ရပ်တန့်သွားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ရှေ့-နောက် ကက်ရှ်ရှိ စာမျက်နှာအတွက် ပုံဖော်ခြင်းလုပ်ငန်းစဉ်ကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "အသံဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "အာရုံခံကိရိယာခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "နောက်ခံစင့်ခ်လုပ်ခြင်း (သို့) fetch ခွင့်ပြုချက် တောင်းဆိုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "အကြောင်းကြားချက် ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "သိုလှောင်ခန်းသုံးခွင့် တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ဗီဒီယိုဖမ်းယူမှု ခွင့်ပြုချက်များ တောင်းဆိုသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "URL စနစ်သည် HTTP / HTTPS ဖြစ်သော စာမျက်နှာများကိုသာ ကက်ရှ်သိမ်းနိုင်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင်ရှိစဉ် ServiceWorker က တောင်းဆိုထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ရှေ့-နောက် ကက်ရှ်တွင် ServiceWorker သည် စာမျက်နှာအား MessageEvent ပို့ရန် ကြိုးပမ်းထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ရှိနေချိန်၌ ServiceWorker ကို စာရင်းသွင်းမထားပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ServiceWorker စတင်မှုကြောင့် ဤစာမျက်နှာကို ရှေ့-နောက် ကက်ရှ်မှထုတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ပြန်စသွားပြီး ရှေ့-နောက် ကက်ရှ်ဝင်ရောက်မှုများကို ရှင်းထုတ်လိုက်သည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "စာမျက်နှာပေါ်ရှိ iframe သည် အပြီးမသတ်သော လမ်းညွှန်မှုစတင်ထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-cache ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ရင်းမြစ်ခွဲတွင် cache-control:no-store ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "စာမျက်နှာ ရှေ့-နောက် ကက်ရှ်ရှိ အများဆုံးအချိန်ထက် ကျော်သွားပြီး သက်တမ်းကုန်သွားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "စာမျက်နှာသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်ရန် အချိန်ကုန်သွားသည် (အချိန်ကြာလုပ်ဆောင်နေသော စာမျက်နှာဖျောက်သည့် စီမံသူများကြောင့် ဖြစ်နိုင်သည်)။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "စာမျက်နှာတွင် ပင်မဖရိမ်အတွင်း၌ ဖယ်ရှားမှုစီမံသူရှိသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "စာမျက်နှာတွင် ဖရိမ်ခွဲအတွင်း၌ ဖယ်ရှားမှုစီမံသူ ရှိသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ဘရောင်ဇာသည် အသုံးပြုသူ အေးဂျင့် အစားထိုးခေါင်းစီးကို ပြောင်းထားသည်။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ဗီဒီယို (သို့) အသံဖမ်းယူရန် ခွင့်ပြုထားသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ရှေ့-နောက် ကက်ရှ်"
   },
@@ -2316,25 +2655,34 @@
     "message": "ရှေ့-နောက် ကက်ရှ် အခြေအနေ"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "လုပ်ဆောင်နိုင်ခြင်းမရှိပါ"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "နောက်ဆုံး ပင်မဖရိမ် လမ်းညွှန်မှု"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "စာမျက်နှာ၏ တိုက်ရိုက်ထိန်းချုပ်မှုမရှိသည့် အရာတစ်ခုက ကက်ရှ်သိမ်းခြင်းကို တားမြစ်ထားလျှင် ၎င်းကိုလုပ်ဆောင်၍ မရပါ။"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "ပင်မဖရိမ်"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ပုံမှန်လမ်းညွှန်ခြင်း (ရှေ့-နောက် ကက်ရှ်မှ ပြန်ယူထားခြင်းမဟုတ်ပါ)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "လုပ်ဆောင်နိုင်သည်"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်ရန် ၎င်းတို့ကို ရှင်းလင်းနိုင်သည်။"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ရှေ့-နောက် ကက်ရှ်မှ ပြန်ယူထားသည်"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "စမ်းသပ်ရန်"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ဤအကြောင်းရင်းများအတွက် Chrome ပံ့ပိုးမှုကို ဆိုင်းငံ့ထားသည်။ Chrome ၏ လာမည့်ဗားရှင်းတွင် ရှေ့-နောက် ကက်ရှ်အတွက် စာမျက်နှာအကျုံးဝင်နေခြင်းကို တားဆီးမည်မဟုတ်ဟု ဆိုလိုသည်။"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "မရနိုင်ပါ"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "တိုကင် {PH1} ခု"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "စမ်းသပ်မှုအမည်"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "အသုံးပြုမှု ကန့်သတ်ချက်"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ရင်းမြစ်မြေပုံမှ)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "ထပ်ဆောင်းဖြည့်ခြင်း-{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "ဖျက်ခြင်း- {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … တူညီသောစာကြောင်း {PH1} ကြောင်းကို ကျော်ခြင်း … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binary ဒေတာ"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "အပြောင်းအလဲများ ကွဲပြားမှု ကြည့်ရှုရေးစနစ်"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "အပြောင်းအလဲ မရှိပါ"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "အနှစ်ချုပ်ကို ရှင်းထုတ်ရန်"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "အနှစ်ချုပ် ရိုက်ကူးရန်"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS အနှစ်ချုပ်"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "တည်ငြိမ်စွာနေရာချထားသော အစိတ်အပိုင်းတွင် Bottom ကို ထည့်သွင်းထားသည်"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "အင်လိုင်းအစိတ်အပိုင်းတွင် Width ထည့်သွင်းထားသည်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ကျွန်ုပ်တို့အဖွဲ့သည် ဤဝန်ဆောင်မှုအတွက် လက်ရှိတွင် ဆောင်ရွက်လျက်ရှိပြီး သင်၏ {PH1} ကို ရှာနေပါသည်။"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "အနှစ်ချုပ် ရိုက်ကူးရန်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "သင့်စာမျက်နှာ၏ CSS အနှစ်ချုပ်ကို ရိုက်ယူနိုင်သည်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "အကြံပြုချက်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "အကြံပြုချက်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "CSS မွမ်းမံမှု အလားအလာများကို ဖော်ထုတ်ခြင်း"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "CSS မွမ်းမံမှု အလားအလာများကို ဖော်ထုတ်နိုင်သည် (ဥပမာ အရောင်ခြားနားချက် နိမ့်ခြင်း ပြဿနာများ၊ အသုံးမပြုသော ကြေညာချက်များ၊ အရောင် (သို့) ဖောင့် မကိုက်ညီမှုများ)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "‘အစိတ်အပိုင်းများ’ အကန့်တွင် သက်ရောက်သောအစိတ်အပိုင်းကို ရှာနိုင်သည်"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "အစမ်းကြည့်ရှုခြင်း ဝန်ဆောင်မှု"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "အမြန်စတင်ခြင်း- CSS အနှစ်ချုပ် အကန့်အသစ်ဖြင့် စတင်လိုက်ပါ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ဗီဒီယိုနှင့် မှတ်တမ်း"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS အနှစ်ချုပ်"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector မိတ္တူကူးရန်"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS သတ်မှတ်ချက် အမည်"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS သတ်မှတ်ချက်တန်ဖိုး"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS ရွေးချယ်စနစ်"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "စစ်ထုတ်ရန်"
   },
@@ -4353,7 +4728,10 @@
     "message": "(စာသား)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "ဤအစိတ်အပိုင်းအတွက် ထပ်ပိုးလွှာအရောင် ရွေးချယ်ခြင်း"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "အရောင်ရွေးစနစ် ဖွင့်လိုက်သည်။"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "သတိပေးချက်"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ဖရိမ်"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{ရင်းမြစ် # ခု}other{ရင်းမြစ် # ခု}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "အားလုံး ပြန်ပြရန်"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "လက်ရှိ {PH1} အားလုံး ဖျောက်ထားရန်"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "သက်ရောက်မှုရှိသော ရင်းမြစ်များ"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "ပိတ်ထားသည်"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "ဤကဲ့သို့ပြဿနာများကို ဖျောက်ရန်"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ပိုမိုလေ့လာရန်- {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "ကန့်သတ်ချက် အခြေအနေ"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "ဤကဲ့သို့ပြဿနာများကို ပြန်ပြရန်"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "သတိပေးထားသည်"
@@ -5028,19 +5415,19 @@
     "message": "ဇာစ်မြစ်အမျိုးမျိုးတွင် မြှုပ်သွင်းခြင်းစနစ် မူဝါဒ"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "အထွေထွေ"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "အမျိုးအစားအလိုက် အုပ်စုဖွဲ့ရန်"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "အမျိုးအစားအလိုက် အုပ်စုဖွဲ့ရန်"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ဆက်စပ်အမျိုးအစားအောက်တွင် ပြထားသော ပြဿနာများကို အုပ်စုဖွဲ့ရန်"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "ပြသထားသော ပြဿနာများကို ‘စာမျက်နှာအမှားများ’၊ ‘အားလုံးရပ်တန့်သွားစေနိုင်သည့် အပြောင်းအလဲများ’ နှင့် ‘မွမ်းမံမှုများ’ အဖြစ် အုပ်စုဖွဲ့ခြင်း"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "အရွယ်ကြီးမားသော ကြော်ငြာများ"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm မော်ဂျူး URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "ဤကဲ့သို့ပြဿနာများကို ပြန်ပြရန်"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "ဤကဲ့သို့ပြဿနာများကို ဖျောက်ရန်"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "ပြဿနာ မီနူးကို ဖျောက်ရန်"
+    "message": "ပြဿနာများ ဖျောက်ထားပါ"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP ချိုးဖောက်မှုများ"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "လက်မှတ်ထိုးထားသော ဖလှယ်မှု"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "တုံ့ပြန်ချိန် (တုံ့ပြန်မှု ရရှိချိန် - စတင်ချိန်)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(အမည်မသိ)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "သတိပေးချက်-"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "ဤဆက်တင်ဖွင့်ရန် Chrome တွင် စင့်ခ်ဆက်တင်များ ဦးစွာဖွင့်ထားရမည်။"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ဆက်တင်များသို့သွားရန်"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome သို့ ၎င်းအဖြစ် လက်မှတ်ထိုးဝင်ထားသည်-"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "ဤဆက်တင်ဖွင့်ရန် Chrome စင့်ခ် ဖွင့်ထားရမည်။"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "စိတ်ကြိုက်စက် ထည့်ရန်..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Script ကို လျစ်လျူရှုစာရင်းတွင် ထည့်ရန်"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "ခေါ်ဆိုမှုဖရိမ်အချို့တွင် သတိပေးချက်များ ရှိသည်"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "ဒေတာဖွဲ့စည်းပုံ"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "စီရန်"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … တူညီသောစာကြောင်း {PH1} ကြောင်းကို ကျော်ခြင်း … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "ထပ်ဆောင်းဖြည့်ခြင်း-"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "အပြောင်းအလဲများ ကွဲပြားမှု ကြည့်ရှုရေးစနစ်"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "ဖျက်ခြင်း-"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{အားလုံးရပ်တန့်သွားစေနိုင်သည့် အပြောင်းအလဲ # ခု}other{အားလုံးရပ်တန့်သွားစေနိုင်သည့် အပြောင်းအလဲ # ခု}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "နောက်ထပ် တဘ်များ"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "အစမ်းကြည့်ရှုခြင်း ဝန်ဆောင်မှု"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools ကို ဤစာမျက်နှာမှ ချိတ်ဆက်မှုဖြုတ်ထားသည်။"

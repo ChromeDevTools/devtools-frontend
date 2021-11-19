@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "„Same-Site“ ir „Same-Origin“"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Naudotojo priemonės eilutės sumažinimas"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portalai – vieno šaltinio ryšio kanalai"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Sudėtingų skelbimų intervencijų apdorojimas"
@@ -1344,25 +1341,28 @@
     "message": "Gedimą sukeliančio pakeitimo problema: puslapis gali nebeveikti būsimos versijos naršyklėje „Chrome“"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Gedimus sukeliantys pakeitimai"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Patobulinimo problema: yra galimybė patobulinti puslapį"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Patobulinimai"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Puslapio klaidos problema: puslapis neveikia tinkamai"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Puslapio klaidos"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Spalvos ir kontrasto pritaikomumas"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Neleidžiamas įvairus turinys"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Naudotojo priemonės eilutės sumažinimas"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentų suderinamumo režimas"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Iš „caption“"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Iš „description“"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Iš „label“"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Atributo vertė."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Vertė iš „description“ elemento."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Elemento turinio vertė."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "darbuotojas"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Tik puslapiams, įkeltiems naudojant GET užklausą, galima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkciją."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Talpykloje galima saugoti tik puslapius, kurių būsenos kodas yra 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "„Chrome“ aptiko bandymą vykdyti „JavaScript“, kol saugoma talpykloje."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Puslapiams, kurie pateikė „AppBanner“ užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta taikant žymas. Jei norite įgalinti ją vietiniu mastu šiame įrenginyje, apsilankykite adresu chrome://flags/#back-forward-cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta taikant komandos eilutę."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta dėl nepakankamos atminties."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Perduodant ilgalaikio viso puslapio saugojimo talpykloje funkcija nepalaikoma."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta dėl išankstinio pateikimo priemonės."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Puslapio negalima saugoti saugykloje, nes jame yra „BroadcastChannel“ objektas su registruotomis apdorojimo priemonėmis."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Puslapiams su antrašte „cache-control:no-store“ negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Talpykla tyčia išvalyta."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Puslapis buvo pašalintas iš talpyklos, kad būtų leidžiama talpykloje saugoti kitą puslapį."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Puslapiams, kuriuose yra papildinių, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Puslapiams, kuriuose naudojama „FileChooser“ API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Puslapiams, kuriuose naudojama failų sistemos prieigos API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Puslapiams, kuriuose naudojamas „Media Device Dispatcher“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Medijos leistuvė buvo leidžiama prieš išeinant iš jos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Puslapiams, kuriuose naudojama „MediaSession“ API ir nustatyta atkūrimo būsena, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Puslapiams, kuriuose naudojama „MediaSession“ API ir nustatytos veiksmų doroklės, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Puslapiams, kuriuose naudojama „SecurityHandler“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Puslapiams, kuriuose naudojama serijos API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Puslapiams, kuriuose naudojama „WebAuthetication“ API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Puslapiams, kuriuose naudojama „WebBluetooth“ API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Puslapiams, kuriuose naudojama „WebUSB“ API, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Puslapiams, kuriuose naudojamas skirtasis scenarijus arba scenarijaus dalis, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumentas nebuvo visiškai įkeltas prieš išeinant iš jo."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Paslaugos scenarijus buvo suaktyvintas, kol puslapiui buvo taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Puslapis buvo pašalintas iš talpyklos, kad būtų leidžiama talpykloje saugoti kitą puslapį."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Puslapiams, kuriuose suteikta medijos srautinio perdavimo prieiga, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Puslapiams, kuriuose naudojami portalai, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Puslapiams, kuriuose naudojama „IdleManager“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Puslapiams, kuriuose veikia atviras „IndexedDB“ ryšys, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Buvo naudojamos netinkamos API."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Puslapiams, kuriuose įterpta „JavaScript“ naudojant plėtinius, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Puslapiams, kuriuose įterptas stiliaus aprašas naudojant plėtinius, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Vidinė klaida."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Puslapiams, kuriuose naudojamas klaviatūros užraktas, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Puslapis nebuvo visiškai įkeltas prieš išeinant iš jo."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Puslapiams, kurių pagrindiniame šaltinyje yra „cache-control:no-cache“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Puslapiams, kurių pagrindiniame šaltinyje yra „cache-control:no-store“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Naršymas buvo atšauktas, prieš leidžiant atkurti puslapį, kuriam taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Puslapis buvo pašalintas iš talpyklos, nes aktyvus tinklo ryšys gavo per daug duomenų. „Chrome“ riboja duomenų, kuriuos gali gauti talpykloje saugomas puslapis, kiekį."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Puslapiams, kuriuose yra skrydžio „fetch()“ arba XHR, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Puslapiui nebetaikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija, nes į aktyvaus tinklo užklausą buvo įtrauktas peradresavimas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Puslapis buvo pašalintas iš talpyklos, nes tinklo ryšys per ilgai buvo atviras. „Chrome“ riboja laikotarpį, per kurį talpykloje saugomas puslapis gali gauti duomenis."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Puslapiams, kuriuose nėra tinkamos atsako antraštės, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Naršymo veiksmas atliktas ne pagrindiniame rėmelyje."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Puslapyje yra iškėlimo doroklė be ilgalaikio viso puslapio saugojimo talpykloje pasirinkimo antraštės."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Puslapiams, kuriuose yra vykdomų indeksuotų DB operacijų, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Puslapiams, kuriuose pateikta skrydžio tinklo užklausa, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Puslapiams, kuriuose pateikta skrydžio gavimo tinklo užklausa, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Puslapiams, kuriuose pateikta skrydžio tinklo užklausa, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Puslapiams, kuriuose pateikta skrydžio XHR tinklo užklausa, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Puslapiams, kuriuose naudojama „PaymentManager“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Puslapiams, kuriuose naudojamas vaizdas vaizde, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Puslapiams, kuriuose naudojami portalai, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Puslapiams, kuriuose rodoma spausdinimo NS, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Puslapis buvo atidarytas naudojant „window.open()“ ir kitame skirtuke yra jo nuoroda arba puslapyje atidarytas langas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Pateikėjo procesas puslapyje, kuriam taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija, užstrigo."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Pateikėjo procesas puslapyje, kuriam taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija, buvo nutrauktas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Puslapiams, kurie pateikė garso įrašo fiksavimo leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Puslapiams, kurie pateikė jutiklio leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Puslapiams, kurie pateikė sinchronizavimo fone arba gavimo leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Puslapiams, kurie pateikė MIDI leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Puslapiams, kurie pateikė pranešimų leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Puslapiams, kurie pateikė saugyklos prieigos užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Puslapiams, kurie pateikė vaizdo įrašo fiksavimo leidimų užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Talpykloje galima saugoti tik puslapius, kurių URL schema yra HTTP / HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Paslaugos scenarijus patvirtino puslapį, kol jam buvo taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Paslaugos scenarijus bandė siųsti puslapiui, kuriam taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija, „MessageEvent“."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Paslaugos scenarijus buvo išregistruotas, kol puslapiui buvo taikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Suaktyvinus paslaugos scenarijų puslapiui nebetaikoma ilgalaikio viso puslapio saugojimo talpykloje funkcija."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "„Chrome“ paleido iš naujo ir išvalė ilgalaikio viso puslapio saugojimo talpykloje įrašus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Puslapiams, kuriuose naudojamas „SharedWorker“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Puslapiams, kuriuose naudojama „SpeechRecognizer“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Puslapiams, kuriuose naudojama „SpeechSynthesis“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "„Iframe“ puslapyje pradėjo naršymo procesą, kuris nebuvo užbaigtas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Puslapiams, kurių papildomame šaltinyje yra „cache-control:no-cache“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Puslapiams, kurių papildomame šaltinyje yra „cache-control:no-store“, negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Viršytas maksimalus puslapio laikas, taikant ilgalaikio viso puslapio saugojimo talpykloje funkciją, ir puslapis nebegalioja."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Baigėsi puslapio skirtasis laikas bandant pritaikyti ilgalaikio viso puslapio saugojimo talpykloje funkciją (gali būti dėl ilgai vykdomų puslapio slėpimo doroklių)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Puslapio pagrindiniame rėmelyje yra iškėlimo doroklė."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Puslapio papildomame rėmelyje yra iškėlimo doroklė."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Naršyklė pakeitė naudotojo priemonės nepaisymo antraštę."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Puslapiams, kuriuose suteikta vaizdo ar garso įrašymo prieiga, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Puslapiams, kuriuose naudojama „WebDatabase“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Puslapiams, kuriuose naudojama „WebHID“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Puslapiams, kuriuose naudojama „WebLock“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Puslapiams, kuriuose naudojama „WebNfc“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Puslapiams, kuriuose naudojama „WebOTPService“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Puslapiams su „WebRTC“ negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Puslapiams, kuriuose naudojama „WebShare“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Puslapiams su „WebSocket“ negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Puslapiams su „WebTransport“ negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Puslapiams, kuriuose naudojama „WebXR“, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Ilgalaikis viso puslapio saugojimas talpykloje"
   },
@@ -2316,25 +2655,34 @@
     "message": "Ilgalaikio viso puslapio saugojimo talpykloje būsena"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Nereikia imtis veiksmų"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Paskutinio pagrindinio rėmelio naršymas"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Negalima imtis su šiomis priežastimis susijusių veiksmų, pvz., saugoti talpykloje neleidžiama dėl kažkokių veiksnių, kurių puslapis negali tiesiogiai valdyti."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Pagrindinis rėmelis"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Įprastas naršymas (neatkurta naudojant ilgalaikį viso puslapio saugojimą talpykloje)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Reikia imtis veiksmų"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Galima imtis su šiomis priežastimis susijusių veiksmų, pvz., jas galima išvalyti, kad puslapiui būtų galima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkciją."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Atkurta iš ilgalaikio viso puslapio saugojimo talpykloje"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Vykdyti testą"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Palaikymas bus įtrauktas būsimoje versijoje"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Laukiama „Chrome“ palaikymo dėl šių priežasčių, t. y. dėl jų nebus draudžiama puslapiui taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos būsimos versijos sistemoje „Chrome“."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "nepasiekiama"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "Prieigos raktų: {PH1}"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Bandomojo laikotarpio pavadinimas"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Naudojimo apribojimas"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (iš šaltinio žemėlapio)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Pridėjimas: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Trynimas: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Praleidžiamos atitinkančios eilutės ({PH1}) … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dvejetainiai duomenys"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Pakeitimų skirtumų žiūriklis"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Pakeitimų nėra"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Išvalyti apžvalgą"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Fiksuoti apžvalgą"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS kalbos apžvalga"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom vertės pritaikytos statinės pozicijos elementui"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width pritaikytas eilutiniam elementui"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Mūsų komanda tobulina šią funkciją, todėl laukiame jūsų {PH1}!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Fiksuoti apžvalgą"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Puslapio CSS kalbos apžvalgos fiksavimas"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "atsiliepimai"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Atsiliepimai"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Potencialių CSS kalbos patobulinimų nustatymas"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Nustatykite potencialius CSS kalbos patobulinimus (pvz., mažo kontrasto problemas, nenaudojamus pareiškimus, spalvos ar šrifto neatitikimus)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Suraskite paveiktus elementus „Elementų“ skydelyje"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Peržiūros funkcija"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Sparčioji pradžia: pradėkite naudoti naująjį CSS kalbos apžvalgos skydelį"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Vaizdo įrašai ir dokumentai"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS kalbos apžvalga"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopijuoti selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS nuosavybės pavadinimas"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS nuosavybės vertė"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS parinkiklis"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtruoti"
   },
@@ -4353,7 +4728,10 @@
     "message": "(tekstas)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Pasirinkite šio elemento perdangos spalvą"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Atidarytas spalvos parinkiklis."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Lankstusis laukas"
@@ -4977,7 +5355,7 @@
     "message": "įspėjimas"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Rėmelis"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# šaltinis}one{# šaltinis}few{# šaltiniai}many{# šaltinio}other{# šaltinių}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Nebeslėpti nieko"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Slėpti visas dabartines {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Paveikti šaltiniai"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "užblokuota"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Slėpti panašias problemas"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Sužinokite daugiau: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Apribojimo būsena"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Nebeslėpti panašių problemų"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Įspėta"
@@ -5028,19 +5415,19 @@
     "message": "Kelių šaltinių įterpimo programos politika"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Bendrosios"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Grupuoti pagal kategoriją"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Grupuoti pagal tipą"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Grupuoti pateiktas problemas pagal susietas kategorijas"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Grupuoti pateiktas problemas kaip puslapio klaidas, gedimus sukeliančius pakeitimus ir patobulinimus"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Sudėtingi skelbimai"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "„Wasm“ modulio URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Nebeslėpti panašių problemų"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Slėpti panašias problemas"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Slėpti problemų meniu"
+    "message": "Problemų slėpimas"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP pažeidimai"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "pasirašytas apsikeitimas"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Delsa (atsako gavimo laikas–pradžios laikas)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(nežinoma)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ĮSPĖJIMAS:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Jei norite įjungti šį nustatymą, pirmiausia turite įgalinti nustatymų sinchronizavimą sistemoje „Chrome“."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Eikite į skiltį „Nustatymai“"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Prisijungta prie „Chrome“ kaip:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Jei norite įjungti šį nustatymą, turite įgalinti „Chrome“ sinchronizavimą."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Pridėti tinkintą įrenginį…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Pridėti scenarijų, kad būtų nepaisoma sąrašo"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Pateikta perspėjimų dėl kelių iškvietimo rėmelių"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Vykdymo dėklas"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Rūšiuoti pagal"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Praleidžiamos atitinkančios eilutės ({PH1}) … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Pridėjimas:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Pakeitimų skirtumų žiūriklis"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Ištrynimas:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# gedimą sukeliantis pakeitimas}one{# gedimą sukeliantis pakeitimas}few{# gedimą sukeliantys pakeitimai}many{# gedimą sukeliančio pakeitimo}other{# gedimą sukeliančių pakeitimų}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Daugiau skirtukų"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Peržiūros funkcija"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Kūrėjo įrankiai atjungti nuo puslapio."

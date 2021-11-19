@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site va Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Foydalanuvchi agenti qatori qisqartmasi"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portallar – bitta manbali aloqa kanallari"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Ogʻir reklama aralashuvlari bilan ishlash"
@@ -1344,25 +1341,28 @@
     "message": "Jiddiy oʻzgarish xatosi: sahifa Chromening keyingi versiyalarida ishlamay qolishi mumkin"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Nosozlik keltirib chiqaruvchi oʻzgarishlar"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Yechimli masala: sahifani yaxshilash ehtimoli bor"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Yaxshilanishlar"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Sahifada xato: sahifa ishlashida nosozlik bor"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Sahifada xato bor"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Rang va kontrast qulayligi"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Aralash kontent chiqarmaydi"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Foydalanuvchi agenti qatori qisqartmasi"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Hujjat moslik rejimi"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "captiondan"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description tomonidan"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "labeldan"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Atribut qiymati."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description elementi qiymati."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Element tarkibidan olingan qiymat."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Faqatgina GET soʻrovi orqali yuklangan sahifalar keshdan ortga qaytarilishi mumkin."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Faqatgina 2XX holat kodiga ega sahifalar keshlanishi mumkin."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome kesh ichidan JavaScript ishga tushirish urinishini aniqladi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBanner soʻrovini yuboradigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Ortga qaytadigan kesh bayroqcha tomonidan faolsizlantirildi. Uni bu qurilmada chrome://flags/#back-forward-cache sahifasi orqali mustaqil yoqish mumkin."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Ortga qaytadigan kesh buryuqlar qatoridan faolsizlantirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Xotira kamligi sababli ortga qaytadigan kesh faolsizlantirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Ortga qaytadigan kesh vakil taʼminoti bilan ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Ortga qaytadigan kesh oldindan renderlanishi uchun faolsizlantirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Tarkibida qayd qilingan kutish vositalariga ega BroadcastChannel namunasi borligi uchun sahifani keshlash imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Sarlavhasida cache-control:no-store parametri bor sahifalarni keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Kesh ataylab tozalandi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Sahifa boshqasini keshlash maqsadida keshdan oʻchirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Tarkibida plaginlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Fayllar tizimiga ruxsat API taʼminotidan foydalanuvchi sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media qurilmalar dispetcheridan foydalanadigan sahifalarda ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Boshqa sahifaga oʻtish vaqtida media pleyer ijrosi faol edi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API ishlatadigan va ijro holati belgilangan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API ishlatadigan va amal bajarish vositalari belgilangan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "SecurityHandler ishlatadigan sahifalarda ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Alohida worker yoki worklet interfeysi bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Hujjat boshqa joyga oʻtishdan oldin oxirigacha yuklanmadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Sahifa ortga qaytadigan keshdaligida service worker aktivatsiya qilinadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Sahifa boshqasini keshlash maqsadida keshdan oʻchirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Media oqimga ruxsat olgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Portallardan foydalanadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "IdleManager ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Ochiq Indekslangan axborot ombori ulanishlariga ega sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Ruxsat etilmagan API taʼminotlar ishlatildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Tarkibiga kengaytma tomonidan JavaScript kiritilgadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Tarkibiga kengaytma tomonidan StyleSheet qiymatlari kiritilgadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Ichki xatolik."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Klaviatura qulfidan foydalanigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Sahifa boshqa joyga oʻtishdan oldin oxirigacha yuklanmadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Asosiy resursida cache-control:no-cache parametri bor sahifalarni keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Asosiy resursida cache-control:no-store parametri bor sahifalarni keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Sahifa ortga qaytadigan keshdan qayta tiklanguncha navigatsiya bekor qilindi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Faol tarmoq ulanishi ortiqcha axborot qabul qilgani sababli sahifa keshdan oʻchirildi. Chrome sahifalarning keshlanish vaqtida qabul qilishi mumkin axborot hajmini cheklaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Harakatdagi fetch() yoki XHR tarmoq soʻrovlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Faol tarmoq soʻrovi qayta yoʻnaltirilishi sababli sahifa ortga qaytadigan keshdan oʻchirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Tarmoq ulanishi juda uzoq ochiq turgani sababli sahifa keshdan oʻchirildi. Chrome sahifalarning keshlanish jarayonida qabul qilishi mumkin axborot vaqtini cheklaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Yaroqli javob sarlavhasi boʻlmagan sahifalar ortga qaytadigan keshga kiritilmaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Asosiy freymdan tashqari freymda oʻtish amali yuz berdi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Sahifada ortga qaytadigan keshga yozilish sarlavhasi boʻlmagan yuklanishdan yechish vositasi bor."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Indekslangan axborot ombori tranzaksiyalari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Harakatdagi tarmoq soʻrovlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Harakatdagi yuklash tarmoq soʻrovlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Harakatdagi tarmoq soʻrovlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Harakatdagi XHR tarmoq soʻrovlari bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "PaymentManager ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Tasvir ustida tasvir rejimidagi sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Portallardan foydalanadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Bosma interfeysni chiqaradigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Sahifa window.open() yordamida ochildi va unga boshqa varaq yoʻnaltirilgan yoki sahifa oynani ochdi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Ortga qaytadigan keshdagi sahifani renderlash jarayoni ishdan chiqdi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Ortga qaytadigan keshdagi sahifani renderlash jarayoni tugatildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Audio yozib olishga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Sensorlarga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Fonda sinxronlash yoki yuklashga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI signallarga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Bildirishnomalarga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Xotira omboriga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Video yozib olishga ruxsat olmoqchi boʻlgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Faqat HTTP / HTTPS URL andozali sahifalar keshlanadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Sahifa ortga qaytadigan keshdaligida service worker tomonidan talab qilindi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Service worker ortga qaytadigan keshdagi sahifaga MessageEvent yuborishga urindi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Sahifa ortga qaytadigan kesh ichidaligida ServiceWorker roʻyxatdan olib tashlandi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Sahifa service worker aktivatsiyasi sababli ortga qaytadigan keshdan oʻchirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome qaytadan ishga tushdi va ortga qaytadigan kesh qaydlari tozalandi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "SharedWorker ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "SpeechRecognizer ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "SpeechSynthesis ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Sahifadagi iframe oʻtish amalini boshladi, lekin bu navigatsiya yakunlanmadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Quyi resursida cache-control:no-cache parametri bor sahifalarni keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Quyi resursida cache-control:no-store parametri bor sahifalarni keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Sahifaning ortga qaytadigan keshda boʻlishi uchun ajratilgan maksimal vaqti oʻtib ketdi va uning muddati tugadi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Sahifalar ortga qaytadigan keshga kirishga ulgurmayapti (sahifani berkitadigan vositalar uzoq ishlayotgani uchun boʻlishi mumkin)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Sahifa asosiy freymda yuklanishni yechish vositasiga ega."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Sahifa quyi freymda yuklanishni yechish vositasiga ega."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Brauzer sarlavhadagi foydalanuvchi agenti qiymati oʻzgartirildi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Video yoki audio yozib olishga ruxsat olgan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "WebDatabase ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "WebHID ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "WebLocks ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "WebNfc ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "WebOTPService ishlatadigan sahifalarda hozircha ortga qaytadigan kesh (bfcache) ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC sahifalarini keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "WebShare ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket protokolidagi sahifalarini keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport protokolidagi sahifalarini keshdan ortga qaytarish imkonsiz."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "WebXR ishlatadigan sahifalarida hozircha ortga qaytadigan kesh ishlamaydi."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Orqaga qaytadigan kesh"
   },
@@ -2316,25 +2655,34 @@
     "message": "Orqaga qaytadigan kesh holati"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Harakat qilish shart emas"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Oxirgi asosiy freym navigatsiyasi"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Keshlanishga sahifa tashqarisidagi narsalar xalaqit qilishi kabi sabablar tuzatilmaydi."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Asosiy freym"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Standart navigatsiya (orqaga qaytadigan keshdan tiklanmaydi)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Harakat qilish kerak"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Sahifalarni ortga qaytadigan keshlanishga moslash kabi sabablarni tuzatish mumkin."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Orqaga qaytadigan keshdan tiklandi"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Tekshirish"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Keyingi versiyalarda quvvatlash rejalashtirildi"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chromening bu sabablar bilan mosligi hozircha tugatilmagan va ular keyingi Chrome versiyalarida sahifaning ortga qaytadigan keshlanishiga xalaqit qilmaydi."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "mavjud emas"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ta token"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Sinov nomi"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Foydalanish cheklovi"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (manba xaritasidan)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Kiritish:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Oʻchirildi:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … {PH1} bilan mos qatorlar tashlab ketilmoqda … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binar axborot"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Oʻzgarishlarni taqqoslar vositasi"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Oʻzgarishsiz"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Umumiy panelni tozalash"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Yozib olish miqyosi"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Umumiy CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottomdan surilayotgan element statik mahkamlangan"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Ichki elementga Width qiymati kiritildi"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Jamoamiz bu funksiyani yaxshilash ustida tinimsiz ishlamoqda va sizdan {PH1} kutib qolamiz!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Yozib olish miqyosi"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Sahifadagi umumiy CSS elementlarni yozib olish"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "fikr-mulohaza"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Fikr-mulohaza"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Ehtimoliy CSS yaxshilanishlarini aniqlash"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Ehtimoliy CSS yaxshilanishlarini aniqlash (masalan, quyi kontrast muammolari, ishlatilmagan bayon qilishlar, mos kelmaydigan rang va yozuvlar)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Tegishli elementlar joylashuvini Elementlar paneli orqali aniqlang"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Tanishuv funksiyasi"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Tezkor start: Yangi umumiy CSS paneli bilan ishni tez boshlang"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video va texnik hujjatlar"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Umumiy CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Nusxalash: selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS xususiyati nomi"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS xususiyati qiymati"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS tanlagichi"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtr"
   },
@@ -4353,7 +4728,10 @@
     "message": "(matn)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Bu element uchun ustiga joylanadigan rangni tanlang"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Ranglar palitrasi ochildi."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "ogohlantiruv"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Freym"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ta resurs}other{# ta resurs}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Hammasini chiqarish"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Joriy barcha {PH1} ni berkitish"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Tegishli resurslar"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "bloklandi"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Shu kabi nosozliklar chiqmasin"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Batafsil: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Cheklov holati"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Shu kabi nosozliklarni chiqarish"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Ogohlantirildi"
@@ -5028,19 +5415,19 @@
     "message": "Qarama-qarshi manbadan joylash siyosati"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Boshqa"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Turkum asosida guruhlash"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Turi boʻyicha guruhlash"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Guruhdagi muammolar tegishli turkumlarda chiqadi"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Xatolarni turiga qarab guruhlash: sahifadagi xatolar, nosozlik keltirib chiqaruvchi oʻzgarishlar va yaxshilanishlar"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Ogʻir reklamalar"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm moduli URL manzili"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Shu kabi nosozliklarni chiqarish"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Shu kabi nosozliklar chiqmasin"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Nosozliklar menyusini yopish"
+    "message": "Xatolarni berkitish"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP qoidabuzarliklari"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Kechikish (javob kelgan vaqti - boshlangan vaqti)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(noaniq)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "DIQQAT:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Bu sozlamani yoqish uchun Chromeda sinxronizatsiya sozlamasini yoqing."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Sozlamalarni ochish"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Quyidagi Chrome hisobidan kirgansiz:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Bu sozlamani yoqish uchun Chrome sinxronizatsiyasi yoniq boʻlishi lozim."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Boshqa qurilma kiritish..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Inkor etish roʻyxatiga skript kiritish"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Ayrim chaqiruv freymlarida ogohlantirishlar bor"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Chaqiruvlar steki"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Saralash"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … {PH1} bilan mos qatorlar tashlab ketilmoqda … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Kiritish:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Oʻzgarishlarni taqqoslar vositasi"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Oʻchilrildi:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ta uzish nuqtasi oʻzgardi}other{# ta uzish nuqtasi oʻzgardi}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Boshqa varaqlar"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Tanishuv funksiyasi"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools sahifadan uzildi."

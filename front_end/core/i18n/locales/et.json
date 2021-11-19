@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site ja Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Kasutaja-agendi stringi lihtsustamine"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portaalid – sama päritolu suhtluskanalid"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Raskete reklaamide sekkumiste töötlemine"
@@ -1344,25 +1341,28 @@
     "message": "Probleeme põhjustav muudatus: leht võib Chrome'i tulevases versioonis töötamast lakata"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Probleeme põhjustavad muudatused"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Täiustamisega seotud probleem: saadaval on lehe täiustamise võimalus"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Täiustused"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Lehe veaga seotud probleem: leht ei tööta õigesti"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Lehe vead"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Värvi ja kontrastsuse juurdepääsetavus"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Segatud sisu takistatakse"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Kasutaja-agendi stringi lihtsustamine"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumendi ühilduvusrežiim"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Üksusest caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Atribuudist description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Üksusest label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Atribuudist pärit väärtus."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Väärtus elemendist description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Väärtus elemendi sisust."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "töötaja"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Tagasi-edasiliikumise vahemälu jaoks on sobilikud ainult GET-päringu kaudu laaditud lehed."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Vahemällu saab talletada ainult lehti, mille olekukood on 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome tuvastas JavaScripti käivitamise katse ajal, mil leht oli vahemälus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "AppBannerit taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Tagasi-edasiliikumise vahemälu on lippudega keelatud. Minge aadressile chrome://flags/#back-forward-cache, et see selles seadmes kohalikult lubada."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Tagasi-edasiliikumise vahemälu on käsureal keelatud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Tagasi-edasiliikumise vahemälu on keelatud ebapiisava mälumahu tõttu."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Delegaat ei toeta tagasi-edasiliikumise vahemälu."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Tagasi-edasiliikumise vahemälu on eelrenderdaja jaoks keelatud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Lehte ei saa vahemällu talletada, kuna sellel on registreeritud kuulajatega liidese BroadcastChannel eksemplar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Lehed, millel on päis cache-control:no-cache, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Vahemälu tühjendati tahtlikult."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Leht eemaldati vahemälust, et võimaldada teist lehte vahemällu talletada."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Pistikprogramme sisaldavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "FileChooser API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Failisüsteemi juurdepääsu API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Media Device Dispatcherit kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Meediapleier töötas eemale navigeerimise ajal."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "MediaSession API-d kasutavad ja taasesituse olekut määravad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "MediaSession API-d kasutavad ja toimingutöötlejaid määravad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Objekti SecurityHandler kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Serial API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "WebAuthetication API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "WebBluetooth API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "WebUSB API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Spetsiaalset töötajat või tööki kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumendi laadimine ei jõudnud enne eemale navigeerimist lõpule."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Teenuse töötleja aktiveeriti ajal, mil leht oli tagasi-edasiliikumise vahemälus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Leht eemaldati vahemälust, et võimaldada teist lehte vahemällu talletada."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Lehed, mis on andnud meediasisu voogesitamise juurdepääsu, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Portaale kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Liidest IdleManager kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Lehed, millel on avatud IndexedDB ühendus, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Kasutati sobimatuid API-sid."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Lehed, millele sisestatakse JavaScript laienduste kaudu, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Lehed, millele sisestatakse StyleSheet laienduste kaudu, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Sisemine viga."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Klaviatuurilukku kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Lehe laadimine ei jõudnud enne eemale navigeerimist lõpule."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Lehed, mille peamine ressurss hõlmab atribuuti cache-control:no-cache, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Lehed, mille peamine ressurss hõlmab atribuuti cache-control:no-store, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigeerimine tühistati enne, kui leht tagasi-edasiliikumise vahemälust taastati."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Leht eemaldati vahemälust, kuna aktiivne võrguühendus võttis vastu liiga palju andmeid. Chrome piirab andmehulka, mida vahemälus olev leht võib vastu võtta."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Lehed, millel on pooleliolev fetch() või XHR, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Leht eemaldati tagasi-edasiliikumise vahemälust, kuna aktiivne võrgutaotlus hõlmas ümbersuunamist."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Leht eemaldati vahemälust, kuna võrguühendus oli liiga pikka aega avatud. Chrome piirab aega, mille jooksul vahemälus olev leht võib andmeid vastu võtta."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Lehed, millel puudub kehtiv vastuse päis, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigeerimine toimus raamis, mis ei ole peamine raam."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Lehel on mahalaadimise töötleja, mille päisest puudub tagasi-edasiliikumise vahemälu luba."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Käimasolevate indekseeritud andmebaasi tehingutega lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Poolelioleva võrgutaotlusega lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Poolelioleva toomise võrgutaotlusega lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Poolelioleva võrgutaotlusega lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Poolelioleva XHR-i võrgutaotlusega lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Liidest PaymentManager kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Funktsiooni Pilt pildis kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Portaale kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Lehed, mis näitavad printimise kasutajaliidest, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Leht avati meetodiga window.open() ja teine vaheleht viitab sellele või leht avati aknas."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Tagasi-edasiliikumise vahemälus oleva lehe renderdaja protsess jooksis kokku."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Tagasi-edasiliikumise vahemälus oleva lehe renderdaja protsess katkestati."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Heli jäädvustamise lube taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Lehed, mis on taotlenud andurite lube, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Lehed, mis on taotlenud taustal sünkroonimise või toomise lube, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "MIDI lube taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Märguannete lube taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Lehed, mis on taotlenud juurdepääsu salvestusruumile, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Video jäädvustamise lube taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Vahemällu saab talletada ainult lehti, mille URL-i skeem on HTTP/HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Teenuse töötleja taotles seda lehte ajal, mil see oli tagasi-edasiliikumise vahemälus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Teenuse töötaja üritas saata tagasi-edasiliikumise vahemälus olevale lehele atribuuti MessageEvent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker oli registreerimata ajal, mil leht oli tagasi-edasiliikumise vahemälus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Leht eemaldati tagasi-edasiliikumise vahemälust teenuse töötaja aktiveerimise tõttu."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome taaskäivitus ja tühjendas tagasi-edasiliikumise vahemälu kirjed."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Liidest SharedWorker kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Liidest SpeechRecognizer kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Liidest SpeechSynthesis kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Lehel olev iframe alustas navigeerimist, mida ei viidud lõpule."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Lehed, mille alamressurss hõlmab atribuuti cache-control:no-cache, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Lehed, mille alamressurss hõlmab atribuuti cache-control:no-store, ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Leht ületas tagasi-edasiliikumise vahemälus viibimise maksimumaja ja aegus."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Lehel ilmnes tagasi-edasiliikumise vahemällu sisenemisel ajalõpp (tõenäoliselt kaua töötanud lehe peitmise töötlejate tõttu)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Lehe põhiraam sisaldab mahalaadimise töötlejat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Lehe alamraam hõlmab mahalaadimise töötlejat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Brauser on kasutaja-agendi alistamise päist muutnud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Lehed, mis on andnud juurdepääsu video või heli salvestamiseks, ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Liidest WebDatabase kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Liidest WebHID kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Liidest WebLocks kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Liidest WebNfc kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Teenust WebOTPService kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC-ga lehed ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Liidest WebShare kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocketiga lehed ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Liidest WebTransport hõlmavad lehed ei saa tagasi-edasiliikumise vahemällu siseneda."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Liidest WebXR kasutavad lehed ei ole praegu tagasi-edasiliikumiseks mõeldud vahemälu jaoks sobilikud."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Vahemälu tagasi-edasiliikumiseks"
   },
@@ -2316,25 +2655,34 @@
     "message": "Tagasi-edasiliikumiseks mõeldud vahemälu olek"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Pole toimingut võimaldav"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Viimane täisraamis navigeerimine"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Need põhjused ei võimalda tegutseda, st vahemällu talletamist takistab miski, mis ei ole lehe vahetu kontrolli all."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Peamine raam"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Tavapärane navigeerimine (ei taastatud tagasi-edasiliikumiseks mõeldud vahemälust)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Toimingut võimaldav"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Need põhjused võimaldavad tegutseda, st põhjused saab kõrvaldada, et muuta leht tagasi-edasiliikumise vahemälu jaoks sobilikuks."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Taastati tagasi-edasiliikumiseks mõeldud vahemälust"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Käita testi"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Toe ootel"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Nende põhjuste Chrome'i tugi on ootel, st need ei piira Chrome'i tulevases versioonis lehe sobilikkust tagasi-edasiliikumise vahemälu jaoks."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "pole saadaval"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} tunnust"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Prooviversiooni nimi"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Kasutuspiirang"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (lähtekoodi kaardist)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Lisamine: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Kustutamine: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "(… {PH1} ühtivat rida jäetakse vahele …)"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Kahendandmed"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Muudatuste erinevuste vaatur"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Muudatusi ei ole"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Kustuta ülevaade"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Jäädvusta ülevaade"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS-i ülevaade"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom rakendati staatilise positsiooniga elemendile"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width rakendati tekstisisesele elemendile"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Meie tiim töötab aktiivselt selle funktsiooni kallal ning teie {PH1} on meie jaoks oluline!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Jäädvusta ülevaade"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Lehe CSS-i ülevaate jäädvustamine"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "tagasiside"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Tagasiside"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Potentsiaalsete CSS-i täiustuste tuvastamine"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Potentsiaalsete CSS-i täiustuste (nt madala kontrastsusega seotud probleemid, kasutamata deklaratsioonid, värvide või fontide sobimatus) tuvastamine"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Mõjutatud elementide leidmine paneelil Elemendid"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Eelvaatefunktsioon"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Kiirjuhend: alustage uue CSS-i ülevaate paneeli kasutamist"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video ja dokumendid"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS-i ülevaade"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopeeri selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Atribuudi CSS nimi"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Atribuudi CSS väärtus"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS-i valija"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtreeri"
   },
@@ -4353,7 +4728,10 @@
     "message": "(tekst)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Valige selle elemendi ülekatte värv"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Värvivalija avati."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "hoiatus"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Raam"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ressurss}other{# ressurssi}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Tee kõik nähtavaks"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Peida kõik praegused {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Mõjutatud ressursid"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "blokeeritud"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Peida sarnased probleemid"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Lisateave: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Piirangu olek"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Tühista sarnaste probleemide peitmine"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Hoiatatud"
@@ -5028,19 +5415,19 @@
     "message": "Mitme lähtekohaga manustaja eeskirjad"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Üldine"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Rühmita kategooria järgi"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Grupeeri tüübi järgi"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Rühmita kuvatavad probleemid seotud kategooriatesse"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Grupp kuvas probleemid tüüpidena Lehevead, Probleeme põhjustavad muudatused ja Täiustused."
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Rasked reklaamid"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "WASM-i mooduli URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Tühista sarnaste probleemide peitmine"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Peida sarnased probleemid"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Probleemide peitmise menüü"
+    "message": "Peida probleemid"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP rikkumised"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latentsus (vastuse kättesaamise aeg – algusaeg)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(teadmata)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "HOIATUS!"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Selle seade sisselülitamiseks tuleb teil esmalt Chrome'is seadete sünkroonimine lubada."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Ava seaded"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome'i sisse logitud kui:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Selle seade sisselülitamiseks tuleb teil lubada Chrome'i sünkroonimine."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Lisa kohandatud seade …"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Lisa skript eiramisloendisse"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Mõnel kutseraamil on hoiatusi"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Kutsepinu"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortimisalus:"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "(… {PH1} ühtivat rida jäetakse vahele …)"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Lisamine:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Muudatuste erinevuste vaatur"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Kustutamine:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# probleeme põhjustav muudatus}other{# probleeme põhjustavat muudatust}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Rohkem vahekaarte"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Eelvaatefunktsioon"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevToolsi ühendus lehega katkes."

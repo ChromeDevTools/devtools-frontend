@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Laman Sama dan Asalan Sama"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Pengurangan Rentetan Ejen Pengguna"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portal - Saluran komunikasi sama asalan"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Mengendalikan Campur Tangan Iklan Berat"
@@ -1344,25 +1341,28 @@
     "message": "Isu perubahan memutus: halaman mungkin berhenti berfungsi pada versi Chrome yang akan datang"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Perubahan Memutus"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Isu peningkatan: terdapat peluang untuk meningkatkan mutu halaman"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Peningkatan"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Isu ralat halaman: halaman tidak berfungsi dengan betul"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Ralat Halaman"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Kebolehaksesan warna dan kontras"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Menghalang kandungan campuran"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Pengurangan Rentetan Ejen Pengguna"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mod keserasian dokumen"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Daripada caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Daripada description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Daripada label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Nilai daripada atribut."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Nilai daripada unsur description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Nilai daripada kandungan unsur."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "pekerja"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Hanya halaman yang dimuatkan melalui permintaan GT layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Hanya halaman dengan kod status 2XX yang boleh dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome mengesan percubaan untuk melaksanakan JavaScript semasa dalam cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Halaman yang meminta AppBanner tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Cache kembali/maju dilumpuhkan oleh bendera. Lawati chrome://flags/#back-forward-cache untuk mendayakan ciri ini secara setempat pada peranti ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Cache kembali/maju dilumpuhkan oleh baris perintah."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Cache kembali/maju dilumpuhkan kerana memori tidak mencukupi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Cache kembali/maju tidak disokong oleh perwakilan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Cache kembali/maju dilumpuhkan untuk prapemapar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Halaman tidak boleh dicache kerana halaman itu mempunyai tika BroadcastChannel dengan pendengar berdaftar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Halaman dengan pengepala cache-control:no-store tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Cache telah dikosongkan dengan sengaja."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Halaman telah dikeluarkan daripada cache untuk membenarkan halaman lain dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Halaman yang mengandungi pemalam tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Halaman yang menggunakan FileChooser API tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Halaman yang menggunakan API Akses Sistem Fail tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Halaman yang menggunakan Penghantar Peranti Media tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Pemain media sedang dimainkan semasa menavigasi keluar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Halaman yang menggunakan MediaSession API dan menetapkan keadaan main balik tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Halaman yang menggunakan MediaSession API dan menetapkan pengendali tindakan tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Halaman yang menggunakan SecurityHandler tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Halaman yang menggunakan API Bersiri tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Halaman yang menggunakan WebAuthenticaion API tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Halaman yang menggunakan WebBluetooth API tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Halaman yang menggunakan WebUSB API tidak layak untuk cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Halaman yang menggunakan pekerja atau kerja kecil khusus tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumen belum selesai dimuatkan sebelum menavigasi keluar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Pekerja perkhidmatan telah diaktifkan semasa halaman dalam cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Halaman telah dikeluarkan daripada cache untuk membenarkan halaman lain dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Halaman yang telah memberikan akses strim media tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Halaman yang menggunakan portal tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Halaman yang menggunakan IdleManager tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Halaman yang mempunyai sambungan IndexedDB terbuka tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "API yang tidak layak telah digunakan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Halaman yang telah disuntik JavaScript oleh sambungan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Halaman yang telah disuntik StyleSheet oleh sambungan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Ralat dalaman."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Halaman yang menggunakan kunci Papan Kekunci tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Halaman belum selesai dimuatkan sebelum menavigasi keluar."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Halaman yang sumber utamanya mempunyai cache-control:no-cache tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Halaman yang sumber utamanya mempunyai cache-control:no-store tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigasi dibatalkan sebelum halaman dapat dipulihkan daripada cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Halaman telah dikeluarkan daripada cache kerana sambungan rangkaian yang aktif menerima terlalu banyak data. Chrome mengehadkan jumlah data yang boleh diterima oleh halaman semasa dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Halaman yang mempunyai ambil() atau XHR yang sedang diproses tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Halaman telah dikeluarkan daripada cache kembali/maju kerana permintaan rangkaian aktif terlibat dalam pengubahhalaan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Halaman telah dikeluarkan daripada cache kerana sambungan rangkaian telah dibuka terlalu lama. Chrome mengehadkan jumlah masa halaman boleh menerima data semasa dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Halaman yang tiada pengepala respons yang sah tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigasi berlaku dalam bingkai selain bingkai utama."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Halaman mempunyai pengendali nyahmuat tanpa pengepala ikut serta cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Halaman dengan transaksi DB berindeks yang sedang berjalan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Halaman dengan permintaan rangkaian yang sedang diproses tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Halaman dengan permintaan ambil rangkaian yang sedang diproses tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Halaman dengan permintaan rangkaian yang sedang diproses tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Halaman dengan permintaan rangkaian XHR yang sedang diproses tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Halaman yang menggunakan PaymentManager tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Halaman yang menggunakan Gambar dalam Gambar tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Halaman yang menggunakan portal tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Halaman yang menunjukkan UI Pencetakan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Halaman telah dibuka menggunakan window.open() dan tab lain mempunyai rujukan pada halaman itu atau halaman telah membuka tetingkap."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Proses pemapar untuk halaman dalam cache kembali/maju telah ranap."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Proses pemapar untuk halaman dalam cache kembali/maju telah dihentikan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Halaman yang telah meminta kebenaran rakaman audio tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Halaman yang telah meminta kebenaran penderia tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Halaman yang telah meminta kebenaran penyegerakan atau ambil di latar belakang tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Halaman yang telah meminta kebenaran MIDI tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Halaman yang telah meminta kebenaran pemberitahuan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Halaman yang telah meminta akses storan tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Halaman yang telah meminta kebenaran rakaman video tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Hanya halaman yang skema URLnya ialah HTTP / HTTPS boleh dicache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Halaman telah dituntut oleh pekerja perkhidmatan semasa dalam cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Pekerja perkhidmatan cuba menghantar MessageEvent kepada halaman dalam cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker telah dinyahdaftar semasa halaman dalam cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Halaman telah dikeluarkan daripada cache kembali/maju disebabkan pengaktifan pekerja perkhidmatan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome dimulakan semula dan masukan cache kembali/maju dikosongkan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Halaman yang menggunakan SharedWorker tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Halaman yang menggunakan SpeechRecognizer tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Halaman yang menggunakan SpeechSynthesis tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe pada halaman memulakan navigasi yang tidak selesai."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Halaman yang subsumbernya mempunyai cache-control:no-cache tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Halaman yang subsumbernya mempunyai cache-control:no-store tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Halaman melebihi masa maksimum dalam cache kembali/maju dan telah tamat tempoh."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Halaman tamat masa semasa memasuki cache kembali/maju (mungkin disebabkan pengendali pagehide yang telah lama berjalan)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Halaman mempunyai pengendali nyahmuat dalam bingkai utama."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Halaman mempunyai pengendali nyahmuat dalam subbingkai."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Penyemak imbas telah menukar pengepala penggantian agen pengguna."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Halaman yang telah memberikan akses untuk merakam video atau audio tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Halaman yang menggunakan WebDatabase tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Halaman yang menggunakan WebHID tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Halaman yang menggunakan WebLocks tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Halaman yang menggunakan WebNfc tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Halaman yang menggunakan WebOTPService tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Halaman dengan WebRTC tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Halaman yang menggunakan WebShare tidak layak untuk cache kembali/maju pada masa ini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Halaman dengan WebSocket tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Halaman dengan WebTransport tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Halaman yang menggunakan WebXR tidak layak untuk cache kembali/maju pada masa ini."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Cache Kembali-maju"
   },
@@ -2316,25 +2655,34 @@
     "message": "Status Cache Kembali-maju"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Tidak Boleh Diambil Tindakan"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Navigasi Bingkai Utama Terakhir"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Sebab ini tidak boleh diambil tindakan, iaitu tindakan membuat cache dihalang oleh sesuatu di luar kawalan langsung halaman."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Bingkai Utama"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Navigasi biasa (Bukan dipulihkan daripada cache kembali-maju)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Boleh Diambil Tindakan"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Sebab ini boleh diambil tindakan, iaitu item boleh dibersihkan untuk melayakkan halaman membuat cache kembali/maju."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Dipulihkan daripada cache kembali-maju"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Jalankan Ujian"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Menunggu Sokongan"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Menunggu sokongan Chrome untuk sebab ini iaitu item tidak akan menghalang halaman daripada layak untuk cache kembali/maju dalam versi Chrome masa hadapan."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "tidak tersedia"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} token"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Nama Percubaan"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Sekatan Penggunaan"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (daripada peta sumber)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Tambahan:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Pemadaman:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Melangkau {PH1} baris yang sepadan … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Data perduaan"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Alat lihat perbezaan perubahan"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Tiada perubahan"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Kosongkan ikhtisar"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Tangkap ikhtisar"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Ikhtisar CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom digunakan pada unsur berkedudukan statik"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width digunakan pada unsur dalam baris"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Pasukan kami sedang giat berusaha untuk menghasilkan ciri ini dan kami ingin mendengar {PH1} anda!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Tangkap ikhtisar"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Ringkasan ikhtisar CSS halaman"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "maklum balas"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Maklum balas"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Kenal pasti peningkatan CSS yang berkemungkinan"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Kenal pasti peningkatan CSS yang berkemungkinan (mis. isu kontras rendah, pengisytiharan tidak digunakan, warna atau fon tidak sepadan)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Cari unsur yang terjejas dalam panel Unsur"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Ciri pratonton"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Mula cepat: bermula dengan panel Ikhtisar CSS baharu"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video dan dokumentasi"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Ikhtisar CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Salin selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Nama sifat CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Nilai sifat CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Pemilih CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Tapis"
   },
@@ -4353,7 +4728,10 @@
     "message": "(teks)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Pilih warna tindanan untuk elemen ini"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Pemilih warna dibuka."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "amaran"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Bingkai"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# sumber}other{# sumber}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Nyahsembunyikan semua"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Sembunyikan semua {PH1} semasa"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Sumber Terjejas"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "disekat"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Sembunyikan isu seperti ini"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Ketahui lebih lanjut: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Status Sekatan"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Nyahsembunyikan isu seperti ini"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Diberikan amaran"
@@ -5028,19 +5415,19 @@
     "message": "Dasar Pembenam Rentas Asalan"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Generik"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Kumpulkan mengikut kategori"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Kumpulkan mengikut jenis"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Kumpulkan isu yang dipaparkan di bawah kategori yang berkaitan"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Kumpulan memaparkan isu sebagai Ralat halaman, Perubahan memutus dan Peningkatan"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Iklan Berat"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL Modul Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Nyahsembunyikan isu seperti ini"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Sembunyikan isu seperti ini"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Sembunyikan menu isu"
+    "message": "Sembunyikan isu"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Pelanggaran CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "pertukaran bertandatangan"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Kependaman (masa terima respons - masa mula)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(tidak diketahui)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "AMARAN:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Untuk menghidupkan tetapan ini, anda mesti mendayakan penyegerakan tetapan dalam Chrome dahulu."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Pergi ke Tetapan"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Dilog masuk ke Chrome sebagai:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Untuk menghidupkan tetapan ini, anda mesti mendayakan Penyegerakan Chrome."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Tambah peranti tersuai..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Tambahkan skrip pada senarai abaikan"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Sesetengah bingkai panggilan mempunyai amaran"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Tindanan Panggilan"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Isih Mengikut"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Melangkau {PH1} baris yang sepadan … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Tambahan:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Alat lihat perbezaan perubahan"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Pemadaman:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# perubahan memutus}other{# perubahan memutus}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Lagi tab"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Ciri pratonton"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools telah diputuskan sambungan daripada halaman."

@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ਸਮਾਨ-ਸਾਈਟ ਅਤੇ ਸਮਾਨ-ਮੂਲ"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ ਘਟਾਉਣਾ"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "ਪੋਰਟਲ - ਇੱਕ ਹੀ ਮੂਲ ਥਾਂ ਵਾਲੇ ਸੰਚਾਰ ਚੈਨਲ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ਬਹੁਤ ਜ਼ਿਆਦਾ ਵਿਗਿਆਪਨ ਦਖਲ ਨੂੰ ਹੈਂਡਲ ਕਰਨਾ"
@@ -1344,25 +1341,28 @@
     "message": "ਬ੍ਰੇਕਿੰਗ ਚੇਂਜ ਸਮੱਸਿਆ: ਪੰਨਾ Chrome ਦੇ ਆਗਾਮੀ ਵਰਜਨ ਵਿੱਚ ਕੰਮ ਕਰਨਾ ਬੰਦ ਕਰ ਸਕਦਾ ਹੈ"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "ਬ੍ਰੇਕਿੰਗ ਚੇਂਜਾਂ"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "ਸੁਧਾਰ ਨਾਲ ਸੰਬੰਧਿਤ ਸਮੱਸਿਆ: ਇਹ ਪੰਨੇ ਨੂੰ ਸੁਧਾਰਨ ਦਾ ਇੱਕ ਮੌਕਾ ਹੈ"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "ਸੁਧਾਰ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "ਪੰਨਾ ਗੜਬੜੀ ਦੀ ਸਮੱਸਿਆ: ਪੰਨਾ ਸਹੀ ਤਰ੍ਹਾਂ ਨਾਲ ਕੰਮ ਨਹੀਂ ਕਰ ਰਿਹਾ"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "ਪੰਨਾ ਗੜਬੜਾਂ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ਰੰਗ ਅਤੇ ਕੰਟ੍ਰਾਸਟ ਸੰਬੰਧੀ ਪਹੁੰਚਯੋਗਤਾ"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ਮਿਸ਼ਰਿਤ ਸਮੱਗਰੀ ਦੀ ਰੋਕਥਾਮ ਕਰਨਾ"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ ਘਟਾਉਣਾ"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ਦਸਤਾਵੇਜ਼ ਅਨੁਰੂਪਤਾ ਮੋਡ"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "caption ਤੋਂ"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description ਤੋਂ"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "label ਤੋਂ"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "ਵਿਸ਼ੇਸ਼ਤਾ ਤੋਂ ਮੁੱਲ।"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description ਤੱਤ ਤੋਂ ਮੁੱਲ।"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "ਤੱਤ ਸਮੱਗਰੀਆਂ ਤੋਂ ਮੁੱਲ।"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ਕਰਮਚਾਰੀ"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "ਸਿਰਫ਼ GET ਬੇਨਤੀ ਰਾਹੀਂ ਲੋਡ ਕੀਤੇ ਪੰਨੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "ਸਿਰਫ਼ 2XX ਦੇ ਸਥਿਤੀ ਕੋਡ ਵਾਲੇ ਪੰਨਿਆਂ ਨੂੰ ਹੀ ਕੈਸ਼ੇ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "ਕੈਸ਼ੇ ਵਿੱਚ ਹੋਣ ਦੌਰਾਨ Chrome ਨੂੰ JavaScript ਚਲਾਉਣ ਦੀ ਇੱਕ ਕੋਸ਼ਿਸ਼ ਦਾ ਪਤਾ ਲੱਗਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ AppBanner ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦਾ ਕੈਸ਼ੇ ਫਲੈਗਾਂ ਵੱਲੋਂ ਬੰਦ ਕੀਤਾ ਗਿਆ। ਇਸ ਡੀਵਾਈਸ 'ਤੇ ਇਸ ਨੂੰ ਸਥਾਨਕ ਤੌਰ 'ਤੇ ਚਾਲੂ ਕਰਨ ਲਈ chrome://flags/#back-forward-cache 'ਤੇ ਜਾਓ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਨੂੰ ਆਦੇਸ਼ ਲਾਈਨ ਵੱਲੋਂ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਨੂੰ ਨਾਕਾਫ਼ੀ ਮੈਮੋਰੀ ਦੇ ਕਾਰਨ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦਾ ਕੈਸ਼ੇ ਪ੍ਰਤਿਨਿਧ ਵੱਲੋਂ ਸਮਰਥਿਤ ਨਹੀਂ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਨੂੰ ਪ੍ਰੀਰੈਂਡਰਰ ਲਈ ਬੰਦ ਕਰ ਦਿੱਤਾ ਗਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "ਪੰਨੇ ਨੂੰ ਕੈਸ਼ੇ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ ਕਿਉਂਕਿ ਇਸ ਦੇ ਕੋਲ ਰਜਿਸਟਰ ਕੀਤੇ ਸਰੋਤਿਆਂ ਵਾਲੀ BroadcastChannel ਕਿਰਿਆ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store ਸਿਰਲੇਖ ਵਾਲੇ ਪੰਨੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ਕੈਸ਼ੇ ਨੂੰ ਜਾਣਬੁੱਝ ਕੇ ਕਲੀਅਰ ਕੀਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "ਕੈਸ਼ੇ ਤੋਂ ਇੱਕ ਪੰਨਾ ਕੱਢ ਦਿੱਤਾ ਗਿਆ ਸੀ ਤਾਂ ਜੋ ਦੂਜਾ ਪੰਨਾ ਕੈਸ਼ੇ ਕੀਤਾ ਜਾ ਸਕੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵਿੱਚ ਪਲੱਗਇਨ ਸ਼ਾਮਲ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "ਪੰਨੇ ਜੋ FileChooser API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ਪੰਨੇ ਜੋ File System Access API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "ਪੰਨੇ ਜੋ Media Device Dispatcher ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ਪੰਨੇ ਤੋਂ ਦੂਰ ਨੈਵੀਗੇਟ ਕਰਨ ਸਮੇਂ ਮੀਡੀਆ ਪਲੇਅਰ ਚੱਲ ਰਿਹਾ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "ਪੰਨੇ ਜੋ MediaSession API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ ਅਤੇ ਪਲੇਬੈਕ ਸਥਿਤੀ ਨੂੰ ਸੈੱਟ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "ਪੰਨੇ ਜੋ MediaSession API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ ਅਤੇ ਕਾਰਵਾਈ ਹੈਂਡਲਰ ਨੂੰ ਸੈੱਟ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "ਪੰਨੇ ਜੋ SecurityHandler ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "ਪੰਨੇ ਜੋ Serial API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "ਪੰਨੇ ਜੋ WebAuthetication API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "ਪੰਨੇ ਜੋ WebBluetooth API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "ਪੰਨੇ ਜੋ WebUSB API ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ਪੰਨੇ ਜੋ ਸਮਰਪਿਤ ਵਰਕਰ ਜਾਂ ਵਰਕਲੈੱਟ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ਪੰਨੇ ਤੋਂ ਦੂਰ ਨੈਵੀਗੇਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਦਸਤਾਵੇਜ਼ ਪੂਰੀ ਤਰ੍ਹਾਂ ਨਾਲ ਲੋਡ ਨਹੀਂ ਸੀ ਹੋਇਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ਪੰਨੇ ਦੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਹੋਣ ਦੌਰਾਨ ਕਿਸੇ ਸਰਵਿਸ ਵਰਕਰ ਨੂੰ ਕਿਰਿਆਸ਼ੀਲ ਕੀਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "ਕੈਸ਼ੇ ਤੋਂ ਇੱਕ ਪੰਨਾ ਕੱਢ ਦਿੱਤਾ ਗਿਆ ਸੀ ਤਾਂ ਜੋ ਦੂਜਾ ਪੰਨਾ ਕੈਸ਼ੇ ਕੀਤਾ ਜਾ ਸਕੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਨੇ ਮੀਡਿਆ ਸਟ੍ਰੀਮ ਤੱਕ ਪਹੁੰਚ ਦੀ ਆਗਿਆ ਦਿੱਤੀ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ਪੰਨੇ ਜੋ ਪੋਰਟਲਾਂ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "ਪੰਨੇ ਜੋ IdleManager ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਕੋਲ ਇੱਕ ਖੁੱਲ੍ਹਾ IndexedDB ਕਨੈਕਸ਼ਨ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "ਅਯੋਗ API ਵਰਤੇ ਗਏ ਸਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵਿੱਚ ਐਕਸਟੈਂਸ਼ਨਾਂ ਵੱਲੋਂ JavaScript ਨੂੰ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵਿੱਚ ਐਕਸਟੈਂਸ਼ਨਾਂ ਵੱਲੋਂ StyleSheet ਨੂੰ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "ਅੰਦਰੂਨੀ ਗੜਬੜ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ਪੰਨੇ ਜੋ ਕੀ-ਬੋਰਡ ਲਾਕ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "ਪੰਨੇ ਤੋਂ ਦੂਰ ਨੈਵੀਗੇਟ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਪੰਨੇ ਦੀ ਲੋਡਿੰਗ ਪੂਰੀ ਨਹੀਂ ਹੋਈ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਦੇ ਮੁੱਖ ਸਰੋਤ ਵਿੱਚ cache-control:no-cache ਹੈ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਦੇ ਮੁੱਖ ਸਰੋਤ ਵਿੱਚ cache-control:no-store ਹੈ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਤੋਂ ਪੰਨੇ ਨੂੰ ਮੁੜ-ਬਹਾਲ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਰੱਦ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ਪੰਨੇ ਨੂੰ ਕੈਸ਼ੇ ਤੋਂ ਕੱਢ ਦਿੱਤਾ ਗਿਆ ਸੀ ਕਿਉਂਕਿ ਕਿਸੇ ਕਿਰਿਆਸ਼ੀਲ ਨੈੱਟਵਰਕ ਕਨੈਕਸ਼ਨ ਨੇ ਬਹੁਤ ਜ਼ਿਆਦਾ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਸੀ। Chrome, ਕੈਸ਼ੇ ਕੀਤਾ ਹੋਣ ਦੌਰਾਨ ਕਿਸੇ ਪੰਨੇ ਵੱਲੋਂ ਪ੍ਰਾਪਤ ਕੀਤੇ ਜਾ ਸਕਣ ਵਾਲੇ ਡਾਟਾ ਦੀ ਮਾਤਰਾ ਨੂੰ ਸੀਮਤ ਕਰ ਦਿੰਦਾ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵਿੱਚ ਇਨ-ਫਲਾਈਟ ਫ਼ੈੱਚ() ਜਾਂ XHR ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ਪੰਨੇ ਨੂੰ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਤੋਂ ਕੱਢ ਦਿੱਤਾ ਗਿਆ ਸੀ, ਕਿਉਂਕਿ ਇੱਕ ਕਿਰਿਆਸ਼ੀਲ ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਵਿੱਚ ਰੀਡਾਇਰੈਕਟ ਸ਼ਾਮਲ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ਪੰਨੇ ਨੂੰ ਕੈਸ਼ੇ ਤੋਂ ਕੱਢ ਦਿੱਤਾ ਗਿਆ ਸੀ ਕਿਉਂਕਿ ਇੱਕ ਨੈੱਟਵਰਕ ਕਨੈਕਸ਼ਨ ਬਹੁਤ ਲੰਮਾ ਸਮਾਂ ਖੁੱਲ੍ਹਾ ਰਿਹਾ ਸੀ। Chrome ਉਸ ਸਮੇਂ ਦੀ ਮਾਤਰਾ ਨੂੰ ਸੀਮਤ ਕਰਦਾ ਹੈ ਜਿਸ ਸਮੇਂ ਲਈ ਪੰਨਾ ਕੈਸ਼ੇ ਵਿੱਚ ਹੋਣ ਦੌਰਾਨ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕਰ ਸਕਦਾ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਕੋਲ ਕੋਈ ਵੈਧ ਜਵਾਬ ਸਿਰਲੇਖ ਨਹੀਂ ਹੈ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ਨੈਵੀਗੇਸ਼ਨ ਮੁੱਖ ਫ੍ਰੇਮ ਤੋਂ ਇਲਾਵਾ ਹੋਰ ਫ੍ਰੇਮ ਵਿੱਚ ਹੋਈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "ਪੰਨੇ ਵਿੱਚ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਚੋਣ ਵਾਲੇ ਸਿਰਲੇਖ ਤੋਂ ਬਿਨਾਂ ਇੱਕ ਅਣਲੋਡ ਹੈਂਡਲਰ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "ਚਾਲੂ ਇੰਡੈਕਸਡ DB ਲੈਣ-ਦੇਣ ਵਾਲੇ ਪੰਨੇ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ਇਨ-ਫਲਾਈਟ ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਵਾਲੇ ਪੰਨੇ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ਇਨ-ਫਲਾਈਟ ਫ਼ੈੱਚ ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਵਾਲੇ ਪੰਨੇ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ਇਨ-ਫਲਾਈਟ ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਵਾਲੇ ਪੰਨੇ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ਇਨ-ਫਲਾਈਟ XHR ਨੈੱਟਵਰਕ ਬੇਨਤੀ ਵਾਲੇ ਪੰਨੇ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "ਪੰਨੇ ਜੋ PaymentManager ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ਪੰਨੇ ਜੋ ਤਸਵੀਰ-ਵਿੱਚ-ਤਸਵੀਰ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "ਪੰਨੇ ਜੋ ਪੋਰਟਲਾਂ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "ਪੰਨੇ ਜੋ ਪ੍ਰਿੰਟਿੰਗ UI ਦਿਖਾਉਂਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ਪੰਨੇ ਨੂੰ window.open() ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਖੋਲ੍ਹਿਆ ਗਿਆ ਅਤੇ ਕਿਸੇ ਹੋਰ ਟੈਬ ਵਿੱਚ ਇਸਦਾ ਹਵਾਲਾ ਸੀ, ਜਾਂ ਪੰਨੇ ਨੇ ਕਿਸੇ ਵਿੰਡੋ ਨੂੰ ਖੋਲ੍ਹਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿਚਲੇ ਪੰਨੇ ਲਈ ਰੈਂਡਰਰ ਪ੍ਰਕਿਰਿਆ ਕ੍ਰੈਸ਼ ਹੋ ਗਈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿਚਲੇ ਪੰਨੇ ਲਈ ਰੈਂਡਰਰ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਨਸ਼ਟ ਕਰ ਦਿੱਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਆਡੀਓ ਕੈਪਚਰ ਕਰਨ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਲਈ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਸੈਂਸਰ ਇਜਾਜ਼ਤਾਂ ਲਈ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਬੈਕਗ੍ਰਾਊਂਡ ਸਮਕਾਲੀਕਰਨ ਜਾਂ ਇਜਾਜ਼ਤਾਂ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ MIDI ਇਜਾਜ਼ਤਾਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਸੂਚਨਾਵਾਂ ਸੰਬੰਧੀ ਇਜਾਜ਼ਤਾਂ ਦੀ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਸਟੋਰੇਜ ਪਹੁੰਚ ਲਈ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਵੱਲੋਂ ਵੀਡੀਓ ਕੈਪਚਰ ਕਰਨ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਲਈ ਬੇਨਤੀ ਕੀਤੀ ਗਈ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "ਸਿਰਫ਼ ਉਨ੍ਹਾਂ ਪੰਨਿਆਂ ਨੂੰ ਕੈਸ਼ੇ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ ਜਿਨ੍ਹਾਂ ਦੀ URL ਸਕੀਮ HTTP / HTTPS ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ਪੰਨੇ 'ਤੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਹੋਣ ਦੌਰਾਨ ਕਿਸੇ ਸਰਵਿਸ ਵਰਕਰ ਵੱਲੋਂ ਦਾਅਵਾ ਕੀਤਾ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ਸਰਵਿਸ ਵਰਕਰ ਨੇ MessageEvent ਨੂੰ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਪੰਨਾ ਭੇਜਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕੀਤੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ਕਿਸੇ ਪੰਨੇ ਦੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਹੋਣ ਦੌਰਾਨ ServiceWorker ਅਣਰਜਿਸਟਰ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ਸਰਵਿਸ ਵਰਕਰ ਕਿਰਿਆਸ਼ੀਲਤਾ ਕਰਕੇ ਪੰਨੇ ਨੂੰ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਤੋਂ ਕੱਢਿਆ ਗਿਆ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ਮੁੜ-ਸ਼ੁਰੂ ਕੀਤਾ ਗਿਆ ਅਤੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਦੀਆਂ ਐਂਟਰੀਆਂ ਨੂੰ ਕਲੀਅਰ ਕੀਤਾ ਗਿਆ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "ਪੰਨੇ ਜੋ SharedWorker ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "ਪੰਨੇ ਜੋ SpeechRecognizer ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "ਪੰਨੇ ਜੋ SpeechSynthesis ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "ਪੰਨੇ 'ਤੇ ਇੱਕ iframe ਨੇ ਨੈਵੀਗੇਸ਼ਨ ਸ਼ੁਰੂ ਕੀਤੀ ਜੋ ਪੂਰੀ ਨਹੀਂ ਹੋਈ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਦੇ ਉਪ-ਸਰੋਤ ਵਿੱਚ cache-control:no-cache ਹੈ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਦੇ ਉਪ-ਸਰੋਤ ਵਿੱਚ cache-control:no-store ਹੈ, ਉਹ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "ਪੰਨੇ ਨੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਵੱਧੋ-ਵੱਧ ਸਮੇਂ ਨੂੰ ਪਾਰ ਕਰ ਲਿਆ ਸੀ ਅਤੇ ਉਸਦੀ ਮਿਆਦ ਮੁੱਕ ਗਈ ਸੀ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ਪੰਨੇ ਦਾ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਹੋਣ ਸਮੇਂ ਟਾਈਮ-ਆਊਟ ਹੋ ਗਿਆ (ਸੰਭਾਵੀ ਤੌਰ 'ਤੇ pagehide ਹੈਂਡਲਰਾਂ ਦੇ ਲੰਮੇ ਸਮੇਂ ਤੱਕ ਚੱਲਣ ਕਰਕੇ)।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ਪੰਨੇ ਕੋਲ ਮੁੱਖ ਫ੍ਰੇਮ ਵਿੱਚ ਇੱਕ ਅਣਲੋਡ ਹੈਂਡਲਰ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ਪੰਨੇ ਕੋਲ ਉਪ ਫ੍ਰੇਮ ਵਿੱਚ ਇੱਕ ਅਣਲੋਡ ਹੈਂਡਲਰ ਹੈ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ਬ੍ਰਾਊਜ਼ਰ ਨੇ ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਓਵਰਰਾਈਡ ਸਿਰਲੇਖ ਨੂੰ ਬਦਲ ਦਿੱਤਾ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ਪੰਨੇ ਜਿਨ੍ਹਾਂ ਨੇ ਵੀਡੀਓ ਜਾਂ ਆਡੀਓ ਰਿਕਾਰਡ ਕਰਨ ਦੀ ਪਹੁੰਚ ਦਿੱਤੀ ਹੈ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "ਪੰਨੇ ਜੋ WebDatabase ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "ਪੰਨੇ ਜੋ WebHID ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "ਪੰਨੇ ਜੋ WebLocks ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "ਪੰਨੇ ਜੋ WebNfc ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "ਪੰਨੇ ਜੋ WebOTPService ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ bfcache ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC ਵਾਲੇ ਪੰਨੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "ਪੰਨੇ ਜੋ WebShare ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket ਵਾਲੇ ਪੰਨੇ, ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport ਵਾਲੇ ਪੰਨੇ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚ ਦਾਖਲ ਨਹੀਂ ਹੋ ਸਕਦੇ।"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "ਪੰਨੇ ਜੋ WebXR ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਨ, ਉਹ ਫ਼ਿਲਹਾਲ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਨਹੀਂ ਹਨ।"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ਪੂਰੇ ਪੰਨੇ ਦਾ ਕੈਸ਼ੇ"
   },
@@ -2316,25 +2655,34 @@
     "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਦੀ ਸਥਿਤੀ"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "ਕਾਰਵਾਈਯੋਗ ਨਹੀਂ ਹੈ"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "ਪਿਛਲੀ ਮੁੱਖ ਫ੍ਰੇਮ ਨੈਵੀਗੇਸ਼ਨ"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ਇਹ ਕਾਰਨ ਕਾਰਵਾਈਯੋਗ ਨਹੀਂ ਹਨ, ਮਤਲਬ ਕਿ, ਕੈਸ਼ੇ ਕਰਨ ਦੀ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਕਿਸੇ ਅਜਿਹੀ ਚੀਜ਼ ਵੱਲੋਂ ਰੋਕਿਆ ਗਿਆ ਸੀ ਜੋ ਪੰਨੇ ਦੇ ਸਿੱਧੇ ਕੰਟਰੋਲ ਤੋਂ ਬਾਹਰ ਸੀ।"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "ਮੁੱਖ ਫ੍ਰੇਮ"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ਸਧਾਰਨ ਨੈਵੀਗੇਸ਼ਨ (ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਵਿੱਚੋਂ ਮੁੜ-ਬਹਾਲ ਨਹੀਂ ਕੀਤੇ ਗਏ)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "ਕਾਰਵਾਈਯੋਗ"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ਇਹ ਕਾਰਨ ਕਾਰਵਾਈਯੋਗ ਹਨ, ਮਤਲਬ ਕਿ, ਪੰਨੇ ਨੂੰ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਬਣਾਉਣ ਵਾਸਤੇ ਇਨ੍ਹਾਂ ਨੂੰ ਸਾਫ਼ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਤੋਂ ਮੁੜ-ਬਹਾਲ ਕੀਤਾ ਗਿਆ"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "ਜਾਂਚ ਕਰੋ"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "ਵਿਚਾਰ-ਅਧੀਨ ਸਹਾਇਤਾ"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ਇਨ੍ਹਾਂ ਕਾਰਨਾਂ ਲਈ Chrome ਸਹਾਇਤਾ ਅਜੇ ਵਿਚਾਰ-ਅਧੀਨ ਹੈ, ਮਤਲਬ ਕਿ, ਇਹ ਕਿਸੇ ਵੀ ਪੰਨੇ ਨੂੰ Chrome ਦੇ ਭਵਿੱਖੀ ਵਰਜਨ ਵਿੱਚ ਪੂਰੇ ਪੰਨੇ ਦੇ ਕੈਸ਼ੇ ਲਈ ਯੋਗ ਤੋਂ ਨਹੀਂ ਰੋਕਣਗੇ।"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ਉਪਲਬਧ ਨਹੀਂ"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ਟੋਕਨ"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ਪਰਖ ਦਾ ਨਾਮ"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ਵਰਤੋਂ 'ਤੇ ਪ੍ਰਤਿਬੰਧ"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ਸਰੋਤ ਨਕਸ਼ੇ ਤੋਂ)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "ਜੋੜੋ:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "ਮਿਟਾਉਣਾ:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … {PH1} ਮੇਲ ਖਾਂਦੀਆਂ ਲਾਈਨਾਂ ਨੂੰ ਛੱਡਿਆ ਜਾ ਰਿਹਾ ਹੈ … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ਬਾਈਨਰੀ ਡਾਟਾ"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "ਤਬਦੀਲੀਆਂ ਦਿਖਾਉਣ ਵਾਲਾ ਵਿਊਅਰ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ਕੋਈ ਤਬਦੀਲੀ ਨਹੀਂ"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ਰੂਪ-ਰੇਖਾ ਨੂੰ ਕਲੀਅਰ ਕਰੋ"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ਕੈਪਚਰ ਰੂਪ-ਰੇਖਾ"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS ਰੂਪ-ਰੇਖਾ"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom ਮੁੱਲ ਸਥਿਰ ਸਥਿਤੀ ਵਾਲੇ ਤੱਤ 'ਤੇ ਲਾਗੂ ਕੀਤਾ ਗਿਆ"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width ਨੂੰ ਕਿਸੇ ਇਨਲਾਈਨ ਤੱਤ 'ਤੇ ਲਾਗੂ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ਸਾਡੀ ਟੀਮ ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ 'ਤੇ ਸਰਗਰਮੀ ਨਾਲ ਕੰਮ ਕਰ ਰਹੀ ਹੈ ਅਤੇ ਅਸੀਂ ਤੁਹਾਡੇ {PH1} ਦੀ ਉਡੀਕ ਵਿੱਚ ਹਾਂ!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ਕੈਪਚਰ ਰੂਪ-ਰੇਖਾ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "ਆਪਣੇ ਪੰਨੇ ਦੇ CSS ਦੀ ਰੂਪ-ਰੇਖਾ ਨੂੰ ਕੈਪਚਰ ਕਰੋ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "ਵਿਚਾਰ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "ਵਿਚਾਰ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "ਸੰਭਾਵੀ CSS ਸੁਧਾਰਾਂ ਨੂੰ ਪਛਾਣੋ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "ਸੰਭਾਵੀ CSS ਸੁਧਾਰਾਂ ਦੀ ਪਛਾਣ ਕਰੋ (ਜਿਵੇਂ ਕਿ, ਘੱਟ ਕੰਟ੍ਰਾਸਟ ਸੰਬੰਧੀ ਸਮੱਸਿਆਵਾਂ, ਅਣਵਰਤੀਆਂ ਘੋਸ਼ਣਾਵਾਂ, ਰੰਗ ਜਾਂ ਫ਼ੌਂਟ ਦਾ ਮੇਲ ਨਹੀਂ ਖਾਣਾ)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "ਤੱਤਾਂ ਦੇ ਪੈਨਲ ਵਿੱਚ ਪ੍ਰਭਾਵਿਤ ਤੱਤਾਂ ਦਾ ਪਤਾ ਲਗਾਓ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "ਪੂਰਵ-ਝਲਕ ਸੰਬੰਧੀ ਵਿਸ਼ੇਸ਼ਤਾ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "ਝਟਪਟ ਸ਼ੁਰੂਆਤ: ਨਵੇਂ CSS ਰੂਪ-ਰੇਖਾ ਪੈਨਲ ਨਾਲ ਸ਼ੁਰੂਆਤ ਕਰੋ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ਵੀਡੀਓ ਅਤੇ ਦਸਤਾਵੇਜ਼ੀਕਰਨ"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS ਰੂਪ-ਰੇਖਾ"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector ਕਾਪੀ ਕਰੋ"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS ਸੰਪਤੀ ਦਾ ਨਾਮ"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS ਸੰਪਤੀ ਮੁੱਲ"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS ਚੋਣਕਾਰ"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ਫਿਲਟਰ ਕਰੋ"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ਲਿਖਤ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "ਇਸ ਤੱਤ ਲਈ ਓਵਰਲੇ ਰੰਗ ਨੂੰ ਚੁਣੋ"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "ਰੰਗ ਚੋਣਕਾਰ ਖੋਲ੍ਹਿਆ ਗਿਆ।"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "ਫਲੈਕਸਬਾਕਸ"
@@ -4977,7 +5355,7 @@
     "message": "ਚਿਤਾਵਨੀ"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ਫ੍ਰੇਮ"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ਸਰੋਤ}one{# ਸਰੋਤ}other{# ਸਰੋਤ}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "ਸਾਰੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦਿਖਾਓ"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "ਸਾਰੇ ਮੌਜੂਦਾ {PH1} ਨੂੰ ਲੁਕਾਓ"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ਪ੍ਰਭਾਵਿਤ ਸਰੋਤ"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "ਬਲਾਕ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "ਇਸ ਤਰ੍ਹਾਂ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਲੁਕਾਓ"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ਹੋਰ ਜਾਣੋ: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "ਪਾਬੰਦੀ ਦੀ ਸਥਿਤੀ"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "ਇਸ ਤਰ੍ਹਾਂ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਦਿਖਾਓ"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "ਚਿਤਾਵਨੀ ਦਿੱਤੀ ਗਈ"
@@ -5028,19 +5415,19 @@
     "message": "ਕ੍ਰੌਸ-ਮੂਲ ਸੰਬੰਧੀ ਪਰੋਈ ਹੋਈ ਨੀਤੀ"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "ਆਮ"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "ਸ਼੍ਰੇਣੀ ਮੁਤਾਬਕ ਗਰੁੱਪਬੱਧ ਕਰੋ"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "ਕਿਸਮ ਮੁਤਾਬਕ ਗਰੁੱਪ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ਦਿਖਾਈਆਂ ਗਈਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਸੰਬੰਧਿਤ ਸ਼੍ਰੇਣੀਆਂ ਅਧੀਨ ਗਰੁੱਪਬੱਧ ਕਰੋ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "ਗਰੁੱਪ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਪੰਨਾ ਗੜਬੜਾਂ, ਬ੍ਰੇਕਿੰਗ ਚੇਂਜਾਂ ਅਤੇ ਸੁਧਾਰਾਂ ਵਜੋਂ ਦਿਖਾਉਂਦਾ ਹੈ"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "ਭਾਰੀ ਵਿਗਿਆਪਨ"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm ਮਾਡਿਊਲ ਦਾ URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "ਇਸ ਤਰ੍ਹਾਂ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਦਿਖਾਓ"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "ਇਸ ਤਰ੍ਹਾਂ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਲੁਕਾਓ"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "ਸਮੱਸਿਆਵਾਂ ਮੀਨੂ ਲੁਕਾਓ"
+    "message": "ਸਮੱਸਿਆਵਾਂ ਲੁਕਾਓ"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP ਉਲੰਘਣਾਵਾਂ"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "ਹਸਤਾਖਰਿਤ-ਐਕਸਚੇਂਜ"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "ਵਿਲੰਬਤਾ (ਜਵਾਬ ਪ੍ਰਾਪਤ ਹੋਣ ਦਾ ਸਮਾਂ - ਸ਼ੁਰੂੂਆਤ ਦਾ ਸਮਾਂ)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(ਅਗਿਆਤ)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ਚਿਤਾਵਨੀ:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "ਇਹ ਸੈਟਿੰਗ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ, ਤੁਹਾਨੂੰ ਪਹਿਲਾਂ Chrome ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਦੇ ਸਮਕਾਲੀਕਰਨ ਨੂੰ ਚਾਲੂ ਕਰਨਾ ਪਵੇਗਾ।"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ਸੈਟਿੰਗਾਂ 'ਤੇ ਜਾਓ"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chrome ਵਿੱਚ ਇਸ ਵਜੋਂ ਸਾਈਨ-ਇਨ ਹੈ:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "ਇਸ ਸੈਟਿੰਗ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ, ਤੁਹਾਨੂੰ Chrome ਸਮਕਾਲੀਕਰਨ ਚਾਲੂ ਕਰਨ ਦੀ ਲੋੜ ਹੈ।"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "ਵਿਉਂਤਬੱਧ ਡੀਵਾਈਸ ਸ਼ਾਮਲ ਕਰੋ..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "ਅਣਡਿੱਠ ਸੂਚੀ ਵਿੱਚ ਸਕ੍ਰਿਪਟ ਸ਼ਾਮਲ ਕਰੋ"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "ਕੁਝ ਕਾਲ ਫ੍ਰੇਮਾਂ ਵਿੱਚ ਚਿਤਾਵਨੀਆਂ ਹਨ।"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "ਕਾਲ ਸਟੈਕ"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ਇਸ ਮੁਤਾਬਕ ਕ੍ਰਮ-ਬੱਧ ਕਰੋ"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … {PH1} ਮੇਲ ਖਾਂਦੀਆਂ ਲਾਈਨਾਂ ਨੂੰ ਛੱਡਿਆ ਜਾ ਰਿਹਾ ਹੈ … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "ਸ਼ਾਮਲ ਕਰੋ:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "ਤਬਦੀਲੀਆਂ ਦਿਖਾਉਣ ਵਾਲਾ ਵਿਊਅਰ"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "ਮਿਟਾਉਣਾ:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# ਬ੍ਰੇਕਿੰਗ ਚੇਂਜ}one{# ਬ੍ਰੇਕਿੰਗ ਚੇਂਜ}other{# ਬ੍ਰੇਕਿੰਗ ਚੇਂਜਾਂ}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "ਹੋਰ ਟੈਬਾਂ"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "ਪੂਰਵ-ਝਲਕ ਸੰਬੰਧੀ ਵਿਸ਼ੇਸ਼ਤਾ"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools ਨੂੰ ਪੰਨੇ ਤੋਂ ਡਿਸਕਨੈਕਟ ਕੀਤਾ ਗਿਆ।"

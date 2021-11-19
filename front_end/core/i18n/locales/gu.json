@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "સમાન-સાઇટ અને સમાન-ઑરિજિન"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "વપરાશકર્તા એજન્ટ સ્ટ્રિંગમાં ઘટાડો"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "પૉર્ટલ - સમાન ઑરિજિન કમ્યૂનિકેશન ચૅનલ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "મોટા પ્રમાણમાં જાહેરાતો સંબંધિત હસ્તક્ષેપો હૅન્ડલ કરવા વિશે"
@@ -1344,25 +1341,28 @@
     "message": "નિષ્ફળ કરનાર ફેરફારની સમસ્યા: Chromeના આગામી વર્ઝનમાં પેજ યોગ્ય રીતે કામ કરવાનું બંધ કરી શકે છે"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "નિષ્ફળ કરનારા ફેરફારો"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "બહેતર બનાવવા સંબંધિત સમસ્યા: અહીં પેજને બહેતર બનાવવાની તક છે"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "સુધારણાઓ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "પેજમાં ભૂલની સમસ્યા: પેજ યોગ્ય રીતે કામ કરી રહ્યું નથી"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "પેજમાં ભૂલ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "રંગ અને કૉન્ટ્રાસ્ટની ઍક્સેસિબિલિટી"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "મિક્સ કરેલું કન્ટેન્ટ અટકાવી રહ્યાં છીએ"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "વપરાશકર્તા એજન્ટ સ્ટ્રિંગમાં ઘટાડો"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "દસ્તાવેજ સાથે સુસંગત મોડ"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "captionમાંથી"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "description તરફથી"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "labelમાંથી"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "વિશેષતામાંથી મળેલું મૂલ્ય."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "description ઘટકમાંથી મેળવેલું મૂલ્ય."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "ઘટકના કન્ટેન્ટમાંથી મેળવેલું મૂલ્ય."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "વર્કર"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "માત્ર કોઈ GET વિનંતી મારફતે લોડ કરેલા પેજ બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "માત્ર 2XXનો સ્ટેટસ કોડ ધરાવનારા પેજને કૅશ મેમરીમાં સાચવી શકાય છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "કૅશ મેમરીમાં હોવા દરમિયાન JavaScript ચલાવવાનો પ્રયાસ કરવામાં આવ્યો હોવાની Chrome દ્વારા ભાળ મેળવવામાં આવી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "જે કોઈ પેજ દ્વારા કોઈ AppBannerની વિનંતી કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ચિહ્નિત કરવાની સુવિધા દ્વારા બૅક/ફૉરવર્ડ કૅશની સુવિધા બંધ કરવામાં આવી છે. આ ડિવાઇસ પર તેને સ્થાનિક રીતે ચાલુ કરવા માટે chrome://flags/#back-forward-cacheની મુલાકાત લો."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "આદેશ લાઇન દ્વારા બૅક/ફૉરવર્ડ કૅશની સુવિધા બંધ કરવામાં આવી છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "અપૂરતી મેમરી હોવાને કારણે બૅક/ફૉરવર્ડ કૅશની સુવિધા બંધ કરવામાં આવી છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "બૅક/ફૉરવર્ડ કૅશની સુવિધાને નિયુક્ત દ્વારા સપોર્ટ આપવામાં આવતો નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "પ્રીરેન્ડરર માટે બૅક/ફૉરવર્ડ કૅશની સુવિધા બંધ કરવામાં આવી છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "નોંધણીકૃત સાંભળનારાઓ સાથે BroadcastChannel આવૃત્તિ હોવાને કારણે આ પેજ કૅશ મેમરીમાં સાચવી શકાશે નહીં."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "cache-control:no-store હેડર ધરાવતા પેજ બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "કૅશ મેમરી જાણી જોઈને સાફ કરવામાં આવી હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "અન્ય કોઈ પેજને તેમાં ઉમેરી શકાય એ માટે આ પેજને કૅશ મેમરીમાંથી કાઢી નાખવામાં આવ્યું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "જે કોઈ પેજમાં પ્લગ-ઇનનો સમાવેશ હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "જે કોઈ પેજમાં FileChooser APIનો ઉપયોગ કરવામાં આવ્યો હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "જે કોઈ પેજ File System Access APIનો ઉપયોગ કરતા હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "જે કોઈ પેજ Media Device Dispatcherનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "પેજમાંથી બહાર નીકળતી વખતે કોઈ મીડિયા પ્લેયર ચાલી રહ્યું હતું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "જે કોઈ પેજ MediaSession APIનો ઉપયોગ કરતા હોય અને પ્લેબૅકનું સ્ટેટસ સેટ કરતા હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "જે કોઈ પેજ MediaSession API અને સેટ કરેલી ઍક્શનના હૅન્ડલરનો ઉપયોગ કરતા હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "જે કોઈ પેજ SecurityHandlerનો ઉપયોગ કરતા હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "જે કોઈ પેજમાં Serial APIનો ઉપયોગ કરવામાં આવ્યો હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "જે કોઈ પેજમાં WebAuthentication APIનો ઉપયોગ કરવામાં આવ્યો હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "જે કોઈ પેજમાં WebBluetooth APIનો ઉપયોગ કરવામાં આવ્યો હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "જે કોઈ પેજમાં WebUSB APIનો ઉપયોગ કરવામાં આવ્યો હોય, તે બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "જે કોઈ પેજ કોઈ સમર્પિત વર્કર કે વર્કલેટનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "પેજમાંથી બહાર નીકળવા પહેલાં દસ્તાવેજના લોડ થવાની પ્રક્રિયા પૂર્ણ થઈ ન હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "આ પેજ જ્યારે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં હતું, ત્યારે કોઈ સર્વિસ વર્કરની સેવાને સક્રિય કરવામાં આવી હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "અન્ય કોઈ પેજને તેમાં ઉમેરી શકાય એ માટે આ પેજને કૅશ મેમરીમાંથી કાઢી નાખવામાં આવ્યું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "જે કોઈ પેજ દ્વારા મીડિયા સ્ટ્રીમ કરવાનો ઍક્સેસ આપવામાં આવ્યો હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "જે કોઈ પેજ પોર્ટલનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "જે કોઈ પેજ IdleManagerનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "જે કોઈ પેજ કોઈ ઓપન IndexedDB કનેક્શન ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "અયોગ્ય APIsનો ઉપયોગ કરવામાં આવ્યો હતો."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "જે કોઈ પેજમાં એક્સ્ટેન્શન દ્વારા JavaScriptને શામેલ કરવામાં આવેલી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "જે કોઈ પેજમાં એક્સ્ટેન્શન દ્વારા StyleSheetને શામેલ કરવામાં આવેલી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "આંતરિક ભૂલ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "જે કોઈ પેજ કીબોર્ડ લૉકનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "પેજમાંથી બહાર નીકળવા પહેલાં પેજના લોડ થવાની પ્રક્રિયા પૂર્ણ થઈ ન હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "જે કોઈ પેજના મુખ્ય સંસાધન cache-control:no-cache હોય, તે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "જે કોઈ પેજના મુખ્ય સંસાધન cache-control:no-store હોય, તે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાંથી પેજને રિસ્ટોર કરવામાં આવે એ પહેલાં નૅવિગેશન રદ કરવામાં આવ્યું હતું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "કોઈ સક્રિય નેટવર્ક કનેક્શન દ્વારા વધુ પડતો ડેટા મેળવવાને કારણે આ પેજને કૅશ મેમરીમાંથી કાઢી નાખવામાં આવ્યું હતું. કૅશ મેમરીમાં હોય ત્યારે કોઈ પેજ કેટલો ડેટા મેળવી શકે તે, Chrome દ્વારા નિયંત્રિત કરવામાં આવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "જે કોઈ પેજ XHR કે નેટવર્ક મેળવવાની પ્રક્રિયામાં હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "નેટવર્કની કોઈ સક્રિય વિનંતીમાં રીડાયરેક્ટનો સમાવેશ હોવાને કારણે આ પેજને બૅક/ફૉરવર્ડ કૅશ મેમરીમાંથી કાઢી નાખવામાં આવ્યું હતું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "કોઈ નેટવર્ક કનેક્શન ઘણા લાંબા સમય માટે ખુલ્લું રહેવાને કારણે આ પેજને કૅશ મેમરીમાંથી કાઢી નાખવામાં આવ્યું હતું. કૅશ મેમરીમાં હોય ત્યારે કોઈ પેજ કેટલા સમયમાં કેટલો ડેટા મેળવી શકે તે, Chrome દ્વારા નિયંત્રિત કરવામાં આવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "જે કોઈ પેજ કોઈ માન્ય પ્રતિસાદ હેડર ધરાવતા ન હોય, તે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "મુખ્ય ફ્રેમ સિવાય કોઈ અન્ય ફ્રેમમાં નૅવિગેશનની પ્રક્રિયા બનવા પામી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "આ પેજ બૅક/ફૉરવર્ડ કૅશ મેમરીની પસંદગીના હેડર વિના અનલોડ હૅન્ડલર ધરાવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "જે કોઈ પેજ અનુક્રમિત કરેલા ચાલુ DB વ્યવહારો ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "જે કોઈ પેજ નેટવર્કની પ્રક્રિયામાં હોય તેવી વિનંતી ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "જે કોઈ પેજ નેટવર્ક મેળવવાની પ્રક્રિયામાં હોય તેવી વિનંતી ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "જે કોઈ પેજ નેટવર્કની પ્રક્રિયામાં હોય તેવી વિનંતી ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "જે કોઈ પેજ XHR નેટવર્કની પ્રક્રિયામાં હોય તેવી વિનંતી ધરાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "જે કોઈ પેજ PaymentManagerનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "જે કોઈ પેજ ચિત્ર-માં-ચિત્રની સુવિધાનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "જે કોઈ પેજ પોર્ટલનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "જે કોઈ પેજ પ્રિન્ટિંગ UI બતાવતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "window.open()ના વડે આ પેજ ખોલવામાં આવ્યું હતું તેમજ તેનો સંદર્ભ અન્ય ટૅબ ધરાવે છે અથવા આ પેજ દ્વારા કોઈ વિન્ડો ખોલવામાં આવી હોઈ શકે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાંના પેજની રેન્ડર કરવાની પ્રક્રિયા ક્રૅશ થઈ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાંના પેજની રેન્ડર કરવાની પ્રક્રિયા બંધ કરવામાં આવી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "જે કોઈ પેજ દ્વારા ઑડિયો કૅપ્ચર કરવાની પરવાનગીઓ માટે વિનંતી કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "જે કોઈ પેજ દ્વારા સેન્સર પરવાનગીઓ વિશે વિનંતીઓ કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "જે કોઈ પેજ દ્વારા બૅકગ્રાઉન્ડ સિંક કે મેળવવાની પરવાનગીઓ વિશે વિનંતી કરવામાં આવતી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "જે કોઈ પેજ દ્વારા MIDI પરવાનગીઓ વિશે વિનંતીઓ કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "જે કોઈ પેજ દ્વારા નોટિફિકેશન પરવાનગીઓ વિશે વિનંતીઓ કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "જે કોઈ પેજ દ્વારા સ્ટોરેજના ઍક્સેસની વિનંતી કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "જે કોઈ પેજ દ્વારા વીડિયો કૅપ્ચર કરવાની પરવાનગીઓ માટે વિનંતી કરવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "જે કોઈ પેજના URLની સ્કીમ HTTP / HTTPS હોય, માત્ર તેને જ કૅશ મેમરીમાં સાચવી શકાશે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાં હોવા દરમિયાન કોઈ સર્વિસ વર્કર દ્વારા આ પેજ માટે દાવો કરવામાં આવ્યો હતો."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાં રહેલા પેજને કોઈ સર્વિસ વર્કર દ્વારા MessageEvent મોકલવાનો પ્રયાસ કરવામાં આવ્યો."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "કોઈ પેજ જ્યારે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં હતું, ત્યારે ServiceWorker નોંધણી વિના હતું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "કોઈ સર્વિસ વર્કરની સક્રિયતાને કારણે આ પેજને બૅક/ફૉરવર્ડ કૅશમાંથી કાઢી નાખવામાં આવ્યું હતું."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ફરીથી શરૂ થયું હતું અને બૅક/ફૉરવર્ડ કૅશ મેમરીમાંની બધી એન્ટ્રી સાફ કરવામાં આવી હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "જે કોઈ પેજ SharedWorkerનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "જે કોઈ પેજ SpeechRecognizerનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "જે કોઈ પેજ SpeechSynthesisનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "પેજ પરના કોઈ iframe દ્વારા નૅવિગેશનની શરૂ કરવામાં આવેલી પ્રક્રિયા પૂર્ણ થઈ ન શકી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "જે કોઈ પેજના પેટાસંસાધન cache-control:no-cache હોય, તે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "જે કોઈ પેજના પેટાસંસાધન cache-control:no-store હોય, તે બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "આ પેજ દ્વારા બૅક/ફૉરવર્ડ કૅશ મેમરીમાં મહત્તમથી વધુ સમય વિતાવવામાં આવ્યો હતો અને તેથી તેની સમયસીમા સમાપ્ત થઈ હતી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ થતી વખતે આ પેજની સમયસીમા સમાપ્ત થઈ હતી (મોટા ભાગે લાંબા ગાળાના પેજહાઇડ હૅન્ડલરના કારણે)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "મુખ્ય ફ્રેમમાં આ પેજ અનલોડ હૅન્ડલર ધરાવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "કોઈ પેટા ફ્રેમમાં આ પેજ અનલોડ હૅન્ડલર ધરાવે છે."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "બ્રાઉઝર દ્વારા વપરાશકર્તા એજન્ટ ઓવરરાઇડના હેડરમાં ફેરફાર કરવામાં આવ્યો."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "જે કોઈ પેજને વીડિયો કે ઑડિયો રેકોર્ડ કરવાના ઍક્સેસની પરવાનગી આપવામાં આવી હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "જે કોઈ પેજમાં WebDatabaseનો ઉપયોગ કરવામાં આવ્યો હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "જે કોઈ પેજ WebHIDનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "જે કોઈ પેજ WebLocksનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "જે કોઈ પેજ WebNfcનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "જે કોઈ પેજ WebOTPServiceનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "WebRTC ધરાવતા પેજ બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "જે કોઈ પેજ WebShareનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "WebSocket ધરાવતા પેજ બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "WebTransport ધરાવતા પેજ બૅક/ફૉરવર્ડ કૅશ મેમરીમાં દાખલ કરી શકાતા નથી."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "જે કોઈ પેજ WebXRનો ઉપયોગ કરતા હોય, તે હાલમાં બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતા નથી."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "બૅક-ફૉરવર્ડ કૅશ"
   },
@@ -2316,25 +2655,34 @@
     "message": "બૅક-ફૉરવર્ડ કૅશનું સ્ટેટસ"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "પગલાં લઈ શકાય એવું નથી"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "અંતિમ મુખ્ય ફ્રેમ નૅવિગેશન"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "આ કારણો ઍક્શન લેવા યોગ્ય નથી એટલે કે પેજના સીધા નિયંત્રણમાં ન હોય એવી કોઈ બાબતને કારણે કૅશ મેમરીમાં સાચવવું શક્ય થયું ન હતું."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "મુખ્ય ફ્રેમ"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "સામાન્ય નૅવિગેશન (બૅક-ફૉરવર્ડ કૅશમાંથી રિસ્ટોર ન કરવામાં આવેલું)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "પગલાં લઈ શકાય એવું"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "આ કારણો ઍક્શન લેવા યોગ્ય છે એટલે કે જો આ બાબતોને ઠીક કરવામાં આવે તો પેજ બૅક/ફૉરવર્ડ કૅશ માટે યોગ્યતા ધરાવતું થઈ શકે છે."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "બૅક-ફૉરવર્ડ કૅશમાંથી રિસ્ટોર કરી"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "પરીક્ષણ શરૂ કરો"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "સપોર્ટ માટે બાકી"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "આ કારણો માટે Chrome સપોર્ટ બાકી છે એટલે કે Chromeના ભાવિ વર્ઝનમાં બૅક-ફૉરવર્ડ કૅશ માટે પેજને યોગ્યતા મેળવવાથી આ કારણો તેમને પ્રતિબંધિત કરી શકશે નહીં."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ઉપલબ્ધ નથી"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ટોકન"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "અજમાયશનું નામ"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "વપરાશ પર પ્રતિબંધ"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (સૉર્સના નકશામાંથી)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "વધારો:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "આને ડિલીટ કરો:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … મેળ ખાતી {PH1} પંક્તિ છોડી રહ્યાં છીએ … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "બાઇનરી ડેટા"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "તફાવત બતાવતું 'ફેરફારો' સાધન"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "કોઈ ફેરફાર નથી"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ઓવરવ્યૂ સાફ કરો"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ઓવરવ્યૂ કૅપ્ચર કરો"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSSનો ઓવરવ્યૂ"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottomના મૂલ્યો સ્થિર સ્થિતિ ધરાવતા ઘટક પર લાગુ કરવામાં આવ્યા છે"
   },
@@ -3896,8 +4229,41 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Widthને ઇનલાઇન ઘટક પર લાગુ કરવામાં આવી"
   },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "આ સુવિધા પર અમારી ટીમ પૂર્ણ સક્રિયતાથી કામ કરી રહી છે અને અમે તમારા {PH1}ની રાહ જોઈ રહ્યાં છીએ!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ઓવરવ્યૂ કૅપ્ચર કરો"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "તમારા પેજના CSSનો કોઈ ઓવરવ્યૂ કૅપ્ચર કરો"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "પ્રતિસાદ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "પ્રતિસાદ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "CSSની સંભવિત સુધારણાઓ ઓળખો"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "CSSની સંભવિત સુધારણાઓ ઓળખો (દા.ત. ઓછો કોન્ટ્રાસ્ટ હોવાની સમસ્યાઓ, ઉપયોગમાં ન લીધેલી ઘોષણાઓ, રંગ કે ફૉન્ટનો મેળ ન થવો)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Elements પૅનલમાં અસરગ્રસ્ત ઘટકો શોધો"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "પ્રીવ્યૂની સુવિધા"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "ઝડપી શરૂઆત: નવી CSS ઓવરવ્યૂ પૅનલ સાથે શરૂ કરો"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "વીડિયો અને દસ્તાવેજીકરણ"
+  },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
-    "message": "CSSનો ઓવરવ્યૂ"
+    "message": "CSS ઓવરવ્યૂ"
   },
   "panels/css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "CSS ઓવરવ્યૂ બતાવો"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector કૉપિ કરો"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "CSS ગુણધર્મનું નામ"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "CSS ગુણધર્મ મૂલ્ય"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS પસંદગીકર્તા"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ફિલ્ટર"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ટેક્સ્ટ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "આ ઘટક માટે ઓવરલેનો રંગ પસંદ કરો"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "કલર પીકર ખોલવામાં આવ્યું."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "ફ્લૅક્સબૉક્સ"
@@ -4977,7 +5355,7 @@
     "message": "ચેતવણી"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ફ્રેમ"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# સંસાધન}one{# સંસાધન}other{# સંસાધન}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "બધું બતાવો"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "હાલની બધી {PH1} છુપાવો"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "અસરગ્રસ્ત સંસાધનો"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "બ્લૉક કરેલું"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "આના જેવી સમસ્યાઓ છુપાવો"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "વધુ જાણો: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "પ્રતિબંધનું સ્ટેટસ"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "આના જેવી સમસ્યાઓ બતાવો"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "ચેતવણી આપવામાં આવી"
@@ -5028,19 +5415,19 @@
     "message": "ક્રોસ-ઑરિજિન એમ્બેડર પૉલિસી"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "સામાન્ય"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "કૅટેગરી મુજબ ગ્રૂપ બનાવો"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "પ્રકાર મુજબ ગ્રૂપ બનાવો"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "સંકળાયેલી કૅટેગરી હેઠળ બતાવવામાં આવેલી સમસ્યાઓનું ગ્રૂપ બનાવો"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "પેજમાં ભૂલ, નિષ્ફળ કરનારા ફેરફારો અને સુધારણાઓ જેવી સમસ્યાઓ ગ્રૂપ દ્વારા બતાવવામાં આવી"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "બૅટરી કે ડેટાનો ભારે ઉપયોગ કરતી જાહેરાતો"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Wasm મૉડ્યૂલનું URL"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "આના જેવી સમસ્યાઓ બતાવો"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "આના જેવી સમસ્યાઓ છુપાવો"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "સમસ્યાઓનું મેનૂ છુપાવો"
+    "message": "સમસ્યાઓ છુપાવો"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSPના ઉલ્લંઘનો"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "સહીવાળું એક્સચેંજ"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "વિલંબતા (પ્રતિસાદ મેળવ્યાનો સમય - શરૂ થવાનો સમય)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(અજ્ઞાત)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ચેતવણી:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "આ સેટિંગ ચાલુ કરવા માટે, પહેલાં તમારે Chromeમાં સેટિંગ સિંક કરવાનો વિકલ્પ ચાલુ કરવો આવશ્યક છે."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "સેટિંગ પર જાઓ"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Chromeમાં તરીકે સાઇન ઇન કરેલું:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "આ સેટિંગ ચાલુ કરવા માટે, તમારે Chrome સિંક ચાલુ કરવું આવશ્યક છે."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "કસ્ટમ ડિવાઇસ ઉમેરો..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "અવગણવાની સૂચિમાં સ્ક્રિપ્ટ ઉમેરો"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "અમુક કૉલ ફ્રેમમાં ચેતવણીઓ હોય છે"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "કૉલ સ્ટૅક"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "આ પ્રમાણે સૉર્ટ કરો"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … મેળ ખાતી {PH1} પંક્તિ છોડી રહ્યાં છીએ … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "વધારવાની ક્રિયા:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "તફાવત બતાવતું 'ફેરફારો' સાધન"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "ડિલીટ કરવાની પ્રક્રિયા:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{નિષ્ફળ કરનારો # ફેરફાર}one{નિષ્ફળ કરનારો # ફેરફાર}other{નિષ્ફળ કરનારા # ફેરફાર}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "વધુ ટૅબ"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "પ્રીવ્યૂની સુવિધા"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "આ પેજથી DevTools ડિસ્કનેક્ટ કરવામાં આવ્યું હતું."

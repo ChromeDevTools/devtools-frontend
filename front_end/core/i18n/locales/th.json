@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "มาจากเว็บไซต์และต้นทางเดียวกัน"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "การลดสตริง User Agent"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "พอร์ทัล - ช่องทางการสื่อสารต้นทางเดียวกัน"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "การจัดการการแทรกแซงโฆษณาที่ใช้ทรัพยากรมาก"
@@ -1344,25 +1341,28 @@
     "message": "ปัญหาการเปลี่ยนแปลงที่ส่งผลกับส่วนอื่นในระบบ: หน้าเว็บอาจหยุดทำงานใน Chrome เวอร์ชันที่กำลังจะมาถึง"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "การเปลี่ยนแปลงที่ส่งผลกับส่วนอื่นในระบบ"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "ปัญหาในการปรับปรุง: หน้านี้สามารถปรับปรุงได้"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "การปรับปรุง"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "ปัญหาข้อผิดพลาดของหน้าเว็บ: หน้าเว็บทำงานไม่ถูกต้อง"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "ข้อผิดพลาดของหน้าเว็บ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "การช่วยเหลือพิเศษด้วยสีและคอนทราสต์"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "การป้องกันเนื้อหาผสม"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "การลดสตริง User Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "โหมดความเข้ากันได้กับเอกสาร"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "จาก caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "จาก description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "จาก label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "ค่าจากแอตทริบิวต์"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "ค่าจากองค์ประกอบ description"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "ค่าจากเนื้อหาองค์ประกอบ"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ผู้ปฏิบัติงาน"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "เฉพาะหน้าที่โหลดผ่านคำขอ GET เท่านั้นที่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "เฉพาะหน้าที่มีรหัสสถานะ 2XX เท่านั้นที่แคชได้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome ตรวจพบความพยายามที่จะเรียกใช้ JavaScript ขณะอยู่ในแคช"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "หน้าที่ขอ AppBanner ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "แคชย้อนหลังถูกปิดใช้งานจากการแจ้งว่าไม่เหมาะสม ไปที่ chrome://flags/#back-forward-cache เพื่อเปิดใช้งานในอุปกรณ์นี้โดยตรง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "แคชย้อนหลังถูกปิดใช้งานโดยบรรทัดคำสั่ง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "แคชย้อนหลังถูกปิดใช้งานเนื่องจากหน่วยความจำไม่พอ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Delegate ไม่รองรับแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "แคชย้อนหลังถูกปิดใช้งานสำหรับตัวแสดงผลล่วงหน้า"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "แคชหน้านี้ไม่ได้เพราะมีอินสแตนซ์ BroadcastChannel ที่ Listener ลงทะเบียนไว้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "หน้าที่มีส่วนหัว cache-control:no-store ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "มีการล้างแคชโดยตั้งใจ"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "หน้านี้ถูกนำออกจากแคชเพื่อให้แคชหน้าอื่นได้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "หน้าที่มีปลั๊กอินยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "หน้าที่ใช้ FileChooser API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "หน้าที่ใช้ File System Access API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "หน้าที่ใช้ตัวส่งสำหรับอุปกรณ์สื่อไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "โปรแกรมเล่นสื่อกำลังเล่นอยู่ขณะที่มีการออกจากหน้าไป"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "หน้าที่ใช้ MediaSession API และมีการตั้งสถานะการเล่นไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "หน้าที่ใช้ MediaSession API และมีการตั้งตัวจัดการการทำงานไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "หน้าที่ใช้ SecurityHandler ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "หน้าที่ใช้ Serial API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "หน้าที่ใช้ WebAuthetication API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "หน้าที่ใช้ WebBluetooth API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "หน้าที่ใช้ WebUSB API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "หน้าที่ใช้ Dedicated Worker หรือ Worklet ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "เอกสารโหลดไม่เสร็จก่อนที่จะมีการออกจากหน้าไป"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "มีการเปิดใช้งาน Service Worker ขณะที่หน้าอยู่ในแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "หน้านี้ถูกนำออกจากแคชเพื่อให้แคชหน้าอื่นได้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "หน้าที่ให้สิทธิ์สตรีมสื่อยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "หน้าที่ใช้พอร์ทัลยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "หน้าที่ใช้ IdleManager ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "หน้าที่มีการเชื่อมต่อ IndexedDB แบบเปิดยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "มีการใช้ API ที่ไม่มีสิทธิ์"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "หน้าที่มีการแทรก JavaScript ลงในส่วนขยายยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "หน้าที่มีการแทรกสไตล์ชีตลงในส่วนขยายยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "ข้อผิดพลาดภายใน"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "หน้าที่ใช้การล็อกแป้นพิมพ์ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "หน้านี้โหลดไม่เสร็จก่อนที่จะมีการออกจากหน้าไป"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "หน้าที่ทรัพยากรหลักของหน้ามี cache-control:no-cache ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "หน้าที่ทรัพยากรหลักของหน้ามี cache-control:no-store ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "มีการยกเลิกการนำทางก่อนที่จะสามารถกู้คืนหน้าจากแคชย้อนหลังได้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "หน้าถูกนำออกจากแคชเพราะการเชื่อมต่อเครือข่ายที่ทำงานอยู่ได้รับข้อมูลมากเกินไป Chrome จำกัดปริมาณข้อมูลที่แต่ละหน้าสามารถรับได้ขณะที่มีการแคชหน้าไว้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "หน้าที่คำขอ fetch() หรือ XHR กำลังทำงานยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "หน้าถูกนำออกจากแคชย้อนหลังเพราะคำขอเครือข่ายที่ใช้งานอยู่เกี่ยวข้องกับการเปลี่ยนเส้นทาง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "หน้านี้ถูกนำออกจากแคชเพราะเปิดการเชื่อมต่อเครือข่ายไว้นานเกินไป Chrome จำกัดเวลาที่หน้าสามารถรับข้อมูลขณะแคช"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "หน้าที่ไม่มีส่วนหัวการตอบกลับที่ถูกต้องไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "มีการนำทางเกิดขึ้นในเฟรมอื่นนอกเหนือจากเฟรมหลัก"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "หน้านี้มีตัวจัดการสำหรับยกเลิกการโหลดโดยไม่มีส่วนหัวการเลือกใช้แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "หน้าที่ธุรกรรมฐานข้อมูลได้รับการจัดทำดัชนีอย่างต่อเนื่องยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "หน้าที่คำขอเครือข่ายกำลังทำงานยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "หน้าที่คำขอดึงข้อมูลจากเครือข่ายกำลังทำงานยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "หน้าที่คำขอเครือข่ายกำลังทำงานยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "หน้าที่คำขอเครือข่าย XHR กำลังทำงานยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "หน้าที่ใช้ PaymentManager ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "หน้าที่ใช้การแสดงภาพซ้อนภาพยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "หน้าที่ใช้พอร์ทัลยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "หน้าที่แสดง Printing UI ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "มีการเปิดหน้านี้โดยใช้ window.open() และมีการอ้างอิงจากแท็บอื่น หรือหน้านี้เปิดหน้าต่างขึ้นมา"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "การประมวลการแสดงผลสำหรับหน้านี้ในแคชย้อนหลังเกิดการขัดข้อง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "การประมวลการแสดงผลสำหรับหน้านี้ในแคชย้อนหลังถูกตัด"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "หน้าที่มีการขอสิทธิ์บันทึกเสียงยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "หน้าที่ขอสิทธิ์เข้าถึงข้อมูลเซ็นเซอร์ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "หน้าที่มีการขอสิทธิ์เพื่อซิงค์เบื้องหลังหรือดึงข้อมูลยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "หน้าที่มีการขอสิทธิ์ MIDI ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "หน้าที่มีการขอสิทธิ์ส่งการแจ้งเตือนยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "หน้าที่มีการขอการเข้าถึงพื้นที่เก็บข้อมูลยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "หน้าที่มีการขอสิทธิ์บันทึกวิดีโอยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "เฉพาะหน้าที่รูปแบบ URL ของหน้าเป็น HTTP / HTTPS เท่านั้นที่สามารถแคชไว้ได้"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "มี Service Worker อ้างสิทธิ์หน้านี้ขณะอยู่ในแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "มี Service Worker พยายามส่ง MessageEvent ให้หน้าที่อยู่ในแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "มีการยกเลิกการลงทะเบียน ServiceWorker ขณะที่หน้าอยู่ในแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "หน้านี้ถูกนำออกจากแคชย้อนหลังเนื่องจากมีการเปิดใช้งาน Service Worker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome รีสตาร์ทและล้างรายการแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "หน้าที่ใช้ SharedWorker ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "หน้าที่ใช้ SpeechRecognizer ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "หน้าที่ใช้ SpeechSynthesis ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe ในหน้าเริ่มการนำทางที่ไม่เสร็จสมบูรณ์"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "หน้าที่ทรัพยากรย่อยของหน้ามี cache-control:no-cache ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "หน้าที่ทรัพยากรย่อยของหน้ามี cache-control:no-store ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "หน้านี้อยู่ในแคชย้อนหลังเกินเวลาที่จำกัดและหมดอายุไปแล้ว"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "หมดเวลาเข้าถึงแคชย้อนหลังสำหรับหน้านี้ (น่าจะเป็นเพราะตัวจัดการสำหรับซ่อนหน้าทำงานเป็นเวลานาน)"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "หน้านี้มีตัวจัดการสำหรับยกเลิกการโหลดติดตั้งอยู่ในเฟรมหลัก"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "หน้านี้มีตัวจัดการสำหรับยกเลิกการโหลดในเฟรมย่อย"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "เบราว์เซอร์ได้เปลี่ยนส่วนหัวการลบล้างของ User Agent"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "หน้าที่ให้สิทธิ์เข้าถึงเพื่อบันทึกวิดีโอหรือเสียงยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "หน้าที่ใช้ WebDatabase ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "หน้าที่ใช้ WebHID ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "หน้าที่ใช้ WebLocks ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "หน้าที่ใช้ WebNfc ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "หน้าที่ใช้ WebOTPService ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "หน้าที่มี WebRTC ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "หน้าที่ใช้ WebShare ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "หน้าที่มี WebSocket ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "หน้าที่มี WebTransport ไม่สามารถเข้าถึงแคชย้อนหลัง"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "หน้าที่ใช้ WebXR ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "แคชย้อนหลัง"
   },
@@ -2316,25 +2655,34 @@
     "message": "สถานะแคชย้อนหลัง"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "ดำเนินการไม่ได้"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "การนำทางเฟรมหลักล่าสุด"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "เหตุผลเหล่านี้ไม่สามารถดำเนินการได้ กล่าวคือ มีบางอย่างที่อยู่นอกเหนือการควบคุมของหน้าป้องกันการแคชไว้"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "เฟรมหลัก"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "การนำทางทั่วไป (ไม่กู้คืนจากแคชย้อนหลัง)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "ดำเนินการได้"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "เหตุผลเหล่านี้สามารถดำเนินการได้ กล่าวคือ สามารถล้างเหตุผลเพื่อทำให้หน้ามีสิทธิ์สำหรับแคชย้อนหลัง"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "กู้คืนจากแคชย้อนหลัง"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "เรียกใช้การทดสอบ"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "รอการรองรับ"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "การสนับสนุนของ Chrome สำหรับเหตุผลเหล่านี้อยู่ระหว่างดำเนินการ กล่าวคือ เหตุผลดังกล่าวจะไม่ทำให้หน้านี้ไม่สามารถใช้ฟีเจอร์แคชย้อนหลังใน Chrome เวอร์ชันอนาคต"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ไม่มีข้อมูล"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} โทเค็น"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ชื่อสำหรับช่วงทดลอง"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ข้อจำกัดการใช้งาน"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (จากการแมปแหล่งที่มา)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "การเพิ่ม: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "การลบ: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … ข้าม {PH1} บรรทัดที่ตรงกัน … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ข้อมูลไบนารี"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "โปรแกรมดูความแตกต่างของการเปลี่ยนแปลง"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ไม่มีการเปลี่ยนแปลง"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ล้างภาพรวม"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "บันทึกภาพรวม"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "ภาพรวม CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom มีผลกับองค์ประกอบที่อยู่ในตำแหน่งคงที่"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "ใช้ Width กับองค์ประกอบในบรรทัดแล้ว"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ทีมของเราทำงานอย่างแข็งขันสำหรับฟีเจอร์นี้ และเราอยากฟัง{PH1}จากคุณ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "บันทึกภาพรวม"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "ดูภาพรวม CSS ของหน้า"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "ความคิดเห็น"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "ความคิดเห็น"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "ระบุการปรับปรุง CSS ที่สามารถทำได้"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "ระบุการปรับปรุง CSS ที่สามารถทำได้ (เช่น ปัญหาคอนทราสต์ต่ำ การประกาศที่ไม่ได้ใช้ สีหรือแบบอักษรไม่ตรงกัน)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "หาองค์ประกอบที่ได้รับผลกระทบว่าอยู่ตรงไหนในแผงองค์ประกอบ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "ฟีเจอร์พรีวิว"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "คู่มือเริ่มต้นฉบับย่อ: เริ่มต้นใช้งานแผงภาพรวม CSS ใหม่"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "วิดีโอและเอกสารประกอบ"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "ภาพรวม CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "คัดลอก selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "ชื่อพร็อพเพอร์ตี้ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "ค่าพร็อพเพอร์ตี้ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "ตัวเลือก CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "กรอง"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ข้อความ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "เลือกสีการวางซ้อนสำหรับองค์ประกอบนี้"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "เปิดตัวเลือกสีแล้ว"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "คำเตือน"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "เฟรม"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{ทรัพยากร # รายการ}other{ทรัพยากร # รายการ}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "เลิกซ่อนทั้งหมด"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "ซ่อน{PH1}ปัจจุบันทั้งหมด"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ทรัพยากรที่ได้รับผลกระทบ"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "ถูกบล็อก"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "ซ่อนปัญหาที่คล้ายกัน"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ดูข้อมูลเพิ่มเติมที่ {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "สถานะการจำกัด"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "เลิกซ่อนปัญหาที่คล้ายกัน"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "เตือนแล้ว"
@@ -5028,19 +5415,19 @@
     "message": "นโยบายเครื่องมือฝังแบบข้ามต้นทาง"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "ทั่วไป"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "จัดกลุ่มตามหมวดหมู่"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "จัดกลุ่มตามประเภท"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "จัดกลุ่มปัญหาที่แสดงไว้ในหมวดหมู่ที่เกี่ยวข้อง"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "จัดกลุ่มปัญหาที่แสดงเป็น \"ข้อผิดพลาดของหน้าเว็บ\" \"การเปลี่ยนแปลงที่ส่งผลกับส่วนอื่นในระบบ\" และ \"การปรับปรุง\""
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "โฆษณาที่ใช้ทรัพยากรมาก"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL โมดูล Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "เลิกซ่อนปัญหาที่คล้ายกัน"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "ซ่อนปัญหาที่คล้ายกัน"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "เมนูซ่อนปัญหา"
+    "message": "ซ่อนปัญหา"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "การละเมิด CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "Signed Exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "ความล่าช้า (เวลาที่ได้รับการตอบสนอง - เวลาเริ่มต้น)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(ไม่รู้จัก)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "คำเตือน:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "หากต้องการเปิดการตั้งค่านี้ คุณต้องเปิดการตั้งค่าการซิงค์ใน Chrome ก่อน"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ไปที่การตั้งค่า"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "ลงชื่อเข้าใช้ Chrome ด้วย:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "หากต้องการเปิดการตั้งค่านี้ คุณต้องเปิดใช้การซิงค์ของ Chrome"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "เพิ่มอุปกรณ์ที่กำหนดเอง…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "เพิ่มสคริปต์ลงในรายการละเว้น"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "เฟรม Call บางเฟรมมีคำเตือน"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "สแต็กการเรียกใช้"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "จัดเรียงตาม"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … ข้าม {PH1} บรรทัดที่ตรงกัน … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "การเพิ่ม:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "โปรแกรมดูความแตกต่างของการเปลี่ยนแปลง"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "การลบ:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{การเปลี่ยนแปลงที่ส่งผลกับส่วนอื่นในระบบ # รายการ}other{การเปลี่ยนแปลงที่ส่งผลกับส่วนอื่นในระบบ # รายการ}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "แท็บเพิ่มเติม"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "ฟีเจอร์พรีวิว"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "ยกเลิกการเชื่อมต่อเครื่องมือสำหรับนักพัฒนาเว็บจากหน้าเว็บแล้ว"

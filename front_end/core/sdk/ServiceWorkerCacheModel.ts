@@ -25,13 +25,17 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerCacheModel.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
-  readonly #cachesInternal: Map<string, Cache>;
   readonly cacheAgent: ProtocolProxyApi.CacheStorageApi;
   readonly #storageAgent: ProtocolProxyApi.StorageApi;
   readonly #securityOriginManager: SecurityOriginManager;
-  readonly #originsUpdated: Set<string>;
-  readonly #throttler: Common.Throttler.Throttler;
-  #enabled: boolean;
+
+  readonly #cachesInternal = new Map<string, Cache>();
+  readonly #originsUpdated = new Set<string>();
+  readonly #throttler = new Common.Throttler.Throttler(2000);
+  #enabled = false;
+
+  // Used by tests to remove the Throttler timeout.
+  #scheduleAsSoonAsPossible = false;
 
   /**
    * Invariant: This #model can only be constructed on a ServiceWorker target.
@@ -40,16 +44,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     super(target);
     target.registerStorageDispatcher(this);
 
-    this.#cachesInternal = new Map();
-
     this.cacheAgent = target.cacheStorageAgent();
     this.#storageAgent = target.storageAgent();
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
-
-    this.#originsUpdated = new Set();
-    this.#throttler = new Common.Throttler.Throttler(2000);
-
-    this.#enabled = false;
   }
 
   enable(): void {
@@ -240,7 +237,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
       const promises = Array.from(this.#originsUpdated, origin => this.loadCacheNames(origin));
       this.#originsUpdated.clear();
       return Promise.all(promises);
-    });
+    }, this.#scheduleAsSoonAsPossible);
   }
 
   cacheStorageContentUpdated({origin, cacheName}: Protocol.Storage.CacheStorageContentUpdatedEvent): void {
@@ -251,6 +248,10 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   indexedDBContentUpdated(_event: Protocol.Storage.IndexedDBContentUpdatedEvent): void {
+  }
+
+  setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
+    this.#scheduleAsSoonAsPossible = true;
   }
 }
 

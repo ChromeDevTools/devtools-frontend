@@ -248,21 +248,5 @@ ruleTester.run('es_modules_import', rule, {
             'Incorrect cross-namespace import: "../third_party/marked/package/lib/marked.esm.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.'
       }],
     },
-    {
-      code: 'import * as Marked from \'../../front_end/third_party/marked/package/lib/marked.esm.js\';',
-      filename: 'front_end/marked/marked.js',
-      errors: [{
-        message:
-            'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.'
-      }],
-    },
-    {
-      code: 'import * as SDK from \'../../front_end/sdk/sdk.js\';',
-      filename: 'front_end/marked/marked.js',
-      errors: [{
-        message:
-            'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.'
-      }],
-    }
   ]
 });

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable rulesdir/es_modules_import */
+
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged, assertPageScreenshotUnchanged} from '../../shared/screenshot.js';

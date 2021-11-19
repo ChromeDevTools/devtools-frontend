@@ -11,7 +11,6 @@
 const path = require('path');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
-const UNITTESTS_DIRECTORY = path.join(__dirname, '..', '..', '..', 'test', 'unittests');
 const INSPECTOR_OVERLAY_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end', 'inspector_overlay');
 const COMPONENT_DOCS_DIRECTORY = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'docs');
 
@@ -164,12 +163,6 @@ module.exports = {
           });
         }
 
-        const importingFileIsUnitTestFile = importingFileName.startsWith(UNITTESTS_DIRECTORY);
-        const importingFileIsComponentDocsFile = importingFileName.startsWith(COMPONENT_DOCS_DIRECTORY);
-        if (!importingFileName.startsWith(FRONT_END_DIRECTORY) && !importingFileIsUnitTestFile) {
-          return;
-        }
-
         if (importingFileName.startsWith(INSPECTOR_OVERLAY_DIRECTORY)) {
           return;
         }
@@ -179,15 +172,6 @@ module.exports = {
         }
 
         const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
-
-        if (importPath.replace(/\\/g, '/').includes('/front_end/') && !importingFileIsUnitTestFile &&
-            !importingFileIsComponentDocsFile) {
-          context.report({
-            node,
-            message:
-                'Invalid relative import: an import should not include the "front_end" directory. If you are in a unit test, you should import from the module entrypoint.',
-          });
-        }
 
         if (importPathForErrorMessage.endsWith('platform/platform.js') &&
             nodeSpecifiersSpecialImportsOnly(node.specifiers)) {

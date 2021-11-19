@@ -2182,6 +2182,8 @@ declare namespace ProtocolProxyApi {
     reportingApiReportAdded(params: Protocol.Network.ReportingApiReportAddedEvent): void;
 
     reportingApiReportUpdated(params: Protocol.Network.ReportingApiReportUpdatedEvent): void;
+
+    reportingApiEndpointsChangedForOrigin(params: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void;
   }
 
   export interface OverlayApi {

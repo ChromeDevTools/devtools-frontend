@@ -7513,6 +7513,15 @@ declare namespace Protocol {
        * This is a temporary ability and it will be removed in the future.
        */
       sourcePort: integer;
+      /**
+       * Cookie partition key. The site of the top-level URL the browser was visiting at the start
+       * of the request to the endpoint that set the cookie.
+       */
+      partitionKey?: string;
+      /**
+       * True if cookie partition key is opaque.
+       */
+      partitionKeyOpaque?: boolean;
     }
 
     /**
@@ -7653,6 +7662,12 @@ declare namespace Protocol {
        * This is a temporary ability and it will be removed in the future.
        */
       sourcePort?: integer;
+      /**
+       * Cookie partition key. The site of the top-level URL the browser was visiting at the start
+       * of the request to the endpoint that set the cookie.
+       * If not set, the cookie will be set as not partitioned.
+       */
+      partitionKey?: string;
     }
 
     export const enum AuthChallengeSource {
@@ -7974,6 +7989,17 @@ declare namespace Protocol {
       completedAttempts: integer;
       body: any;
       status: ReportStatus;
+    }
+
+    export interface ReportingApiEndpoint {
+      /**
+       * The URL of the endpoint to which reports may be delivered.
+       */
+      url: string;
+      /**
+       * Name of the endpoint group.
+       */
+      groupName: string;
     }
 
     /**
@@ -8332,6 +8358,12 @@ declare namespace Protocol {
        * This is a temporary ability and it will be removed in the future.
        */
       sourcePort?: integer;
+      /**
+       * Cookie partition key. The site of the top-level URL the browser was visiting at the start
+       * of the request to the endpoint that set the cookie.
+       * If not set, the cookie will be set as not partitioned.
+       */
+      partitionKey?: string;
     }
 
     export interface SetCookieResponse extends ProtocolResponseWithError {
@@ -9097,6 +9129,14 @@ declare namespace Protocol {
 
     export interface ReportingApiReportUpdatedEvent {
       report: ReportingApiReport;
+    }
+
+    export interface ReportingApiEndpointsChangedForOriginEvent {
+      /**
+       * Origin of the document(s) which configured the endpoints.
+       */
+      origin: string;
+      endpoints: ReportingApiEndpoint[];
     }
   }
 

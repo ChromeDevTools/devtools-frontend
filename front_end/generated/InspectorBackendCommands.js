@@ -1700,6 +1700,7 @@ export function registerCommands(inspectorBackend) {
       ['innerRequestId', 'innerRequestURL', 'errorMessage', 'bundleRequestId']);
   inspectorBackend.registerEvent('Network.reportingApiReportAdded', ['report']);
   inspectorBackend.registerEvent('Network.reportingApiReportUpdated', ['report']);
+  inspectorBackend.registerEvent('Network.reportingApiEndpointsChangedForOrigin', ['origin', 'endpoints']);
   inspectorBackend.registerCommand(
       'Network.setAcceptedEncodings', [{'name': 'encodings', 'type': 'object', 'optional': false}], []);
   inspectorBackend.registerCommand('Network.clearAcceptedEncodingsOverride', [], []);
@@ -1791,7 +1792,8 @@ export function registerCommands(inspectorBackend) {
         {'name': 'priority', 'type': 'string', 'optional': true},
         {'name': 'sameParty', 'type': 'boolean', 'optional': true},
         {'name': 'sourceScheme', 'type': 'string', 'optional': true},
-        {'name': 'sourcePort', 'type': 'number', 'optional': true}
+        {'name': 'sourcePort', 'type': 'number', 'optional': true},
+        {'name': 'partitionKey', 'type': 'string', 'optional': true}
       ],
       ['success']);
   inspectorBackend.registerCommand(

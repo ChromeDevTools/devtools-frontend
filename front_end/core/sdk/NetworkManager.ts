@@ -1044,6 +1044,9 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#manager.dispatchEventToListeners(Events.ReportingApiReportUpdated, data.report);
   }
 
+  reportingApiEndpointsChangedForOrigin(_data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void {
+  }
+
   /**
    * @deprecated
    * This method is only kept for usage in a web test.

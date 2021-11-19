@@ -1,0 +1,13 @@
+200
+Date: Tue, 16 Nov 2021 08:04:35 GMT
+Server: Apache/2.2.8 (Ubuntu) mod_ssl/2.2.8 OpenSSL/0.9.8g
+Last-Modified: Tue, 16 Nov 2021 08:04:35 GMT
+ETag: "reporting-api-rawresponse"
+Accept-Ranges: bytes
+Content-Length: 83
+Connection: close
+Cache-Control: max-age=315360000
+Content-Type: text/html; charset=utf-8
+Reporting-Endpoints: main-endpoint="https://reports.example/main", default="https://reports.example/default"
+
+<!DOCTYPE html><html><body><script>window.webkitStorageInfo;</script></body></html>

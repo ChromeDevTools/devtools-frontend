@@ -19,6 +19,7 @@ copy_to_gen("application") {
     "manifest-id.json",
     "manifest-no-id.json",
     "reporting-api.html",
+    "reporting-api.rawresponse",
     "service-worker-network.html",
     "service-worker.js",
     "session-storage.html",

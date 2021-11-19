@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, enableExperiment, getBrowserAndPages, getTestServerPort, waitFor} from '../../shared/helper.js';
+import {$, click, enableExperiment, getBrowserAndPages, getTestServerPort, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
@@ -40,5 +40,24 @@ describe('The Reporting API Page', async () => {
     const jsonView = await waitFor('.json-view');
     const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);
     assert.strictEqual(jsonViewText, '{columnNumber: 10, id: "PrefixedStorageInfo", lineNumber: 9,…}');
+  });
+
+  it('shows endpoints', async () => {
+    await goToResource('application/reporting-api.rawresponse');
+    await click('#tab-resources');
+    await waitFor('.storage-group-list-item');  // Make sure the application navigation list is shown
+    await click(REPORTING_API_SELECTOR);
+    const endpointsGrid = await $('devtools-resources-endpoints-grid');
+    if (!endpointsGrid) {
+      assert.fail('Could not find data-grid');
+    }
+    const dataGrid = await getDataGrid(endpointsGrid);
+    const innerText = await getInnerTextOfDataGridCells(dataGrid, 2, true);
+    assert.strictEqual(innerText[0][0], `https://localhost:${getTestServerPort()}`);
+    assert.strictEqual(innerText[0][1], 'default');
+    assert.strictEqual(innerText[0][2], 'https://reports.example/default');
+    assert.strictEqual(innerText[1][0], `https://localhost:${getTestServerPort()}`);
+    assert.strictEqual(innerText[1][1], 'main-endpoint');
+    assert.strictEqual(innerText[1][2], 'https://reports.example/main');
   });
 });

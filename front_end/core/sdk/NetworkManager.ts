@@ -305,6 +305,7 @@ export enum Events {
   LoadingFinished = 'LoadingFinished',
   ReportingApiReportAdded = 'ReportingApiReportAdded',
   ReportingApiReportUpdated = 'ReportingApiReportUpdated',
+  ReportingApiEndpointsChangedForOrigin = 'ReportingApiEndpointsChangedForOrigin',
 }
 
 export interface RequestStartedEvent {
@@ -334,6 +335,7 @@ export type EventTypes = {
   [Events.LoadingFinished]: NetworkRequest,
   [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport,
   [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport,
+  [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent,
 };
 
 export const NoThrottlingConditions: Conditions = {
@@ -1044,7 +1046,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.#manager.dispatchEventToListeners(Events.ReportingApiReportUpdated, data.report);
   }
 
-  reportingApiEndpointsChangedForOrigin(_data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void {
+  reportingApiEndpointsChangedForOrigin(data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void {
+    this.#manager.dispatchEventToListeners(Events.ReportingApiEndpointsChangedForOrigin, data);
   }
 
   /**

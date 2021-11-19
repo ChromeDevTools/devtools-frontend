@@ -159,6 +159,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.textEditorInternal = new TextEditor.TextEditor.TextEditor(this.placeholderEditorState(''));
     this.textEditorInternal.style.flexGrow = '1';
     this.element.appendChild(this.textEditorInternal);
+    this.element.addEventListener('keydown', (event: KeyboardEvent): void => {
+      if (event.defaultPrevented) {
+        event.stopPropagation();
+      }
+    });
 
     this.baseDoc = this.textEditorInternal.state.doc;
 
@@ -716,7 +721,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (wasLoaded) {
       textEditor.editor.scrollDOM.scrollTop = scrollTop;
     }
-    this.editorInitialized();
     this.wasShownOrLoaded();
 
     if (this.delayedFindSearchMatches) {
@@ -724,9 +728,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.delayedFindSearchMatches = null;
     }
     this.muteChangeEventsForSetContent = false;
-  }
-
-  protected editorInitialized(): void {
   }
 
   setSearchableView(view: UI.SearchableView.SearchableView|null): void {

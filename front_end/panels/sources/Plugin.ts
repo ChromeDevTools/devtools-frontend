@@ -18,9 +18,6 @@ export class Plugin {
     return false;
   }
 
-  wasShown(): void {
-  }
-
   willHide(): void {
   }
 

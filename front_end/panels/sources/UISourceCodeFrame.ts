@@ -70,13 +70,11 @@ export class UISourceCodeFrame extends
         SourceFrame.SourceFrame.SourceFrameImpl) {
   private uiSourceCodeInternal: Workspace.UISourceCode.UISourceCode;
   private muteSourceCodeEvents: boolean;
-  private isSettingContent: boolean;
   private persistenceBinding: Persistence.Persistence.PersistenceBinding|null;
   private uiSourceCodeEventListeners: Common.EventTarget.EventDescriptor[];
   private messageAndDecorationListeners: Common.EventTarget.EventDescriptor[];
   private readonly boundOnBindingChanged: () => void;
   private plugins: Plugin[] = [];
-  private pluginsLoaded = false;
   private readonly errorPopoverHelper: UI.PopoverHelper.PopoverHelper;
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
@@ -84,7 +82,6 @@ export class UISourceCodeFrame extends
     this.uiSourceCodeInternal = uiSourceCode;
 
     this.muteSourceCodeEvents = false;
-    this.isSettingContent = false;
 
     this.persistenceBinding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
 
@@ -162,27 +159,24 @@ export class UISourceCodeFrame extends
   }
 
   setUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    this.unloadUISourceCode();
-    this.uiSourceCodeInternal = uiSourceCode;
-    if (uiSourceCode.contentLoaded()) {
-      if (uiSourceCode.workingCopy() !== this.textEditor.state.doc.toString()) {
-        this.innerSetContent(uiSourceCode.workingCopy());
+    const loaded = uiSourceCode.contentLoaded() ? Promise.resolve() : uiSourceCode.requestContent();
+    const startUISourceCode = this.uiSourceCodeInternal;
+    loaded.then(() => {
+      if (this.uiSourceCodeInternal !== startUISourceCode) {
+        return;
       }
-    } else {
-      uiSourceCode.requestContent().then(() => {
-        if (this.uiSourceCodeInternal !== uiSourceCode) {
-          return;
-        }
-        if (uiSourceCode.workingCopy() !== this.textEditor.state.doc.toString()) {
-          this.innerSetContent(uiSourceCode.workingCopy());
-        }
-      });
-    }
-    this.initializeUISourceCode();
+      this.unloadUISourceCode();
+      this.uiSourceCodeInternal = uiSourceCode;
+      if (uiSourceCode.workingCopy() !== this.textEditor.state.doc.toString()) {
+        this.setContent(uiSourceCode.workingCopy());
+      } else {
+        this.reloadPlugins();
+      }
+      this.initializeUISourceCode();
+    }, console.error);
   }
 
   private unloadUISourceCode(): void {
-    this.disposePlugins();
     Common.EventTarget.removeEventListeners(this.messageAndDecorationListeners);
     Common.EventTarget.removeEventListeners(this.uiSourceCodeEventListeners);
     this.uiSourceCodeInternal.removeWorkingCopyGetter();
@@ -212,9 +206,6 @@ export class UISourceCodeFrame extends
   wasShown(): void {
     super.wasShown();
     this.setEditable(this.canEditSourceInternal());
-    for (const plugin of this.plugins) {
-      plugin.wasShown();
-    }
   }
 
   willHide(): void {
@@ -277,16 +268,12 @@ export class UISourceCodeFrame extends
 
   async setContent(content: string): Promise<void> {
     this.disposePlugins();
-    this.ensurePluginsLoaded();
+    this.loadPlugins();
     await super.setContent(content);
-    Common.EventTarget.fireEvent('source-file-loaded', this.uiSourceCodeInternal.displayName(true));
-  }
-
-  protected editorInitialized(): void {
-    super.editorInitialized();
     for (const plugin of this.plugins) {
       plugin.editorInitialized(this.textEditor);
     }
+    Common.EventTarget.fireEvent('source-file-loaded', this.uiSourceCodeInternal.displayName(true));
   }
 
   private allMessages(): Set<Workspace.UISourceCode.Message> {
@@ -302,9 +289,6 @@ export class UISourceCodeFrame extends
     const wasPretty = this.pretty;
     super.onTextChanged();
     this.errorPopoverHelper.hidePopover();
-    if (this.isSettingContent) {
-      return;
-    }
     SourcesPanel.instance().updateLastModificationTime();
     this.muteSourceCodeEvents = true;
     if (this.isClean()) {
@@ -323,12 +307,12 @@ export class UISourceCodeFrame extends
     if (this.muteSourceCodeEvents) {
       return;
     }
-    this.innerSetContent(this.uiSourceCodeInternal.workingCopy());
+    this.maybeSetContent(this.uiSourceCodeInternal.workingCopy());
   }
 
   private onWorkingCopyCommitted(): void {
     if (!this.muteSourceCodeEvents) {
-      this.innerSetContent(this.uiSourceCode().workingCopy());
+      this.maybeSetContent(this.uiSourceCode().workingCopy());
     }
     this.contentCommitted();
     this.updateStyle();
@@ -336,7 +320,7 @@ export class UISourceCodeFrame extends
 
   private reloadPlugins(): void {
     this.disposePlugins();
-    this.ensurePluginsLoaded();
+    this.loadPlugins();
     const editor = this.textEditor;
     editor.dispatch({effects: pluginCompartment.reconfigure(this.plugins.map(plugin => plugin.editorExtension()))});
     for (const plugin of this.plugins) {
@@ -348,12 +332,7 @@ export class UISourceCodeFrame extends
     this.updateLanguageMode('').then(() => this.reloadPlugins(), console.error);
   }
 
-  private ensurePluginsLoaded(): void {
-    if (this.pluginsLoaded) {
-      return;
-    }
-    this.pluginsLoaded = true;
-
+  private loadPlugins(): void {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
     const pluginUISourceCode = binding ? binding.network : this.uiSourceCodeInternal;
 
@@ -364,9 +343,6 @@ export class UISourceCodeFrame extends
     }
 
     this.dispatchEventToListeners(Events.ToolbarItemsChanged);
-    for (const plugin of this.plugins) {
-      plugin.wasShown();
-    }
   }
 
   private disposePlugins(): void {
@@ -374,7 +350,6 @@ export class UISourceCodeFrame extends
       plugin.dispose();
     }
     this.plugins = [];
-    this.pluginsLoaded = false;
   }
 
   private onBindingChanged(): void {
@@ -385,19 +360,17 @@ export class UISourceCodeFrame extends
     this.unloadUISourceCode();
     this.persistenceBinding = binding;
     this.initializeUISourceCode();
+    this.reloadPlugins();
   }
 
   private updateStyle(): void {
     this.setEditable(this.canEditSourceInternal());
   }
 
-  private innerSetContent(content: string): void {
-    this.isSettingContent = true;
-    const oldContent = this.textEditor.state.doc.toString();
-    if (oldContent !== content) {
+  private maybeSetContent(content: string): void {
+    if (this.textEditor.state.doc.toString() !== content) {
       this.setContent(content);
     }
-    this.isSettingContent = false;
   }
 
   protected populateTextAreaContextMenu(
@@ -422,6 +395,7 @@ export class UISourceCodeFrame extends
 
   dispose(): void {
     this.errorPopoverHelper.dispose();
+    this.disposePlugins();
     this.unloadUISourceCode();
     this.textEditor.editor.destroy();
     this.detach();

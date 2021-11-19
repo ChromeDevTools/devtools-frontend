@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site i Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Redukcja ciągu tekstowego klienta użytkownika"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portale – kanały komunikacji z tego samego źródła"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Obsługa interwencji związanych z reklamami wykorzystującymi dużo zasobów"
@@ -1344,25 +1341,28 @@
     "message": "Problem dotyczący zmiany powodującej niezgodność: strona może przestać działać w nowszych wersjach Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Zmiany powodujące niezgodność"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Możliwość ulepszenia: stronę można ulepszyć"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Ulepszenia"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Błąd strony: strona nie działa prawidłowo"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Błędy strony"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Ułatwienia dostępu – kolor i kontrast"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Zapobieganie treści mieszanej"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Redukcja ciągu tekstowego klienta użytkownika"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Tryb zgodności dokumentu"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Źródło: caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Źródło: description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Źródło: label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Wartość z atrybutu."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Wartość z elementu description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Wartość z zawartości elementu."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "moduł roboczy"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Tylko strony wczytane za pomocą żądania GET kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "W pamięci mogą być przechowywane tylko strony z kodem stanu 2XX."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Przeglądarka Chrome wykryła próbę wykonania JavaScriptu podczas przechowywania strony w pamięci podręcznej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Strony, które poprosiły o AppBanner, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona przez flagi. Wejdź na chrome://flags/#back-forward-cache, aby włączyć ją lokalnie na tym urządzeniu."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona przez wiersz poleceń."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona z powodu niewystarczającej ilości pamięci."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Pamięć podręczna stanu strony internetowej nie jest obsługiwana w ramach przekazywania."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona w przypadku wstępnego renderowania."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Strona nie może być przechowywana w pamięci podręcznej, bo zawiera wystąpienie BroadcastChannel z zarejestrowanymi detektorami."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Strony z nagłówkiem cache-control:no-store nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Pamięć podręczna została celowo wyczyszczona."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Strona została usunięta z pamięci podręcznej, aby umożliwić przechowywanie w niej innej strony."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Strony, które zawierają wtyczki, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Strony, które używają interfejsu FileChooser API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Strony, które używają interfejsu File System Access API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Strony, które używają dyspozytora nośnika danych, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Odtwarzacz był włączony, gdy użytkownik zamknął stronę."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Strony, które używają interfejsu MediaSession API i określają stan odtwarzania, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Strony, które używają interfejsu MediaSession API i określają elementy działania, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Strony, które używają SecurityHandler, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Strony, które używają interfejsu Serial API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Strony, które używają interfejsu WebAuthetication API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Strony, które używają interfejsu WebBluetooth API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Strony, które używają interfejsu WebUSB API, nie kwalifikują się do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Strony, które używają dedykowanej instancji roboczej lub workletu, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokument nie został w pełni wczytany, zanim użytkownik go zamknął."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Skrypt service worker został aktywowany, gdy strona znajdowała się w pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Strona została usunięta z pamięci podręcznej, aby umożliwić przechowywanie w niej innej strony."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Strony, które mają przyznany dostęp do strumienia multimediów, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Strony, które używają portali, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Strony, które używają IdleManagera, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Strony, które mają otwarte połączenie IndexedDB, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Użyto nieodpowiednich interfejsów API."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Strony z JavaScriptem wstrzykiwanym przez rozszerzenia nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Strony z interfejsem StyleSheet wstrzykiwanym przez rozszerzenia nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Błąd wewnętrzny."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Strony, które używają blokady klawiatury, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Strona nie została w pełni wczytana, zanim użytkownik ją opuścił."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Strony, których zasoby główne mają nagłówek cache-control:no-cache, nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Strony, których zasoby główne mają nagłówek cache-control:no-store, nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Nawigacja została anulowana przed przywróceniem strony z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Strona została usunięta z pamięci podręcznej, ponieważ aktywne połączenie sieciowe otrzymało za dużo danych. Chrome ogranicza ilość danych, które strona może otrzymać, gdy jest przechowywana w pamięci podręcznej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Strony, które mają przesyłane żądanie fetch() lub XHR, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Strona została usunięta z pamięci podręcznej stanu strony internetowej, ponieważ aktywne żądanie sieciowe wiązało się z przekierowaniem."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Strona została usunięta z pamięci podręcznej, ponieważ połączenie sieciowe było zbyt długo otwarte. Chrome ogranicza ilość czasu, przez który strona może otrzymywać dane podczas przechowywania w pamięci podręcznej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Strony, które nie mają prawidłowego nagłówka odpowiedzi, nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Nawigacja odbywała się w ramce innej niż ramka główna."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Strona ma wyrażenie unload bez nagłówka akceptacji pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Strony z trwającymi transakcjami indeksowanej bazy danych nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Strony z przesyłanym żądaniem sieciowym nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Strony z przesyłanym żądaniem sieciowym fetch() nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Strony z przesyłanym żądaniem sieciowym nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Strony z przesyłanym żądaniem sieciowym XHR nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Strony, które używają PaymentManagera, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Strony, które używają obrazu w obrazie, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Strony, które używają portali, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Strony, które wyświetlają interfejs drukowania, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Strona została otwarta za pomocą window.open() i inna karta się do niej odnosi lub strona otworzyła okno."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "W trakcie renderowania strony w pamięci podręcznej stanu strony internetowej wystąpił błąd."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Proces renderowania strony w pamięci podręcznej stanu strony internetowej został przerwany."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień do nagrywania dźwięku, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień dotyczących czujników, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień do pobierania lub synchronizacji w tle, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień dotyczących MIDI, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień do powiadomień, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Strony, które poprosiły o przyznanie dostępu do pamięci, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Strony, które poprosiły o przyznanie uprawnień do nagrywania filmów, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "W pamięci mogą być przechowywane tylko strony, których schemat URL to HTTP/HTTPS."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Strona została wywołana przez skrypt service worker podczas korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Skrypt service worker próbował wysłać właściwość MessageEvent stronie w pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Skrypt service worker był niezarejestrowany, gdy strona znajdowała się w pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Strona została usunięta z pamięci podręcznej stanu strony internetowej z powodu aktywacji skryptu service worker."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Przeglądarka Chrome uruchomiła się ponownie i wyczyściła wpisy w pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Strony, które używają SharedWorker, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Strony, które używają SpeechRecognizer, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Strony, które używają SpeechSynthesis, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Element iframe na stronie rozpoczął nawigację, która się nie zakończyła."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Strony, których zasoby podrzędne mają nagłówek cache-control:no-cache, nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Strony, których zasoby podrzędne mają nagłówek cache-control:no-store, nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Strona przekroczyła limit czasu w pamięci podręcznej stanu strony internetowej i wygasła."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Strona przekroczyła limit czasu w trakcie zapisywania w pamięci podręcznej stanu strony internetowej (prawdopodobnie z powodu długotrwałych wyrażeń pagehide)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Strona ma wyrażenie unload w ramce głównej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Strona ma wyrażenie unload w ramce podrzędnej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Przeglądarka zmieniła nagłówek zastępowania klienta użytkownika."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Strony, które mają przyznany dostęp do nagrywania filmu lub dźwięku, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Strony, które używają WebDatabase, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Strony, które używają WebHID, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Strony, które używają WebLocks, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Strony, które używają WebNfc, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Strony, które używają WebOTPService, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Strony z WebRTC nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Strony, które używają WebShare, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Strony z WebSocket nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Strony z WebTransport nie mogą korzystać z pamięci podręcznej stanu strony internetowej."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Strony, które używają WebXR, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Pamięć podręczna stanu strony internetowej (bfcache)"
   },
@@ -2316,25 +2655,34 @@
     "message": "Stan pamięci podręcznej stanu strony internetowej (bfcache)"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Nie umożliwiające wykonania czynności"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Ostatnia nawigacja w ramce głównej"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Te przyczyny nie dają podstaw do działania, to znaczy, że zapisywanie w pamięci podręcznej zostało uniemożliwione przez czynniki poza bezpośrednią kontrolą strony."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Ramka główna"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Zwykła nawigacja (bez przywracania z pamięci podręcznej stanu strony internetowej)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Wymagające wykonania czynności"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Te przyczyny dają podstawy do działania, to znaczy, że można je wyeliminować, aby strona kwalifikowała się do korzystania z pamięci podręcznej stanu strony internetowej."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Przywrócono z pamięci podręcznej stanu strony internetowej"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Uruchom test"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Oczekuje na pomoc"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Pomoc dotycząca Chrome w przypadku tych przyczyn jest jeszcze niedostępna, co oznacza, że strona nadal będzie kwalifikować się do korzystania z pamięci podręcznej stanu strony internetowej w przyszłej wersji Chrome."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "niedostępna"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "Tokeny: {PH1}"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Nazwa wersji próbnej"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Ograniczenie wykorzystania"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (z mapy źródeł)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Dodatek: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Usunięcie: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "(…pomijanie {PH1} pasujących wierszy…)"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Dane binarne"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Przeglądarka zmian"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Bez zmian"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Wyczyść przegląd"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Przegląd przechwytywania"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Przegląd CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Do elementu umieszczonego statystycznie zastosowano wartość Bottom"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Wartość Width została zastosowana do wbudowanego elementu"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Nasz zespół pracuje nad tą funkcją. Czekamy na Wasze {PH1}."
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Przegląd przechwytywania"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Poznaj przegląd CSS strony"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "opinie"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Opinie"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Określ, co można potencjalnie ulepszyć w przypadku CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Określ, co można potencjalnie ulepszyć w przypadku CSS (dotyczy to na przykład problemów związanych z niskim kontrastem, nieużywanych deklaracji, niedopasowanych kolorów lub czcionek)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Znajdź odpowiednie elementy w panelu Elementy"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Funkcja podglądu"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Krótki przewodnik: pierwsze kroki z nowym panelem Przegląd CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Film i dokumentacja"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Przegląd CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopiuj: selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Nazwa właściwości CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Wartość właściwości CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Selektor CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtr"
   },
@@ -4353,7 +4728,10 @@
     "message": "(tekst)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Wybierz kolor nakładany na ten element"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Otwarto selektor kolorów."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "ostrzeżenie"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Ramka"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# zasób}few{# zasoby}many{# zasobów}other{# zasobu}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Odkryj wszystkie"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Ukryj wszystkie bieżące {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Zasoby objęte wpływem"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "zablokowano"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Ukryj problemy tego typu"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Więcej informacji: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Stan ograniczenia"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Odkryj problemy tego typu"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Z ostrzeżeniem"
@@ -5028,19 +5415,19 @@
     "message": "Zasady umieszczania zasobów z innych domen"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Ogólny"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Grupuj według kategorii"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Grupuj według rodzaju"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Grupuj wyświetlane problemy w odpowiednie kategorie"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Grupuj wyświetlone problemy na Błędy strony, Zmiany powodujące niezgodność oraz Ulepszenia"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Reklamy zużywające dużo zasobów"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL modułu Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Odkryj problemy tego typu"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Ukryj problemy tego typu"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Ukryj menu problemów"
+    "message": "Ukryj problemy"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Naruszenia CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Czas oczekiwania (czas otrzymania odpowiedzi – czas rozpoczęcia)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(nieznany)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "OSTRZEŻENIE:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Aby włączyć to ustawienie, musisz najpierw umożliwić synchronizację ustawień w Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Otwórz Ustawienia"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Zalogowano w Chrome jako:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Aby włączyć to ustawienie, musisz włączyć Synchronizację Chrome."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Dodaj niestandardowe urządzenie…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Dodaj skrypt do listy ignorowanych"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Niektóre ramki wywołań funkcji mają ostrzeżenia"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Stos wywołań"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortuj według"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "(…pomijanie {PH1} pasujących wierszy…)"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Dodatek:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Przeglądarka zmian"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Usunięcie:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# zmiana powodująca niezgodność}few{# zmiany powodujące niezgodność}many{# zmian powodujących niezgodność}other{# zmiany powodującej niezgodność}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Więcej kart"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Funkcja podglądu"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Połączenie Narzędzi deweloperskich ze stroną zostało przerwane."

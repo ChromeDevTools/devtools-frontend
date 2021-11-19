@@ -675,7 +675,7 @@
     "message": "Logboek niet opslaan bij navigatie"
   },
   "core/sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
-    "message": "Benoemde rastergebieden niet tonen"
+    "message": "Benoemde rastergebieden niet bekijken"
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Rastergrootte niet tonen"
@@ -801,46 +801,46 @@
     "message": "Namen van gebieden tonen"
   },
   "core/sdk/sdk-meta.ts | showCoreWebVitalsOverlay": {
-    "message": "Site-vitaliteit-overlay tonen"
+    "message": "Site-vitaliteit-overlay bekijken"
   },
   "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
-    "message": "Meter voor frames per seconde (fps) tonen"
+    "message": "Meter voor frames per seconde (fps) bekijken"
   },
   "core/sdk/sdk-meta.ts | showGridNamedAreas": {
-    "message": "Benoemde rastergebieden tonen"
+    "message": "Benoemde rastergebieden bekijken"
   },
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
-    "message": "Rastergrootte tonen"
+    "message": "Rastergrootte bekijken"
   },
   "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Randen van hit-test tonen"
+    "message": "Randen van hit-test bekijken"
   },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Randen van laag tonen"
   },
   "core/sdk/sdk-meta.ts | showLayoutShiftRegions": {
-    "message": "Regio's met verschoven indeling tonen"
+    "message": "Regio's met verschoven indeling bekijken"
   },
   "core/sdk/sdk-meta.ts | showLineLabels": {
     "message": "Regellabels tonen"
   },
   "core/sdk/sdk-meta.ts | showLineNames": {
-    "message": "Regelnamen tonen"
+    "message": "Regelnamen bekijken"
   },
   "core/sdk/sdk-meta.ts | showLineNumbers": {
-    "message": "Regelnummers tonen"
+    "message": "Regelnummers bekijken"
   },
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
-    "message": "Knipperende rechthoeken voor weergave tonen"
+    "message": "Knipperende rechthoeken voor weergave bekijken"
   },
   "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Linialen tonen"
+    "message": "Linialen bekijken"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
-    "message": "Knelpunten voor scrollen tonen"
+    "message": "Knelpunten voor scrollen bekijken"
   },
   "core/sdk/sdk-meta.ts | showTrackSizes": {
-    "message": "Rastergrootte tonen"
+    "message": "Rastergrootte bekijken"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
     "message": "Tritanopie"
@@ -945,10 +945,10 @@
     "message": "Toont een overlay met Site-vitaliteit."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Randen om hit-test-gebieden tonen."
+    "message": "Randen om hit-test-gebieden bekijken."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
-    "message": "Randen van laag (oranje/olijfgroen) en tegels (cyaan) tonen."
+    "message": "Randen van laag (oranje/olijfgroen) en tegels (cyaan) bekijken."
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | autoOpenDevTools": {
     "message": "DevTools automatisch openen voor pop-ups"
@@ -993,7 +993,7 @@
     "message": "Renderen"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showAds": {
-    "message": "Advertenties tonen op deze site, indien toegestaan"
+    "message": "Advertenties bekijken op deze site, indien toegestaan"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | showRendering": {
     "message": "Renderen tonen"
@@ -1035,7 +1035,7 @@
     "message": "Plaatsing van DevTools ten opzichte van de pagina. ({PH1} herstelt de laatste positie)"
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
-    "message": "Lade van console tonen"
+    "message": "Lade van console bekijken"
   },
   "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
     "message": "Het voorkeurskleurenschema van het systeem is gewijzigd Laad DevTools opnieuw om deze wijziging toe te passen."
@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site en Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Tekenreeksvermindering voor user-agent"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portals - Communicatiekanalen met dezelfde oorsprong"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Interventie van zware advertenties verwerken"
@@ -1344,25 +1341,28 @@
     "message": "Een schadelijke wijziging: de pagina werkt misschien niet meer in toekomstige versies van Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Schadelijke wijzigingen"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Een verbeterpunt: deze pagina kan worden verbeterd"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Verbeteringen"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Fout op de pagina: de pagina werkt niet goed"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Paginafouten"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Toegankelijkheid van kleur en contrast"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Gemengde content vermijden"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Tekenreeksvermindering voor user-agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Compatibiliteitsmodus voor documenten"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Van caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Van description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Van label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Waarde uit kenmerk."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Waarde van description-element."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Waarde uit de content van een element."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Alleen pagina's die worden geladen via een GET-verzoek, komen in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Alleen pagina's met een statuscode 2XX kunnen in het cachegeheugen worden opgeslagen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome heeft een poging waargenomen om JavaScript uit te voeren in het cachegeheugen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Back-Forward Cache is uitgezet door de opdrachtregel."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Back-Forward Cache is uitgezet vanwege onvoldoende geheugen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Back-Forward Cache wordt niet ondersteund door de gemachtigde."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Back-Forward Cache is uitgezet voor prerenderer."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "De pagina kan niet worden opgeslagen in het cachegeheugen omdat deze een BroadcastChannel-instantie met geregistreerde listeners bevat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Pagina's met de header cache-control:no-store kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Het cachegeheugen is opzettelijk gewist."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Pagina's met plug-ins komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Pagina's die de FileChooser API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Pagina's die de File System Access API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Pagina's die Media Device Dispatcher gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Een mediaspeler speelde tijdens het sluiten."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Pagina's die de MediaSession API gebruiken en een afspeelstatus instellen, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Pagina's die de MediaSession API gebruiken en action-handlers instellen, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Pagina's die SecurityHandler gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Pagina's die de Serial API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Pagina's die de WebAuthetication API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Pagina's die de WebBluetooth API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Pagina's die de WebUSB API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Pagina's die een specifieke worker of worklet gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Het document was niet helemaal geladen voordat het werd gesloten."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Er is een service worker geactiveerd terwijl de pagina zich in Back-Forward Cache bevond."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen zodat een andere pagina kon worden opgeslagen in het cachegeheugen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Pagina's die toegang tot mediastreams hebben gegeven, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Pagina's die IdleManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Pagina's met een open IndexedDB-verbinding komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Er zijn niet in aanmerking komende API's gebruikt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Pagina's waarin JavaScript is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Pagina's waarin StyleSheet is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interne fout."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Pagina's die toetsenbordvergrendeling gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "De pagina was niet helemaal geladen voordat die werd gesloten."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Pagina's waarvan de hoofdbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Pagina's waarvan de hoofdbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigatie is geannuleerd voordat de pagina kon worden hersteld vanuit Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "De pagina is verwijderd uit het cachegeheugen omdat een actieve netwerkverbinding te veel gegevens heeft ontvangen. Chrome beperkt de hoeveelheid gegevens die een pagina kan ontvangen als deze in het cachegeheugen is opgeslagen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Pagina's met inflight fetch() of XHR komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "De pagina is verwijderd uit Back-Forward Cache omdat bij een actief netwerkverzoek een omleiding betrokken was."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "De pagina is verwijderd uit het cachegeheugen omdat een netwerkverbinding te lang open was. Chrome beperkt hoelang een pagina gegevens kan ontvangen als deze in het cachegeheugen is opgeslagen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Pagina's die geen geldige reactiekop hebben, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigatie vond plaats in een ander frame dan het hoofdframe."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "De pagina bevat een unload-handler zonder de Back-Forward Cache-aanmeldingsheader."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Pagina's met actieve geïndexeerde DB-transacties komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Pagina's met een netwerkverzoek voor ophalen in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Pagina's met een netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Pagina's met een XHR-netwerkverzoek in behandeling komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Pagina's die PaymentManager gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Pagina's die scherm-in-scherm gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Pagina's die UI voor afdrukken tonen, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "De pagina is geopend met window.open() en een ander tabblad bevat een verwijzing ernaar, of de pagina heeft een venster geopend."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is gecrasht."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Het proces van het weergaveprogramma voor de pagina in Back-Forward Cache is beëindigd."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Pagina's die rechten voor audio-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Pagina's die sensorrechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Pagina's die rechten voor synchronisatie of ophalen op de achtergrond hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Pagina's die MIDI-rechten hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Pagina's die rechten voor meldingen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Pagina's die opslagtoegang hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Pagina's die rechten voor video-opnamen hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Alleen pagina's met HTTP/HTTPS als URL-schema kunnen in het cachegeheugen worden opgeslagen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "De pagina is geclaimd door een service worker terwijl de pagina zich in Back-Forward Cache bevindt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Een service worker heeft geprobeerd de pagina in Back-Forward Cache een MessageEvent te sturen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "De registratie van ServiceWorker is ongedaan gemaakt terwijl een pagina zich in Back-Forward Cache bevond."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "De pagina is verwijderd uit Back-Forward Cache vanwege de activering van een service worker."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome is opnieuw opgestart en heeft de Back-Forward Cache-items gewist."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Pagina's die SharedWorker gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Pagina's die SpeechRecognizer gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Pagina's die SpeechSynthesis gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Een iframe op de pagina heeft navigatie gestart die niet is afgerond."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Pagina's waarvan de subbron cache-control:no-cache bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Pagina's waarvan de subbron cache-control:no-store bevat, kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "De pagina heeft de maximale tijd in Back-Forward Cache overschreden en is verlopen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Er is een time-out voor de pagina opgetreden tijdens het opslaan in Back-Forward Cache (waarschijnlijk vanwege langdurige pagehide-handlers)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "De pagina heeft een unload-handler in het hoofdframe."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "De pagina heeft een unload-handler in een subframe."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Browser heeft de override-header voor user-agents gewijzigd."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Pagina's die toegang hebben gegeven om video of audio op te nemen, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Pagina's die WebDatabase gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Pagina's die WebHID gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Pagina's die WebLocks gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Pagina's die WebNfc gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Pagina's die WebOTPService gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Pagina's met WebRTC kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Pagina's die WebShare gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Pagina's met WebSocket kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Pagina's met WebTransport kunnen niet worden opgeslagen in Back-Forward Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Pagina's die WebXR gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-Forward Cache"
   },
@@ -2316,25 +2655,34 @@
     "message": "Status van Back-Forward Cache"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Niet actiegericht"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Laatste mainframenavigatie"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Er kan geen actie worden ondernomen voor deze redenen, wat betekent dat opslaan in het cachegeheugen is voorkomen door iets buiten de directe controle van de pagina."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Mainframe"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Normale navigatie (niet hersteld vanuit Back-Forward Cache)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Actiegericht"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Er kan actie worden ondernomen voor deze redenen, wat betekent dat ze kunnen worden opgelost om de pagina in aanmerking te laten komen voor Back-Forward Cache."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Hersteld uit Back-Forward Cache"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Test uitvoeren"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Support in behandeling"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Chrome-support voor deze redenen is in behandeling, wat betekent dat ze niet voorkomen dat de pagina in een toekomstige versie van Chrome in aanmerking komt voor Back-Forward Cache."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "niet beschikbaar"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} tokens"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Naam proefversie"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Gebruiksbeperking"
   },
@@ -3084,10 +3435,10 @@
     "message": "Toegestane functies"
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowHeader": {
-    "message": "Klik om het verzoek te tonen waarvan de HTTP-header Permissions-Policy deze functie heeft uitgezet."
+    "message": "Klik om het verzoek te bekijken waarvan de HTTP-header Permissions-Policy deze functie heeft uitgezet."
   },
   "panels/application/components/PermissionsPolicySection.ts | clickToShowIframe": {
-    "message": "Klik om het bovenste iframe te tonen waarvoor deze functie niet in het deelvenster Elementen is toegestaan."
+    "message": "Klik om het bovenste iframe te bekijken waarvoor deze functie niet in het deelvenster Elementen is toegestaan."
   },
   "panels/application/components/PermissionsPolicySection.ts | disabledByHeader": {
     "message": "uitgezet door header Permissions-Policy"
@@ -3102,7 +3453,7 @@
     "message": "Details verbergen"
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
-    "message": "Details tonen"
+    "message": "Details bekijken"
   },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Geen rapporten om te laten zien"
@@ -3111,7 +3462,7 @@
     "message": "Kan geen stacktrace renderen"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Nog # frame tonen}other{Nog # frames tonen}}"
+    "message": "{n,plural, =1{Nog # frame bekijken}other{Nog # frames bekijken}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Alle opgeslagen Trust Tokens zijn beschikbaar in deze browserinstantie."
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (van bronkaart)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Toevoeging: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Verwijdering: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … {PH1} overeenkomende regels overslaan… )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binaire gegevens"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Wijzigingen diff-viewer"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Onveranderd"
@@ -3462,7 +3801,7 @@
     "message": "Alleen geselecteerde context"
   },
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
-    "message": "Zijbalk van console tonen"
+    "message": "Zijbalk van console bekijken"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "Fouten voor CORS laten zien in de console"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Overzicht wissen"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Overzicht vastleggen"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Css-overzicht"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom toegepast op een statistisch gepositioneerd element"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width is toegepast op een inline element"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Ons team werkt actief aan deze functie en we krijgen graag je {PH1}."
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Overzicht vastleggen"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Leg een overzicht van de css van je pagina vast"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Potentiële css-verbeteringen identificeren"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Identificeer potentiële css-verbeteringen (bijvoorbeeld problemen met laag contrast, niet-gebruikte verklaringen, niet-overeenkomende kleuren of lettertypen)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Zoek de getroffen elementen in het deelvenster Elementen"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Voorbeeldfunctie"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Snel aan de slag: begin met het nieuwe deelvenster Css-overzicht"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video en documentatie"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Css-overzicht"
@@ -3996,7 +4362,7 @@
     "message": "Geen overeenkomende property"
   },
   "panels/elements/ComputedStyleWidget.ts | showAll": {
-    "message": "Alles tonen"
+    "message": "Alles bekijken"
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<node>"
@@ -4032,7 +4398,7 @@
     "message": "Tonen in deelvenster Elementen"
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
-    "message": "Zijbalk voor berekende stijlen tonen"
+    "message": "Zijbalk voor berekende stijlen bekijken"
   },
   "panels/elements/ElementsPanel.ts | sidePanelContent": {
     "message": "Content van zijvenster"
@@ -4152,7 +4518,7 @@
     "message": "In beeld scrollen"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
-    "message": "Details voor iframe tonen"
+    "message": "Details voor iframe bekijken"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Dit frame is herkend als advertentieframe"
@@ -4173,7 +4539,7 @@
     "message": "weergeven"
   },
   "panels/elements/ElementsTreeOutline.ts | showAllNodesDMore": {
-    "message": "Alle nodes tonen (nog {PH1})"
+    "message": "Alle nodes bekijken (nog {PH1})"
   },
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Opslaan als globale variabele"
@@ -4203,7 +4569,7 @@
     "message": "Event-listeners omzetten die in een framework zitten"
   },
   "panels/elements/EventListenersWidget.ts | showListenersOnTheAncestors": {
-    "message": "Listeners in de bovenliggende entiteit tonen"
+    "message": "Listeners in de bovenliggende entiteit bekijken"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
     "message": "DOM-breakpoint"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopiëren: selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Naam van CSS-eigenschap"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Waarde van CSS-eigenschap"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Kiezer voor CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filter"
   },
@@ -4323,7 +4698,7 @@
     "message": "{PH1}[Kenmerkstijl]"
   },
   "panels/elements/StylesSidebarPane.ts | showAllPropertiesSMore": {
-    "message": "Alle property's tonen (nog {PH1})"
+    "message": "Alle property's bekijken (nog {PH1})"
   },
   "panels/elements/StylesSidebarPane.ts | styleAttribute": {
     "message": "Kenmerk style"
@@ -4344,7 +4719,7 @@
     "message": "Sluiten"
   },
   "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Badges tonen"
+    "message": "Badges bekijken"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Broodkruimels van DOM-boomstructuur"
@@ -4353,7 +4728,10 @@
     "message": "(tekst)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Kies de overlaykleur voor dit element"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Kleurkiezer geopend."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4377,7 +4755,7 @@
     "message": "Weergave-instellingen van overlay"
   },
   "panels/elements/components/LayoutPane.ts | showElementInTheElementsPanel": {
-    "message": "Element tonen in het deelvenster Elementen"
+    "message": "Element bekijken in het deelvenster Elementen"
   },
   "panels/elements/components/StylePropertyEditor.ts | deselectButton": {
     "message": "{propertyName} verwijderen: {propertyValue}"
@@ -4425,34 +4803,34 @@
     "message": "Opnieuw"
   },
   "panels/elements/elements-meta.ts | revealDomNodeOnHover": {
-    "message": "DOM-node tonen bij muisaanwijzer plaatsen"
+    "message": "DOM-node bekijken bij muisaanwijzer plaatsen"
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Selecteer een element op de pagina om het te inspecteren"
   },
   "panels/elements/elements-meta.ts | showDetailedInspectTooltip": {
-    "message": "Gedetailleerde inspectiehulp tonen"
+    "message": "Gedetailleerde inspectiehulp bekijken"
   },
   "panels/elements/elements-meta.ts | showElements": {
-    "message": "Elementen tonen"
+    "message": "Elementen bekijken"
   },
   "panels/elements/elements-meta.ts | showEventListeners": {
     "message": "Event-listeners tonen"
   },
   "panels/elements/elements-meta.ts | showHtmlComments": {
-    "message": "HTML opmerkingen tonen"
+    "message": "HTML opmerkingen bekijken"
   },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "Indeling tonen"
   },
   "panels/elements/elements-meta.ts | showProperties": {
-    "message": "Property's tonen"
+    "message": "Property's bekijken"
   },
   "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Stacktrace tonen"
+    "message": "Stacktrace bekijken"
   },
   "panels/elements/elements-meta.ts | showUserAgentShadowDOM": {
-    "message": "Schaduw-DOM van user-agent tonen"
+    "message": "Schaduw-DOM van user-agent bekijken"
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stacktrace"
@@ -4542,13 +4920,13 @@
     "message": "Opties voor schermstand"
   },
   "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
-    "message": "Apparaatframe tonen"
+    "message": "Apparaatframe bekijken"
   },
   "panels/emulation/DeviceModeToolbar.ts | showMediaQueries": {
-    "message": "Media-query's tonen"
+    "message": "Media-query's bekijken"
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
-    "message": "Linialen tonen"
+    "message": "Linialen bekijken"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Dubbel scherm schakelen"
@@ -4605,13 +4983,13 @@
     "message": "Linialen verbergen"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
-    "message": "Apparaatframe tonen"
+    "message": "Apparaatframe bekijken"
   },
   "panels/emulation/emulation-meta.ts | showMediaQueries": {
-    "message": "Media-query's tonen"
+    "message": "Media-query's bekijken"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Linialen tonen"
+    "message": "Linialen bekijken"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Apparaatwerkbalk schakelen"
@@ -4713,7 +5091,7 @@
     "message": "Domein"
   },
   "panels/issues/AffectedCookiesView.ts | filterSetCookieTitle": {
-    "message": "Netwerkverzoeken met deze Set-Cookie-koptekst tonen in het deelvenster Netwerk"
+    "message": "Netwerkverzoeken met deze Set-Cookie-koptekst bekijken in het deelvenster Netwerk"
   },
   "panels/issues/AffectedCookiesView.ts | nCookies": {
     "message": "{n,plural, =1{# cookie}other{# cookies}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Alles zichtbaar maken"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Alle huidige {PH1} verbergen"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Getroffen resources"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "geblokkeerd"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Problemen zoals deze verbergen"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Meer informatie: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Beperkingsstatus"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Problemen zoals deze zichtbaar maken"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Gewaarschuwd"
@@ -5028,19 +5415,19 @@
     "message": "Beleid voor cross-origin-embedding"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Algemeen"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Groeperen op categorie"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Groeperen op soort"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Getoonde problemen groeperen onder bijbehorende categorieën"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Getoonde problemen groeperen als paginafouten, schadelijke wijzigingen en verbeteringen"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Zware advertenties"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL van Wasm-module"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Problemen zoals deze zichtbaar maken"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Problemen zoals deze verbergen"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Menu Problemen verbergen"
+    "message": "Problemen verbergen"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-schendingen"
@@ -5523,7 +5904,7 @@
     "message": "Walmart heeft een opbrengststijging van 1% gerealiseerd voor elke verbetering van 100 ms in het laden van pagina's [Bron: WPO Stats]"
   },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
-    "message": "Lighthouse tonen"
+    "message": "Lighthouse bekijken"
   },
   "panels/media/EventDisplayTable.ts | eventDisplay": {
     "message": "Gebeurtenisweergave"
@@ -6056,6 +6437,9 @@
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
   },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Vertraging (ontvangsttijd reactie - begintijd)"
+  },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(onbekend)"
   },
@@ -6246,7 +6630,7 @@
     "message": "Voer een verzoek uit of selecteer {PH1} om het herladen op te nemen."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Netwerklogboek opnemen ({PH1}) om netwerkactiviteit te tonen."
+    "message": "Netwerklogboek opnemen ({PH1}) om netwerkactiviteit te bekijken."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Netwerkactiviteit opnemen…"
@@ -7059,7 +7443,7 @@
     "message": "Blokkering voor netwerkverzoeken tonen"
   },
   "panels/network/network-meta.ts | showSearch": {
-    "message": "Zoekopdracht tonen"
+    "message": "Zoekopdracht bekijken"
   },
   "panels/network/network-meta.ts | stopRecordingNetworkLog": {
     "message": "Stoppen met vastleggen van netwerklogboek"
@@ -7317,7 +7701,7 @@
     "message": "Tonen in deelvenster Overzicht"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | revealObjectSWithIdSInSummary": {
-    "message": "Object {PH1} met ID @{PH2} tonen in de overzichtsweergave"
+    "message": "Object {PH1} met ID @{PH2} bekijken in de overzichtsweergave"
   },
   "panels/profiler/HeapSnapshotGridNodes.ts | storeAsGlobalVariable": {
     "message": "Opslaan als globale variabele"
@@ -8367,10 +8751,10 @@
     "message": "Sensoren"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
-    "message": "Locaties tonen"
+    "message": "Locaties bekijken"
   },
   "panels/sensors/sensors-meta.ts | showSensors": {
-    "message": "Sensoren tonen"
+    "message": "Sensoren bekijken"
   },
   "panels/sensors/sensors-meta.ts | timezones": {
     "message": "tijdzones"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "WAARSCHUWING:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Als je deze instelling wilt aanzetten, moet je eerst de synchronisatie van instellingen aanzetten in Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Naar Instellingen"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Ingelogd bij Chrome als:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Als je deze instelling wilt aanzetten, moet je Chrome-synchronisatie aanzetten."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Aangepast apparaat toevoegen…"
   },
@@ -8634,7 +9030,7 @@
     "message": "Apparaten"
   },
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
-    "message": "Apparaten tonen"
+    "message": "Apparaten bekijken"
   },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Documentatie"
@@ -8723,6 +9119,9 @@
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Script toevoegen aan negeerlijst"
   },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Sommige aanroepframes hebben waarschuwingen"
+  },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Aanroepstack"
   },
@@ -8742,13 +9141,13 @@
     "message": "Verwijderen van negeerlijst"
   },
   "panels/sources/CallStackSidebarPane.ts | showIgnorelistedFrames": {
-    "message": "Frames op negeerlijst tonen"
+    "message": "Frames op negeerlijst bekijken"
   },
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Meer tonen"
   },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
-    "message": "Klik om het deelvenster Dekking te tonen"
+    "message": "Klik om het deelvenster Dekking te bekijken"
   },
   "panels/sources/CoveragePlugin.ts | coverageNa": {
     "message": "Dekking: n.v.t."
@@ -9153,10 +9552,10 @@
     "message": "Debugger tonen"
   },
   "panels/sources/SourcesPanel.ts | showFunctionDefinition": {
-    "message": "Definitie van functie tonen"
+    "message": "Definitie van functie bekijken"
   },
   "panels/sources/SourcesPanel.ts | showNavigator": {
-    "message": "Navigator tonen"
+    "message": "Navigator bekijken"
   },
   "panels/sources/SourcesPanel.ts | storeSAsGlobalVariable": {
     "message": "{PH1} opslaan als globale variabele"
@@ -9285,7 +9684,7 @@
     "message": "Scrollen voorbij het einde van het bestand niet toestaan"
   },
   "panels/sources/sources-meta.ts | displayVariableValuesInlineWhile": {
-    "message": "Waarden van variabelen inline tonen tijdens foutopsporing"
+    "message": "Waarden van variabelen inline bekijken tijdens foutopsporing"
   },
   "panels/sources/sources-meta.ts | doNotAutomaticallyRevealFilesIn": {
     "message": "Bestanden niet automatisch weergeven in zijbalk"
@@ -9294,13 +9693,13 @@
     "message": "Geen inspringing waarnemen"
   },
   "panels/sources/sources-meta.ts | doNotDisplayVariableValuesInline": {
-    "message": "Waarden van variabelen niet inline tonen tijdens foutopsporing"
+    "message": "Waarden van variabelen niet inline bekijken tijdens foutopsporing"
   },
   "panels/sources/sources-meta.ts | doNotSearchInAnonymousAndContent": {
     "message": "Niet zoeken in anonieme scripts en contentscripts"
   },
   "panels/sources/sources-meta.ts | doNotShowWhitespaceCharacters": {
-    "message": "Geen witruimtetekens tonen"
+    "message": "Geen witruimtetekens bekijken"
   },
   "panels/sources/sources-meta.ts | enableAutoFocusOnDebuggerPaused": {
     "message": "Deelvenster Bronnen openen bij activering van een breakpoint"
@@ -9396,37 +9795,37 @@
     "message": "Zoeken in anonieme scripts en contentscripts"
   },
   "panels/sources/sources-meta.ts | showAllWhitespaceCharacters": {
-    "message": "Alle witruimtetekens tonen"
+    "message": "Alle witruimtetekens bekijken"
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
-    "message": "Breakpoints tonen"
+    "message": "Breakpoints bekijken"
   },
   "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Bestandssysteem tonen"
+    "message": "Bestandssysteem bekijken"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
-    "message": "Snelle bron tonen"
+    "message": "Snelle bron bekijken"
   },
   "panels/sources/sources-meta.ts | showScope": {
-    "message": "Bereik tonen"
+    "message": "Bereik bekijken"
   },
   "panels/sources/sources-meta.ts | showSearch": {
-    "message": "Zoekopdracht tonen"
+    "message": "Zoekopdracht bekijken"
   },
   "panels/sources/sources-meta.ts | showSnippets": {
-    "message": "Fragmenten tonen"
+    "message": "Fragmenten bekijken"
   },
   "panels/sources/sources-meta.ts | showSources": {
-    "message": "Bronnen tonen"
+    "message": "Bronnen bekijken"
   },
   "panels/sources/sources-meta.ts | showThreads": {
-    "message": "Threads tonen"
+    "message": "Threads bekijken"
   },
   "panels/sources/sources-meta.ts | showTrailingWhitespaceCharacters": {
     "message": "Losse witruimtetekens tonen"
   },
   "panels/sources/sources-meta.ts | showWatch": {
-    "message": "Watch tonen"
+    "message": "Watch bekijken"
   },
   "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
     "message": "Witruimtetekens tonen:"
@@ -9783,10 +10182,10 @@
     "message": "Screenshots"
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
-    "message": "Geheugentijdlijn tonen"
+    "message": "Geheugentijdlijn bekijken"
   },
   "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Site-vitaliteit tonen"
+    "message": "Site-vitaliteit bekijken"
   },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} s"
@@ -10785,13 +11184,13 @@
     "message": "Profiel opslaan…"
   },
   "panels/timeline/timeline-meta.ts | showJavascriptProfiler": {
-    "message": "JavaScript-profiler tonen"
+    "message": "JavaScript-profiler bekijken"
   },
   "panels/timeline/timeline-meta.ts | showPerformance": {
-    "message": "Prestaties tonen"
+    "message": "Prestaties bekijken"
   },
   "panels/timeline/timeline-meta.ts | showRecentTimelineSessions": {
-    "message": "Recente tijdlijnsessies tonen"
+    "message": "Recente tijdlijnsessies bekijken"
   },
   "panels/timeline/timeline-meta.ts | startProfilingAndReloadPage": {
     "message": "Profilering starten en pagina opnieuw laden"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sorteren op"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … {PH1} overeenkomende regels overslaan… )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Toevoeging:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Wijzigingen diff-viewer"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Verwijdering:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# schadelijke wijziging}other{# schadelijke wijzigingen}}"
   },
@@ -10953,7 +11364,7 @@
     "message": "{issueCount,plural, =1{# mogelijke verbetering}other{# mogelijke verbeteringen}}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
-    "message": "Klik om het probleem op het tabblad Problemen te tonen"
+    "message": "Klik om het probleem op het tabblad Problemen te bekijken"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
     "message": "Klik om het tabblad Problemen te openen en dit probleem te bekijken: {title}"
@@ -11019,7 +11430,7 @@
     "message": "Geheugeninspector tonen"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Klik om het deelvenster Netwerk te openen en het verzoek te tonen voor de URL: {url}"
+    "message": "Klik om het deelvenster Netwerk te openen en het verzoek te bekijken voor de URL: {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
     "message": "Verzoek is niet beschikbaar in het netwerkdeelvenster. Probeer de geïnspecteerde pagina opnieuw te laden."
@@ -11109,7 +11520,7 @@
     "message": "DevTools opnieuw laden"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
-    "message": "Altijd tonen in de taal van Chrome"
+    "message": "Altijd bekijken in de taal van Chrome"
   },
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools overzetten naar het {PH1}"
@@ -11214,7 +11625,7 @@
     "message": "Meer tabbladen"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Voorbeeldfunctie"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "De verbinding van de pagina met DevTools is verbroken."
@@ -11436,7 +11847,7 @@
     "message": "Sorteren op"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
-    "message": "Alle {PH1} tonen"
+    "message": "Alle {PH1} bekijken"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDAfter": {
     "message": "{PH1} tonen na"
@@ -11847,7 +12258,7 @@
     "message": "Verwijderen van negeerlijst"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Nog # frame tonen}other{Nog # frames tonen}}"
+    "message": "{n,plural, =1{Nog # frame bekijken}other{Nog # frames bekijken}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "onbekend"

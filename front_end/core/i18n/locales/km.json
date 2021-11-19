@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "គេហទំព័រ​ដូចគ្នា និង​ប្រភពដើម​ដូចគ្នា"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "ការកាត់បន្ថយជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "ច្រក - បណ្ដាញទំនាក់ទំនងដែលមានប្រភពដូចគ្នា"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ការចាត់ចែង​អន្តរាគមន៍​ការផ្សាយពាណិជ្ជកម្ម​ដែលចំណាយ​ពេលច្រើន"
@@ -1344,25 +1341,28 @@
     "message": "បញ្ហា​ផ្លាស់ប្ដូរ​ដែលអាច​ធ្វើឱ្យខូច៖ ទំព័រ​អាចនឹង​ឈប់ដំណើរការ​នៅក្នុង​កំណែនាពេល​ខាងមុខ​របស់ Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "ការផ្លាស់ប្ដូរ​​ដែល​អាច​ធ្វើឱ្យខូច"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "បញ្ហា​ក្នុងការ​កែលម្អ៖ មានឱកាស​ក្នុងការ​កែលម្អ​ទំព័រ"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "ការកែលម្អ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "មានបញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ៖ ទំព័រ​មិនដំណើរការ​ត្រឹមត្រូវទេ"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "បញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ភាពងាយស្រួល​នៃពន្លឺបញ្ច្រាស និង​ពណ៌"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "កំពុង​ទប់ស្កាត់​ខ្លឹមសារ​ចម្រុះ"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "ការកាត់បន្ថយជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "មុខងារភាពត្រូវគ្នានៃឯកសារ"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "ពី caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "ពី description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "ពី label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "តម្លៃដែលបានមកពីលក្ខណៈ។"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "តម្លៃ​ពីធាតុ description។"
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "តម្លៃដែលបានមកពី​ខ្លឹមសារនៃធាតុ។"
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "បុគ្គលិក"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "មានតែទំព័រដែលត្រូវបានផ្ទុកតាមរយៈសំណើ GET ប៉ុណ្ណោះដែលអាចទុកក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបាន។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "មានតែទំព័រដែលមានលេខកូដស្ថានភាព 2XX ប៉ុណ្ណោះដែលអាចទុកក្នុងឃ្លាំងបម្រុងបាន។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome បានរកឃើញការព្យាយាមធ្វើប្រតិបត្តិការ JavaScript ពេលស្ថិតនៅក្នុងឃ្លាំងបម្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំ AppBanner នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយទង់។ ចូលទៅកាន់ chrome://flags/#back-forward-cache ដើម្បីបើកឃ្លាំងបម្រុងនៅលើឧបករណ៍។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយឃ្លាបញ្ជា។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយសារមានអង្គចងចាំមិនគ្រប់គ្រាន់។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "មិនអាចប្រើឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងជាមួយកម្មវិធីបង្កប់បានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទសម្រាប់ការបំប្លែងជាមុន។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "មិនអាចទុកទំព័រនេះក្នុងឃ្លាំងបម្រុងបានទេ ដោយសារវាមានអង្គ BroadcastChannel ដែលប្រើកម្មវិធីស្ដាប់ដែលបានចុះឈ្មោះ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "មិនអាចទុកទំព័រដែលមានផ្នែកក្បាល cache-control:no-store នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ឃ្លាំងបម្រុងនេះត្រូវបានសម្អាតដោយចេតនា។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុង ដើម្បីអនុញ្ញាតឱ្យទុកទំព័រផ្សេងទៀតក្នុងឃ្លាំងបម្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលមានកម្មវិធីជំនួយ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ FileChooser API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ File System Access API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ Media Device Dispatcher នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "កម្មវិធីចាក់មេឌៀកំពុងលេង នៅពេលចាកចេញ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ MediaSession API និងកំណត់ស្ថានភាពចាក់វីដេអូ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ MediaSession API និងកំណត់ឧបករណ៍ដោះស្រាយសកម្មភាព នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ SecurityHandler នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ Serial API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ WebAuthetication API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ WebBluetooth API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "មិនអាចទុកទំព័រដែលប្រើ WebUSB API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើស្គ្រីបជំនួយផ្ទៃខាងក្រោយដាច់ដោយឡែក និងមុខងារសង្ខេបកិច្ចការតែមួយ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ឯកសារនេះមិនបានបញ្ចប់ការផ្ទុក មុនពេលចាកចេញទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ស្គ្រីបជំនួយផ្ទៃខាងក្រោយត្រូវបានបើកដំណើរការ ខណៈពេលដែលទំព័រនេះស្ថិតនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុង ដើម្បីអនុញ្ញាតឱ្យទុកទំព័រផ្សេងទៀតក្នុងឃ្លាំងបម្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានផ្ដល់សិទ្ធិចូលចាក់មេឌៀ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើច្រក នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ IdleManager នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលមានការតភ្ជាប់ IndexedDB ចំហ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "API ដែលមិនមានសិទ្ធិត្រូវបានប្រើ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបញ្ចូល JavaScript ដោយកម្មវិធីបន្ថែម នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបញ្ចូល StyleSheet ដោយកម្មវិធីបន្ថែម នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "បញ្ហាផ្នែកខាងក្នុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើការចាក់សោក្ដារចុច នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "ទំព័រនេះមិនបានបញ្ចប់ការផ្ទុក មុនពេលចាកចេញទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "មិនអាចទុកទំព័រដែលធនធានចម្បងរបស់វាមាន cache-control:no-cache នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "មិនអាចទុកទំព័រដែលធនធានចម្បងរបស់វាមាន cache-control:no-store នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ការរុករកត្រូវបានបោះបង់ មុនពេលអាចស្ដារទំព័រពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុង ដោយសារការតភ្ជាប់បណ្ដាញសកម្មបានទទួលទិន្នន័យច្រើនពេក។ Chrome កំណត់បរិមាណទិន្នន័យដែលទំព័រអាចទទួល ខណៈពេលទុកក្នុងឃ្លាំងបម្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការ fetch() ឬ XHR នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង ដោយសារសំណើបណ្ដាញសកម្មបានជាប់ពាក់ព័ន្ធនឹងការបញ្ជូនបន្ត។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុង ដោយសារបានបើកការតភ្ជាប់បណ្ដាញយូរពេក។ Chrome កំណត់រយៈពេលដែលទំព័រអាចទទួលទិន្នន័យ ខណៈពេលទុកក្នុងឃ្លាំងបម្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "មិនអាចទុកទំព័រដែលមិនមានផ្នែកក្បាលនៃការឆ្លើយតបត្រឹមត្រូវ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ការរុករកបានធ្វើឡើងនៅក្នុងស៊ុមក្រៅពីស៊ុមចម្បង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "ទំព័រនេះមានឧបករណ៍ដោះស្រាយការឈប់ផ្ទុកដោយមិនមានផ្នែកក្បាលសម្រាប់បើកឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការប្រតិបត្តិការ DB ដែលបានធ្វើសន្ទស្សន៍ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការសំណើបណ្ដាញ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការសំណើបណ្ដាញ fetch() នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការសំណើបណ្ដាញ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកំពុងដំណើរការសំណើបណ្ដាញ XHR នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ PaymentManager នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើរូបក្នុងរូប នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើច្រក នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបង្ហាញ UI ការបោះពុម្ព នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ទំព័រនេះត្រូវបានបើកដោយប្រើ window.open() ហើយផ្ទាំងផ្សេងទៀតមានសេចក្ដីយោងទៅរកវា ឬទំព័រនេះបានបើកវិនដូ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ដំណើរការបំប្លែងសម្រាប់ទំព័រនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានគាំង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ដំណើរការបំប្លែងសម្រាប់ទំព័រនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបញ្ឈប់។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការអនុញ្ញាតឱ្យថតសំឡេង នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការអនុញ្ញាតឧបករណ៍ចាប់សញ្ញា នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការធ្វើសមកាលកម្មផ្ទៃខាងក្រោយ ឬការអនុញ្ញាតការទាញយក នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការអនុញ្ញាត MIDI នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការអនុញ្ញាតការជូនដំណឹង នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការចូលប្រើទំហំផ្ទុក នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំការអនុញ្ញាតឱ្យថតវីដេអូ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "មានតែទំព័រដែល URL របស់វាមានទម្រង់ជា HTTP / HTTPS ប៉ុណ្ណោះដែលអាចទុកក្នុងឃ្លាំងបម្រុងបាន។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ទំព័រនេះត្រូវបានទាមទារដោយស្គ្រីបជំនួយផ្ទៃខាងក្រោយ ខណៈពេលដែលវាស្ថិតនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ស្គ្រីបជំនួយផ្ទៃខាងក្រោយបានព្យាយាមផ្ញើ MessageEvent ទៅទំព័រនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker ត្រូវបានលុបការចុះឈ្មោះ ពេលទំព័រស្ថិតនៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ទំព័រនេះត្រូវបានដកចេញពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង ដោយសារការបើកដំណើរការស្គ្រីបជំនួយផ្ទៃខាងក្រោយ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome បានចាប់ផ្ដើមឡើងវិញ និងបានសម្អាតធាតុក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ SharedWorker នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ SpeechRecognizer នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ SpeechSynthesis នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe នៅលើទំព័រនេះបានចាប់ផ្ដើមការរុករកដែលមិនបានបញ្ចប់។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "មិនអាចទុកទំព័រដែលធនធានរងរបស់វាមាន cache-control:no-cache នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "មិនអាចទុកទំព័រដែលធនធានរងរបស់វាមាន cache-control:no-store នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "ទំព័រនេះបានលើសរយៈពេលអតិបរមានៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង និងបានផុតកំណត់។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ទំព័រនេះបានអស់ម៉ោងទុកក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង (ទំនងជាដោយសារឧបករណ៍ដោះស្រាយការលាក់ទំព័រដំណើរការយូរ)។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ទំព័រនេះមានឧបករណ៍ដោះស្រាយការឈប់ផ្ទុកនៅក្នុងស៊ុមចម្បង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ទំព័រនេះមានឧបករណ៍ដោះស្រាយការឈប់ផ្ទុកនៅក្នុងស៊ុមរង។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "កម្មវិធីរុករកតាមអ៊ីនធឺណិតបានផ្លាស់ប្ដូរផ្នែកក្បាលនៃការលុបពីលើភ្នាក់ងារអ្នកប្រើប្រាស់។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានផ្ដល់សិទ្ធិចូលថតវីដេអូ ឬសំឡេង នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebDatabase នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebHID នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebLocks នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebNfc នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebOTPService នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "មិនអាចទុកទំព័រដែលមាន WebRTC នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebShare នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "មិនអាចទុកទំព័រដែលមាន WebSocket នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "មិនអាចទុកទំព័រដែលមាន WebTransport នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើ WebXR នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
   },
@@ -2316,25 +2655,34 @@
     "message": "ស្ថានភាពឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "មិនអាចធ្វើសកម្មភាពបានទេ"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "ការរុករកស៊ុមចម្បងចុងក្រោយ"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ទាំងនេះជាមូលហេតុដែលមិនអាចធ្វើសកម្មភាពបានទេ ឧ. ការទុកក្នុងឃ្លាំងបម្រុងត្រូវបានទប់ស្កាត់ដោយអ្វីមួយដែលមិនពាក់ព័ន្ធនឹងការគ្រប់គ្រងទំព័រដោយផ្ទាល់។"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "ស៊ុមចម្បង"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ការរុករកធម្មតា (មិនបានស្ដារពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងទេ)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "អាចធ្វើសកម្មភាពបាន"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ទាំងនេះជាមូលហេតុដែលអាចធ្វើសកម្មភាពបាន ឧ. អាចសម្អាតធាតុទាំងនេះ ដើម្បីឱ្យអាចទុកក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង។"
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "បានស្ដារពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "ដំណើរការ​ការធ្វើតេស្ត"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "ជំនួយដែលកំពុងរង់ចាំ"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ជំនួយ Chrome សម្រាប់មូលហេតុទាំងនេះកំពុងរង់ចាំការសម្រេច ឧ. ធាតុទាំងនេះនឹងមិនទប់ស្កាត់មិនឱ្យអាចទុកទំព័រក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងក្នុងកំណែ Chrome នាពេលអនាគតទេ។"
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "មិនមានទេ"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "ថូខិន {PH1}"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ឈ្មោះការសាកល្បង"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ការរឹតបន្តឹង​ការប្រើប្រាស់"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ពីផែនទី​ប្រភព)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "ការបន្ថែម៖{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "ការ​លុប៖ {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … កំពុងរំលងជួរដែលត្រូវគ្នា {PH1} … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ទិន្នន័យ​គោលពីរ"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "ឧបករណ៍មើល​ភាពខុសគ្នានៃ​ការផ្លាស់ប្ដូរ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "គ្មានការផ្លាស់ប្ដូរទេ"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "សម្អាត​ទិដ្ឋភាពរួម"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ថត​ទិដ្ឋភាពរួម"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "ទិដ្ឋភាពរួមនៃ CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom ត្រូវបានប្រើ​នៅក្នុងធាតុ​ដែលមាន​ទីតាំងថេរ"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "បានប្រើ Width នៅក្នុង​ធាតុក្នុងជួរ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ក្រុមការងាររបស់យើងកំពុងធ្វើការយ៉ាងសកម្មលើមុខងារនេះ ហើយយើងរង់ចាំទទួល{PH1}របស់អ្នក!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ថត​ទិដ្ឋភាពរួម"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "ថតទិដ្ឋភាពរួមនៃ CSS របស់ទំព័រអ្នក"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "មតិកែលម្អ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "មតិកែលម្អ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "សម្គាល់ការកែលម្អ CSS ដែលអាចមាន"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "សម្គាល់ការកែលម្អ CSS ដែលអាចមាន (ឧ. បញ្ហាពន្លឺបញ្រ្ចាសកម្រិតទាប ការប្រកាសដែលមិនបានប្រើ ពណ៌ ឬពុម្ពអក្សរមិនត្រូវគ្នា)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "កំណត់ទីតាំងធាតុដែលរងការប៉ះពាល់នៅក្នុងផ្ទាំង \"ធាតុ\""
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "មុខងារសាកល្បង"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "ការចាប់ផ្ដើមរហ័ស៖ ចាប់ផ្ដើមដោយប្រើផ្ទាំងទិដ្ឋភាពរួម CSS ថ្មី"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "វីដេអូ និងឯកសារ"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "ទិដ្ឋភាពរួមនៃ CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "ចម្លង selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "ឈ្មោះលក្ខណសម្បត្តិ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "តម្លៃលក្ខណសម្បត្តិ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "ផ្ទាំងជ្រើសរើស CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "តម្រង"
   },
@@ -4353,7 +4728,10 @@
     "message": "(អត្ថបទ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "ជ្រើសរើសពណ៌ត្រួត​គ្នាសម្រាប់ធាតុនេះ"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "បានបើកផ្ទាំងជ្រើសរើសពណ៌។"
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "ការព្រមាន"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ស៊ុម"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{ធនធាន #}other{ធនធាន #}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "ឈប់លាក់​ទាំងអស់"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "លាក់ {PH1} បច្ចុប្បន្នទាំងអស់"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ធនធាន​ដែលរង​ការប៉ះពាល់"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "បាន​ទប់ស្កាត់"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "លាក់បញ្ហាដូចនេះ"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ស្វែងយល់​បន្ថែម៖ {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "ស្ថានភាពនៃការរឹតបន្តឹង"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "ឈប់​លាក់បញ្ហាដូចនេះ"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "បានព្រមាន"
@@ -5028,19 +5415,19 @@
     "message": "គោលការណ៍កម្មវិធីបង្កប់​ដែលមានប្រភពដើមផ្សេង"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "ទូទៅ"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "ដាក់ជាក្រុមតាមប្រភេទ"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "ដាក់ជាក្រុម​តាមប្រភេទ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ដាក់បញ្ហាដែលបានបង្ហាញជាក្រុមក្នុងប្រភេទដែលពាក់ព័ន្ធ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "ដាក់បញ្ហាដែលបង្ហាញជាក្រុមជាបញ្ហា​ពាក់ព័ន្ធនឹង​ទំព័រ ការផ្លាស់ប្ដូរ​​ដែល​អាច​ធ្វើឱ្យខូច និងការកែលម្អ"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "ការផ្សាយពាណិជ្ជកម្មដែលមានទំហំធំ"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL នៃម៉ូឌុល Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "ឈប់​លាក់បញ្ហាដូចនេះ"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "លាក់បញ្ហាដូចនេះ"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "លាក់ម៉ឺនុយបញ្ហា"
+    "message": "លាក់បញ្ហា"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ការបំពាន CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "ការពន្យារ (ពេលទទួលការឆ្លើយតប - ពេលចាប់ផ្ដើម)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(មិនស្គាល់)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ការព្រមាន៖"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "ដើម្បីបើកការកំណត់នេះ អ្នកត្រូវតែបើកការធ្វើសមកាលកម្មការកំណត់នៅក្នុង Chrome ជាមុនសិន។"
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ចូលទៅកាន់​ការកំណត់"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "បានចូល Chrome ជា៖"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "ដើម្បីបើកការកំណត់នេះ អ្នកត្រូវតែបើក Chrome សមកាលកម្ម។"
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "បញ្ចូល​ឧបករណ៍​ផ្ទាល់ខ្លួន..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "បញ្ចូល​ស្គ្រីបទៅ​បញ្ជីមិនអើពើ"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "ស៊ុមនៃការហៅមួយចំនួនមានការព្រមាន"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "គំនរ​នៃការហៅ"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "តម្រៀបតាម"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … កំពុងរំលងជួរដែលត្រូវគ្នា {PH1} … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "ការបន្ថែម៖"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "ឧបករណ៍មើល​ភាពខុសគ្នានៃ​ការផ្លាស់ប្ដូរ"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "ការលុប៖"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{ការផ្លាស់ប្ដូរ​ដែល​អាច​ធ្វើឱ្យខូច #}other{ការផ្លាស់ប្ដូរ​ដែល​អាច​ធ្វើឱ្យខូច #}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "ផ្ទាំងច្រើនទៀត"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "មុខងារសាកល្បង"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools ត្រូវបាន​ផ្ដាច់ចេញពី​ទំព័រ។"

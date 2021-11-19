@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site și Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Reducerea șirului User-Agent"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portaluri – Canale de comunicare cu aceeași origine"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Gestionarea intervențiilor pentru anunțuri care consumă multe resurse"
@@ -1344,25 +1341,28 @@
     "message": "Eroare legată de o modificare generatoare de conflicte: este posibil ca pagina să nu mai funcționeze într-o versiune Chrome viitoare"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Modificări generatoare de conflicte"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Problemă legată de îmbunătățiri: ai oportunitatea de a îmbunătăți pagina"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Îmbunătățiri"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Eroare legată de pagină: pagina nu funcționează corect"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Erori de pagină"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Accesibilitatea pentru culori și contrast"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Blochează conținutul mixt"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Reducerea șirului User-Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mod de compatibilitate cu documentul"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "De la caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "De la description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "De la label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Valoarea din atribut."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Valoarea din elementul description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Valoarea din conținutul elementului."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Doar paginile încărcate prin intermediul unei solicitări GET sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Doar paginile cu codul de stare 2XX pot fi stocate în memoria cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome a detectat o încercare de executare JavaScript în cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Paginile care au solicitat un AppBanner nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Memoria cache înainte/înapoi este dezactivată de funcțiile experimentale. Accesează chrome://flags/#back-forward-cache ca să o activezi local pe acest dispozitiv."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Memoria cache înainte/înapoi este dezactivată de linia de comandă."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Memoria cache înainte/înapoi este dezactivată din cauza memoriei insuficiente."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Memoria cache înainte/înapoi nu este acceptată de delegat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Memoria cache înainte/înapoi este dezactivată de programul de redare în avans."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Pagina nu poate fi stocată în memoria cache deoarece are o instanță BroadcastChannel cu ascultători înregistrați."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Paginile cu antetul cache-control:no-store nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Memoria cache a fost golită intenționat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Pagina a fost eliminată din memoria cache pentru a permite memorarea altei pagini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Paginile care conțin pluginuri nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Paginile care folosesc API-ul FileChooser nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Paginile care folosesc API-ul de acces la sistemul de fișiere nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Paginile care folosesc dispecerul pentru dispozitive media nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Un player media funcționa la ieșire."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Paginile care folosesc API-ul MediaSession și setează o stare de redare nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Paginile care folosesc API-ul MediaSession și setează handlere de acțiune nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Paginile care folosesc SecurityHandler nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Paginile care folosesc API-ul Serial nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Paginile care folosesc API-ul WebAuthentication nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Paginile care folosesc API-ul WebBluetooth nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Paginile care folosesc API-ul WebUSB nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Paginile care folosesc un lucrător sau un worklet special nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Documentul nu s-a încărcat complet înainte de a ieși."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Un service worker s-a activat în timp ce pagina era în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Pagina a fost eliminată din memoria cache pentru a permite memorarea altei pagini."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Paginile care au acordat acces pentru fluxul media nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Paginile care folosesc portaluri nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Paginile care folosesc IdleManager nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Paginile care au o conexiune IndexedDB deschisă nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "S-au folosit API-uri ineligibile."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Paginile în care se injectează JavaScript prin extensii nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Paginile în care se injectează StyleSheet prin extensii nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Eroare internă."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Paginile care folosesc blocarea tastaturii nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Pagina nu s-a încărcat complet înainte de a ieși."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Paginile a căror resursă principală are cache-control:no-cache nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Paginile a căror resursă principală are cache-control:no-store nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigarea a fost anulată înainte ca pagina să poată fi restabilită din memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Pagina a fost eliminată din cache pentru că o conexiune la rețea activă primea prea multe date. Chrome limitează volumul de date pe care îl poate primi o pagină în cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Paginile care au fetch() sau XHR în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Pagina a fost eliminată din memoria cache înainte/înapoi deoarece o solicitare pentru o rețea activă implica o redirecționare."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Pagina a fost eliminată din cache pentru că o conexiune la rețea a fost deschisă prea mult. Chrome limitează durata în care o pagină poate primi date în cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Paginile care nu au un antet de răspuns valid nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigarea a avut loc într-un cadru diferit de principalul."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Pagina are un handler de descărcare fără antet de înscriere în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Paginile cu tranzacții DB indexate în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Paginile cu o solicitare de rețea în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Paginile cu o solicitare de rețea de preluare în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Paginile cu o solicitare de rețea în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Paginile cu o solicitare de rețea XHR în curs nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Paginile care folosesc PaymentManager nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Paginile care folosesc modul picture-in-picture nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Paginile care folosesc portaluri nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Paginile care afișează interfața de printare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Pagina s-a deschis folosind window.open() și altă filă are o referință la aceasta sau pagina a deschis o fereastră."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Procesul dispozitivului de redare pentru pagina din memoria cache înainte/înapoi s-a blocat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Procesul dispozitivului de redare pentru pagina din memoria cache înainte/înapoi a fost oprit."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Paginile care au solicitat permisiuni de înregistrare audio nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Paginile care au permisiunile solicitate pentru senzori nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Paginile care au solicitat sincronizarea în fundal sau permisiuni de preluare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Paginile care au solicitat permisiuni MIDI nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Paginile care au solicitat permisiuni de notificare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Paginile care au solicitat acces la spațiul de stocare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Paginile care au solicitat permisiuni de înregistrare video nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Doar paginile a căror schemă URL este HTTP / HTTPS pot fi stocate în memoria cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Pagina a fost revendicată de un service worker în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Un service worker a încercat să trimită paginii din memoria cache înainte/înapoi o proprietate MessageEvent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "S-a anulat înregistrarea ServiceWorker cât timp o pagină era în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Pagina a fost eliminată din memoria cache înainte/înapoi din cauza activării unui service worker."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome a repornit și a șters intrările din memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Paginile care folosesc SharedWorker nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Paginile care folosesc SpeechRecognizer nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Paginile care folosesc SpeechSynthesis nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Un iframe de pe pagină a început o navigare care nu s-a terminat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Paginile a căror subresursă are cache-control:no-cache nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Paginile a căror subresursă are cache-control:no-store nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Pagina a depășit timpul maxim în memoria cache înainte/înapoi și a expirat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "A expirat intrarea paginii în memoria cache înainte/înapoi (probabil din cauza handlerelor pagehide pe termen lung)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Pagina are un handler de descărcare în cadrul principal."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Pagina are un handler de descărcare într-un subcadru."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Browserul a schimbat antetul de modificare user agent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Paginile care au acordat acces pentru a înregistra conținut video sau audio nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Paginile care folosesc WebDatabase nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Paginile care folosesc WebHID nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Paginile care folosesc WebLocks nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Paginile care folosesc WebNfc nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Paginile care folosesc WebOTPService nu sunt eligibile momentan pentru bfcache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Paginile cu WebRTC nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Paginile care folosesc WebShare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Paginile cu WebSocket nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Paginile cu WebTransport nu pot intra în memoria cache înainte/înapoi."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Paginile care folosesc WebXR nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Memorie cache înainte-înapoi"
   },
@@ -2316,25 +2655,34 @@
     "message": "Stare memorie cache înainte-înapoi"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Nu se poate acționa"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Navigarea la ultimul cadru principal"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Aceste motive nu sunt utile; stocarea în memoria cache a fost împiedicată de ceva din afara controlului direct al paginii."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Cadrul principal"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Navigare normală (nu s-a restaurat din memoria cache înainte-înapoi)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Se poate acționa"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Aceste motive sunt utile, adică pot fi folosire pentru a face pagina eligibilă pentru memoria cache înainte/înapoi."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Restabilit din memoria cache înainte-înapoi"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Rulează un test"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "În așteptarea asistenței"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Suportul Chrome pentru aceste motive este în așteptare; ele nu vor împiedica pagina să fie eligibilă pentru memoria cache înainte/înapoi într-o versiune ulterioară de Chrome."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "indisponibil"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} indicative"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Numele versiunii de încercare"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Restricții de folosire"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (din harta sursă)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Adăugare:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Ștergere: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Se omit {PH1} linii corespunzătoare … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Date binare"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Vizualizatorul de diferențe ale modificărilor"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Fără modificări"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Golește prezentarea generală"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Prezentare generală a capturii"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "Prezentare generală CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom s-a aplicat unui element poziționat static"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width a fost aplicată unui element inline"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Echipa noastră lucrează la această funcție și așteaptă {PH1}!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Prezentare generală a capturii"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Capturează o prezentare generală a codului CSS al paginii"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Identificați potențialele îmbunătățiri CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Identifică potențialele îmbunătățiri CSS (de ex., probleme de contrast scăzut, declarații nefolosite, nepotriviri de culoare sau font)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Găsiți elementele afectate în panoul Elemente"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Funcție de previzualizare"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Pornire rapidă: începe lucrul cu noul panou Prezentare generală CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video și documentație"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Prezentare generală CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Copiază selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Numele proprietății CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Valoarea proprietății CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "Selector CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrează"
   },
@@ -4353,7 +4728,10 @@
     "message": "(text)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Alege culoarea de suprapunere pentru acest element"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "S-e deschis selectorul de culoare."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "avertisment"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Cadru"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resursă}few{# resurse}other{# de resurse}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Reafișează-le pe toate"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Ascunde toate {PH1} actuale"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Resursele afectate"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "blocat"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Ascunde problemele similare"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Află mai multe: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Starea restricției"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Reafișează problemele similare"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "A primit un avertisment"
@@ -5028,19 +5415,19 @@
     "message": "Politica privind elementele de încorporare cu origini multiple"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Generice"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Grupează după categorie"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Grupează după tip"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Probleme afișate în grup în categoriile asociate"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Grupează erorile afișate ca Erori de pagină, Modificări generatoare de conflicte și Îmbunătățiri"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Anunțuri care consumă multe resurse"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Adresa URL a modulului Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Reafișează problemele similare"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Ascunde problemele similare"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Ascunde meniul cu probleme"
+    "message": "Ascunde problemele"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Încălcări CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latență (ora de primire a răspunsului - ora de începere)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(necunoscut)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "AVERTISMENT:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Ca să activezi această setare, trebuie să activezi întâi sincronizarea setărilor în Chrome."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Accesează Setări"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Conectat la Chrome ca:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Pentru a activa această setare, trebuie să activezi sincronizarea Chrome."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Adaugă un dispozitiv personalizat..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Adaugă scriptul pe lista de ignorat"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Unele cadre de apelare au avertismente"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Stivă de apel"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortează după"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Se omit {PH1} linii corespunzătoare … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Adăugare:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Vizualizatorul de diferențe ale modificărilor"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Ștergere:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# modificare generatoare de conflicte}few{# modificări generatoare de conflicte}other{# de modificări generatoare de conflicte}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Mai multe file"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Funcție de previzualizare"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools a fost deconectat de la pagină."

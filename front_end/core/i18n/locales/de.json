@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site und Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Verringerung der User-Agent-Strings"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portale – Kommunikationskanäle mit demselben Ursprung"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Handhabung umfangreicher Anzeigeninterventionen"
@@ -1344,25 +1341,28 @@
     "message": "Problem mit einer funktionsgefährdenden Änderung: Die Seite funktioniert möglicherweise in einer kommenden Version von Chrome nicht mehr"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Funktionsgefährdende Änderungen"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Ein Verbesserungsproblem: Es gibt eine Möglichkeit, die Seite zu verbessern"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Verbesserungen"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Ein Seitenfehler: Seite funktioniert nicht richtig"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Fehler auf der Seite"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Farb- und Kontrastbedienungshilfen"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Gemischte Inhalte verhindern"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Verringerung der User-Agent-Strings"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modus für die Kompatibilität von Dokumenten"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Aus caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Von description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Aus label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Wert vom Attribut"
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Wert aus dem description-Element."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Wert aus Elementinhalten."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "Worker"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Nur Seiten, die über GET-Anfragen geladen werden, können den Back-Forward-Cache verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Nur Seiten mit dem Statuscode 2XX können im Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome hat einen Versuch erkannt, JavaScript auszuführen, während die Seite im Cache gespeichert war."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Seiten, die einen App-Banner angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Der Back-Forward-Cache wurde durch Flags deaktiviert. Rufen Sie chrome://flags/#back-forward-cache auf, um die Funktion lokal für dieses Gerät zu aktivieren."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Der Back-Forward-Cache wurde über die Befehlszeile deaktiviert."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Der Back-Forward-Cache wurde aufgrund fehlenden Arbeitsspeichers deaktiviert."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Der Back-Forward-Cache wird vom Bevollmächtigten nicht unterstützt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Der Back-Forward-Cache ist für Prerenderer deaktiviert."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Die Seite konnte nicht im Cache gespeichert werden, da sie eine „BroadcastChannel“-Instanz mit registrierten Listenern hat."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Seiten mit „cache-control:no-store“ können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Der Cache wurde absichtlich gelöscht."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Die Seite wurde aus dem Cache entfernt, damit eine andere Seite im Cache gespeichert werden kann."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Seiten, die Plug-ins enthalten, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Seiten, die die FileChooser API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Seiten, die die File System Access API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Seiten, die „Media Device Dispatcher“ nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Ein Mediaplayer wurde verwendet, als die Seite verlassen wurde."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Seiten, die die MediaSession API verwenden und einen Wiedergabestatus festlegen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Seiten, die die MediaSession API verwenden und Aktions-Handler festlegen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Seiten, die „SecurityHandler“ nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Seiten, die die Serial API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Seiten, die die WebAuthentication API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Seiten, die die WebBluetooth API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Seiten, die die WebUSB API nutzen, können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Seiten, die einen Dedicated Worker oder ein Worklet nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Das Dokument wurde verlassen, bevor es vollständig geladen werden konnte."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "Ein Service Worker wurde aktiviert, während die Seite im Back-Forward-Cache gespeichert war."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Die Seite wurde aus dem Cache entfernt, damit eine andere Seite im Cache gespeichert werden kann."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Seiten mit Zugriff auf Medienstreams können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Seiten, die Portale nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Seiten, die „IdleManager“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Seiten mit einer offenen IndexedDB-Verbindung können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Es wurden ungültige APIs verwendet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Seiten, bei denen durch Erweiterungen JavaScript eingeschleust wird, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Seiten, bei denen durch Erweiterungen ein Stylesheet eingeschleust wird, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Interner Fehler."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Seiten, die die Tastatursperre nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Die Seite wurde verlassen, bevor sie vollständig geladen werden konnte."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Seiten, deren Hauptressource „cache-control:no-cache“ enthalten, können nicht im Back-Forward-Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Seiten, deren Hauptressource „cache-control:no-store“ enthalten, können nicht im Back-Forward-Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Die Navigation wurde abgebrochen, bevor die Seite aus dem Back-Forward-Cache wiederhergestellt werden konnte."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Diese Seite wurde aus dem Cache entfernt, weil eine aktive Netzwerkverbindung zu viele Daten empfangen hat. Chrome schränkt die Menge der Daten ein, die eine Seite empfangen darf, während sie im Cache gespeichert ist."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Seiten mit einer laufenden fetch()- oder XHR-Anfrage können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Die Seite wurde aus dem Back-Forward-Cache entfernt, weil eine aktive Netzwerkanfrage eine Weiterleitung enthielt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Die Seite wurde aus dem Cache entfernt, weil die Netzwerkverbindung zu lange offen war. Chrome schränkt ein, wie lange die Seite Daten empfangen darf, während sie im Cache gespeichert ist."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Seiten ohne gültigen Antwortheader können nicht im Back-Forward-Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Außerhalb des Hauptframes ist eine Navigation aufgetreten."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Die Seite hat einen Unload-Handler ohne Opt-in-Header für den Back-Forward-Cache."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Seiten mit laufenden indexierten DB-Transaktionen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Seiten mit einer laufenden Netzwerkanfrage können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Seiten mit einer laufenden Netzwerkabrufanfrage können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Seiten mit einer laufenden Netzwerkanfrage können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Seiten mit einer laufenden XHR-Netzwerkanfrage können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Seiten, die „PaymentManager“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Seiten, die „Bild im Bild“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Seiten, die Portale nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Seiten, die die Benutzeroberfläche zum Drucken anzeigen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Die Seite wurde mithilfe von window.open() geöffnet und ein anderer Tab verweist darauf oder die Seite wurde in einem Fenster geöffnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Der Renderingvorgang für die Seite im Back-Forward-Cache ist abgestürzt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Der Renderingvorgang für die Seite im Back-Forward-Cache wurde beendet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Seiten, die Berechtigungen zur Audioaufnahme angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Seiten, die Sensor-Berechtigungen angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Seiten, die Berechtigungen für die Hintergrundsynchronisierung oder den Hintergrundabruf angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Seiten, die MIDI-Berechtigungen angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Seiten, die Benachrichtigungsberechtigungen angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Seiten, die Speicherzugriff angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Seiten, die Berechtigungen zur Videoaufnahme angefragt haben, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Nur Seiten mit dem URL-Schema „HTTP/HTTPS“ können im Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "Die Seite wurde von einem Service Worker beansprucht, während sie im Back-Forward-Cache gespeichert war."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "Ein Service Worker hat versucht, MessageEvent an die Seite im Back-Forward-Cache zu senden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "Die Funktion „ServiceWorkers“ war abgemeldet, während die Seite im Back-Forward-Cache gespeichert war."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Die Seite wurde aufgrund einer Aktivierung durch einen Service Worker aus dem Back-Forward-Cache entfernt."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome wurde neu gestartet und hat die Einträge im Back-Forward-Cache gelöscht."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Seiten, die „SharedWorker“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Seiten, die „SpeechRecognizer“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Seiten, die „SpeechSynthesis“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "Ein iFrame auf der Seite hat eine Navigation gestartet, die nicht abgeschlossen wurde."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Seiten, deren Unterressource „cache-control:no-cache“ enthalten, können nicht im Back-Forward-Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Seiten, deren Unterressource „cache-control:no-store“ enthalten, können nicht im Back-Forward-Cache gespeichert werden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Die Seite hat die maximale Speicherdauer für den Back-Forward-Cache überschritten und ist abgelaufen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Beim Speichern der Seite im Back-Forward-Cache ist eine Zeitüberschreitung aufgetreten (vermutlich, weil Pagehide-Handler zu lange ausgeführt wurden)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Im Hauptframe dieser Seite befindet sich ein Unload-Handler."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Im Subframe dieser Seite befindet sich ein Unload-Handler."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Der Browser hat den Überschreibungs-Header für den User-Agent geändert."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Seiten mit der Berechtigung zum Aufnehmen von Videos oder Audio können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Seiten, die „WebDatabase“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Seiten, die „WebHID“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Seiten, die „WebLocks“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Seiten, die „WebNfc“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Seiten, die „WebOTPService“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Seiten mit WebRTC können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Seiten, die „WebShare“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Seiten mit „WebSocket“ können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Seiten mit „WebSocket“ können den Back-Forward-Cache nicht verwenden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Seiten, die „WebXR“ nutzen, können den Back-Forward-Cache aktuell nicht verwenden."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-Forward-Cache"
   },
@@ -2316,25 +2655,34 @@
     "message": "Status des Back-Forward-Cache"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Nicht umsetzbar"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Letzte Hauptframe-Navigation"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "Sie können keine Maßnahmen ergreifen, um diese Probleme zu lösen, da das Caching durch etwas verhindert wurde, das außerhalb des direkten Einflussbereichs der Seite liegt."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Hauptframe"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Normale Navigation (nicht aus dem Back-Forward-Cache wiederhergestellt)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Umsetzbar"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "Sie können Maßnahmen ergreifen, um diese Probleme zu lösen und dafür zu sorgen, dass die Seite den Back-Forward-Cache verwenden kann."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Aus dem Back-Forward-Cache wiederhergestellt"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Testen"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Noch kein Support"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "Die Chrome-Unterstützung ist aus den genannten Gründen ausstehend – dies bedeutet, dass die Seite nicht daran gehindert wird, den Back-Forward-Cache in einer zukünftigen Chrome-Version zu verwenden."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "nicht verfügbar"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} Tokens"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Testname"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Nutzungseinschränkungen"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (aus Quellzuordnung)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Hinzufügen: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Löschen: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Überspringen {PH1} übereinstimmende Zeilen … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binärdaten"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Viewer für Änderungen"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Keine Änderungen"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Übersicht löschen"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Aufnahmenübersicht"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS-Übersicht"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom wurde auf ein statisch positioniertes Element angewendet"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width wurde auf ein Inline-Element angewendet"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Unser Team arbeitet fortlaufend an dieser Funktion und wir würden uns sehr über Ihr {PH1} freuen."
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Aufnahmenübersicht"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Eine Übersicht über das CSS Ihrer Seite aufnehmen"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "Feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "CSS-Verbesserungsmöglichkeiten entdecken"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Nach Verbesserungsmöglichkeiten für das CSS suchen (z. B. niedriger Kontrast, nicht verwendete Deklarationen, Unstimmigkeiten hinsichtlich Farben oder Schriftarten)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Die betroffenen Elemente im Elementbereich finden"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Vorschaufunktion"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Schnelleinstieg: Erste Schritte mit dem Menü „CSS-Übersicht“"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video und Dokumentation"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS-Übersicht"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "selector kopieren"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Property-Name „CSS“"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Property-Wert „CSS“"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS-Auswahl"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtern"
   },
@@ -4353,7 +4728,10 @@
     "message": "(Text)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Overlay-Farbe für dieses Element wählen"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Farbauswahl geöffnet."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4533,7 +4911,7 @@
     "message": "Auf Standardeinstellungen zurücksetzen"
   },
   "panels/emulation/DeviceModeToolbar.ts | responsive": {
-    "message": "Reagiert schnell"
+    "message": "Responsiv"
   },
   "panels/emulation/DeviceModeToolbar.ts | rotate": {
     "message": "Drehen"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Alle einblenden"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Alle aktuellen Probleme vom Typ „{PH1}“ ausblenden"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Betroffene Ressourcen"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "blockiert"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Ähnliche Probleme ausblenden"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Weitere Informationen: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Einschränkungsstatus"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Ähnliche Probleme einblenden"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Gewarnt"
@@ -5028,19 +5415,19 @@
     "message": "Cross-Origin-Embedder-Richtlinie"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Allgemeines"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Nach Kategorie gruppieren"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Nach Art gruppieren"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Angezeigte Probleme unter zugehörigen Kategorien gruppieren"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Angezeigte Probleme als Fehler auf der Seite, funktionsgefährdende Änderungen und Verbesserungen gruppieren"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Umfangreiche Werbung"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL des Wasm-Moduls"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Ähnliche Probleme einblenden"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Ähnliche Probleme ausblenden"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Menü „Probleme ausblenden“"
+    "message": "Probleme ausblenden"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-Verstöße"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latenz (Empfangszeit der Antwort − Startzeit)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(unbekannt)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ACHTUNG:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Wenn Sie diese Einstellung aktivieren möchten, müssen Sie erst die Chrome-Synchronisierung aktivieren."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Zu den Einstellungen"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "In Chrome angemeldet als:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Wenn Sie diese Einstellung aktivieren möchten, müssen Sie zuerst die Chrome-Synchronisierung aktivieren."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Benutzerdefiniertes Gerät hinzufügen…"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Skript zur Ignorieren-Liste hinzufügen"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Es gibt Warnungen für einige Aufruf-Frames"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Aufrufstack"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortieren nach"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Überspringen {PH1} übereinstimmende Zeilen … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Hinzufügen:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Viewer für Änderungen"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Löschen:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# funktionsgefährdende Änderung}other{# funktionsgefährdende Änderungen}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Mehr Tabs"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Vorschaufunktion"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Die Verbindung zwischen Entwicklertools und der Seite wurde getrennt."

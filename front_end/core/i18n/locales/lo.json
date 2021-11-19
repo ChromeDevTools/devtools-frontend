@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ເວັບໄຊດຽວກັນ ແລະ ທີ່ມາດຽວກັນ"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "ການລຸດສະຕຣິງໂປຣແກຣມຜູ້ໃຊ້"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "ພໍທັລ - ຊ່ອງການຕິດຕໍ່ສື່ສານຕົ້ນທາງດຽວກັນ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ການຈັດການການແຊກແຊງໂຄສະນາທີ່ໃຊ້ຊັບພະຍາກອນຫຼາຍ"
@@ -1350,19 +1347,22 @@
     "message": "ບັນຫາການປັບປຸງ: ມີໂອກາດເພື່ອປັບປຸງໜ້າ"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "ການປັບປຸງ"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "ບັນຫາຂໍ້ຜິດພາດໜ້າເວັບ: ໜ້າເວັບເຮັດວຽກບໍ່ຖືກຕ້ອງ"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "ຂໍ້ຜິດພາດໜ້າ"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "ການຊ່ວຍເຂົ້າເຖິງດ້ວຍສີ ແລະ ຄອນທຣາສ"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ການປ້ອງກັນເນື້ອຫາປະສົມ"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "ການລຸດສະຕຣິງໂປຣແກຣມຜູ້ໃຊ້"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ໂໝດຄວາມເຂົ້າກັນໄດ້ຂອງເອກະສານ"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "ຈາກ caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "ຈາກ description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "ຈາກ label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "ຄ່າຈາກຄຸນສົມບັດ."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "ຄ່າຈາກອົງປະກອບ description."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "ຄ່າຈາກເນື້ອຫາອົງປະກອບ."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "ຜູ້ເຮັດວຽກ"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "ສະເພາະໜ້າທີ່ໂຫຼດຜ່ານຄຳຮ້ອງຂໍ GET ທີ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "ສະເພາະໜ້າທີ່ມີລະຫັດສະຖານະ 2XX ທີ່ສາມາດຖືກແຄສໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Chrome ກວດພົບຄວາມພະຍາຍາມເປີດໃຊ້ JavaScript ໃນຂະນະທີ່ຢູ່ໃນແຄສ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍ AppBanner ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍການປັກທຸງ. ກະລຸນາເຂົ້າໄປ chrome://flags/#back-forward-cache ເພື່ອເປີດການນຳໃຊ້ມັນຢູ່ອຸປະກອນນີ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ໂດຍ command line."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ເນື່ອງຈາກໜ່ວຍຄວາມຈຳບໍ່ພຽງພໍ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "ບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງໂດຍຕົວແທນ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "ແຄສຍ້ອນຫຼັງຖືກປິດການນຳໃຊ້ສຳລັບຕົວສະແດງພາບລ່ວງໜ້າ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "ບໍ່ສາມາດແຄສໜ້າໄດ້ເນື່ອງຈາກມັນມີອິນສະແຕນ BroadcastChannel ທີ່ມີຕົວຟັງທີ່ລົງທະບຽນແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "ໜ້າທີ່ມີສ່ວນຫົວ cache-control:no-store ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "ແຄສຖືກລຶບລ້າງໂດຍຄວາມຕັ້ງໃຈແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີປລັກອິນແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "ໜ້າທີ່ໃຊ້ FileChooser API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "ໜ້າທີ່ໃຊ້ File System Access API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "ໜ້າທີ່ໃຊ້ Media Device Dispatcher ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "ເຄື່ອງຫຼິ້ນມີເດຍກຳລັງຫຼິ້ນໃນເວລາກຳລັງນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງສະຖານະການຫຼິ້ນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "ໜ້າທີ່ໃຊ້ MediaSession API ແລະ ຕັ້ງຕົວຈັດການຄຳສັ່ງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "ໜ້າທີ່ໃຊ້ SecurityHandler ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "ໜ້າທີ່ໃຊ້ Serial API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "ໜ້າທີ່ໃຊ້ WebAuthetication API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "ໜ້າທີ່ໃຊ້ WebBluetooth API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "ໜ້າທີ່ໃຊ້ WebUSB API ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ຕົວເຮັດວຽກສະເພາະ ຫຼື worklet ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "ການໂຫຼດເອກະສານບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "ຕົວເຮັດວຽກບໍລິການຖືກເປີດໃຊ້ໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສແລ້ວເພື່ອອະນຸຍາດໃຫ້ໜ້າອື່ນຖືກແຄສໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງການສະຕຣີມມີເດຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ IdleManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີການເຊື່ອມຕໍ່ IndexedDB ເປີດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "ໃຊ້ API ທີ່ບໍ່ມີສິດ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ JavaScript ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃສ່ StyleSheet ເຂົ້າໄປໂດຍສ່ວນຂະຫຍາຍແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "ຂໍ້ຜິດພາດພາຍໃນ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການລັອກແປ້ນພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "ການໂຫຼດໜ້າບໍ່ສຳເລັດກ່ອນການນຳທາງໄປບ່ອນອື່ນ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "ໜ້າທີ່ມີແຫຼ່ງຊັບພະຍາກອນຫຼັກທີ່ມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "ການນຳທາງຖືກຍົກເລີກກ່ອນໜ້າຈະຖືກກູູ້ຄືນຈາກແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ເຮັດວຽກຢູ່ນັ້ນໄດ້ຮັບຂໍ້ມູນຫຼາຍເກີນໄປ. Chrome ຈຳກັດຈຳນວນຂໍ້ມູນທີ່ໜ້າສາມາດຮັບໄດ້ໃນຂະນະທີ່ແຄສແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີ inflight fetch() ຫຼື XHR ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກຄຳຮ້ອງຂໍເຄືອຂ່າຍທີ່ດຳເນີນຢູ່ມີການປ່ຽນເສັ້ນທາງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສເນື່ອງຈາກເປີດການເຊື່ອມຕໍ່ເຄືອຂ່າຍດົນເກີນໄປ. Chrome ຈຳກັດໄລຍະເວລາທີ່ໜ້າສາມາດໄດ້ຮັບຂໍ້ມູນໃນຂະນະທີ່ແຄສແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "ໜ້າທີ່ບໍ່ມີສ່ວນຫົວຄຳຕອບທີ່ຖືກຕ້ອງບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "ການນຳທາງເກີດຂຶ້ນໃນເຟຣມໃດໜຶ່ງທີ່ນອກເໜືອໄປຈາກເຟຣມຫຼັກ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "ໜ້າມີຕົວຈັດການການຍົກເລີກການໂຫຼດໂດຍບໍ່ມີການເປີດການນຳໃຊ້ແຄສຍ້ອນຫຼັງໃນສ່ວນຫົວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີທຸລະກຳ DB ທີ່ສ້າງດັດຊະນີແລ້ວທີ່ດຳເນີນຢູ່ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍການໂຫຼດເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "ຕອນນີ້ໜ້າທີ່ມີຄຳຮ້ອງຂໍເຄືອຂ່າຍ XHR ແບບ in-flight ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ PaymentManager ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ການສະແດງຜົນຊ້ອນກັນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ portals ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "ຕອນນີ້ໜ້າທີ່ສະແດງສ່ວນຕິດຕໍ່ຜູ້ໃຊ້ການພິມແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "ໜ້າຖືກເປີດໂດຍໃຊ້ window.open() ແລະ ແຖບອື່ນມີການອ້າງອີງຫາມັນ ຫຼື ໜ້າໄດ້ເປີດໜ້າຈໍໃດໜຶ່ງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຫຼົ້ມ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "ໂປຣເຊສຕົວສະແດງພາບສຳລັບໜ້າໃນແຄສຍ້ອນຫຼັງຖືກຢຸດແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດເຊັນເຊີແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການຊິ້ງຂໍ້ມູນພື້ນຫຼັງ ຫຼື ການອະນຸຍາດການໂຫຼດແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດ MIDI ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການແຈ້ງເຕືອນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການເຂົ້າເຖິງບ່ອນຈັດເກັບຂໍ້ມູນແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "ຕອນນີ້ໜ້າທີ່ຮ້ອງຂໍການອະນຸຍາດການບັນທຶກວິດີໂອແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "ມີພຽງໜ້າທີ່ຮູບແບບ URL ເປັນ HTTP / HTTPS ທີ່ສາມາດຖືກແຄສໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "ໜ້າຖືກອ້າງສິດໂດຍຕົວເຮັດວຽກບໍລິການອື່ນໃນຂະນະທີ່ມັນຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "ຕົວເຮັດວຽກບໍລິການພະຍາຍາມສົ່ງ MessageEvent ໄປໃສ່ໜ້າໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "ServiceWorker ຖືກຖອນການລົງທະບຽນໃນຂະນະທີ່ໜ້າຢູ່ໃນແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "ໜ້າຖືກໄລ່ອອກຈາກແຄສຍ້ອນຫຼັງເນື່ອງຈາກການເປີດນຳໃຊ້ຕົວເຮັດວຽກບໍລິການ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome ຣີສະຕາດ ແລະ ລຶບລ້າງຂໍ້ມູນແຄສຍ້ອນຫຼັງແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SharedWorker ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechRecognizer ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ SpeechSynthesis ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "iframe ຢູ່ໜ້າເລີ່ມການນຳທາງທີ່ບໍ່ສຳເລັດ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-cache ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "ໜ້າທີ່ແຫຼ່ງຊັບພະຍາກອນຍ່ອຍມີ cache-control:no-store ນັ້ນບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "ໜ້າເກີນເວລາສູງສຸດໃນແຄສຍ້ອນຫຼັງ ແລະ ໝົດອາຍຸແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "ໜ້າໝົດເວລາໃນຂະນະທີ່ກຳລັງເຂົ້າແຄສຍ້ອນຫຼັງ (ໜ້າຈະເປັນຍ້ອນຕົວຈັດການການເຊື່ອງໜ້າທີ່ເອີ້ນໃຊ້ດົນ)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຫຼັກແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "ໜ້າໄດ້ຍົກເລີກການໂຫຼດຕົວຈັດການໃນເຟຣມຍ່ອຍແລ້ວ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "ໂປຣແກຣມທ່ອງເວັບປ່ຽນສ່ວນຫົວການຍົກເລີກໂປຣແກຣມຜູ້ໃຊ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໄດ້ຮັບສິດເຂົ້າເຖິງເພື່ອບັນທຶກວິດີໂອ ຫຼື ສຽງແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebDatabase ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebHID ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebLocks ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebNfc ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebOTPService ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "ໜ້າທີ່ມີ WebRTC ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebShare ແມ່ນບໍ່ມີສິດໃຊ້ແຄສຍ້ອນຫຼັງ."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "ໜ້າທີ່ມີ WebSocket ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "ໜ້າທີ່ມີ WebTransport ບໍ່ສາມາດເຂົ້າແຄສຍ້ອນຫຼັງໄດ້."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "ຕອນນີ້ໜ້າທີ່ໃຊ້ WebXR ແມ່ນບໍ່ຮອງຮັບແຄສຍ້ອນຫຼັງ."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "ແຄສຍ້ອນຫຼັງ"
   },
@@ -2316,25 +2655,34 @@
     "message": "ສະຖານະແຄສຍ້ອນຫຼັງ"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "ບໍ່ສາມາດດຳເນີນການໄດ້"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "ການນຳທາງເຟຣມຫຼັກຫຼ້າສຸດ"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "ເຫດຜົນເຫຼົ່ານີ້ບໍ່ສາມາດດຳເນີນການໄດ້ ເຊັ່ນ: ການແຄສຖືກປ້ອງກັນໄວ້ໂດຍບາງຢ່າງນອກການຄວບຄຸມໂດຍກົງຂອງໜ້າ."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "ເຟຣມຫຼັກ"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "ການນຳທາງປົກກະຕິ (ບໍ່ໄດ້ກູ້ຄືນມາຈາກແຄສຍ້ອນຫຼັງ)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "ສາມາດດຳເນີນການໄດ້"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "ເຫດຜົນເຫຼົ່ານີ້ແມ່ນດຳເນີນການໄດ້ ເຊັ່ນ: ພວກມັນສາມາດຖືກລຶບລ້າງເພື່ອເຮັດໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໄດ້."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "ກູ້ຄືນຈາກແຄສຍ້ອນຫຼັງແລ້ວ"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "ເລີ່ມທົດສອບ"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "ກຳລັງລໍຖ້າການຮອງຮັບຢູ່"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "ການຮັບຮອງ Chrome ສຳລັບເຫດຜົນເຫຼົ່ານີ້ແມ່ນລໍຖ້າດຳເນີນການຢູ່ ເຊັ່ນ: ພວກມັນຈະບໍ່ປ້ອງກັນບໍ່ໃຫ້ໜ້າມີສິດໃຊ້ແຄສຍ້ອນຫຼັງໃນ Chrome ເວີຊັນໃນອະນາຄົດ."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ບໍ່ສາມາດໃຊ້ໄດ້"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} ໂທເຄນ"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "ຊື່ການທົດລອງໃຊ້"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "ຂໍ້ຈຳກັດການນຳໃຊ້"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ຈາກແຜນທີ່ແຫຼ່ງທີ່ມາ)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "ການເພີ່ມ:{PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "ການລຶບ:{PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … ກຳລັງຂ້າມ {PH1} ແຖວທີ່ກົງກັນ … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "ຂໍ້ມູນໄບນາຣີ"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "ໂປຣແກຣມເບິ່ງຄວາມແຕກຕ່າງຂອງການປ່ຽນແປງ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ບໍ່ມີການປ່ຽນແປງ"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ລຶບລ້າງພາບຮວມ"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ບັນທຶກພາບຮວມ"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "ພາບຮວມ CSS"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "ນຳໃຊ້ Bottom ກັບອົງປະກອບທີ່ຢູ່ໃນຕຳແໜ່ງຄົງທີ່ແລ້ວ"
   },
@@ -3895,6 +4228,39 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "ນຳໃຊ້ Width ໃສ່ອົງປະກອບໃນແຖວແລ້ວ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "ທີມງານຂອງພວກເຮົາກຳລັງສ້າງຄຸນສົມບັດນີ້ຢ່າງຕໍ່ເນື່ອງຢູ່ ແລະ ຢາກຟັງ {PH1} ຂອງທ່ານ!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ບັນທຶກພາບຮວມ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "ບັນທຶກສະຫຼຸບຂອງ CSS ຂອງໜ້າທ່ານ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "ຄຳຕິຊົມ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "ຄຳຕິຊົມ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "ລະບຸການປັບປຸງ CSS ທີ່ເປັນໄປໄດ້"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "ລະບຸການປັບປຸງ CSS ທີ່ເປັນໄປໄດ້ (ເຊັ່ນ: ບັນຫາຄອນທຣາສຕ່ຳ, ການປະກາດທີ່ບໍ່ໄດ້ໃຊ້, ສີ ຫຼື ຟອນບໍ່ກົງກັນ)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "ຊອກຫາອົງປະກອບທີ່ໄດ້ຮັບຜົນກະທົບໃນແຜງອົງປະກອບ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "ຄຸນສົມບັດຕົວຢ່າງ"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "ເລີ່ມຕົ້ນດ່ວນ: ເລີ່ມຕົ້ນດ້ວຍແຜງພາບຮວມ CSS ໃໝ່"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "ວິດີໂອ ແລະ ເອກະສານ"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "ພາບຮວມ CSS"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "ສຳເນົາ selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "ຊື່ຄຸນສົມບັດ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "ຄ່າຄຸນສົມບັດ CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "ຕົວເລືອກ CSS"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "ກັ່ນຕອງ"
   },
@@ -4353,7 +4728,10 @@
     "message": "(ຂໍ້ຄວາມ)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "ເລືອກສີການວາງທັບສຳລັບອົງປະກອບນີ້"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "ເປີດຕົວເລືອກສີແລ້ວ."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4977,7 +5355,7 @@
     "message": "ຄຳເຕືອນ"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "ເຟຣມ"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ຊັບພະຍາກອນ}other{# ຊັບພະຍາກອນ}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "ເຊົາເຊື່ອງທັງໝົດ"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "ເຊື່ອງ {PH1} ປັດຈຸບັນທັງໝົດ"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "ຊັບພະຍາກອນທີ່ໄດ້ຮັບຜົນກະທົບ"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "ບລັອກໄວ້ແລ້ວ"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "ເຊື່ອງບັນຫາແບບນີ້"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "ສຶກສາເພີ່ມເຕີມ: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "ສະຖານະການຈຳກັດ"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "ເຊົາເຊື່ອງບັນຫາແບບນີ້"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "ເຕືອນແລ້ວ"
@@ -5028,19 +5415,19 @@
     "message": "ນະໂຍບາຍເຄື່ອງມືຝັງແບບຂ້າມຕົ້ນທາງ"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "ທົ່ວໄປ"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "ຈັດກຸ່ມຕາມໝວດໝູ່"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "ຈັດກຸ່ມຕາມປະເພດ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "ຈັດກຸ່ມບັນຫາທີ່ສະແດງໄວ້ໃນໝວດໝູ່ທີ່ກ່ຽວຂ້ອງ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "ຈັດກຸ່ມບັນຫາທີ່ສະແດງເປັນຂໍ້ຜິດພາດໜ້າ, Breaking change ແລະ ການປັບປຸງ"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "ໂຄສະນາທີ່ໃຊ້ຊັບພະຍາກອນຫຼາຍ"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "URL ໂມດູນ Wasm"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "ເຊົາເຊື່ອງບັນຫາແບບນີ້"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "ເຊື່ອງບັນຫາແບບນີ້"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "ເຊື່ອງເມນູບັນຫາ"
+    "message": "ເຊື່ອງບັນຫາ"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "ການລະເມີດ CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "ການຕອບສະໜອງ (ເວລາໄດ້ຮັບການຕອບສະໜອງ - ເວລາເລີ່ມ)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(ບໍ່ຮູ້ຈັກ)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "ຄຳເຕືອນ:"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "ເພື່ອເປີດໃຊ້ການຕັ້ງຄ່ານີ້, ທ່ານຈະຕ້ອງເປີດການນຳໃຊ້ການຊິ້ງຂໍ້ມູນການຕັ້ງຄ່າໃນ Chrome ກ່ອນ."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "ໄປຫາການຕັ້ງຄ່າ"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "ເຂົ້າສູ່ລະບົບຫາ Chrome ແລ້ວເປັນ:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "ເພື່ອເປີດໃຊ້ການຕັ້ງຄ່ານີ້, ທ່ານຈະຕ້ອງເປີດການນຳໃຊ້ການຊິ້ງຂໍ້ມູນ Chrome ກ່ອນ."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "ເພີ່ມອຸປະກອນກຳນົດເອງ..."
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "ເພີ່ມສະຄຣິບໃສ່ລາຍການລະເວັ້ນ"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "ເຟຣມການເອີ້ນບາງອັນມີຄຳເຕືອນ"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "ສະແຕັກການເອີ້ນໃຊ້"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ຈັດຮຽງຕາມ"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … ກຳລັງຂ້າມ {PH1} ແຖວທີ່ກົງກັນ … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "ການເພີ່ມ:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "ໂປຣແກຣມເບິ່ງຄວາມແຕກຕ່າງຂອງການປ່ຽນແປງ"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "ການລຶບ:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{ການປ່ຽນແປງທີ່ສົ່ງຜົນກັບສ່ວນອື່ນໃນລະບົບ # ລາຍການ}other{ການປ່ຽນແປງທີ່ສົ່ງຜົນກັບສ່ວນອື່ນໃນລະບົບ # ລາຍການ}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "ແຖບເພີ່ມເຕີມ"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "ຄຸນສົມບັດຕົວຢ່າງ"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools ຖືກຕັດການເຊື່ອມຕໍ່ຈາກໜ້າແລ້ວ."

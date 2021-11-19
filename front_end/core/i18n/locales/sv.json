@@ -1331,11 +1331,8 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site och Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | userAgentReduction": {
-    "message": "Reducering av användaragentsträng"
-  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
-    "message": "Portals - Same-origin communication channels"
+    "message": "Portaler – Kommunikationskanaler med samma ursprung"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Hantera åtgärder mot tunga annonser"
@@ -1344,25 +1341,28 @@
     "message": "Ett problem med icke-bakåtkompatibel ändring: sidan kan sluta att fungera i en kommande version av Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Icke-bakåtkompatibla ändringar"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "Ett problem med förbättring: det finns en möjlighet att förbättra sidan"
   },
   "models/issues_manager/Issue.ts | improvements": {
-    "message": "Improvements"
+    "message": "Förbättringar"
   },
   "models/issues_manager/Issue.ts | pageErrorIssue": {
     "message": "Ett problem med sidfel: sidan fungerar inte som den ska"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Sidfel"
   },
   "models/issues_manager/LowTextContrastIssue.ts | colorAndContrastAccessibility": {
     "message": "Tillgänglighet för färg och kontrast"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Förhindrar blandat innehåll"
+  },
+  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
+    "message": "Reducering av användaragentsträng"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetsläge för dokumentet"
@@ -1703,6 +1703,9 @@
   "panels/accessibility/AccessibilityStrings.ts | fromCaption": {
     "message": "Från caption"
   },
+  "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
+    "message": "Från description"
+  },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Från label"
   },
@@ -1852,6 +1855,9 @@
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromAttribute": {
     "message": "Värde från attribut."
+  },
+  "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
+    "message": "Värde från description-elementet."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Värde från elementens innehåll."
@@ -2309,6 +2315,339 @@
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "funktion"
   },
+  "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
+    "message": "Bara sidor som lästs in via en GET-begäran kan placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
+    "message": "Bara sidor med statuskoden 2XX kan cachelagras."
+  },
+  "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
+    "message": "Ett försök att köra JavaScript i cacheminnet upptäcktes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | appBanner": {
+    "message": "Sidor som har begärt en AppBanner kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
+    "message": "Vilocacheminnet har inaktiverats med hjälp av en flagga. Öppna chrome://flags/#back-forward-cache om du vill aktivera det lokalt på enheten."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
+    "message": "Vilocacheminnet har inaktiverats från kommandoraden."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
+    "message": "Vilocacheminnet har inaktiverats därför att minnet inte räckte till."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
+    "message": "Vilocacheminnet stöds inte vid delegering."
+  },
+  "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
+    "message": "Vilocacheminnet har inaktiverats för förrendering."
+  },
+  "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
+    "message": "Sidan kan inte cachelagras eftersom den har en BroadcastChannel-instans med registrerade lyssnare."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
+    "message": "Sidor med fältet cache-control:no-store i huvudet kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
+    "message": "Cacheminnet rensades avsiktligen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
+    "message": "Sidan togs bort från cacheminnet så att en annan sida skulle kunna cachelagras."
+  },
+  "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
+    "message": "Sidor som använder en plugin kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
+    "message": "Sidor som använder FileChooser API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
+    "message": "Sidor som använder File System Access API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
+    "message": "Sidor som använder Media Device Dispatcher kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
+    "message": "Uppspelning pågick i en mediespelare när användaren navigerade bort från sidan."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
+    "message": "Sidor som använder MediaSession API och ställer in en uppspelningsstatus kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
+    "message": "Sidor som använder MediaSession API och ställer in åtgärdshanterare kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
+    "message": "Sidor som använder SecurityHandler kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentSerial": {
+    "message": "Sidor som använder Serial API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
+    "message": "Sidor som använder WebAuthentication API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
+    "message": "Sidor som använder WebBluetooth API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
+    "message": "Sidor som använder WebUSB API kan inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
+    "message": "Sidor som använder en dedikerad tjänstefunktion eller worklet kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
+    "message": "Dokumentet lästes inte in helt innan användaren navigerade bort från det."
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "EmbedderAppBannerManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "EmbedderDomDistillerViewerSource"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "EmbedderExtensionMessaging"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "EmbedderExtensionMessagingForOpenPort"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "EmbedderExtensionSentMessageToCachedFrame"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "EmbedderExtensions"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "EmbedderModalDialog"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "EmbedderOfflinePage"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "EmbedderOomInterventionTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "EmbedderPermissionRequestManager"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "EmbedderPopupBlockerTabHelper"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "EmbedderSafeBrowsingThreatDetails"
+  },
+  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+  },
+  "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
+    "message": "En tjänstefunktion aktiverades medan sidan lagrades i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
+    "message": "Sidan togs bort från cacheminnet så att en annan sida skulle kunna cachelagras."
+  },
+  "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
+    "message": "Sidor med åtkomstbehörighet till en mediestream kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
+    "message": "Sidor som använder en portal kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | idleManager": {
+    "message": "Sidor som använder IdleManager kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
+    "message": "Sidor med en öppen IndexedDB-anslutning kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
+    "message": "Otillåtna API:er användes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
+    "message": "Sidor som tar emot injicerad JavaScript-kod från tillägg kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
+    "message": "Sidor med ett StyleSheet som injicerats av ett tillägg kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | internalError": {
+    "message": "Internt fel."
+  },
+  "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
+    "message": "Sidor som använder tangentbordslås kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | loading": {
+    "message": "Sidan hade inte lästs in helt innan användaren navigerade bort från den."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
+    "message": "Sidor vars huvudresurs har cache-control:no-cache kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
+    "message": "Sidor vars huvudresurs har cache-control:no-store kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
+    "message": "Navigeringen avbröts innan sidan kunde återställas från vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
+    "message": "Sidan togs bort från cacheminnet eftersom för mycket data skickades till den via en aktiv nätverksanslutning. Det finns en gräns för hur mycket data en cachelagrad sida får ta emot i Chrome."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
+    "message": "Sidor med utestående fetch() eller XHR kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
+    "message": "Sidan togs bort från vilocacheminnet eftersom en aktiv nätverksbegäran medförde en omdirigering."
+  },
+  "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
+    "message": "Sidan togs bort från cacheminnet eftersom en nätverksanslutning förblev öppen för länge. Det finns en gräns för hur länge en cachelagrad sida får ta emot data i Chrome."
+  },
+  "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
+    "message": "Sidor utan giltigt svarshuvud kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
+    "message": "Navigeringen gjordes i en annan ram än den överordnade ramen."
+  },
+  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
+    "message": "Sidan har en unload-hanterare utan det fält i huvudet som används för att välja vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
+    "message": "Sidor med pågående transaktioner i en indexerad databas kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
+    "message": "Sidor med en utestående nätverksbegäran kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
+    "message": "Sidor med en utestående hämtningsbegäran i nätverket kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
+    "message": "Sidor med en utestående nätverksbegäran kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
+    "message": "Sidor med en utestående XHR-nätverksbegäran kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | paymentManager": {
+    "message": "Sidor som använder PaymentManager kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
+    "message": "Sidor som använder bild-i-bild kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | portal": {
+    "message": "Sidor som använder en portal kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | printing": {
+    "message": "Sidor där användargränssnittet för utskrift visas kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
+    "message": "Sidan öppnades med window.open() och en annan flik refererar till den, eller också öppnade sidan ett fönster."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
+    "message": "Renderingen av sidan i vilocacheminnet kraschade."
+  },
+  "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
+    "message": "Renderingsprocessen för sidan i vilocacheminnet avslutades."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
+    "message": "Sidor som har begärt behörighet att spela in ljud kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
+    "message": "Sidor som har begärt sensorbehörighet kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
+    "message": "Sidor som har begärt synkronisering i bakgrunden eller hämtningsbehörighet kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
+    "message": "Sidor som har begärt MIDI-behörighet kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
+    "message": "Sidor som har begärt aviseringsbehörighet kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
+    "message": "Sidor som har begärt åtkomst till lagringsutrymme kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
+    "message": "Sidor som har begärt behörighet till videoinspelning kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
+    "message": "Bara sidor med webbprotokollet HTTP eller HTTPS kan cachelagras."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
+    "message": "En tjänstefunktion gjorde anspråk på sidan medan den lagrades i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
+    "message": "En tjänstefunktion försökte skicka MessageEvent till sidan i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
+    "message": "En ServiceWorker avregistrerades medan sidan lagrades i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
+    "message": "Sidan togs bort från vilocacheminnet därför att en tjänstefunktion aktiverades."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
+    "message": "Chrome har startats om och vilocacheminnet nollställts."
+  },
+  "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
+    "message": "Sidor som använder SharedWorker kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
+    "message": "Sidor som använder SpeechRecognizer kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
+    "message": "Sidor som använder SpeechSynthesis kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
+    "message": "En iframe på sidan initierade en navigering som aldrig slutfördes."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
+    "message": "Sidor som har en underresurs med cache-control:no-cache kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
+    "message": "Sidor som har en underresurs med cache-control:no-store kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeout": {
+    "message": "Sidan finns inte kvar eftersom tidsgränsen för lagring i vilocacheminnet överskreds."
+  },
+  "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
+    "message": "Tidsgränsen överskreds när sidan skulle lagras i vilocacheminnet (troligen på grund av en pagehide-hanterare som kördes under lång tid)."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
+    "message": "Det finns en unload-hanterare i sidans överordnade ram."
+  },
+  "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
+    "message": "Sidan har en unload-hanterare i en underordnad ram."
+  },
+  "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
+    "message": "Webbläsaren har ändrat fältet för åsidosättning av användaragent."
+  },
+  "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
+    "message": "Sidor med behörighet att spela in video eller ljud kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webDatabase": {
+    "message": "Sidor som använder WebDatabase kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webHID": {
+    "message": "Sidor som använder WebHID kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webLocks": {
+    "message": "Sidor som använder WebLocks kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webNfc": {
+    "message": "Sidor som använder WebNfc kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webOTPService": {
+    "message": "Sidor som använder WebOTPService kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webRTC": {
+    "message": "Sidor med WebRTC kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webShare": {
+    "message": "Sidor som använder WebShare kan för närvarande inte placeras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webSocket": {
+    "message": "Sidor med WebSocket kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webTransport": {
+    "message": "Sidor med WebTransport kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/BackForwardCacheStrings.ts | webXR": {
+    "message": "Sidor som använder WebXR kan för närvarande inte placeras i vilocacheminnet."
+  },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Vilocacheminne"
   },
@@ -2316,25 +2655,34 @@
     "message": "Status för vilocacheminne"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
-    "message": "Not Actionable"
+    "message": "Ingen åtgärd kan vidtas"
   },
-  "panels/application/BackForwardCacheView.ts | lastMainFrameNavigation": {
-    "message": "Senaste navigering i huvudramen"
+  "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
+    "message": "I dessa fall går orsaken inte att åtgärda, det vill säga, skälet till att sidan inte gick att cachelagra är något som inte styrs av sidan."
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Huvudram"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigation (Not restored from back-forward cache)"
+    "message": "Normal navigering (inte återställd från vilocacheminnet)"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
-    "message": "Actionable"
+    "message": "Åtgärder kan vidtas"
+  },
+  "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
+    "message": "I dessa fall går orsaken att åtgärda, dvs den kan avlägsnas så att sidan kan lagras i vilocacheminnet."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
     "message": "Har återställts från vilocacheminnet"
   },
+  "panels/application/BackForwardCacheView.ts | runTest": {
+    "message": "Kör testet"
+  },
   "panels/application/BackForwardCacheView.ts | supportPending": {
-    "message": "Pending Support"
+    "message": "Väntar på support"
+  },
+  "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
+    "message": "I dessa fall har stöd i Chrome ännu inte implementerats, det vill säga, i en kommande version av Chrome kommer detta inte att utgöra ett hinder för att sidorna lagras i vilocacheminnet."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "otillgänglig"
@@ -3077,6 +3425,9 @@
   "panels/application/components/OriginTrialTreeView.ts | tokens": {
     "message": "{PH1} token"
   },
+  "panels/application/components/OriginTrialTreeView.ts | trialName": {
+    "message": "Namn på provperiod"
+  },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Användningsbegränsning"
   },
@@ -3266,20 +3617,8 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (från källkarta)"
   },
-  "panels/changes/ChangesTextEditor.ts | additions": {
-    "message": "Tillägg: {PH1}"
-  },
-  "panels/changes/ChangesTextEditor.ts | deletions": {
-    "message": "Borttagning: {PH1}"
-  },
-  "panels/changes/ChangesView.ts | SkippingDMatchingLines": {
-    "message": "( … Hoppar över {PH1} matchande rader … )"
-  },
   "panels/changes/ChangesView.ts | binaryData": {
     "message": "Binär data"
-  },
-  "panels/changes/ChangesView.ts | changesDiffViewer": {
-    "message": "Visningsprogram för ändringar i differens"
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Inga ändringar"
@@ -3869,12 +4208,6 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Rensa översikt"
   },
-  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
-    "message": "Ta en skärmbild av översikten"
-  },
-  "panels/css_overview/CSSOverviewStartView.ts | cssOverview": {
-    "message": "CSS – översikt"
-  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom tillämpas på ett element i statisk position"
   },
@@ -3896,8 +4229,41 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width tillämpades på ett infogat element"
   },
+  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
+    "message": "Vårt team arbetar aktivt med denna funktion och tar gärna emot {PH1}!"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
+    "message": "Ta en skärmbild av översikten"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Få en översikt över sidans CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
+    "message": "feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
+    "message": "Feedback"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Identifiera förbättringsmöjligheter i CSS"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Identifiera förbättringsmöjligheter i CSS (t.ex. problem med låg kontrast, deklarationer som inte används, färg eller teckensnitt som inte stämmer överens)"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Hitta de element som påverkas i panelen Element"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
+    "message": "Förhandsfunktion"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Snabbstart: Kom igång med den nya CSS-översiktspanelen"
+  },
+  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
+    "message": "Video och dokumentation"
+  },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
-    "message": "CSS – översikt"
+    "message": "CSS-översikt"
   },
   "panels/css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "Visa CSS-översikt"
@@ -4283,6 +4649,15 @@
   "panels/elements/StylesSidebarPane.ts | copySelector": {
     "message": "Kopiera selector"
   },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
+    "message": "Namn på egenskapen CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
+    "message": "Värde på egenskapen CSS"
+  },
+  "panels/elements/StylesSidebarPane.ts | cssSelector": {
+    "message": "CSS-väljare"
+  },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrera"
   },
@@ -4353,7 +4728,10 @@
     "message": "(text)"
   },
   "panels/elements/components/LayoutPane.ts | chooseElementOverlayColor": {
-    "message": "Choose the overlay color for this element"
+    "message": "Välj överlagringsfärg för elementet"
+  },
+  "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
+    "message": "Färgväljaren har öppnats."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexibel ruta"
@@ -4977,7 +5355,7 @@
     "message": "varning"
   },
   "panels/issues/GenericIssueDetailsView.ts | frameId": {
-    "message": "Frame"
+    "message": "Ram"
   },
   "panels/issues/GenericIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resurs}other{# resurser}}"
@@ -4988,6 +5366,9 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Visa alla"
   },
+  "panels/issues/IssueKindView.ts | hideAllCurrent": {
+    "message": "Dölj alla aktuella {PH1}"
+  },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Berörda resurser"
   },
@@ -4996,6 +5377,9 @@
   },
   "panels/issues/IssueView.ts | blocked": {
     "message": "blockerad"
+  },
+  "panels/issues/IssueView.ts | hideIssuesLikeThis": {
+    "message": "Dölj problem som detta"
   },
   "panels/issues/IssueView.ts | learnMoreS": {
     "message": "Läs mer: {PH1}"
@@ -5011,6 +5395,9 @@
   },
   "panels/issues/IssueView.ts | restrictionStatus": {
     "message": "Begränsningsstatus"
+  },
+  "panels/issues/IssueView.ts | unhideIssuesLikeThis": {
+    "message": "Visa problem som detta"
   },
   "panels/issues/IssueView.ts | warned": {
     "message": "Varnad"
@@ -5028,19 +5415,19 @@
     "message": "Princip för inbäddning med korsursprung"
   },
   "panels/issues/IssuesPane.ts | generic": {
-    "message": "Generic"
+    "message": "Allmän"
   },
   "panels/issues/IssuesPane.ts | groupByCategory": {
     "message": "Gruppera efter kategori"
   },
   "panels/issues/IssuesPane.ts | groupByKind": {
-    "message": "Group by kind"
+    "message": "Gruppera efter sort"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnder": {
     "message": "Gruppera visade problem under relaterade kategorier"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "Group displayed issues as Page errors, Breaking changes and Improvements"
+    "message": "Problem som sidfel, icke-bakåtkompatibla ändringar och förbättringar visas för gruppen"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "Tunga annonser"
@@ -5096,14 +5483,8 @@
   "panels/issues/WasmCrossOriginModuleSharingAffectedResourcesView.ts | wasmModuleUrl": {
     "message": "Webbadress för wasm-modul"
   },
-  "panels/issues/components/HideIssuesMenu.ts | UnhideIssueByCode": {
-    "message": "Visa problem som detta"
-  },
-  "panels/issues/components/HideIssuesMenu.ts | hideIssueByCode": {
-    "message": "Dölj problem som detta"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Menyn Dölj problem"
+    "message": "Dölj problem"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "Överträdelser av CSP"
@@ -6055,6 +6436,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
+  },
+  "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
+    "message": "Latens (tiden då svaret togs emot minus starttiden)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(okänt)"
@@ -8516,6 +8900,18 @@
   "panels/settings/SettingsScreen.ts | warning": {
     "message": "VARNING!"
   },
+  "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
+    "message": "Du måste aktivera synkronisering av inställningar i Chrome innan du kan aktivera den här inställningen."
+  },
+  "panels/settings/components/SyncSection.ts | settings": {
+    "message": "Öppna inställningarna"
+  },
+  "panels/settings/components/SyncSection.ts | signedIn": {
+    "message": "Inloggad i Chrome som:"
+  },
+  "panels/settings/components/SyncSection.ts | syncDisabled": {
+    "message": "Du måste aktivera synkronisering i Chrome innan du kan aktivera den här funktionen."
+  },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Lägg till anpassad enhet …"
   },
@@ -8722,6 +9118,9 @@
   },
   "panels/sources/CallStackSidebarPane.ts | addScriptToIgnoreList": {
     "message": "Lägg till skript på ignoreringslistan"
+  },
+  "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
+    "message": "Det finns varningar för vissa anropsramar"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Anropsstack"
@@ -10943,6 +11342,18 @@
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortera efter"
   },
+  "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
+    "message": "( … Hoppar över {PH1} matchande rader … )"
+  },
+  "ui/components/diff_view/DiffView.ts | additions": {
+    "message": "Tillägg:"
+  },
+  "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
+    "message": "Visningsprogram för ändringar i differens"
+  },
+  "ui/components/diff_view/DiffView.ts | deletions": {
+    "message": "Strykning:"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# icke-bakåtkompatibel ändring}other{# icke-bakåtkompatibla ändringar}}"
   },
@@ -11214,7 +11625,7 @@
     "message": "Fler flikar"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Förhandsfunktion"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Verktyg för programmerare har kopplats från på sidan."

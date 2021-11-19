@@ -33,15 +33,19 @@ async function loadSecurityModule(): Promise<typeof Security> {
   return loadedSecurityModule;
 }
 
-UI.ViewManager.registerViewExtension({
-  location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'security',
-  title: i18nLazyString(UIStrings.security),
-  commandPrompt: i18nLazyString(UIStrings.showSecurity),
-  order: 80,
-  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
-  async loadView() {
-    const Security = await loadSecurityModule();
-    return Security.SecurityPanel.SecurityPanel.instance();
-  },
-});
+// COHERENT BEGIN
+
+// UI.ViewManager.registerViewExtension({
+//   location: UI.ViewManager.ViewLocationValues.PANEL,
+//   id: 'security',
+//   title: i18nLazyString(UIStrings.security),
+//   commandPrompt: i18nLazyString(UIStrings.showSecurity),
+//   order: 80,
+//   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+//   async loadView() {
+//     const Security = await loadSecurityModule();
+//     return Security.SecurityPanel.SecurityPanel.instance();
+//   },
+// });
+
+// COHERENT END

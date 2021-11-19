@@ -127,30 +127,22 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     if (!scriptFile.hasScripts([script])) {
       return null;
     }
-    const lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-    let columnNumber = rawLocation.columnNumber || 0;
-    if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber) {
-      columnNumber -= script.columnOffset;
-    }
+    const {lineNumber, columnNumber = 0} = rawLocation;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
   uiLocationToRawLocations(uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number, columnNumber: number):
       SDK.DebuggerModel.Location[] {
     const scriptFile = this.#uiSourceCodeToScriptFile.get(uiSourceCode);
-    if (!scriptFile || typeof scriptFile.script === 'undefined') {
+    if (!scriptFile) {
       return [];
     }
 
-    const script = scriptFile.script;
+    const {script} = scriptFile;
     if (!script) {
       return [];
     }
 
-    if (script.isInlineScriptWithSourceURL()) {
-      return [this.debuggerModel.createRawLocation(
-          script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset)];
-    }
     return [this.debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 

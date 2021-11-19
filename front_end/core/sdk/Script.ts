@@ -313,10 +313,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return !this.sourceURL;
   }
 
-  isInlineScriptWithSourceURL(): boolean {
-    return Boolean(this.hasSourceURL) && this.isInlineScript();
-  }
-
   async setBlackboxedRanges(positions: Protocol.Debugger.ScriptPosition[]): Promise<boolean> {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
         {scriptId: this.scriptId, positions});

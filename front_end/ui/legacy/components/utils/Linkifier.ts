@@ -184,17 +184,9 @@ export class Linkifier implements SDK.TargetManager.Observer {
       }
       info.liveLocation = null;
       Linkifier.unbindUILocation(anchor);
-      const fallback = (info.fallback as HTMLElement | null);
+      const fallback = info.fallback;
       if (fallback) {
-        // @ts-ignore
-        anchor.href = fallback.href;
-        UI.Tooltip.Tooltip.install(anchor, fallback.title);
-        anchor.className = fallback.className;
-        anchor.textContent = fallback.textContent;
-        const fallbackInfo = infoByAnchor.get(fallback);
-        if (fallbackInfo) {
-          infoByAnchor.set(anchor, fallbackInfo);
-        }
+        anchor.replaceWith(fallback);
       }
     }
   }
@@ -336,7 +328,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       inlineFrameIndex: 0,
       maxLength: this.maxLength,
       text: undefined,
-      preventClick: undefined,
+      preventClick: true,
       tabStop: undefined,
       bypassURLTrimming: undefined,
     });

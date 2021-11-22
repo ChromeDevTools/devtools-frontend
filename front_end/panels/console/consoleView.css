@@ -345,13 +345,13 @@
 }
 
 #console-messages .link {
+  cursor: pointer;
   text-decoration: underline;
 }
 
 #console-messages .link,
 #console-messages .devtools-link {
   color: var(--color-text-secondary);
-  cursor: pointer;
   word-break: break-all;
 }
 

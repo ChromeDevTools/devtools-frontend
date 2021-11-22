@@ -18,7 +18,7 @@ aXe violations: [
             ".cm-content"
           ]
         ],
-        "html": "<div spellcheck=\"false\" autocorrect=\"off\" autocapitalize=\"off\" translate=\"no\" contenteditable=\"true\" class=\"cm-content\" style=\"tab-size: 4;\" role=\"textbox\" aria-multiline=\"true\" aria-autocomplete=\"list\" aria-expanded=\"false\" aria-label=\"Code editor\"><div class=\"cm-line\"><br></div></div>",
+        "html": "<div spellcheck=\"false\" autocorrect=\"off\" autocapitalize=\"off\" translate=\"no\" contenteditable=\"true\" class=\"cm-content\" style=\"tab-size: 4;\" role=\"textbox\" aria-multiline=\"true\" aria-label=\"Code editor\" aria-autocomplete=\"list\" aria-expanded=\"false\"><div class=\"cm-line\"><br></div></div>",
         "failureSummary": "Fix any of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\""
       }
     ]

@@ -7,8 +7,9 @@
 import {StreamLanguage} from '@codemirror/stream-parser';
 
 export {
-  acceptCompletion, autocompletion, completeAnyWord, Completion, CompletionContext,
-  CompletionResult, CompletionSource, currentCompletions, ifNotIn
+  acceptCompletion, autocompletion, closeCompletion, completeAnyWord,
+  Completion, CompletionContext, CompletionResult, CompletionSource, currentCompletions,
+  ifNotIn, selectedCompletion, startCompletion,
 } from '@codemirror/autocomplete';
 export {closeBrackets, closeBracketsKeymap} from '@codemirror/closebrackets';
 export {

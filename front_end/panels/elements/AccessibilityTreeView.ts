@@ -9,15 +9,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
-export class AccessibilityTreeView extends UI.Widget.VBox {
-  private readonly accessibilityTreeComponent =
-      new TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>();
-  private treeData: AccessibilityTreeUtils.AXTreeNode[] = [];
+export class AccessibilityTreeView extends UI.Widget.VBox implements
+    SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {
+  private accessibilityTreeComponent = new TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>();
   private readonly toggleButton: HTMLButtonElement;
-  private accessibilityModel: SDK.AccessibilityModel.AccessibilityModel|null = null;
-  private rootAXNode: SDK.AccessibilityModel.AccessibilityNode|null = null;
-  private selectedTreeNode: AccessibilityTreeUtils.AXTreeNode|null = null;
   private inspectedDOMNode: SDK.DOMModel.DOMNode|null = null;
+  private root: SDK.AccessibilityModel.AccessibilityNode|null = null;
 
   constructor(toggleButton: HTMLButtonElement) {
     super();
@@ -26,6 +23,8 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     this.toggleButton = toggleButton;
     this.contentElement.appendChild(this.toggleButton);
     this.contentElement.appendChild(this.accessibilityTreeComponent);
+
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this);
 
     // The DOM tree and accessibility are kept in sync as much as possible, so
     // on node selection, update the currently inspected node and reveal in the
@@ -57,147 +56,58 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     });
   }
 
-  wasShown(): void {
+  async wasShown(): Promise<void> {
+    await this.refreshAccessibilityTree();
     if (this.inspectedDOMNode) {
-      this.loadSubTreeIntoAccessibilityModel(this.inspectedDOMNode);
-    } else {
-      this.accessibilityTreeComponent.expandRecursively(1);
+      await this.loadSubTreeIntoAccessibilityModel(this.inspectedDOMNode);
     }
   }
 
-  setAccessibilityModel(model: SDK.AccessibilityModel.AccessibilityModel|null): void {
-    this.accessibilityModel = model;
-  }
-
-  wireToDOMModel(domModel: SDK.DOMModel.DOMModel): void {
-    if (!domModel.parentModel()) {
-      this.setAccessibilityModel(domModel.target().model(SDK.AccessibilityModel.AccessibilityModel));
+  async refreshAccessibilityTree(): Promise<void> {
+    if (!this.root) {
+      const frameId = SDK.FrameManager.FrameManager.instance().getTopFrame()?.id;
+      if (!frameId) {
+        throw Error('No top frame');
+      }
+      this.root = await AccessibilityTreeUtils.getRootNode(frameId);
+      if (!this.root) {
+        throw Error('No root');
+      }
     }
-    domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this.domUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this.domUpdatedNode, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this.domUpdatedNode, this);
-    domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.domUpdatedNode, this);
-    domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.domUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.domUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.domUpdated, this);
-    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+    await this.renderTree();
+    await this.accessibilityTreeComponent.expandRecursively(1);
   }
 
-  unwireFromDOMModel(domModel: SDK.DOMModel.DOMModel): void {
-    domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this.domUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this.domUpdatedNode, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this.domUpdatedNode, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.domUpdatedNode, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.domUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.domUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.domUpdated, this);
-    domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
-  }
-
-  domUpdatedNode(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode}>): void {
-    this.update(event.data.node);
-  }
-
-  domUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
-    this.update(event.data);
-  }
-
-  async update(node: SDK.DOMModel.DOMNode): Promise<void> {
-    const axModel = node.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-    await axModel?.requestAndLoadSubTreeToNode(node);
-    this.renderTree();
-  }
-
-  documentUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
-    const domModel = event.data;
-    const axModel = domModel.target().model(SDK.AccessibilityModel.AccessibilityModel);
-    if (domModel.existingDocument() && !domModel.parentModel() && axModel) {
-      this.refreshAccessibilityTree(axModel);
-    }
-  }
-
-  renderTree(): void {
-    if (!this.rootAXNode) {
-      this.treeData = [];
-    } else {
-      this.treeData = [AccessibilityTreeUtils.sdkNodeToAXTreeNode(this.rootAXNode)];
-    }
-
-    this.accessibilityTreeComponent.data = {
-      defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
-      tree: this.treeData,
-    };
-
-    const axModel = this.inspectedDOMNode?.domModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
-    const inspectedAXNode = axModel?.axNodeForDOMNode(this.inspectedDOMNode);
-    if (inspectedAXNode) {
-      this.selectedTreeNode = AccessibilityTreeUtils.sdkNodeToAXTreeNode(inspectedAXNode);
-      this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.selectedTreeNode);
-    } else {
-      this.accessibilityTreeComponent.expandRecursively(1);
-    }
-  }
-
-  async refreshAccessibilityTree(accessibilityModel: SDK.AccessibilityModel.AccessibilityModel): Promise<void> {
-    // We always expand the root node so we might as well fetch one level of children immediately.
-    const root = await accessibilityModel.requestRootNode();
-    if (!root) {
+  async renderTree(): Promise<void> {
+    if (!this.root) {
       return;
     }
-
-    this.rootAXNode = root;
-    this.inspectedDOMNode = null;
-    this.renderTree();
+    const treeData = await AccessibilityTreeUtils.sdkNodeToAXTreeNodes(this.root);
+    this.accessibilityTreeComponent.data = {
+      defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
+      tree: treeData,
+      filter: (node): TreeOutline.TreeOutline.FilterOption => {
+        return node.ignored() || (node.role()?.value === 'generic' && !node.name()?.value) ?
+            TreeOutline.TreeOutline.FilterOption.FLATTEN :
+            TreeOutline.TreeOutline.FilterOption.SHOW;
+      },
+    };
   }
 
   // Given a selected DOM node, asks the model to load the missing subtree from the root to the
   // selected node and then re-renders the tree.
   async loadSubTreeIntoAccessibilityModel(selectedNode: SDK.DOMModel.DOMNode): Promise<void> {
-    if (!this.accessibilityModel) {
-      return;
-    }
-
-    // If this node has been loaded previously, the accessibility tree will return it's cached node.
-    // Eventually we'll need some mechanism for forcing it to fetch a new node when we are subscribing
-    // for updates, but TBD later.
-    // EG for a backend tree like:
-    //
-    // A*
-    //   B
-    //     C
-    //   D
-    //     E
-    // Where only A is already loaded into the model, calling requestAndLoadSubTreeToNode(C) will
-    // load [A, B, D, C] into the model, and return C.
-    await this.accessibilityModel.requestAndLoadSubTreeToNode(selectedNode);
-    const inspectedAXNode = this.accessibilityModel.axNodeForDOMNode(selectedNode);
+    const ancestors = await AccessibilityTreeUtils.getNodeAndAncestorsFromDOMNode(selectedNode);
+    const inspectedAXNode = ancestors.find(node => node.backendDOMNodeId() === selectedNode.backendNodeId());
     if (!inspectedAXNode) {
       return;
     }
-
-    this.accessibilityTreeComponent.data = {
-      defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
-      tree: this.treeData,
-    };
-
-    // These nodes require a special case, as they don't have an unignored node in the
-    // accessibility tree. Someone inspecting these in the DOM is probably expecting to
-    // be focused on the root WebArea of the accessibility tree.
-    // TODO(meredithl): Fix for when the inspected node is ingored in the accessibility
-    // tree. Eg, inspecting <head> in the DOM tree.
-    if (selectedNode.nodeName() === 'BODY' || selectedNode.nodeName() === 'HTML') {
-      this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.treeData[0]);
-      this.selectedTreeNode = this.treeData[0];
-      return;
-    }
-
-    this.selectedTreeNode = AccessibilityTreeUtils.sdkNodeToAXTreeNode(inspectedAXNode);
-    this.accessibilityTreeComponent.expandToAndSelectTreeNode(this.selectedTreeNode);
+    await this.accessibilityTreeComponent.expandNodeIds(ancestors.map(node => node.getFrameId() + '#' + node.id()));
+    await this.accessibilityTreeComponent.focusNodeId(AccessibilityTreeUtils.getNodeId(inspectedAXNode));
   }
 
-  // Selected node in the DOM has changed, and the corresponding accessibility node may be
-  // unloaded.
-  async selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
+  // A node was revealed through the elements picker.
+  async revealAndSelectNode(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
     if (inspectedNode === this.inspectedDOMNode) {
       return;
     }
@@ -206,5 +116,45 @@ export class AccessibilityTreeView extends UI.Widget.VBox {
     if (this.isShowing()) {
       await this.loadSubTreeIntoAccessibilityModel(inspectedNode);
     }
+  }
+
+  // Selected node in the DOM tree has changed.
+  async selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
+    if (this.isShowing()) {
+      return;
+    }
+    if (inspectedNode.ownerDocument && (inspectedNode.nodeName() === 'HTML' || inspectedNode.nodeName() === 'BODY')) {
+      inspectedNode = inspectedNode.ownerDocument;
+    }
+    if (inspectedNode === this.inspectedDOMNode) {
+      return;
+    }
+    this.inspectedDOMNode = inspectedNode;
+  }
+
+  treeUpdated({data}: Common.EventTarget
+                  .EventTargetEvent<SDK.AccessibilityModel.EventTypes[SDK.AccessibilityModel.Events.TreeUpdated]>):
+      void {
+    if (!data.root) {
+      this.renderTree();
+      return;
+    }
+    const topFrameId = SDK.FrameManager.FrameManager.instance().getTopFrame()?.id;
+    if (data.root?.getFrameId() !== topFrameId) {
+      this.renderTree();
+      return;
+    }
+    this.root = data.root;
+    this.accessibilityTreeComponent.collapseAllNodes();
+
+    this.refreshAccessibilityTree();
+  }
+
+  modelAdded(model: SDK.AccessibilityModel.AccessibilityModel): void {
+    model.addEventListener(SDK.AccessibilityModel.Events.TreeUpdated, this.treeUpdated, this);
+  }
+
+  modelRemoved(model: SDK.AccessibilityModel.AccessibilityModel): void {
+    model.removeEventListener(SDK.AccessibilityModel.Events.TreeUpdated, this.treeUpdated, this);
   }
 }

@@ -2421,9 +2421,13 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(i18nString(UIStrings.score), eventData['score'].toPrecision(4));
         contentHelper.appendTextRow(
             i18nString(UIStrings.cumulativeScore), eventData['cumulative_score'].toPrecision(4));
-        contentHelper.appendTextRow(i18nString(UIStrings.currentClusterId), eventData['_current_cluster_id']);
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.currentClusterScore), eventData['_current_cluster_score'].toPrecision(4));
+        if ('_current_cluster_id' in eventData) {
+          contentHelper.appendTextRow(i18nString(UIStrings.currentClusterId), eventData['_current_cluster_id']);
+        }
+        if ('_current_cluster_score' in eventData) {
+          contentHelper.appendTextRow(
+              i18nString(UIStrings.currentClusterScore), eventData['_current_cluster_score'].toPrecision(4));
+        }
         contentHelper.appendTextRow(
             i18nString(UIStrings.hadRecentInput),
             eventData['had_recent_input'] ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));

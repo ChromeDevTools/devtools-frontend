@@ -24,6 +24,7 @@ devtools_module("text_editor") {
     "../../../core/sdk:bundle",
     "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
+    "../../../services/window_bounds:bundle",
     "../../legacy:bundle",
     "../../lit-html:bundle",
     "../code_highlighter:bundle",

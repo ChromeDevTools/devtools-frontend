@@ -710,9 +710,6 @@
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Ĥíd̂é f̂ŕâḿêś p̂ér̂ śêćôńd̂ (F́P̂Ś) m̂ét̂ér̂"
   },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Ĥíd̂é ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
-  },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Ĥíd̂é l̂áŷér̂ b́ôŕd̂ér̂ś"
   },
@@ -766,9 +763,6 @@
   },
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Ŝh́ôẃ ĝŕîd́ t̂ŕâćk̂ śîźêś"
-  },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Ŝh́ôẃ ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
   },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Ŝh́ôẃ l̂áŷér̂ b́ôŕd̂ér̂ś"
@@ -992,9 +986,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Ĥíĝh́l̂íĝh́t̂ś f̂ŕâḿêś (r̂éd̂) d́êt́êćt̂éd̂ t́ô b́ê ád̂ś."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Ĥít̂-t́êśt̂ b́ôŕd̂ér̂ś"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "L̂áŷér̂ b́ôŕd̂ér̂ś"
   },
@@ -1015,9 +1006,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Ŝh́ôẃŝ án̂ óv̂ér̂ĺâý ŵít̂h́ Ĉór̂é Ŵéb̂ V́ît́âĺŝ."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Ŝh́ôẃŝ b́ôŕd̂ér̂ś âŕôún̂d́ ĥít̂-t́êśt̂ ŕêǵîón̂ś."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."

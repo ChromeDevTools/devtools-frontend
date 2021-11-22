@@ -155,14 +155,6 @@ const UIStrings = {
   */
   hideScrollPerformanceBottlenecks: 'Hide scroll performance bottlenecks',
   /**
-  *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
-  */
-  showHittestBorders: 'Show hit-test borders',
-  /**
-  *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
-  */
-  hideHittestBorders: 'Hide hit-test borders',
-  /**
   *@description Title of a Rendering setting that can be invoked through the Command Menu
   */
   emulateAFocusedPage: 'Emulate a focused page',
@@ -660,24 +652,6 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.hideScrollPerformanceBottlenecks),
-    },
-  ],
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'showHitTestBorders',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.Session,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showHittestBorders),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideHittestBorders),
     },
   ],
   defaultValue: false,

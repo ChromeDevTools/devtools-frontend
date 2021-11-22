@@ -79,9 +79,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   #showScrollBottleneckRectsSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showHitTestBordersSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #showWebVitalsSetting: Common.Settings.Setting<any>;
   #registeredListeners: Common.EventTarget.EventDescriptor[];
   #showViewportSizeOnResize: boolean;
@@ -123,7 +120,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting('showFPSCounter');
     this.#showScrollBottleneckRectsSetting =
         Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects');
-    this.#showHitTestBordersSetting = Common.Settings.Settings.instance().moduleSetting('showHitTestBorders');
     this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting('showWebVitals');
 
     this.#registeredListeners = [];
@@ -213,8 +209,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       this.#showScrollBottleneckRectsSetting.addChangeListener(
           () => this.overlayAgent.invoke_setShowScrollBottleneckRects(
               {show: this.#showScrollBottleneckRectsSetting.get()})),
-      this.#showHitTestBordersSetting.addChangeListener(
-          () => this.overlayAgent.invoke_setShowHitTestBorders({show: this.#showHitTestBordersSetting.get()})),
       this.#showWebVitalsSetting.addChangeListener(
           () => this.overlayAgent.invoke_setShowWebVitals({show: this.#showWebVitalsSetting.get()})),
     ];
@@ -236,9 +230,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
     if (this.#showScrollBottleneckRectsSetting.get()) {
       this.overlayAgent.invoke_setShowScrollBottleneckRects({show: true});
-    }
-    if (this.#showHitTestBordersSetting.get()) {
-      this.overlayAgent.invoke_setShowHitTestBorders({show: true});
     }
     if (this.#showWebVitalsSetting.get()) {
       this.overlayAgent.invoke_setShowWebVitals({show: true});

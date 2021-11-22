@@ -710,9 +710,6 @@
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Hide frames per second (FPS) meter"
   },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Hide hit-test borders"
-  },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Hide layer borders"
   },
@@ -766,9 +763,6 @@
   },
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Show grid track sizes"
-  },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Show hit-test borders"
   },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Show layer borders"
@@ -992,9 +986,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Highlights frames (red) detected to be ads."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Hit-test borders"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Layer borders"
   },
@@ -1015,9 +1006,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Shows an overlay with Core Web Vitals."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Shows borders around hit-test regions."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Shows layer borders (orange/olive) and tiles (cyan)."

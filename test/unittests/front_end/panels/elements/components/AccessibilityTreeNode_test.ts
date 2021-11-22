@@ -17,6 +17,7 @@ describe('AccessibilityTreeNode', () => {
       name: 'NodeName',
       role: 'NodeRole',
       ignored: false,
+      properties: [],
     };
 
     await coordinator.done();
@@ -33,6 +34,7 @@ describe('AccessibilityTreeNode', () => {
       name: 'NodeName',
       role: 'NodeRole',
       ignored: true,
+      properties: [],
     };
     await coordinator.done();
 

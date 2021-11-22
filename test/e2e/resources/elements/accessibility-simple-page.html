@@ -6,5 +6,20 @@
 <!DOCTYPE html>
 <title>Simple page with aria labeled element</title>
 <h1>Title</h1>
+<h2 id='subtitle'>Subtitle</h2>
+<h2 role="presentation">Heading with role "presentation"</h2>
 <span aria-label="span-name"></span>
 <a href="x">cats</a>
+<div aria-label="wrapper 1">
+    <div aria-label="wrapper 2">
+        <div aria-label="wrapper 3">
+            <div aria-label="wrapper 4">
+                <h1 id='nested-title'>Deeply nested title</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<button aria-labelledby='nested-title' >Text shadowed by label</button>
+<button id='button-with-labelledby' aria-labelledby='nested-title subtitle' >Text shadowed by label</button>
+<button aria-labelledby='button-with-labelledby'>Text shadowed by label</button>
+<span aria-hidden="true">hidden span</span>

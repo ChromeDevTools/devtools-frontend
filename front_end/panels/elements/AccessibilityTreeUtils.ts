@@ -122,8 +122,9 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
   const sdkNode = node.treeNodeData;
   const name = sdkNode.name()?.value || '';
   const role = sdkNode.role()?.value || '';
+  const properties = sdkNode.properties() || [];
   const ignored = sdkNode.ignored();
-  return LitHtml.html`<${tag} .data=${{name, role, ignored} as Data}></${tag}>`;
+  return LitHtml.html`<${tag} .data=${{name, role, ignored, properties} as Data}></${tag}>`;
 }
 
 export function getNodeId(node: SDK.AccessibilityModel.AccessibilityNode): string {

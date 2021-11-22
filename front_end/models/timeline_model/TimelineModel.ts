@@ -678,7 +678,6 @@ export class TimelineModelImpl {
     if (jsSamples || events.some(e => e.name === RecordType.JSSample)) {
       const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
         showAllEvents: Root.Runtime.experiments.isEnabled('timelineShowAllEvents'),
-        showRuntimeCallStats: Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats'),
         showNativeFunctions: Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get(),
       });
       if (jsFrameEvents && jsFrameEvents.length) {

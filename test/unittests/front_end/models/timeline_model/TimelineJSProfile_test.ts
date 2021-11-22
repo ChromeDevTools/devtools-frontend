@@ -15,7 +15,6 @@ describe('TimelineJSProfile', () => {
 
   const config = {
     showAllEvents: false,
-    showRuntimeCallStats: false,
     showNativeFunctions: false,
   };
 

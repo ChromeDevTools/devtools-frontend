@@ -59,7 +59,6 @@ export class TimelineJSProfileProcessor {
 
   static generateJSFrameEvents(events: SDK.TracingModel.Event[], config: {
     showAllEvents: boolean,
-    showRuntimeCallStats: boolean,
     showNativeFunctions: boolean,
   }): SDK.TracingModel.Event[] {
     function equalFrames(frame1: Protocol.Runtime.CallFrame, frame2: Protocol.Runtime.CallFrame): boolean {
@@ -85,7 +84,7 @@ export class TimelineJSProfileProcessor {
     const lockedJsStackDepth: number[] = [];
     let ordinal = 0;
     let fakeJSInvocation = false;
-    const {showAllEvents, showRuntimeCallStats, showNativeFunctions} = config;
+    const {showAllEvents, showNativeFunctions} = config;
 
     function onStartEvent(e: SDK.TracingModel.Event): void {
       if (fakeJSInvocation) {
@@ -135,15 +134,10 @@ export class TimelineJSProfileProcessor {
       jsFramesStack.length = depth;
     }
 
-    function showNativeName(name: string): boolean {
-      return showRuntimeCallStats && Boolean(TimelineJSProfileProcessor.nativeGroup(name));
-    }
-
     function filterStackFrames(stack: Protocol.Runtime.CallFrame[]): void {
       if (showAllEvents) {
         return;
       }
-      let previousNativeFrameName: (string|null)|null = null;
       let j = 0;
       for (let i = 0; i < stack.length; ++i) {
         const frame = stack[i];
@@ -153,16 +147,9 @@ export class TimelineJSProfileProcessor {
           continue;
         }
         const isNativeRuntimeFrame = TimelineJSProfileProcessor.isNativeRuntimeFrame(frame);
-        if (isNativeRuntimeFrame && !showNativeName(frame.functionName)) {
-          continue;
+        if (!isNativeRuntimeFrame) {
+          stack[j++] = frame;
         }
-        const nativeFrameName =
-            isNativeRuntimeFrame ? TimelineJSProfileProcessor.nativeGroup(frame.functionName) : null;
-        if (previousNativeFrameName && previousNativeFrameName === nativeFrameName) {
-          continue;
-        }
-        previousNativeFrameName = nativeFrameName;
-        stack[j++] = frame;
       }
       stack.length = j;
     }

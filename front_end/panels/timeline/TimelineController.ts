@@ -93,9 +93,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     ];
     categoriesArray.push(TimelineModel.TimelineModel.TimelineModelImpl.Category.LatencyInfo);
 
-    if (Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
-      categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
-    }
     if (!Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
     }

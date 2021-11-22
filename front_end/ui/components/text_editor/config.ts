@@ -68,7 +68,10 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.k
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
-export const autocompletion = CM.autocompletion({icons: false});
+export const autocompletion = CM.autocompletion({
+  icons: false,
+  optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+});
 
 export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);
 
@@ -185,7 +188,6 @@ const baseKeymap = CM.keymap.of([
   {key: 'Mod-d', run: CM.selectNextOccurrence},
   {key: 'Alt-ArrowLeft', mac: 'Ctrl-ArrowLeft', run: CM.cursorSubwordBackward, shift: CM.selectSubwordBackward},
   {key: 'Alt-ArrowRight', mac: 'Ctrl-ArrowRight', run: CM.cursorSubwordForward, shift: CM.selectSubwordForward},
-  ...CM.closeBracketsKeymap,
   ...CM.standardKeymap,
   ...CM.historyKeymap,
 ]);
@@ -219,7 +221,6 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.EditorState.allowMultipleSelections.of(true),
     CM.indentOnInput(),
     CodeHighlighter.CodeHighlighter.highlightStyle,
-    CM.closeBrackets(),
     baseKeymap,
     tabMovesFocus.instance(),
     bracketMatching.instance(),
@@ -233,6 +234,11 @@ export function baseConfiguration(text: string): CM.Extension {
     }),
   ];
 }
+
+export const closeBrackets: CM.Extension = [
+  CM.closeBrackets(),
+  CM.keymap.of(CM.closeBracketsKeymap),
+];
 
 // Root editor tooltips at the top of the document, creating a special
 // element with the editor styles mounted in it for them. This is
@@ -299,12 +305,16 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
   }
 
   topCompletion(state: CM.EditorState): string|null {
-    const completions = CM.currentCompletions(state);
-    if (!completions.length) {
+    const completion = CM.selectedCompletion(state);
+    if (!completion) {
       return null;
     }
-    const {label} = completions[0];
-    if (label.length > 100 || label.indexOf('\n') > -1) {
+    let {label, apply} = completion;
+    if (typeof apply === 'string') {
+      label = apply;
+      apply = undefined;
+    }
+    if (apply || label.length > 100 || label.indexOf('\n') > -1 || completion.type === 'secondary') {
       return null;
     }
     const pos = state.selection.main.head;
@@ -312,13 +322,11 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
     if (pos !== lineBefore.to) {
       return null;
     }
-    const textBefore = lineBefore.text.slice(0, pos - lineBefore.from);
-    for (let i = label.length - 1; i > 0; i--) {
-      if (textBefore.endsWith(label.slice(0, i)) && !/\w/.test(textBefore.charAt(textBefore.length - i - 1))) {
-        return label.slice(i);
-      }
+    const wordBefore = /[\w$]+$/.exec(lineBefore.text);
+    if (wordBefore && !label.startsWith(wordBefore[0])) {
+      return null;
     }
-    return null;
+    return label.slice(wordBefore ? wordBefore[0].length : 0);
   }
 }, {decorations: p => p.decorations});
 

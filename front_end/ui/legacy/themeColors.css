@@ -167,6 +167,7 @@
   --color-selected-option: #fff;
   --color-selected-option-background: #1a73e8;
   --color-highlighted-line: rgb(255 255 0 / 50%);
+  --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);
   --color-selected-search-match: var(--color-text-primary);
   --color-selected-search-match-background: rgb(241 234 0);
@@ -307,6 +308,7 @@
   --color-selected-option: #fff;
   --color-selected-option-background: #0e639c;
   --color-highlighted-line: hsl(133deg 100% 30% / 50%);
+  --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);
   --color-selected-search-match: #eee;
   --color-selected-search-match-background: hsl(133deg 100% 30%);

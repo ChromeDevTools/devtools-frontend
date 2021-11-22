@@ -1044,6 +1044,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           },
         ]),
         TextEditor.Config.baseConfiguration(initialValue),
+        TextEditor.Config.closeBrackets,
         TextEditor.Config.autocompletion,
         CodeMirror.html.html(),
         TextEditor.Config.domWordWrap.instance(),

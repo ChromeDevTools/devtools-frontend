@@ -255,6 +255,7 @@ export class ConsolePin {
         ]),
         CodeMirror.EditorView.domEventHandlers({blur: (_e, view) => this.onBlur(view)}),
         TextEditor.Config.baseConfiguration(expression),
+        TextEditor.Config.closeBrackets,
         TextEditor.Config.autocompletion,
       ],
     }));

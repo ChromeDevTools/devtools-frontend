@@ -3,6 +3,8 @@ load(
     "acls",
     "builder",
     "builder_coverage",
+    "cq_acls",
+    "cq_retry_config",
     "default_timeout",
     "defaults",
     "dimensions",
@@ -121,25 +123,6 @@ luci.list_view(
     title = "Tryserver",
     favicon = defaults.favicon,
     entries = [luci.list_view_entry(builder = b) for b in try_builders],
-)
-
-cq_acls = [
-    acl.entry(
-        [acl.CQ_COMMITTER],
-        groups = ["project-devtools-committers"],
-    ),
-    acl.entry(
-        [acl.CQ_DRY_RUNNER],
-        groups = ["project-devtools-tryjob-access"],
-    ),
-]
-
-cq_retry_config = cq.retry_config(
-    single_quota = 2,
-    global_quota = 4,
-    failure_weight = 2,
-    transient_failure_weight = 1,
-    timeout_weight = 4,
 )
 
 cq_main = struct(

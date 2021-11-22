@@ -2,9 +2,6 @@
 
 lucicfg.check_version("1.29.1", "Please update depot_tools")
 
-# Enable LUCI Realms support.
-lucicfg.enable_experiment("crbug.com/1085650")
-
 # Launch 100% of Swarming tasks for builds in "realms-aware mode"
 luci.builder.defaults.experiments.set({"luci.use_realms": 100})
 
@@ -195,3 +192,4 @@ luci.cq(
 
 exec("//buckets/ci.star")
 exec("//buckets/try.star")
+exec("//buckets/serving_app.star")

@@ -289,6 +289,10 @@ export class CSSStyleDeclaration {
     return this.#allPropertiesInternal;
   }
 
+  hasActiveProperty(name: string): boolean {
+    return this.#activePropertyMap.has(name);
+  }
+
   getPropertyValue(name: string): string {
     const property = this.#activePropertyMap.get(name);
     return property ? property.value : '';

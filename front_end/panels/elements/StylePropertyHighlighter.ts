@@ -39,12 +39,19 @@ export class StylePropertyHighlighter {
    * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
    */
   findAndHighlightPropertyName(propertyName: string): void {
-    const {treeElement, section} = this.findTreeElementAndSection(
-        treeElement => treeElement.property.name === propertyName && !treeElement.overloaded());
-    if (treeElement) {
-      this.scrollAndHighlightTreeElement(treeElement);
-      if (section) {
-        section.element.focus();
+    for (const section of this.styleSidebarPane.allSections()) {
+      if (!section.style().hasActiveProperty(propertyName)) {
+        continue;
+      }
+      section.showAllItems();
+      const treeElement = this.findTreeElementFromSection(
+          treeElement => treeElement.property.name === propertyName && !treeElement.overloaded(), section);
+      if (treeElement) {
+        this.scrollAndHighlightTreeElement(treeElement);
+        if (section) {
+          section.element.focus();
+        }
+        return;
       }
     }
   }
@@ -57,23 +64,26 @@ export class StylePropertyHighlighter {
     treeElement: StylePropertyTreeElement|null,
     section: StylePropertiesSection|null,
   } {
-    let result: StylePropertyTreeElement|null = null;
-    let containingSection: StylePropertiesSection|null = null;
     for (const section of this.styleSidebarPane.allSections()) {
-      let treeElement = section.propertiesTreeOutline.firstChild();
-      while (treeElement && !result && (treeElement instanceof StylePropertyTreeElement)) {
-        if (compareCb(treeElement)) {
-          result = treeElement;
-          break;
-        }
-        treeElement = treeElement.traverseNextTreeElement(false, null, true);
-      }
-      if (result) {
-        containingSection = section;
-        break;
+      const treeElement = this.findTreeElementFromSection(compareCb, section);
+      if (treeElement) {
+        return {treeElement, section};
       }
     }
-    return {treeElement: result, section: containingSection};
+    return {treeElement: null, section: null};
+  }
+
+  private findTreeElementFromSection(
+      compareCb: (arg0: StylePropertyTreeElement) => boolean, section: StylePropertiesSection): StylePropertyTreeElement
+      |null {
+    let treeElement = section.propertiesTreeOutline.firstChild();
+    while (treeElement && (treeElement instanceof StylePropertyTreeElement)) {
+      if (compareCb(treeElement)) {
+        return treeElement;
+      }
+      treeElement = treeElement.traverseNextTreeElement(false, null, true);
+    }
+    return null;
   }
 
   private scrollAndHighlightTreeElement(treeElement: StylePropertyTreeElement): void {

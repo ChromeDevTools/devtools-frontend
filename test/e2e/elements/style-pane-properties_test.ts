@@ -79,6 +79,20 @@ describe('The Styles pane', async () => {
     await waitForPropertyToHighlight('html', '--title-color');
   });
 
+  it('can jump to an unexpanded CSS variable definition', async () => {
+    const {frontend} = getBrowserAndPages();
+    await goToResourceAndWaitForStyleSection('elements/css-variables-many.html');
+
+    // Select div that we will inspect the CSS variables for
+    await frontend.keyboard.press('ArrowRight');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+
+    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
+    await click(FIRST_PROPERTY_VALUE_SELECTOR, {root: testElementRule});
+
+    await waitForPropertyToHighlight('html', '--color56');
+  });
+
   it('displays the correct value when editing CSS var() functions', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-variables.html');

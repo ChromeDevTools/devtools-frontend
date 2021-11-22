@@ -1922,7 +1922,7 @@ export class StylePropertiesSection {
     }
   }
 
-  private showAllItems(event?: Event): void {
+  showAllItems(event?: Event): void {
     if (event) {
       event.consume();
     }

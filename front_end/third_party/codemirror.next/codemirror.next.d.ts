@@ -5502,6 +5502,19 @@ declare function tooltips(config?: {
     those.
     */
     parent?: HTMLElement;
+    /**
+    By default, when figuring out whether there is room for a
+    tooltip at a given position, the extension considers the entire
+    space between 0,0 and `innerWidth`,`innerHeight` to be available
+    for showing tooltips. You can provide a function here that
+    returns an alternative rectangle.
+    */
+    tooltipSpace?: (view: EditorView) => {
+        top: number;
+        left: number;
+        bottom: number;
+        right: number;
+    };
 }): Extension;
 /**
 Describes a tooltip. Values of this type, when provided through

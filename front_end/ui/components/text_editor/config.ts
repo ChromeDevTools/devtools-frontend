@@ -201,6 +201,15 @@ export function theme(): CM.Extension {
   return [editorTheme, themeIsDark() ? dummyDarkTheme : []];
 }
 
+let sideBarElement: HTMLElement|null = null;
+
+function getTooltipSpace(): DOMRect {
+  if (!sideBarElement) {
+    sideBarElement = document.querySelector('[slot="insertion-point-sidebar"]');
+  }
+  return (sideBarElement || document.body).getBoundingClientRect();
+}
+
 export function baseConfiguration(text: string): CM.Extension {
   return [
     theme(),
@@ -218,7 +227,10 @@ export function baseConfiguration(text: string): CM.Extension {
     CM.Prec.lowest(CM.EditorView.contentAttributes.of({'aria-label': i18nString(UIStrings.codeEditor)})),
     detectLineSeparator(text),
     autocompletion,
-    CM.tooltips({parent: getTooltipHost() as unknown as HTMLElement}),
+    CM.tooltips({
+      parent: getTooltipHost() as unknown as HTMLElement,
+      tooltipSpace: getTooltipSpace,
+    }),
   ];
 }
 

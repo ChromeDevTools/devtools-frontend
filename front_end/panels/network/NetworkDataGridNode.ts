@@ -246,6 +246,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
+  // RequestSelected might fire twice for the same "activation"
   RequestSelected = 'RequestSelected',
   RequestActivated = 'RequestActivated',
 }
@@ -1007,7 +1008,10 @@ export class NetworkRequestNode extends NetworkNode {
       cell.style.setProperty('padding-left', leftPadding);
       this.nameCell = cell;
       cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
-      cell.addEventListener('click', () => {
+      cell.addEventListener('mousedown', () => {
+        // When the request panel isn't visible yet, firing the RequestActivated event
+        // doesn't make it visible if no request is selected. So we'll select it first.
+        this.select();
         this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       let iconElement;

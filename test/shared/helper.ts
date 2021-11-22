@@ -58,37 +58,46 @@ export const getElementPosition =
     element = selector;
   }
 
-  const rect = await element.evaluate((element: Element) => {
+  const rectData = await element.evaluate((element: Element) => {
     if (!element) {
       return {};
     }
 
-    const {left, top, width, height} = element.getBoundingClientRect();
-    return {left, top, width, height};
-  });
+    const isConnected = element.isConnected;
 
-  if (rect.left === undefined) {
+    const {left, top, width, height} = element.getBoundingClientRect();
+    return {left, top, width, height, isConnected};
+  });
+  if (!rectData.isConnected) {
+    throw new Error('Element is no longer attached to the dom');
+  }
+
+  if (rectData.left === undefined) {
     throw new Error(`Unable to find element with selector "${selector}"`);
   }
 
-  let pixelsFromLeft = rect.width * 0.5;
+  let pixelsFromLeft = rectData.width * 0.5;
   if (maxPixelsFromLeft && pixelsFromLeft > maxPixelsFromLeft) {
     pixelsFromLeft = maxPixelsFromLeft;
   }
 
   return {
-    x: rect.left + pixelsFromLeft,
-    y: rect.top + rect.height * 0.5,
+    x: rectData.left + pixelsFromLeft,
+    y: rectData.top + rectData.height * 0.5,
   };
 };
 
-interface ClickOptions extends puppeteer.ClickOptions {
+export interface ClickOptions {
+  root?: puppeteer.JSHandle;
+  clickOptions?: PuppeteerClickOptions;
+  maxPixelsFromLeft?: number;
+}
+
+interface PuppeteerClickOptions extends puppeteer.ClickOptions {
   modifier?: 'ControlOrMeta';
 }
 
-export const click = async (
-    selector: string|puppeteer.ElementHandle,
-    options?: {root?: puppeteer.JSHandle, clickOptions?: ClickOptions, maxPixelsFromLeft?: number}) => {
+export const click = async (selector: string|puppeteer.ElementHandle, options?: ClickOptions) => {
   const {frontend} = getBrowserAndPages();
   const clickableElement =
       await getElementPosition(selector, options && options.root, options && options.maxPixelsFromLeft);

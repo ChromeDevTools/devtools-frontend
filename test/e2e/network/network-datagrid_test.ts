@@ -341,4 +341,16 @@ describe('The Network Tab', async function() {
     const updatedRequestNames = await getAllRequestNames();
     assert.deepStrictEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
   });
+
+  it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)', async () => {
+    await navigateToNetworkTab('websocket.html?infiniteMessages=true');
+
+    await waitForSomeRequestsToAppear(2);
+
+    // WebSocket messages get sent every 100 milliseconds, so holding the mouse
+    // down for 300 milliseconds should suffice.
+    await selectRequestByName('localhost', {delay: 300});
+
+    await waitFor('.network-item-view');
+  });
 });

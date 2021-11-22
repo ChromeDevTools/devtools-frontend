@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <body>
   <script>
+    function shouldSendInfiniteMessages() {
+      const url = new URL(document.location);
+      return !!url.searchParams.get('infiniteMessages');
+    }
+
     const protocol = location.protocol.replace('http', 'ws');
     const url = protocol + '//' + location.host + '/'
     const ws = new WebSocket(url);
-    ws.onopen = () => ws.send('ping');
+    ws.onopen = () => {
+      if (shouldSendInfiniteMessages()) {
+        setInterval(() => {
+          ws.send('ping');
+        }, 100);
+      } else {
+        ws.send('ping');
+      }
+    }
 
     ws.onmessage = (msg) => {
       if (msg.data == 'ping') ws.send('pong')

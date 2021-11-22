@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, goToResource, setCheckBox, waitFor, waitForFunction} from '../../shared/helper.js';
+import {$$, click, getBrowserAndPages, goToResource, setCheckBox, waitFor, waitForFunction} from '../../shared/helper.js';
 
+import type {puppeteer} from '../../shared/helper.js';
 const REQUEST_LIST_SELECTOR = '.network-log-grid .data';
 
 /**
@@ -40,14 +41,30 @@ export async function getSelectedRequestName() {
   });
 }
 
-export async function selectRequestByName(name: string) {
-  const requests = await $$(REQUEST_LIST_SELECTOR + ' .name-column');
-  for (const request of requests) {
-    const hasSoughtName = await request.evaluate((node, name) => node.childNodes[1].textContent === name, name);
-    if (hasSoughtName) {
-      await click(request);
-      return;
+export async function selectRequestByName(name: string, clickOptions?: puppeteer.ClickOptions) {
+  const selector = REQUEST_LIST_SELECTOR + ' .name-column';
+  const {frontend} = getBrowserAndPages();
+
+  // Finding he click position is done in a single frontend.evaluate call
+  // to make sure the element still exists after finding the element.
+  // If this were done outside of evaluate code, it would be possible for an
+  // element to be removed from the dom between the $$(.selector) call and the
+  // click(element) call.
+  const rect = await frontend.evaluate((name, selector) => {
+    const elements = document.querySelectorAll(selector);
+    for (const element of elements) {
+      if (element.childNodes[1].textContent === name) {
+        const {left, top, width, height} = element.getBoundingClientRect();
+        return {left, top, width, height};
+      }
     }
+    return null;
+  }, name, selector);
+
+  if (rect) {
+    const x = rect.left + rect.width * 0.5;
+    const y = rect.top + rect.height * 0.5;
+    await frontend.mouse.click(x, y, clickOptions);
   }
 }
 

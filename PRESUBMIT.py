@@ -189,12 +189,18 @@ def _CheckJSON(input_api, output_api):
 
 def _CheckFormat(input_api, output_api):
     node_modules_affected_files = _getAffectedFiles(input_api, [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules')
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
+                               'third_party')
     ], [], [])
 
     # TODO(crbug.com/1068198): Remove once `git cl format --js` can handle large CLs.
     if (len(node_modules_affected_files) > 0):
-        return [output_api.PresubmitNotifyResult('Skipping Format Checks because `node_modules` files are affected.')]
+        return [
+            output_api.PresubmitNotifyResult(
+                'Skipping Format Checks because `node_modules`/`front_end/third_party` files are affected.'
+            )
+        ]
 
     results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
 

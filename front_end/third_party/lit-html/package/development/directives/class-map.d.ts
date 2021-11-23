@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 import { AttributePart, noChange } from '../lit-html.js';
-
+import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 /**
  * A key-value set of class names to truthy values.
  */
@@ -18,6 +17,7 @@ declare class ClassMapDirective extends Directive {
      * Used to unset existing values when a new ClassInfo object is applied.
      */
     private _previousClasses?;
+    private _staticClasses?;
     constructor(partInfo: PartInfo);
     render(classInfo: ClassInfo): string;
     update(part: AttributePart, [classInfo]: DirectiveParameters<this>): string | typeof noChange;

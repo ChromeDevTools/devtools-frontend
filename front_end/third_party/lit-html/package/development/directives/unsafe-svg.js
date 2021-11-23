@@ -13,6 +13,9 @@ UnsafeSVGDirective.resultType = SVG_RESULT;
 /**
  * Renders the result as SVG, rather than text.
  *
+ * The values `undefined`, `null`, and `nothing`, will all result in no content
+ * (empty string) being rendered.
+ *
  * Note, this is unsafe to use with any user-provided input that hasn't been
  * sanitized or escaped, as it may lead to cross-site-scripting
  * vulnerabilities.

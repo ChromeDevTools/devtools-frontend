@@ -25,13 +25,14 @@
  * The sparse tree created by means of the `AsyncDirective` constructor
  * crawling up the `_$parent` tree and placing a `_$disconnectableChildren` Set
  * on each parent that includes each child that contains a
- * `AsyncDirective` directly or transitively via its children. In order
- * disconnect (or reconnect) a tree, the `_$setChildPartConnected` API is patched
- * onto ChildParts as a directive climbs the parent tree, which is called by the
- * core when clearing a part if it exists. When called, that method iterates
- * over the sparse tree of Set<DisconnectableChildren> built up by
- * AsyncDirectives, and calls `_$setDirectiveConnected` on any
- * directives that are encountered in that tree, running the required callbacks.
+ * `AsyncDirective` directly or transitively via its children. In order to
+ * notify connection state changes and disconnect (or reconnect) a tree, the
+ * `_$notifyConnectionChanged` API is patched onto ChildParts as a directive
+ * climbs the parent tree, which is called by the core when clearing a part if
+ * it exists. When called, that method iterates over the sparse tree of
+ * Set<DisconnectableChildren> built up by AsyncDirectives, and calls
+ * `_$notifyDirectiveConnectionChanged` on any directives that are encountered
+ * in that tree, running the required callbacks.
  *
  * A given "logical tree" of lit-html data-structures might look like this:
  *
@@ -87,7 +88,7 @@
  * Example 1: The directive in ChildPart(N12) updates and returns `nothing`. The
  * ChildPart will _clear() itself, and so we need to disconnect the "value" of
  * the ChildPart (but not its directive). In this case, when `_clear()` calls
- * `_$setChildPartConnected()`, we don't iterate all of the
+ * `_$notifyConnectionChanged()`, we don't iterate all of the
  * _$disconnectableChildren, rather we do a value-specific disconnection: i.e.
  * since the _value was an Array<ChildPart> (because an iterable had been
  * committed), we iterate the array of ChildParts (N14, N16) and run
@@ -109,32 +110,37 @@
  *
  * Example 3: If the LitElement containing the entire tree above becomes
  * disconnected, it will run `childPart.setConnected()` (which calls
- * `childPart._$setChildPartConnected()` if it exists); in this case, we
+ * `childPart._$notifyConnectionChanged()` if it exists); in this case, we
  * recursively run `setConnected()` over the entire tree, without removing any
  * children from `_$disconnectableChildren`, since this tree is required to
  * re-connect the tree, which does the same operation, simply passing
  * `isConnectd: true` down the tree, signaling which callback to run.
  */
-import { Directive } from './directive.js';
 import { Disconnectable, Part } from './lit-html.js';
-
+import { Directive } from './directive.js';
 export { directive } from './directive.js';
-
 /**
  * An abstract `Directive` base class whose `disconnected` method will be
  * called when the part containing the directive is cleared as a result of
- * re-rendering, or when the user calls `part.setDirectiveConnection(false)` on
- * a part that was previously rendered containing the directive.
+ * re-rendering, or when the user calls `part.setConnected(false)` on
+ * a part that was previously rendered containing the directive (as happens
+ * when e.g. a LitElement disconnects from the DOM).
  *
- * If `part.setDirectiveConnection(true)` is subsequently called on a
+ * If `part.setConnected(true)` is subsequently called on a
  * containing part, the directive's `reconnected` method will be called prior
  * to its next `update`/`render` callbacks. When implementing `disconnected`,
  * `reconnected` should also be implemented to be compatible with reconnection.
+ *
+ * Note that updates may occur while the directive is disconnected. As such,
+ * directives should generally check the `this.isConnected` flag during
+ * render/update to determine whether it is safe to subscribe to resources
+ * that may prevent garbage collection.
  */
 export declare abstract class AsyncDirective extends Directive {
+    /**
+     * The connection state for this Directive.
+     */
     isConnected: boolean;
-    private _pendingValue;
-    _$disconnetableChildren?: Set<Disconnectable>;
     /**
      * Initialize the part with internal fields
      * @param part
@@ -143,48 +149,11 @@ export declare abstract class AsyncDirective extends Directive {
      */
     _$initialize(part: Part, parent: Disconnectable, attributeIndex: number | undefined): void;
     /**
-     * Called from the core code when a directive is going away from a part (in
-     * which case `shouldRemoveFromParent` should be true), and from the
-     * `setChildrenConnected` helper function when recursively changing the
-     * connection state of a tree (in which case `shouldRemoveFromParent` should
-     * be false).
-     *
-     * @param isConnected
-     * @param isClearingDirective - True when the directive itself is being
-     *     removed; false when the tree is being disconnected
-     * @internal
-     */
-    _$setDirectiveConnected(isConnected: boolean, isClearingDirective?: boolean): void;
-    /**
-     * Private method used to set the connection state of the directive and call
-     * the respective `disconnected` or `reconnected` callback. Note thatsince
-     * `isConnected` defaults to true, we do not run `reconnected` on first
-     * render.
-     *
-     * If a call to `setValue` was made while disconnected, flush it to the part
-     * before reconnecting.
-     *
-     * @param isConnected
-     * @internal
-     */
-    private _setConnected;
-    /**
-     * Override of the base `_resolve` method to ensure `reconnected` is run
-     * prior to the next render.
-     *
-     * @override
-     * @internal
-     */
-    _$resolve(part: Part, props: Array<unknown>): unknown;
-    /**
      * Sets the value of the directive's Part outside the normal `update`/`render`
      * lifecycle of a directive.
      *
      * This method should not be called synchronously from a directive's `update`
      * or `render`.
-     *
-     * If the method is called while the part is disconnected, the value will be
-     * queued until directive is reconnected.
      *
      * @param directive The directive to update
      * @param value The value to set

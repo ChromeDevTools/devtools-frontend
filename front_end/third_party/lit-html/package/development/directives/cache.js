@@ -3,10 +3,9 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { clearPart, getCommittedValue, insertPart, isTemplateResult, setCommittedValue, } from '../directive-helpers.js';
+import { render, nothing, } from '../lit-html.js';
 import { directive, Directive, } from '../directive.js';
-import { nothing , render} from '../lit-html.js';
-
+import { clearPart, getCommittedValue, insertPart, isTemplateResult, setCommittedValue, } from '../directive-helpers.js';
 class CacheDirective extends Directive {
     constructor(partInfo) {
         super(partInfo);
@@ -30,12 +29,12 @@ class CacheDirective extends Directive {
             if (cachedContainerPart === undefined) {
                 const fragment = document.createDocumentFragment();
                 cachedContainerPart = render(nothing, fragment);
+                cachedContainerPart.setConnected(false);
                 this._templateCache.set(this._value.strings, cachedContainerPart);
             }
             // Move into cache
             setCommittedValue(cachedContainerPart, [childPart]);
             insertPart(cachedContainerPart, undefined, childPart);
-            childPart.setConnected(false);
         }
         // If the new value is a TemplateResult and the previous value is not,
         // or is a different Template as the previous value, restore the child
@@ -51,7 +50,6 @@ class CacheDirective extends Directive {
                     clearPart(containerPart);
                     insertPart(containerPart, undefined, cachedPart);
                     setCommittedValue(containerPart, [cachedPart]);
-                    cachedPart.setConnected(true);
                 }
             }
             this._value = v;
@@ -68,7 +66,7 @@ class CacheDirective extends Directive {
  *
  * Example:
  *
- * ```
+ * ```js
  * let checked = false;
  *
  * html`

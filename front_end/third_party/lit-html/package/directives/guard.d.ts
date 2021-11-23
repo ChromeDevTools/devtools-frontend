@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { Directive, DirectiveParameters } from '../directive.js';
 import { Part } from '../lit-html.js';
-
+import { Directive, DirectiveParameters } from '../directive.js';
 declare class GuardDirective extends Directive {
     private _previousValue;
     render(_value: unknown, f: () => unknown): unknown;
@@ -28,6 +27,7 @@ declare class GuardDirective extends Directive {
  *   <div>
  *     ${guard([user.id, company.id], () => html`...`)}
  *   </div>
+ * `
  * ```
  *
  * In this case, the template only rerenders if either `user.id` or `company.id`
@@ -43,6 +43,7 @@ declare class GuardDirective extends Directive {
  *   <div>
  *     ${guard([immutableItems], () => immutableItems.map(i => html`${i}`))}
  *   </div>
+ * `
  * ```
  *
  * In this case, items are mapped over only when the array reference changes.

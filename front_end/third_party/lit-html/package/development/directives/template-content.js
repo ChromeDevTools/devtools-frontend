@@ -3,9 +3,8 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { directive, Directive, PartType } from '../directive.js';
 import { noChange } from '../lit-html.js';
-
+import { directive, Directive, PartType } from '../directive.js';
 class TemplateContentDirective extends Directive {
     constructor(partInfo) {
         super(partInfo);

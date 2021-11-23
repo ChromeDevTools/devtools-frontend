@@ -3,15 +3,15 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { DirectiveClass, DirectiveResult, PartInfo } from './directive.js';
-import { DirectiveParent, Part, TemplateResult } from './lit-html.js';
-
+import { Part, DirectiveParent, TemplateResult } from './lit-html.js';
+import { DirectiveResult, DirectiveClass, PartInfo } from './directive.js';
+declare type Primitive = null | undefined | boolean | number | string | symbol | bigint;
 /**
  * Tests if a value is a primitive value.
  *
  * See https://tc39.github.io/ecma262/#sec-typeof-operator
  */
-export declare const isPrimitive: (value: unknown) => value is string | number | bigint | boolean | symbol | null | undefined;
+export declare const isPrimitive: (value: unknown) => value is Primitive;
 export declare const TemplateResultType: {
     readonly HTML: 1;
     readonly SVG: 2;
@@ -20,7 +20,7 @@ export declare type TemplateResultType = typeof TemplateResultType[keyof typeof 
 /**
  * Tests if a value is a TemplateResult.
  */
-export declare const isTemplateResult: (value: unknown, type?: 1 | 2 | undefined) => value is TemplateResult<1 | 2>;
+export declare const isTemplateResult: (value: unknown, type?: TemplateResultType | undefined) => value is TemplateResult<1 | 2>;
 /**
  * Tests if a value is a DirectiveResult.
  */
@@ -102,4 +102,5 @@ export declare const getCommittedValue: (part: import("./lit-html.js").ChildPart
  */
 export declare const removePart: (part: import("./lit-html.js").ChildPart) => void;
 export declare const clearPart: (part: import("./lit-html.js").ChildPart) => void;
+export {};
 //# sourceMappingURL=directive-helpers.d.ts.map

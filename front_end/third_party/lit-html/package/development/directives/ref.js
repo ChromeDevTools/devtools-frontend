@@ -3,13 +3,15 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective , directive} from '../async-directive.js';
 import { nothing } from '../lit-html.js';
-
+import { directive, AsyncDirective } from '../async-directive.js';
 /**
  * Creates a new Ref object, which is container for a reference to an element.
  */
 export const createRef = () => new Ref();
+/**
+ * An object that holds a ref value.
+ */
 class Ref {
 }
 // When callbacks are used for refs, this map tracks the last value the callback
@@ -93,16 +95,16 @@ class RefDirective extends AsyncDirective {
  * removed in a subsequent render, it will first be called with `undefined`,
  * followed by another call with the new element it was rendered to (if any).
  *
- * @example
+ * ```js
+ * // Using Ref object
+ * const inputRef = createRef();
+ * render(html`<input ${ref(inputRef)}>`, container);
+ * inputRef.value.focus();
  *
- *    // Using Ref object
- *    const inputRef = createRef();
- *    render(html`<input ${ref(inputRef)}>`, container);
- *    inputRef.value.focus();
- *
- *    // Using callback
- *    const callback = (inputElement) => inputElement.focus();
- *    render(html`<input ${ref(callback)}>`, container);
+ * // Using callback
+ * const callback = (inputElement) => inputElement.focus();
+ * render(html`<input ${ref(callback)}>`, container);
+ * ```
  */
 export const ref = directive(RefDirective);
 //# sourceMappingURL=ref.js.map

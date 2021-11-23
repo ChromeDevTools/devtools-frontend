@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { directive, Directive } from '../directive.js';
 import { noChange } from '../lit-html.js';
-
+import { directive, Directive } from '../directive.js';
 // A sentinal that indicates guard() hasn't rendered anything yet
 const initialValue = {};
 class GuardDirective extends Directive {
@@ -53,6 +52,7 @@ class GuardDirective extends Directive {
  *   <div>
  *     ${guard([user.id, company.id], () => html`...`)}
  *   </div>
+ * `
  * ```
  *
  * In this case, the template only rerenders if either `user.id` or `company.id`
@@ -68,6 +68,7 @@ class GuardDirective extends Directive {
  *   <div>
  *     ${guard([immutableItems], () => immutableItems.map(i => html`${i}`))}
  *   </div>
+ * `
  * ```
  *
  * In this case, items are mapped over only when the array reference changes.

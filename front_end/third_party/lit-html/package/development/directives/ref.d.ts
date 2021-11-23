@@ -3,13 +3,15 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective } from '../async-directive.js';
 import { ElementPart } from '../lit-html.js';
-
+import { AsyncDirective } from '../async-directive.js';
 /**
  * Creates a new Ref object, which is container for a reference to an element.
  */
 export declare const createRef: <T = Element>() => Ref<T>;
+/**
+ * An object that holds a ref value.
+ */
 declare class Ref<T = Element> {
     /**
      * The current Element value of the ref, or else `undefined` if the ref is no
@@ -17,6 +19,7 @@ declare class Ref<T = Element> {
      */
     readonly value?: T;
 }
+export type { Ref };
 export declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
 declare class RefDirective extends AsyncDirective {
     private _element?;
@@ -43,16 +46,16 @@ declare class RefDirective extends AsyncDirective {
  * removed in a subsequent render, it will first be called with `undefined`,
  * followed by another call with the new element it was rendered to (if any).
  *
- * @example
+ * ```js
+ * // Using Ref object
+ * const inputRef = createRef();
+ * render(html`<input ${ref(inputRef)}>`, container);
+ * inputRef.value.focus();
  *
- *    // Using Ref object
- *    const inputRef = createRef();
- *    render(html`<input ${ref(inputRef)}>`, container);
- *    inputRef.value.focus();
- *
- *    // Using callback
- *    const callback = (inputElement) => inputElement.focus();
- *    render(html`<input ${ref(callback)}>`, container);
+ * // Using callback
+ * const callback = (inputElement) => inputElement.focus();
+ * render(html`<input ${ref(callback)}>`, container);
+ * ```
  */
 export declare const ref: (_ref: RefOrCallback) => import("../directive.js").DirectiveResult<typeof RefDirective>;
 /**

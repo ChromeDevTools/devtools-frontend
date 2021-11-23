@@ -23,45 +23,5 @@
  *
  * @packageDocumentation
  */
-interface RenderOptions {
-    readonly renderBefore?: ChildNode | null;
-    scope?: string;
-}
-interface ShadyTemplateResult {
-    strings: TemplateStringsArray;
-    _$litType$?: string;
-}
-interface Directive {
-    __directive?: Directive;
-}
-interface DirectiveParent {
-    _$parent?: DirectiveParent;
-    __directive?: Directive;
-    __directives?: Array<Directive | undefined>;
-}
-interface PatchableChildPartConstructor {
-    new (...args: any[]): PatchableChildPart;
-}
-interface PatchableChildPart {
-    __directive?: Directive;
-    _$committedValue: unknown;
-    _$startNode: ChildNode;
-    _$endNode: ChildNode | null;
-    options: RenderOptions;
-    _$setValue(value: unknown, directiveParent: DirectiveParent): void;
-    _$getTemplate(result: ShadyTemplateResult): HTMLTemplateElement;
-}
-interface PatchableTemplate {
-    el: HTMLTemplateElement;
-}
-interface PatchableTemplateConstructor {
-    new (...args: any[]): PatchableTemplate;
-    createElement(html: string, options?: RenderOptions): HTMLTemplateElement;
-}
-interface PatchableTemplateInstance {
-    _$template: PatchableTemplate;
-}
-declare const styledScopes: Set<string>;
-declare const scopeCssStore: Map<string, string[]>;
-declare const ENABLE_SHADYDOM_NOPATCH = true;
+export {};
 //# sourceMappingURL=polyfill-support.d.ts.map

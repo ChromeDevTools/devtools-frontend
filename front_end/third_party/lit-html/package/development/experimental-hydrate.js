@@ -3,11 +3,10 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { isPrimitive, isSingleExpression, isTemplateResult, } from './directive-helpers.js';
+import { noChange, _$LH } from './lit-html.js';
 import { PartType } from './directive.js';
-import { _Σ , noChange} from './lit-html.js';
-
-const { _TemplateInstance: TemplateInstance, _isIterable: isIterable, _resolveDirective: resolveDirective, _ChildPart: ChildPart, _ElementPart: ElementPart, } = _Σ;
+import { isPrimitive, isSingleExpression, isTemplateResult, } from './directive-helpers.js';
+const { _TemplateInstance: TemplateInstance, _isIterable: isIterable, _resolveDirective: resolveDirective, _ChildPart: ChildPart, _ElementPart: ElementPart, } = _$LH;
 /**
  * hydrate() operates on a container with server-side rendered content and
  * restores the client side data structures needed for lit-html updates such as
@@ -51,8 +50,9 @@ const { _TemplateInstance: TemplateInstance, _isIterable: isIterable, _resolveDi
  */
 export const hydrate = (rootValue, container, options = {}) => {
     // TODO(kschaaf): Do we need a helper for _$litPart$ ("part for node")?
+    // This property needs to remain unminified.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (container._$litPart$ !== undefined) {
+    if (container['_$litPart$'] !== undefined) {
         throw new Error('container already contains a live render');
     }
     // Since render() creates a ChildPart to render into, we'll always have
@@ -98,8 +98,9 @@ export const hydrate = (rootValue, container, options = {}) => {
         }
     }
     console.assert(rootPart !== undefined, 'there should be exactly one root part in a render container');
+    // This property needs to remain unminified.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    container._$litPart$ = rootPart;
+    container['_$litPart$'] = rootPart;
 };
 const openChildPart = (rootValue, marker, stack, options) => {
     let value;
@@ -140,7 +141,7 @@ const openChildPart = (rootValue, marker, stack, options) => {
             // we need to decide what to do in this case. Note that this part won't be
             // retained by any parent TemplateInstance, since a primitive had been
             // rendered in its place.
-            // https://github.com/Polymer/lit-html/issues/1434
+            // https://github.com/lit/lit/issues/1434
             // throw new Error('Hydration value mismatch: Found a TemplateInstance' +
             //  'where a leaf value was expected');
             part = new ChildPart(marker, null, state.part, options);
@@ -168,7 +169,7 @@ const openChildPart = (rootValue, marker, stack, options) => {
         // TODO(kschaaf): We can detect when a primitive is being hydrated on the
         // client where a TemplateResult was rendered on the server, but we need to
         // decide on a strategy for what to do next.
-        // https://github.com/Polymer/lit-html/issues/1434
+        // https://github.com/lit/lit/issues/1434
         // if (marker.data !== 'lit-part') {
         //   throw new Error('Hydration value mismatch: Primitive found where TemplateResult expected');
         // }

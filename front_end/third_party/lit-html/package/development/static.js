@@ -19,11 +19,11 @@ import { html as coreHtml, svg as coreSvg } from './lit-html.js';
  * since they effectively create a new template.
  */
 export const unsafeStatic = (value) => ({
-    _$litStatic$: value,
+    ['_$litStatic$']: value,
 });
 const textFromStatic = (value) => {
-    if (value._$litStatic$ !== undefined) {
-        return value._$litStatic$;
+    if (value['_$litStatic$'] !== undefined) {
+        return value['_$litStatic$'];
     }
     else {
         throw new Error(`Value passed to 'literal' function must be a 'literal' result: ${value}. Use 'unsafeStatic' to pass non-literal values, but
@@ -45,7 +45,7 @@ const textFromStatic = (value) => {
  * they effectively create a new template.
  */
 export const literal = (strings, ...values) => ({
-    _$litStatic$: values.reduce((acc, v, idx) => acc + textFromStatic(v) + strings[idx + 1], strings[0]),
+    ['_$litStatic$']: values.reduce((acc, v, idx) => acc + textFromStatic(v) + strings[idx + 1], strings[0]),
 });
 const stringsCache = new Map();
 /**
@@ -68,7 +68,8 @@ export const withStatic = (coreTag) => (strings, ...values) => {
         // a single template string.
         while (i < l &&
             ((dynamicValue = values[i]),
-                (staticValue = (_a = dynamicValue) === null || _a === void 0 ? void 0 : _a._$litStatic$)) !== undefined) {
+                (staticValue = (_a = dynamicValue) === null || _a === void 0 ? void 0 : _a['_$litStatic$'])) !==
+                undefined) {
             s += staticValue + strings[++i];
             hasStatics = true;
         }

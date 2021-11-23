@@ -3,21 +3,14 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective } from '../async-directive.js';
+import { ChildPart } from '../lit-html.js';
 import { DirectiveParameters, PartInfo } from '../directive.js';
-import { ChildPart, noChange } from '../lit-html.js';
-
-declare type Mapper<T> = (v: T, index?: number) => unknown;
-declare class AsyncAppendDirective extends AsyncDirective {
-    private _value?;
-    private _reconnectResolver?;
-    private _reconnectPromise?;
+import { AsyncReplaceDirective } from './async-replace.js';
+declare class AsyncAppendDirective extends AsyncReplaceDirective {
+    private __childPart;
     constructor(partInfo: PartInfo);
-    render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
-    update(part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
-    private __iterate;
-    disconnected(): void;
-    reconnected(): void;
+    update(part: ChildPart, params: DirectiveParameters<this>): typeof import("../lit-html.js").noChange | undefined;
+    protected commitValue(value: unknown, index: number): void;
 }
 /**
  * A directive that renders the items of an async iterable[1], appending new
@@ -37,7 +30,7 @@ declare class AsyncAppendDirective extends AsyncDirective {
  * @param mapper An optional function that maps from (value, index) to another
  *     value. Useful for generating templates for each item in the iterable.
  */
-export declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: Mapper<unknown> | undefined) => import("../directive.js").DirectiveResult<typeof AsyncAppendDirective>;
+export declare const asyncAppend: (value: AsyncIterable<unknown>, _mapper?: ((v: unknown, index?: number | undefined) => unknown) | undefined) => import("../directive.js").DirectiveResult<typeof AsyncAppendDirective>;
 /**
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.

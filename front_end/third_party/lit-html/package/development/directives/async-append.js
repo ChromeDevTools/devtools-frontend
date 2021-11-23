@@ -3,73 +3,32 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective } from '../async-directive.js';
-import { clearPart, insertPart, setChildPartValue, } from '../directive-helpers.js';
 import { directive, PartType, } from '../directive.js';
-import { noChange } from '../lit-html.js';
-
-class AsyncAppendDirective extends AsyncDirective {
+import { AsyncReplaceDirective } from './async-replace.js';
+import { clearPart, insertPart, setChildPartValue, } from '../directive-helpers.js';
+class AsyncAppendDirective extends AsyncReplaceDirective {
+    // Override AsyncReplace to narrow the allowed part type to ChildPart only
     constructor(partInfo) {
         super(partInfo);
         if (partInfo.type !== PartType.CHILD) {
             throw new Error('asyncAppend can only be used in child expressions');
         }
     }
-    // @ts-expect-error value not used, but we want a nice parameter for docs
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    render(value, _mapper) {
-        return noChange;
+    // Override AsyncReplace to save the part since we need to append into it
+    update(part, params) {
+        this.__childPart = part;
+        return super.update(part, params);
     }
-    update(part, [value, mapper]) {
-        // If we've already set up this particular iterable, we don't need
-        // to do anything.
-        if (value === this._value) {
-            return;
+    // Override AsyncReplace to append rather than replace
+    commitValue(value, index) {
+        // When we get the first value, clear the part. This lets the
+        // previous value display until we can replace it.
+        if (index === 0) {
+            clearPart(this.__childPart);
         }
-        this._value = value;
-        this.__iterate(part, mapper);
-        return noChange;
-    }
-    // Separate function to avoid an iffe in update; update can't be async
-    // because its return value must be `noChange`
-    async __iterate(part, mapper) {
-        let i = 0;
-        const { _value: value } = this;
-        for await (let v of value) {
-            // Check to make sure that value is the still the current value of
-            // the part, and if not bail because a new value owns this part
-            if (this._value !== value) {
-                break;
-            }
-            // If we were disconnected, pause until reconnected
-            if (this._reconnectPromise) {
-                await this._reconnectPromise;
-            }
-            // When we get the first value, clear the part. This lets the
-            // previous value display until we can replace it.
-            if (i === 0) {
-                clearPart(part);
-            }
-            // As a convenience, because functional-programming-style
-            // transforms of iterables and async iterables requires a library,
-            // we accept a mapper function. This is especially convenient for
-            // rendering a template for each item.
-            if (mapper !== undefined) {
-                v = mapper(v, i);
-            }
-            const newPart = insertPart(part);
-            setChildPartValue(newPart, v);
-            i++;
-        }
-    }
-    disconnected() {
-        // Pause iteration while disconnected
-        this._reconnectPromise = new Promise((resolve) => (this._reconnectResolver = resolve));
-    }
-    reconnected() {
-        // Resume iteration when reconnected
-        this._reconnectPromise = undefined;
-        this._reconnectResolver();
+        // Create and insert a new part and set its value to the next value
+        const newPart = insertPart(this.__childPart);
+        setChildPartValue(newPart, value);
     }
 }
 /**

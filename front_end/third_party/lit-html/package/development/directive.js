@@ -16,7 +16,8 @@ export const PartType = {
  * function has the same parameters as the directive's render() method.
  */
 export const directive = (c) => (...values) => ({
-    _$litDirective$: c,
+    // This property needs to remain unminified.
+    ['_$litDirective$']: c,
     values,
 });
 /**
@@ -26,6 +27,10 @@ export const directive = (c) => (...values) => ({
  */
 export class Directive {
     constructor(_partInfo) { }
+    // See comment in Disconnectable interface for why this is a getter
+    get _$isConnected() {
+        return this._$parent._$isConnected;
+    }
     /** @internal */
     _$initialize(part, parent, attributeIndex) {
         this.__part = part;

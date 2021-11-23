@@ -3,9 +3,8 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 import { ChildPart } from '../lit-html.js';
-
+import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 declare class CacheDirective extends Directive {
     private _templateCache;
     private _value?;
@@ -19,7 +18,7 @@ declare class CacheDirective extends Directive {
  *
  * Example:
  *
- * ```
+ * ```js
  * let checked = false;
  *
  * html`

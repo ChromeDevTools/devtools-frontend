@@ -3,9 +3,8 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+import { nothing, noChange } from '../lit-html.js';
 import { directive, Directive, PartType } from '../directive.js';
-import { noChange , nothing} from '../lit-html.js';
-
 const HTML_RESULT = 1;
 export class UnsafeHTMLDirective extends Directive {
     constructor(partInfo) {
@@ -16,8 +15,7 @@ export class UnsafeHTMLDirective extends Directive {
         }
     }
     render(value) {
-        // TODO: add tests for nothing and noChange
-        if (value === nothing) {
+        if (value === nothing || value == null) {
             this._templateResult = undefined;
             return (this._value = value);
         }
@@ -39,7 +37,8 @@ export class UnsafeHTMLDirective extends Directive {
         return (this._templateResult = {
             // Cast to a known set of integers that satisfy ResultType so that we
             // don't have to export ResultType and possibly encourage this pattern.
-            _$litType$: this.constructor
+            // This property needs to remain unminified.
+            ['_$litType$']: this.constructor
                 .resultType,
             strings,
             values: [],
@@ -50,6 +49,9 @@ UnsafeHTMLDirective.directiveName = 'unsafeHTML';
 UnsafeHTMLDirective.resultType = HTML_RESULT;
 /**
  * Renders the result as HTML, rather than text.
+ *
+ * The values `undefined`, `null`, and `nothing`, will all result in no content
+ * (empty string) being rendered.
  *
  * Note, this is unsafe to use with any user-provided input that hasn't been
  * sanitized or escaped, as it may lead to cross-site-scripting

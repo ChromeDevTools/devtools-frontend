@@ -3,18 +3,17 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective } from '../async-directive.js';
-import { DirectiveParameters } from '../directive.js';
 import { ChildPart, noChange } from '../lit-html.js';
-
+import { DirectiveParameters } from '../directive.js';
+import { AsyncDirective } from '../async-directive.js';
 declare type Mapper<T> = (v: T, index?: number) => unknown;
-declare class AsyncReplaceDirective extends AsyncDirective {
-    private _value?;
-    private _reconnectResolver?;
-    private _reconnectPromise?;
+export declare class AsyncReplaceDirective extends AsyncDirective {
+    private __value?;
+    private __weakThis;
+    private __pauser;
     render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>): symbol;
     update(_part: ChildPart, [value, mapper]: DirectiveParameters<this>): typeof noChange | undefined;
-    private __iterate;
+    protected commitValue(value: unknown, _index: number): void;
     disconnected(): void;
     reconnected(): void;
 }
@@ -23,7 +22,7 @@ declare class AsyncReplaceDirective extends AsyncDirective {
  * previous values with new values, so that only one value is ever rendered
  * at a time. This directive may be used in any expression type.
  *
- * Async iterables are objects with a [Symbol.asyncIterator] method, which
+ * Async iterables are objects with a `[Symbol.asyncIterator]` method, which
  * returns an iterator who's `next()` method returns a Promise. When a new
  * value is available, the Promise resolves and the value is rendered to the
  * Part controlled by the directive. If another value other than this
@@ -37,9 +36,5 @@ declare class AsyncReplaceDirective extends AsyncDirective {
  *     value. Useful for generating templates for each item in the iterable.
  */
 export declare const asyncReplace: (value: AsyncIterable<unknown>, _mapper?: Mapper<unknown> | undefined) => import("../directive.js").DirectiveResult<typeof AsyncReplaceDirective>;
-/**
- * The type of the class that powers this directive. Necessary for naming the
- * directive's return type.
- */
-export type { AsyncReplaceDirective };
+export {};
 //# sourceMappingURL=async-replace.d.ts.map

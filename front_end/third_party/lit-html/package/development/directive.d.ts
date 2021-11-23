@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import { Disconnectable, Part } from './lit-html';
-export { AttributePart, BooleanAttributePart, ChildPart, ElementPart, EventPart, Part, } from './lit-html';
+export { AttributePart, BooleanAttributePart, ChildPart, ElementPart, EventPart, Part, PropertyPart, } from './lit-html';
 export interface DirectiveClass {
     new (part: PartInfo): Directive;
 }
@@ -18,10 +18,6 @@ export declare type DirectiveParameters<C extends Directive> = Parameters<C['ren
  * returns a DirectiveResult object that captures the arguments.
  */
 export interface DirectiveResult<C extends DirectiveClass = DirectiveClass> {
-    /** @internal */
-    _$litDirective$: C;
-    /** @internal */
-    values: DirectiveParameters<InstanceType<C>>;
 }
 export declare const PartType: {
     readonly ATTRIBUTE: 1;
@@ -61,18 +57,9 @@ export declare const directive: <C extends DirectiveClass>(c: C) => (...values: 
  * implement `render` and/or `update`, and then pass their subclass to
  * `directive`.
  */
-export declare abstract class Directive {
-    __part: Part;
-    __attributeIndex: number | undefined;
-    __directive?: Directive;
-    _$parent: Disconnectable;
-    _$disconnetableChildren?: Set<Disconnectable>;
-    _$setDirectiveConnected?(isConnected: boolean): void;
+export declare abstract class Directive implements Disconnectable {
     constructor(_partInfo: PartInfo);
-    /** @internal */
-    _$initialize(part: Part, parent: Disconnectable, attributeIndex: number | undefined): void;
-    /** @internal */
-    _$resolve(part: Part, props: Array<unknown>): unknown;
+    get _$isConnected(): boolean;
     abstract render(...props: Array<unknown>): unknown;
     update(_part: Part, props: Array<unknown>): unknown;
 }

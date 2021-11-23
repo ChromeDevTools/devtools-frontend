@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 var _a, _b;
-import { _Σ } from './lit-html.js';
-const { _ChildPart: ChildPart } = _Σ;
+import { _$LH } from './lit-html.js';
+const { _ChildPart: ChildPart } = _$LH;
 const ENABLE_SHADYDOM_NOPATCH = true;
-const wrap = ENABLE_SHADYDOM_NOPATCH && ((_a = window.ShadyDOM) === null || _a === void 0 ? void 0 : _a.inUse) &&
+const wrap = ENABLE_SHADYDOM_NOPATCH &&
+    ((_a = window.ShadyDOM) === null || _a === void 0 ? void 0 : _a.inUse) &&
     ((_b = window.ShadyDOM) === null || _b === void 0 ? void 0 : _b.noPatch) === true
     ? window.ShadyDOM.wrap
     : (node) => node;
@@ -27,17 +28,22 @@ export const TemplateResultType = {
 export const isTemplateResult = (value, type) => {
     var _a, _b;
     return type === undefined
-        ? ((_a = value) === null || _a === void 0 ? void 0 : _a._$litType$) !== undefined
-        : ((_b = value) === null || _b === void 0 ? void 0 : _b._$litType$) === type;
+        ? // This property needs to remain unminified.
+            ((_a = value) === null || _a === void 0 ? void 0 : _a['_$litType$']) !== undefined
+        : ((_b = value) === null || _b === void 0 ? void 0 : _b['_$litType$']) === type;
 };
 /**
  * Tests if a value is a DirectiveResult.
  */
-export const isDirectiveResult = (value) => { var _a; return ((_a = value) === null || _a === void 0 ? void 0 : _a._$litDirective$) !== undefined; };
+export const isDirectiveResult = (value) => { var _a; 
+// This property needs to remain unminified.
+return ((_a = value) === null || _a === void 0 ? void 0 : _a['_$litDirective$']) !== undefined; };
 /**
  * Retrieves the Directive class for a DirectiveResult
  */
-export const getDirectiveClass = (value) => { var _a; return (_a = value) === null || _a === void 0 ? void 0 : _a._$litDirective$; };
+export const getDirectiveClass = (value) => { var _a; 
+// This property needs to remain unminified.
+return (_a = value) === null || _a === void 0 ? void 0 : _a['_$litDirective$']; };
 /**
  * Tests whether a part has only a single-expression with no strings to
  * interpolate between.
@@ -71,7 +77,8 @@ export const insertPart = (containerPart, refPart, part) => {
     }
     else {
         const endNode = wrap(part._$endNode).nextSibling;
-        const parentChanged = part._$parent !== containerPart;
+        const oldParent = part._$parent;
+        const parentChanged = oldParent !== containerPart;
         if (parentChanged) {
             (_a = part._$reparentDisconnectables) === null || _a === void 0 ? void 0 : _a.call(part, containerPart);
             // Note that although `_$reparentDisconnectables` updates the part's
@@ -79,6 +86,15 @@ export const insertPart = (containerPart, refPart, part) => {
             // method only exists if Disconnectables are present, so we need to
             // unconditionally set it here
             part._$parent = containerPart;
+            // Since the _$isConnected getter is somewhat costly, only
+            // read it once we know the subtree has directives that need
+            // to be notified
+            let newConnectionState;
+            if (part._$notifyConnectionChanged !== undefined &&
+                (newConnectionState = containerPart._$isConnected) !==
+                    oldParent._$isConnected) {
+                part._$notifyConnectionChanged(newConnectionState);
+            }
         }
         if (endNode !== refNode || parentChanged) {
             let start = part._$startNode;
@@ -148,7 +164,7 @@ export const getCommittedValue = (part) => part._$committedValue;
  */
 export const removePart = (part) => {
     var _a;
-    (_a = part._$setChildPartConnected) === null || _a === void 0 ? void 0 : _a.call(part, false, true);
+    (_a = part._$notifyConnectionChanged) === null || _a === void 0 ? void 0 : _a.call(part, false, true);
     let start = part._$startNode;
     const end = wrap(part._$endNode).nextSibling;
     while (start !== end) {

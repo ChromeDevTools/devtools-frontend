@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { directive, Directive, PartType, } from '../directive.js';
 import { noChange } from '../lit-html.js';
-
+import { directive, Directive, PartType, } from '../directive.js';
 class StyleMapDirective extends Directive {
     constructor(partInfo) {
         var _a;

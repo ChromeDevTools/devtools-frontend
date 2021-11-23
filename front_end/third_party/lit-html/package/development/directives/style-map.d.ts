@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 import { AttributePart, noChange } from '../lit-html.js';
-
+import { Directive, DirectiveParameters, PartInfo } from '../directive.js';
 /**
  * A key-value set of CSS properties and values.
  *

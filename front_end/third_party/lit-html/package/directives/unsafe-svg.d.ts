@@ -11,11 +11,14 @@ declare class UnsafeSVGDirective extends UnsafeHTMLDirective {
 /**
  * Renders the result as SVG, rather than text.
  *
+ * The values `undefined`, `null`, and `nothing`, will all result in no content
+ * (empty string) being rendered.
+ *
  * Note, this is unsafe to use with any user-provided input that hasn't been
  * sanitized or escaped, as it may lead to cross-site-scripting
  * vulnerabilities.
  */
-export declare const unsafeSVG: (value: string | typeof import("../lit-html.js").noChange | typeof import("../lit-html.js").nothing) => import("../directive.js").DirectiveResult<typeof UnsafeSVGDirective>;
+export declare const unsafeSVG: (value: string | typeof import("../lit-html.js").noChange | typeof import("../lit-html.js").nothing | null | undefined) => import("../directive.js").DirectiveResult<typeof UnsafeSVGDirective>;
 /**
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.

@@ -3,14 +3,17 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { AsyncDirective } from '../async-directive.js';
 import { Part } from '../lit-html.js';
-
-declare class UntilDirective extends AsyncDirective {
-    private _lastRenderedIndex;
-    private _values;
+import { AsyncDirective } from '../async-directive.js';
+export declare class UntilDirective extends AsyncDirective {
+    private __lastRenderedIndex;
+    private __values;
+    private __weakThis;
+    private __pauser;
     render(...args: Array<unknown>): unknown;
     update(_part: Part, args: Array<unknown>): unknown;
+    disconnected(): void;
+    reconnected(): void;
 }
 /**
  * Renders one of a series of values, including Promises, to a Part.
@@ -28,13 +31,14 @@ declare class UntilDirective extends AsyncDirective {
  *
  * Example:
  *
- *     const content = fetch('./content.txt').then(r => r.text());
- *     html`${until(content, html`<span>Loading...</span>`)}`
+ * ```js
+ * const content = fetch('./content.txt').then(r => r.text());
+ * html`${until(content, html`<span>Loading...</span>`)}`
+ * ```
  */
 export declare const until: (...values: unknown[]) => import("../directive.js").DirectiveResult<typeof UntilDirective>;
 /**
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type { UntilDirective };
 //# sourceMappingURL=until.d.ts.map

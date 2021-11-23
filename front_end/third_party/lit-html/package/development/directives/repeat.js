@@ -3,10 +3,9 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { getCommittedValue, insertPart, removePart, setChildPartValue, setCommittedValue, } from '../directive-helpers.js';
-import { directive, Directive, PartType } from '../directive.js';
 import { noChange } from '../lit-html.js';
-
+import { directive, Directive, PartType } from '../directive.js';
+import { insertPart, getCommittedValue, removePart, setCommittedValue, setChildPartValue, } from '../directive-helpers.js';
 // Helper for generating a map of array item to its index over a subset
 // of an array (used to lazily generate `newKeyToIndexMap` and
 // `oldKeyToIndexMap`)
@@ -50,14 +49,24 @@ class RepeatDirective extends Directive {
     }
     update(containerPart, [items, keyFnOrTemplate, template]) {
         var _a;
-        // Old part & key lists are retrieved from the last update
-        // TODO: deal with directive being swapped out?
+        // Old part & key lists are retrieved from the last update (which may
+        // be primed by hydration)
         const oldParts = getCommittedValue(containerPart);
         const { values: newValues, keys: newKeys } = this._getValuesAndKeys(items, keyFnOrTemplate, template);
-        if (!oldParts) {
+        // We check that oldParts, the committed value, is an Array as an
+        // indicator that the previous value came from a repeat() call. If
+        // oldParts is not an Array then this is the first render and we return
+        // an array for lit-html's array handling to render, and remember the
+        // keys.
+        if (!Array.isArray(oldParts)) {
             this._itemKeys = newKeys;
             return newValues;
         }
+        // In SSR hydration it's possible for oldParts to be an arrray but for us
+        // to not have item keys because the update() hasn't run yet. We set the
+        // keys to an empty array. This will cause all oldKey/newKey comparisons
+        // to fail and execution to fall to the last nested brach below which
+        // reuses the oldPart.
         const oldKeys = ((_a = this._itemKeys) !== null && _a !== void 0 ? _a : (this._itemKeys = []));
         // New part list will be built up as we go (either reused from
         // old parts or created for new keys in this update). This is
@@ -257,7 +266,7 @@ class RepeatDirective extends Directive {
         //   remaining clauses is is just a simple guess at which cases
         //   will be most common.
         //
-        // * TODO(kschaaf) Note, we could calculate the longest
+        // * Note, we could calculate the longest
         //   increasing subsequence (LIS) of old items in new position,
         //   and only move those not in the LIS set. However that costs
         //   O(nlogn) time and adds a bit more code, and only helps
@@ -385,8 +394,13 @@ class RepeatDirective extends Directive {
  * The `keyFn` takes two parameters, the item and its index, and returns a unique key value.
  *
  * ```js
- * ${repeat(this.items, (item) => item.id, (item, index) =>
-     html`<li>${index}: ${item.name}</li>`)}
+ * html`
+ *   <ol>
+ *     ${repeat(this.items, (item) => item.id, (item, index) => {
+ *       return html`<li>${index}: ${item.name}</li>`;
+ *     })}
+ *   </ol>
+ * `
  * ```
  *
  * **Important**: If providing a `keyFn`, keys *must* be unique for all items in a

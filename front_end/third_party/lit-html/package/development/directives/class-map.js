@@ -3,9 +3,8 @@
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { directive, Directive, PartType, } from '../directive.js';
 import { noChange } from '../lit-html.js';
-
+import { directive, Directive, PartType, } from '../directive.js';
 class ClassMapDirective extends Directive {
     constructor(partInfo) {
         var _a;
@@ -18,16 +17,26 @@ class ClassMapDirective extends Directive {
         }
     }
     render(classInfo) {
-        return Object.keys(classInfo)
-            .filter((key) => classInfo[key])
-            .join(' ');
+        // Add spaces to ensure separation from static classes
+        return (' ' +
+            Object.keys(classInfo)
+                .filter((key) => classInfo[key])
+                .join(' ') +
+            ' ');
     }
     update(part, [classInfo]) {
+        var _a, _b;
         // Remember dynamic classes on the first render
         if (this._previousClasses === undefined) {
             this._previousClasses = new Set();
+            if (part.strings !== undefined) {
+                this._staticClasses = new Set(part.strings
+                    .join(' ')
+                    .split(/\s/)
+                    .filter((s) => s !== ''));
+            }
             for (const name in classInfo) {
-                if (classInfo[name]) {
+                if (classInfo[name] && !((_a = this._staticClasses) === null || _a === void 0 ? void 0 : _a.has(name))) {
                     this._previousClasses.add(name);
                 }
             }
@@ -48,7 +57,8 @@ class ClassMapDirective extends Directive {
             // We explicitly want a loose truthy check of `value` because it seems
             // more convenient that '' and 0 are skipped.
             const value = !!classInfo[name];
-            if (value !== this._previousClasses.has(name)) {
+            if (value !== this._previousClasses.has(name) &&
+                !((_b = this._staticClasses) === null || _b === void 0 ? void 0 : _b.has(name))) {
                 if (value) {
                     classList.add(name);
                     this._previousClasses.add(name);

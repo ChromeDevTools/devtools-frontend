@@ -3,10 +3,9 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import { isSingleExpression, setCommittedValue } from '../directive-helpers.js';
-import { directive, Directive, PartType, } from '../directive.js';
 import { noChange, nothing } from '../lit-html.js';
-
+import { directive, Directive, PartType, } from '../directive.js';
+import { isSingleExpression, setCommittedValue } from '../directive-helpers.js';
 class LiveDirective extends Directive {
     constructor(partInfo) {
         super(partInfo);
@@ -28,9 +27,6 @@ class LiveDirective extends Directive {
         }
         const element = part.element;
         const name = part.name;
-        // TODO (justinfagnani): This is essentially implementing a getLiveValue()
-        // method for each part type. Should that be moved into the AttributePart
-        // interface?
         if (part.type === PartType.PROPERTY) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if (value === element[name]) {
@@ -67,7 +63,9 @@ class LiveDirective extends Directive {
  * it alone. If this is not what you want--if you want to overwrite the DOM
  * value with the bound value no matter what--use the `live()` directive:
  *
- *     html`<input .value=${live(x)}>`
+ * ```js
+ * html`<input .value=${live(x)}>`
+ * ```
  *
  * `live()` performs a strict equality check agains the live DOM value, and if
  * the new value is equal to the live value, does nothing. This means that

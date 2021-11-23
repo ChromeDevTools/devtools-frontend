@@ -2849,14 +2849,8 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "This frame was created programmatically. The stack trace shows where this happened."
   },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Cross-Origin Embedder Policy"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Cross-Origin Isolated"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Cross-Origin Opener Policy"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Document"
@@ -2878,12 +2872,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "No"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Origin"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Origin Trials"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Owner Element"
@@ -2935,9 +2923,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
     "message": "Unreachable URL"
-  },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "URL"
   },
   "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ will require cross-origin isolated context in the future"

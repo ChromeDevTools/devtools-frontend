@@ -47,10 +47,6 @@ const UIStrings = {
   */
   document: 'Document',
   /**
-  *@description Text for web URLs
-  */
-  url: 'URL',
-  /**
   *@description Title for a link to the Sources panel
   */
   clickToRevealInSourcesPanel: 'Click to reveal in Sources panel',
@@ -66,10 +62,6 @@ const UIStrings = {
   *@description Title for a link that applies a filter to the network panel
   */
   clickToRevealInNetworkPanelMight: 'Click to reveal in Network panel (might require page reload)',
-  /**
-  *@description Text for the origin of something
-  */
-  origin: 'Origin',
   /**
   *@description Related node label in Timeline UIUtils of the Performance panel
   */
@@ -117,11 +109,11 @@ const UIStrings = {
   /**
   *@description Row title for in the Frame Details view
   */
-  crossoriginIsolated: 'Cross-Origin Isolated',
+  crossoriginIsolated: '`Cross-Origin` Isolated',
   /**
   *@description Explanatory text in the Frame Details view
   */
-  localhostIsAlwaysASecureContext: 'Localhost is always a secure context',
+  localhostIsAlwaysASecureContext: '`Localhost` is always a secure context',
   /**
   *@description Explanatory text in the Frame Details view
   */
@@ -130,14 +122,6 @@ const UIStrings = {
   *@description Explanatory text in the Frame Details view
   */
   theFramesSchemeIsInsecure: 'The frame\'s scheme is insecure',
-  /**
-  *@description Row title in the Frame Details view
-  */
-  crossoriginEmbedderPolicy: 'Cross-Origin Embedder Policy',
-  /**
-  *@description Row title in the Frame Details view
-  */
-  crossoriginOpenerPolicy: 'Cross-Origin Opener Policy',
   /**
   *@description This label specifies the server endpoints to which the server is reporting errors
   *and warnings through the Report-to API. Following this label will be the URL of the server.
@@ -150,7 +134,8 @@ const UIStrings = {
   /**
   *@description Explanatory text in the Frame Details view for the API availability section
   */
-  availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated.',
+  availabilityOfCertainApisDepends:
+      'Availability of certain APIs depends on the document being `cross-origin` isolated.',
   /**
   *@description Description of the SharedArrayBuffer status
   */
@@ -167,20 +152,20 @@ const UIStrings = {
   *@description Tooltip for the SharedArrayBuffer availability status
   */
   sharedarraybufferConstructorIs:
-      'SharedArrayBuffer constructor is available and SABs can be transferred via postMessage',
+      '`SharedArrayBuffer` constructor is available and `SABs` can be transferred via `postMessage`',
   /**
   *@description Tooltip for the SharedArrayBuffer availability status
   */
   sharedarraybufferConstructorIsAvailable:
-      'SharedArrayBuffer constructor is available but SABs cannot be transferred via postMessage',
+      '`SharedArrayBuffer` constructor is available but `SABs` cannot be transferred via `postMessage`',
   /**
   *@description Explanation for the SharedArrayBuffer availability status
   */
-  willRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
+  willRequireCrossoriginIsolated: '⚠️ will require `cross-origin` isolated context in the future',
   /**
   *@description Explanation for the SharedArrayBuffer availability status
   */
-  requiresCrossoriginIsolated: 'requires cross-origin isolated context',
+  requiresCrossoriginIsolated: 'requires `cross-origin` isolated context',
   /**
    *@description Explanation for the SharedArrayBuffer availability status in case the transfer of a SAB requires the
    * permission policy `cross-origin-isolated` to be enabled (e.g. because the message refers to the situation in an iframe).
@@ -194,11 +179,12 @@ const UIStrings = {
   /**
   *@description Tooltip for the Measure Memory availability status
   */
-  thePerformanceAPI: 'The performance.measureUserAgentSpecificMemory() API is available',
+  thePerformanceAPI: 'The `performance.measureUserAgentSpecificMemory()` API is available',
   /**
   *@description Tooltip for the Measure Memory availability status
   */
-  thePerformancemeasureuseragentspecificmemory: 'The performance.measureUserAgentSpecificMemory() API is not available',
+  thePerformancemeasureuseragentspecificmemory:
+      'The `performance.measureUserAgentSpecificMemory()` API is not available',
   /**
   *@description Entry in the API availability section of the frame details view
   */
@@ -211,12 +197,13 @@ const UIStrings = {
   *@description Label for a stack trace. If a frame is created programmatically (i.e. via JavaScript), there is a
   * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
   */
-  creationStackTrace: 'Frame Creation Stack Trace',
+  creationStackTrace: 'Frame Creation `Stack Trace`',
   /**
   *@description Tooltip for 'Frame Creation Stack Trace' explaining that the stack
   *trace shows where in the code the frame has been created programmatically
   */
-  creationStackTraceExplanation: 'This frame was created programmatically. The stack trace shows where this happened.',
+  creationStackTraceExplanation:
+      'This frame was created programmatically. The `stack trace` shows where this happened.',
   /**
   *@description Text descripting why a frame has been indentified as an advertisement.
   */
@@ -230,11 +217,11 @@ const UIStrings = {
   *@description Text descripting why a frame has been indentified as an advertisement.
   */
   createdByAdScriptExplanation:
-      'There was an ad script in the (async) stack when this frame was created. Examining the creation stack trace of this frame might provide more insight.',
+      'There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.',
   /**
    *@description Label for a list of origin trials that associated with at least one token.
    */
-  originTrials: 'Origin Trials',
+  // originTrials: 'Origin Trials',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -330,7 +317,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
     return LitHtml.html`
     <${ReportView.ReportView.ReportSectionHeader.litTagName}>
-      ${i18nString(UIStrings.originTrials)}
+      ${i18n.i18n.lockedString('Origin Trials')}
       <${IconButton.IconButton.IconButton.litTagName} class="inline-button" .data="${{
       clickHandler: refreshOriginTrials,
       groups: [
@@ -356,7 +343,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.document)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
         <div class="inline-items">
@@ -462,7 +449,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private maybeRenderOrigin(): LitHtml.TemplateResult|{} {
     if (this.frame && this.frame.securityOrigin && this.frame.securityOrigin !== '://') {
       return LitHtml.html`
-        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('Origin')}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
           <div class="text-ellipsis" title=${this.frame.securityOrigin}>${this.frame.securityOrigin}</div>
@@ -622,11 +609,11 @@ export class FrameDetailsReportView extends HTMLElement {
         return LitHtml.html`
           ${
             this.maybeRenderCrossOriginStatus(
-                info.coep, i18nString(UIStrings.crossoriginEmbedderPolicy),
+                info.coep, i18n.i18n.lockedString('Cross-Origin Embedder Policy (COEP)'),
                 Protocol.Network.CrossOriginEmbedderPolicyValue.None)}
           ${
             this.maybeRenderCrossOriginStatus(
-                info.coop, i18nString(UIStrings.crossoriginOpenerPolicy),
+                info.coop, i18n.i18n.lockedString('Cross-Origin Opener Policy (COOP)'),
                 Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone)}
         `;
       }

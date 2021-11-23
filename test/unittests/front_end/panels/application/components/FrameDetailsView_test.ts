@@ -124,8 +124,8 @@ describe('FrameDetailsView', () => {
       'Frame Creation Stack Trace',
       'Secure Context',
       'Cross-Origin Isolated',
-      'Cross-Origin Embedder Policy',
-      'Cross-Origin Opener Policy',
+      'Cross-Origin Embedder Policy (COEP)',
+      'Cross-Origin Opener Policy (COOP)',
       'SharedArrayBuffers',
       'Measure Memory',
     ]);

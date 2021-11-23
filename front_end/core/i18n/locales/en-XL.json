@@ -2811,7 +2811,7 @@
     "message": "ÂṔÎ áv̂áîĺâb́îĺît́ŷ"
   },
   "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Âv́âíl̂áb̂íl̂ít̂ý ôf́ ĉér̂t́âín̂ ÁP̂Íŝ d́êṕêńd̂ś ôń t̂h́ê d́ôćûḿêńt̂ b́êín̂ǵ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂."
+    "message": "Âv́âíl̂áb̂íl̂ít̂ý ôf́ ĉér̂t́âín̂ ÁP̂Íŝ d́êṕêńd̂ś ôń t̂h́ê d́ôćûḿêńt̂ b́êín̂ǵ cross-origin îśôĺât́êd́."
   },
   "panels/application/components/FrameDetailsView.ts | available": {
     "message": "âv́âíl̂áb̂ĺê"
@@ -2841,22 +2841,16 @@
     "message": "Ĉĺîćk̂ t́ô ŕêv́êál̂ ín̂ Śôúr̂ćêś p̂án̂él̂"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "T̂h́êŕê ẃâś âń âd́ ŝćr̂íp̂t́ îń t̂h́ê (áŝýn̂ć) ŝt́âćk̂ ẃĥén̂ t́ĥíŝ f́r̂ám̂é ŵáŝ ćr̂éât́êd́. Êx́âḿîńîńĝ t́ĥé ĉŕêát̂íôń ŝt́âćk̂ t́r̂áĉé ôf́ t̂h́îś f̂ŕâḿê ḿîǵĥt́ p̂ŕôv́îd́ê ḿôŕê ín̂śîǵĥt́."
+    "message": "T̂h́êŕê ẃâś âń âd́ ŝćr̂íp̂t́ îń t̂h́ê (async) stack ẃĥén̂ t́ĥíŝ f́r̂ám̂é ŵáŝ ćr̂éât́êd́. Êx́âḿîńîńĝ t́ĥé ĉŕêát̂íôń stack trace ôf́ t̂h́îś f̂ŕâḿê ḿîǵĥt́ p̂ŕôv́îd́ê ḿôŕê ín̂śîǵĥt́."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "F̂ŕâḿê Ćr̂éât́îón̂ Śt̂áĉḱ T̂ŕâćê"
+    "message": "F̂ŕâḿê Ćr̂éât́îón̂ Stack Trace"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "T̂h́îś f̂ŕâḿê ẃâś ĉŕêát̂éd̂ ṕr̂óĝŕâḿm̂át̂íĉál̂ĺŷ. T́ĥé ŝt́âćk̂ t́r̂áĉé ŝh́ôẃŝ ẃĥér̂é t̂h́îś ĥáp̂ṕêńêd́."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ém̂b́êd́d̂ér̂ Ṕôĺîćŷ"
+    "message": "T̂h́îś f̂ŕâḿê ẃâś ĉŕêát̂éd̂ ṕr̂óĝŕâḿm̂át̂íĉál̂ĺŷ. T́ĥé stack trace ŝh́ôẃŝ ẃĥér̂é t̂h́îś ĥáp̂ṕêńêd́."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Íŝól̂át̂éd̂"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Óp̂én̂ér̂ Ṕôĺîćŷ"
+    "message": "Cross-Origin Îśôĺât́êd́"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "D̂óĉúm̂én̂t́"
@@ -2868,7 +2862,7 @@
     "message": "L̂éâŕn̂ ḿôŕê"
   },
   "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "L̂óĉál̂h́ôśt̂ íŝ ál̂ẃâýŝ á ŝéĉúr̂é ĉón̂t́êx́t̂"
+    "message": "Localhost îś âĺŵáŷś â śêćûŕê ćôńt̂éx̂t́"
   },
   "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
     "message": "T̂h́îś f̂ŕâḿê íŝ ćôńŝíd̂ér̂éd̂ án̂ ád̂ f́r̂ám̂é b̂éĉáûśê ít̂ś ĉúr̂ŕêńt̂ (ór̂ ṕr̂év̂íôúŝ) ḿâín̂ d́ôćûḿêńt̂ íŝ án̂ ád̂ ŕêśôúr̂ćê."
@@ -2878,12 +2872,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "N̂ó"
-  },
-  "panels/application/components/FrameDetailsView.ts | origin": {
-    "message": "Ôŕîǵîń"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Ôŕîǵîń T̂ŕîál̂ś"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Ôẃn̂ér̂ Él̂ém̂én̂t́"
@@ -2895,7 +2883,7 @@
     "message": "r̂ép̂ór̂t́îńĝ t́ô"
   },
   "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "r̂éq̂úîŕêś ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂ ćôńt̂éx̂t́"
+    "message": "r̂éq̂úîŕêś cross-origin îśôĺât́êd́ ĉón̂t́êx́t̂"
   },
   "panels/application/components/FrameDetailsView.ts | root": {
     "message": "r̂óôt́"
@@ -2910,19 +2898,19 @@
     "message": "Ŝéĉúr̂ít̂ý & Îśôĺât́îón̂"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Ŝh́âŕêd́Âŕr̂áŷB́ûf́f̂ér̂ ćôńŝt́r̂úĉt́ôŕ îś âv́âíl̂áb̂ĺê án̂d́ ŜÁB̂ś ĉán̂ b́ê t́r̂án̂śf̂ér̂ŕêd́ v̂íâ ṕôśt̂Ḿêśŝáĝé"
+    "message": "SharedArrayBuffer ĉón̂śt̂ŕûćt̂ór̂ íŝ áv̂áîĺâb́l̂é âńd̂ SABs ćâń b̂é t̂ŕâńŝf́êŕr̂éd̂ v́îá postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "Ŝh́âŕêd́Âŕr̂áŷB́ûf́f̂ér̂ ćôńŝt́r̂úĉt́ôŕ îś âv́âíl̂áb̂ĺê b́ût́ ŜÁB̂ś ĉán̂ńôt́ b̂é t̂ŕâńŝf́êŕr̂éd̂ v́îá p̂óŝt́M̂éŝśâǵê"
+    "message": "SharedArrayBuffer ĉón̂śt̂ŕûćt̂ór̂ íŝ áv̂áîĺâb́l̂é b̂út̂ SABs ćâńn̂ót̂ b́ê t́r̂án̂śf̂ér̂ŕêd́ v̂íâ postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "T̂h́ê f́r̂ám̂é'ŝ śĉh́êḿê íŝ ín̂śêćûŕê"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "T̂h́ê ṕêŕf̂ór̂ḿâńĉé.m̂éâśûŕêÚŝér̂Áĝén̂t́Ŝṕêćîf́îćM̂ém̂ór̂ý() ÂṔÎ íŝ áv̂áîĺâb́l̂é"
+    "message": "T̂h́ê performance.measureUserAgentSpecificMemory() ÁP̂Í îś âv́âíl̂áb̂ĺê"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "T̂h́ê ṕêŕf̂ór̂ḿâńĉé.m̂éâśûŕêÚŝér̂Áĝén̂t́Ŝṕêćîf́îćM̂ém̂ór̂ý() ÂṔÎ íŝ ńôt́ âv́âíl̂áb̂ĺê"
+    "message": "T̂h́ê performance.measureUserAgentSpecificMemory() ÁP̂Í îś n̂ót̂ áv̂áîĺâb́l̂é"
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "T̂h́îś âd́d̂ít̂íôńâĺ (d̂éb̂úĝǵîńĝ) ín̂f́ôŕm̂át̂íôń îś ŝh́ôẃn̂ b́êćâúŝé t̂h́ê 'Ṕr̂ót̂óĉól̂ Ḿôńît́ôŕ' êx́p̂ér̂ím̂én̂t́ îś êńâb́l̂éd̂."
@@ -2936,11 +2924,8 @@
   "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
     "message": "Ûńr̂éâćĥáb̂ĺê ÚR̂Ĺ"
   },
-  "panels/application/components/FrameDetailsView.ts | url": {
-    "message": "ÛŔL̂"
-  },
   "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́êd́ ĉón̂t́êx́t̂ ín̂ t́ĥé f̂út̂úr̂é"
+    "message": "⚠️ ŵíl̂ĺ r̂éq̂úîŕê cross-origin íŝól̂át̂éd̂ ćôńt̂éx̂t́ îń t̂h́ê f́ût́ûŕê"
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ŷéŝ"

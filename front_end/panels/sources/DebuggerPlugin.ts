@@ -702,8 +702,8 @@ export class DebuggerPlugin extends Plugin {
       if (this.popoverHelper.isPopoverVisible()) {
         this.popoverHelper.hidePopover();
         event.consume();
+        return true;
       }
-      return true;
     }
     if (ctrlDown && this.executionLocation) {
       this.setControlDown(true);

@@ -25,6 +25,7 @@ export class TextEditor extends HTMLElement {
   private dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
   private activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
   private pendingState: CodeMirror.EditorState|undefined;
+  private lastScrollPos = {left: 0, top: 0};
 
   constructor(pendingState?: CodeMirror.EditorState) {
     super();
@@ -43,6 +44,12 @@ export class TextEditor extends HTMLElement {
           this.ensureSettingListeners();
         }
       },
+    });
+    this.activeEditor.scrollDOM.scrollTop = this.lastScrollPos.top;
+    this.activeEditor.scrollDOM.scrollLeft = this.lastScrollPos.left;
+    this.activeEditor.scrollDOM.addEventListener('scroll', (event): void => {
+      this.lastScrollPos.left = (event.target as HTMLElement).scrollLeft;
+      this.lastScrollPos.top = (event.target as HTMLElement).scrollTop;
     });
     this.ensureSettingListeners();
     return this.activeEditor;

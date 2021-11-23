@@ -1,24 +1,24 @@
-const Lexer = require('./Lexer.js');
-const Parser = require('./Parser.js');
-const Tokenizer = require('./Tokenizer.js');
-const Renderer = require('./Renderer.js');
-const TextRenderer = require('./TextRenderer.js');
-const Slugger = require('./Slugger.js');
-const {
-  merge,
-  checkSanitizeDeprecation,
-  escape
-} = require('./helpers.js');
-const {
-  getDefaults,
+import {
   changeDefaults,
   defaults
-} = require('./defaults.js');
+,
+  getDefaults} from './defaults.js';
+import {
+  checkSanitizeDeprecation,
+  escape
+,
+  merge} from './helpers.js';
+import { Lexer } from './Lexer.js';
+import { Parser } from './Parser.js';
+import { Renderer } from './Renderer.js';
+import { Slugger } from './Slugger.js';
+import { TextRenderer } from './TextRenderer.js';
+import { Tokenizer } from './Tokenizer.js';
 
 /**
  * Marked
  */
-function marked(src, opt, callback) {
+export function marked(src, opt, callback) {
   // throw error in case of non string input
   if (typeof src === 'undefined' || src === null) {
     throw new Error('marked(): input parameter is undefined or null');
@@ -51,6 +51,9 @@ function marked(src, opt, callback) {
 
       if (!err) {
         try {
+          if (opt.walkTokens) {
+            marked.walkTokens(tokens, opt.walkTokens);
+          }
           out = Parser.parse(tokens, opt);
         } catch (e) {
           err = e;
@@ -138,46 +141,114 @@ marked.defaults = defaults;
  * Use Extension
  */
 
-marked.use = function(extension) {
-  const opts = merge({}, extension);
-  if (extension.renderer) {
-    const renderer = marked.defaults.renderer || new Renderer();
-    for (const prop in extension.renderer) {
-      const prevRenderer = renderer[prop];
-      renderer[prop] = (...args) => {
-        let ret = extension.renderer[prop].apply(renderer, args);
-        if (ret === false) {
-          ret = prevRenderer.apply(renderer, args);
+marked.use = function(...args) {
+  const opts = merge({}, ...args);
+  const extensions = marked.defaults.extensions || { renderers: {}, childTokens: {} };
+  let hasExtensions;
+
+  args.forEach((pack) => {
+    // ==-- Parse "addon" extensions --== //
+    if (pack.extensions) {
+      hasExtensions = true;
+      pack.extensions.forEach((ext) => {
+        if (!ext.name) {
+          throw new Error('extension name required');
         }
-        return ret;
-      };
-    }
-    opts.renderer = renderer;
-  }
-  if (extension.tokenizer) {
-    const tokenizer = marked.defaults.tokenizer || new Tokenizer();
-    for (const prop in extension.tokenizer) {
-      const prevTokenizer = tokenizer[prop];
-      tokenizer[prop] = (...args) => {
-        let ret = extension.tokenizer[prop].apply(tokenizer, args);
-        if (ret === false) {
-          ret = prevTokenizer.apply(tokenizer, args);
+        if (ext.renderer) { // Renderer extensions
+          const prevRenderer = extensions.renderers ? extensions.renderers[ext.name] : null;
+          if (prevRenderer) {
+            // Replace extension with func to run new extension but fall back if false
+            extensions.renderers[ext.name] = function(...args) {
+              let ret = ext.renderer.apply(this, args);
+              if (ret === false) {
+                ret = prevRenderer.apply(this, args);
+              }
+              return ret;
+            };
+          } else {
+            extensions.renderers[ext.name] = ext.renderer;
+          }
         }
-        return ret;
-      };
+        if (ext.tokenizer) { // Tokenizer Extensions
+          if (!ext.level || (ext.level !== 'block' && ext.level !== 'inline')) {
+            throw new Error("extension level must be 'block' or 'inline'");
+          }
+          if (extensions[ext.level]) {
+            extensions[ext.level].unshift(ext.tokenizer);
+          } else {
+            extensions[ext.level] = [ext.tokenizer];
+          }
+          if (ext.start) { // Function to check for start of token
+            if (ext.level === 'block') {
+              if (extensions.startBlock) {
+                extensions.startBlock.push(ext.start);
+              } else {
+                extensions.startBlock = [ext.start];
+              }
+            } else if (ext.level === 'inline') {
+              if (extensions.startInline) {
+                extensions.startInline.push(ext.start);
+              } else {
+                extensions.startInline = [ext.start];
+              }
+            }
+          }
+        }
+        if (ext.childTokens) { // Child tokens to be visited by walkTokens
+          extensions.childTokens[ext.name] = ext.childTokens;
+        }
+      });
     }
-    opts.tokenizer = tokenizer;
-  }
-  if (extension.walkTokens) {
-    const walkTokens = marked.defaults.walkTokens;
-    opts.walkTokens = (token) => {
-      extension.walkTokens(token);
-      if (walkTokens) {
-        walkTokens(token);
+
+    // ==-- Parse "overwrite" extensions --== //
+    if (pack.renderer) {
+      const renderer = marked.defaults.renderer || new Renderer();
+      for (const prop in pack.renderer) {
+        const prevRenderer = renderer[prop];
+        // Replace renderer with func to run extension, but fall back if false
+        renderer[prop] = (...args) => {
+          let ret = pack.renderer[prop].apply(renderer, args);
+          if (ret === false) {
+            ret = prevRenderer.apply(renderer, args);
+          }
+          return ret;
+        };
       }
-    };
-  }
-  marked.setOptions(opts);
+      opts.renderer = renderer;
+    }
+    if (pack.tokenizer) {
+      const tokenizer = marked.defaults.tokenizer || new Tokenizer();
+      for (const prop in pack.tokenizer) {
+        const prevTokenizer = tokenizer[prop];
+        // Replace tokenizer with func to run extension, but fall back if false
+        tokenizer[prop] = (...args) => {
+          let ret = pack.tokenizer[prop].apply(tokenizer, args);
+          if (ret === false) {
+            ret = prevTokenizer.apply(tokenizer, args);
+          }
+          return ret;
+        };
+      }
+      opts.tokenizer = tokenizer;
+    }
+
+    // ==-- Parse WalkTokens extensions --== //
+    if (pack.walkTokens) {
+      const walkTokens = marked.defaults.walkTokens;
+      opts.walkTokens = function(token) {
+        pack.walkTokens.call(this, token);
+        if (walkTokens) {
+          walkTokens.call(this, token);
+        }
+      };
+    }
+
+    if (hasExtensions) {
+      opts.extensions = extensions;
+    }
+
+    marked.setOptions(opts);
+  });
 };
 
 /**
@@ -186,15 +257,15 @@ marked.use = function(extension) {
 
 marked.walkTokens = function(tokens, callback) {
   for (const token of tokens) {
-    callback(token);
+    callback.call(marked, token);
     switch (token.type) {
       case 'table': {
-        for (const cell of token.tokens.header) {
-          marked.walkTokens(cell, callback);
+        for (const cell of token.header) {
+          marked.walkTokens(cell.tokens, callback);
         }
-        for (const row of token.tokens.cells) {
+        for (const row of token.rows) {
           for (const cell of row) {
-            marked.walkTokens(cell, callback);
+            marked.walkTokens(cell.tokens, callback);
           }
         }
         break;
@@ -204,7 +275,11 @@ marked.walkTokens = function(tokens, callback) {
         break;
       }
       default: {
-        if (token.tokens) {
+        if (marked.defaults.extensions && marked.defaults.extensions.childTokens && marked.defaults.extensions.childTokens[token.type]) { // Walk any extensions
+          marked.defaults.extensions.childTokens[token.type].forEach(function(childTokens) {
+            marked.walkTokens(token[childTokens], callback);
+          });
+        } else if (token.tokens) {
           marked.walkTokens(token.tokens, callback);
         }
       }
@@ -248,20 +323,28 @@ marked.parseInline = function(src, opt) {
 /**
  * Expose
  */
-
 marked.Parser = Parser;
 marked.parser = Parser.parse;
-
 marked.Renderer = Renderer;
 marked.TextRenderer = TextRenderer;
-
 marked.Lexer = Lexer;
 marked.lexer = Lexer.lex;
-
 marked.Tokenizer = Tokenizer;
-
 marked.Slugger = Slugger;
-
 marked.parse = marked;
 
-module.exports = marked;
+export const options = marked.options;
+export const setOptions = marked.setOptions;
+export const use = marked.use;
+export const walkTokens = marked.walkTokens;
+export const parseInline = marked.parseInline;
+export const parse = marked;
+export const parser = Parser.parse;
+export const lexer = Lexer.lex;
+export { defaults, getDefaults } from './defaults.js';
+export { Lexer } from './Lexer.js';
+export { Parser } from './Parser.js';
+export { Tokenizer } from './Tokenizer.js';
+export { Renderer } from './Renderer.js';
+export { TextRenderer } from './TextRenderer.js';
+export { Slugger } from './Slugger.js';

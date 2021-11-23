@@ -1,15 +1,15 @@
-const Renderer = require('./Renderer.js');
-const TextRenderer = require('./TextRenderer.js');
-const Slugger = require('./Slugger.js');
-const { defaults } = require('./defaults.js');
-const {
+import { defaults } from './defaults.js';
+import {
   unescape
-} = require('./helpers.js');
+} from './helpers.js';
+import { Renderer } from './Renderer.js';
+import { Slugger } from './Slugger.js';
+import { TextRenderer } from './TextRenderer.js';
 
 /**
  * Parsing & Compiling
  */
-module.exports = class Parser {
+export class Parser {
   constructor(options) {
     this.options = options || defaults;
     this.options.renderer = this.options.renderer || new Renderer();
@@ -57,11 +57,22 @@ module.exports = class Parser {
       item,
       checked,
       task,
-      checkbox;
+      checkbox,
+      ret;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
       token = tokens[i];
+
+      // Run any renderer extensions
+      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
+        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+        if (ret !== false || !['space', 'hr', 'heading', 'code', 'table', 'blockquote', 'list', 'html', 'paragraph', 'text'].includes(token.type)) {
+          out += ret || '';
+          continue;
+        }
+      }
+
       switch (token.type) {
         case 'space': {
           continue;
@@ -92,22 +103,22 @@ module.exports = class Parser {
           l2 = token.header.length;
           for (j = 0; j < l2; j++) {
             cell += this.renderer.tablecell(
-              this.parseInline(token.tokens.header[j]),
+              this.parseInline(token.header[j].tokens),
               { header: true, align: token.align[j] }
             );
           }
           header += this.renderer.tablerow(cell);
 
           body = '';
-          l2 = token.cells.length;
+          l2 = token.rows.length;
           for (j = 0; j < l2; j++) {
-            row = token.tokens.cells[j];
+            row = token.rows[j];
 
             cell = '';
             l3 = row.length;
             for (k = 0; k < l3; k++) {
               cell += this.renderer.tablecell(
-                this.parseInline(row[k]),
+                this.parseInline(row[k].tokens),
                 { header: false, align: token.align[k] }
               );
             }
@@ -138,7 +149,7 @@ module.exports = class Parser {
             if (item.task) {
               checkbox = this.renderer.checkbox(checked);
               if (loose) {
-                if (item.tokens.length > 0 && item.tokens[0].type === 'text') {
+                if (item.tokens.length > 0 && item.tokens[0].type === 'paragraph') {
                   item.tokens[0].text = checkbox + ' ' + item.tokens[0].text;
                   if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === 'text') {
                     item.tokens[0].tokens[0].text = checkbox + ' ' + item.tokens[0].tokens[0].text;
@@ -179,6 +190,7 @@ module.exports = class Parser {
           out += top ? this.renderer.paragraph(body) : body;
           continue;
         }
+
         default: {
           const errMsg = 'Token with "' + token.type + '" type was not found.';
           if (this.options.silent) {
@@ -201,11 +213,22 @@ module.exports = class Parser {
     renderer = renderer || this.renderer;
     let out = '',
       i,
-      token;
+      token,
+      ret;
 
     const l = tokens.length;
     for (i = 0; i < l; i++) {
       token = tokens[i];
+
+      // Run any renderer extensions
+      if (this.options.extensions && this.options.extensions.renderers && this.options.extensions.renderers[token.type]) {
+        ret = this.options.extensions.renderers[token.type].call({ parser: this }, token);
+        if (ret !== false || !['escape', 'html', 'link', 'image', 'strong', 'em', 'codespan', 'br', 'del', 'text'].includes(token.type)) {
+          out += ret || '';
+          continue;
+        }
+      }
+
       switch (token.type) {
         case 'escape': {
           out += renderer.text(token.text);
@@ -260,4 +283,4 @@ module.exports = class Parser {
     }
     return out;
   }
-};
+}

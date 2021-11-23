@@ -10,6 +10,7 @@ devtools_pre_built("marked") {
   sources_are_release = false
 
   sources = [
+    "../../../node_modules/@types/marked/index.d.ts",
     "marked-tsconfig.json",
     "package/lib/marked.esm.d.ts",
     "package/lib/marked.esm.js",

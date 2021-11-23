@@ -29,6 +29,12 @@ Also read about:
 * [Options](https://marked.js.org/#/USING_ADVANCED.md)
 * [Extensibility](https://marked.js.org/#/USING_PRO.md)
 
+## Compatibility
+
+**Node.js:** Only [current and LTS](https://nodejs.org/en/about/releases/) Node.js versions are supported. End of life Node.js versions may become incompatible with Marked at any point in time.
+
+**Browser:** Not IE11 :)
+
 ## Installation
 
 **CLI:** `npm install -g marked`
@@ -63,7 +69,7 @@ $ cat hello.html
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     document.getElementById('content').innerHTML =
-      marked('# Marked in the browser\n\nRendered by **marked**.');
+      marked.parse('# Marked in the browser\n\nRendered by **marked**.');
   </script>
 </body>
 </html>

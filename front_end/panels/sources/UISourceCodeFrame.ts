@@ -380,7 +380,6 @@ export class UISourceCodeFrame extends
     const location = this.editorLocationToUILocation(lineNumber, columnNumber);
     contextMenu.appendApplicableItems(
         new Workspace.UISourceCode.UILocation(this.uiSourceCodeInternal, location.lineNumber, location.columnNumber));
-    contextMenu.appendApplicableItems(this);
     for (const plugin of this.plugins) {
       plugin.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     }

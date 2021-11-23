@@ -1877,7 +1877,7 @@ export class BinaryReader {
       shift += 7;
       if ((byte & 0x80) === 0) break;
     }
-    return result;
+    return result >>> 0;
   }
   private readVarInt64(): Int64 {
     var result = new Uint8Array(8);
@@ -1951,7 +1951,7 @@ export class BinaryReader {
     return new Type(TypeKind.unspecified, func_index);
   }
   private readStringBytes(): Uint8Array {
-    var length = this.readVarUint32() >>> 0;
+    var length = this.readVarUint32();
     return this.readBytes(length);
   }
   private readBytes(length: number): Uint8Array {
@@ -1965,7 +1965,7 @@ export class BinaryReader {
   private hasStringBytes(): boolean {
     if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
-    var length = this.readVarUint32() >>> 0;
+    var length = this.readVarUint32();
     var result = this.hasBytes(length);
     this._pos = pos;
     return result;
@@ -1974,7 +1974,7 @@ export class BinaryReader {
     return this.hasBytes(this._sectionRange.end - this._pos);
   }
   private readFuncType(): ITypeEntry {
-    var paramCount = this.readVarUint32() >>> 0;
+    var paramCount = this.readVarUint32();
     var paramTypes = new Array(paramCount);
     for (var i = 0; i < paramCount; i++) paramTypes[i] = this.readType();
     var returnCount = this.readVarUint1();
@@ -1993,7 +1993,7 @@ export class BinaryReader {
     return result;
   }
   private readStructType(): ITypeEntry {
-    var fieldCount = this.readVarUint32() >>> 0;
+    var fieldCount = this.readVarUint32();
     var fieldTypes = new Array(fieldCount);
     var fieldMutabilities = new Array(fieldCount);
     for (var i = 0; i < fieldCount; i++) {
@@ -2028,21 +2028,21 @@ export class BinaryReader {
     return result;
   }
   private readResizableLimits(maxPresent: boolean): IResizableLimits {
-    var initial = this.readVarUint32() >>> 0;
+    var initial = this.readVarUint32();
     var maximum;
     if (maxPresent) {
-      maximum = this.readVarUint32() >>> 0;
+      maximum = this.readVarUint32();
     }
     return { initial: initial, maximum: maximum };
   }
   private readTableType(): ITableType {
     var elementType = this.readType();
-    var flags = this.readVarUint32() >>> 0;
+    var flags = this.readVarUint32();
     var limits = this.readResizableLimits(!!(flags & 0x01));
     return { elementType: elementType, limits: limits };
   }
   private readMemoryType(): IMemoryType {
-    var flags = this.readVarUint32() >>> 0;
+    var flags = this.readVarUint32();
     var shared = !!(flags & 0x02);
     return {
       limits: this.readResizableLimits(!!(flags & 0x01)),
@@ -2063,8 +2063,8 @@ export class BinaryReader {
     return { contentType: contentType, mutability: mutability };
   }
   private readEventType(): IEventType {
-    var attribute = this.readVarUint32() >>> 0;
-    var typeIndex = this.readVarUint32() >>> 0;
+    var attribute = this.readVarUint32();
+    var typeIndex = this.readVarUint32();
     return {
       attribute: attribute,
       typeIndex: typeIndex,
@@ -2115,7 +2115,7 @@ export class BinaryReader {
     var type: ITableType | IMemoryType | IGlobalType | IEventType;
     switch (kind) {
       case ExternalKind.Function:
-        funcTypeIndex = this.readVarUint32() >>> 0;
+        funcTypeIndex = this.readVarUint32();
         break;
       case ExternalKind.Table:
         type = this.readTableType();
@@ -2147,7 +2147,7 @@ export class BinaryReader {
     }
     var field = this.readStringBytes();
     var kind = this.readUint8();
-    var index = this.readVarUint32() >>> 0;
+    var index = this.readVarUint32();
     this.state = BinaryReaderState.EXPORT_SECTION_ENTRY;
     this.result = { field: field, kind: kind, index: index };
     this._sectionEntriesLeft--;
@@ -2158,7 +2158,7 @@ export class BinaryReader {
       this.skipSection();
       return this.read();
     }
-    var typeIndex = this.readVarUint32() >>> 0;
+    var typeIndex = this.readVarUint32();
     this.state = BinaryReaderState.FUNCTION_SECTION_ENTRY;
     this.result = { typeIndex: typeIndex };
     this._sectionEntriesLeft--;
@@ -2345,8 +2345,8 @@ export class BinaryReader {
     return true;
   }
   private readMemoryImmediate(): IMemoryAddress {
-    var flags = this.readVarUint32() >>> 0;
-    var offset = this.readVarUint32() >>> 0;
+    var flags = this.readVarUint32();
+    var offset = this.readVarUint32();
     return { flags: flags, offset: offset };
   }
   private readNameMap(): INaming[] {
@@ -2473,7 +2473,7 @@ export class BinaryReader {
     }
     if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
-    var type: LinkingType = this.readVarUint32() >>> 0;
+    var type: LinkingType = this.readVarUint32();
     var index;
     switch (type) {
       case LinkingType.StackPointer:
@@ -2570,11 +2570,11 @@ export class BinaryReader {
       case OperatorCode.br_on_non_data:
       case OperatorCode.br_on_i31:
       case OperatorCode.br_on_non_i31:
-        brDepth = this.readVarUint32() >>> 0;
+        brDepth = this.readVarUint32();
         break;
       case OperatorCode.br_on_cast_static:
       case OperatorCode.br_on_cast_static_fail:
-        brDepth = this.readVarUint32() >>> 0;
+        brDepth = this.readVarUint32();
         refType = this.readHeapType();
         break;
       case OperatorCode.array_get:
@@ -2613,7 +2613,7 @@ export class BinaryReader {
         refType = this.readHeapType();
         // This really is the "length" value. Overload "brDepth" to keep the
         // IOperatorInformation interface a little leaner.
-        brDepth = this.readVarUint32() >>> 0;
+        brDepth = this.readVarUint32();
         break;
       case OperatorCode.ref_is_func:
       case OperatorCode.ref_is_data:
@@ -2682,25 +2682,25 @@ export class BinaryReader {
         reserved = this.readVarUint1();
         break;
       case OperatorCode.table_init:
-        segmentIndex = this.readVarUint32() >>> 0;
-        tableIndex = this.readVarUint32() >>> 0;
+        segmentIndex = this.readVarUint32();
+        tableIndex = this.readVarUint32();
         break;
       case OperatorCode.table_copy:
-        tableIndex = this.readVarUint32() >>> 0;
-        destinationIndex = this.readVarUint32() >>> 0;
+        tableIndex = this.readVarUint32();
+        destinationIndex = this.readVarUint32();
         break;
       case OperatorCode.table_grow:
       case OperatorCode.table_size:
       case OperatorCode.table_fill:
-        tableIndex = this.readVarUint32() >>> 0;
+        tableIndex = this.readVarUint32();
         break;
       case OperatorCode.memory_init:
-        segmentIndex = this.readVarUint32() >>> 0;
+        segmentIndex = this.readVarUint32();
         reserved = this.readVarUint1();
         break;
       case OperatorCode.data_drop:
       case OperatorCode.elem_drop:
-        segmentIndex = this.readVarUint32() >>> 0;
+        segmentIndex = this.readVarUint32();
         break;
       default:
         this.error = new Error(
@@ -3218,10 +3218,10 @@ export class BinaryReader {
         case OperatorCode.br_if:
         case OperatorCode.br_on_null:
         case OperatorCode.br_on_non_null:
-          brDepth = this.readVarUint32() >>> 0;
+          brDepth = this.readVarUint32();
           break;
         case OperatorCode.br_table:
-          var tableCount = this.readVarUint32() >>> 0;
+          var tableCount = this.readVarUint32();
           if (!this.hasBytes(tableCount + 1)) {
             // We need at least (tableCount + 1) bytes
             this._pos = pos;
@@ -3234,12 +3234,12 @@ export class BinaryReader {
               this._pos = pos;
               return false;
             }
-            brTable.push(this.readVarUint32() >>> 0);
+            brTable.push(this.readVarUint32());
           }
           break;
         case OperatorCode.rethrow:
         case OperatorCode.delegate:
-          relativeDepth = this.readVarUint32() >>> 0;
+          relativeDepth = this.readVarUint32();
           break;
         case OperatorCode.catch:
         case OperatorCode.throw:
@@ -3251,25 +3251,25 @@ export class BinaryReader {
         case OperatorCode.call:
         case OperatorCode.return_call:
         case OperatorCode.ref_func:
-          funcIndex = this.readVarUint32() >>> 0;
+          funcIndex = this.readVarUint32();
           break;
         case OperatorCode.call_indirect:
         case OperatorCode.return_call_indirect:
-          typeIndex = this.readVarUint32() >>> 0;
+          typeIndex = this.readVarUint32();
           reserved = this.readVarUint1();
           break;
         case OperatorCode.local_get:
         case OperatorCode.local_set:
         case OperatorCode.local_tee:
-          localIndex = this.readVarUint32() >>> 0;
+          localIndex = this.readVarUint32();
           break;
         case OperatorCode.global_get:
         case OperatorCode.global_set:
-          globalIndex = this.readVarUint32() >>> 0;
+          globalIndex = this.readVarUint32();
           break;
         case OperatorCode.table_get:
         case OperatorCode.table_set:
-          tableIndex = this.readVarUint32() >>> 0;
+          tableIndex = this.readVarUint32();
           break;
         case OperatorCode.i32_load:
         case OperatorCode.i64_load:
@@ -3532,20 +3532,20 @@ export class BinaryReader {
     }
     if (!this.hasVarIntBytes()) return false;
     var pos = this._pos;
-    var size = this.readVarUint32() >>> 0;
+    var size = this.readVarUint32();
     var bodyEnd = this._pos + size;
     if (!this.hasVarIntBytes()) {
       this._pos = pos;
       return false;
     }
-    var localCount = this.readVarUint32() >>> 0;
+    var localCount = this.readVarUint32();
     var locals: Array<ILocals> = [];
     for (var i = 0; i < localCount; i++) {
       if (!this.hasVarIntBytes()) {
         this._pos = pos;
         return false;
       }
-      var count = this.readVarUint32() >>> 0;
+      var count = this.readVarUint32();
       if (!this.hasVarIntBytes()) {
         this._pos = pos;
         return false;
@@ -3588,7 +3588,7 @@ export class BinaryReader {
       this._pos = sectionStart;
       return false;
     }
-    var payloadLength = this.readVarUint32() >>> 0;
+    var payloadLength = this.readVarUint32();
     var name = null;
     var payloadEnd = this._pos + payloadLength;
     if (id == 0) {
@@ -3625,31 +3625,31 @@ export class BinaryReader {
     switch (currentSection.id) {
       case SectionCode.Type:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readTypeEntry();
       case SectionCode.Import:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readImportEntry();
       case SectionCode.Export:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readExportEntry();
       case SectionCode.Function:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readFunctionEntry();
       case SectionCode.Table:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readTableEntry();
       case SectionCode.Memory:
         if (!this.hasSectionPayload()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readMemoryEntry();
       case SectionCode.Global:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readGlobalEntry();
       case SectionCode.Start:
         if (!this.hasVarIntBytes()) return false;
@@ -3658,20 +3658,20 @@ export class BinaryReader {
         return true;
       case SectionCode.Code:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         this.state = BinaryReaderState.READING_FUNCTION_HEADER;
         return this.readFunctionBody();
       case SectionCode.Element:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readElementEntry();
       case SectionCode.Data:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readDataEntry();
       case SectionCode.Event:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readEventEntry();
       case SectionCode.Custom:
         var customSectionName = bytesToString(currentSection.name);
@@ -3683,7 +3683,7 @@ export class BinaryReader {
         }
         if (customSectionName === "linking") {
           if (!this.hasVarIntBytes()) return false;
-          this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+          this._sectionEntriesLeft = this.readVarUint32();
           return this.readLinkingEntry();
         }
         if (customSectionName === "sourceMappingURL") {
@@ -3827,7 +3827,7 @@ export class BinaryReader {
         return this.readNameEntry();
       case BinaryReaderState.RELOC_SECTION_HEADER:
         if (!this.hasVarIntBytes()) return false;
-        this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+        this._sectionEntriesLeft = this.readVarUint32();
         return this.readRelocEntry();
       case BinaryReaderState.LINKING_SECTION_ENTRY:
         return this.readLinkingEntry();

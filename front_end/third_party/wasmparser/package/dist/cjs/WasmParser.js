@@ -1678,7 +1678,7 @@ var BinaryReader = /** @class */ (function () {
             if ((byte & 0x80) === 0)
                 break;
         }
-        return result;
+        return result >>> 0;
     };
     BinaryReader.prototype.readVarInt64 = function () {
         var result = new Uint8Array(8);
@@ -1752,7 +1752,7 @@ var BinaryReader = /** @class */ (function () {
         return new Type(0 /* unspecified */, func_index);
     };
     BinaryReader.prototype.readStringBytes = function () {
-        var length = this.readVarUint32() >>> 0;
+        var length = this.readVarUint32();
         return this.readBytes(length);
     };
     BinaryReader.prototype.readBytes = function (length) {
@@ -1767,7 +1767,7 @@ var BinaryReader = /** @class */ (function () {
         if (!this.hasVarIntBytes())
             return false;
         var pos = this._pos;
-        var length = this.readVarUint32() >>> 0;
+        var length = this.readVarUint32();
         var result = this.hasBytes(length);
         this._pos = pos;
         return result;
@@ -1776,7 +1776,7 @@ var BinaryReader = /** @class */ (function () {
         return this.hasBytes(this._sectionRange.end - this._pos);
     };
     BinaryReader.prototype.readFuncType = function () {
-        var paramCount = this.readVarUint32() >>> 0;
+        var paramCount = this.readVarUint32();
         var paramTypes = new Array(paramCount);
         for (var i = 0; i < paramCount; i++)
             paramTypes[i] = this.readType();
@@ -1797,7 +1797,7 @@ var BinaryReader = /** @class */ (function () {
         return result;
     };
     BinaryReader.prototype.readStructType = function () {
-        var fieldCount = this.readVarUint32() >>> 0;
+        var fieldCount = this.readVarUint32();
         var fieldTypes = new Array(fieldCount);
         var fieldMutabilities = new Array(fieldCount);
         for (var i = 0; i < fieldCount; i++) {
@@ -1832,21 +1832,21 @@ var BinaryReader = /** @class */ (function () {
         return result;
     };
     BinaryReader.prototype.readResizableLimits = function (maxPresent) {
-        var initial = this.readVarUint32() >>> 0;
+        var initial = this.readVarUint32();
         var maximum;
         if (maxPresent) {
-            maximum = this.readVarUint32() >>> 0;
+            maximum = this.readVarUint32();
         }
         return { initial: initial, maximum: maximum };
     };
     BinaryReader.prototype.readTableType = function () {
         var elementType = this.readType();
-        var flags = this.readVarUint32() >>> 0;
+        var flags = this.readVarUint32();
         var limits = this.readResizableLimits(!!(flags & 0x01));
         return { elementType: elementType, limits: limits };
     };
     BinaryReader.prototype.readMemoryType = function () {
-        var flags = this.readVarUint32() >>> 0;
+        var flags = this.readVarUint32();
         var shared = !!(flags & 0x02);
         return {
             limits: this.readResizableLimits(!!(flags & 0x01)),
@@ -1867,8 +1867,8 @@ var BinaryReader = /** @class */ (function () {
         return { contentType: contentType, mutability: mutability };
     };
     BinaryReader.prototype.readEventType = function () {
-        var attribute = this.readVarUint32() >>> 0;
-        var typeIndex = this.readVarUint32() >>> 0;
+        var attribute = this.readVarUint32();
+        var typeIndex = this.readVarUint32();
         return {
             attribute: attribute,
             typeIndex: typeIndex,
@@ -1919,7 +1919,7 @@ var BinaryReader = /** @class */ (function () {
         var type;
         switch (kind) {
             case 0 /* Function */:
-                funcTypeIndex = this.readVarUint32() >>> 0;
+                funcTypeIndex = this.readVarUint32();
                 break;
             case 1 /* Table */:
                 type = this.readTableType();
@@ -1951,7 +1951,7 @@ var BinaryReader = /** @class */ (function () {
         }
         var field = this.readStringBytes();
         var kind = this.readUint8();
-        var index = this.readVarUint32() >>> 0;
+        var index = this.readVarUint32();
         this.state = 17 /* EXPORT_SECTION_ENTRY */;
         this.result = { field: field, kind: kind, index: index };
         this._sectionEntriesLeft--;
@@ -1962,7 +1962,7 @@ var BinaryReader = /** @class */ (function () {
             this.skipSection();
             return this.read();
         }
-        var typeIndex = this.readVarUint32() >>> 0;
+        var typeIndex = this.readVarUint32();
         this.state = 13 /* FUNCTION_SECTION_ENTRY */;
         this.result = { typeIndex: typeIndex };
         this._sectionEntriesLeft--;
@@ -2149,8 +2149,8 @@ var BinaryReader = /** @class */ (function () {
         return true;
     };
     BinaryReader.prototype.readMemoryImmediate = function () {
-        var flags = this.readVarUint32() >>> 0;
-        var offset = this.readVarUint32() >>> 0;
+        var flags = this.readVarUint32();
+        var offset = this.readVarUint32();
         return { flags: flags, offset: offset };
     };
     BinaryReader.prototype.readNameMap = function () {
@@ -2270,7 +2270,7 @@ var BinaryReader = /** @class */ (function () {
         if (!this.hasVarIntBytes())
             return false;
         var pos = this._pos;
-        var type = this.readVarUint32() >>> 0;
+        var type = this.readVarUint32();
         var index;
         switch (type) {
             case 1 /* StackPointer */:
@@ -2367,11 +2367,11 @@ var BinaryReader = /** @class */ (function () {
             case 64356 /* br_on_non_data */:
             case 64354 /* br_on_i31 */:
             case 64357 /* br_on_non_i31 */:
-                brDepth = this.readVarUint32() >>> 0;
+                brDepth = this.readVarUint32();
                 break;
             case 64326 /* br_on_cast_static */:
             case 64327 /* br_on_cast_static_fail */:
-                brDepth = this.readVarUint32() >>> 0;
+                brDepth = this.readVarUint32();
                 refType = this.readHeapType();
                 break;
             case 64275 /* array_get */:
@@ -2410,7 +2410,7 @@ var BinaryReader = /** @class */ (function () {
                 refType = this.readHeapType();
                 // This really is the "length" value. Overload "brDepth" to keep the
                 // IOperatorInformation interface a little leaner.
-                brDepth = this.readVarUint32() >>> 0;
+                brDepth = this.readVarUint32();
                 break;
             case 64336 /* ref_is_func */:
             case 64337 /* ref_is_data */:
@@ -2476,25 +2476,25 @@ var BinaryReader = /** @class */ (function () {
                 reserved = this.readVarUint1();
                 break;
             case 64524 /* table_init */:
-                segmentIndex = this.readVarUint32() >>> 0;
-                tableIndex = this.readVarUint32() >>> 0;
+                segmentIndex = this.readVarUint32();
+                tableIndex = this.readVarUint32();
                 break;
             case 64526 /* table_copy */:
-                tableIndex = this.readVarUint32() >>> 0;
-                destinationIndex = this.readVarUint32() >>> 0;
+                tableIndex = this.readVarUint32();
+                destinationIndex = this.readVarUint32();
                 break;
             case 64527 /* table_grow */:
             case 64528 /* table_size */:
             case 64529 /* table_fill */:
-                tableIndex = this.readVarUint32() >>> 0;
+                tableIndex = this.readVarUint32();
                 break;
             case 64520 /* memory_init */:
-                segmentIndex = this.readVarUint32() >>> 0;
+                segmentIndex = this.readVarUint32();
                 reserved = this.readVarUint1();
                 break;
             case 64521 /* data_drop */:
             case 64525 /* elem_drop */:
-                segmentIndex = this.readVarUint32() >>> 0;
+                segmentIndex = this.readVarUint32();
                 break;
             default:
                 this.error = new Error("Unknown operator: 0x" + code.toString(16).padStart(4, "0"));
@@ -2983,10 +2983,10 @@ var BinaryReader = /** @class */ (function () {
                 case 13 /* br_if */:
                 case 212 /* br_on_null */:
                 case 214 /* br_on_non_null */:
-                    brDepth = this.readVarUint32() >>> 0;
+                    brDepth = this.readVarUint32();
                     break;
                 case 14 /* br_table */:
-                    var tableCount = this.readVarUint32() >>> 0;
+                    var tableCount = this.readVarUint32();
                     if (!this.hasBytes(tableCount + 1)) {
                         // We need at least (tableCount + 1) bytes
                         this._pos = pos;
@@ -2999,12 +2999,12 @@ var BinaryReader = /** @class */ (function () {
                             this._pos = pos;
                             return false;
                         }
-                        brTable.push(this.readVarUint32() >>> 0);
+                        brTable.push(this.readVarUint32());
                     }
                     break;
                 case 9 /* rethrow */:
                 case 24 /* delegate */:
-                    relativeDepth = this.readVarUint32() >>> 0;
+                    relativeDepth = this.readVarUint32();
                     break;
                 case 7 /* catch */:
                 case 8 /* throw */:
@@ -3016,25 +3016,25 @@ var BinaryReader = /** @class */ (function () {
                 case 16 /* call */:
                 case 18 /* return_call */:
                 case 210 /* ref_func */:
-                    funcIndex = this.readVarUint32() >>> 0;
+                    funcIndex = this.readVarUint32();
                     break;
                 case 17 /* call_indirect */:
                 case 19 /* return_call_indirect */:
-                    typeIndex = this.readVarUint32() >>> 0;
+                    typeIndex = this.readVarUint32();
                     reserved = this.readVarUint1();
                     break;
                 case 32 /* local_get */:
                 case 33 /* local_set */:
                 case 34 /* local_tee */:
-                    localIndex = this.readVarUint32() >>> 0;
+                    localIndex = this.readVarUint32();
                     break;
                 case 35 /* global_get */:
                 case 36 /* global_set */:
-                    globalIndex = this.readVarUint32() >>> 0;
+                    globalIndex = this.readVarUint32();
                     break;
                 case 37 /* table_get */:
                 case 38 /* table_set */:
-                    tableIndex = this.readVarUint32() >>> 0;
+                    tableIndex = this.readVarUint32();
                     break;
                 case 40 /* i32_load */:
                 case 41 /* i64_load */:
@@ -3292,20 +3292,20 @@ var BinaryReader = /** @class */ (function () {
         if (!this.hasVarIntBytes())
             return false;
         var pos = this._pos;
-        var size = this.readVarUint32() >>> 0;
+        var size = this.readVarUint32();
         var bodyEnd = this._pos + size;
         if (!this.hasVarIntBytes()) {
             this._pos = pos;
             return false;
         }
-        var localCount = this.readVarUint32() >>> 0;
+        var localCount = this.readVarUint32();
         var locals = [];
         for (var i = 0; i < localCount; i++) {
             if (!this.hasVarIntBytes()) {
                 this._pos = pos;
                 return false;
             }
-            var count = this.readVarUint32() >>> 0;
+            var count = this.readVarUint32();
             if (!this.hasVarIntBytes()) {
                 this._pos = pos;
                 return false;
@@ -3349,7 +3349,7 @@ var BinaryReader = /** @class */ (function () {
             this._pos = sectionStart;
             return false;
         }
-        var payloadLength = this.readVarUint32() >>> 0;
+        var payloadLength = this.readVarUint32();
         var name = null;
         var payloadEnd = this._pos + payloadLength;
         if (id == 0) {
@@ -3387,37 +3387,37 @@ var BinaryReader = /** @class */ (function () {
             case 1 /* Type */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readTypeEntry();
             case 2 /* Import */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readImportEntry();
             case 7 /* Export */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readExportEntry();
             case 3 /* Function */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readFunctionEntry();
             case 4 /* Table */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readTableEntry();
             case 5 /* Memory */:
                 if (!this.hasSectionPayload())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readMemoryEntry();
             case 6 /* Global */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readGlobalEntry();
             case 8 /* Start */:
                 if (!this.hasVarIntBytes())
@@ -3428,23 +3428,23 @@ var BinaryReader = /** @class */ (function () {
             case 10 /* Code */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 this.state = 29 /* READING_FUNCTION_HEADER */;
                 return this.readFunctionBody();
             case 9 /* Element */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readElementEntry();
             case 11 /* Data */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readDataEntry();
             case 13 /* Event */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readEventEntry();
             case 0 /* Custom */:
                 var customSectionName = exports.bytesToString(currentSection.name);
@@ -3457,7 +3457,7 @@ var BinaryReader = /** @class */ (function () {
                 if (customSectionName === "linking") {
                     if (!this.hasVarIntBytes())
                         return false;
-                    this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                    this._sectionEntriesLeft = this.readVarUint32();
                     return this.readLinkingEntry();
                 }
                 if (customSectionName === "sourceMappingURL") {
@@ -3605,7 +3605,7 @@ var BinaryReader = /** @class */ (function () {
             case 41 /* RELOC_SECTION_HEADER */:
                 if (!this.hasVarIntBytes())
                     return false;
-                this._sectionEntriesLeft = this.readVarUint32() >>> 0;
+                this._sectionEntriesLeft = this.readVarUint32();
                 return this.readRelocEntry();
             case 21 /* LINKING_SECTION_ENTRY */:
                 return this.readLinkingEntry();

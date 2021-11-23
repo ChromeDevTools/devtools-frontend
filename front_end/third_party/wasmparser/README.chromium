@@ -1,7 +1,7 @@
 Name: wasdk/wasmparser
 Short Name: wasmparser
 URL: https://github.com/wasdk/wasmparser
-Version: 5.3.0
+Version: 5.4.0
 License: Apache
 License File: LICENSE
 Security Critical: no
@@ -10,5 +10,5 @@ Description:
 Simple streamable WebAssembly binary parser.
 
 ```bash
-wget -qO- https://registry.npmjs.org/wasmparser/-/wasmparser-5.3.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/wasmparser/-/wasmparser-5.4.0.tgz | tar xzf -
 ```

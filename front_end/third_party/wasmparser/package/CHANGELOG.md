@@ -1,3 +1,15 @@
+# [5.4.0](https://github.com/wasdk/wasmparser/compare/v5.3.0...v5.4.0) (2021-10-12)
+
+
+### Bug Fixes
+
+* prevent negative name subsection entry length ([c9eeec7](https://github.com/wasdk/wasmparser/commit/c9eeec7a26d45cf436422a0f20c16dcf14c511bd))
+
+
+### Features
+
+* add tests for negative name subsection length ([b5d8d83](https://github.com/wasdk/wasmparser/commit/b5d8d83811785c8b3a0877e5e52c01cad4b4951e))
+
 # [5.3.0](https://github.com/wasdk/wasmparser/compare/v5.2.0...v5.3.0) (2021-09-20)
 
 

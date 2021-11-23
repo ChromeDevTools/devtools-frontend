@@ -597,16 +597,21 @@
     var isGenerator = false;
     var isAsync = false;
     var kind = "method";
+    var isStatic = false;
 
-    // Parse modifiers
-    node.static = false;
     if (this.eatContextual("static")) {
+      // Parse static init block
+      if (ecmaVersion >= 13 && this.eat(acorn.tokTypes.braceL)) {
+        this.parseClassStaticBlock(node);
+        return node
+      }
       if (this.isClassElementNameStart() || this.toks.type === acorn.tokTypes.star) {
-        node.static = true;
+        isStatic = true;
       } else {
         keyName = "static";
       }
     }
+    node.static = isStatic;
     if (!keyName && ecmaVersion >= 8 && this.eatContextual("async")) {
       if ((this.isClassElementNameStart() || this.toks.type === acorn.tokTypes.star) && !this.canInsertSemicolon()) {
         isAsync = true;
@@ -684,6 +689,18 @@
     }
 
     return node
+  };
+
+  lp$1.parseClassStaticBlock = function(node) {
+    var blockIndent = this.curIndent, line = this.curLineStart;
+    node.body = [];
+    this.pushCx();
+    while (!this.closes(acorn.tokTypes.braceR, blockIndent, line, true))
+      { node.body.push(this.parseStatement()); }
+    this.popCx();
+    this.eat(acorn.tokTypes.braceR);
+
+    return this.finishNode(node, "StaticBlock")
   };
 
   lp$1.isClassElementNameStart = function() {
@@ -952,8 +969,8 @@
   lp$2.parseMaybeUnary = function(sawUnary) {
     var start = this.storeCurrentPos(), expr;
     if (this.options.ecmaVersion >= 8 && this.toks.isContextual("await") &&
-      (this.inAsync || (!this.inFunction && this.options.allowAwaitOutsideFunction))
-    ) {
+        (this.inAsync || (this.toks.inModule && this.options.ecmaVersion >= 13) ||
+         (!this.inFunction && this.options.allowAwaitOutsideFunction))) {
       expr = this.parseAwait();
       sawUnary = true;
     } else if (this.tok.type.prefix) {
@@ -1084,8 +1101,10 @@
       var id = this.parseIdent();
       var isAsync = false;
       if (id.name === "async" && !this.canInsertSemicolon()) {
-        if (this.eat(acorn.tokTypes._function))
-          { return this.parseFunction(this.startNodeAt(start), false, true) }
+        if (this.eat(acorn.tokTypes._function)) {
+          this.toks.overrideContext(acorn.tokContexts.f_expr);
+          return this.parseFunction(this.startNodeAt(start), false, true)
+        }
         if (this.tok.type === acorn.tokTypes.name) {
           id = this.parseIdent();
           isAsync = true;
@@ -1142,6 +1161,7 @@
       return this.finishNode(node, "ArrayExpression")
 
     case acorn.tokTypes.braceL:
+      this.toks.overrideContext(acorn.tokContexts.b_expr);
       return this.parseObj()
 
     case acorn.tokTypes._class:

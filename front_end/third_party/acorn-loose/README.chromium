@@ -1,7 +1,7 @@
 Name: An error-tolerant JavaScript parser written in JavaScript.
 Short Name: acorn-loose
 URL: https://github.com/acornjs/acorn
-Version: 8.1.0
+Version: 8.2.1
 License: MIT
 License File: LICENSE
 Security Critical: no
@@ -14,7 +14,7 @@ This parser will parse any text into an ESTree syntax tree that is a reasonable 
 It will, to recover from missing brackets, treat whitespace as significant, which has the downside that it might mis-parse a valid but weirdly indented file. It is recommended to always try a parse with the regular acorn parser first, and only fall back to this parser when that one finds syntax errors.
 
 ```bash
-wget -qO- https://registry.npmjs.org/acorn-loose/-/acorn-loose-8.1.0.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/acorn-loose/-/acorn-loose-8.2.1.tgz | tar xzf -
 ```
 
 Local Modifications:

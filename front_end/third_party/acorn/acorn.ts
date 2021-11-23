@@ -7,7 +7,7 @@ import * as acorn from './package/dist/acorn.mjs';
 import type * as ESTree from './estree-legacy';
 export {ESTree};
 
-export { Comment, defaultOptions, getLineInfo, isNewLine, lineBreak, lineBreakG, Node, SourceLocation, Token,tokTypes} from './package/dist/acorn.mjs';
+export { Comment, defaultOptions, getLineInfo, isNewLine, lineBreak, lineBreakG, Node, SourceLocation, Token, tokTypes, tokContexts} from './package/dist/acorn.mjs';
 
 export const Parser = acorn.Parser;
 export const tokenizer = acorn.Parser.tokenizer.bind(acorn.Parser);

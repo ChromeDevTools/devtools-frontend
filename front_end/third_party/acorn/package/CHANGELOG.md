@@ -1,3 +1,33 @@
+## 8.6.0 (2021-11-18)
+
+### Bug fixes
+
+Fix a bug where an object literal with multiple `__proto__` properties would incorrectly be accepted if a later property value held an assigment.
+
+### New features
+
+Support class private fields with the `in` operator.
+
+## 8.5.0 (2021-09-06)
+
+### Bug fixes
+
+Improve context-dependent tokenization in a number of corner cases.
+
+Fix location tracking after a 0x2028 or 0x2029 character in a string literal (which before did not increase the line number).
+
+Fix an issue where arrow function bodies in for loop context would inappropriately consume `in` operators.
+
+Fix wrong end locations stored on SequenceExpression nodes.
+
+Implement restriction that `for`/`of` loop LHS can't start with `let`.
+
+### New features
+
+Add support for ES2022 class static blocks.
+
+Allow multiple input files to be passed to the CLI tool.
+
 ## 8.4.1 (2021-06-24)
 
 ### Bug fixes
@@ -16,7 +46,7 @@ A new option, `allowSuperOutsideMethod`, can be used to suppress the error when 
 
 Default `allowAwaitOutsideFunction` to true for ECMAScript 2022 an higher.
 
-Add support for the `p` ([indices](https://github.com/tc39/proposal-regexp-match-indices)) regexp flag.
+Add support for the `d` ([indices](https://github.com/tc39/proposal-regexp-match-indices)) regexp flag.
 
 ## 8.2.4 (2021-05-04)
 

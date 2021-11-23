@@ -57,8 +57,8 @@ camelCase('foo_bar');
 camelCase('Foo-Bar');
 //=> 'fooBar'
 
-camelCase('розовый_пушистый_единороги');
-//=> 'розовыйПушистыйЕдинороги'
+camelCase('розовый_пушистый_единорог');
+//=> 'розовыйПушистыйЕдинорог'
 
 camelCase('Foo-Bar', {pascalCase: true});
 //=> 'FooBar'

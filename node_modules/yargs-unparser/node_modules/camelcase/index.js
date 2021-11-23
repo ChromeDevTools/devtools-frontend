@@ -1,5 +1,15 @@
 'use strict';
 
+const UPPERCASE = /[\p{Lu}]/u;
+const LOWERCASE = /[\p{Ll}]/u;
+const LEADING_CAPITAL = /^[\p{Lu}](?![\p{Lu}])/gu;
+const IDENTIFIER = /([\p{Alpha}\p{N}_]|$)/u;
+const SEPARATORS = /[_.\- ]+/;
+
+const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source);
+const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gu');
+const NUMBERS_AND_IDENTIFIER = new RegExp('\\d+' + IDENTIFIER.source, 'gu');
+
 const preserveCamelCase = (string, locale) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
@@ -8,13 +18,13 @@ const preserveCamelCase = (string, locale) => {
 	for (let i = 0; i < string.length; i++) {
 		const character = string[i];
 
-		if (isLastCharLower && /[\p{Lu}]/u.test(character)) {
+		if (isLastCharLower && UPPERCASE.test(character)) {
 			string = string.slice(0, i) + '-' + string.slice(i);
 			isLastCharLower = false;
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = true;
 			i++;
-		} else if (isLastCharUpper && isLastLastCharUpper && /[\p{Ll}]/u.test(character)) {
+		} else if (isLastCharUpper && isLastLastCharUpper && LOWERCASE.test(character)) {
 			string = string.slice(0, i - 1) + '-' + string.slice(i - 1);
 			isLastLastCharUpper = isLastCharUpper;
 			isLastCharUpper = false;
@@ -30,12 +40,17 @@ const preserveCamelCase = (string, locale) => {
 };
 
 const preserveConsecutiveUppercase = input => {
-	return input.replace(/^[\p{Lu}](?![\p{Lu}])/gu, m1 => m1.toLowerCase());
+	LEADING_CAPITAL.lastIndex = 0;
+
+	return input.replace(LEADING_CAPITAL, m1 => m1.toLowerCase());
 };
 
 const postProcess = (input, options) => {
-	return input.replace(/[_.\- ]+([\p{Alpha}\p{N}_]|$)/gu, (_, p1) => p1.toLocaleUpperCase(options.locale))
-		.replace(/\d+([\p{Alpha}\p{N}_]|$)/gu, m => m.toLocaleUpperCase(options.locale));
+	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
+	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
+
+	return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => identifier.toLocaleUpperCase(options.locale))
+		.replace(NUMBERS_AND_IDENTIFIER, m => m.toLocaleUpperCase(options.locale));
 };
 
 const camelCase = (input, options) => {
@@ -71,7 +86,7 @@ const camelCase = (input, options) => {
 		input = preserveCamelCase(input, options.locale);
 	}
 
-	input = input.replace(/^[_.\- ]+/, '');
+	input = input.replace(LEADING_SEPARATORS, '');
 
 	if (options.preserveConsecutiveUppercase) {
 		input = preserveConsecutiveUppercase(input);

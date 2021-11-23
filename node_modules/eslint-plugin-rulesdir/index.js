@@ -29,10 +29,10 @@ module.exports = {
       const rulesObject = {};
       rules.forEach((rulesDir) => {
         fs.readdirSync(rulesDir)
-          .filter(filename => filename.endsWith('.js'))
+          .filter(filename => filename.endsWith('.js') || filename.endsWith('.cjs') || filename.endsWith('.mjs'))
           .map(filename => path.resolve(rulesDir, filename))
           .forEach((absolutePath) => {
-            const ruleName = path.basename(absolutePath, '.js');
+            const ruleName = path.basename(absolutePath, path.extname(absolutePath));
             if (rulesObject[ruleName]) {
               throw new Error(`eslint-plugin-rulesdir found two rules with the same name: ${ruleName}`);
             }

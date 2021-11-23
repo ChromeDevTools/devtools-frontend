@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// TODO(crbug.com/1253323): All casts to RawPathString and UrlString will be removed from this file when migration to branded types is complete.
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -82,7 +84,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   constructor(
       manager: IsolatedFileSystemManager, path: string, embedderPath: string, domFileSystem: FileSystem, type: string) {
     // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
-    super(path as Platform.DevToolsPath.UrlString, type);
+    super(path, type);
     this.manager = manager;
     this.embedderPathInternal = embedderPath;
     this.domFileSystem = domFileSystem;
@@ -176,7 +178,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
             if (this.isFileExcluded(entry.fullPath + '/')) {
               // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
               this.excludedEmbedderFolders.push(Common.ParsedURL.ParsedURL.capFilePrefix(
-                  this.path() + entry.fullPath as Platform.DevToolsPath.RawPathString, Host.Platform.isWin()));
+                  this.path() + entry.fullPath as Platform.DevToolsPath.UrlString, Host.Platform.isWin()));
               continue;
             }
             ++pendingRequests;
@@ -512,8 +514,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(
           requestId, this.embedderPathInternal, query);
 
-      function innerCallback(files: Platform.DevToolsPath.RawPathString[]): void {
-        resolve(files.map(path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path)));
+      function innerCallback(files: string[]): void {
+        resolve(files.map(
+            path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path as Platform.DevToolsPath.RawPathString)));
         progress.incrementWorked(1);
       }
     });
@@ -552,9 +555,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                                              Common.ResourceType.resourceTypes.Document;
   }
 
-  tooltipForURL(url: Platform.DevToolsPath.RawPathString): string {
-    const path =
-        Platform.StringUtilities.trimMiddle(Common.ParsedURL.ParsedURL.capFilePrefix(url, Host.Platform.isWin()), 150);
+  tooltipForURL(url: string): string {
+    const path = Platform.StringUtilities.trimMiddle(
+        Common.ParsedURL.ParsedURL.capFilePrefix(url as Platform.DevToolsPath.UrlString, Host.Platform.isWin()), 150);
     return i18nString(UIStrings.linkedToS, {PH1: path});
   }
 

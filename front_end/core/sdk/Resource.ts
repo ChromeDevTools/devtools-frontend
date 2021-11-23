@@ -152,8 +152,8 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   }
 
   // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.RawPathString {
-    return this.#urlInternal as Platform.DevToolsPath.RawPathString;
+  contentURL(): string {
+    return this.#urlInternal;
   }
 
   contentType(): Common.ResourceType.ResourceType {

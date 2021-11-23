@@ -29,10 +29,9 @@
  */
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 
 export abstract class ContentProvider {
-  abstract contentURL(): Platform.DevToolsPath.RawPathString;
+  abstract contentURL(): string;
   abstract contentType(): Common.ResourceType.ResourceType;
   abstract contentEncoded(): Promise<boolean>;
   abstract requestContent(): Promise<DeferredContent>;

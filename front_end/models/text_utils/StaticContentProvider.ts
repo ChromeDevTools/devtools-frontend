@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 
 import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';
 import {performSearchInContent} from './TextUtils.js';
@@ -30,8 +29,8 @@ export class StaticContentProvider implements ContentProvider {
   }
 
   // TODO(crbug.com/1253323): Cast to PawPathString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.RawPathString {
-    return this.contentURLInternal as Platform.DevToolsPath.RawPathString;
+  contentURL(): string {
+    return this.contentURLInternal;
   }
 
   contentType(): Common.ResourceType.ResourceType {

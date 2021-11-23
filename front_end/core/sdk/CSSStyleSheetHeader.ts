@@ -4,7 +4,6 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -147,8 +146,8 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.RawPathString {
-    return this.resourceURL() as Platform.DevToolsPath.RawPathString;
+  contentURL(): string {
+    return this.resourceURL();
   }
 
   contentType(): Common.ResourceType.ResourceType {

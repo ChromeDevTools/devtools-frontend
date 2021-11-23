@@ -851,7 +851,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
       const folderPath = Common.ParsedURL.ParsedURL.capFilePrefix(
           Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path) as
-              Platform.DevToolsPath.RawPathString,
+              Platform.DevToolsPath.UrlString,
           Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openFolder),

@@ -4,13 +4,11 @@
 
 const {assert} = chai;
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 
 describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {
-    const platformFileSystem = new Persistence.PlatformFileSystem.PlatformFileSystem(
-        'Test Path' as Platform.DevToolsPath.UrlString, 'Test Type');
+    const platformFileSystem = new Persistence.PlatformFileSystem.PlatformFileSystem('Test Path', 'Test Type');
     assert.strictEqual(platformFileSystem.path(), 'Test Path', 'path was not set or retrieved correctly');
     assert.strictEqual(platformFileSystem.type(), 'Test Type', 'Type was not set or retrieved correctly');
   });

@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
@@ -92,7 +93,9 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
-      const path = Common.ParsedURL.ParsedURL.capFilePrefix(fileURL, Host.Platform.isWin());
+      // TODO(crbug.com/1253323): Cast to UrlString will be removed when migration to branded types is complete.
+      const path =
+          Common.ParsedURL.ParsedURL.capFilePrefix(fileURL as Platform.DevToolsPath.UrlString, Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openInContainingFolder),
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));

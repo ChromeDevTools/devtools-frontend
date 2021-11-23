@@ -30,7 +30,6 @@
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
 import * as i18n from '../i18n/i18n.js';
 
 import type {DebuggerModel} from './DebuggerModel.js';
@@ -165,8 +164,8 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   }
 
   // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.RawPathString {
-    return this.sourceURL as Platform.DevToolsPath.RawPathString;
+  contentURL(): string {
+    return this.sourceURL;
   }
 
   contentType(): Common.ResourceType.ResourceType {

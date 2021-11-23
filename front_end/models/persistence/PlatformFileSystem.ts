@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
@@ -16,9 +15,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
-  private readonly pathInternal: Platform.DevToolsPath.UrlString;
+  private readonly pathInternal: string;
   private readonly typeInternal: string;
-  constructor(path: Platform.DevToolsPath.UrlString, type: string) {
+  constructor(path: string, type: string) {
     this.pathInternal = path;
     this.typeInternal = type;
   }
@@ -35,7 +34,7 @@ export class PlatformFileSystem {
     return [];
   }
 
-  path(): Platform.DevToolsPath.UrlString {
+  path(): string {
     return this.pathInternal;
   }
 

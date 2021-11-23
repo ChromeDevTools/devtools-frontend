@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
@@ -86,7 +84,7 @@ export interface DevToolsFileSystem {
   type: string;
   fileSystemName: string;
   rootURL: string;
-  fileSystemPath: Platform.DevToolsPath.RawPathString;
+  fileSystemPath: string;
 }
 
 export interface FileSystemAddedEvent {
@@ -95,9 +93,9 @@ export interface FileSystemAddedEvent {
 }
 
 export interface FilesChangedEvent {
-  changed: Platform.DevToolsPath.RawPathString[];
-  added: Platform.DevToolsPath.RawPathString[];
-  removed: Platform.DevToolsPath.RawPathString[];
+  changed: string[];
+  added: string[];
+  removed: string[];
 }
 
 export interface IndexingEvent {
@@ -133,7 +131,7 @@ export interface SavedURLEvent {
 
 export interface SearchCompletedEvent {
   requestId: number;
-  files: Platform.DevToolsPath.RawPathString[];
+  files: string[];
 }
 
 // While `EventDescriptors` are used to dynamically dispatch host binding events,
@@ -155,7 +153,7 @@ export type EventTypes = {
   [Events.EnterInspectElementMode]: void,
   [Events.EyeDropperPickedColor]: EyeDropperPickedColorEvent,
   [Events.FileSystemsLoaded]: DevToolsFileSystem[],
-  [Events.FileSystemRemoved]: Platform.DevToolsPath.RawPathString,
+  [Events.FileSystemRemoved]: string,
   [Events.FileSystemAdded]: FileSystemAddedEvent,
   [Events.FileSystemFilesChangedAddedRemoved]: FilesChangedEvent,
   [Events.IndexingTotalWorkCalculated]: IndexingTotalWorkCalculatedEvent,

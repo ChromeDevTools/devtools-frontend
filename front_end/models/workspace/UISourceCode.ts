@@ -192,8 +192,8 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
-  contentURL(): Platform.DevToolsPath.RawPathString {
-    return this.url() as Platform.DevToolsPath.RawPathString;
+  contentURL(): string {
+    return this.url();
   }
 
   contentType(): Common.ResourceType.ResourceType {

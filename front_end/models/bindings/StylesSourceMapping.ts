@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -298,7 +297,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
   }
 
-  contentURL(): Platform.DevToolsPath.RawPathString {
+  contentURL(): string {
     console.assert(this.headers.size > 0);
     return this.headers.values().next().value.originalContentProvider().contentURL();
   }

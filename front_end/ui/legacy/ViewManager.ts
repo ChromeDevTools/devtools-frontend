@@ -828,6 +828,12 @@ export class _TabbedLocation extends Location implements TabbedViewLocation {
     this.tabOrderSetting.set(tabOrders);
   }
 
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getCloseableTabSetting(): Common.Settings.Setting<any> {
+    return this.closeableTabSetting.get();
+  }
+
   static orderStep = 10;  // Keep in sync with descriptors.
 }
 

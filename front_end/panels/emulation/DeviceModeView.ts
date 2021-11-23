@@ -547,6 +547,9 @@ export class DeviceModeView extends UI.Widget.VBox {
     const link = document.createElement('a');
     link.download = fileName + '.png';
     canvas.toBlob(blob => {
+      if (blob === null) {
+        return;
+      }
       link.href = URL.createObjectURL(blob);
       link.click();
     });

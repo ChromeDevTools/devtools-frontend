@@ -21,7 +21,9 @@ function getReleaseNoteLang(): string {
   // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const currentDevToolsLocale = new Intl.Locale(currentDevToolsUILanguage);
 
-  return releaseNoteLangs.has(currentDevToolsLocale.language) ? currentDevToolsLocale.language : '';
+  return currentDevToolsLocale.language && releaseNoteLangs.has(currentDevToolsLocale.language) ?
+      currentDevToolsLocale.language :
+      '';
 }
 
 function getLocalizedReleaseNoteURL(url: string): string {

@@ -182,12 +182,15 @@ export function getLocalizedLanguageRegion(
     devtoolsLocale: DevToolsLocale): Platform.UIString.LocalizedString {
   // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const locale = new Intl.Locale(localeString);
+  Platform.DCHECK(() => locale.language !== undefined);
+  Platform.DCHECK(() => locale.baseName !== undefined);
+  const localLanguage = locale.language || 'en';
+  const localBaseName = locale.baseName || 'en-US';
   // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const devtoolsLoc = new Intl.Locale(devtoolsLocale.locale);
-  const targetLanguage = locale.language === devtoolsLoc.language ? 'en' : locale.baseName;
-  const languageInCurrentLocale =
-      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language);
-  const languageInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'language'}).of(locale.language);
+  const targetLanguage = localLanguage === devtoolsLoc.language ? 'en' : localBaseName;
+  const languageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(localLanguage);
+  const languageInTargetLocale = new Intl.DisplayNames([targetLanguage], {type: 'language'}).of(localLanguage);
 
   let wrappedRegionInCurrentLocale = '';
   let wrappedRegionInTargetLocale = '';

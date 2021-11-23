@@ -471,7 +471,7 @@ function createLocaleInfobar(): Infobar {
   // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale =
-      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language);
+      new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en');
 
   const languageSetting = Common.Settings.Settings.instance().moduleSetting<string>('language');
   return new Infobar(

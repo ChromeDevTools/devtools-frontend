@@ -46,7 +46,7 @@ import type {PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection, TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelinePanel.js';
 import type {TimelineCategory} from './TimelineUIUtils.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {TimelineUIUtils, assignLayoutShiftsToClusters} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -768,7 +768,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const metricEvents: SDK.TracingModel.Event[] = [];
     const lcpEvents = [];
-    const layoutShifts = [];
+    const layoutShifts: SDK.TracingModel.Event[] = [];
     const timelineModel = this.performanceModel.timelineModel();
     for (const track of this.model.tracks()) {
       for (const event of track.events) {
@@ -807,38 +807,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     if (layoutShifts.length) {
-      const gapTimeInMs = 1000;
-      const limitTimeInMs = 5000;
-      let firstTimestamp = Number.NEGATIVE_INFINITY;
-      let previousTimestamp = Number.NEGATIVE_INFINITY;
-      let maxScore = 0;
-      let currentClusterId = 1;
-      let currentClusterScore = 0;
-      let currentCluster = new Set<SDK.TracingModel.Event>();
-
-      for (const e of layoutShifts) {
-        if (e.args['data']['had_recent_input'] || e.args['data']['weighted_score_delta'] === undefined) {
-          continue;
-        }
-
-        if (e.startTime - firstTimestamp > limitTimeInMs || e.startTime - previousTimestamp > gapTimeInMs) {
-          firstTimestamp = e.startTime;
-
-          for (const layoutShift of currentCluster) {
-            layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
-            layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
-          }
-
-          currentClusterId += 1;
-          currentClusterScore = 0;
-          currentCluster = new Set();
-        }
-
-        previousTimestamp = e.startTime;
-        currentClusterScore += e.args['data']['weighted_score_delta'];
-        currentCluster.add(e);
-        maxScore = Math.max(maxScore, currentClusterScore);
-      }
+      assignLayoutShiftsToClusters(layoutShifts);
     }
 
     metricEvents.sort(SDK.TracingModel.Event.compareStartTime);

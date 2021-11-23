@@ -3787,3 +3787,47 @@ export interface TimelineMarkerStyle {
   tall: boolean;
   lowPriority: boolean;
 }
+
+export function assignLayoutShiftsToClusters(layoutShifts: readonly SDK.TracingModel.Event[]): void {
+  const gapTimeInMs = 1000;
+  const limitTimeInMs = 5000;
+  let firstTimestamp = Number.NEGATIVE_INFINITY;
+  let previousTimestamp = Number.NEGATIVE_INFINITY;
+  let currentClusterId = 0;
+  let currentClusterScore = 0;
+  let currentCluster = new Set<SDK.TracingModel.Event>();
+
+  for (const event of layoutShifts) {
+    if (event.args['data']['had_recent_input'] || event.args['data']['weighted_score_delta'] === undefined) {
+      continue;
+    }
+
+    if (event.startTime - firstTimestamp > limitTimeInMs || event.startTime - previousTimestamp > gapTimeInMs) {
+      // This means the event does not fit into the current session/cluster, so we need to start a new cluster.
+      firstTimestamp = event.startTime;
+
+      // Update all the layout shifts we found in this cluster to associate them with the cluster.
+      for (const layoutShift of currentCluster) {
+        layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
+        layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
+      }
+
+      // Increment the cluster ID and reset the data.
+      currentClusterId += 1;
+      currentClusterScore = 0;
+      currentCluster = new Set();
+    }
+
+    // Store the timestamp of the previous layout shift.
+    previousTimestamp = event.startTime;
+    // Update the score of the current cluster and store this event in that cluster
+    currentClusterScore += event.args['data']['weighted_score_delta'];
+    currentCluster.add(event);
+  }
+
+  // The last cluster we find may not get closed out - so if not, update all the shifts that we associate with it.
+  for (const layoutShift of currentCluster) {
+    layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
+    layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
+  }
+}

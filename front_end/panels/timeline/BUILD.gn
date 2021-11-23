@@ -74,6 +74,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/panels/timeline/*",
     "../../entrypoints/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

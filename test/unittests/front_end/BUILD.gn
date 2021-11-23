@@ -39,6 +39,7 @@ group("front_end") {
     "panels/settings/emulation",
     "panels/settings/emulation/components",
     "panels/sources",
+    "panels/timeline",
     "panels/timeline/components",
     "test_setup",
     "third_party/i18n",

@@ -24,6 +24,8 @@
   margin-bottom: -1px;
   background-color: var(--color-background-elevation-1);
   display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   flex: 0 0 150px;
 }

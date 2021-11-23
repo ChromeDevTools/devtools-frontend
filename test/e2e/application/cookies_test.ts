@@ -40,6 +40,10 @@ describe('The Application Tab', async () => {
         value: 'Hello%2BWorld!',
       },
       {
+        name: '__Host-foo3',
+        value: 'bar',
+      },
+      {
         name: 'foo2',
         value: 'bar',
       },
@@ -67,7 +71,32 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('can als show the urldecoded value (crbug.com/997625)', async () => {
+  it('shows cookie partition key', async () => {
+    const {target} = getBrowserAndPages();
+    // This sets a new cookie foo=bar
+    await navigateToApplicationTab(target, 'cookies');
+
+    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+
+    const dataGridRowValues1 = await getStorageItemsData(['partitionKey']);
+    assert.deepEqual(dataGridRowValues1, [
+      {
+        partitionKey: '',
+      },
+      {
+        partitionKey: 'https://localhost',
+      },
+      {
+        partitionKey: '',
+      },
+      {
+        partitionKey: '',
+      },
+    ]);
+  });
+
+  it('can also show the urldecoded value (crbug.com/997625)', async () => {
     const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
     await navigateToApplicationTab(target, 'cookies');
@@ -137,6 +166,9 @@ describe('The Application Tab', async () => {
         name: 'urlencoded',
       },
       {
+        name: '__Host-foo3',
+      },
+      {
         name: 'foo2',
       },
       {
@@ -150,6 +182,9 @@ describe('The Application Tab', async () => {
 
     const dataGridRowValues2 = await getStorageItemsData(['name']);
     assert.deepEqual(dataGridRowValues2, [
+      {
+        name: '__Host-foo3',
+      },
       {
         name: 'urlencoded',
       },

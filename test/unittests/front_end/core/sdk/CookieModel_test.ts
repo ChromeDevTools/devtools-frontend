@@ -33,6 +33,7 @@ describeWithMockConnection('CookieModel', () => {
           priority: Protocol.Network.CookiePriority.Medium,
           sourcePort: 80,
           sourceScheme: Protocol.Network.CookieSourceScheme.NonSecure,
+          partitionKey: 'https://example.net',
         }],
       };
     });
@@ -53,5 +54,6 @@ describeWithMockConnection('CookieModel', () => {
     assert.strictEqual(cookies[0].priority(), Protocol.Network.CookiePriority.Medium);
     assert.strictEqual(cookies[0].sourcePort(), 80);
     assert.strictEqual(cookies[0].sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
+    assert.strictEqual(cookies[0].partitionKey(), 'https://example.net');
   });
 });

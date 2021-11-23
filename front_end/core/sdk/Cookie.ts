@@ -4,6 +4,8 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 
+const OPAQUE_PARITION_KEY = '<opaque>';
+
 export class Cookie {
   readonly #nameInternal: string;
   readonly #valueInternal: string;
@@ -49,6 +51,12 @@ export class Cookie {
     if ('sourceScheme' in protocolCookie) {
       cookie.addAttribute('sourceScheme', protocolCookie.sourceScheme);
     }
+    if ('partitionKey' in protocolCookie) {
+      cookie.addAttribute('partitionKey', protocolCookie.partitionKey);
+    }
+    if ('partitionKeyOpaque' in protocolCookie) {
+      cookie.addAttribute('partitionKey', OPAQUE_PARITION_KEY);
+    }
     cookie.setSize(protocolCookie['size']);
     return cookie;
   }
@@ -85,6 +93,14 @@ export class Cookie {
 
   sameParty(): boolean {
     return 'sameparty' in this.#attributes;
+  }
+
+  partitionKey(): string {
+    return this.#attributes['partitionkey'] as string;
+  }
+
+  partitionKeyOpaque(): boolean {
+    return (this.#attributes['partitionkey'] === OPAQUE_PARITION_KEY);
   }
 
   priority(): Protocol.Network.CookiePriority {
@@ -245,6 +261,7 @@ export enum Attributes {
   SourceScheme = 'sourceScheme',
   SourcePort = 'sourcePort',
   Priority = 'priority',
+  PartitionKey = 'partitionKey',
 }
 
 /**

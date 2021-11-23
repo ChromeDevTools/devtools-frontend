@@ -91,6 +91,7 @@ export class CookieModel extends SDKModel<void> {
       expires,
       priority: cookie.priority(),
       sameParty: cookie.sameParty(),
+      partitionKey: cookie.partitionKey(),
       sourceScheme: enabled ? cookie.sourceScheme() : preserveUnset(cookie.sourceScheme()),
       sourcePort: enabled ? cookie.sourcePort() : undefined,
     };

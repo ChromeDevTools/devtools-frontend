@@ -11555,6 +11555,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Name"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(opaque)"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Session"
   },

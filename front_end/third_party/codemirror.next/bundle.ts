@@ -39,7 +39,7 @@ export {
 } from '@codemirror/state';
 export {StreamLanguage, StreamParser, StringStream} from '@codemirror/stream-parser';
 export {Line, Text, TextIterator} from '@codemirror/text';
-export {showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
+export { repositionTooltips,showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';
 export {
   Command, Decoration, DecorationSet, drawSelection, EditorView,
   highlightSpecialChars, KeyBinding, keymap, MatchDecorator, placeholder,

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
@@ -26,6 +27,17 @@ export class TextEditor extends HTMLElement {
   private activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
   private pendingState: CodeMirror.EditorState|undefined;
   private lastScrollPos = {left: 0, top: 0};
+  private resizeTimeout = -1;
+  private devtoolsResizeObserver = new ResizeObserver(() => {
+    if (this.resizeTimeout < 0) {
+      this.resizeTimeout = window.setTimeout(() => {
+        this.resizeTimeout = -1;
+        if (this.activeEditor) {
+          CodeMirror.repositionTooltips(this.activeEditor);
+        }
+      }, 50);
+    }
+  });
 
   constructor(pendingState?: CodeMirror.EditorState) {
     super();
@@ -52,6 +64,7 @@ export class TextEditor extends HTMLElement {
       this.lastScrollPos.top = (event.target as HTMLElement).scrollTop;
     });
     this.ensureSettingListeners();
+    this.startObservingResize();
     return this.activeEditor;
   }
 
@@ -90,6 +103,7 @@ export class TextEditor extends HTMLElement {
   disconnectedCallback(): void {
     if (this.activeEditor) {
       this.pendingState = this.activeEditor.state;
+      this.devtoolsResizeObserver.disconnect();
       this.activeEditor.destroy();
       this.activeEditor = undefined;
       this.ensureSettingListeners();
@@ -125,6 +139,14 @@ export class TextEditor extends HTMLElement {
       const setting = settings.moduleSetting(dynamicSetting.settingName);
       setting.addChangeListener(handler);
       this.activeSettingListeners.push([setting, handler]);
+    }
+  }
+
+  private startObservingResize(): void {
+    const devtoolsElement =
+        WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
+    if (devtoolsElement) {
+      this.devtoolsResizeObserver.observe(devtoolsElement);
     }
   }
 

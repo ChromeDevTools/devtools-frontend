@@ -31,7 +31,7 @@
     "@codemirror/state": "0.19.5",
     "@codemirror/stream-parser": "0.19.2",
     "@codemirror/text": "0.19.5",
-    "@codemirror/tooltip": "0.19.9",
+    "@codemirror/tooltip": "0.19.10",
     "@codemirror/view": "0.19.20",
     "@lezer/common": "0.15.8",
     "@rollup/plugin-node-resolve": "^13.0.4",

@@ -2417,51 +2417,6 @@
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "T̂h́ê d́ôćûḿêńt̂ d́îd́ n̂ót̂ f́îńîśĥ ĺôád̂ín̂ǵ b̂éf̂ór̂é n̂áv̂íĝát̂ín̂ǵ âẃâý."
   },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "Êḿb̂éd̂d́êŕÂṕp̂B́âńn̂ér̂Ḿâńâǵêŕ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "Êḿb̂éd̂d́êŕĈh́r̂óm̂éP̂áŝśŵór̂d́M̂án̂áĝér̂Ćl̂íêńt̂B́îńd̂Ćr̂éd̂én̂t́îál̂Ḿâńâǵêŕ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "Êḿb̂éd̂d́êŕD̂óm̂D́îśt̂íl̂ĺêŕŜél̂f́D̂él̂ét̂ín̂ǵR̂éq̂úêśt̂D́êĺêǵât́ê"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "Êḿb̂éd̂d́êŕD̂óm̂D́îśt̂íl̂ĺêŕV̂íêẃêŕŜóûŕĉé"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Ḿêśŝáĝín̂ǵ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Ḿêśŝáĝín̂ǵF̂ór̂Óp̂én̂Ṕôŕt̂"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂ś"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "Êḿb̂éd̂d́êŕÊx́t̂én̂śîón̂Śêńt̂ḾêśŝáĝéT̂óĈáĉh́êd́F̂ŕâḿê"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "Êḿb̂éd̂d́êŕM̂ód̂ál̂D́îál̂óĝ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "Êḿb̂éd̂d́êŕÔf́f̂ĺîńêṔâǵê"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "Êḿb̂éd̂d́êŕÔóm̂Ín̂t́êŕv̂én̂t́îón̂T́âb́Ĥél̂ṕêŕ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "Êḿb̂éd̂d́êŕP̂ér̂ḿîśŝíôńR̂éq̂úêśt̂Ḿâńâǵêŕ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "Êḿb̂éd̂d́êŕP̂óp̂úp̂B́l̂óĉḱêŕT̂áb̂H́êĺp̂ér̂"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "Êḿb̂éd̂d́êŕŜáf̂éB̂ŕôẃŝín̂ǵT̂h́r̂éât́D̂ét̂áîĺŝ"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "Êḿb̂éd̂d́êŕŜáf̂éB̂ŕôẃŝín̂ǵT̂ŕîǵĝér̂éd̂ṔôṕûṕB̂ĺôćk̂ér̂"
-  },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Â śêŕv̂íĉé ŵór̂ḱêŕ ŵáŝ áĉt́îv́ât́êd́ ŵh́îĺê t́ĥé p̂áĝé ŵáŝ ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },

@@ -424,66 +424,6 @@ const UIStrings = {
       * @description Description text for not restored reason ContentMediaPlay.
       */
   contentMediaPlay: 'A media player was playing upon navigating away.',
-  /**
-      * @description Description text for not restored reason EmbedderPopupBlockerTabHelper.
-      */
-  embedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',
-  /**
-      * @description Description text for not restored reason EmbedderSafeBrowsingTriggeredPopupBlocker.
-      */
-  embedderSafeBrowsingTriggeredPopupBlocker: 'EmbedderSafeBrowsingTriggeredPopupBlocker',
-  /**
-      * @description Description text for not restored reason EmbedderSafeBrowsingThreatDetails.
-      */
-  embedderSafeBrowsingThreatDetails: 'EmbedderSafeBrowsingThreatDetails',
-  /**
-      * @description Description text for not restored reason EmbedderAppBannerManager.
-      */
-  embedderAppBannerManager: 'EmbedderAppBannerManager',
-  /**
-      * @description Description text for not restored reason EmbedderDomDistillerViewerSource.
-      */
-  embedderDomDistillerViewerSource: 'EmbedderDomDistillerViewerSource',
-  /**
-      * @description Description text for not restored reason EmbedderDomDistillerSelfDeletingRequestDelegate.
-      */
-  embedderDomDistillerSelfDeletingRequestDelegate: 'EmbedderDomDistillerSelfDeletingRequestDelegate',
-  /**
-      * @description Description text for not restored reason EmbedderOomInterventionTabHelper.
-      */
-  embedderOomInterventionTabHelper: 'EmbedderOomInterventionTabHelper',
-  /**
-      * @description Description text for not restored reason EmbedderOfflinePage.
-      */
-  embedderOfflinePage: 'EmbedderOfflinePage',
-  /**
-      * @description Description text for not restored reason EmbedderChromePasswordManagerClientBindCredentialManager.
-      */
-  embedderChromePasswordManagerClientBindCredentialManager: 'EmbedderChromePasswordManagerClientBindCredentialManager',
-  /**
-      * @description Description text for not restored reason EmbedderPermissionRequestManager.
-      */
-  embedderPermissionRequestManager: 'EmbedderPermissionRequestManager',
-  /**
-      * @description Description text for not restored reason EmbedderModalDialog.
-      */
-  embedderModalDialog: 'EmbedderModalDialog',
-  /**
-      * @description Description text for not restored reason EmbedderExtensions.
-      */
-  embedderExtensions: 'EmbedderExtensions',
-  /**
-      * @description Description text for not restored reason EmbedderExtensionMessaging.
-      */
-  embedderExtensionMessaging: 'EmbedderExtensionMessaging',
-  /**
-      * @description Description text for not restored reason EmbedderExtensionMessagingForOpenPort.
-      */
-  embedderExtensionMessagingForOpenPort: 'EmbedderExtensionMessagingForOpenPort',
-  /**
-      * @description Description text for not restored reason EmbedderExtensionSentMessageToCachedFrame.
-      */
-  embedderExtensionSentMessageToCachedFrame: 'EmbedderExtensionSentMessageToCachedFrame',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackForwardCacheStrings.ts', UIStrings);
@@ -601,23 +541,23 @@ export const NotRestoredReasonDescription = {
   'ContentMediaSession': {name: i18nLazyString(UIStrings.contentMediaSession)},
   'ContentMediaSessionService': {name: i18nLazyString(UIStrings.contentMediaSessionService)},
   'ContentMediaPlay': {name: i18nLazyString(UIStrings.contentMediaPlay)},
-  'EmbedderPopupBlockerTabHelper': {name: i18nLazyString(UIStrings.embedderPopupBlockerTabHelper)},
+  'EmbedderPopupBlockerTabHelper': {name: i18n.i18n.lockedLazyString('EmbedderPopupBlockerTabHelper')},
   'EmbedderSafeBrowsingTriggeredPopupBlocker':
-      {name: i18nLazyString(UIStrings.embedderSafeBrowsingTriggeredPopupBlocker)},
-  'EmbedderSafeBrowsingThreatDetails': {name: i18nLazyString(UIStrings.embedderSafeBrowsingThreatDetails)},
-  'EmbedderAppBannerManager': {name: i18nLazyString(UIStrings.embedderAppBannerManager)},
-  'EmbedderDomDistillerViewerSource': {name: i18nLazyString(UIStrings.embedderDomDistillerViewerSource)},
+      {name: i18n.i18n.lockedLazyString('EmbedderSafeBrowsingTriggeredPopupBlocker')},
+  'EmbedderSafeBrowsingThreatDetails': {name: i18n.i18n.lockedLazyString('EmbedderSafeBrowsingThreatDetails')},
+  'EmbedderAppBannerManager': {name: i18n.i18n.lockedLazyString('EmbedderAppBannerManager')},
+  'EmbedderDomDistillerViewerSource': {name: i18n.i18n.lockedLazyString('EmbedderDomDistillerViewerSource')},
   'EmbedderDomDistillerSelfDeletingRequestDelegate':
-      {name: i18nLazyString(UIStrings.embedderDomDistillerSelfDeletingRequestDelegate)},
-  'EmbedderOomInterventionTabHelper': {name: i18nLazyString(UIStrings.embedderOomInterventionTabHelper)},
-  'EmbedderOfflinePage': {name: i18nLazyString(UIStrings.embedderOfflinePage)},
+      {name: i18n.i18n.lockedLazyString('EmbedderDomDistillerSelfDeletingRequestDelegate')},
+  'EmbedderOomInterventionTabHelper': {name: i18n.i18n.lockedLazyString('EmbedderOomInterventionTabHelper')},
+  'EmbedderOfflinePage': {name: i18n.i18n.lockedLazyString('EmbedderOfflinePage')},
   'EmbedderChromePasswordManagerClientBindCredentialManager':
-      {name: i18nLazyString(UIStrings.embedderChromePasswordManagerClientBindCredentialManager)},
-  'EmbedderPermissionRequestManager': {name: i18nLazyString(UIStrings.embedderPermissionRequestManager)},
-  'EmbedderModalDialog': {name: i18nLazyString(UIStrings.embedderModalDialog)},
-  'EmbedderExtensions': {name: i18nLazyString(UIStrings.embedderExtensions)},
-  'EmbedderExtensionMessaging': {name: i18nLazyString(UIStrings.embedderExtensionMessaging)},
-  'EmbedderExtensionMessagingForOpenPort': {name: i18nLazyString(UIStrings.embedderExtensionMessagingForOpenPort)},
+      {name: i18n.i18n.lockedLazyString('EmbedderChromePasswordManagerClientBindCredentialManager')},
+  'EmbedderPermissionRequestManager': {name: i18n.i18n.lockedLazyString('EmbedderPermissionRequestManager')},
+  'EmbedderModalDialog': {name: i18n.i18n.lockedLazyString('EmbedderModalDialog')},
+  'EmbedderExtensions': {name: i18n.i18n.lockedLazyString('EmbedderExtensions')},
+  'EmbedderExtensionMessaging': {name: i18n.i18n.lockedLazyString('EmbedderExtensionMessaging')},
+  'EmbedderExtensionMessagingForOpenPort': {name: i18n.i18n.lockedLazyString('EmbedderExtensionMessagingForOpenPort')},
   'EmbedderExtensionSentMessageToCachedFrame':
-      {name: i18nLazyString(UIStrings.embedderExtensionSentMessageToCachedFrame)},
+      {name: i18n.i18n.lockedLazyString('EmbedderExtensionSentMessageToCachedFrame')},
 };

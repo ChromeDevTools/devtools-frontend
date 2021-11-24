@@ -48,6 +48,7 @@ export class Infobar {
   private readonly toggleElement: HTMLButtonElement;
   private readonly closeButton: HTMLElement;
   private closeCallback: (() => void)|null;
+  #firstFocusableElement: HTMLElement|null = null;
   private parentView?: Widget;
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -88,6 +89,9 @@ export class Infobar {
         }
 
         const button = createTextButton(action.text, actionCallback, buttonClass);
+        if (action.highlight && !this.#firstFocusableElement) {
+          this.#firstFocusableElement = button;
+        }
         this.actionContainer.appendChild(button);
       }
     }
@@ -202,6 +206,11 @@ export class Infobar {
     this.toggleElement.remove();
     this.onResize();
     ARIAUtils.alert(this.detailsMessage);
+    if (this.#firstFocusableElement) {
+      this.#firstFocusableElement.focus();
+    } else {
+      this.closeButton.focus();
+    }
   }
 
   createDetailsRowMessage(message?: string): Element {

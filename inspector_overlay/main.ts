@@ -77,6 +77,7 @@ let platformName: PlatformName;
 type MessageLookup = {
   'setOverlay': keyof Overlays,
   'setPlatform': PlatformName,
+  drawingFinished: '',
 };
 
 const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
@@ -95,6 +96,8 @@ const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLooku
     }
   } else if (functionName === 'setPlatform') {
     platformName = message[1];
+  } else if (functionName === 'drawingFinished') {
+    // TODO The logic needs to be added here once the backend starts sending this event.
   } else {
     currentOverlay.dispatch(message);
   }

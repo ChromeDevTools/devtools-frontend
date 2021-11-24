@@ -53,7 +53,7 @@ let isolatedFileSystemManagerInstance: IsolatedFileSystemManager;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<string, PlatformFileSystem>;
-  private readonly callbacks: Map<number, (arg0: Array<string>) => void>;
+  private readonly callbacks: Map<number, (arg0: Array<Platform.DevToolsPath.RawPathString>) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
   private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
@@ -278,7 +278,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.workspaceFolderExcludePatternSettingInternal;
   }
 
-  registerCallback(callback: (arg0: Array<string>) => void): number {
+  registerCallback(callback: (arg0: Array<Platform.DevToolsPath.RawPathString>) => void): number {
     const requestId = ++lastRequestId;
     this.callbacks.set(requestId, callback);
     return requestId;

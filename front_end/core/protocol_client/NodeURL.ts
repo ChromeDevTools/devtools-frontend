@@ -14,6 +14,7 @@ export class NodeURL {
 
     function process(object: {url?: string}, path: string): void {
       if (object.url && NodeURL.isPlatformPath(object.url, Host.Platform.isWin())) {
+        // object.url can be ob both types: RawPathString and UrlString
         object.url = Common.ParsedURL.ParsedURL.rawPathToUrlString(object.url as Platform.DevToolsPath.RawPathString);
       }
       for (const entry of Object.entries(object)) {

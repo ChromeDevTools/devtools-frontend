@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO(crbug.com/1253323): All casts to RawPathString and UrlString will be removed from this file when migration to branded types is complete.
+// TODO(crbug.com/1253323): All casts to UrlString will be removed from this file when migration to branded types is complete.
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -176,7 +176,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
               this.initialGitFoldersInternal.add(parentFolder);
             }
             if (this.isFileExcluded(entry.fullPath + '/')) {
-              // TODO(crbug.com/1253323): Cast to RawPathString will be removed when migration to branded types is complete.
               this.excludedEmbedderFolders.push(Common.ParsedURL.ParsedURL.capFilePrefix(
                   this.path() + entry.fullPath as Platform.DevToolsPath.UrlString, Host.Platform.isWin()));
               continue;
@@ -514,9 +513,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.searchInPath(
           requestId, this.embedderPathInternal, query);
 
-      function innerCallback(files: string[]): void {
-        resolve(files.map(
-            path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path as Platform.DevToolsPath.RawPathString)));
+      function innerCallback(files: Platform.DevToolsPath.RawPathString[]): void {
+        resolve(files.map(path => Common.ParsedURL.ParsedURL.rawPathToUrlString(path)));
         progress.incrementWorked(1);
       }
     });

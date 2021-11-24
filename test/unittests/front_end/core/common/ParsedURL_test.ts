@@ -70,32 +70,32 @@ describe('Parsed URL', () => {
   });
 
   it('converts platform path to a URL that does not start with "file://"', () => {
-    const platformPathTest = 'usr/lib';
-    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest as Platform.DevToolsPath.RawPathString);
+    const platformPathTest = 'usr/lib' as Platform.DevToolsPath.RawPathString;
+    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest);
     assert.strictEqual(convertedUrl, 'file:///usr/lib', 'URL was not converted correctly');
   });
 
   it('converts platform path to a URL that does not start with "file://" but starts with a slash ("/")', () => {
-    const platformPathTest = '/usr/lib';
-    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest as Platform.DevToolsPath.RawPathString);
+    const platformPathTest = '/usr/lib' as Platform.DevToolsPath.RawPathString;
+    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest);
     assert.strictEqual(convertedUrl, 'file:///usr/lib', 'URL was not converted correctly');
   });
 
   it('converts platform path to a URL that starts with "file://"', () => {
-    const platformPathTest = 'file://usr/lib';
-    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest as Platform.DevToolsPath.RawPathString);
+    const platformPathTest = 'file://usr/lib' as Platform.DevToolsPath.RawPathString;
+    const convertedUrl = ParsedURL.rawPathToUrlString(platformPathTest);
     assert.strictEqual(convertedUrl, 'file://usr/lib', 'URL was not converted correctly');
   });
 
   it('converts path that starts with "file://" to a platform path', () => {
-    const pathTest = 'file://usr/lib';
-    const convertedPath = ParsedURL.capFilePrefix(pathTest as Platform.DevToolsPath.UrlString);
+    const pathTest = 'file://usr/lib' as Platform.DevToolsPath.UrlString;
+    const convertedPath = ParsedURL.capFilePrefix(pathTest);
     assert.strictEqual(convertedPath, 'usr/lib', 'URL was not converted successfully');
   });
 
   it('converts path that starts with "file:///" to a platform path on Windows', () => {
-    const pathTest = 'file:///usr/lib';
-    const convertedPath = ParsedURL.capFilePrefix(pathTest as Platform.DevToolsPath.UrlString, true);
+    const pathTest = 'file:///usr/lib' as Platform.DevToolsPath.UrlString;
+    const convertedPath = ParsedURL.capFilePrefix(pathTest, true);
     assert.strictEqual(convertedPath, 'usr\\lib', 'URL was not converted successfully');
   });
 

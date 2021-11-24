@@ -832,6 +832,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.idleCallbackManager = new IdleCallbackManager();
 
     const blocks = [new SectionBlock(null)];
+    let sectionIdx = 0;
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
     for (const style of matchedStyles.nodeStyles()) {
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
@@ -844,7 +845,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       const lastBlock = blocks[blocks.length - 1];
       if (lastBlock) {
         this.idleCallbackManager.schedule(() => {
-          const section = new StylePropertiesSection(this, matchedStyles, style);
+          const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx);
+          sectionIdx++;
           lastBlock.sections.push(section);
         });
       }
@@ -860,7 +862,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       const block = SectionBlock.createPseudoTypeBlock(pseudoType);
       for (const style of matchedStyles.pseudoStyles(pseudoType)) {
         this.idleCallbackManager.schedule(() => {
-          const section = new StylePropertiesSection(this, matchedStyles, style);
+          const section = new StylePropertiesSection(this, matchedStyles, style, sectionIdx);
+          sectionIdx++;
           block.sections.push(section);
         });
       }
@@ -871,7 +874,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       const block = SectionBlock.createKeyframesBlock(keyframesRule.name().text);
       for (const keyframe of keyframesRule.keyframes()) {
         this.idleCallbackManager.schedule(() => {
-          block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style));
+          block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style, sectionIdx));
+          sectionIdx++;
         });
       }
       blocks.push(block);
@@ -917,7 +921,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const node = this.node();
     const blankSection = new BlankStylePropertiesSection(
         this, insertAfterSection.matchedStyles, node ? node.simpleSelector() : '', styleSheetId, ruleLocation,
-        insertAfterSection.style());
+        insertAfterSection.style(), 0);
 
     this.sectionsContainer.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
 
@@ -928,6 +932,13 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
       block.sections.splice(index + 1, 0, blankSection);
       blankSection.startEditingSelector();
+    }
+    let sectionIdx = 0;
+    for (const block of this.sectionBlocks) {
+      for (const section of block.sections) {
+        section.setSectionIdx(sectionIdx);
+        sectionIdx++;
+      }
     }
   }
 
@@ -1208,10 +1219,15 @@ export class StylePropertiesSection {
 
   private queryListElement: HTMLElement;
 
+  // Used to identify buttons that trigger a flexbox or grid editor.
+  nextEditorTriggerButtonIdx = 1;
+  private sectionIdx = 0;
+
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
     this.parentPane = parentPane;
+    this.sectionIdx = sectionIdx;
     this.styleInternal = style;
     this.matchedStyles = matchedStyles;
     this.editable = Boolean(style.styleSheetId && style.range);
@@ -1342,6 +1358,15 @@ export class StylePropertiesSection {
     this.isHiddenInternal = false;
     this.markSelectorMatches();
     this.onpopulate();
+  }
+
+  setSectionIdx(sectionIdx: number): void {
+    this.sectionIdx = sectionIdx;
+    this.onpopulate();
+  }
+
+  getSectionIdx(): number {
+    return this.sectionIdx;
   }
 
   registerFontProperty(treeElement: StylePropertyTreeElement): void {
@@ -1935,6 +1960,7 @@ export class StylePropertiesSection {
 
   onpopulate(): void {
     this.parentPane.setActiveProperty(null);
+    this.nextEditorTriggerButtonIdx = 1;
     this.propertiesTreeOutline.removeChildren();
     const style = this.styleInternal;
     let count = 0;
@@ -2457,10 +2483,10 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, defaultSelectorText: string,
       styleSheetId: Protocol.CSS.StyleSheetId, ruleLocation: TextUtils.TextRange.TextRange,
-      insertAfterStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
+      insertAfterStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
     const cssModel = (stylesPane.cssModel() as SDK.CSSModel.CSSModel);
     const rule = SDK.CSSRule.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
-    super(stylesPane, matchedStyles, rule.style);
+    super(stylesPane, matchedStyles, rule.style, sectionIdx);
     this.normal = false;
     this.ruleLocation = ruleLocation;
     this.styleSheetId = styleSheetId;
@@ -2564,8 +2590,8 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
 export class KeyframePropertiesSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
-    super(stylesPane, matchedStyles, style);
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
+    super(stylesPane, matchedStyles, style, sectionIdx);
     this.selectorElement.className = 'keyframe-key';
   }
 

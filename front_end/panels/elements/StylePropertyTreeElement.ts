@@ -668,21 +668,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const section = this.section();
     if (this.valueElement && section && section.editable && this.property.name === 'display') {
       const propertyValue = this.property.trimmedValueWithoutImportant();
-      if (propertyValue === 'flex' || propertyValue === 'inline-flex') {
+      const isFlex = propertyValue === 'flex' || propertyValue === 'inline-flex';
+      const isGrid = propertyValue === 'grid' || propertyValue === 'inline-grid';
+      if (isFlex || isGrid) {
+        const key = `${section.getSectionIdx()}_${section.nextEditorTriggerButtonIdx}`;
         const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, section, FlexboxEditor, i18nString(UIStrings.flexboxEditorButton));
+            this.parentPaneInternal, section, isFlex ? FlexboxEditor : GridEditor,
+            isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
+        section.nextEditorTriggerButtonIdx++;
         this.listItemElement.appendChild(button);
         const helper = this.parentPaneInternal.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance())) {
-          helper.setAnchorElement(button);
-        }
-      }
-      if (propertyValue === 'grid' || propertyValue === 'inline-grid') {
-        const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, section, GridEditor, i18nString(UIStrings.gridEditorButton));
-        this.listItemElement.appendChild(button);
-        const helper = this.parentPaneInternal.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance())) {
+        if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
           helper.setAnchorElement(button);
         }
       }

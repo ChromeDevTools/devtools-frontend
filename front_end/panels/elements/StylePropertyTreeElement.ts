@@ -670,22 +670,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const propertyValue = this.property.trimmedValueWithoutImportant();
       if (propertyValue === 'flex' || propertyValue === 'inline-flex') {
         const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, section, FlexboxEditor, i18nString(UIStrings.flexboxEditorButton),
-            this.property.index);
+            this.parentPaneInternal, section, FlexboxEditor, i18nString(UIStrings.flexboxEditorButton));
         this.listItemElement.appendChild(button);
         const helper = this.parentPaneInternal.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance()) &&
-            this.property.index === StyleEditorWidget.instance().getPropertyIndex()) {
+        if (helper.isShowing(StyleEditorWidget.instance())) {
           helper.setAnchorElement(button);
         }
       }
       if (propertyValue === 'grid' || propertyValue === 'inline-grid') {
         const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, section, GridEditor, i18nString(UIStrings.gridEditorButton), this.property.index);
+            this.parentPaneInternal, section, GridEditor, i18nString(UIStrings.gridEditorButton));
         this.listItemElement.appendChild(button);
         const helper = this.parentPaneInternal.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance()) &&
-            this.property.index === StyleEditorWidget.instance().getPropertyIndex()) {
+        if (helper.isShowing(StyleEditorWidget.instance())) {
           helper.setAnchorElement(button);
         }
       }

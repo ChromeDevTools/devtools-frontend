@@ -7135,8 +7135,6 @@ domain Page
       optional string cursive
       # The fantasy font-family.
       optional string fantasy
-      # The pictograph font-family.
-      optional string pictograph
 
   # Default font sizes.
   experimental type FontSizes extends object

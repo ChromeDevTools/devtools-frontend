@@ -10442,10 +10442,6 @@ declare namespace Protocol {
        * The fantasy font-family.
        */
       fantasy?: string;
-      /**
-       * The pictograph font-family.
-       */
-      pictograph?: string;
     }
 
     /**

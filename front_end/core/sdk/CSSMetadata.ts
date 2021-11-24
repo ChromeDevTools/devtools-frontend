@@ -567,7 +567,6 @@ const extraPropertyValues = {
       'ui-monospace',
       'ui-rounded',
       '-webkit-body',
-      '-webkit-pictograph',
     ],
   },
   'zoom': {values: ['normal']},

@@ -262,7 +262,14 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   private renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
     return LitHtml.html`
-      <li>${explanation.reason} : ${
+      <li>
+      <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+      iconName: 'circled_exclamation_icon',
+      color: 'orange',
+      width: '16px',
+      height: '16px',
+    } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
+        ${explanation.reason} : ${
         (explanation.reason in NotRestoredReasonDescription) ?
             LitHtml.html`${NotRestoredReasonDescription[explanation.reason].name()}` :
             LitHtml.nothing} </li>

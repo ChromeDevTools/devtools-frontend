@@ -61,14 +61,14 @@ const PADDING_ROWS_COUNT = 10;
 export class DataGrid extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-data-grid`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private columns: readonly Column[] = [];
-  private rows: readonly Row[] = [];
-  private sortState: Readonly<SortState>|null = null;
-  private isRendering = false;
-  private userScrollState: UserScrollState = UserScrollState.NOT_SCROLLED;
-  private contextMenus?: DataGridContextMenusConfiguration = undefined;
-  private currentResize: {
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #columns: readonly Column[] = [];
+  #rows: readonly Row[] = [];
+  #sortState: Readonly<SortState>|null = null;
+  #isRendering = false;
+  #userScrollState: UserScrollState = UserScrollState.NOT_SCROLLED;
+  #contextMenus?: DataGridContextMenusConfiguration = undefined;
+  #currentResize: {
     rightCellCol: HTMLTableColElement,
     leftCellCol: HTMLTableColElement,
     leftCellColInitialPercentageWidth: number,
@@ -83,16 +83,16 @@ export class DataGrid extends HTMLElement {
   // actual row index from the original dataset. We could use this.rows[index]
   // but that's O(n) and will slow as the dataset grows. A weakmap makes the
   // lookup constant.
-  private readonly rowIndexMap = new WeakMap<Row, number>();
-  private readonly resizeObserver = new ResizeObserver(() => {
+  readonly #rowIndexMap = new WeakMap<Row, number>();
+  readonly #resizeObserver = new ResizeObserver(() => {
     this.alignScrollHandlers();
   });
 
   // These have to be bound as they are put onto the global document, not onto
   // this element, so LitHtml does not bind them for us.
-  private boundOnResizePointerUp = this.onResizePointerUp.bind(this);
-  private boundOnResizePointerMove = this.onResizePointerMove.bind(this);
-  private boundOnResizePointerDown = this.onResizePointerDown.bind(this);
+  #boundOnResizePointerUp = this.onResizePointerUp.bind(this);
+  #boundOnResizePointerMove = this.onResizePointerMove.bind(this);
+  #boundOnResizePointerDown = this.onResizePointerDown.bind(this);
 
   /**
    * Following guidance from
@@ -108,35 +108,35 @@ export class DataGrid extends HTMLElement {
    * first render if any of the columns are sortable we'll set the active cell
    * to [0, 0].
    */
-  private cellToFocusIfUserTabsIn: CellPosition = [0, 1];
-  private cellUserHasFocused: CellPosition|null = null;
+  #cellToFocusIfUserTabsIn: CellPosition = [0, 1];
+  #cellUserHasFocused: CellPosition|null = null;
 
-  private hasRenderedAtLeastOnce = false;
-  private userHasFocusInDataGrid = false;
-  private scheduleRender = false;
+  #hasRenderedAtLeastOnce = false;
+  #userHasFocusInDataGrid = false;
+  #scheduleRender = false;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [dataGridStyles];
+    this.#shadow.adoptedStyleSheets = [dataGridStyles];
     ComponentHelpers.SetCSSProperty.set(this, '--table-row-height', `${ROW_HEIGHT_PIXELS}px`);
   }
 
   get data(): DataGridData {
     return {
-      columns: this.columns as Column[],
-      rows: this.rows as Row[],
-      activeSort: this.sortState,
-      contextMenus: this.contextMenus,
+      columns: this.#columns as Column[],
+      rows: this.#rows as Row[],
+      activeSort: this.#sortState,
+      contextMenus: this.#contextMenus,
     };
   }
 
   set data(data: DataGridData) {
-    this.columns = data.columns;
-    this.rows = data.rows;
-    this.rows.forEach((row, index) => {
-      this.rowIndexMap.set(row, index);
+    this.#columns = data.columns;
+    this.#rows = data.rows;
+    this.#rows.forEach((row, index) => {
+      this.#rowIndexMap.set(row, index);
     });
-    this.sortState = data.activeSort;
-    this.contextMenus = data.contextMenus;
+    this.#sortState = data.activeSort;
+    this.#contextMenus = data.contextMenus;
 
     /**
      * On first render, now we have data, we can figure out which cell is the
@@ -153,22 +153,22 @@ export class DataGrid extends HTMLElement {
      * We only do this on the first render; otherwise if we re-render and the
      * user has focused a cell, this logic will reset it.
      */
-    if (!this.hasRenderedAtLeastOnce) {
-      this.cellToFocusIfUserTabsIn = calculateFirstFocusableCell({columns: this.columns, rows: this.rows});
+    if (!this.#hasRenderedAtLeastOnce) {
+      this.#cellToFocusIfUserTabsIn = calculateFirstFocusableCell({columns: this.#columns, rows: this.#rows});
     }
 
-    if (this.hasRenderedAtLeastOnce && this.userHasCellFocused()) {
+    if (this.#hasRenderedAtLeastOnce && this.userHasCellFocused()) {
       const [selectedColIndex, selectedRowIndex] = this.tabbableCell();
-      const columnOutOfBounds = selectedColIndex > this.columns.length;
-      const rowOutOfBounds = selectedRowIndex > this.rows.length;
+      const columnOutOfBounds = selectedColIndex > this.#columns.length;
+      const rowOutOfBounds = selectedRowIndex > this.#rows.length;
 
       /** If the row or column was removed, so the user is out of bounds, we
        * move them to the last focusable cell, which should be close to where
        * they were. */
       if (columnOutOfBounds || rowOutOfBounds) {
-        this.cellUserHasFocused = [
-          columnOutOfBounds ? this.columns.length : selectedColIndex,
-          rowOutOfBounds ? this.rows.length : selectedRowIndex,
+        this.#cellUserHasFocused = [
+          columnOutOfBounds ? this.#columns.length : selectedColIndex,
+          rowOutOfBounds ? this.#rows.length : selectedRowIndex,
         ];
       }
     }
@@ -181,7 +181,7 @@ export class DataGrid extends HTMLElement {
      * If the user's last scroll took them to the bottom, then we assume they
      * want to automatically scroll.
      */
-    if (this.userScrollState === UserScrollState.SCROLLED_TO_BOTTOM) {
+    if (this.#userScrollState === UserScrollState.SCROLLED_TO_BOTTOM) {
       return true;
     }
 
@@ -190,7 +190,7 @@ export class DataGrid extends HTMLElement {
      * selected a cell), we automatically scroll, as long as the user hasn't
      * manually scrolled the data-grid to somewhere that isn't the bottom.
      */
-    if (!this.userHasFocusInDataGrid && this.userScrollState !== UserScrollState.MANUAL_SCROLL_NOT_BOTTOM) {
+    if (!this.#userHasFocusInDataGrid && this.#userScrollState !== UserScrollState.MANUAL_SCROLL_NOT_BOTTOM) {
       return true;
     }
 
@@ -202,12 +202,12 @@ export class DataGrid extends HTMLElement {
   }
 
   private scrollToBottomIfRequired(): void {
-    if (this.hasRenderedAtLeastOnce === false || !this.shouldAutoScrollToBottom()) {
+    if (this.#hasRenderedAtLeastOnce === false || !this.shouldAutoScrollToBottom()) {
       return;
     }
 
     coordinator.read(() => {
-      const wrapper = this.shadow.querySelector('.wrapping-container');
+      const wrapper = this.#shadow.querySelector('.wrapping-container');
       if (!wrapper) {
         return;
       }
@@ -219,21 +219,21 @@ export class DataGrid extends HTMLElement {
   }
 
   private engageResizeObserver(): void {
-    if (!this.hasRenderedAtLeastOnce) {
-      this.resizeObserver.observe(this.shadow.host);
+    if (!this.#hasRenderedAtLeastOnce) {
+      this.#resizeObserver.observe(this.#shadow.host);
     }
   }
 
   private userHasCellFocused(): boolean {
-    return this.cellUserHasFocused !== null;
+    return this.#cellUserHasFocused !== null;
   }
 
   private getTableElementForCellUserHasFocused(): HTMLTableCellElement|null {
-    if (!this.cellUserHasFocused) {
+    if (!this.#cellUserHasFocused) {
       return null;
     }
-    const [columnIndex, rowIndex] = this.cellUserHasFocused;
-    const cell = this.shadow.querySelector<HTMLTableCellElement>(
+    const [columnIndex, rowIndex] = this.#cellUserHasFocused;
+    const cell = this.#shadow.querySelector<HTMLTableCellElement>(
         `[data-row-index="${rowIndex}"][data-col-index="${columnIndex}"]`);
     return cell;
   }
@@ -245,15 +245,15 @@ export class DataGrid extends HTMLElement {
   }
 
   private focusCellIfRequired([newColumnIndex, newRowIndex]: CellPosition): void {
-    this.userHasFocusInDataGrid = true;
+    this.#userHasFocusInDataGrid = true;
 
-    if (this.cellUserHasFocused && this.cellUserHasFocused[0] === newColumnIndex &&
-        this.cellUserHasFocused[1] === newRowIndex) {
+    if (this.#cellUserHasFocused && this.#cellUserHasFocused[0] === newColumnIndex &&
+        this.#cellUserHasFocused[1] === newRowIndex) {
       // The cell is already active and focused so we don't need to do anything.
       return;
     }
 
-    this.cellUserHasFocused = [newColumnIndex, newRowIndex];
+    this.#cellUserHasFocused = [newColumnIndex, newRowIndex];
     this.render();
     const tableCell = this.getTableElementForCellUserHasFocused();
     if (!tableCell) {
@@ -270,13 +270,13 @@ export class DataGrid extends HTMLElement {
   private onTableKeyDown(event: KeyboardEvent): void {
     const key = event.key;
 
-    if (!this.cellUserHasFocused) {
+    if (!this.#cellUserHasFocused) {
       return;
     }
 
     if (KEYS_TREATED_AS_CLICKS.has(key)) {
-      const [focusedColumnIndex, focusedRowIndex] = this.cellUserHasFocused;
-      const activeColumn = this.columns[focusedColumnIndex];
+      const [focusedColumnIndex, focusedRowIndex] = this.#cellUserHasFocused;
+      const activeColumn = this.#columns[focusedColumnIndex];
       if (focusedRowIndex === 0 && activeColumn && activeColumn.sortable) {
         this.onColumnHeaderClick(activeColumn, focusedColumnIndex);
       }
@@ -288,9 +288,9 @@ export class DataGrid extends HTMLElement {
 
     const nextFocusedCell = handleArrowKeyNavigation({
       key: key,
-      currentFocusedCell: this.cellUserHasFocused,
-      columns: this.columns,
-      rows: this.rows,
+      currentFocusedCell: this.#cellUserHasFocused,
+      columns: this.#columns,
+      rows: this.#rows,
     });
     event.preventDefault();
     this.focusCellIfRequired(nextFocusedCell);
@@ -306,13 +306,13 @@ export class DataGrid extends HTMLElement {
    * https://www.w3.org/TR/wai-aria-practices/examples/grid/dataGrids.html.
    */
   private ariaSortForHeader(col: Column): string|undefined {
-    if (col.sortable && (!this.sortState || this.sortState.columnId !== col.id)) {
+    if (col.sortable && (!this.#sortState || this.#sortState.columnId !== col.id)) {
       // Column is sortable but is not currently sorted
       return 'none';
     }
 
-    if (this.sortState && this.sortState.columnId === col.id) {
-      return this.sortState.direction === SortDirection.ASC ? 'ascending' : 'descending';
+    if (this.#sortState && this.#sortState.columnId === col.id) {
+      return this.#sortState.direction === SortDirection.ASC ? 'ascending' : 'descending';
     }
 
     // Column is not sortable, so don't apply any label
@@ -320,7 +320,7 @@ export class DataGrid extends HTMLElement {
   }
 
   private renderEmptyFillerRow(numberOfVisibleRows: number): LitHtml.TemplateResult {
-    const emptyCells = this.columns.map((col, colIndex) => {
+    const emptyCells = this.#columns.map((col, colIndex) => {
       if (!col.visible) {
         return LitHtml.nothing;
       }
@@ -338,11 +338,11 @@ export class DataGrid extends HTMLElement {
   }
 
   private cleanUpAfterResizeColumnComplete(): void {
-    if (!this.currentResize) {
+    if (!this.#currentResize) {
       return;
     }
-    this.currentResize.documentForCursorChange.body.style.cursor = this.currentResize.cursorToRestore;
-    this.currentResize = null;
+    this.#currentResize.documentForCursorChange.body.style.cursor = this.#currentResize.cursorToRestore;
+    this.#currentResize = null;
     // Realign the scroll handlers now the table columns have been resized.
     this.alignScrollHandlers();
   }
@@ -366,20 +366,20 @@ export class DataGrid extends HTMLElement {
     /* To find the cell to the right we can't just go +1 as it might be hidden,
      * so find the next index that is visible.
      */
-    const rightColumnIndexAsNumber = this.columns.findIndex((column, index) => {
+    const rightColumnIndexAsNumber = this.#columns.findIndex((column, index) => {
       return index > leftColumnIndexAsNumber && column.visible === true;
     });
 
-    const leftCell = this.shadow.querySelector(`td[data-filler-row-column-index="${leftColumnIndexAsNumber}"]`);
-    const rightCell = this.shadow.querySelector(`td[data-filler-row-column-index="${rightColumnIndexAsNumber}"]`);
+    const leftCell = this.#shadow.querySelector(`td[data-filler-row-column-index="${leftColumnIndexAsNumber}"]`);
+    const rightCell = this.#shadow.querySelector(`td[data-filler-row-column-index="${rightColumnIndexAsNumber}"]`);
     if (!leftCell || !rightCell) {
       return;
     }
     // We query for the <col> elements as they are the elements that we put the actual width on.
     const leftCellCol =
-        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${leftColumnIndexAsNumber}"]`);
+        this.#shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${leftColumnIndexAsNumber}"]`);
     const rightCellCol =
-        this.shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${rightColumnIndexAsNumber}"]`);
+        this.#shadow.querySelector<HTMLTableColElement>(`col[data-col-column-index="${rightColumnIndexAsNumber}"]`);
     if (!leftCellCol || !rightCellCol) {
       return;
     }
@@ -389,7 +389,7 @@ export class DataGrid extends HTMLElement {
       return;
     }
     // We now store values that we'll make use of in the mousemouse event to calculate how much to resize the table by.
-    this.currentResize = {
+    this.#currentResize = {
       leftCellCol,
       rightCellCol,
       leftCellColInitialPercentageWidth: globalThis.parseInt(leftCellCol.style.width, 10),
@@ -403,23 +403,23 @@ export class DataGrid extends HTMLElement {
 
     targetDocumentForCursorChange.body.style.cursor = 'col-resize';
     resizerElement.setPointerCapture(event.pointerId);
-    resizerElement.addEventListener('pointermove', this.boundOnResizePointerMove);
+    resizerElement.addEventListener('pointermove', this.#boundOnResizePointerMove);
   }
 
   private onResizePointerMove(event: PointerEvent): void {
     event.preventDefault();
-    if (!this.currentResize) {
+    if (!this.#currentResize) {
       return;
     }
 
     const MIN_CELL_WIDTH_PERCENTAGE = 10;
-    const MAX_CELL_WIDTH_PERCENTAGE =
-        (this.currentResize.leftCellColInitialPercentageWidth + this.currentResize.rightCellColInitialPercentageWidth) -
+    const MAX_CELL_WIDTH_PERCENTAGE = (this.#currentResize.leftCellColInitialPercentageWidth +
+                                       this.#currentResize.rightCellColInitialPercentageWidth) -
         MIN_CELL_WIDTH_PERCENTAGE;
-    const deltaOfMouseMove = event.x - this.currentResize.initialMouseX;
+    const deltaOfMouseMove = event.x - this.#currentResize.initialMouseX;
     const absoluteDelta = Math.abs(deltaOfMouseMove);
     const percentageDelta =
-        (absoluteDelta / (this.currentResize.initialLeftCellWidth + this.currentResize.initialRightCellWidth)) * 100;
+        (absoluteDelta / (this.#currentResize.initialLeftCellWidth + this.#currentResize.initialRightCellWidth)) * 100;
 
     let newLeftColumnPercentage;
     let newRightColumnPercentage;
@@ -429,10 +429,10 @@ export class DataGrid extends HTMLElement {
        * want to make the right column smaller, and the left column larger.
        */
       newLeftColumnPercentage = Platform.NumberUtilities.clamp(
-          this.currentResize.leftCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          this.#currentResize.leftCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
           MAX_CELL_WIDTH_PERCENTAGE);
       newRightColumnPercentage = Platform.NumberUtilities.clamp(
-          this.currentResize.rightCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          this.#currentResize.rightCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
           MAX_CELL_WIDTH_PERCENTAGE);
     } else if (deltaOfMouseMove < 0) {
       /**
@@ -441,10 +441,10 @@ export class DataGrid extends HTMLElement {
        * smaller.
        */
       newLeftColumnPercentage = Platform.NumberUtilities.clamp(
-          this.currentResize.leftCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          this.#currentResize.leftCellColInitialPercentageWidth - percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
           MAX_CELL_WIDTH_PERCENTAGE);
       newRightColumnPercentage = Platform.NumberUtilities.clamp(
-          this.currentResize.rightCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
+          this.#currentResize.rightCellColInitialPercentageWidth + percentageDelta, MIN_CELL_WIDTH_PERCENTAGE,
           MAX_CELL_WIDTH_PERCENTAGE);
     }
 
@@ -456,8 +456,8 @@ export class DataGrid extends HTMLElement {
     // We limit the values to two decimal places to not work with huge decimals.
     // It also prevents stuttering if the user barely moves the mouse, as the
     // browser won't try to move the column by 0.0000001% or similar.
-    this.currentResize.leftCellCol.style.width = newLeftColumnPercentage.toFixed(2) + '%';
-    this.currentResize.rightCellCol.style.width = newRightColumnPercentage.toFixed(2) + '%';
+    this.#currentResize.leftCellCol.style.width = newLeftColumnPercentage.toFixed(2) + '%';
+    this.#currentResize.rightCellCol.style.width = newRightColumnPercentage.toFixed(2) + '%';
   }
 
   private onResizePointerUp(event: PointerEvent): void {
@@ -467,7 +467,7 @@ export class DataGrid extends HTMLElement {
       return;
     }
     resizer.releasePointerCapture(event.pointerId);
-    resizer.removeEventListener('pointermove', this.boundOnResizePointerMove);
+    resizer.removeEventListener('pointermove', this.#boundOnResizePointerMove);
     this.cleanUpAfterResizeColumnComplete();
   }
 
@@ -487,16 +487,16 @@ export class DataGrid extends HTMLElement {
     }
 
     return LitHtml.html`<span class="cell-resize-handle"
-     @pointerdown=${this.boundOnResizePointerDown}
-     @pointerup=${this.boundOnResizePointerUp}
+     @pointerdown=${this.#boundOnResizePointerDown}
+     @pointerup=${this.#boundOnResizePointerUp}
      data-column-index=${columnIndex}
     ></span>`;
   }
 
   private getIndexOfLastVisibleColumn(): number {
-    let index = this.columns.length - 1;
+    let index = this.#columns.length - 1;
     for (; index > -1; index--) {
-      const col = this.columns[index];
+      const col = this.#columns[index];
       if (col.visible) {
         break;
       }
@@ -524,9 +524,9 @@ export class DataGrid extends HTMLElement {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 
-    if (this.contextMenus && this.contextMenus.headerRow) {
+    if (this.#contextMenus && this.#contextMenus.headerRow) {
       // Let the user append things to the menu
-      this.contextMenus.headerRow(menu, this.columns);
+      this.#contextMenus.headerRow(menu, this.#columns);
     }
     menu.show();
   }
@@ -551,7 +551,7 @@ export class DataGrid extends HTMLElement {
 
     const rowIndex = parseInt(rowIndexAttribute, 10);
     // rowIndex - 1 here because in the UI the 0th row is the column headers.
-    const rowThatWasClicked = this.rows[rowIndex - 1];
+    const rowThatWasClicked = this.#rows[rowIndex - 1];
 
     const menu = new UI.ContextMenu.ContextMenu(event);
     const sortMenu = menu.defaultSection().appendSubMenuItem(i18nString(UIStrings.sortBy));
@@ -563,8 +563,8 @@ export class DataGrid extends HTMLElement {
       this.dispatchEvent(new ContextMenuHeaderResetClickEvent());
     });
 
-    if (this.contextMenus && this.contextMenus.bodyRow) {
-      this.contextMenus.bodyRow(menu, this.columns, rowThatWasClicked);
+    if (this.#contextMenus && this.#contextMenus.bodyRow) {
+      this.#contextMenus.bodyRow(menu, this.#columns, rowThatWasClicked);
     }
     menu.show();
   }
@@ -578,7 +578,7 @@ export class DataGrid extends HTMLElement {
     // Need to Math.round because on high res screens we can end up with decimal
     // point numbers for scroll positions.
     const userIsAtBottom = Math.round(wrapper.scrollTop + wrapper.clientHeight) === Math.round(wrapper.scrollHeight);
-    this.userScrollState =
+    this.#userScrollState =
         userIsAtBottom ? UserScrollState.SCROLLED_TO_BOTTOM : UserScrollState.MANUAL_SCROLL_NOT_BOTTOM;
 
     this.render();
@@ -586,9 +586,9 @@ export class DataGrid extends HTMLElement {
 
   private alignScrollHandlers(): Promise<void> {
     return coordinator.read(() => {
-      const columnHeaders = this.shadow.querySelectorAll<HTMLElement>('th:not(.hidden)');
-      const handlers = this.shadow.querySelectorAll<HTMLElement>('.cell-resize-handle');
-      const table = this.shadow.querySelector<HTMLTableElement>('table');
+      const columnHeaders = this.#shadow.querySelectorAll<HTMLElement>('th:not(.hidden)');
+      const handlers = this.#shadow.querySelectorAll<HTMLElement>('.cell-resize-handle');
+      const table = this.#shadow.querySelector<HTMLTableElement>('table');
       if (!table) {
         return;
       }
@@ -616,7 +616,7 @@ export class DataGrid extends HTMLElement {
    */
   private calculateTopAndBottomRowIndexes(): Promise<{topVisibleRow: number, bottomVisibleRow: number}> {
     return coordinator.read(() => {
-      const wrapper = this.shadow.querySelector('.wrapping-container');
+      const wrapper = this.#shadow.querySelector('.wrapping-container');
 
       // On first render we don't have a wrapper, so we can't get at its
       // scroll/height values. So we default to the inner height of the window as
@@ -633,7 +633,7 @@ export class DataGrid extends HTMLElement {
       let bottomVisibleRow = Math.ceil((scrollTop + clientHeight + padding) / ROW_HEIGHT_PIXELS);
 
       topVisibleRow = Math.max(0, topVisibleRow);
-      bottomVisibleRow = Math.min(this.rows.filter(r => !r.hidden).length, bottomVisibleRow);
+      bottomVisibleRow = Math.min(this.#rows.filter(r => !r.hidden).length, bottomVisibleRow);
 
       return {
         topVisibleRow,
@@ -652,7 +652,7 @@ export class DataGrid extends HTMLElement {
      * we can steal focus away from the user if they are typing into an input
      * box to filter the data-grid, for example.
      */
-    this.userHasFocusInDataGrid = false;
+    this.#userHasFocusInDataGrid = false;
   }
 
   private tabbableCell(): CellPosition {
@@ -662,7 +662,7 @@ export class DataGrid extends HTMLElement {
      * hasn't selected a cell, we fallback to the default cell that we set as
      * tabbable when we render.
      */
-    return this.cellUserHasFocused || this.cellToFocusIfUserTabsIn;
+    return this.#cellUserHasFocused || this.#cellToFocusIfUserTabsIn;
   }
 
   /**
@@ -673,27 +673,27 @@ export class DataGrid extends HTMLElement {
    * padding).
    */
   private async render(): Promise<void> {
-    if (this.isRendering) {
+    if (this.#isRendering) {
       // If we receive a request to render during a previous render call, we block
       // the newly requested render (since we could receive a lot of them in quick
       // succession), but we do ensure that at the end of the current render we
       // go again with the latest data.
-      this.scheduleRender = true;
+      this.#scheduleRender = true;
       return;
     }
-    this.isRendering = true;
+    this.#isRendering = true;
 
     const {topVisibleRow, bottomVisibleRow} = await this.calculateTopAndBottomRowIndexes();
-    const nonHiddenRows = this.rows.filter(row => !row.hidden);
+    const nonHiddenRows = this.#rows.filter(row => !row.hidden);
     const renderableRows = nonHiddenRows.filter((_, idx) => idx >= topVisibleRow && idx <= bottomVisibleRow);
-    const indexOfFirstVisibleColumn = this.columns.findIndex(col => col.visible);
-    const anyColumnsSortable = this.columns.some(col => col.sortable === true);
+    const indexOfFirstVisibleColumn = this.#columns.findIndex(col => col.visible);
+    const anyColumnsSortable = this.#columns.some(col => col.sortable === true);
 
     await coordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-      ${this.columns.map((col, columnIndex) => {
+      ${this.#columns.map((col, columnIndex) => {
         /**
         * We render the resizers outside of the table. One is rendered for each
         * column, and they are positioned absolutely at the right position. They
@@ -704,13 +704,13 @@ export class DataGrid extends HTMLElement {
       })}
       <div class="wrapping-container" @scroll=${this.onScroll} @focusout=${this.onFocusOut}>
         <table
-          aria-rowcount=${this.rows.length}
-          aria-colcount=${this.columns.length}
+          aria-rowcount=${this.#rows.length}
+          aria-colcount=${this.#columns.length}
           @keydown=${this.onTableKeyDown}
         >
           <colgroup>
-            ${this.columns.map((col, colIndex) => {
-              const width = calculateColumnWidthPercentageFromWeighting(this.columns, col.id);
+            ${this.#columns.map((col, colIndex) => {
+              const width = calculateColumnWidthPercentageFromWeighting(this.#columns, col.id);
               const style = `width: ${width}%`;
               if (!col.visible) {
                 return LitHtml.nothing;
@@ -720,7 +720,7 @@ export class DataGrid extends HTMLElement {
           </colgroup>
           <thead>
             <tr @contextmenu=${this.onHeaderContextMenu}>
-              ${this.columns.map((col, columnIndex) => {
+              ${this.#columns.map((col, columnIndex) => {
                 const thClasses = LitHtml.Directives.classMap({
                   hidden: !col.visible,
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
@@ -758,8 +758,8 @@ export class DataGrid extends HTMLElement {
             <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
               height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
             })}></tr>
-            ${LitHtml.Directives.repeat(renderableRows, row => this.rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
-              const rowIndex = this.rowIndexMap.get(row);
+            ${LitHtml.Directives.repeat(renderableRows, row => this.#rowIndexMap.get(row), (row): LitHtml.TemplateResult => {
+              const rowIndex = this.#rowIndexMap.get(row);
               if (rowIndex === undefined) {
                 throw new Error('Trying to render a row that has no index in the rowIndexMap');
               }
@@ -769,7 +769,7 @@ export class DataGrid extends HTMLElement {
 
               // Check for cellUserHasFocused instead of tabbableCell so that we
               // don't highlight the active cell before they've even clicked it.
-              const rowIsSelected = this.cellUserHasFocused ? tableRowIndex === this.cellUserHasFocused[1] : false;
+              const rowIsSelected = this.#cellUserHasFocused ? tableRowIndex === this.#cellUserHasFocused[1] : false;
 
               const rowClasses = LitHtml.Directives.classMap({
                 selected: rowIsSelected,
@@ -781,7 +781,7 @@ export class DataGrid extends HTMLElement {
                   class=${rowClasses}
                   style=${LitHtml.Directives.ifDefined(row.styles ? LitHtml.Directives.styleMap(row.styles) : undefined)}
                   @contextmenu=${this.onBodyRowContextMenu}
-                >${this.columns.map((col, columnIndex) => {
+                >${this.#columns.map((col, columnIndex) => {
                   const cell = getRowEntryForColumnId(row, col.id);
                   const cellClasses = LitHtml.Directives.classMap({
                     hidden: !col.visible,
@@ -813,7 +813,7 @@ export class DataGrid extends HTMLElement {
           </tbody>
         </table>
       </div>
-      `, this.shadow, {
+      `, this.#shadow, {
         host: this,
       });
     });
@@ -827,18 +827,18 @@ export class DataGrid extends HTMLElement {
     const tabbableCell = this.tabbableCell();
     const currentlyFocusedRowIndex = tabbableCell[1];
     const tabbableCellElement = this.getTableElementForCellUserHasFocused();
-    if (this.userHasFocusInDataGrid && currentlyFocusedRowIndex > 0 && tabbableCellElement) {
+    if (this.#userHasFocusInDataGrid && currentlyFocusedRowIndex > 0 && tabbableCellElement) {
       this.focusTableCellInDOM(tabbableCellElement);
     }
     this.scrollToBottomIfRequired();
     this.engageResizeObserver();
-    this.isRendering = false;
-    this.hasRenderedAtLeastOnce = true;
+    this.#isRendering = false;
+    this.#hasRenderedAtLeastOnce = true;
 
     // If we've received more data mid-render we will do one extra render at
     // the end with the most recent data.
-    if (this.scheduleRender) {
-      this.scheduleRender = false;
+    if (this.#scheduleRender) {
+      this.#scheduleRender = false;
       this.render();
     }
   }

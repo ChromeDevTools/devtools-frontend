@@ -55,73 +55,73 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class RequestLinkIcon extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-request-link-icon`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private linkToPreflight?: boolean;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #linkToPreflight?: boolean;
   // The value `null` indicates that the request is not available,
   // `undefined` that it is still being resolved.
-  private request?: SDK.NetworkRequest.NetworkRequest|null;
-  private highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
-  private requestResolver?: Logs.RequestResolver.RequestResolver;
-  private displayURL: boolean = false;
-  private networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
-  private affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
-  private additionalOnClickAction?: () => void;
-  private reveal = Common.Revealer.reveal;
-  private requestResolvedPromise = Promise.resolve<void>(undefined);
+  #request?: SDK.NetworkRequest.NetworkRequest|null;
+  #highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
+  #requestResolver?: Logs.RequestResolver.RequestResolver;
+  #displayURL: boolean = false;
+  #networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
+  #affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
+  #additionalOnClickAction?: () => void;
+  #reveal = Common.Revealer.reveal;
+  #requestResolvedPromise = Promise.resolve<void>(undefined);
 
   set data(data: RequestLinkIconData) {
-    this.linkToPreflight = data.linkToPreflight;
-    this.request = data.request;
+    this.#linkToPreflight = data.linkToPreflight;
+    this.#request = data.request;
     if (data.affectedRequest) {
-      this.affectedRequest = {...data.affectedRequest};
+      this.#affectedRequest = {...data.affectedRequest};
     }
-    this.highlightHeader = data.highlightHeader;
-    this.networkTab = data.networkTab;
-    this.requestResolver = data.requestResolver;
-    this.displayURL = data.displayURL ?? false;
-    this.additionalOnClickAction = data.additionalOnClickAction;
+    this.#highlightHeader = data.highlightHeader;
+    this.#networkTab = data.networkTab;
+    this.#requestResolver = data.requestResolver;
+    this.#displayURL = data.displayURL ?? false;
+    this.#additionalOnClickAction = data.additionalOnClickAction;
     if (data.revealOverride) {
-      this.reveal = data.revealOverride;
+      this.#reveal = data.revealOverride;
     }
-    if (!this.request && data.affectedRequest) {
-      this.requestResolvedPromise = this.resolveRequest(data.affectedRequest.requestId);
+    if (!this.#request && data.affectedRequest) {
+      this.#requestResolvedPromise = this.resolveRequest(data.affectedRequest.requestId);
     }
     this.render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [requestLinkIconStyles];
+    this.#shadow.adoptedStyleSheets = [requestLinkIconStyles];
   }
 
   private resolveRequest(requestId: Protocol.Network.RequestId): Promise<void> {
-    if (!this.requestResolver) {
+    if (!this.#requestResolver) {
       throw new Error('A `RequestResolver` must be provided if an `affectedRequest` is provided.');
     }
-    return this.requestResolver.waitFor(requestId)
+    return this.#requestResolver.waitFor(requestId)
         .then(request => {
-          this.request = request;
+          this.#request = request;
         })
         .catch(() => {
-          this.request = null;
+          this.#request = null;
         });
   }
 
   get data(): RequestLinkIconData {
     return {
-      linkToPreflight: this.linkToPreflight,
-      request: this.request,
-      affectedRequest: this.affectedRequest,
-      highlightHeader: this.highlightHeader,
-      networkTab: this.networkTab,
-      requestResolver: this.requestResolver,
-      displayURL: this.displayURL,
-      additionalOnClickAction: this.additionalOnClickAction,
-      revealOverride: this.reveal !== Common.Revealer.reveal ? this.reveal : undefined,
+      linkToPreflight: this.#linkToPreflight,
+      request: this.#request,
+      affectedRequest: this.#affectedRequest,
+      highlightHeader: this.#highlightHeader,
+      networkTab: this.#networkTab,
+      requestResolver: this.#requestResolver,
+      displayURL: this.#displayURL,
+      additionalOnClickAction: this.#additionalOnClickAction,
+      revealOverride: this.#reveal !== Common.Revealer.reveal ? this.#reveal : undefined,
     };
   }
 
   private iconColor(): string {
-    if (!this.request) {
+    if (!this.#request) {
       return '--issue-color-yellow';
     }
     return '--color-link';
@@ -140,38 +140,38 @@ export class RequestLinkIcon extends HTMLElement {
     if (event.button !== 0) {
       return;  // Only handle left-click for now.
     }
-    const linkedRequest = this.linkToPreflight ? this.request?.preflightRequest() : this.request;
+    const linkedRequest = this.#linkToPreflight ? this.#request?.preflightRequest() : this.#request;
     if (!linkedRequest) {
       return;
     }
-    if (this.highlightHeader) {
+    if (this.#highlightHeader) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(
-          linkedRequest, this.highlightHeader.section, this.highlightHeader.name);
-      this.reveal(requestLocation);
+          linkedRequest, this.#highlightHeader.section, this.#highlightHeader.name);
+      this.#reveal(requestLocation);
     } else {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          linkedRequest, this.networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
-      this.reveal(requestLocation);
+          linkedRequest, this.#networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
+      this.#reveal(requestLocation);
     }
-    this.additionalOnClickAction?.();
+    this.#additionalOnClickAction?.();
   }
 
   private getTooltip(): Platform.UIString.LocalizedString {
-    if (this.request) {
-      return i18nString(UIStrings.clickToShowRequestInTheNetwork, {url: this.request.url()});
+    if (this.#request) {
+      return i18nString(UIStrings.clickToShowRequestInTheNetwork, {url: this.#request.url()});
     }
     return i18nString(UIStrings.requestUnavailableInTheNetwork);
   }
 
   private getUrlForDisplaying(): string|undefined {
-    if (!this.request) {
-      return this.affectedRequest?.url;
+    if (!this.#request) {
+      return this.#affectedRequest?.url;
     }
-    return this.request.url();
+    return this.#request.url();
   }
 
   private maybeRenderURL(): LitHtml.TemplateResult|{} {
-    if (!this.displayURL) {
+    if (!this.#displayURL) {
       return LitHtml.nothing;
     }
     const url = this.getUrlForDisplaying();
@@ -186,9 +186,9 @@ export class RequestLinkIcon extends HTMLElement {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        ${LitHtml.Directives.until(this.requestResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
+        ${LitHtml.Directives.until(this.#requestResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
       `,
-      this.shadow, {host: this});
+      this.#shadow, {host: this});
       // clang-format on
     });
   }
@@ -196,7 +196,7 @@ export class RequestLinkIcon extends HTMLElement {
   private renderComponent(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <span class=${LitHtml.Directives.classMap({'link': Boolean(this.request)})}
+      <span class=${LitHtml.Directives.classMap({'link': Boolean(this.#request)})}
             tabindex="0"
             @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} .data=${this.iconData() as IconButton.Icon.IconData}

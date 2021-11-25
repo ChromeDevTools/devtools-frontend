@@ -36,16 +36,16 @@ export interface ReportData {
 export class Report extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private reportTitle: string = '';
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #reportTitle: string = '';
 
   set data({reportTitle}: ReportData) {
-    this.reportTitle = reportTitle;
+    this.#reportTitle = reportTitle;
     this.render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportStyles];
+    this.#shadow.adoptedStyleSheets = [reportStyles];
     this.render();
   }
 
@@ -54,10 +54,10 @@ export class Report extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="content">
-        ${this.reportTitle ? LitHtml.html`<div class="report-title">${this.reportTitle}</div>` : LitHtml.nothing}
+        ${this.#reportTitle ? LitHtml.html`<div class="report-title">${this.#reportTitle}</div>` : LitHtml.nothing}
         <slot></slot>
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -69,9 +69,9 @@ export interface ReportSectionData {
 export class ReportSectionHeader extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report-section-header`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportSectionHeaderStyles];
+    this.#shadow.adoptedStyleSheets = [reportSectionHeaderStyles];
     this.render();
   }
 
@@ -82,7 +82,7 @@ export class ReportSectionHeader extends HTMLElement {
       <div class="section-header">
         <slot></slot>
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -90,9 +90,9 @@ export class ReportSectionHeader extends HTMLElement {
 export class ReportSectionDivider extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report-divider`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportSectionDividerStyles];
+    this.#shadow.adoptedStyleSheets = [reportSectionDividerStyles];
     this.render();
   }
 
@@ -102,7 +102,7 @@ export class ReportSectionDivider extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <div class="section-divider">
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -110,9 +110,9 @@ export class ReportSectionDivider extends HTMLElement {
 export class ReportKey extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report-key`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportKeyStyles];
+    this.#shadow.adoptedStyleSheets = [reportKeyStyles];
     this.render();
   }
 
@@ -121,7 +121,7 @@ export class ReportKey extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="key"><slot></slot></div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -129,9 +129,9 @@ export class ReportKey extends HTMLElement {
 export class ReportValue extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report-value`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportValueStyles];
+    this.#shadow.adoptedStyleSheets = [reportValueStyles];
     this.render();
   }
 
@@ -140,7 +140,7 @@ export class ReportValue extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="value"><slot></slot></div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }

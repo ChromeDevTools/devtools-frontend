@@ -21,19 +21,19 @@ declare global {
 export class TextEditor extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-text-editor`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private activeEditor: CodeMirror.EditorView|undefined = undefined;
-  private dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
-  private activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
-  private pendingState: CodeMirror.EditorState|undefined;
-  private lastScrollPos = {left: 0, top: 0};
-  private resizeTimeout = -1;
-  private devtoolsResizeObserver = new ResizeObserver(() => {
-    if (this.resizeTimeout < 0) {
-      this.resizeTimeout = window.setTimeout(() => {
-        this.resizeTimeout = -1;
-        if (this.activeEditor) {
-          CodeMirror.repositionTooltips(this.activeEditor);
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #activeEditor: CodeMirror.EditorView|undefined = undefined;
+  #dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
+  #activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
+  #pendingState: CodeMirror.EditorState|undefined;
+  #lastScrollPos = {left: 0, top: 0};
+  #resizeTimeout = -1;
+  #devtoolsResizeObserver = new ResizeObserver(() => {
+    if (this.#resizeTimeout < 0) {
+      this.#resizeTimeout = window.setTimeout(() => {
+        this.#resizeTimeout = -1;
+        if (this.#activeEditor) {
+          CodeMirror.repositionTooltips(this.#activeEditor);
         }
       }, 50);
     }
@@ -41,15 +41,15 @@ export class TextEditor extends HTMLElement {
 
   constructor(pendingState?: CodeMirror.EditorState) {
     super();
-    this.pendingState = pendingState;
-    this.shadow.adoptedStyleSheets = [CodeHighlighter.Style.default];
+    this.#pendingState = pendingState;
+    this.#shadow.adoptedStyleSheets = [CodeHighlighter.Style.default];
   }
 
   private createEditor(): CodeMirror.EditorView {
-    this.activeEditor = new CodeMirror.EditorView({
+    this.#activeEditor = new CodeMirror.EditorView({
       state: this.state,
-      parent: this.shadow,
-      root: this.shadow,
+      parent: this.#shadow,
+      root: this.#shadow,
       dispatch: (tr: CodeMirror.Transaction): void => {
         this.editor.update([tr]);
         if (tr.reconfigured) {
@@ -57,19 +57,19 @@ export class TextEditor extends HTMLElement {
         }
       },
     });
-    this.activeEditor.scrollDOM.scrollTop = this.lastScrollPos.top;
-    this.activeEditor.scrollDOM.scrollLeft = this.lastScrollPos.left;
-    this.activeEditor.scrollDOM.addEventListener('scroll', (event): void => {
-      this.lastScrollPos.left = (event.target as HTMLElement).scrollLeft;
-      this.lastScrollPos.top = (event.target as HTMLElement).scrollTop;
+    this.#activeEditor.scrollDOM.scrollTop = this.#lastScrollPos.top;
+    this.#activeEditor.scrollDOM.scrollLeft = this.#lastScrollPos.left;
+    this.#activeEditor.scrollDOM.addEventListener('scroll', (event): void => {
+      this.#lastScrollPos.left = (event.target as HTMLElement).scrollLeft;
+      this.#lastScrollPos.top = (event.target as HTMLElement).scrollTop;
     });
     this.ensureSettingListeners();
     this.startObservingResize();
-    return this.activeEditor;
+    return this.#activeEditor;
   }
 
   get editor(): CodeMirror.EditorView {
-    return this.activeEditor || this.createEditor();
+    return this.#activeEditor || this.createEditor();
   }
 
   dispatch(spec: CodeMirror.TransactionSpec): void {
@@ -77,68 +77,68 @@ export class TextEditor extends HTMLElement {
   }
 
   get state(): CodeMirror.EditorState {
-    if (this.activeEditor) {
-      return this.activeEditor.state;
+    if (this.#activeEditor) {
+      return this.#activeEditor.state;
     }
-    if (!this.pendingState) {
-      this.pendingState = CodeMirror.EditorState.create({extensions: baseConfiguration('')});
+    if (!this.#pendingState) {
+      this.#pendingState = CodeMirror.EditorState.create({extensions: baseConfiguration('')});
     }
-    return this.pendingState;
+    return this.#pendingState;
   }
 
   set state(state: CodeMirror.EditorState) {
-    if (this.activeEditor) {
-      this.activeEditor.setState(state);
+    if (this.#activeEditor) {
+      this.#activeEditor.setState(state);
     } else {
-      this.pendingState = state;
+      this.#pendingState = state;
     }
   }
 
   connectedCallback(): void {
-    if (!this.activeEditor) {
+    if (!this.#activeEditor) {
       this.createEditor();
     }
   }
 
   disconnectedCallback(): void {
-    if (this.activeEditor) {
-      this.pendingState = this.activeEditor.state;
-      this.devtoolsResizeObserver.disconnect();
-      this.activeEditor.destroy();
-      this.activeEditor = undefined;
+    if (this.#activeEditor) {
+      this.#pendingState = this.#activeEditor.state;
+      this.#devtoolsResizeObserver.disconnect();
+      this.#activeEditor.destroy();
+      this.#activeEditor = undefined;
       this.ensureSettingListeners();
     }
   }
 
   focus(): void {
-    if (this.activeEditor) {
-      this.activeEditor.focus();
+    if (this.#activeEditor) {
+      this.#activeEditor.focus();
     }
   }
 
   private ensureSettingListeners(): void {
-    const dynamicSettings = this.activeEditor ? this.activeEditor.state.facet(dynamicSetting) : DynamicSetting.none;
-    if (dynamicSettings === this.dynamicSettings) {
+    const dynamicSettings = this.#activeEditor ? this.#activeEditor.state.facet(dynamicSetting) : DynamicSetting.none;
+    if (dynamicSettings === this.#dynamicSettings) {
       return;
     }
-    this.dynamicSettings = dynamicSettings;
+    this.#dynamicSettings = dynamicSettings;
 
-    for (const [setting, listener] of this.activeSettingListeners) {
+    for (const [setting, listener] of this.#activeSettingListeners) {
       setting.removeChangeListener(listener);
     }
-    this.activeSettingListeners = [];
+    this.#activeSettingListeners = [];
 
     const settings = Common.Settings.Settings.instance();
     for (const dynamicSetting of dynamicSettings) {
       const handler = ({data}: {data: unknown}): void => {
         const change = dynamicSetting.sync(this.state, data);
-        if (change && this.activeEditor) {
-          this.activeEditor.dispatch({effects: change});
+        if (change && this.#activeEditor) {
+          this.#activeEditor.dispatch({effects: change});
         }
       };
       const setting = settings.moduleSetting(dynamicSetting.settingName);
       setting.addChangeListener(handler);
-      this.activeSettingListeners.push([setting, handler]);
+      this.#activeSettingListeners.push([setting, handler]);
     }
   }
 
@@ -146,12 +146,12 @@ export class TextEditor extends HTMLElement {
     const devtoolsElement =
         WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
     if (devtoolsElement) {
-      this.devtoolsResizeObserver.observe(devtoolsElement);
+      this.#devtoolsResizeObserver.observe(devtoolsElement);
     }
   }
 
   revealPosition(selection: CodeMirror.EditorSelection, highlight: boolean = true): void {
-    const view = this.activeEditor;
+    const view = this.#activeEditor;
     if (!view) {
       return;
     }

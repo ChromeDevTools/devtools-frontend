@@ -13,26 +13,26 @@ export interface ExpandableListData {
 export class ExpandableList extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-expandable-list`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private expanded = false;
-  private rows: LitHtml.TemplateResult[] = [];
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #expanded = false;
+  #rows: LitHtml.TemplateResult[] = [];
 
   set data(data: ExpandableListData) {
-    this.rows = data.rows;
+    this.#rows = data.rows;
     this.render();
   }
 
   private onArrowClick(): void {
-    this.expanded = !this.expanded;
+    this.#expanded = !this.#expanded;
     this.render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [expandableListStyles];
+    this.#shadow.adoptedStyleSheets = [expandableListStyles];
   }
 
   private render(): void {
-    if (this.rows.length < 1) {
+    if (this.#rows.length < 1) {
       return;
     }
 
@@ -42,22 +42,22 @@ export class ExpandableList extends HTMLElement {
         LitHtml.html`
       <div class="expandable-list-container">
         <div>
-          ${this.rows.length > 1 ?
+          ${this.#rows.length > 1 ?
             LitHtml.html`
               <button @click=${(): void => this.onArrowClick()} class="arrow-icon-button">
-                <span class="arrow-icon ${this.expanded ? 'expanded' : ''}"></span>
+                <span class="arrow-icon ${this.#expanded ? 'expanded' : ''}"></span>
               </button>
             `
           : LitHtml.nothing}
         </div>
         <div class="expandable-list-items">
-          ${this.rows.filter((_, index) => (this.expanded || index === 0)).map(row => LitHtml.html`
+          ${this.#rows.filter((_, index) => (this.#expanded || index === 0)).map(row => LitHtml.html`
             ${row}
           `)}
         </div>
       </div>
     `,
-        this.shadow, {host: this});
+        this.#shadow, {host: this});
     // clang-format on
   }
 }

@@ -21,17 +21,17 @@ export interface MarkdownViewData {
 
 export class MarkdownView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-markdown-view`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
   // TODO(crbug.com/1108699): Replace with `Marked.Marked.Token[]` once AST types are fixed upstream.
-  private tokenData: readonly Object[] = [];
+  #tokenData: readonly Object[] = [];
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [markdownViewStyles];
+    this.#shadow.adoptedStyleSheets = [markdownViewStyles];
   }
 
   set data(data: MarkdownViewData) {
-    this.tokenData = data.tokens;
+    this.#tokenData = data.tokens;
     this.update();
   }
 
@@ -44,9 +44,9 @@ export class MarkdownView extends HTMLElement {
     // clang-format off
     render(html`
       <div class='message'>
-        ${this.tokenData.map(renderToken)}
+        ${this.#tokenData.map(renderToken)}
       </div>
-    `, this.shadow);
+    `, this.#shadow);
     // clang-format on
   }
 }

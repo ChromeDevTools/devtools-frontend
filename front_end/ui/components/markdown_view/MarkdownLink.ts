@@ -23,28 +23,28 @@ export interface MarkdownLinkData {
 export class MarkdownLink extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-markdown-link`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private linkText: string = '';
-  private linkUrl: string = '';
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #linkText: string = '';
+  #linkUrl: string = '';
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [markdownLinkStyles];
+    this.#shadow.adoptedStyleSheets = [markdownLinkStyles];
   }
 
   set data(data: MarkdownLinkData) {
     const {key, title} = data;
     const markdownLink = getMarkdownLink(key);
-    this.linkText = title;
-    this.linkUrl = markdownLink;
+    this.#linkText = title;
+    this.#linkUrl = markdownLink;
     this.render();
   }
 
   private render(): void {
     // clang-format off
     const output = LitHtml.html`
-      <x-link class="devtools-link" href=${this.linkUrl}>${this.linkText}</x-link>
+      <x-link class="devtools-link" href=${this.#linkUrl}>${this.#linkText}</x-link>
     `;
-    LitHtml.render(output, this.shadow, {host: this});
+    LitHtml.render(output, this.#shadow, {host: this});
     // clang-format on
   }
 }

@@ -29,52 +29,55 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export class Icon extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-icon`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
-  private iconPath: Readonly<string> = '';
-  private color: Readonly<string> = 'rgb(110 110 110)';
-  private width: Readonly<string> = '100%';
-  private height: Readonly<string> = '100%';
-  private iconName?: Readonly<string>;
+  #iconPath: Readonly<string> = '';
+  #color: Readonly<string> = 'rgb(110 110 110)';
+  #width: Readonly<string> = '100%';
+  #height: Readonly<string> = '100%';
+  #iconName?: Readonly<string>;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [iconStyles];
+    this.#shadow.adoptedStyleSheets = [iconStyles];
   }
 
   set data(data: IconData) {
     const {width, height} = data;
-    this.color = data.color;
-    this.width = isString(width) ? width : (isString(height) ? height : this.width);
-    this.height = isString(height) ? height : (isString(width) ? width : this.height);
+    this.#color = data.color;
+    this.#width = isString(width) ? width : (isString(height) ? height : this.#width);
+    this.#height = isString(height) ? height : (isString(width) ? width : this.#height);
     if ('iconPath' in data) {
-      this.iconPath = data.iconPath;
+      this.#iconPath = data.iconPath;
     } else {
-      this.iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
-      this.iconName = data.iconName;
+      this.#iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
+      this.#iconName = data.iconName;
     }
     this.render();
   }
 
   get data(): IconData {
     const commonData = {
-      color: this.color,
-      width: this.width,
-      height: this.height,
+      color: this.#color,
+      width: this.#width,
+      height: this.#height,
     };
-    if (this.iconName) {
+    if (this.#iconName) {
       return {
         ...commonData,
-        iconName: this.iconName,
+        iconName: this.#iconName,
       };
     }
     return {
       ...commonData,
-      iconPath: this.iconPath,
+      iconPath: this.#iconPath,
     };
   }
 
   private getStyles(): {[key: string]: string} {
-    const {iconPath, width, height, color} = this;
+    const iconPath = this.#iconPath;
+    const width = this.#width;
+    const height = this.#height;
+    const color = this.#color;
     const commonStyles = {
       width,
       height,
@@ -106,7 +109,7 @@ export class Icon extends HTMLElement {
       // clang-format off
       LitHtml.render(LitHtml.html`
         <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
-      `, this.shadow, {host: this});
+      `, this.#shadow, {host: this});
       // clang-format on
     });
   }

@@ -19,18 +19,18 @@ export class Adorner extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-adorner`;
   name = '';
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private isToggle = false;
-  private ariaLabelDefault?: string;
-  private ariaLabelActive?: string;
-  private content?: HTMLElement;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #isToggle = false;
+  #ariaLabelDefault?: string;
+  #ariaLabelActive?: string;
+  #content?: HTMLElement;
 
   set data(data: AdornerData) {
     this.name = data.name;
     data.content.slot = 'content';
-    this.content?.remove();
+    this.#content?.remove();
     this.append(data.content);
-    this.content = data.content;
+    this.#content = data.content;
     this.render();
   }
 
@@ -38,7 +38,7 @@ export class Adorner extends HTMLElement {
     if (!this.getAttribute('aria-label')) {
       this.setAttribute('aria-label', this.name);
     }
-    this.shadow.adoptedStyleSheets = [adornerStyles];
+    this.#shadow.adoptedStyleSheets = [adornerStyles];
   }
 
   isActive(): boolean {
@@ -50,12 +50,12 @@ export class Adorner extends HTMLElement {
    * an active state; pass `false` to force-set an inactive state.
    */
   toggle(forceActiveState?: boolean): void {
-    if (!this.isToggle) {
+    if (!this.#isToggle) {
       return;
     }
     const shouldBecomeActive = forceActiveState === undefined ? !this.isActive() : forceActiveState;
     this.setAttribute('aria-pressed', Boolean(shouldBecomeActive).toString());
-    this.setAttribute('aria-label', (shouldBecomeActive ? this.ariaLabelActive : this.ariaLabelDefault) || this.name);
+    this.setAttribute('aria-label', (shouldBecomeActive ? this.#ariaLabelActive : this.#ariaLabelDefault) || this.name);
   }
 
   show(): void {
@@ -78,9 +78,9 @@ export class Adorner extends HTMLElement {
   }): void {
     const {isToggle = false, shouldPropagateOnKeydown = false, ariaLabelDefault, ariaLabelActive} = options;
 
-    this.isToggle = isToggle;
-    this.ariaLabelDefault = ariaLabelDefault;
-    this.ariaLabelActive = ariaLabelActive;
+    this.#isToggle = isToggle;
+    this.#ariaLabelDefault = ariaLabelDefault;
+    this.#ariaLabelActive = ariaLabelActive;
     this.setAttribute('aria-label', ariaLabelDefault);
 
     if (isToggle) {
@@ -111,7 +111,7 @@ export class Adorner extends HTMLElement {
     // clang-format off
     render(html`
       <slot name="content"></slot>
-    `, this.shadow, {
+    `, this.#shadow, {
       host: this,
     });
   }

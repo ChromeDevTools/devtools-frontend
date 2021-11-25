@@ -83,84 +83,84 @@ export function getIssueCountsEnumeration(
 
 export class IssueCounter extends HTMLElement {
   static readonly litTagName = LitHtml.literal`issue-counter`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private clickHandler: undefined|(() => void) = undefined;
-  private tooltipCallback: undefined|(() => void) = undefined;
-  private leadingText: string = '';
-  private throttler: undefined|Common.Throttler.Throttler;
-  private counts: [number, number, number] = [0, 0, 0];
-  private displayMode: DisplayMode = DisplayMode.OmitEmpty;
-  private issuesManager: IssuesManager.IssuesManager.IssuesManager|undefined = undefined;
-  private accessibleName: string|undefined = undefined;
-  private throttlerTimeout: number|undefined;
-  private compact = false;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #clickHandler: undefined|(() => void) = undefined;
+  #tooltipCallback: undefined|(() => void) = undefined;
+  #leadingText: string = '';
+  #throttler: undefined|Common.Throttler.Throttler;
+  #counts: [number, number, number] = [0, 0, 0];
+  #displayMode: DisplayMode = DisplayMode.OmitEmpty;
+  #issuesManager: IssuesManager.IssuesManager.IssuesManager|undefined = undefined;
+  #accessibleName: string|undefined = undefined;
+  #throttlerTimeout: number|undefined;
+  #compact = false;
 
   scheduleUpdate(): void {
-    if (this.throttler) {
-      this.throttler.schedule(async () => this.render());
+    if (this.#throttler) {
+      this.#throttler.schedule(async () => this.render());
     } else {
       this.render();
     }
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [issueCounterStyles];
+    this.#shadow.adoptedStyleSheets = [issueCounterStyles];
   }
 
   set data(data: IssueCounterData) {
-    this.clickHandler = data.clickHandler;
-    this.leadingText = data.leadingText ?? '';
-    this.tooltipCallback = data.tooltipCallback;
-    this.displayMode = data.displayMode ?? DisplayMode.OmitEmpty;
-    this.accessibleName = data.accessibleName;
-    this.throttlerTimeout = data.throttlerTimeout;
-    this.compact = Boolean(data.compact);
-    if (this.issuesManager !== data.issuesManager) {
-      this.issuesManager?.removeEventListener(
+    this.#clickHandler = data.clickHandler;
+    this.#leadingText = data.leadingText ?? '';
+    this.#tooltipCallback = data.tooltipCallback;
+    this.#displayMode = data.displayMode ?? DisplayMode.OmitEmpty;
+    this.#accessibleName = data.accessibleName;
+    this.#throttlerTimeout = data.throttlerTimeout;
+    this.#compact = Boolean(data.compact);
+    if (this.#issuesManager !== data.issuesManager) {
+      this.#issuesManager?.removeEventListener(
           IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
-      this.issuesManager = data.issuesManager;
-      this.issuesManager.addEventListener(
+      this.#issuesManager = data.issuesManager;
+      this.#issuesManager.addEventListener(
           IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.scheduleUpdate, this);
     }
     if (data.throttlerTimeout !== 0) {
-      this.throttler = new Common.Throttler.Throttler(data.throttlerTimeout ?? 100);
+      this.#throttler = new Common.Throttler.Throttler(data.throttlerTimeout ?? 100);
     } else {
-      this.throttler = undefined;
+      this.#throttler = undefined;
     }
     this.scheduleUpdate();
   }
 
   get data(): IssueCounterData {
     return {
-      clickHandler: this.clickHandler,
-      leadingText: this.leadingText,
-      tooltipCallback: this.tooltipCallback,
-      displayMode: this.displayMode,
-      accessibleName: this.accessibleName,
-      throttlerTimeout: this.throttlerTimeout,
-      compact: this.compact,
-      issuesManager: this.issuesManager as IssuesManager.IssuesManager.IssuesManager,
+      clickHandler: this.#clickHandler,
+      leadingText: this.#leadingText,
+      tooltipCallback: this.#tooltipCallback,
+      displayMode: this.#displayMode,
+      accessibleName: this.#accessibleName,
+      throttlerTimeout: this.#throttlerTimeout,
+      compact: this.#compact,
+      issuesManager: this.#issuesManager as IssuesManager.IssuesManager.IssuesManager,
     };
   }
 
   private render(): void {
-    if (!this.issuesManager) {
+    if (!this.#issuesManager) {
       return;
     }
-    this.counts = [
-      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError),
-      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange),
-      this.issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement),
+    this.#counts = [
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PageError),
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BreakingChange),
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.Improvement),
     ];
     const importance = [
       IssuesManager.Issue.IssueKind.PageError,
       IssuesManager.Issue.IssueKind.BreakingChange,
       IssuesManager.Issue.IssueKind.Improvement,
     ];
-    const mostImportant = importance[this.counts.findIndex(x => x > 0) ?? 2];
+    const mostImportant = importance[this.#counts.findIndex(x => x > 0) ?? 2];
 
     const countToString = (kind: IssuesManager.Issue.IssueKind, count: number): string|undefined => {
-      switch (this.displayMode) {
+      switch (this.#displayMode) {
         case DisplayMode.OmitEmpty:
           return count > 0 ? `${count}` : undefined;
         case DisplayMode.ShowAlways:
@@ -174,29 +174,29 @@ export class IssueCounter extends HTMLElement {
       groups: [
         {
           ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.PageError), iconSize),
-          text: countToString(IssuesManager.Issue.IssueKind.PageError, this.counts[0]),
+          text: countToString(IssuesManager.Issue.IssueKind.PageError, this.#counts[0]),
         },
         {
           ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.BreakingChange), iconSize),
-          text: countToString(IssuesManager.Issue.IssueKind.BreakingChange, this.counts[1]),
+          text: countToString(IssuesManager.Issue.IssueKind.BreakingChange, this.#counts[1]),
         },
         {
           ...toIconGroup(getIssueKindIconData(IssuesManager.Issue.IssueKind.Improvement), iconSize),
-          text: countToString(IssuesManager.Issue.IssueKind.Improvement, this.counts[2]),
+          text: countToString(IssuesManager.Issue.IssueKind.Improvement, this.#counts[2]),
         },
       ],
-      clickHandler: this.clickHandler,
-      leadingText: this.leadingText,
-      accessibleName: this.accessibleName,
-      compact: this.compact,
+      clickHandler: this.#clickHandler,
+      leadingText: this.#leadingText,
+      accessibleName: this.#accessibleName,
+      compact: this.#compact,
     };
     LitHtml.render(
         LitHtml.html`
         <icon-button .data=${data as IconButton.IconButton.IconButtonData} .accessibleName="${
-            this.accessibleName}"></icon-button>
+            this.#accessibleName}"></icon-button>
         `,
-        this.shadow, {host: this});
-    this.tooltipCallback?.();
+        this.#shadow, {host: this});
+    this.#tooltipCallback?.();
   }
 }
 

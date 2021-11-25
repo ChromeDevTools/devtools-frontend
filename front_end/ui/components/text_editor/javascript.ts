@@ -217,10 +217,10 @@ let cacheInstance: PropertyCache|null = null;
 // Store recent collections of property completions. The empty string
 // is used to store the set of global bindings.
 class PropertyCache {
-  private readonly cache: Map<string, Promise<CompletionSet>> = new Map();
+  readonly #cache: Map<string, Promise<CompletionSet>> = new Map();
 
   constructor() {
-    const clear = (): void => this.cache.clear();
+    const clear = (): void => this.#cache.clear();
     SDK.ConsoleModel.ConsoleModel.instance().addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, clear);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, clear);
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -230,14 +230,14 @@ class PropertyCache {
   }
 
   get(expression: string): Promise<CompletionSet>|undefined {
-    return this.cache.get(expression);
+    return this.#cache.get(expression);
   }
 
   set(expression: string, value: Promise<CompletionSet>): void {
-    this.cache.set(expression, value);
+    this.#cache.set(expression, value);
     setTimeout(() => {
-      if (this.cache.get(expression) === value) {
-        this.cache.delete(expression);
+      if (this.#cache.get(expression) === value) {
+        this.#cache.delete(expression);
       }
     }, maxCacheAge);
   }

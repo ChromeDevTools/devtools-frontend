@@ -76,34 +76,34 @@ export class JumpToPointerAddressEvent extends Event {
 export class ValueInterpreterDisplay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-display`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private endianness = Endianness.Little;
-  private buffer = new ArrayBuffer(0);
-  private valueTypes: Set<ValueType> = new Set();
-  private valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
-  private memoryLength = 0;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #endianness = Endianness.Little;
+  #buffer = new ArrayBuffer(0);
+  #valueTypes: Set<ValueType> = new Set();
+  #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
+  #memoryLength = 0;
 
   constructor() {
     super();
-    this.shadow.adoptedStyleSheets = [
+    this.#shadow.adoptedStyleSheets = [
       inspectorCommonStyles,
     ];
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [valueInterpreterDisplayStyles];
+    this.#shadow.adoptedStyleSheets = [valueInterpreterDisplayStyles];
   }
 
   set data(data: ValueDisplayData) {
-    this.buffer = data.buffer;
-    this.endianness = data.endianness;
-    this.valueTypes = data.valueTypes;
-    this.memoryLength = data.memoryLength;
+    this.#buffer = data.buffer;
+    this.#endianness = data.endianness;
+    this.#valueTypes = data.valueTypes;
+    this.#memoryLength = data.memoryLength;
 
     if (data.valueTypeModes) {
       data.valueTypeModes.forEach((mode, valueType) => {
         if (isValidMode(valueType, mode)) {
-          this.valueTypeModeConfig.set(valueType, mode);
+          this.#valueTypeModeConfig.set(valueType, mode);
         }
       });
     }
@@ -116,9 +116,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format off
     render(html`
       <div class="value-types">
-        ${SORTED_VALUE_TYPES.map(type => this.valueTypes.has(type) ? this.showValue(type) : '')}
+        ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.showValue(type) : '')}
       </div>
-    `, this.shadow, {host: this},
+    `, this.#shadow, {host: this},
     );
     // clang-format on
   }
@@ -135,8 +135,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   private renderPointerValue(type: ValueType): LitHtml.TemplateResult {
     const unsignedValue = this.parse({type, signed: false});
-    const address = getPointerAddress(type, this.buffer, this.endianness);
-    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.memoryLength);
+    const address = getPointerAddress(type, this.#buffer, this.#endianness);
+    const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
     const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
     const iconColor = jumpDisabled ? 'var(--color-text-secondary)' : 'var(--color-primary)';
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -177,7 +177,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           @change=${this.onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`
-                <option value=${mode} .selected=${this.valueTypeModeConfig.get(type) === mode}>${
+                <option value=${mode} .selected=${this.#valueTypeModeConfig.get(type) === mode}>${
                   i18n.i18n.lockedString(mode)}
                 </option>`;
             })}
@@ -191,7 +191,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   private renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
     const unsignedValue = this.parse({type, signed: false});
     const signedValue = this.parse({type, signed: true});
-    const mode = this.valueTypeModeConfig.get(type);
+    const mode = this.#valueTypeModeConfig.get(type);
     const showSignedAndUnsigned =
         signedValue !== unsignedValue && mode !== ValueTypeMode.Hexadecimal && mode !== ValueTypeMode.Octal;
 
@@ -232,9 +232,9 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 
   private parse(data: {type: ValueType, signed?: boolean}): string {
-    const mode = this.valueTypeModeConfig.get(data.type);
+    const mode = this.#valueTypeModeConfig.get(data.type);
     return format(
-        {buffer: this.buffer, type: data.type, endianness: this.endianness, signed: data.signed || false, mode});
+        {buffer: this.#buffer, type: data.type, endianness: this.#endianness, signed: data.signed || false, mode});
   }
 }
 

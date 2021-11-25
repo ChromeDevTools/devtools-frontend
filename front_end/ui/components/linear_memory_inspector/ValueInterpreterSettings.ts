@@ -61,15 +61,15 @@ export class TypeToggleEvent extends Event {
 export class ValueInterpreterSettings extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-settings`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private valueTypes: Set<ValueType> = new Set();
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #valueTypes: Set<ValueType> = new Set();
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [valueInterpreterSettingsStyles];
+    this.#shadow.adoptedStyleSheets = [valueInterpreterSettingsStyles];
   }
 
   set data(data: ValueInterpreterSettingsData) {
-    this.valueTypes = data.valueTypes;
+    this.#valueTypes = data.valueTypes;
     this.render();
   }
 
@@ -86,7 +86,7 @@ export class ValueInterpreterSettings extends HTMLElement {
           </div>
         `;})}
       </div>
-      `, this.shadow, {host: this});
+      `, this.#shadow, {host: this});
   }
 
   private plotTypeSelections(group: ValueTypeGroup): LitHtml.TemplateResult {
@@ -98,7 +98,7 @@ export class ValueInterpreterSettings extends HTMLElement {
       ${types.map(type => {
         return html`
           <label class="type-label" title=${valueTypeToLocalizedString(type)}>
-            <input data-input="true" type="checkbox" .checked=${this.valueTypes.has(type)} @change=${(e: Event): void => this.onTypeToggle(type, e)}>
+            <input data-input="true" type="checkbox" .checked=${this.#valueTypes.has(type)} @change=${(e: Event): void => this.onTypeToggle(type, e)}>
             <span data-title="true">${valueTypeToLocalizedString(type)}</span>
           </label>
      `;})}`;

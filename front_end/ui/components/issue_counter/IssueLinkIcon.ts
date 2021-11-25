@@ -51,79 +51,79 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class IssueLinkIcon extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-issue-link-icon`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   // The value `null` indicates that the issue is not available,
   // `undefined` that it is still being resolved.
-  private issue?: IssuesManager.Issue.Issue|null;
-  private issueTitle: string|null = null;
-  private issueTitlePromise = Promise.resolve<void>(undefined);
-  private issueId?: Protocol.Audits.IssueId;
-  private issueResolver?: IssuesManager.IssueResolver.IssueResolver;
-  private additionalOnClickAction?: () => void;
-  private reveal = Common.Revealer.reveal;
-  private issueResolvedPromise = Promise.resolve<void>(undefined);
+  #issue?: IssuesManager.Issue.Issue|null;
+  #issueTitle: string|null = null;
+  #issueTitlePromise = Promise.resolve<void>(undefined);
+  #issueId?: Protocol.Audits.IssueId;
+  #issueResolver?: IssuesManager.IssueResolver.IssueResolver;
+  #additionalOnClickAction?: () => void;
+  #reveal = Common.Revealer.reveal;
+  #issueResolvedPromise = Promise.resolve<void>(undefined);
 
   set data(data: IssueLinkIconData) {
-    this.issue = data.issue;
-    this.issueId = data.issueId;
-    if (!this.issue && !this.issueId) {
+    this.#issue = data.issue;
+    this.#issueId = data.issueId;
+    if (!this.#issue && !this.#issueId) {
       throw new Error('Either `issue` or `issueId` must be provided');
     }
-    this.issueResolver = data.issueResolver;
-    this.additionalOnClickAction = data.additionalOnClickAction;
+    this.#issueResolver = data.issueResolver;
+    this.#additionalOnClickAction = data.additionalOnClickAction;
     if (data.revealOverride) {
-      this.reveal = data.revealOverride;
+      this.#reveal = data.revealOverride;
     }
-    if (!this.issue && this.issueId) {
-      this.issueResolvedPromise = this.resolveIssue(this.issueId);
-      this.issueTitlePromise = this.issueResolvedPromise.then(() => this.fetchIssueTitle());
+    if (!this.#issue && this.#issueId) {
+      this.#issueResolvedPromise = this.resolveIssue(this.#issueId);
+      this.#issueTitlePromise = this.#issueResolvedPromise.then(() => this.fetchIssueTitle());
     } else {
-      this.issueTitlePromise = this.fetchIssueTitle();
+      this.#issueTitlePromise = this.fetchIssueTitle();
     }
     this.render();
   }
 
   private async fetchIssueTitle(): Promise<void> {
-    const description = this.issue?.getDescription();
+    const description = this.#issue?.getDescription();
     if (!description) {
       return;
     }
     const title = await IssuesManager.MarkdownIssueDescription.getIssueTitleFromMarkdownDescription(description);
     if (title) {
-      this.issueTitle = title;
+      this.#issueTitle = title;
     }
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [IssueLinkIconStyles];
+    this.#shadow.adoptedStyleSheets = [IssueLinkIconStyles];
   }
 
   private resolveIssue(issueId: Protocol.Audits.IssueId): Promise<void> {
-    if (!this.issueResolver) {
+    if (!this.#issueResolver) {
       throw new Error('An `IssueResolver` must be provided if an `issueId` is provided.');
     }
-    return this.issueResolver.waitFor(issueId)
+    return this.#issueResolver.waitFor(issueId)
         .then(issue => {
-          this.issue = issue;
+          this.#issue = issue;
         })
         .catch(() => {
-          this.issue = null;
+          this.#issue = null;
         });
   }
 
   get data(): IssueLinkIconData {
     return {
-      issue: this.issue,
-      issueId: this.issueId,
-      issueResolver: this.issueResolver,
-      additionalOnClickAction: this.additionalOnClickAction,
-      revealOverride: this.reveal !== Common.Revealer.reveal ? this.reveal : undefined,
+      issue: this.#issue,
+      issueId: this.#issueId,
+      issueResolver: this.#issueResolver,
+      additionalOnClickAction: this.#additionalOnClickAction,
+      revealOverride: this.#reveal !== Common.Revealer.reveal ? this.#reveal : undefined,
     };
   }
 
   iconData(): IconButton.Icon.IconData {
-    if (this.issue) {
-      return getIssueKindIconData(this.issue.getKind());
+    if (this.#issue) {
+      return getIssueKindIconData(this.#issue.getKind());
     }
     return {iconName: 'issue-questionmark-icon', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
   }
@@ -132,17 +132,17 @@ export class IssueLinkIcon extends HTMLElement {
     if (event.button !== 0) {
       return;  // Only handle left-click for now.
     }
-    if (this.issue) {
-      this.reveal(this.issue);
+    if (this.#issue) {
+      this.#reveal(this.#issue);
     }
-    this.additionalOnClickAction?.();
+    this.#additionalOnClickAction?.();
   }
 
   private getTooltip(): Platform.UIString.LocalizedString {
-    if (this.issueTitle) {
-      return i18nString(UIStrings.clickToShowIssueWithTitle, {title: this.issueTitle});
+    if (this.#issueTitle) {
+      return i18nString(UIStrings.clickToShowIssueWithTitle, {title: this.#issueTitle});
     }
-    if (this.issue) {
+    if (this.#issue) {
       return i18nString(UIStrings.clickToShowIssue);
     }
     return i18nString(UIStrings.issueUnavailable);
@@ -152,9 +152,9 @@ export class IssueLinkIcon extends HTMLElement {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        ${LitHtml.Directives.until(this.issueTitlePromise.then(() => this.renderComponent()), this.issueResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
+        ${LitHtml.Directives.until(this.#issueTitlePromise.then(() => this.renderComponent()), this.#issueResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
       `,
-      this.shadow, {host: this});
+      this.#shadow, {host: this});
       // clang-format on
     });
   }
@@ -162,7 +162,7 @@ export class IssueLinkIcon extends HTMLElement {
   private renderComponent(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <span class=${LitHtml.Directives.classMap({'link': Boolean(this.issue)})}
+      <span class=${LitHtml.Directives.classMap({'link': Boolean(this.#issue)})}
             tabindex="0"
             @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} .data=${this.iconData() as IconButton.Icon.IconData}

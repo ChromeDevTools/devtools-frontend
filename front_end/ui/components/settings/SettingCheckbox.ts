@@ -22,32 +22,32 @@ export interface SettingCheckboxData {
  */
 export class SettingCheckbox extends HTMLElement {
   static readonly litTagName = LitHtml.literal`setting-checkbox`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
-  private setting?: Common.Settings.Setting<boolean>;
-  private disabled: boolean = false;
-  private changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
+  #setting?: Common.Settings.Setting<boolean>;
+  #disabled: boolean = false;
+  #changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [settingCheckboxStyles];
+    this.#shadow.adoptedStyleSheets = [settingCheckboxStyles];
   }
 
   set data(data: SettingCheckboxData) {
-    if (this.changeListenerDescriptor && this.setting) {
-      this.setting.removeChangeListener(this.changeListenerDescriptor.listener);
+    if (this.#changeListenerDescriptor && this.#setting) {
+      this.#setting.removeChangeListener(this.#changeListenerDescriptor.listener);
     }
 
-    this.setting = data.setting;
-    this.disabled = Boolean(data.disabled);
+    this.#setting = data.setting;
+    this.#disabled = Boolean(data.disabled);
 
-    this.changeListenerDescriptor = this.setting.addChangeListener(() => {
+    this.#changeListenerDescriptor = this.#setting.addChangeListener(() => {
       this.render();
     });
     this.render();
   }
 
   private render(): void {
-    if (!this.setting) {
+    if (!this.#setting) {
       throw new Error('No "Setting" object provided for rendering');
     }
 
@@ -55,15 +55,15 @@ export class SettingCheckbox extends HTMLElement {
         LitHtml.html`
       <p>
         <label>
-          <input type="checkbox" ?checked=${this.setting.get()} ?disabled=${this.disabled} @change="${
-            this.checkboxChanged}" aria-label="${this.setting.title()}" /> ${this.setting.title()}
+          <input type="checkbox" ?checked=${this.#setting.get()} ?disabled=${this.#disabled} @change="${
+            this.checkboxChanged}" aria-label="${this.#setting.title()}" /> ${this.#setting.title()}
         </label>
       </p>`,
-        this.shadow, {host: this});
+        this.#shadow, {host: this});
   }
 
   private checkboxChanged(e: Event): void {
-    this.setting?.set((e.target as HTMLInputElement).checked);
+    this.#setting?.set((e.target as HTMLInputElement).checked);
   }
 }
 

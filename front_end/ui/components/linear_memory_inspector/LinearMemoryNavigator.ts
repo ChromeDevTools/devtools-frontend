@@ -98,26 +98,26 @@ export const enum Mode {
 export class LinearMemoryNavigator extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-navigator`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private address = '0';
-  private error: string|undefined = undefined;
-  private valid = true;
-  private canGoBackInHistory = false;
-  private canGoForwardInHistory = false;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #address = '0';
+  #error: string|undefined = undefined;
+  #valid = true;
+  #canGoBackInHistory = false;
+  #canGoForwardInHistory = false;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [linearMemoryNavigatorStyles];
+    this.#shadow.adoptedStyleSheets = [linearMemoryNavigatorStyles];
   }
 
   set data(data: LinearMemoryNavigatorData) {
-    this.address = data.address;
-    this.error = data.error;
-    this.valid = data.valid;
-    this.canGoBackInHistory = data.canGoBackInHistory;
-    this.canGoForwardInHistory = data.canGoForwardInHistory;
+    this.#address = data.address;
+    this.#error = data.error;
+    this.#valid = data.valid;
+    this.#canGoBackInHistory = data.canGoBackInHistory;
+    this.#canGoForwardInHistory = data.canGoForwardInHistory;
     this.render();
 
-    const addressInput = this.shadow.querySelector<HTMLInputElement>('.address-input');
+    const addressInput = this.#shadow.querySelector<HTMLInputElement>('.address-input');
     if (addressInput) {
       if (data.mode === Mode.Submitted) {
         addressInput.blur();
@@ -134,9 +134,9 @@ export class LinearMemoryNavigator extends HTMLElement {
       <div class="navigator">
         <div class="navigator-item">
           ${this.createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.canGoBackInHistory})}
+              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory})}
           ${this.createButton({icon: 'ic_redo_16x16_icon', title: i18nString(UIStrings.goForwardInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.canGoForwardInHistory})}
+              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory})}
         </div>
         <div class="navigator-item">
           ${this.createButton({icon: 'ic_page_prev_16x16_icon', title: i18nString(UIStrings.previousPage),
@@ -149,18 +149,18 @@ export class LinearMemoryNavigator extends HTMLElement {
             event: new RefreshRequestedEvent(), enabled: true})}
       </div>
       `;
-      render(result, this.shadow, {host: this});
+      render(result, this.#shadow, {host: this});
     // clang-format on
   }
 
   private createAddressInput(): LitHtml.TemplateResult {
     const classMap = {
       'address-input': true,
-      invalid: !this.valid,
+      invalid: !this.#valid,
     };
     return html`
-      <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.address}
-        title=${this.valid ? i18nString(UIStrings.enterAddress) : this.error} @change=${
+      <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
+        title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error} @change=${
         this.onAddressChange.bind(this, Mode.Submitted)} @input=${this.onAddressChange.bind(this, Mode.Edit)}/>`;
   }
 

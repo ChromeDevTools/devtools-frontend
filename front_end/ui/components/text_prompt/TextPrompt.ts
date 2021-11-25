@@ -26,27 +26,27 @@ export class PromptInputEvent extends Event {
 
 export class TextPrompt extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-text-prompt`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private ariaLabelText = '';
-  private prefixText = '';
-  private suggestionText = '';
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #ariaLabelText = '';
+  #prefixText = '';
+  #suggestionText = '';
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [textPromptStyles];
+    this.#shadow.adoptedStyleSheets = [textPromptStyles];
   }
 
   set data(data: TextPromptData) {
-    this.ariaLabelText = data.ariaLabel;
-    this.prefixText = data.prefix;
-    this.suggestionText = data.suggestion;
+    this.#ariaLabelText = data.ariaLabel;
+    this.#prefixText = data.prefix;
+    this.#suggestionText = data.suggestion;
     this.render();
   }
 
   get data(): TextPromptData {
     return {
-      ariaLabel: this.ariaLabelText,
-      prefix: this.prefixText,
-      suggestion: this.suggestionText,
+      ariaLabel: this.#ariaLabelText,
+      prefix: this.#prefixText,
+      suggestion: this.#suggestionText,
     };
   }
 
@@ -55,7 +55,7 @@ export class TextPrompt extends HTMLElement {
   }
 
   private input(): HTMLInputElement {
-    const inputElement = this.shadow.querySelector<HTMLInputElement>('input');
+    const inputElement = this.#shadow.querySelector<HTMLInputElement>('input');
     if (!inputElement) {
       throw new Error('Expected an input element!');
     }
@@ -92,12 +92,12 @@ export class TextPrompt extends HTMLElement {
   }
 
   setPrefix(prefix: string): void {
-    this.prefixText = prefix;
+    this.#prefixText = prefix;
     this.render();
   }
 
   setSuggestion(suggestion: string): void {
-    this.suggestionText = suggestion;
+    this.#suggestionText = suggestion;
     this.render();
   }
 
@@ -112,7 +112,7 @@ export class TextPrompt extends HTMLElement {
   }
 
   private suggestion(): HTMLSpanElement {
-    const suggestionElement = this.shadow.querySelector<HTMLSpanElement>('.suggestion');
+    const suggestionElement = this.#shadow.querySelector<HTMLSpanElement>('.suggestion');
     if (!suggestionElement) {
       throw new Error('Expected an suggestion element!');
     }
@@ -125,11 +125,11 @@ export class TextPrompt extends HTMLElement {
 
   private render(): void {
     const output = LitHtml.html`
-      <span class="prefix">${this.prefixText} </span>
-      <span class="text-prompt-input"><input aria-label=${this.ariaLabelText} spellcheck="false" @input=${
+      <span class="prefix">${this.#prefixText} </span>
+      <span class="text-prompt-input"><input aria-label=${this.#ariaLabelText} spellcheck="false" @input=${
         this.onInput} @keydown=${this.onKeyDown}/><span class='suggestion' suggestion="${
-        this.suggestionText}"></span></span>`;
-    LitHtml.render(output, this.shadow, {host: this});
+        this.#suggestionText}"></span></span>`;
+    LitHtml.render(output, this.#shadow, {host: this});
   }
 }
 

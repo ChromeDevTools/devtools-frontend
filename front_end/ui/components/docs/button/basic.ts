@@ -201,3 +201,19 @@ for (let i = 0; i < 6; i++) {
     appendToSmallToolbar(sep);
   }
 }
+
+const submitButton = new Buttons.Button.Button();
+submitButton.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  type: 'submit',
+};
+submitButton.innerText = 'Submit';
+document.querySelector('#form')?.append(submitButton);
+
+const resetButton = new Buttons.Button.Button();
+resetButton.data = {
+  variant: Buttons.Button.Variant.SECONDARY,
+  type: 'reset',
+};
+resetButton.innerText = 'Reset';
+document.querySelector('#form')?.append(resetButton);

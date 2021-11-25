@@ -25,12 +25,16 @@ export const enum Size {
   MEDIUM = 'MEDIUM',
 }
 
+type ButtonType = 'button'|'submit'|'reset';
+
 interface ButtonState {
   iconUrl?: string;
   variant?: Variant;
   size?: Size;
   disabled: boolean;
   active: boolean;
+  type: ButtonType;
+  value?: string;
 }
 
 export type ButtonData = {
@@ -39,15 +43,29 @@ export type ButtonData = {
   size?: Size,
   disabled?: boolean,
   active?: boolean,
+  type?: ButtonType,
+  value?: string,
 }|{
   variant: Variant.PRIMARY | Variant.SECONDARY,
   iconUrl?: string,
   size?: Size,
   disabled?: boolean,
   active?: boolean,
+  type?: ButtonType,
+  value?: string,
 };
 
+interface ButtonElementInternals extends ElementInternals {
+  readonly form?: HTMLFormElement;
+  readonly validity: ValidityState;
+  readonly willValidate: boolean;
+  readonly validationMessage: string;
+  checkValidity(): void;
+  reportValidity(): void;
+}
+
 export class Button extends HTMLElement {
+  static formAssociated = true;
   static readonly litTagName = LitHtml.literal`devtools-button`;
   private readonly shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   private readonly boundRender = this.render.bind(this);
@@ -56,8 +74,10 @@ export class Button extends HTMLElement {
     size: Size.MEDIUM,
     disabled: false,
     active: false,
+    type: 'button',
   };
   private isEmpty = true;
+  private internals = this.attachInternals() as ButtonElementInternals;
 
   constructor() {
     super();
@@ -74,6 +94,7 @@ export class Button extends HTMLElement {
     this.props.iconUrl = data.iconUrl;
     this.props.size = data.size || Size.MEDIUM;
     this.props.active = Boolean(data.active);
+    this.props.type = data.type || 'button';
     this.setDisabledProperty(data.disabled || false);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
@@ -90,6 +111,11 @@ export class Button extends HTMLElement {
 
   set size(size: Size) {
     this.props.size = size;
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+  }
+
+  set type(type: ButtonType) {
+    this.props.type = type;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
   }
 
@@ -121,6 +147,17 @@ export class Button extends HTMLElement {
     if (this.props.disabled) {
       event.stopPropagation();
       event.preventDefault();
+      return;
+    }
+    if (this.form && this.props.type === 'submit') {
+      event.preventDefault();
+      this.form.dispatchEvent(new SubmitEvent('submit', {
+        submitter: this,
+      }));
+    }
+    if (this.form && this.props.type === 'reset') {
+      event.preventDefault();
+      this.form.reset();
     }
   }
 
@@ -167,6 +204,43 @@ export class Button extends HTMLElement {
         </button>
       `, this.shadow, {host: this});
     // clang-format on
+  }
+
+  // Based on https://web.dev/more-capable-form-controls/ to make custom elements form-friendly.
+  // Form controls usually expose a "value" property.
+  get value(): string {
+    return this.props.value || '';
+  }
+  set value(value: string) {
+    this.props.value = value;
+  }
+
+  // The following properties and methods aren't strictly required,
+  // but browser-level form controls provide them. Providing them helps
+  // ensure consistency with browser-provided controls.
+  get form(): HTMLFormElement|undefined {
+    return this.internals.form;
+  }
+  get name(): string|null {
+    return this.getAttribute('name');
+  }
+  get type(): ButtonType {
+    return this.props.type;
+  }
+  get validity(): ValidityState {
+    return this.internals.validity;
+  }
+  get validationMessage(): string {
+    return this.internals.validationMessage;
+  }
+  get willValidate(): boolean {
+    return this.internals.willValidate;
+  }
+  checkValidity(): void {
+    return this.internals.checkValidity();
+  }
+  reportValidity(): void {
+    return this.internals.reportValidity();
   }
 }
 

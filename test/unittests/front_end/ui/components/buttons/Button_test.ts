@@ -147,4 +147,61 @@ describe('Button', async () => {
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
     assert.isFalse(innerButton.classList.contains('small'));
   });
+
+  describe('in forms', () => {
+    async function renderForm(data: Buttons.Button.ButtonData = {
+      variant: Buttons.Button.Variant.PRIMARY,
+    }) {
+      const form = document.createElement('form');
+      const input = document.createElement('input');
+      const button = new Buttons.Button.Button();
+      const reference = {
+        submitCount: 0,
+        form,
+        button,
+        input,
+      };
+      form.onsubmit = (event: Event) => {
+        event.preventDefault();
+        reference.submitCount++;
+      };
+      button.data = data;
+      button.innerText = 'button';
+
+      form.append(input);
+      form.append(button);
+
+      renderElementIntoDOM(form);
+      await coordinator.done();
+      return reference;
+    }
+
+    it('submits a form with button[type=submit]', async () => {
+      const state = await renderForm({
+        variant: Buttons.Button.Variant.PRIMARY,
+        type: 'submit',
+      });
+      state.button.click();
+      assert.strictEqual(state.submitCount, 1);
+    });
+
+    it('does not submit a form with button[type=button]', async () => {
+      const state = await renderForm({
+        variant: Buttons.Button.Variant.PRIMARY,
+        type: 'button',
+      });
+      state.button.click();
+      assert.strictEqual(state.submitCount, 0);
+    });
+
+    it('resets a form with button[type=reset]', async () => {
+      const state = await renderForm({
+        variant: Buttons.Button.Variant.PRIMARY,
+        type: 'reset',
+      });
+      state.input.value = 'test';
+      state.button.click();
+      assert.strictEqual(state.input.value, '');
+    });
+  });
 });

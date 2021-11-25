@@ -1,4 +1,4 @@
-#!/usr/bin/env vpython
+#!/usr/bin/env python3
 #
 # Copyright 2019 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
@@ -14,7 +14,7 @@ import shutil
 import stat
 import subprocess
 import sys
-import urllib
+import urllib.request
 import zipfile
 
 
@@ -55,7 +55,7 @@ def download_and_extract(options):
 
     # Download again and save build number
     try:
-        filehandle, headers = urllib.urlretrieve(options.url)
+        filehandle, headers = urllib.request.urlretrieve(options.url)
     except:
         print("Using curl as fallback. You should probably update OpenSSL.")
         filehandle = io.BytesIO(

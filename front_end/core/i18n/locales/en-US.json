@@ -584,6 +584,9 @@
   "core/sdk/sdk-meta.ts | disabledDarkMode": {
     "message": "Disable"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Disable auto dark mode"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
   },
@@ -613,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Do not emulate CSS media type"
+  },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Do not emulate auto dark mode"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Do not extend grid lines"
@@ -685,6 +691,9 @@
   },
   "core/sdk/sdk-meta.ts | enabledDarkMode": {
     "message": "Enable"
+  },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Enable auto dark mode"
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Enable JavaScript"

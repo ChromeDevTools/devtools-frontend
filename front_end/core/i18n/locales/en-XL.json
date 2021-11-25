@@ -584,6 +584,9 @@
   "core/sdk/sdk-meta.ts | disabledDarkMode": {
     "message": "D̂íŝáb̂ĺê"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "D̂íŝáb̂ĺê áût́ô d́âŕk̂ ḿôd́ê"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "D̂íŝáb̂ĺê J́âv́âŚĉŕîṕt̂"
   },
@@ -613,6 +616,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "D̂ó n̂ót̂ ém̂úl̂át̂é ĈŚŜ ḿêd́îá t̂ýp̂é"
+  },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "D̂ó n̂ót̂ ém̂úl̂át̂é âút̂ó d̂ár̂ḱ m̂ód̂é"
   },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "D̂ó n̂ót̂ éx̂t́êńd̂ ǵr̂íd̂ ĺîńêś"
@@ -685,6 +691,9 @@
   },
   "core/sdk/sdk-meta.ts | enabledDarkMode": {
     "message": "Êńâb́l̂é"
+  },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Êńâb́l̂é âút̂ó d̂ár̂ḱ m̂ód̂é"
   },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Êńâb́l̂é Ĵáv̂áŜćr̂íp̂t́"

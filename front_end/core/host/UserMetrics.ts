@@ -598,6 +598,7 @@ export const DevtoolsExperiments: {
   'timelineEventInitiators': 24,
   'timelineInvalidationTracking': 26,
   'timelineShowAllEvents': 27,
+  'timelineV8RuntimeCallStats': 28,
   'timelineWebGL': 29,
   'timelineReplayEvent': 30,
   'wasmDWARFDebugging': 31,

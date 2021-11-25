@@ -617,7 +617,8 @@ export const DevtoolsExperiments: {
   'syncSettings': 50,
   'groupAndHideIssuesByKind': 51,
   'cssTypeComponentLength': 52,
-  '__lastValidEnumPosition': 52,
+  'preciseChanges': 53,
+  '__lastValidEnumPosition': 53,
 };
 
 export const IssueExpanded: {

@@ -365,11 +365,15 @@ export class MainImpl {
         'Enable CSS <length> authoring tool in the Styles pane (https://goo.gle/length-feedback)', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-96/#length');
 
+    // Display precise changes in the Changes tab.
+    Root.Runtime.experiments.register('preciseChanges', 'Display more precise changes in the Changes tab');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'hideIssuesFeature',
       'bfcacheDebugging',
       'cssTypeComponentLength',
+      'preciseChanges',
       Root.Runtime.ExperimentName.SYNC_SETTINGS,
     ]);
 

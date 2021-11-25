@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -166,7 +167,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.registerCSSFiles([changesViewStyles]);
   }
 
-  private refreshDiff(): void {
+  private async refreshDiff(): Promise<void> {
     if (!this.isShowing()) {
       return;
     }
@@ -180,12 +181,12 @@ export class ChangesView extends UI.Widget.VBox {
       this.hideDiff(i18nString(UIStrings.binaryData));
       return;
     }
-    this.workspaceDiff.requestDiff(uiSourceCode).then((diff: Diff.Diff.DiffArray|null): void => {
-      if (this.selectedUISourceCode !== uiSourceCode) {
-        return;
-      }
-      this.renderDiffRows(diff);
-    });
+    const diff = await this.workspaceDiff.requestDiff(
+        uiSourceCode, {shouldFormatDiff: Root.Runtime.experiments.isEnabled('preciseChanges')});
+    if (this.selectedUISourceCode !== uiSourceCode) {
+      return;
+    }
+    this.renderDiffRows(diff);
   }
 
   private hideDiff(message: string): void {

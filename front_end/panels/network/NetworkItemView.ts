@@ -250,6 +250,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   }
 
   private async maybeAppendPayloadPanel(): Promise<void> {
+    if (this.hasTab('payload')) {
+      return;
+    }
     if (this.requestInternal.queryParameters || await this.requestInternal.requestFormData()) {
       this.payloadView = new RequestPayloadView(this.requestInternal);
       this.appendTab(

@@ -66,10 +66,19 @@ wss.on('connection', ws => {
   });
 });
 
+let delayResolve = null;
+
 server.listen(requestedPort);
 
 async function requestHandler(request, response) {
-  const filePath = unescape(parseURL(request.url).pathname);
+  const url = parseURL(request.url);
+  const filePath = unescape(url.pathname);
+
+  if (url.search === '?send_delayed' && delayResolve) {
+    delayResolve();
+    delayResolve = null;
+  }
+
   if (filePath === '/') {
     const landingURL = `http://localhost:${remoteDebuggingPort}#custom=true`;
     sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`, 'utf8');
@@ -147,7 +156,13 @@ async function requestHandler(request, response) {
     return null;
   }
 
-  function sendResponse(statusCode, data, encoding, headers) {
+  async function sendResponse(statusCode, data, encoding, headers) {
+    if (url.search === '?delay') {
+      delayPromise = new Promise(resolve => {
+        delayResolve = resolve;
+      });
+      await delayPromise;
+    }
     if (!headers) {
       headers = new Map();
     }

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import type {ElementHandle} from 'puppeteer';
-import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction} from '../../shared/helper.js';
+import {$$, click, step, typeText, waitFor, waitForElementWithTextContent, waitForFunction, getBrowserAndPages} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {navigateToNetworkTab, selectRequestByName, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
@@ -213,5 +213,15 @@ describe('The Network Request view', async () => {
 
     await selectRequestByName('image.svg');
     await waitForElementWithTextContent('foo: gamma');
+  });
+
+  it('no duplicate payload tab on headers update', async () => {
+    await navigateToNetworkTab('requests.html');
+    const {target} = getBrowserAndPages();
+    target.evaluate(() => fetch('image.svg?delay'));
+    await waitForSomeRequestsToAppear(2);
+
+    await selectRequestByName('image.svg?delay');
+    await target.evaluate(async () => await fetch('/?send_delayed'));
   });
 });

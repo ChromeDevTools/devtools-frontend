@@ -432,18 +432,38 @@ export class SearchView extends UI.Widget.VBox {
     }
   }
 
+  /**
+   * Handles keydown event on panel itself for handling expand/collapse all shortcut
+   *
+   * We use `event.code` instead of `event.key` here to check whether the shortcut is triggered.
+   * The reason is, `event.key` is dependent on the modification keys, locale and keyboard layout.
+   * Usually it is useful when we care about the character that needs to be printed.
+   *
+   * However, our aim in here is to assign a shortcut to the physical key combination on the keyboard
+   * not on the character that the key combination prints.
+   *
+   * For example, `Cmd + [` shortcut in global shortcuts map to focusing on previous panel.
+   * In Turkish - Q keyboard layout, the key combination that triggers the shortcut prints `ğ`
+   * character. Whereas in Turkish - Q Legacy keyboard layout, the shortcut that triggers focusing
+   * on previous panel prints `[` character. So, if we use `event.key` and check
+   * whether it is `[`, we break the shortcut in Turkish - Q keyboard layout.
+   *
+   * @param event KeyboardEvent
+   */
   private onKeyDownOnPanel(event: KeyboardEvent): void {
     const isMac = Host.Platform.isMac();
     // "Command + Alt + ]" for Mac
-    const shouldShowAllForMac = isMac && event.metaKey && !event.ctrlKey && event.altKey && event.key === ']';
+    const shouldShowAllForMac =
+        isMac && event.metaKey && !event.ctrlKey && event.altKey && event.code === 'BracketRight';
     // "Ctrl + Shift + }" for other platforms
     const shouldShowAllForOtherPlatforms =
-        !isMac && event.ctrlKey && !event.metaKey && event.shiftKey && event.key === '}';
+        !isMac && event.ctrlKey && !event.metaKey && event.shiftKey && event.code === 'BracketRight';
     // "Command + Alt + [" for Mac
-    const shouldCollapseAllForMac = isMac && event.metaKey && !event.ctrlKey && event.altKey && event.key === '[';
+    const shouldCollapseAllForMac =
+        isMac && event.metaKey && !event.ctrlKey && event.altKey && event.code === 'BracketLeft';
     // "Command + Alt + {" for other platforms
     const shouldCollapseAllForOtherPlatforms =
-        !isMac && event.ctrlKey && !event.metaKey && event.shiftKey && event.key === '{';
+        !isMac && event.ctrlKey && !event.metaKey && event.shiftKey && event.code === 'BracketLeft';
 
     if (shouldShowAllForMac || shouldShowAllForOtherPlatforms) {
       this.searchResultsPane?.showAllMatches();

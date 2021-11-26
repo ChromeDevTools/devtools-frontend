@@ -5,8 +5,9 @@
 'use strict';
 
 const path = require('path');
+const {devtoolsRootPath} = require('../../devtools_paths.js');
 
-const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
+const DEFAULT_FRONT_END_DIRECTORY = path.join(devtoolsRootPath(), 'front_end');
 
 function isModuleScope(context) {
   return context.getScope().type === 'module';
@@ -36,7 +37,15 @@ module.exports = {
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [{
+      'type': 'object',
+      'properties': {
+        'rootFrontendDirectory': {
+          'type': 'string',
+        },
+      },
+      additionalProperties: false,
+    }]
   },
   create: function(context) {
     return {
@@ -51,8 +60,12 @@ module.exports = {
           return;
         }
 
+        let frontEndDirectory = DEFAULT_FRONT_END_DIRECTORY;
+        if (context.options && context.options[0]?.rootFrontendDirectory) {
+          frontEndDirectory = context.options[0].rootFrontendDirectory;
+        }
         const currentSourceFile = path.resolve(context.getFilename());
-        const currentFileRelativeToFrontEnd = path.relative(FRONT_END_DIRECTORY, currentSourceFile);
+        const currentFileRelativeToFrontEnd = path.relative(frontEndDirectory, currentSourceFile);
 
         const currentModuleDirectory = path.dirname(currentSourceFile);
         const allowedPathArguments = [
@@ -62,7 +75,7 @@ module.exports = {
         ];
 
         const previousFileLocationArgument = callExpression.arguments[0];
-        const actualPath = path.join(FRONT_END_DIRECTORY, previousFileLocationArgument.value);
+        const actualPath = path.join(frontEndDirectory, previousFileLocationArgument.value);
         if (!allowedPathArguments.includes(actualPath)) {
           const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');
           context.report({

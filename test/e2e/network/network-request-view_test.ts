@@ -198,4 +198,20 @@ describe('The Network Request view', async () => {
 
     await assertOutlineMatches(expectedPayloadContent, payloadOutline);
   });
+
+  it('payload tab selection is preserved', async () => {
+    await navigateToNetworkTab('headers-and-payload.html');
+
+    await waitForSomeRequestsToAppear(3);
+
+    await selectRequestByName('image.svg?id=42&param=a%20b');
+
+    const networkView = await waitFor('.network-item-view');
+    const payloadTabHeader = await waitFor('[aria-label=Payload][role="tab"]', networkView);
+    await click(payloadTabHeader);
+    await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
+
+    await selectRequestByName('image.svg');
+    await waitForElementWithTextContent('foo: gamma');
+  });
 });

@@ -270,7 +270,13 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   private selectTabInternal(tabId: string): void {
     if (!this.selectTab(tabId)) {
-      this.selectTab('headers');
+      // maybeAppendPayloadPanel might cause payload tab to appear asynchronously, so
+      // it makes sense to retry on the next tick
+      setTimeout(() => {
+        if (!this.selectTab(tabId)) {
+          this.selectTab('headers');
+        }
+      }, 0);
     }
   }
 

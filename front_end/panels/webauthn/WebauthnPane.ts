@@ -229,12 +229,11 @@ const PROTOCOL_AUTHENTICATOR_VALUES: Protocol.EnumerableEnum<typeof Protocol.Web
 
 export class WebauthnPaneImpl extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.WebAuthnModel.WebAuthnModel> {
-  private enabled: boolean;
-  private activeAuthId: Protocol.WebAuthn.AuthenticatorId|null;
-  private hasBeenEnabled: boolean;
-  private readonly dataGrids: Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>;
-  // @ts-ignore
-  private enableCheckbox: UI.Toolbar.ToolbarCheckbox;
+  private activeAuthId: Protocol.WebAuthn.AuthenticatorId|null = null;
+  private hasBeenEnabled = false;
+  private readonly dataGrids =
+      new Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>();
+  private enableCheckbox!: UI.Toolbar.ToolbarCheckbox;
   private readonly availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
   private model?: SDK.WebAuthnModel.WebAuthnModel;
   private authenticatorsView: HTMLElement;
@@ -257,14 +256,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this);
 
     this.contentElement.classList.add('webauthn-pane');
-    this.enabled = false;
-    this.activeAuthId = null;
-    this.hasBeenEnabled = false;
-    this.dataGrids = new Map();
 
     this.availableAuthenticatorSetting =
-        (Common.Settings.Settings.instance().createSetting('webauthnAuthenticators', []) as
-         Common.Settings.Setting<AvailableAuthenticatorOptions[]>);
+        Common.Settings.Settings.instance().createSetting<AvailableAuthenticatorOptions[]>(
+            'webauthnAuthenticators', []);
 
     this.createToolbar();
     this.authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
@@ -431,7 +426,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.VirtualAuthenticatorEnvironmentEnabled);
         this.hasBeenEnabled = true;
       }
-      this.enabled = enable;
       if (this.model) {
         await this.model.setVirtualAuthEnvEnabled(enable);
       }
@@ -618,7 +612,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         UI.UIUtils.createRadioLabel(`active-authenticator-${authenticatorId}`, i18nString(UIStrings.active));
     activeLabel.radioElement.addEventListener('click', this.setActiveAuthenticator.bind(this, authenticatorId));
     activeButtonContainer.appendChild(activeLabel);
-    /** @type {!HTMLInputElement} */ (activeLabel.radioElement as HTMLInputElement).checked = true;
+    (activeLabel.radioElement as HTMLInputElement).checked = true;
     this.activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
 
     const removeButton = headerElement.createChild('button', 'text-button');
@@ -792,19 +786,16 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       throw new Error('Unable to create options from current inputs');
     }
 
-    /**
-     * @type {!Protocol.WebAuthn.VirtualAuthenticatorOptions}
-     */
-    const options = ({
-      protocol: this.protocolSelect.options[this.protocolSelect.selectedIndex].value,
-      transport: this.transportSelect.options[this.transportSelect.selectedIndex].value,
+    return {
+      protocol: this.protocolSelect.options[this.protocolSelect.selectedIndex].value as
+          Protocol.WebAuthn.AuthenticatorProtocol,
+      transport: this.transportSelect.options[this.transportSelect.selectedIndex].value as
+          Protocol.WebAuthn.AuthenticatorTransport,
       hasResidentKey: this.residentKeyCheckbox.checked,
       hasUserVerification: this.userVerificationCheckbox.checked,
       automaticPresenceSimulation: true,
       isUserVerified: true,
-    } as Protocol.WebAuthn.VirtualAuthenticatorOptions);
-
-    return options;
+    };
   }
 
   /**
@@ -833,8 +824,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       if (!button) {
         return;
       }
-      button.checked =
-          /** @type {!HTMLElement} */ (authenticator as HTMLElement).dataset.authenticatorId === this.activeAuthId;
+      button.checked = (authenticator as HTMLElement).dataset.authenticatorId === this.activeAuthId;
     });
   }
 

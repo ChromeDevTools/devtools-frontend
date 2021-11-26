@@ -16,7 +16,6 @@ import {Endianness} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import inspectorCommonStyles from '../../legacy/inspectorCommon.css.js';
 
 const UIStrings = {
   /**
@@ -73,13 +72,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = new Map();
   #memoryLength = 0;
   #showSettings = false;
-
-  constructor() {
-    super();
-    this.#shadow.adoptedStyleSheets = [
-      inspectorCommonStyles,
-    ];
-  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [linearMemoryValueInterpreterStyles];

@@ -332,7 +332,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       show: (popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         let animGroup;
         for (const [group, previewUI] of this.#previewMap) {
-          if (previewUI.element === element.parentElement) {
+          if (previewUI.element === element || previewUI.element === element.parentElement) {
             animGroup = group;
           }
         }

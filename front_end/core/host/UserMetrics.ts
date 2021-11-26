@@ -611,7 +611,6 @@ export const DevtoolsExperiments: {
   'ignoreListJSFramesOnTimeline': 43,
   'contrastIssues': 44,
   'experimentalCookieFeatures': 45,
-  'bfcacheDebugging': 47,
   'hideIssuesFeature': 48,
   'reportingApiDebugging': 49,
   'syncSettings': 50,

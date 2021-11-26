@@ -132,11 +132,8 @@
   }
 }
 
-.heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag {
-  color: var(--color-text-secondary);
-}
-
-.heap-snapshot-view td.object-column span.grayed {
+.heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag,
+.heap-snapshot-view tr:not(.selected) td.object-column span.grayed {
   color: var(--color-text-secondary);
 }
 

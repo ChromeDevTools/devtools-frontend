@@ -33,6 +33,7 @@ interface ButtonState {
   size?: Size;
   disabled: boolean;
   active: boolean;
+  spinner?: boolean;
   type: ButtonType;
   value?: string;
 }
@@ -43,6 +44,7 @@ export type ButtonData = {
   size?: Size,
   disabled?: boolean,
   active?: boolean,
+  spinner?: boolean,
   type?: ButtonType,
   value?: string,
 }|{
@@ -51,6 +53,7 @@ export type ButtonData = {
   size?: Size,
   disabled?: boolean,
   active?: boolean,
+  spinner?: boolean,
   type?: ButtonType,
   value?: string,
 };
@@ -74,6 +77,7 @@ export class Button extends HTMLElement {
     size: Size.MEDIUM,
     disabled: false,
     active: false,
+    spinner: false,
     type: 'button',
   };
   #isEmpty = true;
@@ -94,6 +98,7 @@ export class Button extends HTMLElement {
     this.#props.iconUrl = data.iconUrl;
     this.#props.size = data.size || Size.MEDIUM;
     this.#props.active = Boolean(data.active);
+    this.#props.spinner = Boolean(data.spinner);
     this.#props.type = data.type || 'button';
     this.setDisabledProperty(data.disabled || false);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -126,6 +131,11 @@ export class Button extends HTMLElement {
 
   set active(active: boolean) {
     this.#props.active = active;
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set spinner(spinner: boolean) {
+    this.#props.spinner = spinner;
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -189,6 +199,12 @@ export class Button extends HTMLElement {
       small: Boolean(this.#props.size === Size.SMALL),
       active: this.#props.active,
     };
+    const spinnerClasses = {
+      primary: this.#props.variant === Variant.PRIMARY,
+      secondary: this.#props.variant === Variant.SECONDARY,
+      disabled: Boolean(this.#props.disabled),
+      'spinner-component': true,
+    };
     // clang-format off
     LitHtml.render(
       LitHtml.html`
@@ -200,6 +216,7 @@ export class Button extends HTMLElement {
             } as IconButton.Icon.IconData}
           >
           </${IconButton.Icon.Icon.litTagName}>` : ''}
+          ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.onSlotChange}></slot>
         </button>
       `, this.#shadow, {host: this});

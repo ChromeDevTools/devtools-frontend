@@ -227,7 +227,8 @@ const PROTOCOL_AUTHENTICATOR_VALUES: Protocol.EnumerableEnum<typeof Protocol.Web
   U2f: Protocol.WebAuthn.AuthenticatorProtocol.U2f,
 };
 
-export class WebauthnPaneImpl extends UI.Widget.VBox {
+export class WebauthnPaneImpl extends UI.Widget.VBox implements
+    SDK.TargetManager.SDKModelObserver<SDK.WebAuthnModel.WebAuthnModel> {
   private enabled: boolean;
   private activeAuthId: Protocol.WebAuthn.AuthenticatorId|null;
   private hasBeenEnabled: boolean;
@@ -235,7 +236,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
   // @ts-ignore
   private enableCheckbox: UI.Toolbar.ToolbarCheckbox;
   private readonly availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
-  private model: SDK.WebAuthnModel.WebAuthnModel|null|undefined;
+  private model?: SDK.WebAuthnModel.WebAuthnModel;
   private authenticatorsView: HTMLElement;
   private topToolbarContainer: HTMLElement|undefined;
   private topToolbar: UI.Toolbar.Toolbar|undefined;
@@ -253,6 +254,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
 
   constructor() {
     super(true);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this);
 
     this.contentElement.classList.add('webauthn-pane');
     this.enabled = false;
@@ -263,11 +265,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     this.availableAuthenticatorSetting =
         (Common.Settings.Settings.instance().createSetting('webauthnAuthenticators', []) as
          Common.Settings.Setting<AvailableAuthenticatorOptions[]>);
-
-    const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
-    if (mainTarget) {
-      this.model = mainTarget.model(SDK.WebAuthnModel.WebAuthnModel);
-    }
 
     this.createToolbar();
     this.authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
@@ -282,6 +279,18 @@ export class WebauthnPaneImpl extends UI.Widget.VBox {
     }
 
     return webauthnPaneImplInstance;
+  }
+
+  modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
+    if (model.target() === SDK.TargetManager.TargetManager.instance().mainTarget()) {
+      this.model = model;
+    }
+  }
+
+  modelRemoved(model: SDK.WebAuthnModel.WebAuthnModel): void {
+    if (model.target() === SDK.TargetManager.TargetManager.instance().mainTarget()) {
+      this.model = undefined;
+    }
   }
 
   private async loadInitialAuthenticators(): Promise<void> {

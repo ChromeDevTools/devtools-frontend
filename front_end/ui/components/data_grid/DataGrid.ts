@@ -832,6 +832,15 @@ export class DataGrid extends HTMLElement {
     }
     this.scrollToBottomIfRequired();
     this.engageResizeObserver();
+    if (this.#hasRenderedAtLeastOnce) {
+      // We may have had a cell's width change on a re-render, or it may have
+      // been hidden entirely, so we need to ensure that the resize handlers are
+      // re-positioned correctly if so.
+
+      // We don't have to do this on first render as it will fire when the resize observer is engaged.
+      this.alignScrollHandlers();
+    }
+
     this.#isRendering = false;
     this.#hasRenderedAtLeastOnce = true;
 

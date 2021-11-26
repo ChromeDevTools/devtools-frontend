@@ -16,17 +16,21 @@ function assertNumberBetween(number: number, min: number, max: number) {
   assert.isBelow(number, max);
 }
 
-async function clickAndDragResizeHandlerHorizontally(handler: ElementHandle<Element>, mouseXChange: number) {
-  const position = await handler.evaluate(handler => {
+async function clickAndDragCellToResizeHorizontally(cell: ElementHandle<HTMLTableElement>, mouseXChange: number) {
+  const cellBoundingBoxData = await cell.evaluate(cellElement => {
+    const box = cellElement.getBoundingClientRect();
     return {
-      x: handler.getBoundingClientRect().x,
-      y: handler.getBoundingClientRect().y,
+      right: box.right,
+      top: box.top,
     };
   });
   const {frontend} = getBrowserAndPages();
-  await frontend.mouse.move(position.x, position.y);
+  const startX = cellBoundingBoxData.right - 5;
+  const startY = cellBoundingBoxData.top + 5;
+
+  await frontend.mouse.move(startX, startY);
   await frontend.mouse.down();
-  await frontend.mouse.move(position.x + mouseXChange, position.y);
+  await frontend.mouse.move(startX + mouseXChange, startY);
   await frontend.mouse.up();
 }
 
@@ -62,12 +66,7 @@ describe('data grid', async () => {
   it('can resize two columns', async () => {
     await loadComponentDocExample('data_grid/basic.html');
     const dataGrid = await getDataGrid();
-    await waitFor('.cell-resize-handle', dataGrid);
-    await getDataGridRows(3, dataGrid);
-    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
-    if (!firstResizeHandler) {
-      assert.fail('Could not find resizeHandler');
-    }
+
     const columns = [
       await getDataGridCellAtIndex(dataGrid, {row: 1, column: 0}),
       await getDataGridCellAtIndex(dataGrid, {row: 1, column: 1}),
@@ -76,8 +75,9 @@ describe('data grid', async () => {
     let columnWidths = await getColumnPixelWidths(columns);
     assertNumberBetween(columnWidths[0], 500, 515);
     assertNumberBetween(columnWidths[1], 500, 515);
+    const firstRowFirstCell = await waitFor<HTMLTableElement>('td[data-row-index="1"][data-col-index="0"]', dataGrid);
+    await clickAndDragCellToResizeHorizontally(firstRowFirstCell, -50);
 
-    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -50);
     columnWidths = await getColumnPixelWidths(columns);
     assertNumberBetween(columnWidths[0], 450, 465);
     assertNumberBetween(columnWidths[1], 545, 565);
@@ -87,10 +87,8 @@ describe('data grid', async () => {
     await loadComponentDocExample('data_grid/empty.html');
     const dataGrid = await getDataGrid();
     await waitFor('.cell-resize-handle', dataGrid);
-    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
-    if (!firstResizeHandler) {
-      assert.fail('Could not find resizeHandler');
-    }
+    const emptyTableFillerFirstColumn =
+        await waitFor<HTMLTableElement>('td[data-filler-row-column-index="0"]', dataGrid);
     const columns = [
       await getDataGridFillerCellAtColumnIndex(dataGrid, 0),
       await getDataGridFillerCellAtColumnIndex(dataGrid, 1),
@@ -100,7 +98,7 @@ describe('data grid', async () => {
     assertNumberBetween(columnWidths[0], 485, 500);
     assertNumberBetween(columnWidths[1], 485, 500);
 
-    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -50);
+    await clickAndDragCellToResizeHorizontally(emptyTableFillerFirstColumn, -50);
     columnWidths = await getColumnPixelWidths(columns);
     assertNumberBetween(columnWidths[0], 435, 450);
     assertNumberBetween(columnWidths[1], 530, 550);
@@ -111,10 +109,7 @@ describe('data grid', async () => {
     const dataGrid = await getDataGrid();
     await waitFor('.cell-resize-handle', dataGrid);
     await getDataGridRows(3, dataGrid);
-    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
-    if (!firstResizeHandler) {
-      assert.fail('Could not find resizeHandler');
-    }
+    const firstRowFirstCell = await waitFor<HTMLTableElement>('td[data-row-index="1"][data-col-index="0"]', dataGrid);
 
     const columns = [
       await getDataGridCellAtIndex(dataGrid, {row: 1, column: 0}),
@@ -129,7 +124,7 @@ describe('data grid', async () => {
     assertNumberBetween(columnWidths[1], 295, 305);
     assertNumberBetween(columnWidths[2], 295, 305);
 
-    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -100);
+    await clickAndDragCellToResizeHorizontally(firstRowFirstCell, -100);
     /* The resize calculation is roughly as follows
      * mouse delta = 100px (-100, but we Math.abs it)
      * delta as a % = (100 / (leftCellWidth + rightCellWidth)) * 100
@@ -188,11 +183,7 @@ describe('data grid', async () => {
       ['Charlie', '3'],
     ]);
 
-    await waitFor('.cell-resize-handle', dataGrid);
-    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
-    if (!firstResizeHandler) {
-      assert.fail('Could not find resizeHandler');
-    }
+    const firstRowFirstCell = await waitFor<HTMLTableElement>('td[data-row-index="1"][data-col-index="0"]', dataGrid);
 
     const columns = [
       await getDataGridCellAtIndex(dataGrid, {row: 1, column: 0}),
@@ -207,7 +198,7 @@ describe('data grid', async () => {
     assertNumberBetween(columnWidths[0], 602, 607);
     assertNumberBetween(columnWidths[1], 294, 300);
 
-    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, -100);
+    await clickAndDragCellToResizeHorizontally(firstRowFirstCell, -100);
     /* The resize calculation is roughly as follows
      * mouse delta = 100px (-100, but we Math.abs it)
      * delta as a % = (100 / (leftCellWidth + rightCellWidth)) * 100
@@ -234,10 +225,7 @@ describe('data grid', async () => {
     const dataGrid = await getDataGrid();
     await getDataGridRows(10, dataGrid);
     await waitFor('.cell-resize-handle', dataGrid);
-    const firstResizeHandler = await $('.cell-resize-handle', dataGrid);
-    if (!firstResizeHandler) {
-      assert.fail('Could not find resizeHandler');
-    }
+    const firstRowFirstCell = await waitFor<HTMLTableElement>('td[data-row-index="1"][data-col-index="0"]', dataGrid);
 
     const columns = [
       await getDataGridCellAtIndex(dataGrid, {row: 1, column: 0}),
@@ -250,7 +238,7 @@ describe('data grid', async () => {
     assertNumberBetween(columnPixelWidths[0], 297, 303);
     assertNumberBetween(columnPixelWidths[1], 297, 303);
 
-    await clickAndDragResizeHandlerHorizontally(firstResizeHandler, 50);
+    await clickAndDragCellToResizeHorizontally(firstRowFirstCell, 50);
     const newColumnPercentageWidths = await getColumnPercentageWidthsRounded(dataGrid);
     assert.deepEqual(
         newColumnPercentageWidths,

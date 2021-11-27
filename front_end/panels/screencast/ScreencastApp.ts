@@ -27,7 +27,7 @@ export class ScreencastApp implements Common.App.App,
   private screenCaptureModel?: SDK.ScreenCaptureModel.ScreenCaptureModel;
   private screencastView?: ScreencastView;
   constructor() {
-    this.enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', true);
+    this.enabledSetting = Common.Settings.Settings.instance().createSetting('screencastEnabled', false);
     this.toggleButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleScreencast), 'largeicon-phone');
     this.toggleButton.setToggled(this.enabledSetting.get());
     this.toggleButton.setEnabled(false);

@@ -6,6 +6,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
@@ -226,11 +227,18 @@ export class CSSProperty {
         // implementation takes special care to restore a single
         // whitespace token in this edge case. https://crbug.com/1071296
         const trimmedPropertyText = propertyText.trim();
-        result = result.trimRight() + indentation + trimmedPropertyText +
-            (trimmedPropertyText.endsWith(':') ? ' ' : '') + ';';
+        result =
+            result.trimRight() + indentation + trimmedPropertyText + (trimmedPropertyText.endsWith(':') ? ' ' : '');
         needsSemi = false;
         insideProperty = false;
         propertyName = '';
+        if (Root.Runtime.experiments.isEnabled('preciseChanges')) {
+          result += token;
+          return;
+        }
+        // We preserve the legacy behavior to always add semicolon to
+        // declarations regardless of its original text.
+        result += ';';
         if (token === '}') {
           result += '}';
         }

@@ -11690,15 +11690,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Ŝh́ôẃ âś Ĵáv̂áŜćr̂íp̂t́ ôb́ĵéĉt́"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "K̂éŷś"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "k̂éŷẃôŕd̂ś"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "L̂éx̂íĉál̂ śĉóp̂é v̂ár̂íâb́l̂éŝ"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Ĉól̂ĺâṕŝé ĉh́îĺd̂ŕêń"
   },
@@ -11962,9 +11953,6 @@
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "F̂ín̂d́"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Ĉód̂é êd́ît́ôŕ"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Ĉúr̂ŕêńt̂ śôúr̂ćê:"

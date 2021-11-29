@@ -2,12 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../third_party/codemirror/package/addon/runmode/runmode-standalone.js';
-import '../../third_party/codemirror/package/mode/css/css.js';
-import '../../third_party/codemirror/package/mode/xml/xml.js';
-import '../../third_party/codemirror/package/mode/javascript/javascript.js';
-
 import * as Platform from '../../core/platform/platform.js';
+
 import * as FormatterWorker from './formatter_worker.js';
 
 import {FormatterActions} from './FormatterActions.js';
@@ -37,12 +33,6 @@ self.onmessage = function(event: MessageEvent): void {
       break;
     case FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING:
       self.postMessage(FormatterWorker.FormatterWorker.evaluatableJavaScriptSubstring(params.content));
-      break;
-    case FormatterActions.FIND_LAST_EXPRESSION:
-      self.postMessage(FormatterWorker.FormatterWorker.findLastExpression(params.content));
-      break;
-    case FormatterActions.FIND_LAST_FUNCTION_CALL:
-      self.postMessage(FormatterWorker.FormatterWorker.findLastFunctionCall(params.content));
       break;
     case FormatterActions.ARGUMENTS_LIST:
       self.postMessage(FormatterWorker.FormatterWorker.argumentsList(params.content));

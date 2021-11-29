@@ -41,7 +41,7 @@ describe.skip('[crbug.com/1198160]: Snippet creation', () => {
   });
 });
 
-// Flaky test
+// Flaky test (likely further bit-rotted by CM6 transition)
 describe.skip('[crbug.com/1198160]: Expression evaluation', () => {
   const message = '"Hello"';
 

@@ -30,7 +30,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/bindings_test_runner/IsolatedFilesystemTestRunner.js",
   "front_end/legacy_test_runner/bindings_test_runner/OverridesTestRunner.js",
   "front_end/legacy_test_runner/bindings_test_runner/PersistenceTestRunner.js",
-  "front_end/third_party/codemirror/codemirror.css",
   "front_end/legacy_test_runner/console_test_runner/console_test_runner.js",
   "front_end/legacy_test_runner/coverage_test_runner/coverage_test_runner.js",
   "front_end/legacy_test_runner/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
@@ -122,9 +121,6 @@ all_devtools_files = [
   "front_end/legacy_test_runner/sources_test_runner/LiveEditTestRunner.js",
   "front_end/legacy_test_runner/sources_test_runner/SearchTestRunner.js",
   "front_end/legacy_test_runner/sources_test_runner/SourcesTestRunner.js",
-  "front_end/ui/legacy/components/text_editor/autocompleteTooltip.css",
-  "front_end/ui/legacy/components/text_editor/cmdevtools.css",
-  "front_end/ui/legacy/components/text_editor/module.json",
   "front_end/third_party/lighthouse/report-assets/report.js",
   "front_end/third_party/lighthouse/report-assets/standalone-template.html",
 ]

@@ -229,6 +229,9 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
             },
           },
         },
+        ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
+          color: 'var(--legacy-accent-color)',
+        },
       }),
       CodeMirror.EditorView.domEventHandlers({
         focus: () => this.onFocus(),

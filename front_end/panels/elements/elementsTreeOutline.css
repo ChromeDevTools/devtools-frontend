@@ -186,19 +186,6 @@
   margin-right: 4px;
 }
 
-.CodeMirror {
-  background-color: var(--color-background);
-  height: 300px !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.CodeMirror-lines {
-  padding: 0;
-}
-
-.CodeMirror pre {
-  padding: 0;
-}
-
 button,
 input,
 select {

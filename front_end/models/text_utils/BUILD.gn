@@ -21,7 +21,6 @@ devtools_module("text_utils") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
-    "../../third_party/codemirror:bundle",
   ]
 
   visibility =
@@ -31,10 +30,7 @@ devtools_module("text_utils") {
 devtools_entrypoint("bundle") {
   entrypoint = "text_utils.ts"
 
-  deps = [
-    ":text_utils",
-    "../../third_party/codemirror:bundle",
-  ]
+  deps = [ ":text_utils" ]
 
   visibility = [
     ":*",

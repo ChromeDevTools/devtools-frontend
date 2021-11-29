@@ -11690,15 +11690,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Show as JavaScript object"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Keys"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "keywords"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Lexical scope variables"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Collapse children"
   },
@@ -11962,9 +11953,6 @@
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Find"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Code editor"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Current source:"

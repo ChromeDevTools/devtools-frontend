@@ -52,7 +52,6 @@ devtools_module("perf_ui") {
     "../../../../models/workspace:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
-    "../../../../ui/legacy/components/text_editor:bundle",
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit-html:bundle",
   ]

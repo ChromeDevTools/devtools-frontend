@@ -230,55 +230,6 @@ export function format(
   return result;
 }
 
-export function findLastFunctionCall(content: string): {
-  baseExpression: string,
-  receiver: string,
-  argumentIndex: number,
-  functionName: string,
-}|null {
-  if (content.length > 10000) {
-    return null;
-  }
-  try {
-    const tokenizer = Acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
-    while (tokenizer.getToken().type !== Acorn.tokTypes.eof) {
-    }
-  } catch (e) {
-    return null;
-  }
-
-  const suffix = '000)';
-  const base = _lastCompleteExpression(content, suffix, new Set(['CallExpression', 'NewExpression']));
-  if (!base) {
-    return null;
-  }
-  if (base.baseNode.type !== 'CallExpression' && base.baseNode.type !== 'NewExpression') {
-    return null;
-  }
-  const callee = base.baseNode['callee'];
-
-  let functionName = '';
-  const functionProperty = callee.type === 'Identifier' ? callee : (callee as Acorn.ESTree.MemberExpression).property;
-  if (functionProperty) {
-    if (functionProperty.type === 'Identifier') {
-      functionName = functionProperty.name;
-    } else if (functionProperty.type === 'Literal') {
-      functionName = (functionProperty.value as string);
-    }
-  }
-
-  const argumentIndex = base.baseNode['arguments'].length - 1;
-  const baseExpression =
-      `(${base.baseExpression.substring(callee.start - base.baseNode.start, callee.end - base.baseNode.start)})`;
-  let receiver = '(function(){return this})()';
-  if (callee.type === 'MemberExpression') {
-    const receiverBase = callee['object'];
-    receiver =
-        base.baseExpression.substring(receiverBase.start - base.baseNode.start, receiverBase.end - base.baseNode.start);
-  }
-  return {baseExpression, receiver, argumentIndex, functionName};
-}
-
 export function argumentsList(content: string): string[] {
   if (content.length > 10000) {
     return [];
@@ -347,77 +298,6 @@ export function argumentsList(content: string): string[] {
     }
     return '?';
   }
-}
-
-export function findLastExpression(content: string): string|null {
-  if (content.length > 10000) {
-    return null;
-  }
-  try {
-    const tokenizer = Acorn.tokenizer(content, {ecmaVersion: ECMA_VERSION});
-    while (tokenizer.getToken().type !== Acorn.tokTypes.eof) {
-    }
-  } catch (e) {
-    return null;
-  }
-
-  const suffix = '.DEVTOOLS';
-  try {
-    Acorn.parse(content + suffix, {ecmaVersion: ECMA_VERSION});
-  } catch (parseError) {
-    // If this is an invalid location for a '.', don't attempt to give autocomplete
-    if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length) {
-      return null;
-    }
-  }
-  const base = _lastCompleteExpression(content, suffix, new Set(['MemberExpression', 'Identifier']));
-  if (base) {
-    return base.baseExpression;
-  }
-  return null;
-}
-
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function _lastCompleteExpression(content: string, suffix: string, types: Set<string>): {
-  baseNode: Acorn.ESTree.Node,
-  baseExpression: string,
-}|null {
-  let ast: Acorn.ESTree.Node|null = null;
-  let parsedContent = '';
-  for (let i = 0; i < content.length; i++) {
-    try {
-      // Wrap content in paren to successfully parse object literals
-      parsedContent = content[i] === '{' ? `(${content.substring(i)})${suffix}` : `${content.substring(i)}${suffix}`;
-      ast = (Acorn.parse(parsedContent, {ecmaVersion: ECMA_VERSION}) as Acorn.ESTree.Node);
-      break;
-    } catch (e) {
-    }
-  }
-  if (!ast) {
-    return null;
-  }
-  const astEnd = ast.end;
-  let baseNode: Acorn.ESTree.Node|null = null;
-  const walker = new ESTreeWalker(node => {
-    if (baseNode || node.end < astEnd) {
-      return ESTreeWalker.SkipSubtree;
-    }
-    if (types.has(node.type)) {
-      baseNode = node;
-    }
-    return;
-  });
-  walker.walk(ast);
-  if (!baseNode) {
-    return null;
-  }
-  let baseExpression =
-      parsedContent.substring((baseNode as Acorn.ESTree.Node).start, parsedContent.length - suffix.length);
-  if (baseExpression.startsWith('{')) {
-    baseExpression = `(${baseExpression})`;
-  }
-  return {baseNode, baseExpression};
 }
 
 (function disableLoggingForTest(): void {

@@ -29,7 +29,6 @@
  */
 
 import * as Platform from '../../core/platform/platform.js';
-import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
@@ -330,7 +329,7 @@ export class BalancedJSONTokenizer {
 export interface TokenizerFactory {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createTokenizer(mimeType: string, mode?: CodeMirror.Mode<any>):
+  createTokenizer(mimeType: string):
       (arg0: string, arg1: (arg0: string, arg1: string|null, arg2: number, arg3: number) => void) => void;
 }
 

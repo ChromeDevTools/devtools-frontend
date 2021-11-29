@@ -82,7 +82,6 @@ devtools_module("elements") {
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
-    "../../ui/legacy/components/text_editor:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit-html:bundle",
     "./components:bundle",

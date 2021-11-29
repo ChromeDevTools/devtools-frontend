@@ -33,7 +33,6 @@ ts_library("sdk") {
     "../../../../../front_end/core/protocol_client:bundle",
     "../../../../../front_end/core/sdk:bundle",
     "../../../../../front_end/generated:protocol",
-    "../../../../../front_end/ui/legacy/components/text_editor:bundle",
     "../../helpers",
   ]
 }

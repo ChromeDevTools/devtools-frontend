@@ -37,10 +37,10 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
+import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as UI from '../../legacy.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
-import {JavaScriptAutocomplete} from './JavaScriptAutocomplete.js';
 import {JavaScriptREPL} from './JavaScriptREPL.js';
 import {createSpansForNodeTitle, RemoteObjectPreviewFormatter} from './RemoteObjectPreviewFormatter.js';
 import objectValueStyles from './objectValue.css.js';
@@ -1513,8 +1513,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
 export class ObjectPropertyPrompt extends UI.TextPrompt.TextPrompt {
   constructor() {
     super();
-    const javaScriptAutocomplete = JavaScriptAutocomplete.instance();
-    this.initialize(javaScriptAutocomplete.completionsForTextInCurrentContext.bind(javaScriptAutocomplete));
+    this.initialize(TextEditor.JavaScript.completeInContext);
   }
 }
 

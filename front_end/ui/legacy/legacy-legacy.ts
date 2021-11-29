@@ -166,12 +166,6 @@ UI.TabbedPane = UIModule.TabbedPane.TabbedPane;
 /** @enum {symbol} */
 UI.TabbedPane.Events = UIModule.TabbedPane.Events;
 
-/** @interface */
-UI.TextEditor = UIModule.TextEditor.TextEditor;
-
-/** @interface */
-UI.TextEditorFactory = UIModule.TextEditor.TextEditorFactory;
-
 /** @constructor */
 UI.TextPrompt = UIModule.TextPrompt.TextPrompt;
 

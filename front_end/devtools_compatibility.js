@@ -1490,13 +1490,6 @@
       styleRules.push('* { min-width: 0; min-height: 0; }');
     }
 
-    if (majorVersion <= 51) {
-      // Support for quirky border-image behavior (<M51), see:
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=559258
-      styleRules.push('.cm-breakpoint .CodeMirror-linenumber { border-style: solid !important; }');
-      styleRules.push(
-          '.cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber { border-style: solid !important; }');
-    }
     if (majorVersion <= 71) {
       styleRules.push(
           '.coverage-toolbar-container, .animation-timeline-toolbar-container, .computed-properties { flex-basis: auto; }');

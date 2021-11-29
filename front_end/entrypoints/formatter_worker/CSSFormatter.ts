@@ -86,9 +86,7 @@ export class CSSFormatter {
     if (startLine !== this.lastLine) {
       this.state.eatWhitespace = true;
     }
-    // The css- prefix is optional, as we override that in the tokenizer defined
-    // in CodeMirrorTextEditor.js. In a worker context, we don't use the prefix.
-    if (type && (/^(css-)?property/.test(type) || /^(css-)?variable-2/.test(type)) && !this.state.inPropertyValue) {
+    if (type && (/^property/.test(type) || /^variable-2/.test(type)) && !this.state.inPropertyValue) {
       this.state.seenProperty = true;
     }
     this.lastLine = startLine;

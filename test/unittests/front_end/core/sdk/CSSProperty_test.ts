@@ -4,17 +4,14 @@
 
 const {assert} = chai;
 
-import '../../../../../front_end/ui/legacy/components/text_editor/text_editor.js';
-
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 
 describe('CSSProperty', () => {
   describe('formatStyle', () => {
     const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
-    const mode = tokenizerFactory.getMode('text/css');
     const formatStyle = (styleText: string) =>
-        SDK.CSSProperty.CSSProperty.formatStyle(styleText, ' ', '', tokenizerFactory, mode);
+        SDK.CSSProperty.CSSProperty.formatStyle(styleText, ' ', '', tokenizerFactory);
 
     it('formats a style declaration with a single trailing semicolon correctly', () => {
       assert.strictEqual(formatStyle('color: red;'), '\n color: red;\n');

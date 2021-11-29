@@ -23,7 +23,8 @@ describe('CSSFormatter', () => {
     const formattedCode =
         formatCSS('a { /* pre-comment */ color /* after name */ : /* before value */ red /* post-comment */ }');
     assert.strictEqual(formattedCode, `a {
-  /* pre-comment */ color /* after name */ : /* before value */ red /* post-comment */
+  /* pre-comment */
+  color /* after name */ : /* before value */ red /* post-comment */
 }
 `);
   });

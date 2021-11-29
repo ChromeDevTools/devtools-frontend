@@ -43,7 +43,6 @@ group("legacy_css") {
     "panels/protocol_monitor:legacy_css",
     "third_party/codemirror:legacy_css",
     "ui/legacy/components/data_grid:legacy_css",
-    "ui/legacy/components/text_editor:legacy_css",
   ]
 }
 
@@ -96,7 +95,6 @@ group("legacy_entrypoints") {
     "ui/legacy/components/perf_ui:legacy",
     "ui/legacy/components/quick_open:legacy",
     "ui/legacy/components/source_frame:legacy",
-    "ui/legacy/components/text_editor:legacy",
     "ui/legacy/components/utils:legacy",
   ]
 }

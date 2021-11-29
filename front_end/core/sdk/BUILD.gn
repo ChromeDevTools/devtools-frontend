@@ -86,7 +86,6 @@ devtools_module("sdk") {
     "../../generated",
     "../../generated:protocol",
     "../../models/text_utils:bundle",
-    "../../third_party/codemirror:bundle",
   ]
 }
 

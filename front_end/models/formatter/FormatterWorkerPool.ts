@@ -171,24 +171,6 @@ export class FormatterWorkerPool {
     }
   }
 
-  findLastExpression(content: string): Promise<string|null> {
-    return this.runTask(FormatterActions.FormatterActions.FIND_LAST_EXPRESSION, {content}) as Promise<string|null>;
-  }
-
-  findLastFunctionCall(content: string): Promise<{
-    baseExpression: string,
-    receiver: string,
-    argumentIndex: number,
-    functionName: string,
-  }|null> {
-    return this.runTask(FormatterActions.FormatterActions.FIND_LAST_FUNCTION_CALL, {content}) as Promise<{
-             baseExpression: string,
-             receiver: string,
-             argumentIndex: number,
-             functionName: string,
-           }|null>;
-  }
-
   argumentsList(content: string): Promise<string[]> {
     return this.runTask(FormatterActions.FormatterActions.ARGUMENTS_LIST, {content}) as Promise<string[]>;
   }

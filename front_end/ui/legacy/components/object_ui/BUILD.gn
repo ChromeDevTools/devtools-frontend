@@ -19,7 +19,6 @@ generate_css("css_files") {
 devtools_module("object_ui") {
   sources = [
     "CustomPreviewComponent.ts",
-    "JavaScriptAutocomplete.ts",
     "JavaScriptREPL.ts",
     "ObjectPopoverHelper.ts",
     "ObjectPropertiesSection.ts",
@@ -33,11 +32,10 @@ devtools_module("object_ui") {
     "../../../../core/platform:bundle",
     "../../../../core/sdk:bundle",
     "../../../../generated:protocol",
-    "../../../../models/formatter:bundle",
-    "../../../../models/javascript_metadata:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/linear_memory_inspector:bundle",
+    "../../../../ui/components/text_editor:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
   ]

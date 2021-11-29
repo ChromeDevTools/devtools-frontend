@@ -15,6 +15,23 @@ export function completion(): CodeMirror.Extension {
   });
 }
 
+export async function completeInContext(
+    textBefore: string, query: string, force: boolean = false): Promise<UI.SuggestBox.Suggestions> {
+  const state = CodeMirror.EditorState.create({
+    doc: textBefore,
+    selection: {anchor: textBefore.length},
+    extensions: CodeMirror.javascript.javascriptLanguage,
+  });
+  const result = await javascriptCompletionSource(new CodeMirror.CompletionContext(state, textBefore.length, force));
+  return result ?
+      result.options.filter((o): boolean => o.label.startsWith(query)).map((o): UI.SuggestBox.Suggestion => ({
+                                                                             text: o.label,
+                                                                             priority: 100 + (o.boost || 0),
+                                                                             isSecondary: o.type === 'secondary',
+                                                                           })) :
+      [];
+}
+
 class CompletionSet {
   constructor(
       readonly completions: CodeMirror.Completion[] = [],

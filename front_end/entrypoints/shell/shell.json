@@ -1,5 +1,4 @@
 {
   "modules": [
-    { "name": "ui/legacy/components/text_editor", "type": "autostart" }
   ]
 }

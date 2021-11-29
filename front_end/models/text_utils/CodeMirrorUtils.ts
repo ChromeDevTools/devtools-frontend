@@ -31,56 +31,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import '../../third_party/codemirror/package/addon/runmode/runmode-standalone.js';
+import '../../third_party/codemirror/package/mode/css/css.js';
 
-import * as TextRange from './TextRange.js';
 import type * as TextUtils from './TextUtils.js';
-
-export function toPos(range: TextRange.TextRange): {
-  start: any,
-  end: any,
-} {
-  return {
-    start: new CodeMirror.Pos(range.startLine, range.startColumn),
-    end: new CodeMirror.Pos(range.endLine, range.endColumn),
-  };
-}
-
-export function toRange(start: any, end: any): TextRange.TextRange {
-  return new TextRange.TextRange(start.line, start.ch, end.line, end.ch);
-}
-
-export function changeObjectToEditOperation(changeObject: any): {
-  oldRange: TextRange.TextRange,
-  newRange: TextRange.TextRange,
-} {
-  const oldRange = toRange(changeObject.from, changeObject.to);
-  const newRange = oldRange.clone();
-  const linesAdded = changeObject.text.length;
-  if (linesAdded === 0) {
-    newRange.endLine = newRange.startLine;
-    newRange.endColumn = newRange.startColumn;
-  } else if (linesAdded === 1) {
-    newRange.endLine = newRange.startLine;
-    newRange.endColumn = newRange.startColumn + changeObject.text[0].length;
-  } else {
-    newRange.endLine = newRange.startLine + linesAdded - 1;
-    newRange.endColumn = changeObject.text[linesAdded - 1].length;
-  }
-  return {oldRange: oldRange, newRange: newRange};
-}
-
-export function pullLines(codeMirror: typeof CodeMirror, linesCount: number): string[] {
-  const lines: string[] = [];
-  // @ts-expect-error CodeMirror types do not specify eachLine.
-  codeMirror.eachLine(0, linesCount, onLineHandle);
-  return lines;
-
-  function onLineHandle(lineHandle: {
-    text: string,
-  }): void {
-    lines.push(lineHandle.text);
-  }
-}
 
 let tokenizerFactoryInstance: TokenizerFactory;
 
@@ -103,15 +57,16 @@ export class TokenizerFactory implements TextUtils.TokenizerFactory {
   }
 
   // https://crbug.com/1151919 * = CodeMirror.Mode
-  createTokenizer(mimeType: string, mode?: any): Tokenizer {
-    const cmMode = mode || CodeMirror.getMode({indentUnit: 2}, mimeType);
+  createTokenizer(mimeType: string): Tokenizer {
+    const cmMode = CodeMirror.getMode({indentUnit: 2}, mimeType);
     const state = CodeMirror.startState(cmMode);
 
     function tokenize(
         line: string, callback: (value: string, style: string|null, start: number, end: number) => void): void {
       const stream = new CodeMirror.StringStream(line);
       while (!stream.eol()) {
-        const style = cmMode.token(stream, state);
+        const style =
+            (cmMode.token as (stream: CodeMirror.StringStream, state: unknown) => string | null)(stream, state);
         const value = stream.current();
         callback(value, style, stream.start, stream.start + value.length);
         stream.start = stream.pos;

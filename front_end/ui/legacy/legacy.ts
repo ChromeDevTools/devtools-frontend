@@ -43,7 +43,6 @@ import * as SplitWidget from './SplitWidget.js';
 import * as SuggestBox from './SuggestBox.js';
 import * as TabbedPane from './TabbedPane.js';
 import * as TargetCrashedScreen from './TargetCrashedScreen.js';
-import * as TextEditor from './TextEditor.js';
 import * as TextPrompt from './TextPrompt.js';
 import * as ThrottledWidget from './ThrottledWidget.js';
 import * as Toolbar from './Toolbar.js';
@@ -101,7 +100,6 @@ export {
   SuggestBox,
   TabbedPane,
   TargetCrashedScreen,
-  TextEditor,
   TextPrompt,
   ThrottledWidget,
   Toolbar,

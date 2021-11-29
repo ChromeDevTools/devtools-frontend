@@ -323,8 +323,8 @@ async function completePropertiesInner(
     object = await evaluateExpression(context, toPrototype + '.prototype', 'completion');
   }
 
-  const functionType = expression === 'window' ? 'function' : 'method';
-  const otherType = expression === 'window' ? 'variable' : 'property';
+  const functionType = expression === 'globalThis' ? 'function' : 'method';
+  const otherType = expression === 'globalThis' ? 'variable' : 'property';
   if (object && (object.type === 'object' || object.type === 'function')) {
     const properties = await object.getAllProperties(false, false);
     const isFunction = object.type === 'function';
@@ -383,7 +383,7 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
   }
   const result = baseCompletions.copy();
 
-  const fetchNames = completePropertiesInner('window', context).then(fromWindow => {
+  const fetchNames = completePropertiesInner('globalThis', context).then(fromWindow => {
     return context.globalLexicalScopeNames().then(globals => {
       for (const option of fromWindow.completions) {
         result.add(option);

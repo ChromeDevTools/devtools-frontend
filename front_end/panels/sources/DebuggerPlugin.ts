@@ -1302,7 +1302,7 @@ export class DebuggerPlugin extends Plugin {
           Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidMergeToVM, this.didMergeToVM, this);
       oldScriptFile.removeEventListener(
           Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidDivergeFromVM, this.didDivergeFromVM, this);
-      if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts) {
+      if (this.muted && !this.uiSourceCode.isDirty() && this.consistentScripts()) {
         this.setMuted(false);
       }
     }

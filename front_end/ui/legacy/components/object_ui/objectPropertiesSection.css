@@ -61,7 +61,6 @@
 
 .name-and-value {
   overflow: hidden;
-  text-overflow: ellipsis;
   line-height: 16px;
 }
 

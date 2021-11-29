@@ -589,8 +589,12 @@ export class DebuggerPlugin extends Plugin {
       if (node.firstChild) {
         return null;
       }
-      while (node && node.name !== 'VariableDefinition' && node.name !== 'VariableName' &&
-             node.name !== 'MemberExpression') {
+      while (
+          node && node.name !== 'VariableDefinition' && node.name !== 'VariableName' &&
+          node.name !== 'MemberExpression' &&
+          !(node.name === 'PropertyName' && node.parent?.name === 'PatternProperty' &&
+            node.nextSibling?.name !== ':') &&
+          !(node.name === 'PropertyDefinition' && node.parent?.name === 'Property' && node.nextSibling?.name !== ':')) {
         node = node.parent;
       }
       if (!node) {

@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 import '../shell/shell.js';
 import './devtools_app-meta-files.js';
+
+import * as Main from '../main/main.js';
 import * as Startup from '../startup/startup.js';
 
+new Main.MainImpl.MainImpl();
 Startup.RuntimeInstantiator.startApplication('devtools_app');

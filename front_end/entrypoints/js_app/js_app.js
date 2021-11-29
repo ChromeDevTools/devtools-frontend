@@ -4,6 +4,9 @@
 import '../shell/shell.js';
 import '../../panels/js_profiler/js_profiler-meta.js';
 import './JsMain.js';
+
+import * as Main from '../main/main.js';
 import * as Startup from '../startup/startup.js';
 
+new Main.MainImpl.MainImpl();
 Startup.RuntimeInstantiator.startApplication('js_app');

@@ -1011,5 +1011,3 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
-
-new MainImpl();

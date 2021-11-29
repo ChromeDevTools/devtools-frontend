@@ -13,6 +13,7 @@ ts_library("js_app") {
     ":js_main",
     "../../entrypoints/startup:bundle",
     "../../panels/js_profiler:meta",
+    "../main:bundle",
     "../shell",
   ]
 }

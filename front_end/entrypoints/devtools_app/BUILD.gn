@@ -46,6 +46,7 @@ ts_library("devtools_app") {
   deps = [
     ":devtools_app-meta-files",
     "../../entrypoints/startup:bundle",
+    "../main:bundle",
     "../shell",
   ]
 }

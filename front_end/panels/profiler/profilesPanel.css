@@ -55,7 +55,7 @@
 
 .profile-view .data-grid span.percent-column {
   color: var(--color-text-secondary);
-  width: 55px;
+  width: 9ex;
   display: inline-block;
 }
 

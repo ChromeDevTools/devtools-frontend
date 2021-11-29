@@ -63,7 +63,7 @@ export class DynamicSetting<T> {
   static none: readonly DynamicSetting<unknown>[] = [];
 }
 
-export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', CM.keymap.of([{
+export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', [], CM.keymap.of([{
   key: 'Tab',
   run: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentMore(view) : false,
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
@@ -85,7 +85,7 @@ export function guessIndent(doc: CM.Text): string {
   let scanned = 0;
   for (let cur = doc.iterLines(1, Math.min(doc.lines + 1, LINES_TO_SCAN_FOR_INDENTATION_GUESSING)); !cur.next().done;) {
     let space = (/^\s*/.exec(cur.value) as string[])[0];
-    if (space.length === cur.value.length || !space.length) {
+    if (space.length === cur.value.length || !space.length || cur.value[space.length] === '*') {
       continue;
     }
     if (space[0] === '\t') {

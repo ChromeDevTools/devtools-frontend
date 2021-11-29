@@ -96,18 +96,6 @@
   margin-left: 5px;
 }
 
-.submit-button {
-  border: none;
-  border-radius: 2px;
-  font-weight: normal;
-  height: 24px;
-  font-size: 12px;
-  padding: 0 12px;
-  cursor: pointer;
-  background-color: var(--color-primary-variant);
-  color: var(--color-text-primary);
-}
-
 .hide-container {
   display: none;
 }

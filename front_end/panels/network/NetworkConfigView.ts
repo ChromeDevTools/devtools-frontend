@@ -50,6 +50,10 @@ const UIStrings = {
    * a set of checkboxes to override the content encodings supported by the browser.
    */
   acceptedEncoding: 'Accepted `Content-Encoding`s',
+  /**
+  * @description Status text for successful update of client hints.
+  */
+  clientHintsStatusText: 'User agent updated.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -246,10 +250,12 @@ export class NetworkConfigView extends UI.Widget.VBox {
         showMobileCheckbox: true,
         showSubmitButton: true,
       };
+      userAgentUpdateButtonStatusText.textContent = '';
     });
 
     clientHints.addEventListener('clienthintschange', () => {
       customSelectAndInput.select.value = 'custom';
+      userAgentUpdateButtonStatusText.textContent = '';
     });
 
     clientHints.addEventListener('clienthintssubmit', (event: Event) => {
@@ -257,7 +263,11 @@ export class NetworkConfigView extends UI.Widget.VBox {
       const customUA = customUserAgentSetting.get();
       userAgentMetadataSetting.set(metaData);
       SDK.NetworkManager.MultitargetNetworkManager.instance().setCustomUserAgentOverride(customUA, metaData);
+      userAgentUpdateButtonStatusText.textContent = i18nString(UIStrings.clientHintsStatusText);
     });
+
+    const userAgentUpdateButtonStatusText = section.createChild('span', 'status-text');
+    userAgentUpdateButtonStatusText.textContent = '';
 
     userAgentSelectBoxChanged();
 

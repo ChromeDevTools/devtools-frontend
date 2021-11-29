@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -532,12 +534,12 @@ export class UserAgentClientHintsForm extends HTMLElement {
         'architecture');
     const deviceModelSection = this.renderDeviceModelSection();
     const submitButton = this.showSubmitButton ? LitHtml.html`
-      <button
-        type="submit"
-        class="submit-button full-row"
+      <${Buttons.Button.Button.litTagName}
+        .variant=${Buttons.Button.Variant.SECONDARY}
+        .type=${'submit'}
       >
         ${i18nString(UIStrings.update)}
-      </button>
+      </${Buttons.Button.Button.litTagName}>
     ` :
                                                  LitHtml.html``;
     const output = LitHtml.html`

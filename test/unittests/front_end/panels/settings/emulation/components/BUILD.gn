@@ -11,6 +11,7 @@ ts_library("components") {
   deps = [
     "../../../../../../../front_end/core/platform:bundle",
     "../../../../../../../front_end/panels/settings/emulation/components:bundle",
+    "../../../../../../../front_end/ui/components/buttons:bundle",
     "../../../../helpers",
   ]
 }

@@ -6383,6 +6383,9 @@
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Caching"
   },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "User agent updated."
+  },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Custom..."
   },

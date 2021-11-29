@@ -6383,6 +6383,9 @@
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Ĉáĉh́îńĝ"
   },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "Ûśêŕ âǵêńt̂ úp̂d́ât́êd́."
+  },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Ĉúŝt́ôḿ..."
   },

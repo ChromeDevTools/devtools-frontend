@@ -1,8 +1,8 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 import * as EmulationComponents from '../../../../../../../front_end/panels/settings/emulation/components/components.js';
+import * as Buttons from '../../../../../../../front_end/ui/components/buttons/buttons.js';
 import {getElementsWithinComponent, getElementWithinComponent, getEventPromise, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
@@ -54,7 +54,7 @@ describe('UserAgentClientHintsForm', () => {
     const eventPromise = getEventPromise<EmulationComponents.UserAgentClientHintsForm.ClientHintsSubmitEvent>(
         component, 'clienthintssubmit');
 
-    const submitButton = getElementWithinComponent(component, '.submit-button', HTMLButtonElement);
+    const submitButton = getElementWithinComponent(component, 'devtools-button', Buttons.Button.Button);
     submitButton.click();
 
     const event = await eventPromise;

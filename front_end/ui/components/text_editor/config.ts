@@ -324,7 +324,7 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
     if (pos !== lineBefore.to) {
       return null;
     }
-    const wordBefore = /[\w$]+$/.exec(lineBefore.text);
+    const wordBefore = /#?[\w$]+$/.exec(lineBefore.text);
     if (wordBefore && !label.startsWith(wordBefore[0])) {
       return null;
     }

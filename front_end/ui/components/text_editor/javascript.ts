@@ -101,7 +101,7 @@ export function getQueryType(tree: CodeMirror.Tree, pos: number, doc: CodeMirror
     return null;
   }
 
-  if (node.name === 'PropertyName') {
+  if (node.name === 'PropertyName' || node.name === 'PrivatePropertyName') {
     return parent?.name !== 'MemberExpression' ? null :
                                                  {type: QueryType.PropertyName, from: node.from, relatedNode: parent};
   }
@@ -172,7 +172,7 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   return {
     from: query.from ?? cx.pos,
     options: result.completions,
-    span: /^[\w\P{ASCII}]*/u,
+    span: /^#?[\w\P{ASCII}]*/u,
   };
 }
 
@@ -312,7 +312,8 @@ async function completePropertiesInner(
     const properties = await object.getAllProperties(false, false);
     const isFunction = object.type === 'function';
     for (const prop of properties.properties || []) {
-      if (!prop.symbol && !(isFunction && (prop.name === 'arguments' || prop.name === 'caller'))) {
+      if (!prop.symbol && !(isFunction && (prop.name === 'arguments' || prop.name === 'caller')) &&
+          (!prop.private || expression === 'this')) {
         const label = quoted ? quoted + prop.name + quoted : prop.name;
         const completion: CodeMirror.Completion = {
           label,

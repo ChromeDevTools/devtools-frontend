@@ -226,7 +226,6 @@ grd_files_release_sources = [
   "front_end/entrypoints/node_app/node_app.js",
   "front_end/entrypoints/node_main/node_main-meta.js",
   "front_end/entrypoints/node_main/node_main.js",
-  "front_end/entrypoints/shell/shell-meta-files.js",
   "front_end/entrypoints/shell/shell.js",
   "front_end/entrypoints/startup/startup.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",

@@ -1,6 +1,5 @@
 {
   "modules" : [
     { "name": "panels/lighthouse" }
-  ],
-  "extends": "shell"
+  ]
 }

@@ -68,7 +68,6 @@ devtools_applications = [
   "js_app",
   "ndb_app",
   "node_app",
-  "shell",
   "worker_app",
 ]
 

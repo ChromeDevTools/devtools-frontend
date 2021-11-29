@@ -113,7 +113,6 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/TwaPageUnavailableOffline.md",
   "front_end/legacy_test_runner/sdk_test_runner/sdk_test_runner.js",
   "front_end/legacy_test_runner/security_test_runner/security_test_runner.js",
-  "front_end/entrypoints/shell/shell.json",
   "front_end/legacy_test_runner/sources_test_runner/sources_test_runner.js",
   "front_end/legacy_test_runner/sources_test_runner/AutocompleteTestRunner.js",
   "front_end/legacy_test_runner/sources_test_runner/DebuggerTestRunner.js",

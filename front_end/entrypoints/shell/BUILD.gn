@@ -5,13 +5,17 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_entrypoint("shell-meta-files") {
-  entrypoint = "shell-meta-files.ts"
+devtools_entrypoint("shell") {
+  entrypoint = "shell.js"
 
   deps = [
+    "../../Images:optimize_images",
+    "../../core/dom_extension:bundle",
     "../../core/sdk:meta",
     "../../core/sdk:meta",
     "../../entrypoints/main:meta",
+    "../../entrypoints/main:meta",
+    "../../entrypoints/startup:bundle",
     "../../models/logs:meta",
     "../../models/persistence:meta",
     "../../panels/application:meta",
@@ -29,23 +33,17 @@ devtools_entrypoint("shell-meta-files") {
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
-  ]
-
-  visibility = [ ":*" ]
-
-  visibility += devtools_entrypoints_visibility
-}
-
-ts_library("shell") {
-  no_emit = true
-  sources = [ "shell.js" ]
-
-  deps = [
-    ":shell-meta-files",
-    "../../Images:optimize_images",
-    "../../core/dom_extension:bundle",
-    "../../entrypoints/main:meta",
-    "../../entrypoints/startup:bundle",
     "../startup:bundle",
   ]
+
+  visibility = [
+    "../..:*",
+    "../devtools_app:*",
+    "../js_app:*",
+    "../ndb_app:*",
+    "../node_app:*",
+    "../worker_app:*",
+  ]
+
+  visibility += devtools_entrypoints_visibility
 }

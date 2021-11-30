@@ -12065,6 +12065,12 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "T̂óôĺ d̂ŕâẃêŕ"
   },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "D̂ŕâẃêŕ ĥíd̂d́êń"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "D̂ŕâẃêŕ ŝh́ôẃn̂"
+  },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "M̂áîń t̂óôĺb̂ár̂"
   },

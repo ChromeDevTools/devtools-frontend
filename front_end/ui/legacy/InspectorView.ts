@@ -107,6 +107,14 @@ const UIStrings = {
   *@description The aria label for the drawer.
   */
   drawer: 'Tool drawer',
+  /**
+  *@description The aria label for the drawer shown.
+  */
+  drawerShown: 'Drawer shown',
+  /**
+  *@description The aria label for the drawer hidden.
+  */
+  drawerHidden: 'Drawer hidden',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -312,6 +320,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       this.focusRestorer = null;
     }
     this.emitDrawerChangeEvent(true);
+    ARIAUtils.alert(i18nString(UIStrings.drawerShown));
   }
 
   drawerVisible(): boolean {
@@ -328,6 +337,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerSplitWidget.hideSidebar(true);
 
     this.emitDrawerChangeEvent(false);
+    ARIAUtils.alert(i18nString(UIStrings.drawerHidden));
   }
 
   setDrawerMinimized(minimized: boolean): void {

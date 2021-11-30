@@ -12065,6 +12065,12 @@
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Tool drawer"
   },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Drawer hidden"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Drawer shown"
+  },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Main toolbar"
   },

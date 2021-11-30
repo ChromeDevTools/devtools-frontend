@@ -169,6 +169,7 @@ interface SyntaxNode {
     prevSibling: SyntaxNode | null;
     cursor: TreeCursor;
     resolve(pos: number, side?: -1 | 0 | 1): SyntaxNode;
+    resolveInner(pos: number, side?: -1 | 0 | 1): SyntaxNode;
     enterUnfinishedNodesBefore(pos: number): SyntaxNode;
     tree: Tree | null;
     toTree(): Tree;
@@ -1583,346 +1584,6 @@ declare type StateCommand = (target: {
 }) => boolean;
 
 /**
-A language object manages parsing and per-language
-[metadata](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt). Parse data is
-managed as a [Lezer](https://lezer.codemirror.net) tree. You'll
-want to subclass this class for custom parsers, or use the
-[`LRLanguage`](https://codemirror.net/6/docs/ref/#language.LRLanguage) or
-[`StreamLanguage`](https://codemirror.net/6/docs/ref/#stream-parser.StreamLanguage) abstractions for
-[Lezer](https://lezer.codemirror.net/) or stream parsers.
-*/
-declare class Language {
-    /**
-    The [language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt) data
-    facet used for this language.
-    */
-    readonly data: Facet<{
-        [name: string]: any;
-    }>;
-    /**
-    The node type of the top node of trees produced by this parser.
-    */
-    readonly topNode: NodeType;
-    /**
-    The extension value to install this provider.
-    */
-    readonly extension: Extension;
-    /**
-    The parser object. Can be useful when using this as a [nested
-    parser](https://lezer.codemirror.net/docs/ref#common.Parser).
-    */
-    parser: Parser;
-    /**
-    Construct a language object. You usually don't need to invoke
-    this directly. But when you do, make sure you use
-    [`defineLanguageFacet`](https://codemirror.net/6/docs/ref/#language.defineLanguageFacet) to create
-    the first argument.
-    */
-    constructor(
-    /**
-    The [language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt) data
-    facet used for this language.
-    */
-    data: Facet<{
-        [name: string]: any;
-    }>, parser: Parser,
-    /**
-    The node type of the top node of trees produced by this parser.
-    */
-    topNode: NodeType, extraExtensions?: Extension[]);
-    /**
-    Query whether this language is active at the given position.
-    */
-    isActiveAt(state: EditorState, pos: number, side?: -1 | 0 | 1): boolean;
-    /**
-    Find the document regions that were parsed using this language.
-    The returned regions will _include_ any nested languages rooted
-    in this language, when those exist.
-    */
-    findRegions(state: EditorState): {
-        from: number;
-        to: number;
-    }[];
-    /**
-    Indicates whether this language allows nested languages. The
-    default implementation returns true.
-    */
-    get allowsNesting(): boolean;
-}
-/**
-A subclass of [`Language`](https://codemirror.net/6/docs/ref/#language.Language) for use with Lezer
-[LR parsers](https://lezer.codemirror.net/docs/ref#lr.LRParser)
-parsers.
-*/
-declare class LRLanguage extends Language {
-    readonly parser: LRParser;
-    private constructor();
-    /**
-    Define a language from a parser.
-    */
-    static define(spec: {
-        /**
-        The parser to use. Should already have added editor-relevant
-        node props (and optionally things like dialect and top rule)
-        configured.
-        */
-        parser: LRParser;
-        /**
-        [Language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt)
-        to register for this language.
-        */
-        languageData?: {
-            [name: string]: any;
-        };
-    }): LRLanguage;
-    /**
-    Create a new instance of this language with a reconfigured
-    version of its parser.
-    */
-    configure(options: ParserConfig): LRLanguage;
-    get allowsNesting(): boolean;
-}
-/**
-Get the syntax tree for a state, which is the current (possibly
-incomplete) parse tree of active [language](https://codemirror.net/6/docs/ref/#language.Language),
-or the empty tree if there is no language available.
-*/
-declare function syntaxTree(state: EditorState): Tree;
-/**
-Try to get a parse tree that spans at least up to `upto`. The
-method will do at most `timeout` milliseconds of work to parse
-up to that point if the tree isn't already available.
-*/
-declare function ensureSyntaxTree(state: EditorState, upto: number, timeout?: number): Tree | null;
-/**
-This class bundles a [language object](https://codemirror.net/6/docs/ref/#language.Language) with an
-optional set of supporting extensions. Language packages are
-encouraged to export a function that optionally takes a
-configuration object and returns a `LanguageSupport` instance, as
-the main way for client code to use the package.
-*/
-declare class LanguageSupport {
-    /**
-    The language object.
-    */
-    readonly language: Language;
-    /**
-    An optional set of supporting extensions. When nesting a
-    language in another language, the outer language is encouraged
-    to include the supporting extensions for its inner languages
-    in its own set of support extensions.
-    */
-    readonly support: Extension;
-    /**
-    An extension including both the language and its support
-    extensions. (Allowing the object to be used as an extension
-    value itself.)
-    */
-    extension: Extension;
-    /**
-    Create a support object.
-    */
-    constructor(
-    /**
-    The language object.
-    */
-    language: Language,
-    /**
-    An optional set of supporting extensions. When nesting a
-    language in another language, the outer language is encouraged
-    to include the supporting extensions for its inner languages
-    in its own set of support extensions.
-    */
-    support?: Extension);
-}
-/**
-Language descriptions are used to store metadata about languages
-and to dynamically load them. Their main role is finding the
-appropriate language for a filename or dynamically loading nested
-parsers.
-*/
-declare class LanguageDescription {
-    /**
-    The name of this language.
-    */
-    readonly name: string;
-    /**
-    Alternative names for the mode (lowercased, includes `this.name`).
-    */
-    readonly alias: readonly string[];
-    /**
-    File extensions associated with this language.
-    */
-    readonly extensions: readonly string[];
-    /**
-    Optional filename pattern that should be associated with this
-    language.
-    */
-    readonly filename: RegExp | undefined;
-    private loadFunc;
-    /**
-    If the language has been loaded, this will hold its value.
-    */
-    support: LanguageSupport | undefined;
-    private loading;
-    private constructor();
-    /**
-    Start loading the the language. Will return a promise that
-    resolves to a [`LanguageSupport`](https://codemirror.net/6/docs/ref/#language.LanguageSupport)
-    object when the language successfully loads.
-    */
-    load(): Promise<LanguageSupport>;
-    /**
-    Create a language description.
-    */
-    static of(spec: {
-        /**
-        The language's name.
-        */
-        name: string;
-        /**
-        An optional array of alternative names.
-        */
-        alias?: readonly string[];
-        /**
-        An optional array of extensions associated with this language.
-        */
-        extensions?: readonly string[];
-        /**
-        An optional filename pattern associated with this language.
-        */
-        filename?: RegExp;
-        /**
-        A function that will asynchronously load the language.
-        */
-        load: () => Promise<LanguageSupport>;
-    }): LanguageDescription;
-    /**
-    Look for a language in the given array of descriptions that
-    matches the filename. Will first match
-    [`filename`](https://codemirror.net/6/docs/ref/#language.LanguageDescription.filename) patterns,
-    and then [extensions](https://codemirror.net/6/docs/ref/#language.LanguageDescription.extensions),
-    and return the first language that matches.
-    */
-    static matchFilename(descs: readonly LanguageDescription[], filename: string): LanguageDescription | null;
-    /**
-    Look for a language whose name or alias matches the the given
-    name (case-insensitively). If `fuzzy` is true, and no direct
-    matchs is found, this'll also search for a language whose name
-    or alias occurs in the string (for names shorter than three
-    characters, only when surrounded by non-word characters).
-    */
-    static matchLanguageName(descs: readonly LanguageDescription[], name: string, fuzzy?: boolean): LanguageDescription | null;
-}
-/**
-Facet for overriding the unit by which indentation happens.
-Should be a string consisting either entirely of spaces or
-entirely of tabs. When not set, this defaults to 2 spaces.
-*/
-declare const indentUnit: Facet<string, string>;
-/**
-Indentation contexts are used when calling [indentation
-services](https://codemirror.net/6/docs/ref/#language.indentService). They provide helper utilities
-useful in indentation logic, and can selectively override the
-indentation reported for some lines.
-*/
-declare class IndentContext {
-    /**
-    The editor state.
-    */
-    readonly state: EditorState;
-    /**
-    The indent unit (number of columns per indentation level).
-    */
-    unit: number;
-    /**
-    Create an indent context.
-    */
-    constructor(
-    /**
-    The editor state.
-    */
-    state: EditorState,
-    /**
-    @internal
-    */
-    options?: {
-        /**
-        Override line indentations provided to the indentation
-        helper function, which is useful when implementing region
-        indentation, where indentation for later lines needs to refer
-        to previous lines, which may have been reindented compared to
-        the original start state. If given, this function should
-        return -1 for lines (given by start position) that didn't
-        change, and an updated indentation otherwise.
-        */
-        overrideIndentation?: (pos: number) => number;
-        /**
-        Make it look, to the indent logic, like a line break was
-        added at the given position (which is mostly just useful for
-        implementing something like
-        [`insertNewlineAndIndent`](https://codemirror.net/6/docs/ref/#commands.insertNewlineAndIndent)).
-        */
-        simulateBreak?: number;
-        /**
-        When `simulateBreak` is given, this can be used to make the
-        simulate break behave like a double line break.
-        */
-        simulateDoubleBreak?: boolean;
-    });
-    /**
-    Get a description of the line at the given position, taking
-    [simulated line
-    breaks](https://codemirror.net/6/docs/ref/#language.IndentContext.constructor^options.simulateBreak)
-    into account. If there is such a break at `pos`, the `bias`
-    argument determines whether the part of the line line before or
-    after the break is used.
-    */
-    lineAt(pos: number, bias?: -1 | 1): {
-        text: string;
-        from: number;
-    };
-    /**
-    Get the text directly after `pos`, either the entire line
-    or the next 100 characters, whichever is shorter.
-    */
-    textAfterPos(pos: number, bias?: -1 | 1): string;
-    /**
-    Find the column for the given position.
-    */
-    column(pos: number, bias?: -1 | 1): number;
-    /**
-    Find the column position (taking tabs into account) of the given
-    position in the given string.
-    */
-    countColumn(line: string, pos?: number): number;
-    /**
-    Find the indentation column of the line at the given point.
-    */
-    lineIndent(pos: number, bias?: -1 | 1): number;
-    /**
-    Returns the [simulated line
-    break](https://codemirror.net/6/docs/ref/#language.IndentContext.constructor^options.simulateBreak)
-    for this context, if any.
-    */
-    get simulatedBreak(): number | null;
-}
-/**
-Enables reindentation on input. When a language defines an
-`indentOnInput` field in its [language
-data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt), which must hold a regular
-expression, the line at the cursor will be reindented whenever new
-text is typed and the input from the start of the line up to the
-cursor matches that regexp.
-
-To avoid unneccesary reindents, it is recommended to start the
-regexp with `^` (usually followed by `\s*`), and end it with `$`.
-For example, `/^\s*\}$/` will reindent when a closing brace is
-added at the start of a line.
-*/
-declare function indentOnInput(): Extension;
-
-/**
 Each range is associated with a value, which must inherit from
 this class.
 */
@@ -2608,7 +2269,7 @@ interface MeasureRequest<T> {
     Called in a DOM write phase to update the document. Should _not_
     do anything that triggers DOM layout.
     */
-    write(measure: T, view: EditorView): void;
+    write?(measure: T, view: EditorView): void;
     /**
     When multiple requests with the same key are scheduled, only the
     last one will actually be ran.
@@ -2757,7 +2418,8 @@ declare class BlockInfo {
     */
     readonly length: number;
     /**
-    The top position of the element.
+    The top position of the element (relative to the top of the
+    document).
     */
     readonly top: number;
     /**
@@ -2951,6 +2613,19 @@ declare class EditorView {
     */
     plugin<T>(plugin: ViewPlugin<T>): T | null;
     /**
+    The top position of the document, in screen coordinates. This
+    may be negative when the editor is scrolled down. Points
+    directly to the top of the first line, not above the padding.
+    */
+    get documentTop(): number;
+    /**
+    Reports the padding above and below the document.
+    */
+    get documentPadding(): {
+        top: number;
+        bottom: number;
+    };
+    /**
     Find the line or block widget at the given vertical position.
 
     By default, this position is interpreted as a screen position,
@@ -2960,8 +2635,16 @@ declare class EditorView {
     position, or a precomputed document top
     (`view.contentDOM.getBoundingClientRect().top`) to limit layout
     queries.
+
+    *Deprecated: use `blockAtHeight` instead.*
     */
     blockAtHeight(height: number, docTop?: number): BlockInfo;
+    /**
+    Find the text line or block widget at the given vertical
+    position (which is interpreted as relative to the [top of the
+    document](https://codemirror.net/6/docs/ref/#view.EditorView.documentTop)
+    */
+    elementAtHeight(height: number): BlockInfo;
     /**
     Find information for the visual line (see
     [`visualLineAt`](https://codemirror.net/6/docs/ref/#view.EditorView.visualLineAt)) at the given
@@ -2972,15 +2655,32 @@ declare class EditorView {
     Defaults to treating `height` as a screen position. See
     [`blockAtHeight`](https://codemirror.net/6/docs/ref/#view.EditorView.blockAtHeight) for the
     interpretation of the `docTop` parameter.
+
+    *Deprecated: use `lineBlockAtHeight` instead.*
     */
     visualLineAtHeight(height: number, docTop?: number): BlockInfo;
+    /**
+    Find the line block (see
+    [`lineBlockAt`](https://codemirror.net/6/docs/ref/#view.EditorView.lineBlockAt) at the given
+    height.
+    */
+    lineBlockAtHeight(height: number): BlockInfo;
     /**
     Iterate over the height information of the visual lines in the
     viewport. The heights of lines are reported relative to the
     given document top, which defaults to the screen position of the
     document (forcing a layout).
+
+    *Deprecated: use `viewportLineBlocks` instead.*
     */
     viewportLines(f: (line: BlockInfo) => void, docTop?: number): void;
+    /**
+    Get the extent and vertical position of all [line
+    blocks](https://codemirror.net/6/docs/ref/#view.EditorView.lineBlockAt) in the viewport. Positions
+    are relative to the [top of the
+    document](https://codemirror.net/6/docs/ref/#view.EditorView.documentTop);
+    */
+    get viewportLineBlocks(): BlockInfo[];
     /**
     Find the extent and height of the visual line (a range delimited
     on both sides by either non-[hidden](https://codemirror.net/6/docs/ref/#view.Decoration^range)
@@ -2990,8 +2690,19 @@ declare class EditorView {
     argument, which defaults to 0 for this method. You can pass
     `view.contentDOM.getBoundingClientRect().top` here to get screen
     coordinates.
+
+    *Deprecated: use `lineBlockAt` instead.*
     */
     visualLineAt(pos: number, docTop?: number): BlockInfo;
+    /**
+    Find the line block around the given document position. A line
+    block is a range delimited on both sides by either a
+    non-[hidden](https://codemirror.net/6/docs/ref/#view.Decoration^range) line breaks, or the
+    start/end of the document. It will usually just hold a line of
+    text, but may be broken into multiple textblocks by block
+    widgets.
+    */
+    lineBlockAt(pos: number): BlockInfo;
     /**
     The editor's total content height.
     */
@@ -3509,6 +3220,352 @@ declare class MatchDecorator {
     updateDeco(update: ViewUpdate, deco: DecorationSet): DecorationSet;
     private updateRange;
 }
+
+/**
+A language object manages parsing and per-language
+[metadata](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt). Parse data is
+managed as a [Lezer](https://lezer.codemirror.net) tree. You'll
+want to subclass this class for custom parsers, or use the
+[`LRLanguage`](https://codemirror.net/6/docs/ref/#language.LRLanguage) or
+[`StreamLanguage`](https://codemirror.net/6/docs/ref/#stream-parser.StreamLanguage) abstractions for
+[Lezer](https://lezer.codemirror.net/) or stream parsers.
+*/
+declare class Language {
+    /**
+    The [language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt) data
+    facet used for this language.
+    */
+    readonly data: Facet<{
+        [name: string]: any;
+    }>;
+    /**
+    The node type of the top node of trees produced by this parser.
+    */
+    readonly topNode: NodeType;
+    /**
+    The extension value to install this provider.
+    */
+    readonly extension: Extension;
+    /**
+    The parser object. Can be useful when using this as a [nested
+    parser](https://lezer.codemirror.net/docs/ref#common.Parser).
+    */
+    parser: Parser;
+    /**
+    Construct a language object. You usually don't need to invoke
+    this directly. But when you do, make sure you use
+    [`defineLanguageFacet`](https://codemirror.net/6/docs/ref/#language.defineLanguageFacet) to create
+    the first argument.
+    */
+    constructor(
+    /**
+    The [language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt) data
+    facet used for this language.
+    */
+    data: Facet<{
+        [name: string]: any;
+    }>, parser: Parser,
+    /**
+    The node type of the top node of trees produced by this parser.
+    */
+    topNode: NodeType, extraExtensions?: Extension[]);
+    /**
+    Query whether this language is active at the given position.
+    */
+    isActiveAt(state: EditorState, pos: number, side?: -1 | 0 | 1): boolean;
+    /**
+    Find the document regions that were parsed using this language.
+    The returned regions will _include_ any nested languages rooted
+    in this language, when those exist.
+    */
+    findRegions(state: EditorState): {
+        from: number;
+        to: number;
+    }[];
+    /**
+    Indicates whether this language allows nested languages. The
+    default implementation returns true.
+    */
+    get allowsNesting(): boolean;
+}
+/**
+A subclass of [`Language`](https://codemirror.net/6/docs/ref/#language.Language) for use with Lezer
+[LR parsers](https://lezer.codemirror.net/docs/ref#lr.LRParser)
+parsers.
+*/
+declare class LRLanguage extends Language {
+    readonly parser: LRParser;
+    private constructor();
+    /**
+    Define a language from a parser.
+    */
+    static define(spec: {
+        /**
+        The parser to use. Should already have added editor-relevant
+        node props (and optionally things like dialect and top rule)
+        configured.
+        */
+        parser: LRParser;
+        /**
+        [Language data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt)
+        to register for this language.
+        */
+        languageData?: {
+            [name: string]: any;
+        };
+    }): LRLanguage;
+    /**
+    Create a new instance of this language with a reconfigured
+    version of its parser.
+    */
+    configure(options: ParserConfig): LRLanguage;
+    get allowsNesting(): boolean;
+}
+/**
+Get the syntax tree for a state, which is the current (possibly
+incomplete) parse tree of active [language](https://codemirror.net/6/docs/ref/#language.Language),
+or the empty tree if there is no language available.
+*/
+declare function syntaxTree(state: EditorState): Tree;
+/**
+Try to get a parse tree that spans at least up to `upto`. The
+method will do at most `timeout` milliseconds of work to parse
+up to that point if the tree isn't already available.
+*/
+declare function ensureSyntaxTree(state: EditorState, upto: number, timeout?: number): Tree | null;
+/**
+This class bundles a [language object](https://codemirror.net/6/docs/ref/#language.Language) with an
+optional set of supporting extensions. Language packages are
+encouraged to export a function that optionally takes a
+configuration object and returns a `LanguageSupport` instance, as
+the main way for client code to use the package.
+*/
+declare class LanguageSupport {
+    /**
+    The language object.
+    */
+    readonly language: Language;
+    /**
+    An optional set of supporting extensions. When nesting a
+    language in another language, the outer language is encouraged
+    to include the supporting extensions for its inner languages
+    in its own set of support extensions.
+    */
+    readonly support: Extension;
+    /**
+    An extension including both the language and its support
+    extensions. (Allowing the object to be used as an extension
+    value itself.)
+    */
+    extension: Extension;
+    /**
+    Create a support object.
+    */
+    constructor(
+    /**
+    The language object.
+    */
+    language: Language,
+    /**
+    An optional set of supporting extensions. When nesting a
+    language in another language, the outer language is encouraged
+    to include the supporting extensions for its inner languages
+    in its own set of support extensions.
+    */
+    support?: Extension);
+}
+/**
+Language descriptions are used to store metadata about languages
+and to dynamically load them. Their main role is finding the
+appropriate language for a filename or dynamically loading nested
+parsers.
+*/
+declare class LanguageDescription {
+    /**
+    The name of this language.
+    */
+    readonly name: string;
+    /**
+    Alternative names for the mode (lowercased, includes `this.name`).
+    */
+    readonly alias: readonly string[];
+    /**
+    File extensions associated with this language.
+    */
+    readonly extensions: readonly string[];
+    /**
+    Optional filename pattern that should be associated with this
+    language.
+    */
+    readonly filename: RegExp | undefined;
+    private loadFunc;
+    /**
+    If the language has been loaded, this will hold its value.
+    */
+    support: LanguageSupport | undefined;
+    private loading;
+    private constructor();
+    /**
+    Start loading the the language. Will return a promise that
+    resolves to a [`LanguageSupport`](https://codemirror.net/6/docs/ref/#language.LanguageSupport)
+    object when the language successfully loads.
+    */
+    load(): Promise<LanguageSupport>;
+    /**
+    Create a language description.
+    */
+    static of(spec: {
+        /**
+        The language's name.
+        */
+        name: string;
+        /**
+        An optional array of alternative names.
+        */
+        alias?: readonly string[];
+        /**
+        An optional array of filename extensions associated with this
+        language.
+        */
+        extensions?: readonly string[];
+        /**
+        An optional filename pattern associated with this language.
+        */
+        filename?: RegExp;
+        /**
+        A function that will asynchronously load the language.
+        */
+        load?: () => Promise<LanguageSupport>;
+        /**
+        Alternatively to `load`, you can provide an already loaded
+        support object. Either this or `load` should be provided.
+        */
+        support?: LanguageSupport;
+    }): LanguageDescription;
+    /**
+    Look for a language in the given array of descriptions that
+    matches the filename. Will first match
+    [`filename`](https://codemirror.net/6/docs/ref/#language.LanguageDescription.filename) patterns,
+    and then [extensions](https://codemirror.net/6/docs/ref/#language.LanguageDescription.extensions),
+    and return the first language that matches.
+    */
+    static matchFilename(descs: readonly LanguageDescription[], filename: string): LanguageDescription | null;
+    /**
+    Look for a language whose name or alias matches the the given
+    name (case-insensitively). If `fuzzy` is true, and no direct
+    matchs is found, this'll also search for a language whose name
+    or alias occurs in the string (for names shorter than three
+    characters, only when surrounded by non-word characters).
+    */
+    static matchLanguageName(descs: readonly LanguageDescription[], name: string, fuzzy?: boolean): LanguageDescription | null;
+}
+/**
+Facet for overriding the unit by which indentation happens.
+Should be a string consisting either entirely of spaces or
+entirely of tabs. When not set, this defaults to 2 spaces.
+*/
+declare const indentUnit: Facet<string, string>;
+/**
+Indentation contexts are used when calling [indentation
+services](https://codemirror.net/6/docs/ref/#language.indentService). They provide helper utilities
+useful in indentation logic, and can selectively override the
+indentation reported for some lines.
+*/
+declare class IndentContext {
+    /**
+    The editor state.
+    */
+    readonly state: EditorState;
+    /**
+    The indent unit (number of columns per indentation level).
+    */
+    unit: number;
+    /**
+    Create an indent context.
+    */
+    constructor(
+    /**
+    The editor state.
+    */
+    state: EditorState,
+    /**
+    @internal
+    */
+    options?: {
+        /**
+        Override line indentations provided to the indentation
+        helper function, which is useful when implementing region
+        indentation, where indentation for later lines needs to refer
+        to previous lines, which may have been reindented compared to
+        the original start state. If given, this function should
+        return -1 for lines (given by start position) that didn't
+        change, and an updated indentation otherwise.
+        */
+        overrideIndentation?: (pos: number) => number;
+        /**
+        Make it look, to the indent logic, like a line break was
+        added at the given position (which is mostly just useful for
+        implementing something like
+        [`insertNewlineAndIndent`](https://codemirror.net/6/docs/ref/#commands.insertNewlineAndIndent)).
+        */
+        simulateBreak?: number;
+        /**
+        When `simulateBreak` is given, this can be used to make the
+        simulate break behave like a double line break.
+        */
+        simulateDoubleBreak?: boolean;
+    });
+    /**
+    Get a description of the line at the given position, taking
+    [simulated line
+    breaks](https://codemirror.net/6/docs/ref/#language.IndentContext.constructor^options.simulateBreak)
+    into account. If there is such a break at `pos`, the `bias`
+    argument determines whether the part of the line line before or
+    after the break is used.
+    */
+    lineAt(pos: number, bias?: -1 | 1): {
+        text: string;
+        from: number;
+    };
+    /**
+    Get the text directly after `pos`, either the entire line
+    or the next 100 characters, whichever is shorter.
+    */
+    textAfterPos(pos: number, bias?: -1 | 1): string;
+    /**
+    Find the column for the given position.
+    */
+    column(pos: number, bias?: -1 | 1): number;
+    /**
+    Find the column position (taking tabs into account) of the given
+    position in the given string.
+    */
+    countColumn(line: string, pos?: number): number;
+    /**
+    Find the indentation column of the line at the given point.
+    */
+    lineIndent(pos: number, bias?: -1 | 1): number;
+    /**
+    Returns the [simulated line
+    break](https://codemirror.net/6/docs/ref/#language.IndentContext.constructor^options.simulateBreak)
+    for this context, if any.
+    */
+    get simulatedBreak(): number | null;
+}
+/**
+Enables reindentation on input. When a language defines an
+`indentOnInput` field in its [language
+data](https://codemirror.net/6/docs/ref/#state.EditorState.languageDataAt), which must hold a regular
+expression, the line at the cursor will be reindented whenever new
+text is typed and the input from the start of the line up to the
+cursor matches that regexp.
+
+To avoid unneccesary reindents, it is recommended to start the
+regexp with `^` (usually followed by `\s*`), and end it with `$`.
+For example, `/^\s*\}$/` will reindent when a closing brace is
+added at the start of a line.
+*/
+declare function indentOnInput(): Extension;
 
 interface CompletionConfig {
     /**
@@ -4603,6 +4660,12 @@ interface GutterConfig {
     Can be used to optionally add a single marker to every line.
     */
     lineMarker?: (view: EditorView, line: BlockInfo, otherMarkers: readonly GutterMarker[]) => GutterMarker | null;
+    /**
+    If line markers depend on additional state, and should be
+    updated when that changes, pass a predicate here that checks
+    whether a given view update might change the line markers.
+    */
+    lineMarkerChange?: null | ((update: ViewUpdate) => boolean);
     /**
     Add a hidden spacer element that gives the gutter its base
     width.

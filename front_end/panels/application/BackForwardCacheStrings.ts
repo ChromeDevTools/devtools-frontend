@@ -541,6 +541,7 @@ export const NotRestoredReasonDescription = {
   'ContentMediaSession': {name: i18nLazyString(UIStrings.contentMediaSession)},
   'ContentMediaSessionService': {name: i18nLazyString(UIStrings.contentMediaSessionService)},
   'ContentMediaPlay': {name: i18nLazyString(UIStrings.contentMediaPlay)},
+  'ContentScreenReader': {name: i18n.i18n.lockedLazyString('ContentScreenReader')},
   'EmbedderPopupBlockerTabHelper': {name: i18n.i18n.lockedLazyString('EmbedderPopupBlockerTabHelper')},
   'EmbedderSafeBrowsingTriggeredPopupBlocker':
       {name: i18n.i18n.lockedLazyString('EmbedderSafeBrowsingTriggeredPopupBlocker')},

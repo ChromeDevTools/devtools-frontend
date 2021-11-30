@@ -1542,6 +1542,8 @@ export function registerCommands(inspectorBackend) {
     PreflightInvalidAllowCredentials: 'PreflightInvalidAllowCredentials',
     PreflightMissingAllowExternal: 'PreflightMissingAllowExternal',
     PreflightInvalidAllowExternal: 'PreflightInvalidAllowExternal',
+    PreflightMissingAllowPrivateNetwork: 'PreflightMissingAllowPrivateNetwork',
+    PreflightInvalidAllowPrivateNetwork: 'PreflightInvalidAllowPrivateNetwork',
     InvalidAllowMethodsPreflightResponse: 'InvalidAllowMethodsPreflightResponse',
     InvalidAllowHeadersPreflightResponse: 'InvalidAllowHeadersPreflightResponse',
     MethodDisallowedByPreflightResponse: 'MethodDisallowedByPreflightResponse',
@@ -2203,6 +2205,7 @@ export function registerCommands(inspectorBackend) {
     ContentWebUSB: 'ContentWebUSB',
     ContentMediaSession: 'ContentMediaSession',
     ContentMediaSessionService: 'ContentMediaSessionService',
+    ContentScreenReader: 'ContentScreenReader',
     EmbedderPopupBlockerTabHelper: 'EmbedderPopupBlockerTabHelper',
     EmbedderSafeBrowsingTriggeredPopupBlocker: 'EmbedderSafeBrowsingTriggeredPopupBlocker',
     EmbedderSafeBrowsingThreatDetails: 'EmbedderSafeBrowsingThreatDetails',
@@ -2686,7 +2689,8 @@ export function registerCommands(inspectorBackend) {
       [
         {'name': 'disposeOnDetach', 'type': 'boolean', 'optional': true},
         {'name': 'proxyServer', 'type': 'string', 'optional': true},
-        {'name': 'proxyBypassList', 'type': 'string', 'optional': true}
+        {'name': 'proxyBypassList', 'type': 'string', 'optional': true},
+        {'name': 'originsWithUniversalNetworkAccess', 'type': 'object', 'optional': true}
       ],
       ['browserContextId']);
   inspectorBackend.registerCommand('Target.getBrowserContexts', [], ['browserContextIds']);

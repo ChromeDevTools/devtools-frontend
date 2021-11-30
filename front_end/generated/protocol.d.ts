@@ -7174,6 +7174,8 @@ declare namespace Protocol {
       PreflightInvalidAllowCredentials = 'PreflightInvalidAllowCredentials',
       PreflightMissingAllowExternal = 'PreflightMissingAllowExternal',
       PreflightInvalidAllowExternal = 'PreflightInvalidAllowExternal',
+      PreflightMissingAllowPrivateNetwork = 'PreflightMissingAllowPrivateNetwork',
+      PreflightInvalidAllowPrivateNetwork = 'PreflightInvalidAllowPrivateNetwork',
       InvalidAllowMethodsPreflightResponse = 'InvalidAllowMethodsPreflightResponse',
       InvalidAllowHeadersPreflightResponse = 'InvalidAllowHeadersPreflightResponse',
       MethodDisallowedByPreflightResponse = 'MethodDisallowedByPreflightResponse',
@@ -10442,6 +10444,10 @@ declare namespace Protocol {
        * The fantasy font-family.
        */
       fantasy?: string;
+      /**
+       * The pictograph font-family.
+       */
+      pictograph?: string;
     }
 
     /**
@@ -10649,6 +10655,7 @@ declare namespace Protocol {
       ContentWebUSB = 'ContentWebUSB',
       ContentMediaSession = 'ContentMediaSession',
       ContentMediaSessionService = 'ContentMediaSessionService',
+      ContentScreenReader = 'ContentScreenReader',
       EmbedderPopupBlockerTabHelper = 'EmbedderPopupBlockerTabHelper',
       EmbedderSafeBrowsingTriggeredPopupBlocker = 'EmbedderSafeBrowsingTriggeredPopupBlocker',
       EmbedderSafeBrowsingThreatDetails = 'EmbedderSafeBrowsingThreatDetails',
@@ -12892,6 +12899,11 @@ declare namespace Protocol {
        * Proxy bypass list, similar to the one passed to --proxy-bypass-list
        */
       proxyBypassList?: string;
+      /**
+       * An optional list of origins to grant unlimited cross-origin access to.
+       * Parts of the URL other than those constituting origin are ignored.
+       */
+      originsWithUniversalNetworkAccess?: string[];
     }
 
     export interface CreateBrowserContextResponse extends ProtocolResponseWithError {

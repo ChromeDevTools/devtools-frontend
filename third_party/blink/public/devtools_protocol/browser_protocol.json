@@ -10735,6 +10735,8 @@
                         "PreflightInvalidAllowCredentials",
                         "PreflightMissingAllowExternal",
                         "PreflightInvalidAllowExternal",
+                        "PreflightMissingAllowPrivateNetwork",
+                        "PreflightInvalidAllowPrivateNetwork",
                         "InvalidAllowMethodsPreflightResponse",
                         "InvalidAllowHeadersPreflightResponse",
                         "MethodDisallowedByPreflightResponse",
@@ -15372,6 +15374,12 @@
                             "description": "The fantasy font-family.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "pictograph",
+                            "description": "The pictograph font-family.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -15617,6 +15625,7 @@
                         "ContentWebUSB",
                         "ContentMediaSession",
                         "ContentMediaSessionService",
+                        "ContentScreenReader",
                         "EmbedderPopupBlockerTabHelper",
                         "EmbedderSafeBrowsingTriggeredPopupBlocker",
                         "EmbedderSafeBrowsingThreatDetails",
@@ -19088,6 +19097,15 @@
                             "description": "Proxy bypass list, similar to the one passed to --proxy-bypass-list",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "originsWithUniversalNetworkAccess",
+                            "description": "An optional list of origins to grant unlimited cross-origin access to.\nParts of the URL other than those constituting origin are ignored.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     ],
                     "returns": [

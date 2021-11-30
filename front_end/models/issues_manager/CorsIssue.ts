@@ -43,6 +43,8 @@ export enum IssueCode {
   NoCorsRedirectModeNotFollow = 'CorsIssue::NoCorsRedirectModeNotFollow',
   InvalidPrivateNetworkAccess = 'CorsIssue::InvalidPrivateNetworkAccess',
   UnexpectedPrivateNetworkAccess = 'CorsIssue::UnexpectedPrivateNetworkAccess',
+  PreflightMissingAllowPrivateNetwork = 'CorsIssue::PreflightMissingAllowPrivateNetwork',
+  PreflightInvalidAllowPrivateNetwork = 'CorsIssue::PreflightInvalidAllowPrivateNetwork',
 }
 
 function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
@@ -93,6 +95,10 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
       return IssueCode.InvalidPrivateNetworkAccess;
     case Protocol.Network.CorsError.UnexpectedPrivateNetworkAccess:
       return IssueCode.UnexpectedPrivateNetworkAccess;
+    case Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork:
+      return IssueCode.PreflightMissingAllowPrivateNetwork;
+    case Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork:
+      return IssueCode.PreflightInvalidAllowPrivateNetwork;
   }
 }
 
@@ -225,6 +231,8 @@ export class CorsIssue extends Issue<IssueCode> {
       case IssueCode.InvalidResponse:
       case IssueCode.InvalidPrivateNetworkAccess:
       case IssueCode.UnexpectedPrivateNetworkAccess:
+      case IssueCode.PreflightMissingAllowPrivateNetwork:
+      case IssueCode.PreflightInvalidAllowPrivateNetwork:
         return null;
     }
   }

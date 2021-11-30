@@ -67,7 +67,6 @@ devtools_applications = [
   "inspector",
   "js_app",
   "ndb_app",
-  "node_app",
   "worker_app",
 ]
 

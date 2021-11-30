@@ -651,6 +651,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     }
     const cell = this.createTD(columnId);
     cell.className = 'numeric-column';
+    cell.setAttribute('title', i18nString(UIStrings.fms, {PH1: value.toFixed(4)}));
     const textDiv = cell.createChild('div');
     textDiv.createChild('span').textContent = i18nString(UIStrings.fms, {PH1: value.toFixed(1)});
 

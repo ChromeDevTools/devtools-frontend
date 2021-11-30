@@ -164,18 +164,6 @@ export class UserMetrics {
         EnumeratedHistogram.DualScreenDeviceEmulated, emulationAction, size);
   }
 
-  cssEditorOpened(editorName: string): void {
-    const size = Object.keys(CssEditorOpened).length + 1;
-    const key = editorName;
-    const value = CssEditorOpened[key];
-
-    if (value === undefined) {
-      return;
-    }
-
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.CssEditorOpened, value, size);
-  }
-
   experimentEnabledAtLaunch(experimentId: string): void {
     const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
     const experiment = DevtoolsExperiments[experimentId];
@@ -556,15 +544,6 @@ export enum DualScreenDeviceEmulated {
   SpanButtonClicked = 1,
   PlatformSupportUsed = 2,  // user starts to use platform dual screen support feature.
 }
-
-export const CssEditorOpened: {
-  [x: string]: number,
-} = {
-  'colorPicker': 0,
-  'shadowEditor': 1,
-  'bezierEditor': 2,
-  'fontEditor': 3,
-};
 
 /**
  * This list should contain the currently active Devtools Experiments.

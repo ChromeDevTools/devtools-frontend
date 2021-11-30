@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -55,9 +53,6 @@ export class BezierPopoverIcon {
   }
 
   private iconClick(event: Event): void {
-    if (Root.Runtime.experiments.isEnabled('fontEditor')) {
-      Host.userMetrics.cssEditorOpened('bezierEditor');
-    }
     event.consume(true);
     if (this.swatchPopoverHelper.isShowing()) {
       this.swatchPopoverHelper.hide(true);
@@ -163,9 +158,6 @@ export class ColorSwatchPopoverIcon {
   }
 
   private iconClick(event: Event): void {
-    if (Root.Runtime.experiments.isEnabled('fontEditor')) {
-      Host.userMetrics.cssEditorOpened('colorPicker');
-    }
     event.consume(true);
     this.showPopover();
   }
@@ -278,9 +270,6 @@ export class ShadowSwatchPopoverHelper {
   }
 
   private iconClick(event: Event): void {
-    if (Root.Runtime.experiments.isEnabled('fontEditor')) {
-      Host.userMetrics.cssEditorOpened('shadowEditor');
-    }
     event.consume(true);
     this.showPopover();
   }

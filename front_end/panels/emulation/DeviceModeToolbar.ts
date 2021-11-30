@@ -225,10 +225,6 @@ export class DeviceModeToolbar {
       showMediaInspectorSetting: Common.Settings.Setting<boolean>,
       showRulersSetting: Common.Settings.Setting<boolean>) {
     this.model = model;
-    const device = model.device();
-    if (device) {
-      this.recordDeviceChange(device, null);
-    }
     this.showMediaInspectorSetting = showMediaInspectorSetting;
     this.showRulersSetting = showRulersSetting;
 
@@ -299,16 +295,6 @@ export class DeviceModeToolbar {
       rightToolbar.setEnabled(enabled);
       modeToolbar.setEnabled(enabled);
       optionsToolbar.setEnabled(enabled);
-    }
-  }
-
-  private recordDeviceChange(
-      device: EmulationModel.EmulatedDevices.EmulatedDevice,
-      oldDevice: EmulationModel.EmulatedDevices.EmulatedDevice|null): void {
-    if (device !== oldDevice && device && device.isDualScreen) {
-      // When we start emulating a device, whether we start a new emulation session, or switch to
-      // a new device, if the device is dual screen, we count this once.
-      Host.userMetrics.dualScreenDeviceEmulated(Host.UserMetrics.DualScreenDeviceEmulated.DualScreenDeviceSelected);
     }
   }
 
@@ -527,7 +513,6 @@ export class DeviceModeToolbar {
 
   private emulateDevice(device: EmulationModel.EmulatedDevices.EmulatedDevice): void {
     const scale = this.autoAdjustScaleSetting.get() ? undefined : this.model.scaleSetting().get();
-    this.recordDeviceChange(device, this.model.device());
     this.model.emulate(
         EmulationModel.DeviceModeModel.Type.Device, device, this.lastMode.get(device) || device.modes[0], scale);
   }
@@ -615,7 +600,6 @@ export class DeviceModeToolbar {
       return;
     }
 
-    Host.userMetrics.dualScreenDeviceEmulated(Host.UserMetrics.DualScreenDeviceEmulated.SpanButtonClicked);
     const scale = this.autoAdjustScaleSetting.get() ? undefined : this.model.scaleSetting().get();
     const mode = this.model.mode();
     if (!mode) {

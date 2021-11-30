@@ -1616,7 +1616,6 @@ export class StylePropertiesSection {
 
   private onFontEditorButtonClicked(): void {
     if (this.fontEditorSectionManager && this.fontEditorButton) {
-      Host.userMetrics.cssEditorOpened('fontEditor');
       this.fontEditorSectionManager.showPopover(this.fontEditorButton.element, this.parentPane);
     }
   }

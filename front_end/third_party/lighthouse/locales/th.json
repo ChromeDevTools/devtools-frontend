@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "URL หลายรายการขัดแย้งกัน ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "ชี้ไปที่โดเมนอื่น ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "URL ไม่ถูกต้อง ({url})"
   },

@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Størst indflydelse"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informativ gennemgang}one{{numInformative} informativ gennemgang}other{{numInformative} informative gennemgange}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobil"
@@ -78,13 +78,13 @@
     "message": "Rapport over navigation"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigationsrapportering}one{{numNavigation} navigationsrapportering}other{{numNavigation} navigationsrapporteringer}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} gennemgang, der kan godkendes}one{{numPassableAudits} gennemgang, der kan godkendes}other{{numPassableAudits} gennemgange, der kan godkendes}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} gennemgang blev godkendt}one{{numPassed} gennemgang blev godkendt}other{{numPassed} gennemgange blev godkendt}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Gennemsnit"
@@ -111,7 +111,7 @@
     "message": "Rapport med øjebliksbillede"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} rapportering af øjebliksbillede}one{{numSnapshot} rapportering af øjebliksbillede}other{{numSnapshot} rapporteringer af øjebliksbillede}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Oversigt"
@@ -126,7 +126,7 @@
     "message": "Rapport over tidsperiode"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} perioderapportering}one{{numTimespan} perioderapportering}other{{numTimespan} perioderapporteringer}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Rapport over brugerflow i Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Flere webadresser ({urlList}) er modstridende"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Peger på et andet domæne ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Ugyldig webadresse ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Se beregner."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Skjul visning"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Indledende navigation"
@@ -2370,13 +2367,13 @@
     "message": "Rapportfejl: Der er ingen revisionsoplysninger"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Udvid visning"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Indsend et problem"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Skjul"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratoriedata"
@@ -2400,10 +2397,10 @@
     "message": "Beståede revisioner"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Oprindelig sideindlæsning"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Tilpasset begrænsning"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emuleret computer"
@@ -2433,19 +2430,19 @@
     "message": "Brugeragent (netværk)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Enkeltstående sideindlæsning"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Disse data stammer fra en enkelt sideindlæsning i modsætning til feltdata, der omfatter flere sessioner."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Begrænsning til langsom 4G-forbindelse"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ukendt"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Vis"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Vis gennemgange, som er relevante for:"

@@ -60,10 +60,10 @@
     "message": "Menemukan peluang performa guna meningkatkan pengalaman untuk halaman yang dibuka dalam waktu lama dan aplikasi web satu halaman."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Dampak tertinggi"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} audit informatif}other{{numInformative} audit informatif}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Seluler"
@@ -78,13 +78,13 @@
     "message": "Laporan navigasi"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} laporan navigasi}other{{numNavigation} laporan navigasi}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} audit yang dapat diluluskan}other{{numPassableAudits} audit yang dapat diluluskan}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} audit lulus}other{{numPassed} audit lulus}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Biasa"
@@ -111,7 +111,7 @@
     "message": "Laporan snapshot"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} laporan snapshot}other{{numSnapshot} laporan snapshot}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Ringkasan"
@@ -126,7 +126,7 @@
     "message": "Laporan rentang waktu"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} laporan rentang waktu}other{{numTimespan} laporan rentang waktu}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Laporan Alur Pengguna Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Ada beberapa URL yang bertentangan ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Mengarahkan ke domain yang berbeda ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "URL tidak valid ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Lihat kalkulator."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Ciutkan tampilan"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigasi Awal"
@@ -2370,13 +2367,13 @@
     "message": "Error laporan: tidak ada informasi audit"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Luaskan tampilan"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Laporkan masalah"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Sembunyikan"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Data Lab"
@@ -2400,10 +2397,10 @@
     "message": "Lulus audit"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Pemuatan halaman awal"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Throttle kustom"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Desktop Emulasi"
@@ -2433,19 +2430,19 @@
     "message": "Agen pengguna (jaringan)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Pemuatan satu halaman"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Data ini diambil dari pemuatan satu halaman, tidak seperti data kolom yang merangkum banyak sesi."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Throttle 4G lambat"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Tidak dikenal"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Tampilkan"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Tampilkan audit yang relevan dengan:"

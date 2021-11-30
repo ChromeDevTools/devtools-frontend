@@ -60,10 +60,10 @@
     "message": "Ontdek mogelijkheden om de functionaliteit van langdurige pagina's en apps met één pagina te verbeteren."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Hoogste impact"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informatieve controle}other{{numInformative} informatieve controles}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobiel"
@@ -78,13 +78,13 @@
     "message": "Navigatierapport"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigatierapport}other{{numNavigation} navigatierapporten}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} controle die kan worden doorstaan}other{{numPassableAudits} controles die kunnen worden doorstaan}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} controle doorstaan}other{{numPassed} controles doorstaan}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Gemiddeld"
@@ -111,7 +111,7 @@
     "message": "Momentopnamerapport"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} momentopnamerapport}other{{numSnapshot} momentopnamerapporten}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Overzicht"
@@ -126,7 +126,7 @@
     "message": "Perioderapport"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} perioderapport}other{{numTimespan} perioderapporten}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse-rapport over gebruikersstroom"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Meerdere conflicterende URL's ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Wijst naar een ander domein ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Ongeldige URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Rekenmachine bekijken"
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Weergave samenvouwen"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Beginnavigatie"
@@ -2370,13 +2367,13 @@
     "message": "Rapportfout: geen controlegegevens"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Weergave uitvouwen"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Een probleem melden"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Verbergen"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Labgegevens"
@@ -2400,10 +2397,10 @@
     "message": "Geslaagde controles"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Eerste keer laden van de pagina"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Aangepaste throttling"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Desktopemulatie"
@@ -2433,19 +2430,19 @@
     "message": "User-agent (netwerk)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Laden van één pagina"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Deze gegevens zijn afkomstig van het laden van één pagina, in tegenstelling tot veldgegevens die veel sessies samenvatten."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Langzame 4G-throttling"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Onbekend"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Tonen"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Audits laten zien die relevant zijn voor:"

@@ -60,10 +60,10 @@
     "message": "장기 지속되는 페이지 및 단일 페이지 애플리케이션 관련 경험을 개선할 수 있는 성능 기회를 탐색합니다."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "가장 큰 효과"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{정보 감사 {numInformative}개}other{정보 감사 {numInformative}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "모바일"
@@ -78,13 +78,13 @@
     "message": "탐색 보고서"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{탐색 보고서 {numNavigation}개}other{탐색 보고서 {numNavigation}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{통과 가능한 감사 {numPassableAudits}개}other{통과 가능한 감사 {numPassableAudits}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{통과한 감사 {numPassed}개}other{통과한 감사 {numPassed}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "평균"
@@ -111,7 +111,7 @@
     "message": "스냅샷 보고서"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{스냅샷 보고서 {numSnapshot}개}other{스냅샷 보고서 {numSnapshot}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "요약"
@@ -126,7 +126,7 @@
     "message": "기간 보고서"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{기간 보고서 {numTimespan}개}other{기간 보고서 {numTimespan}개}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse 사용자 플로우 보고서"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "여러 개의 URL({urlList})이 충돌됨"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "다른 도메인({url})을 가리킵니다."
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "잘못된 URL({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "계산기 보기"
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "뷰 접기"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "초기 탐색"
@@ -2370,13 +2367,13 @@
     "message": "보고 오류: 감사 정보 없음"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "뷰 펼치기"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "문제 신고"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "숨기기"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "실험실 데이터"
@@ -2400,10 +2397,10 @@
     "message": "통과한 감사"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "초기 페이지 로드"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "맞춤형 제한"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "에뮬레이션된 데스크톱"
@@ -2433,19 +2430,19 @@
     "message": "사용자 에이전트(네트워크)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "단일 페이지 로드"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "여러 세션을 요약하는 필드 데이터와는 반대로 이 데이터는 단일 페이지 로드에서 가져옵니다."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "느린 4G 제한"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "알 수 없음"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "표시"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "다음과 관련된 감사 표시:"

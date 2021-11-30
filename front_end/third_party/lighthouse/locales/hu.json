@@ -60,10 +60,10 @@
     "message": "teljesítményre vonatkozó lehetőségeket fedezhet fel a hosszú életű oldalak és az egyoldalas alkalmazásokkal kapcsolatos élmények javítása érdekében;"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Legnagyobb hatás"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} tájékoztató ellenőrzés}other{{numInformative} tájékoztató ellenőrzés}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobil"
@@ -78,13 +78,13 @@
     "message": "Navigációs jelentés"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigációs jelentés}other{{numNavigation} navigációs jelentés}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} teljesíthető ellenőrzés}other{{numPassableAudits} teljesíthető ellenőrzés}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} sikeres ellenőrzés}other{{numPassed} sikeres ellenőrzés}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Átlagos"
@@ -111,7 +111,7 @@
     "message": "Pillanatkép-jelentés"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} pillanatkép-jelentés}other{{numSnapshot} pillanatkép-jelentés}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Összegzés"
@@ -126,7 +126,7 @@
     "message": "Időtartam-jelentés"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} időtartam-jelentés}other{{numTimespan} időtartam-jelentés}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse felhasználóimunkafolyamat-jelentés"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Több ütköző URL ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Más domainre mutat ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Érvénytelen URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Számológép megtekintése"
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Nézet összecsukása"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Kezdeti navigáció"
@@ -2370,13 +2367,13 @@
     "message": "Jelentési hiba: nincs ellenőrzési információ"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Nézet kibontása"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Probléma beküldése"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Elrejtés"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboradatok"
@@ -2400,10 +2397,10 @@
     "message": "Sikeresen teljesített ellenőrzések"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Első oldalbetöltés"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Egyéni korlátozás"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulált asztal"
@@ -2433,19 +2430,19 @@
     "message": "Felhasználói ügynök (hálózat)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Egyetlen oldalbetöltés"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Ez az adat egyetlen oldalbetöltésből származik, nem pedig számos munkamenet összesítéséből."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Lassú 4G emulálása"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ismeretlen"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Megjelenítés"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "A következővel kapcsolatos naplóbejegyzések megjelenítése:"

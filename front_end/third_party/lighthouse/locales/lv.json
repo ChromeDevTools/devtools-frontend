@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Vairāki konfliktējoši URL ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Norāda uz citu domēnu ({url})."
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Nederīgs URL ({url})."
   },

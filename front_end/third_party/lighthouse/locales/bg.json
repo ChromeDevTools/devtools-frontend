@@ -3,7 +3,7 @@
     "message": "Всички отчети"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Категории"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Достъпност"
@@ -24,40 +24,40 @@
     "message": "Настолни компютри"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Тълкуване на отчета на Lighthouse за навигацията"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Информация за навигацията"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Използване на отчетите за навигирането за..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Използвайте отчетите за моментната снимка за..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Използване на отчетите за периода от време за..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Получаване на резултат за ефективността от Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Измерване на показатели за ефективността при зареждане на страниците, като например изобразяване на най-голямото съдържание (LCP) и индекс на скоростта."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Тестване на възможностите на прогресивни уеб приложения."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Намиране на проблеми с достъпността в приложения от една страница и сложни формуляри."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "Анализ на най-добрите практики, свързани с взаимодействията с менюта и елементи на ПИ."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "Измерване на структурните промени и времето за изпълнение на JavaScript за поредица от взаимодействия."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "Откриване на възможности за подобряване на ефективността на продължително отворените страници и приложенията от една страница."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "С най-голямо въздействие"
@@ -72,7 +72,7 @@
     "message": "Зареждане на страницата"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Отчетите за навигацията анализират зареждането на отделни страници, точно както първоначалните отчети на Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Отчет за навигирането"
@@ -99,13 +99,13 @@
     "message": "Добра"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Запазване"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Моментно състояние на страницата"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Отчетите за моментната снимка анализират страницата в определено състояние, обикновено след потребителски взаимодействия."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Отчет за моментното състояние"
@@ -120,7 +120,7 @@
     "message": "Потребителски взаимодействия"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Отчетите за периода от време анализират произволен времеви интервал, който обикновено съдържа потребителски взаимодействия."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Отчет за периода от време"
@@ -1291,9 +1291,6 @@
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Множество несъвместими URL адреси ({urlList})"
-  },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Сочи към друг домейн ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Невалиден URL адрес ({url})"

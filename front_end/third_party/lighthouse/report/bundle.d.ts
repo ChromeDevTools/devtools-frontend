@@ -3,7 +3,7 @@ export type ComponentName = '3pFilter' | 'audit' | 'categoryHeader' | 'chevron' 
 export type I18n<T> = any;
 export type DetailsRenderer = any;
 export type CRCSegment = {
-    node: any;
+    node: LH.Audit.Details.SimpleCriticalRequestNode;
     isLastChild: boolean;
     hasChildren: boolean;
     startTime: number;
@@ -53,7 +53,7 @@ export class DOM {
      * @param {string=} className
      * @return {HTMLElementByTagName[T]}
      */
-    createElement<T extends string>(name: T, className?: string | undefined): any;
+    createElement<T extends string>(name: T, className?: string | undefined): HTMLElementByTagName;
     /**
      * @param {string} namespaceURI
      * @param {string} name
@@ -77,7 +77,7 @@ export class DOM {
      * @param {string=} className
      * @return {HTMLElementByTagName[T]}
      */
-    createChildOf<T_1 extends string>(parentElem: Element, elementName: T_1, className?: string | undefined): any;
+    createChildOf<T_1 extends string>(parentElem: Element, elementName: T_1, className?: string | undefined): HTMLElementByTagName;
     /**
      * @param {import('./components.js').ComponentName} componentName
      * @return {!DocumentFragment} A clone of the cached component.
@@ -131,14 +131,14 @@ export class DOM {
      * @param {ParentNode} context
      * @return {ParseSelector<T>}
      */
-    find<T_2 extends string>(query: T_2, context: ParentNode): any;
+    find<T_2 extends string>(query: T_2, context: ParentNode): ParseSelector<T_3>;
     /**
      * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
      * @template {string} T
      * @param {T} query
      * @param {ParentNode} context
      */
-    findAll<T_3 extends string>(query: T_3, context: ParentNode): Element[];
+    findAll<T_4 extends string>(query: T_4, context: ParentNode): Element[];
     /**
      * Fires a custom DOM event on target.
      * @param {string} name Name of the event.
@@ -180,19 +180,19 @@ export class ReportRenderer {
     /** @type {DOM} */
     _dom: DOM;
     /** @type {LH.Renderer.Options} */
-    _opts: any;
+    _opts: LH.Renderer.Options;
     /**
      * @param {LH.Result} lhr
      * @param {HTMLElement?} rootEl Report root element containing the report
      * @param {LH.Renderer.Options=} opts
      * @return {!Element}
      */
-    renderReport(lhr: any, rootEl: HTMLElement | null, opts?: any): Element;
+    renderReport(lhr: LH.Result, rootEl: HTMLElement | null, opts?: LH.Renderer.Options): Element;
     /**
      * @param {LH.ReportResult} report
      * @return {DocumentFragment}
      */
-    _renderReportTopbar(report: any): DocumentFragment;
+    _renderReportTopbar(report: LH.ReportResult): DocumentFragment;
     /**
      * @return {DocumentFragment}
      */
@@ -201,42 +201,42 @@ export class ReportRenderer {
      * @param {LH.ReportResult} report
      * @return {DocumentFragment}
      */
-    _renderReportFooter(report: any): DocumentFragment;
+    _renderReportFooter(report: LH.ReportResult): DocumentFragment;
     /**
      * @param {LH.ReportResult} report
      * @param {DocumentFragment} footer
      */
-    _renderMetaBlock(report: any, footer: DocumentFragment): void;
+    _renderMetaBlock(report: LH.ReportResult, footer: DocumentFragment): void;
     /**
      * Returns a div with a list of top-level warnings, or an empty div if no warnings.
      * @param {LH.ReportResult} report
      * @return {Node}
      */
-    _renderReportWarnings(report: any): Node;
+    _renderReportWarnings(report: LH.ReportResult): Node;
     /**
      * @param {LH.ReportResult} report
      * @param {CategoryRenderer} categoryRenderer
      * @param {Record<string, CategoryRenderer>} specificCategoryRenderers
      * @return {!DocumentFragment[]}
      */
-    _renderScoreGauges(report: any, categoryRenderer: CategoryRenderer, specificCategoryRenderers: Record<string, CategoryRenderer>): DocumentFragment[];
+    _renderScoreGauges(report: LH.ReportResult, categoryRenderer: CategoryRenderer, specificCategoryRenderers: Record<string, CategoryRenderer>): DocumentFragment[];
     /**
      * @param {LH.ReportResult} report
      * @return {!DocumentFragment}
      */
-    _renderReport(report: any): DocumentFragment;
+    _renderReport(report: LH.ReportResult): DocumentFragment;
 }
 export class ReportUIFeatures {
     /**
      * @param {DOM} dom
      * @param {LH.Renderer.Options} opts
      */
-    constructor(dom: DOM, opts?: any);
+    constructor(dom: DOM, opts?: LH.Renderer.Options);
     /** @type {LH.Result} */
-    json: any;
+    json: LH.Result;
     /** @type {DOM} */
     _dom: DOM;
-    _opts: any;
+    _opts: LH.Renderer.Options;
     _topbar: TopbarFeatures;
     /**
      * Handle media query change events.
@@ -248,7 +248,7 @@ export class ReportUIFeatures {
      * should be called whenever the report needs to be re-rendered.
      * @param {LH.Result} lhr
      */
-    initFeatures(lhr: any): void;
+    initFeatures(lhr: LH.Result): void;
     /**
      * @param {{text: string, icon?: string, onClick: () => void}} opts
      */
@@ -256,7 +256,7 @@ export class ReportUIFeatures {
         text: string;
         icon?: string;
         onClick: () => void;
-    }): any;
+    }): HTMLElementByTagName;
     /**
      * Returns the html that recreates this report.
      * @return {string}
@@ -305,7 +305,7 @@ export class ReportUIFeatures {
  * @param {LH.Renderer.Options} opts
  * @return {HTMLElement}
  */
-export function renderReport(lhr: any, opts?: any): HTMLElement;
+export function renderReport(lhr: LH.Result, opts?: LH.Renderer.Options): HTMLElement;
 type LineContentType = number;
 declare namespace LineContentType {
     const CONTENT_NORMAL: number;
@@ -358,21 +358,21 @@ declare class CategoryRenderer {
      * @param {LH.ReportResult.AuditRef} audit
      * @return {Element}
      */
-    renderAudit(audit: any): Element;
+    renderAudit(audit: LH.ReportResult.AuditRef): Element;
     /**
      * Populate an DOM tree with audit details. Used by renderAudit and renderOpportunity
      * @param {LH.ReportResult.AuditRef} audit
      * @param {DocumentFragment} component
      * @return {!Element}
      */
-    populateAuditValues(audit: any, component: DocumentFragment): Element;
+    populateAuditValues(audit: LH.ReportResult.AuditRef, component: DocumentFragment): Element;
     /**
      * Inject the final screenshot next to the score gauge of the first category (likely Performance)
      * @param {HTMLElement} categoriesEl
      * @param {LH.ReportResult['audits']} audits
      * @param {Element} scoreScaleEl
      */
-    injectFinalScreenshot(categoriesEl: HTMLElement, audits: any, scoreScaleEl: Element): any;
+    injectFinalScreenshot(categoriesEl: HTMLElement, audits: LH.ReportResult, scoreScaleEl: Element): any;
     /**
      * @return {Element}
      */
@@ -390,8 +390,8 @@ declare class CategoryRenderer {
      * @param {{gatherMode: LH.Result.GatherMode}=} options
      * @return {DocumentFragment}
      */
-    renderCategoryHeader(category: any, groupDefinitions: Record<string, any>, options?: {
-        gatherMode: any;
+    renderCategoryHeader(category: LH.ReportResult.Category, groupDefinitions: Record<string, LH.Result.ReportGroup>, options?: {
+        gatherMode: LH.Result.GatherMode;
     } | undefined): DocumentFragment;
     /**
      * Renders the group container for a group of audits. Individual audit elements can be added
@@ -399,7 +399,7 @@ declare class CategoryRenderer {
      * @param {LH.Result.ReportGroup} group
      * @return {[Element, Element | null]}
      */
-    renderAuditGroup(group: any): [Element, Element | null];
+    renderAuditGroup(group: LH.Result.ReportGroup): [Element, Element | null];
     /**
      * Takes an array of auditRefs, groups them if requested, then returns an
      * array of audit and audit-group elements.
@@ -407,8 +407,8 @@ declare class CategoryRenderer {
      * @param {Object<string, LH.Result.ReportGroup>} groupDefinitions
      * @return {Array<Element>}
      */
-    _renderGroupedAudits(auditRefs: Array<any>, groupDefinitions: {
-        [x: string]: any;
+    _renderGroupedAudits(auditRefs: Array<LH.ReportResult.AuditRef>, groupDefinitions: {
+        [x: string]: LH.Result.ReportGroup;
     }): Array<Element>;
     /**
      * Take a set of audits, group them if they have groups, then render in a top-level
@@ -417,8 +417,8 @@ declare class CategoryRenderer {
      * @param {Object<string, LH.Result.ReportGroup>} groupDefinitions
      * @return {Element}
      */
-    renderUnexpandableClump(auditRefs: Array<any>, groupDefinitions: {
-        [x: string]: any;
+    renderUnexpandableClump(auditRefs: Array<LH.ReportResult.AuditRef>, groupDefinitions: {
+        [x: string]: LH.Result.ReportGroup;
     }): Element;
     /**
      * Take a set of audits and render in a top-level, expandable clump that starts
@@ -427,36 +427,38 @@ declare class CategoryRenderer {
      * @param {{auditRefs: Array<LH.ReportResult.AuditRef>, description?: string}} clumpOpts
      * @return {!Element}
      */
-    renderClump(clumpId: Exclude<any, 'failed'>, { auditRefs, description }: {
-        auditRefs: Array<any>;
+    renderClump(clumpId: Exclude<TopLevelClumpId, 'failed'>, { auditRefs, description }: {
+        auditRefs: Array<LH.ReportResult.AuditRef>;
         description?: string;
     }): Element;
     /**
      * @param {LH.ReportResult.Category} category
      * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
-     * @param {{gatherMode: LH.Result.GatherMode}=} options
+     * @param {{gatherMode: LH.Result.GatherMode, omitLabel?: boolean, onPageAnchorRendered?: (link: HTMLAnchorElement) => void}=} options
      * @return {DocumentFragment}
      */
-    renderCategoryScore(category: any, groupDefinitions: Record<string, any>, options?: {
-        gatherMode: any;
-    } | undefined): DocumentFragment;
+    renderCategoryScore(category: LH.ReportResult.Category, groupDefinitions: Record<string, LH.Result.ReportGroup>, options?: {
+        gatherMode: LH.Result.GatherMode;
+        omitLabel?: boolean;
+        onPageAnchorRendered?: (link: HTMLAnchorElement) => void;
+    }): DocumentFragment;
     /**
      * @param {LH.ReportResult.Category} category
      * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
      * @return {DocumentFragment}
      */
-    renderScoreGauge(category: any, groupDefinitions: Record<string, any>): DocumentFragment;
+    renderScoreGauge(category: LH.ReportResult.Category, groupDefinitions: Record<string, LH.Result.ReportGroup>): DocumentFragment;
     /**
      * @param {LH.ReportResult.Category} category
      * @return {DocumentFragment}
      */
-    renderCategoryFraction(category: any): DocumentFragment;
+    renderCategoryFraction(category: LH.ReportResult.Category): DocumentFragment;
     /**
      * Returns true if an LH category has any non-"notApplicable" audits.
      * @param {LH.ReportResult.Category} category
      * @return {boolean}
      */
-    hasApplicableAudits(category: any): boolean;
+    hasApplicableAudits(category: LH.ReportResult.Category): boolean;
     /**
      * Define the score arc of the gauge
      * Credit to xgad for the original technique: https://codepen.io/xgad/post/svg-radial-progress-meters
@@ -468,13 +470,13 @@ declare class CategoryRenderer {
      * @param {LH.ReportResult.AuditRef} audit
      * @return {boolean}
      */
-    _auditHasWarning(audit: any): boolean;
+    _auditHasWarning(audit: LH.ReportResult.AuditRef): boolean;
     /**
      * Returns the id of the top-level clump to put this audit in.
      * @param {LH.ReportResult.AuditRef} auditRef
      * @return {TopLevelClumpId}
      */
-    _getClumpIdForAuditRef(auditRef: any): any;
+    _getClumpIdForAuditRef(auditRef: LH.ReportResult.AuditRef): TopLevelClumpId;
     /**
      * Renders a set of top level sections (clumps), under a status of failed, warning,
      * manual, passed, or notApplicable. The result ends up something like:
@@ -498,10 +500,10 @@ declare class CategoryRenderer {
      * @param {{gatherMode: LH.Result.GatherMode}=} options
      * @return {Element}
      */
-    render(category: any, groupDefinitions?: {
-        [x: string]: any;
+    render(category: LH.ReportResult.Category, groupDefinitions?: {
+        [x: string]: LH.Result.ReportGroup;
     } | undefined, options?: {
-        gatherMode: any;
+        gatherMode: LH.Result.GatherMode;
     } | undefined): Element;
 }
 /**
@@ -516,7 +518,7 @@ declare class TopbarFeatures {
      */
     constructor(reportUIFeatures: ReportUIFeatures, dom: DOM);
     /** @type {LH.Result} */
-    lhr: any;
+    lhr: LH.Result;
     _reportUIFeatures: ReportUIFeatures;
     _dom: DOM;
     _dropDownMenu: DropDownMenu;
@@ -552,7 +554,7 @@ declare class TopbarFeatures {
     /**
      * @param {LH.Result} lhr
      */
-    enable(lhr: any): void;
+    enable(lhr: LH.Result): void;
     /**
      * Copies the report JSON to the clipboard (if supported by the browser).
      */
@@ -593,15 +595,15 @@ declare class DetailsRenderer {
      * @param {{fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot}} [options]
      */
     constructor(dom: DOM, options?: {
-        fullPageScreenshot?: any;
+        fullPageScreenshot?: LH.Audit.Details.FullPageScreenshot;
     });
     _dom: DOM;
-    _fullPageScreenshot: any;
+    _fullPageScreenshot: LH.Audit.Details.FullPageScreenshot;
     /**
      * @param {AuditDetails} details
      * @return {Element|null}
      */
-    render(details: any): Element | null;
+    render(details: AuditDetails): Element | null;
     /**
      * @param {{value: number, granularity?: number}} details
      * @return {Element}
@@ -655,7 +657,7 @@ declare class DetailsRenderer {
      * @param {string} type
      * @param {*} value
      */
-    _renderUnknown(type: string, value: any): any;
+    _renderUnknown(type: string, value: any): HTMLElementByTagName;
     /**
      * Render a details item value for embedding in a table. Renders the value
      * based on the heading's valueType, unless the value itself has a `type`
@@ -664,7 +666,7 @@ declare class DetailsRenderer {
      * @param {LH.Audit.Details.OpportunityColumnHeading} heading
      * @return {Element|null}
      */
-    _renderTableValue(value: any, heading: any): Element | null;
+    _renderTableValue(value: TableItemValue, heading: LH.Audit.Details.OpportunityColumnHeading): Element | null;
     /**
      * Get the headings of a table-like details object, converted into the
      * OpportunityColumnHeading type until we have all details use the same
@@ -672,7 +674,7 @@ declare class DetailsRenderer {
      * @param {Table|OpportunityTable} tableLike
      * @return {OpportunityTable['headings']}
      */
-    _getCanonicalizedHeadingsFromTable(tableLike: any | any): any;
+    _getCanonicalizedHeadingsFromTable(tableLike: Table | OpportunityTable): OpportunityTable;
     /**
      * Get the headings of a table-like details object, converted into the
      * OpportunityColumnHeading type until we have all details use the same
@@ -680,13 +682,13 @@ declare class DetailsRenderer {
      * @param {Table['headings'][number]} heading
      * @return {OpportunityTable['headings'][number]}
      */
-    _getCanonicalizedHeading(heading: any): any;
+    _getCanonicalizedHeading(heading: Table): OpportunityTable;
     /**
      * @param {Exclude<LH.Audit.Details.TableColumnHeading['subItemsHeading'], undefined>} subItemsHeading
      * @param {LH.Audit.Details.TableColumnHeading} parentHeading
      * @return {LH.Audit.Details.OpportunityColumnHeading['subItemsHeading']}
      */
-    _getCanonicalizedsubItemsHeading(subItemsHeading: Exclude<any['subItemsHeading'], undefined>, parentHeading: any): any;
+    _getCanonicalizedsubItemsHeading(subItemsHeading: Exclude<LH.Audit.Details.TableColumnHeading['subItemsHeading'], undefined>, parentHeading: LH.Audit.Details.TableColumnHeading): LH.Audit.Details.OpportunityColumnHeading;
     /**
      * Returns a new heading where the values are defined first by `heading.subItemsHeading`,
      * and secondly by `heading`. If there is no subItemsHeading, returns null, which will
@@ -694,45 +696,45 @@ declare class DetailsRenderer {
      * @param {LH.Audit.Details.OpportunityColumnHeading} heading
      * @return {LH.Audit.Details.OpportunityColumnHeading | null}
      */
-    _getDerivedsubItemsHeading(heading: any): any | null;
+    _getDerivedsubItemsHeading(heading: LH.Audit.Details.OpportunityColumnHeading): LH.Audit.Details.OpportunityColumnHeading | null;
     /**
      * @param {TableItem} item
      * @param {(LH.Audit.Details.OpportunityColumnHeading | null)[]} headings
      */
-    _renderTableRow(item: any, headings: (any | null)[]): any;
+    _renderTableRow(item: TableItem, headings: (LH.Audit.Details.OpportunityColumnHeading | null)[]): HTMLElementByTagName;
     /**
      * Renders one or more rows from a details table item. A single table item can
      * expand into multiple rows, if there is a subItemsHeading.
      * @param {TableItem} item
      * @param {LH.Audit.Details.OpportunityColumnHeading[]} headings
      */
-    _renderTableRowsFromItem(item: any, headings: any[]): DocumentFragment;
+    _renderTableRowsFromItem(item: TableItem, headings: LH.Audit.Details.OpportunityColumnHeading[]): DocumentFragment;
     /**
      * @param {OpportunityTable|Table} details
      * @return {Element}
      */
-    _renderTable(details: any | any): Element;
+    _renderTable(details: OpportunityTable | Table): Element;
     /**
      * @param {LH.Audit.Details.List} details
      * @return {Element}
      */
-    _renderList(details: any): Element;
+    _renderList(details: LH.Audit.Details.List): Element;
     /**
      * @param {LH.Audit.Details.NodeValue} item
      * @return {Element}
      */
-    renderNode(item: any): Element;
+    renderNode(item: LH.Audit.Details.NodeValue): Element;
     /**
      * @param {LH.Audit.Details.SourceLocationValue} item
      * @return {Element|null}
      * @protected
      */
-    protected renderSourceLocation(item: any): Element | null;
+    protected renderSourceLocation(item: LH.Audit.Details.SourceLocationValue): Element | null;
     /**
      * @param {LH.Audit.Details.Filmstrip} details
      * @return {Element}
      */
-    _renderFilmstrip(details: any): Element;
+    _renderFilmstrip(details: LH.Audit.Details.Filmstrip): Element;
     /**
      * @param {string} text
      * @return {Element}

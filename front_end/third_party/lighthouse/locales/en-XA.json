@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "[Mûļţîþļé çöñƒļîçţîñĝ ÛŔĻš (ᐅ{urlList}ᐊ) one two three four five six seven]"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "[Þöîñţš ţö å ðîƒƒéŕéñţ ðömåîñ (ᐅ{url}ᐊ) one two three four five six seven]"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "[Îñvåļîð ÛŔĻ (ᐅ{url}ᐊ) one two three four]"
   },

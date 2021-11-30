@@ -60,10 +60,10 @@
     "message": "Atrasti našumo galimybes ir pagerinti ilgai veikiančių puslapių bei atskiro puslapio programų funkcijas."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Svarbiausios"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informatyvi patikra}one{{numInformative} informatyvi patikra}few{{numInformative} informatyvios patikros}many{{numInformative} informatyvios patikros}other{{numInformative} informatyvių patikrų}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobiliesiems"
@@ -78,13 +78,13 @@
     "message": "Naršymo ataskaita"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} naršymo ataskaita}one{{numNavigation} naršymo ataskaita}few{{numNavigation} naršymo ataskaitos}many{{numNavigation} naršymo ataskaitos}other{{numNavigation} naršymo ataskaitų}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} patikra, kuri gali būti atlikta sėkmingai}one{{numPassableAudits} patikra, kuri gali būti atlikta sėkmingai}few{{numPassableAudits} patikros, kurios gali būti atliktos sėkmingai}many{{numPassableAudits} patikros, kuri gali būti atlikta sėkmingai}other{{numPassableAudits} patikrų, kurios gali būti atliktos sėkmingai}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} sėkmingai atlikta patikra}one{{numPassed} sėkmingai atlikta patikra}few{{numPassed} sėkmingai atliktos patikros}many{{numPassed} sėkmingos atliktos patikros}other{{numPassed} sėkmingai atliktų patikrų}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Vidutiniška"
@@ -111,7 +111,7 @@
     "message": "Momentinė ataskaita"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} konkretaus momento ataskaita}one{{numSnapshot} konkretaus momento ataskaita}few{{numSnapshot} konkretaus momento ataskaitos}many{{numSnapshot} konkretaus momento ataskaitos}other{{numSnapshot} konkretaus momento ataskaitų}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Suvestinė"
@@ -126,7 +126,7 @@
     "message": "Laikotarpio ataskaita"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} laikotarpio ataskaita}one{{numTimespan} laikotarpio ataskaita}few{{numTimespan} laikotarpio ataskaitos}many{{numTimespan} laikotarpio ataskaitos}other{{numTimespan} laikotarpio ataskaitų}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "„Lighthouse“ naudotojų srauto ataskaita"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Keli nesuderinami URL ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Nukreipia į kitą domeną ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Negaliojantis URL ({url})"
   },
@@ -1761,7 +1758,7 @@
     "message": "Šios patikros būtinos pagal pradinį [LŽP kontrolinį sąrašą](https://developers.google.com/web/progressive-web-apps/checklist), tačiau „Lighthouse“ jų neatlieka automatiškai. Jos neturi įtakos jūsų rezultatui, tačiau svarbu, kad patvirtintumėte patys."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
+    "message": "LŽP"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Galima įdiegti"
@@ -2331,7 +2328,7 @@
     "message": "Žr. skaičiuotuvą."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Sutraukti rodinį"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Pradinis naršymas"
@@ -2370,13 +2367,13 @@
     "message": "Ataskaitos klaida: nėra patikros informacijos"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Išskleisti rodinį"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Pateikti problemą"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Slėpti"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratorijos duomenys"
@@ -2400,10 +2397,10 @@
     "message": "Sėkmingos patikros"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Pirminis puslapio įkėlimas"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Tinkintas duomenų srauto ribojimas"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emuliuotas stalinis kompiuteris"
@@ -2433,19 +2430,19 @@
     "message": "Naudotojo priemonė (tinklas)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Vienas puslapio įkėlimas"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Šie duomenys gauti išanalizavus vieno puslapio įkėlimą, o lauko duomenys apibendrina daug seansų."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Lėto 4G duomenų srauto ribojimas"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nežinoma"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Rodyti"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Rodyti patikras, aktualias:"

@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "הכי הרבה השפעה"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{ביקורת אינפורמטיבית אחת ({numInformative})}two{{numInformative} ביקורות אינפורמטיביות}many{{numInformative} ביקורות אינפורמטיביות}other{{numInformative} ביקורות אינפורמטיביות}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "ניידים"
@@ -78,13 +78,13 @@
     "message": "דוח לגבי ניווט"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{דוח אחד ({numNavigation}) לגבי ניווט}two{{numNavigation} דוחות לגבי ניווט}many{{numNavigation} דוחות לגבי ניווט}other{{numNavigation} דוחות לגבי ניווט}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{ביקורת עוברת אחת ({numPassableAudits})}two{{numPassableAudits} ביקורות עוברות}many{{numPassableAudits} ביקורות עוברות}other{{numPassableAudits} ביקורות עוברות}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{ביקורת אחת ({numPassed}) עברה}two{{numPassed} ביקורות עברו}many{{numPassed} ביקורות עברו}other{{numPassed} ביקורות עברו}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "ממוצעת"
@@ -111,7 +111,7 @@
     "message": "דוח תמונת מצב"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{דוח תמונת מצב אחד ({numSnapshot})}two{{numSnapshot} דוחות תמונת מצב}many{{numSnapshot} דוחות תמונת מצב}other{{numSnapshot} דוחות תמונת מצב}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "סיכום"
@@ -126,7 +126,7 @@
     "message": "דוח על טווח זמן"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{דוח אחד ({numTimespan}) על טווח זמן}two{{numTimespan} דוחות על טווח זמן}many{{numTimespan} דוחות על טווח זמן}other{{numTimespan} דוחות על טווח זמן}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "דוח Lighthouse על מסלולי משתמשים בדף"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "התנגשויות בין כתובות URL מרובות ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "הכתובת מפנה לדומיין אחר ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "כתובת אתר לא חוקית ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "להצגת המחשבון."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "כיווץ התצוגה"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "ניווט התחלתי"
@@ -2370,13 +2367,13 @@
     "message": "שגיאה בדוח: אין מידע על הבדיקה"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "הרחבת התצוגה"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "דיווח על בעיה"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "הסתרה"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "נתוני בדיקה"
@@ -2400,10 +2397,10 @@
     "message": "בדיקות עם ציון 'עובר'"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "טעינת הדף הראשונית"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "ויסות נתונים בהתאמה אישית"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "אמולציה של מחשב שולחני"
@@ -2433,19 +2430,19 @@
     "message": "סוכן משתמש (רשת)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "טעינת דף יחיד"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "הנתונים האלה מגיעים מטעינת דף יחיד, בניגוד לנתוני שטח שמסכמים מספר סשנים."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "ויסות נתונים איטי ב-4G"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "ערך לא ידוע"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "הצגה"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "הצגת הביקורות שרלוונטיות למדדים:"

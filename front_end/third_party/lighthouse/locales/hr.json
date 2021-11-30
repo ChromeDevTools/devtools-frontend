@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Najviši utjecaj"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informativna revizija}one{{numInformative} informativna revizija}few{{numInformative} informativne revizije}other{{numInformative} informativnih revizija}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobilna verzija"
@@ -78,13 +78,13 @@
     "message": "Izvješće o kretanju"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} izvješće o kretanju}one{{numNavigation} izvješće o kretanju}few{{numNavigation} izvješća o kretanju}other{{numNavigation} izvješća o kretanju}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} prolazna revizija}one{{numPassableAudits} prolazna revizija}few{{numPassableAudits} prolazne revizije}other{{numPassableAudits} prolaznih revizija}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} uspješna revizija}one{{numPassed} uspješna revizija}few{{numPassed} uspješne revizije}other{{numPassed} uspješnih revizija}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Prosječno"
@@ -111,7 +111,7 @@
     "message": "Izvješće o snimci"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} izvješće o snimci}one{{numSnapshot} izvješće o snimci}few{{numSnapshot} izvješća o snimci}other{{numSnapshot} izvješća o snimci}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Sažetak"
@@ -126,7 +126,7 @@
     "message": "Izvješće o razdoblju"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} izvješće o razdoblju}one{{numTimespan} izvješće o razdoblju}few{{numTimespan} izvješća o razdoblju}other{{numTimespan} izvješća o razdoblju}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouseovo izvješće o putovima korisnika"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Više URL-ova u sukobu ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Usmjerava na drugu domenu ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Nevažeći URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Pogledajte kalkulator."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Sažmi prikaz"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Početna navigacija"
@@ -2370,13 +2367,13 @@
     "message": "Pogreška izvješća: nema podataka o pregledu"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Proširi prikaz"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Prijavljivanje poteškoće"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Sakrij"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratorijski podaci"
@@ -2400,10 +2397,10 @@
     "message": "Uspješni pregledi"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Početno učitavanje stranice"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Prilagođeno potiskivanje"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulirana radna površina"
@@ -2433,19 +2430,19 @@
     "message": "Korisnički agent (mreža)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Jedno učitavanje stranice"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Ovi su podaci preuzeti s jednog učitavanja stranice, za razliku od podataka polja koji sažimaju mnoge sesije."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Sporo 4G potiskivanje"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nepoznato"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Prikaži"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Prikaži revizije relevantne za sljedeće:"

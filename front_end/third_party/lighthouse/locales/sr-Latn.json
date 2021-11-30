@@ -60,10 +60,10 @@
     "message": "Otkrijte prilike za učinak da biste poboljšali doživljaj za dugoročne stranice i aplikacije sa jednom stranicom."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Najveći uticaj"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informativna provera}one{{numInformative} informativna provera}few{{numInformative} informativne provere}other{{numInformative} informativnih provera}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobilni uređaj"
@@ -78,13 +78,13 @@
     "message": "Izveštaj o navigaciji"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} izveštaj o navigaciji}one{{numNavigation} izveštaj o navigaciji}few{{numNavigation} izveštaja o navigaciji}other{{numNavigation} izveštaja o navigaciji}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} provera koja može da se prođe}one{{numPassableAudits} provera koja može da se prođe}few{{numPassableAudits} provere koje mogu da se prođu}other{{numPassableAudits} provera koje mogu da se prođu}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{Prošli ste {numPassed} proveru}one{Prošli ste{numPassed} proveru}few{Prošli ste{numPassed} provere}other{Prošli ste{numPassed} provera}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Prosek"
@@ -111,7 +111,7 @@
     "message": "Izveštaj sa pregledom"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} izveštaj sa pregledom}one{{numSnapshot} izveštaj sa pregledom}few{{numSnapshot} izveštaja sa pregledom}other{{numSnapshot} izveštaja sa pregledom}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Rezime"
@@ -126,7 +126,7 @@
     "message": "Izveštaj za period"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} izveštaj za period}one{{numTimespan} izveštaj za period}few{{numTimespan} izveštaja za period}other{{numTimespan} izveštaja za period}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Izveštaj o korisničkom toku za Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Više neusaglašenih URL-ova ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Usmerava ka drugom domenu ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Nevažeći URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Pogledajte kalkulator."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Skupi prikaz"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Početna navigacija"
@@ -2370,13 +2367,13 @@
     "message": "Prijavljivanje greške: nema informacija o proveri"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Proširi prikaz"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Prijavite problem"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Sakrij"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Podaci o eksperimentalnim funkcijama"
@@ -2400,10 +2397,10 @@
     "message": "Provere sa zadovoljavajućom ocenom"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Početno učitavanje stranice"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Prilagođeno ograničavanje"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulirani računar"
@@ -2433,19 +2430,19 @@
     "message": "Korisnički agent (mreža)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Jedno učitavanje stranice"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Ovi podaci su dobijeni na osnovu jednog učitavanja stranice, nasuprot podacima iz polja koji rezimiraju mnoge sesije."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Ograničavanje poput spore 4G veze"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nepoznato"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Prikaži"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Prikaži revizije relevantne za:"

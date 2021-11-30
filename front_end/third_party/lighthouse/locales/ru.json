@@ -60,10 +60,10 @@
     "message": "Узнать возможности для улучшения взаимодействия со страницами, которые используются в течение длительного времени, и одностраничными приложениями."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "С наибольшим влиянием"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} информационная проверка}one{{numInformative} информационная проверка}few{{numInformative} информационные проверки}many{{numInformative} информационных проверок}other{{numInformative} информационной проверки}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Мобильная версия"
@@ -78,13 +78,13 @@
     "message": "Отчет о навигации"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} отчет о навигации}one{{numNavigation} отчет о навигации}few{{numNavigation} отчета о навигации}many{{numNavigation} отчетов о навигации}other{{numNavigation} отчета о навигации}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{Можно пройти {numPassableAudits} проверку}one{Можно пройти {numPassableAudits} проверку}few{Можно пройти {numPassableAudits} проверки}many{Можно пройти {numPassableAudits} проверок}other{Можно пройти {numPassableAudits} проверки}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{Пройдена {numPassed} проверка}one{Пройдена {numPassed} проверка}few{Пройдено {numPassed} проверки}many{Пройдено {numPassed} проверок}other{Пройдено {numPassed} проверки}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Средне"
@@ -111,7 +111,7 @@
     "message": "Отчет о состоянии страницы на определенный момент времени"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} отчет о состоянии страницы на определенный момент времени}one{{numSnapshot} отчет о состоянии страницы на определенный момент времени}few{{numSnapshot} отчета о состоянии страницы на определенный момент времени}many{{numSnapshot} отчетов о состоянии страницы на определенный момент времени}other{{numSnapshot} отчета о состоянии страницы на определенный момент времени}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Сводка"
@@ -126,7 +126,7 @@
     "message": "Отчет о промежутке времени"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} отчет о промежутке времени}one{{numTimespan} отчет о промежутке времени}few{{numTimespan} отчета о промежутке времени}many{{numTimespan} отчетов о промежутке времени}other{{numTimespan} отчета о промежутке времени}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Отчет Lighthouse о пути пользователя"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Несколько конфликтующих URL ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Указывает на другой домен ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Недопустимый URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Показать калькулятор"
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Свернуть"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Начальная навигация"
@@ -2370,13 +2367,13 @@
     "message": "Ошибка отчета: информация аудита отсутствует"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Развернуть"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Сообщить о проблеме"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Скрыть"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Имитация загрузки страницы"
@@ -2400,10 +2397,10 @@
     "message": "Успешные аудиты"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Начальная загрузка страницы"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Настраиваемое ограничение"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Эмуляция компьютера"
@@ -2433,19 +2430,19 @@
     "message": "Агент пользователя (сеть)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Одна загрузка страницы"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Это данные одной загрузки страницы, а не сводка множества сеансов."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Ограничение для сети 4G с низкой скоростью"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Неизвестно"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Показать"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Показать аудиты"

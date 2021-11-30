@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "‏‮Multiple‬‏ ‏‮conflicting‬‏ ‏‮URLs‬‏ ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "‏‮Points‬‏ ‏‮to‬‏ ‏‮a‬‏ ‏‮different‬‏ ‏‮domain‬‏ ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "‏‮Invalid‬‏ ‏‮URL‬‏ ({url})"
   },

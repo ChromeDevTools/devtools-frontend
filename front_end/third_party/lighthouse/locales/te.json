@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "వైరుధ్యమైన అనేక URLలు ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "వేరొక డొమైన్ ({url})కు సూచిస్తోంది"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "చెల్లని URL ({url})"
   },

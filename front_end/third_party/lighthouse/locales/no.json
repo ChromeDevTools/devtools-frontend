@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Høyest effekt"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informativ revisjon}other{{numInformative} informative revisjoner}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobil"
@@ -78,13 +78,13 @@
     "message": "Navigasjonsrapport"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigasjonsrapport}other{{numNavigation} navigasjonsrapporter}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} revisjon som kan bestås}other{{numPassableAudits} revisjoner som kan bestås}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} revisjon er bestått}other{{numPassed} revisjoner er bestått}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Gjennomsnitt"
@@ -111,7 +111,7 @@
     "message": "Øyeblikksbilde-rapport"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} øyeblikksbilderapport}other{{numSnapshot} øyeblikksbilderapporter}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Sammendrag"
@@ -126,7 +126,7 @@
     "message": "Tidsspennrapport"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} tidsspennrapport}other{{numTimespan} tidsspennrapporter}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse-rapport over brukerflyt"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Flere motstridende nettadresser ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Peker til et annet domene ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Ugyldig nettadresse ({url})"
   },
@@ -1761,7 +1758,7 @@
     "message": "Disse kontrollene kreves av den grunnleggende [sjekklisten for progressive nettprogrammer](https://developers.google.com/web/progressive-web-apps/checklist), men kontrolleres ikke automatisk av Lighthouse. De påvirker ikke poengsummen din, men det er viktig at du verifiserer dem manuelt."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
+    "message": "PWA (progressive web app – progressivt nettprogram)"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Kan installeres"
@@ -2331,7 +2328,7 @@
     "message": "Se kalkulatoren."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Skjul visningen"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigasjonsstart"
@@ -2370,13 +2367,13 @@
     "message": "Rapportfeil: ingen revisjonsinformasjon"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Utvid visningen"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Opprett sak"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Skjul"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Prøvefunksjonsdata"
@@ -2400,10 +2397,10 @@
     "message": "Beståtte revisjoner"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Første sideinnlasting"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Egendefinert struping"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulert skrivebord"
@@ -2433,19 +2430,19 @@
     "message": "Brukeragent (nettverk)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Enkelt sideinnlasting"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Disse dataene er hentet fra én enkelt sideinnlasting, i motsetning til feltdata som oppsummerer mange økter."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Treg 4G-struping"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ukjent"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Vis"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Vis revisjoner som er relevant for:"

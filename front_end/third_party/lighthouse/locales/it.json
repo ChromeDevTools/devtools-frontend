@@ -60,10 +60,10 @@
     "message": "Scoprire opportunità legate alle prestazioni per migliorare l'esperienza relativa alle pagine di lunga durata e alle applicazioni a pagina singola."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Massimo impatto"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} controllo informativo}one{{numInformative} controllo informativo}other{{numInformative} controlli informativi}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Dispositivi mobili"
@@ -78,13 +78,13 @@
     "message": "Report relativo alla navigazione"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} report relativo alla navigazione}one{{numNavigation} report relativo alla navigazione}other{{numNavigation} report relativi alla navigazione}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} controllo superabile}one{{numPassableAudits} controllo superabile}other{{numPassableAudits} controlli superabili}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} controllo superato}one{{numPassed} controllo superato}other{{numPassed} controlli superati}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Nella media"
@@ -111,7 +111,7 @@
     "message": "Report relativo a un momento specifico"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} report relativo a un momento specifico}one{{numSnapshot} report relativo a un momento specifico}other{{numSnapshot} report relativi a un momento specifico}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Riepilogo"
@@ -126,7 +126,7 @@
     "message": "Report relativo al periodo di tempo"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} report relativo al periodo di tempo}one{{numTimespan} report relativo al periodo di tempo}other{{numTimespan} report relativi al periodo di tempo}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Report Lighthouse sulla procedura"
@@ -666,7 +666,7 @@
     "message": "La memorizzazione nella cache per un lungo periodo di tempo può velocizzare le visite abituali alla tua pagina. [Ulteriori informazioni](https://web.dev/uses-long-cache-ttl/)."
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 risorsa trovata}other{# risorse trovate}}"
+    "message": "{itemCount,plural, =1{1 risorsa trovata}one{# resources found}other{# risorse trovate}}"
   },
   "lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
     "message": "Pubblica le risorse statiche con criteri della cache efficaci"
@@ -720,7 +720,7 @@
     "message": "Nella sezione Catene di richieste fondamentali indicata di seguito vengono mostrate le risorse caricate con priorità elevata. Potresti ridurre la lunghezza delle catene e le dimensioni del download delle risorse oppure rimandare il download delle risorse non necessarie per velocizzare il caricamento della pagina. [Ulteriori informazioni](https://web.dev/critical-request-chains/)."
   },
   "lighthouse-core/audits/critical-request-chains.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 catena trovata}other{# catene trovate}}"
+    "message": "{itemCount,plural, =1{1 catena trovata}one{# chains found}other{# catene trovate}}"
   },
   "lighthouse-core/audits/critical-request-chains.js | title": {
     "message": "Evita di concatenare le richieste fondamentali"
@@ -756,7 +756,7 @@
     "message": "Le API obsolete verranno rimosse dal browser prima o poi. [Ulteriori informazioni](https://web.dev/deprecations/)."
   },
   "lighthouse-core/audits/deprecations.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 avviso trovato}other{# avvisi trovati}}"
+    "message": "{itemCount,plural, =1{1 avviso trovato}one{# avvisi trovati}other{# avvisi trovati}}"
   },
   "lighthouse-core/audits/deprecations.js | failureTitle": {
     "message": "Usa API obsolete"
@@ -804,7 +804,7 @@
     "message": "Un DOM di grandi dimensioni aumenta l'utilizzo di memoria, causa [calcoli di stile](https://developers.google.com/web/fundamentals/performance/rendering/reduce-the-scope-and-complexity-of-style-calculations) più lunghi e genera costosi [adattamenti dinamici del layout](https://developers.google.com/speed/articles/reflow). [Ulteriori informazioni](https://web.dev/dom-size/)."
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 elemento}other{# elementi}}"
+    "message": "{itemCount,plural, =1{1 elemento}one{# elementi}other{# elementi}}"
   },
   "lighthouse-core/audits/dobetterweb/dom-size.js | failureTitle": {
     "message": "Evita di usare un DOM di dimensioni eccessive"
@@ -879,7 +879,7 @@
     "message": "Alcuni script di terze parti potrebbero contenere vulnerabilità di sicurezza note facilmente identificate e sfruttate dai malintenzionati. [Ulteriori informazioni](https://web.dev/no-vulnerable-libraries/)."
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 vulnerabilità rilevata}other{# vulnerabilità rilevate}}"
+    "message": "{itemCount,plural, =1{1 vulnerabilità rilevata}one{# vulnerabilità rilevate}other{# vulnerabilità rilevate}}"
   },
   "lighthouse-core/audits/dobetterweb/no-vulnerable-libraries.js | failureTitle": {
     "message": "Include librerie JavaScript front-end con vulnerabilità di sicurezza note"
@@ -912,7 +912,7 @@
     "message": "HTTP/2 offre tanti vantaggi rispetto a HTTP/1.1, tra cui intestazioni binarie e multiplexing. [Scopri di più](https://web.dev/uses-http2/)"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 richiesta non pubblicata tramite HTTP/2}other{# richieste non pubblicate tramite HTTP/2}}"
+    "message": "{itemCount,plural, =1{1 richiesta non pubblicata tramite HTTP/2}one{# richieste non pubblicate tramite HTTP/2}other{# richieste non pubblicate tramite HTTP/2}}"
   },
   "lighthouse-core/audits/dobetterweb/uses-http2.js | title": {
     "message": "Usa HTTP/2"
@@ -945,7 +945,7 @@
     "message": "Tutto il testo rimane visibile durante il caricamento dei caratteri web"
   },
   "lighthouse-core/audits/font-display.js | undeclaredFontOriginWarning": {
-    "message": "{fontCountForOrigin,plural, =1{Impossibile controllare automaticamente in Lighthouse il valore `font-display` per l'origine {fontOrigin}.}other{Impossibile controllare automaticamente in Lighthouse i valori `font-display` per l'origine {fontOrigin}.}}"
+    "message": "{fontCountForOrigin,plural, =1{Impossibile controllare automaticamente in Lighthouse il valore `font-display` per l'origine {fontOrigin}.}one{Impossibile controllare automaticamente in Lighthouse i valori `font-display` per l'origine {fontOrigin}.}other{Impossibile controllare automaticamente in Lighthouse i valori `font-display` per l'origine {fontOrigin}.}}"
   },
   "lighthouse-core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Proporzioni (effettive)"
@@ -993,7 +993,7 @@
     "message": "Il service worker è la tecnologia che consente alla tua app di usare tante funzionalità delle app web progressive, ad esempio il funzionamento offline, l'aggiunta alla schermata Home e le notifiche push. Grazie a implementazioni adeguate del service worker e del file manifest, i browser possono chiedere proattivamente agli utenti di aggiungere la tua app alla schermata Home. Ciò potrebbe comportare un maggiore coinvolgimento. [Scopri di più](https://web.dev/installable-manifest/)"
   },
   "lighthouse-core/audits/installable-manifest.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 motivo}other{# motivi}}"
+    "message": "{itemCount,plural, =1{1 motivo}one{# motivi}other{# motivi}}"
   },
   "lighthouse-core/audits/installable-manifest.js | failureTitle": {
     "message": "Il file manifest o il service worker dell'app web non soddisfano i requisiti di installabilità"
@@ -1089,7 +1089,7 @@
     "message": "Tutti i siti dovrebbero essere protetti con HTTPS, anche quelli che non trattano dati sensibili. Si dovrebbero quindi evitare i [contenuti misti](https://developers.google.com/web/fundamentals/security/prevent-mixed-content/what-is-mixed-content) perché alcune risorse vengono caricate tramite HTTP nonostante la richiesta iniziale venga pubblicata tramite HTTPS. HTTPS impedisce agli intrusi di manomettere o ascoltare passivamente le comunicazioni tra la tua app e i tuoi utenti ed è un prerequisito per HTTP/2 e tante nuove API delle piattaforme web. [Ulteriori informazioni](https://web.dev/is-on-https/)"
   },
   "lighthouse-core/audits/is-on-https.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 richiesta non sicura trovata}other{# richieste non sicure trovate}}"
+    "message": "{itemCount,plural, =1{1 richiesta non sicura trovata}one{# richieste non sicure trovate}other{# richieste non sicure trovate}}"
   },
   "lighthouse-core/audits/is-on-https.js | failureTitle": {
     "message": "Non usa HTTPS"
@@ -1131,7 +1131,7 @@
     "message": "Vengono elencate le attività più lunghe nel thread principale; è utile per identificare gli elementi che contribuiscono maggiormente al ritardo dell'interazione. [Ulteriori informazioni](https://web.dev/long-tasks-devtools/)"
   },
   "lighthouse-core/audits/long-tasks.js | displayValue": {
-    "message": "{itemCount,plural, =1{# attività lunga trovata}other{# attività lunghe trovate}}"
+    "message": "{itemCount,plural, =1{# attività lunga trovata}one{# attività lunghe trovate}other{# attività lunghe trovate}}"
   },
   "lighthouse-core/audits/long-tasks.js | title": {
     "message": "Evita attività lunghe nel thread principale"
@@ -1224,7 +1224,7 @@
     "message": "Le animazioni non composite possono essere scadenti e aumentare il valore CLS. [Ulteriori informazioni](https://web.dev/non-composited-animations)"
   },
   "lighthouse-core/audits/non-composited-animations.js | displayValue": {
-    "message": "{itemCount,plural, =1{# elemento animato trovato}other{# elementi animati trovati}}"
+    "message": "{itemCount,plural, =1{# elemento animato trovato}one{# elementi animati trovati}other{# elementi animati trovati}}"
   },
   "lighthouse-core/audits/non-composited-animations.js | filterMayMovePixels": {
     "message": "La proprietà relativa al filtro potrebbe spostare i pixel"
@@ -1242,7 +1242,7 @@
     "message": "La proprietà relativa alla trasformazione dipende dalle dimensioni della casella"
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedCSSProperty": {
-    "message": "{propertyCount,plural, =1{Proprietà CSS non supportata: {properties}}other{Proprietà CSS non supportate: {properties}}}"
+    "message": "{propertyCount,plural, =1{Proprietà CSS non supportata: {properties}}one{Proprietà CSS non supportate: {properties}}other{Proprietà CSS non supportate: {properties}}}"
   },
   "lighthouse-core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "L'effetto ha parametri di timing non supportati"
@@ -1251,7 +1251,7 @@
     "message": "Mantieni la quantità e le dimensioni delle richieste di rete al di sotto dei target impostati tramite il budget per le prestazioni fornito. [Ulteriori informazioni](https://developers.google.com/web/tools/lighthouse/audits/budgets)."
   },
   "lighthouse-core/audits/performance-budget.js | requestCountOverBudget": {
-    "message": "{count,plural, =1{1 richiesta}other{# richieste}}"
+    "message": "{count,plural, =1{1 richiesta}one{# richieste}other{# richieste}}"
   },
   "lighthouse-core/audits/performance-budget.js | title": {
     "message": "Budget per le prestazioni"
@@ -1281,7 +1281,7 @@
     "message": "Per impostare budget relativi alla quantità e alle dimensioni delle risorse della pagina, aggiungi un file budget.json. [Ulteriori informazioni](https://web.dev/use-lighthouse-for-performance-budgets/)."
   },
   "lighthouse-core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 richiesta • {byteCount, number, bytes} KiB}other{# richieste • {byteCount, number, bytes} KiB}}"
+    "message": "{requestCount,plural, =1{1 richiesta • {byteCount, number, bytes} KiB}one{# richieste • {byteCount, number, bytes} KiB}other{# richieste • {byteCount, number, bytes} KiB}}"
   },
   "lighthouse-core/audits/resource-summary.js | title": {
     "message": "Mantieni un numero ridotto di richieste e dimensioni di trasferimento limitate"
@@ -1291,9 +1291,6 @@
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Diversi URL in conflitto ({urlList})"
-  },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Rimanda a un altro dominio ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "URL non valido ({url})"
@@ -1392,7 +1389,7 @@
     "message": "Il testo descrittivo dei link aiuta i motori di ricerca a comprendere i tuoi contenuti. [Ulteriori informazioni](https://web.dev/link-text/)."
   },
   "lighthouse-core/audits/seo/link-text.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 link trovato}other{# link trovati}}"
+    "message": "{itemCount,plural, =1{1 link trovato}one{# link trovati}other{# link trovati}}"
   },
   "lighthouse-core/audits/seo/link-text.js | failureTitle": {
     "message": "I link non contengono testo descrittivo"
@@ -1434,7 +1431,7 @@
     "message": "La richiesta per robots.txt ha restituito uno stato HTTP: {statusCode}"
   },
   "lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError": {
-    "message": "{itemCount,plural, =1{1 errore trovato}other{# errori trovati}}"
+    "message": "{itemCount,plural, =1{1 errore trovato}one{# errori trovati}other{# errori trovati}}"
   },
   "lighthouse-core/audits/seo/robots-txt.js | explanation": {
     "message": "Lighthouse non può completare il download del file robots.txt"
@@ -1536,7 +1533,7 @@
     "message": "Alcuni incorporamenti di terze parti possono essere caricati tramite caricamento lento. Puoi sostituirli con un facade finché non sono richiesti. [Scopri di più](https://web.dev/third-party-facades/)"
   },
   "lighthouse-core/audits/third-party-facades.js | displayValue": {
-    "message": "{itemCount,plural, =1{# alternativa facade disponibile}other{# alternative facade disponibili}}"
+    "message": "{itemCount,plural, =1{# alternativa facade disponibile}one{# alternative facade disponibili}other{# alternative facade disponibili}}"
   },
   "lighthouse-core/audits/third-party-facades.js | failureTitle": {
     "message": "Alcune risorse di terze parti possono essere caricate tramite caricamento lento con un facade"
@@ -1587,7 +1584,7 @@
     "message": "Potresti dotare la tua app dell'API User Timing per misurare le prestazioni reali dell'app durante le esperienze utente chiave. [Ulteriori informazioni](https://web.dev/user-timings/)."
   },
   "lighthouse-core/audits/user-timings.js | displayValue": {
-    "message": "{itemCount,plural, =1{1 tempo utente}other{# tempi utente}}"
+    "message": "{itemCount,plural, =1{1 tempo utente}one{# user timings}other{# tempi utente}}"
   },
   "lighthouse-core/audits/user-timings.js | title": {
     "message": "Indicatori e misure User Timing"
@@ -1629,7 +1626,7 @@
     "message": "Nel file JavaScript di grandi dimensioni manca una mappa di origine"
   },
   "lighthouse-core/audits/valid-source-maps.js | missingSourceMapItemsWarningMesssage": {
-    "message": "{missingItems,plural, =1{Avviso: manca 1 elemento in `.sourcesContent`}other{Avviso: mancano # elementi in `.sourcesContent`}}"
+    "message": "{missingItems,plural, =1{Avviso: manca 1 elemento in `.sourcesContent`}one{Avviso: mancano # elementi in `.sourcesContent`}other{Avviso: mancano # elementi in `.sourcesContent`}}"
   },
   "lighthouse-core/audits/valid-source-maps.js | title": {
     "message": "La pagina ha mappe di origine valide"
@@ -1806,7 +1803,7 @@
     "message": "Il caricamento della pagina è stato troppo lento e non è stato completato entro il limite di tempo. I risultati potrebbero essere incompleti."
   },
   "lighthouse-core/gather/driver/storage.js | warningData": {
-    "message": "{locationCount,plural, =1{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in questa posizione: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}other{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in queste posizioni: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}}"
+    "message": "{locationCount,plural, =1{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in questa posizione: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}one{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in queste posizioni: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}other{Potrebbero esserci dei dati memorizzati che incidono sulle prestazioni di caricamento in queste posizioni: {locations}. Controlla questa pagina in una finestra di navigazione in incognito per evitare che queste risorse incidano sui tuoi punteggi.}}"
   },
   "lighthouse-core/lib/csp-evaluator.js | allowlistFallback": {
     "message": "Potresti aggiungere schemi URL https: e http: (ignorati dai browser che supportano \"strict-dynamic\") per la compatibilità con le versioni precedenti dei browser."
@@ -1932,7 +1929,7 @@
     "message": "Potenziali riduzioni di {wastedBytes, number, bytes} KiB"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueElementsFound": {
-    "message": "{nodeCount,plural, =1{1 elemento trovato}other{# elementi trovati}}"
+    "message": "{nodeCount,plural, =1{1 elemento trovato}one{# elementi trovati}other{# elementi trovati}}"
   },
   "lighthouse-core/lib/i18n/i18n.js | displayValueMsSavings": {
     "message": "Potenziali riduzioni di {wastedMs, number, milliseconds} ms"
@@ -2331,7 +2328,7 @@
     "message": "Vai al calcolatore."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Comprimi visualizzazione"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navigazione iniziale"
@@ -2370,13 +2367,13 @@
     "message": "Errore segnalato: nessuna informazione sul controllo"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Espandi visualizzazione"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Segnala un problema"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Nascondi"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Dati di prova controllati"
@@ -2400,10 +2397,10 @@
     "message": "Controlli superati"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Caricamento pagina iniziale"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Limitazione personalizzata"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Desktop emulato"
@@ -2433,19 +2430,19 @@
     "message": "User-agent (rete)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Caricamento singola pagina"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Questi dati riguardano il caricamento di una singola pagina, al contrario dei dati del campo che riepilogano tante sessioni."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Limitazione a 4G lenta"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Valore sconosciuto"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Mostra"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Mostra controlli relativi a:"

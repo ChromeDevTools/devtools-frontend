@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "تتعدّد عناوين URL المتضاربة ({urlList})."
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "يشير عنوان URL إلى نطاق مختلف ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "عنوان URL غير صالح ({url})"
   },

@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Suurin vaikutus"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informatiivinen tarkastus}other{{numInformative} informatiivista tarkastusta}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobiili"
@@ -78,13 +78,13 @@
     "message": "Navigointiraportti"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigointiraportti}other{{numNavigation} navigointiraporttia}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} läpäistävissä oleva tarkastus}other{{numPassableAudits} läpäistävissä olevaa tarkastusta}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} tarkastus läpäisty}other{{numPassed} tarkastusta läpäisty}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Keskimääräinen"
@@ -111,7 +111,7 @@
     "message": "Tilannekuvaraportti"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} tilannekuvaraportti}other{{numSnapshot} tilannekuvaraporttia}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Yhteenveto"
@@ -126,7 +126,7 @@
     "message": "Aikaväliraportti"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} aikaväliraportti}other{{numTimespan} aikaväliraporttia}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthousen käyttökulkuraportti"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Useita ristiriitaisia URL-osoitteita ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Viittaa toiseen verkkotunnukseen ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Virheellinen URL-osoite ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Katso laskin."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Tiivistä näkymä"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Ensimmäinen navigointi"
@@ -2370,13 +2367,13 @@
     "message": "Raporttivirhe: ei tarkastustietoja"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Laajenna näkymää"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Ilmoita ongelmasta"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Piilota"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Laboratoriodata"
@@ -2400,10 +2397,10 @@
     "message": "Hyväksytyt tarkastukset"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Ensimmäinen sivun lataus"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Omat rajoitukset"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emuloitu työpöytä"
@@ -2433,19 +2430,19 @@
     "message": "Käyttäjäagentti (verkko)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Yksi sivun lataus"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Tämä data on peräisin yhdestä sivun latauksesta, toisin kuin kenttädata, joka on yhteenveto useista käyttökerroista."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Hidasta 4G-yhteyttä simuloiva rajoitus"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Ei tietoa"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Näytä"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Näytä tähän liittyvät tarkastukset:"

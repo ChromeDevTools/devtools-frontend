@@ -3,7 +3,7 @@
     "message": "Lahat ng Ulat"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Mga Kategorya"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Pagiging accessible"
@@ -24,46 +24,46 @@
     "message": "Desktop"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Pag-unawa sa Ulat ng Daloy ng Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Pag-unawa sa Mga Daloy"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Gamitin ang Mga ulat ng pag-navigate para..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Gamitin ang Mga ulat ng snapshot para..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Gamitin ang Mga ulat ng tagal ng panahon para..."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Makakuha ng score sa Performance sa Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Sukatin ang mga sukatan ng Performance ng pag-load ng page gaya ng Largest Contentful Paint at Speed Index."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Suriin ang mga kakayahan ng Progressive Web App."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Maghanap ng mga isyu sa accessibility sa mga single page application o kumplikadong form."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "Suriin ang mga pinakamahuhusay na kagawian ng mga menu at element ng UI na nakatago sa likod ng pakikipag-ugnayan."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "Sukatin ang mga pagbabago sa layout at tagal ng pag-execute sa JavaScript sa isang serye ng mga pakikipag-ugnayan."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "Tumuklas ng mga pagkakataon sa performance para pagandahin ang karanasan para sa mga long-lived na page at single-page application."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Pinakamalaking epekto"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} nagbibigay impormasyong audit}one{{numInformative} nagbibigay impormasyong audit}other{{numInformative} na nagbibigay impormasyong audit}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobile"
@@ -72,19 +72,19 @@
     "message": "Pag-load ng page"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Nagsusuri ang mga ulat ng pag-navigate ng isang pag-load ng page, na eksaktong kagaya ng mga orihinal na ulat ng Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Ulat ng pag-navigate"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} ulat ng pag-navigate}one{{numNavigation} ulat ng pag-navigate}other{{numNavigation} na ulat ng pag-navigate}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} maipapasang audit}one{{numPassableAudits} maipapasang audit}other{{numPassableAudits} na maipapasang audit}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} audit ang pumasa}one{{numPassed} audit ang pumasa}other{{numPassed} na audit ang pumasa}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Average"
@@ -99,19 +99,19 @@
     "message": "Maganda"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "I-save"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Na-capture na status ng page"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Sinusuri ng mga ulat ng snapshot ang page sa isang partikular na status, na karaniwang pagkatapos ng mga pakikipag-ugnayan ng user."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Ulat ng snapshot"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} ulat ng snapshot}one{{numSnapshot} ulat ng snapshot}other{{numSnapshot} na ulat ng snapshot}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Buod"
@@ -120,13 +120,13 @@
     "message": "Mga pakikipag-ugnayan ng user"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Nagsusuri ang mga ulat ng tagal ng panahon ng abitrary na yugto ng panahon, na karaniwang naglalaman ng mga pakikipag-ugnayan ng user."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Ulat ng tagal ng panahon"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} ulat ng tagal ng panahon}one{{numTimespan} ulat ng tagal ng panahon}other{{numTimespan} na ulat ng tagal ng panahon}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Ulat ng Daloy ng User ng Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Maraming URL ang hindi magkakatugma ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Tumuturo sa ibang domain ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Invalid na URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Tingnan ang calculator."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "I-collapse ang view"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Unang Navigation"
@@ -2370,13 +2367,13 @@
     "message": "Error sa ulat: walang impormasyon sa pag-audit"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Palawakin ang view"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Mag-file ng isyu"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Itago"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Data ng Lab"
@@ -2400,10 +2397,10 @@
     "message": "Mga pumasang pag-audit"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Paunang pag-load ng page"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Custom na pag-throttle"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Na-emulate na Desktop"
@@ -2433,19 +2430,19 @@
     "message": "User agent (network)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Isang pag-load ng page"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Kinuha ang data na ito mula sa isang pag-load ng page, kumpara sa data ng field na nagbubuod sa maraming session."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Pag-throttle sa mabagal na 4G"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Hindi alam"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Ipakita"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Ipakita ang mga audit na may kaugnayan sa:"

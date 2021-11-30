@@ -60,10 +60,10 @@
     "message": "長期使用のページやシングルページ アプリケーションでパフォーマンスの利便性を改善できる余地を見つける。"
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "最も影響が大きい"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} 件の監査で情報が提供されました}other{{numInformative} 件の監査で情報が提供されました}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "モバイル"
@@ -78,13 +78,13 @@
     "message": "ナビゲーション レポート"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} 件のナビゲーション レポート}other{{numNavigation} 件のナビゲーション レポート}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} 件の監査にパスする可能性があります}other{{numPassableAudits} 件の監査にパスする可能性があります}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} 件の監査をパスしました}other{{numPassed} 件の監査をパスしました}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "普通"
@@ -111,7 +111,7 @@
     "message": "スナップショット レポート"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} 件のスナップショット レポート}other{{numSnapshot} 件のスナップショット レポート}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "概要"
@@ -126,7 +126,7 @@
     "message": "期間レポート"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} 件の期間レポート}other{{numTimespan} 件の期間レポート}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse ユーザーフロー レポート"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "複数の URL が競合しています（{urlList}）"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "別のドメイン（{url}）を指しています"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "URL（{url}）が無効です"
   },
@@ -2331,7 +2328,7 @@
     "message": "計算ツールはこちら。"
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "ビューを閉じる"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "最初の移動先"
@@ -2370,13 +2367,13 @@
     "message": "レポートエラー: 監査情報はありません"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "ビューを開く"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "問題を提出"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "非表示"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "ラボデータ"
@@ -2400,10 +2397,10 @@
     "message": "合格した監査"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "最初のページ読み込み"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "カスタム スロットリング"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "デスクトップのエミュレーション"
@@ -2433,19 +2430,19 @@
     "message": "ユーザー エージェント（ネットワーク）"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "1 回のページ読み込み"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "このデータは 1 回のページ読み込みで取得されたもので、フィールド データは多数のセッションを要約したものです。"
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "低速 4G スロットリング"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "不明"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "表示"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "次に関連する監査を表示:"

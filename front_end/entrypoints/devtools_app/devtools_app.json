@@ -1,5 +1,4 @@
 {
   "modules" : [
-    { "name": "panels/lighthouse" }
   ]
 }

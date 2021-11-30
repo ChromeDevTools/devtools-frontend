@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "कई कॉन्फ़्लिक्टिंग यूआरएल हैं ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "किसी दूसरे डोमेन की तरफ़ इशारा करता है ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "गलत यूआरएल ({url})"
   },

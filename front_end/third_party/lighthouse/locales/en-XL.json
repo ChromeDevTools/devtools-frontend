@@ -1052,6 +1052,9 @@
   "lighthouse-core/audits/installable-manifest.js | not-offline-capable": {
     "message": "P̂áĝé d̂óêś n̂ót̂ ẃôŕk̂ óf̂f́l̂ín̂é"
   },
+  "lighthouse-core/audits/installable-manifest.js | pipeline-restarted": {
+    "message": "P̂ẂÂ h́âś b̂éêń ûńîńŝt́âĺl̂éd̂ án̂d́ îńŝt́âĺl̂áb̂íl̂ít̂ý ĉh́êćk̂ś r̂éŝét̂t́îńĝ."
+  },
   "lighthouse-core/audits/installable-manifest.js | platform-not-supported-on-android": {
     "message": "T̂h́ê śp̂éĉíf̂íêd́ âṕp̂ĺîćât́îón̂ ṕl̂át̂f́ôŕm̂ íŝ ńôt́ ŝúp̂ṕôŕt̂éd̂ ón̂ Án̂d́r̂óîd́"
   },
@@ -1294,9 +1297,6 @@
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "M̂úl̂t́îṕl̂é ĉón̂f́l̂íĉt́îńĝ ÚR̂Ĺŝ ({urlList})"
-  },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "P̂óîńt̂ś t̂ó â d́îf́f̂ér̂én̂t́ d̂óm̂áîń ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Îńv̂ál̂íd̂ ÚR̂Ĺ ({url})"
@@ -2224,6 +2224,36 @@
   },
   "node_modules/lighthouse-stack-packs/packs/magento.js | uses-rel-preload": {
     "message": "`<link rel=preload>` t̂áĝś ĉán̂ b́ê ád̂d́êd́ b̂ý [m̂ód̂íf̂ýîńĝ á t̂h́êḿêś'ŝ ĺâýôút̂](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
+    "message": "Ûśê t́ĥé `Next.js` Îḿâǵê Óp̂t́îḿîźât́îón̂ ÁP̂Í t̂ó ŝér̂v́ê ḿôd́êŕn̂ f́ôŕm̂át̂ś l̂ík̂é `WebP` âńd̂ `AVIF`. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next/image#acceptable-formats)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂, ẃĥíĉh́ d̂éf̂áûĺt̂ś t̂ó `loading=\"lazy\"`. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#loading)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | render-blocking-resources": {
+    "message": "Ûśê t́ĥé `next/script` ĉóm̂ṕôńêńt̂ t́ô d́êf́êŕ l̂óâd́îńĝ óf̂ ńôń-ĉŕît́îćâĺ t̂h́îŕd̂-ṕâŕt̂ý ŝćr̂íp̂t́ŝ. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/basic-features/script)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-css-rules": {
+    "message": "Ĉón̂śîd́êŕ ŝét̂t́îńĝ úp̂ `PurgeCSS` ín̂ `Next.js` ćôńf̂íĝúr̂át̂íôń t̂ó r̂ém̂óv̂é ûńûśêd́ r̂úl̂éŝ f́r̂óm̂ śt̂ýl̂éŝh́êét̂ś. [L̂éâŕn̂ ḿôŕê](https://purgecss.com/guides/next.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
+    "message": "Ûśê `Webpack Bundle Analyzer` t́ô d́êt́êćt̂ ún̂úŝéd̂ J́âv́âŚĉŕîṕt̂ ćôd́ê. [Ĺêár̂ń m̂ód̂é](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ `Next.js Analytics` t́ô ḿêáŝúr̂é ŷóûŕ âṕp̂'ś r̂éâĺ-ŵór̂ĺd̂ ṕêŕf̂ór̂ḿâńĉé. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/advanced-features/measuring-performance)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-long-cache-ttl": {
+    "message": "Ĉón̂f́îǵûŕê ćâćĥín̂ǵ f̂ór̂ ím̂ḿût́âb́l̂é âśŝét̂ś âńd̂ `Server-side Rendered` (ŚŜŔ) p̂áĝéŝ. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/going-to-production#caching)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ ín̂śt̂éâd́ ôf́ `<img>` t̂ó ôṕt̂ím̂íẑé îḿâǵêś. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/basic-features/image-optimization)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
+    "message": "Ûśê t́ĥé `next/image` ĉóm̂ṕôńêńt̂ t́ô śêt́ t̂h́ê áp̂ṕr̂óp̂ŕîát̂é `sizes`. [L̂éâŕn̂ ḿôŕê](https://nextjs.org/docs/api-reference/next/image#sizes)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
+    "message": "Êńâb́l̂é ĉóm̂ṕr̂éŝśîón̂ ón̂ ýôúr̂ Ńêx́t̂.j́ŝ śêŕv̂ér̂. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | efficient-animated-content": {
     "message": "[R̂ép̂ĺâćê án̂ím̂át̂éd̂ ǴÎF́ŝ ẃît́ĥ v́îd́êó](https://web.dev/replace-gifs-with-videos/) f̂ór̂ f́âśt̂ér̂ ẃêb́ p̂áĝé l̂óâd́ŝ án̂d́ ĉón̂śîd́êŕ ûśîńĝ ḿôd́êŕn̂ f́îĺê f́ôŕm̂át̂ś ŝúĉh́ âś [Ŵéb̂Ḿ](https://web.dev/replace-gifs-with-videos/#create-webm-videos) ôŕ [ÂV́1](https://developers.google.com/web/updates/2018/09/chrome-70-media-updates#av1-decoder) t̂ó îḿp̂ŕôv́ê ćôḿp̂ŕêśŝíôń êf́f̂íĉíêńĉý b̂ý ĝŕêát̂ér̂ t́ĥán̂ 30% óv̂ér̂ t́ĥé ĉúr̂ŕêńt̂ śt̂át̂é-ôf́-t̂h́ê-ár̂t́ v̂íd̂éô ćôd́êć, V̂Ṕ9."

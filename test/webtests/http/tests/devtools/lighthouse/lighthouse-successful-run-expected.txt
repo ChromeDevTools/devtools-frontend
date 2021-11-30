@@ -180,6 +180,7 @@ Computing artifact: LanternMaxPotentialFID$1
 Auditing: Cumulative Layout Shift
 Computing artifact: CumulativeLayoutShift$2
 Auditing: No browser errors logged to the console
+Computing artifact: JSBundles
 Auditing: Initial server response time was short
 Computing artifact: MainResource$g
 Auditing: Time to Interactive
@@ -202,6 +203,7 @@ Auditing: Displays images with correct aspect ratio
 Auditing: Serves images with appropriate resolution
 Auditing: Fonts with `font-display: optional` are preloaded
 Auditing: Avoids deprecated APIs
+Computing artifact: JSBundles
 Auditing: Minimizes main-thread work
 Computing artifact: MainThreadTasks$7
 Auditing: JavaScript execution time
@@ -374,7 +376,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 9.0.0
+Version: 9.1.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,

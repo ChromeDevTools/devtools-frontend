@@ -3,7 +3,7 @@
     "message": "Alla rapporter"
   },
   "flow-report/src/i18n/ui-strings.js | categories": {
-    "message": "Categories"
+    "message": "Kategorier"
   },
   "flow-report/src/i18n/ui-strings.js | categoryAccessibility": {
     "message": "Tillgänglighet"
@@ -24,40 +24,40 @@
     "message": "Dator"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Information om rapporten över flöde i Lighthouse"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Information om flöden"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Du kan använda rapporter över navigering till följande:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Du kan använda rapporter med ögonblicksbilder till följande:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Du kan använda rapporter över tidsperiod till följande:"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Hämta ett prestandavärde för Lighthouse."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Mät resultatmätvärden för sidhämtningar, t.ex. Största uppritningen av innehåll och hastighetsindex."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Testa funktioner för progressiva webbappar."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Hitta tillgänglighetsproblem i appar för en sida eller komplexa formulär."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
-    "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
+    "message": "Utvärdera rekommenderade metoder för menyer och UI-element som döljs bakom interaktioner."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan1": {
-    "message": "Measure layout shifts and JavaScript execution time on a series of interactions."
+    "message": "Mäta layoutförskjutningar och körningstider för JavaScript i en serie interaktioner."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseTimespan2": {
-    "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
+    "message": "Upptäck prestandamöjligheter och förbättra upplevelsen på långlivade sidor och appar för en sida."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
     "message": "Störst effekt"
@@ -72,7 +72,7 @@
     "message": "Sidhämtning"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Med rapporter över navigering kan du analysera en enskild sidhämtning, precis som med de ursprungliga Lighthouse-rapporterna."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Rapport över navigering"
@@ -99,13 +99,13 @@
     "message": "Bra"
   },
   "flow-report/src/i18n/ui-strings.js | save": {
-    "message": "Save"
+    "message": "Spara"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotDescription": {
     "message": "Sidans status vid en viss tidpunkt"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Med rapporter med ögonblicksbilder går det att analysera en sida i ett visst läge, vanligtvis efter interaktioner från användare."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Rapport med ögonblicksbild"
@@ -120,7 +120,7 @@
     "message": "Användarinteraktioner"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Med rapporter över tidsintervall kan du analysera en slumpmässig tidsperiod som oftast innehåller användarinteraktioner."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Rapport över tidsperiod"
@@ -1291,9 +1291,6 @@
   },
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Flera webbadresser som står i konflikt ({urlList})"
-  },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Pekar på en annan domän ({url})"
   },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Ogiltig webbadress ({url})"

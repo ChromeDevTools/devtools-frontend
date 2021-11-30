@@ -24,31 +24,31 @@
     "message": "Desktop"
   },
   "flow-report/src/i18n/ui-strings.js | helpDialogTitle": {
-    "message": "Understanding the Lighthouse Flow Report"
+    "message": "Understanding the Lighthouse flow report"
   },
   "flow-report/src/i18n/ui-strings.js | helpLabel": {
-    "message": "Understanding Flows"
+    "message": "Understanding flows"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionNavigation": {
-    "message": "Use Navigation reports to..."
+    "message": "Use Navigation reports to…"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionSnapshot": {
-    "message": "Use Snapshot reports to..."
+    "message": "Use Snapshot reports to…"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseInstructionTimespan": {
-    "message": "Use Timespan reports to..."
+    "message": "Use Timespan reports to…"
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation1": {
-    "message": "Obtain a Lighthouse Performance score."
+    "message": "Obtain a Lighthouse performance score."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Measure page load Performance metrics such as Largest Contentful Paint and Speed Index."
+    "message": "Measure page load performance metrics, such as largest contentful paint and speed index."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
-    "message": "Assess Progressive Web App capabilities."
+    "message": "Assess progressive web app capabilities."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot1": {
-    "message": "Find accessibility issues in single page applications or complex forms."
+    "message": "Find accessibility issues in single-page applications or complex forms."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseSnapshot2": {
     "message": "Evaluate best practices of menus and UI elements hidden behind interaction."
@@ -63,7 +63,7 @@
     "message": "Highest impact"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} informative audit}other{{numInformative} informative audits}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Mobile"
@@ -72,19 +72,19 @@
     "message": "Page load"
   },
   "flow-report/src/i18n/ui-strings.js | navigationLongDescription": {
-    "message": "Navigation reports analyze a single page load, exactly like the original Lighthouse reports."
+    "message": "Navigation reports analyse a single page load, exactly like the original Lighthouse reports."
   },
   "flow-report/src/i18n/ui-strings.js | navigationReport": {
     "message": "Navigation report"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} navigation report}other{{numNavigation} navigation reports}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} passable audit}other{{numPassableAudits} passable audits}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} audit passed}other{{numPassed} audits passed}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Average"
@@ -105,13 +105,13 @@
     "message": "Captured state of page"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotLongDescription": {
-    "message": "Snapshot reports analyze the page in a particular state, typically after user interactions."
+    "message": "Snapshot reports analyse the page in a particular state, typically after user interactions."
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReport": {
     "message": "Snapshot report"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} snapshot report}other{{numSnapshot} snapshot reports}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Summary"
@@ -120,13 +120,13 @@
     "message": "User interactions"
   },
   "flow-report/src/i18n/ui-strings.js | timespanLongDescription": {
-    "message": "Timespan reports analyze an arbitrary period of time, typically containing user interactions."
+    "message": "Timespan reports analyse an arbitrary period of time, typically containing user interactions."
   },
   "flow-report/src/i18n/ui-strings.js | timespanReport": {
     "message": "Timespan report"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} timespan report}other{{numTimespan} timespan reports}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse user flow report"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Multiple conflicting URLs ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Points to a different domain ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Invalid URL ({url})"
   },
@@ -2436,7 +2433,7 @@
     "message": "Single page load"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "This data is taken from a single page load, as opposed to field data summarising many sessions."
   },
   "report/renderer/util.js | runtimeSlow4g": {
     "message": "Slow 4G throttling"

@@ -60,10 +60,10 @@
     "message": "Знаходити можливості покращити ефективність постійних сторінок і односторінкових додатків."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Найвагоміші"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} інформативна перевірка}one{{numInformative} інформативна перевірка}few{{numInformative} інформативні перевірки}many{{numInformative} інформативних перевірок}other{{numInformative} інформативної перевірки}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Мобільна версія"
@@ -78,13 +78,13 @@
     "message": "Звіт про навігацію"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} звіт про навігацію}one{{numNavigation} звіт про навігацію}few{{numNavigation} звіти про навігацію}many{{numNavigation} звітів про навігацію}other{{numNavigation} звіту про навігацію}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{Можна здійснити {numPassableAudits} перевірку}one{Можна здійснити {numPassableAudits} перевірку}few{Можна здійснити {numPassableAudits} перевірки}many{Можна здійснити {numPassableAudits} перевірок}other{Можна здійснити {numPassableAudits} перевірки}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} перевірку пройдено}one{{numPassed} перевірку пройдено}few{{numPassed} перевірки пройдено}many{{numPassed} перевірок пройдено}other{{numPassed} перевірки пройдено}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Посередньо"
@@ -111,7 +111,7 @@
     "message": "Звіт про стан на певний момент часу"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} звіт про стан на певний момент часу}one{{numSnapshot} звіт про стан на певний момент часу}few{{numSnapshot} звіти про стан на певний момент часу}many{{numSnapshot} звітів про стан на певний момент часу}other{{numSnapshot} звіту про стан на певний момент часу}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Підсумок"
@@ -126,7 +126,7 @@
     "message": "Звіт про період часу"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} звіт про період часу}one{{numTimespan} звіт про період часу}few{{numTimespan} звіти про період часу}many{{numTimespan} звітів про період часу}other{{numTimespan} звіту про період часу}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Звіт про послідовність переходів у Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Кілька URL-адрес конфліктують ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Указує на інший домен ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Недійсна URL-адреса ({url})"
   },
@@ -1761,7 +1758,7 @@
     "message": "Ці категорії обов'язкові відповідно до основного [контрольного списку для прогресивних веб-додатків](https://developers.google.com/web/progressive-web-apps/checklist), але Lighthouse не перевіряє їх автоматично. Вони не впливають на ваш показник, проте їх потрібно підтвердити вручну."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
+    "message": "Прогресивний веб-додаток"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Можна встановити"
@@ -2331,7 +2328,7 @@
     "message": "Показати калькулятор."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Згорнути"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Початкова навігація"
@@ -2370,13 +2367,13 @@
     "message": "Повідомлення про помилку: немає інформації про перевірку"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Розгорнути"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Повідомити про проблему"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Сховати"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Дані тестів"
@@ -2400,10 +2397,10 @@
     "message": "Виконані перевірки"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Перше завантаження сторінки"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Спеціальне обмеження пропускної спроможності"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Емульований комп'ютер"
@@ -2433,19 +2430,19 @@
     "message": "Агент користувача (мережа)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Одне завантаження сторінки"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Було взято дані одного завантаження сторінки, а не дані поля, що охоплюють кілька сеансів."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Обмеження пропускної спроможності для мережі 4G з низькою швидкістю"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Невідомо"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Показати"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Показано аудити, релевантні для:"

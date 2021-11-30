@@ -60,10 +60,10 @@
     "message": "Descubrir oportunidades de rendimiento para mejorar la experiencia en aplicaciones de página única y en páginas abiertas por largo tiempo."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Mayor impacto"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} auditoría informativa}other{{numInformative} auditorías informativas}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Para dispositivos móviles"
@@ -78,13 +78,13 @@
     "message": "Informe de navegación"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} informe de navegación}other{{numNavigation} informes de navegación}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} auditoría con posibilidades de aprobar}other{{numPassableAudits} auditorías con posibilidades de aprobar}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} auditoría aprobada}other{{numPassed} auditorías aprobadas}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Promedio"
@@ -111,7 +111,7 @@
     "message": "Informe de un momento específico"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} informe de un momento específico}other{{numSnapshot} informes de un momento específico}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Resumen"
@@ -126,7 +126,7 @@
     "message": "Informe del período"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} informe del período}other{{numTimespan} informes del período}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Informe del flujo de usuarios de Lighthouse"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Varias URL en conflicto ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Redirige al usuario a otro dominio ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "URL no válida ({url})"
   },
@@ -1761,7 +1758,7 @@
     "message": "Estas comprobaciones son necesarias según el modelo de referencia [Lista de tareas para AWP](https://developers.google.com/web/progressive-web-apps/checklist), pero Lighthouse no las realiza automáticamente. Es importante que las verifiques a mano (aunque no afectan a la puntuación)."
   },
   "lighthouse-core/config/default-config.js | pwaCategoryTitle": {
-    "message": "PWA"
+    "message": "AWP"
   },
   "lighthouse-core/config/default-config.js | pwaInstallableGroupTitle": {
     "message": "Instalable"
@@ -2331,7 +2328,7 @@
     "message": "Consulta la calculadora."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Contraer vista"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Navegación inicial"
@@ -2370,13 +2367,13 @@
     "message": "Error del informe: No hay información de la auditoría"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Expandir vista"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Informa sobre un problema"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Ocultar"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Datos de prueba"
@@ -2400,10 +2397,10 @@
     "message": "Auditorías aprobadas"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Carga inicial de la página"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Limitación personalizada"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Escritorio emulado"
@@ -2433,19 +2430,19 @@
     "message": "Usuario-agente (red)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Carga de una única página"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Estos datos se obtienen de la carga de una única página, a diferencia de los datos de campos que sintetizan la información de muchas sesiones."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Limitación de la red 4G lenta"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Desconocido"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Mostrar"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Mostrar las auditorías relevantes para la métrica:"

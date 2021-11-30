@@ -60,10 +60,10 @@
     "message": "Discover performance opportunities to improve the experience for long-lived pages and single-page applications."
   },
   "flow-report/src/i18n/ui-strings.js | highestImpact": {
-    "message": "Highest impact"
+    "message": "Największy wpływ"
   },
   "flow-report/src/i18n/ui-strings.js | informativeAuditCount": {
-    "message": "{numInformative, plural,\n    =1 {{numInformative} informative audit}\n    other {{numInformative} informative audits}\n  }"
+    "message": "{numInformative,plural, =1{{numInformative} audyt informacyjny}few{{numInformative} audyty informacyjne}many{{numInformative} audytów informacyjnych}other{{numInformative} audytu informacyjnego}}"
   },
   "flow-report/src/i18n/ui-strings.js | mobile": {
     "message": "Wersja mobilna"
@@ -78,13 +78,13 @@
     "message": "Raport dotyczący nawigacji"
   },
   "flow-report/src/i18n/ui-strings.js | navigationReportCount": {
-    "message": "{numNavigation, plural,\n    =1 {{numNavigation} navigation report}\n    other {{numNavigation} navigation reports}\n  }"
+    "message": "{numNavigation,plural, =1{{numNavigation} raport dotyczący nawigacji}few{{numNavigation} raporty dotyczące nawigacji}many{{numNavigation} raportów dotyczących nawigacji}other{{numNavigation} raportu dotyczącego nawigacji}}"
   },
   "flow-report/src/i18n/ui-strings.js | passableAuditCount": {
-    "message": "{numPassableAudits, plural,\n    =1 {{numPassableAudits} passable audit}\n    other {{numPassableAudits} passable audits}\n  }"
+    "message": "{numPassableAudits,plural, =1{{numPassableAudits} audyt zadowalający}few{{numPassableAudits} audyty zadowalające}many{{numPassableAudits} audytów zadowalających}other{{numPassableAudits} audytu zadowalającego}}"
   },
   "flow-report/src/i18n/ui-strings.js | passedAuditCount": {
-    "message": "{numPassed, plural,\n    =1 {{numPassed} audit passed}\n    other {{numPassed} audits passed}\n  }"
+    "message": "{numPassed,plural, =1{{numPassed} audyt zaliczony}few{{numPassed} audyty zaliczone}many{{numPassed} audytów zaliczonych}other{{numPassed} audytu zaliczone}}"
   },
   "flow-report/src/i18n/ui-strings.js | ratingAverage": {
     "message": "Średnia"
@@ -111,7 +111,7 @@
     "message": "Raport dotyczący określonego momentu"
   },
   "flow-report/src/i18n/ui-strings.js | snapshotReportCount": {
-    "message": "{numSnapshot, plural,\n    =1 {{numSnapshot} snapshot report}\n    other {{numSnapshot} snapshot reports}\n  }"
+    "message": "{numSnapshot,plural, =1{{numSnapshot} raport dotyczący określonego momentu}few{{numSnapshot} raporty dotyczące określonego momentu}many{{numSnapshot} raportów dotyczących określonego momentu}other{{numSnapshot} raportu dotyczącego określonego momentu}}"
   },
   "flow-report/src/i18n/ui-strings.js | summary": {
     "message": "Podsumowanie"
@@ -126,7 +126,7 @@
     "message": "Raport dotyczący okresu"
   },
   "flow-report/src/i18n/ui-strings.js | timespanReportCount": {
-    "message": "{numTimespan, plural,\n    =1 {{numTimespan} timespan report}\n    other {{numTimespan} timespan reports}\n  }"
+    "message": "{numTimespan,plural, =1{{numTimespan} raport dotyczący okresu}few{{numTimespan} raporty dotyczące okresu}many{{numTimespan} raportów dotyczących okresu}other{{numTimespan} raportu dotyczącego okresu}}"
   },
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Raport Lighthouse dotyczący przepływu użytkowników"
@@ -1292,9 +1292,6 @@
   "lighthouse-core/audits/seo/canonical.js | explanationConflict": {
     "message": "Niezgodne ze sobą adresy URL ({urlList})"
   },
-  "lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain": {
-    "message": "Wskazuje inną domenę ({url})"
-  },
   "lighthouse-core/audits/seo/canonical.js | explanationInvalid": {
     "message": "Nieprawidłowy URL ({url})"
   },
@@ -2331,7 +2328,7 @@
     "message": "Zobacz kalkulator."
   },
   "report/renderer/util.js | collapseView": {
-    "message": "Collapse view"
+    "message": "Zwiń widok"
   },
   "report/renderer/util.js | crcInitialNavigation": {
     "message": "Początkowa nawigacja"
@@ -2370,13 +2367,13 @@
     "message": "Błąd raportu: brak informacji o audycie"
   },
   "report/renderer/util.js | expandView": {
-    "message": "Expand view"
+    "message": "Rozwiń widok"
   },
   "report/renderer/util.js | footerIssue": {
     "message": "Zgłoś problem"
   },
   "report/renderer/util.js | hide": {
-    "message": "Hide"
+    "message": "Ukryj"
   },
   "report/renderer/util.js | labDataTitle": {
     "message": "Dane laboratoryjne"
@@ -2400,10 +2397,10 @@
     "message": "Zaliczone audyty"
   },
   "report/renderer/util.js | runtimeAnalysisWindow": {
-    "message": "Initial page load"
+    "message": "Wstępne wczytanie strony"
   },
   "report/renderer/util.js | runtimeCustom": {
-    "message": "Custom throttling"
+    "message": "Ograniczanie niestandardowe"
   },
   "report/renderer/util.js | runtimeDesktopEmulation": {
     "message": "Emulacja pulpitu"
@@ -2433,19 +2430,19 @@
     "message": "Klient użytkownika (sieć)"
   },
   "report/renderer/util.js | runtimeSingleLoad": {
-    "message": "Single page load"
+    "message": "Pojedyncze wczytanie strony"
   },
   "report/renderer/util.js | runtimeSingleLoadTooltip": {
-    "message": "This data is taken from a single page load, as opposed to field data summarizing many sessions."
+    "message": "Te dane pochodzą z pojedynczego wczytania strony w odróżnieniu od wartości w polu zawierającym podsumowanie kilku sesji."
   },
   "report/renderer/util.js | runtimeSlow4g": {
-    "message": "Slow 4G throttling"
+    "message": "Ograniczanie spowalniające do 4G"
   },
   "report/renderer/util.js | runtimeUnknown": {
     "message": "Nieznane"
   },
   "report/renderer/util.js | show": {
-    "message": "Show"
+    "message": "Pokaż"
   },
   "report/renderer/util.js | showRelevantAudits": {
     "message": "Pokaż audyty dotyczące:"

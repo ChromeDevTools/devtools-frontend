@@ -80,9 +80,6 @@ type MessageLookup = {
   drawingFinished: '',
 };
 
-let queue: unknown[][] = [];
-let prevQueue: string = '';
-
 const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
   const functionName = message[0];
   if (functionName === 'setOverlay') {
@@ -100,16 +97,9 @@ const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLooku
   } else if (functionName === 'setPlatform') {
     platformName = message[1];
   } else if (functionName === 'drawingFinished') {
-    const currentQueue = JSON.stringify(queue);
-    if (currentQueue !== prevQueue) {
-      for (const message of queue) {
-        currentOverlay.dispatch(message);
-      }
-    }
-    prevQueue = currentQueue;
-    queue = [];
+    // TODO The logic needs to be added here once the backend starts sending this event.
   } else {
-    queue.push(message);
+    currentOverlay.dispatch(message);
   }
 };
 

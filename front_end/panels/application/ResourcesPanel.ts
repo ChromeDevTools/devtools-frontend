@@ -9,7 +9,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import resourcesPanelStyles from './resourcesPanel.css.js';
 
-import type {CookieTreeElement} from './ApplicationPanelSidebar.js';
 import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
 import {CookieItemsView} from './CookieItemsView.js';
 import {DatabaseQueryView} from './DatabaseQueryView.js';
@@ -212,47 +211,6 @@ export class ResourceRevealer implements Common.Revealer.Revealer {
     }
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     await sidebar.showResource(resource);
-  }
-}
-
-let cookieReferenceRevealerInstance: CookieReferenceRevealer;
-
-export class CookieReferenceRevealer implements Common.Revealer.Revealer {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): CookieReferenceRevealer {
-    const {forceNew} = opts;
-    if (!cookieReferenceRevealerInstance || forceNew) {
-      cookieReferenceRevealerInstance = new CookieReferenceRevealer();
-    }
-
-    return cookieReferenceRevealerInstance;
-  }
-  async reveal(cookie: Object): Promise<void> {
-    if (!(cookie instanceof SDK.Cookie.CookieReference)) {
-      throw new Error('Internal error: not a cookie reference');
-    }
-
-    const sidebar = await ResourcesPanel.showAndGetSidebar();
-    await sidebar.cookieListTreeElement.select();
-
-    const contextUrl = cookie.contextUrl();
-    if (contextUrl && await this.revealByDomain(sidebar, contextUrl)) {
-      return;
-    }
-    // Fallback: try to reveal the cookie using its domain as context, which may not work, because the
-    // Application Panel shows cookies grouped by context, see crbug.com/1060563.
-    this.revealByDomain(sidebar, cookie.domain());
-  }
-
-  private async revealByDomain(sidebar: ApplicationPanelSidebar, domain: string): Promise<boolean> {
-    const item = sidebar.cookieListTreeElement.children().find(
-        c => /** @type {!CookieTreeElement} */ (c as CookieTreeElement).cookieDomain().endsWith(domain));
-    if (item) {
-      await item.revealAndSelect();
-      return true;
-    }
-    return false;
   }
 }
 

@@ -263,24 +263,3 @@ export enum Attributes {
   Priority = 'priority',
   PartitionKey = 'partitionKey',
 }
-
-/**
- * A `CookieReference` uniquely identifies a cookie by the triple (#name,domain,#path). Additionally, a context may be
- * included to make it clear which site under Application>Cookies should be opened when revealing a `CookieReference`.
- */
-export class CookieReference {
-  readonly #domainInternal: string;
-  readonly #contextUrlInternal: string|undefined;
-  constructor(_name: string, domain: string, _path: string, contextUrl: string|undefined) {
-    this.#domainInternal = domain;
-    this.#contextUrlInternal = contextUrl;
-  }
-
-  domain(): string {
-    return this.#domainInternal;
-  }
-
-  contextUrl(): string|undefined {
-    return this.#contextUrlInternal;
-  }
-}

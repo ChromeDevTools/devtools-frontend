@@ -142,19 +142,6 @@ Common.Revealer.registerRevealer({
 Common.Revealer.registerRevealer({
   contextTypes() {
     return [
-      SDK.Cookie.CookieReference,
-    ];
-  },
-  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
-  async loadRevealer() {
-    const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.CookieReferenceRevealer.instance();
-  },
-});
-
-Common.Revealer.registerRevealer({
-  contextTypes() {
-    return [
       SDK.ResourceTreeModel.ResourceTreeFrame,
     ];
   },

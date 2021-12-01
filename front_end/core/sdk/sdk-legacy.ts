@@ -74,9 +74,6 @@ SDK.ConsoleMessage.FrontendMessageSource = SDKModule.ConsoleModel.FrontendMessag
 SDK.Cookie = SDKModule.Cookie.Cookie;
 
 /** @constructor */
-SDK.CookieReference = SDKModule.Cookie.CookieReference;
-
-/** @constructor */
 SDK.CookieParser = SDKModule.CookieParser.CookieParser;
 
 /** @constructor */

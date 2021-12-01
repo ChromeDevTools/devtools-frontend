@@ -110,7 +110,7 @@
   --color-image-preview-background: rgb(255 255 255);
 
   /* Colors for styling inputs */
-  --color-input-outline: rgb(128 134 139);
+  --color-input-outline: rgb(218 220 224);
   --color-input-outline-active: rgb(26 115 232);
   --color-input-outline-error: rgb(217 48 37);
   --color-input-outline-disabled: rgba(128 134 139 / 20%);

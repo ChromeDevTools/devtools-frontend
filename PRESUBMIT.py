@@ -178,15 +178,6 @@ def _CheckExperimentTelemetry(input_api, output_api):
     return results
 
 
-def _CheckJSON(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running JSON Validator:')]
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'json_validator',
-                                         'validate_module_json.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
-    return results
-
-
 def _CheckFormat(input_api, output_api):
     node_modules_affected_files = _getAffectedFiles(input_api, [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
@@ -541,7 +532,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckExperimentTelemetry(input_api, output_api))
     results.extend(_CheckGeneratedFiles(input_api, output_api))
-    results.extend(_CheckJSON(input_api, output_api))
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))
     results.extend(_CheckDevToolsStyleCSS(input_api, output_api))
     results.extend(_CheckDevToolsRunESLintTests(input_api, output_api))

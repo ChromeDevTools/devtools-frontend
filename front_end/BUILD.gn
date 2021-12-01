@@ -27,7 +27,7 @@ group("front_end") {
     "entrypoints/node_app:entrypoint",
     "entrypoints/shell",
     "entrypoints/wasmparser_worker:worker_entrypoint",
-    "entrypoints/worker_app",
+    "entrypoints/worker_app:entrypoint",
     "legacy_test_runner",
   ]
 }

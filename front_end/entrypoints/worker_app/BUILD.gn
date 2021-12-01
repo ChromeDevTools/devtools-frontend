@@ -2,12 +2,23 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../third_party/typescript/typescript.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
-ts_library("worker_app") {
-  no_emit = true
-  sources = [ "worker_app.js" ]
+devtools_module("worker_main") {
+  sources = [ "WorkerMain.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../panels/mobile_throttling:bundle",
+    "../../ui/legacy/components/utils:bundle",
+  ]
+}
+
+devtools_entrypoint("entrypoint") {
+  entrypoint = "worker_app.ts"
 
   deps = [
     ":worker_main",
@@ -25,20 +36,8 @@ ts_library("worker_app") {
     "../main:bundle",
     "../shell",
   ]
-}
 
-devtools_entrypoint("worker_main") {
-  entrypoint = "WorkerMain.ts"
-
-  deps = [
-    "../../core/common:bundle",
-    "../../core/i18n:bundle",
-    "../../core/sdk:bundle",
-    "../../panels/mobile_throttling:bundle",
-    "../../ui/legacy/components/utils:bundle",
-  ]
-
-  visibility = [ ":*" ]
+  visibility = [ "../../:*" ]
 
   visibility += devtools_entrypoints_visibility
 }

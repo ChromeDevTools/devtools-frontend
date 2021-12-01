@@ -67,7 +67,6 @@ devtools_applications = [
   "inspector",
   "js_app",
   "ndb_app",
-  "worker_app",
 ]
 
 gen_generated_applications_js = []
@@ -79,7 +78,7 @@ foreach(application, devtools_applications) {
       [ "$target_gen_dir/front_end/entrypoints/$application/$application.js" ]
 }
 
-non_autostart_non_remote_modules = [ ]
+non_autostart_non_remote_modules = []
 
 gen_non_autostart_non_remote_modules = []
 

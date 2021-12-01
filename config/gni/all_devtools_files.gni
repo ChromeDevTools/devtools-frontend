@@ -10,7 +10,6 @@ all_devtools_files = [
   "front_end/entrypoints/inspector/inspector.js",
   "front_end/entrypoints/js_app/js_app.js",
   "front_end/entrypoints/ndb_app/ndb_app.js",
-  "front_end/entrypoints/worker_app/worker_app.js",
   "front_end/legacy_test_runner/accessibility_test_runner/accessibility_test_runner.js",
   "front_end/legacy_test_runner/application_test_runner/application_test_runner.js",
   "front_end/legacy_test_runner/bindings_test_runner/bindings_test_runner.js",

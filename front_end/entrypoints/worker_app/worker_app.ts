@@ -14,8 +14,11 @@ import '../../panels/application/application-meta.js';
 import '../../panels/timeline/timeline-meta.js';
 import './WorkerMain.js';
 
+import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
-import * as Startup from '../startup/startup.js';
 
+const runtimeInstance = Root.Runtime.Runtime.instance({forceNew: true, moduleDescriptors: []});
+// @ts-ignore Exposed for legacy layout tests
+self.runtime = runtimeInstance;
 new Main.MainImpl.MainImpl();
-Startup.RuntimeInstantiator.startApplication('worker_app');
+Root.Runtime.appStartedPromiseCallback();

@@ -10,7 +10,7 @@ devtools_entrypoint("entrypoint") {
   deps = [
     "../../entrypoints/startup:bundle",
     "../../panels/screencast:meta",
-    "../devtools_app",
+    "../devtools_app:entrypoint",
   ]
 
   visibility = [ "../../:*" ]

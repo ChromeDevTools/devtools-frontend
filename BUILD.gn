@@ -63,7 +63,6 @@ devtools_test_files = [
 application_templates = [ "front_end/entrypoint_template.html" ]
 
 devtools_applications = [
-  "devtools_app",
   "js_app",
   "ndb_app",
 ]

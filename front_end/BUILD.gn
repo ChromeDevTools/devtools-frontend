@@ -17,7 +17,7 @@ group("front_end") {
     ":legacy_entrypoints",
     "Images",
     "entrypoints/device_mode_emulation_frame",
-    "entrypoints/devtools_app",
+    "entrypoints/devtools_app:entrypoint",
     "entrypoints/formatter_worker:worker_entrypoint",
     "entrypoints/heap_snapshot_worker:worker_entrypoint",
     "entrypoints/inspector:entrypoint",

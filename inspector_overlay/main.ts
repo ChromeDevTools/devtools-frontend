@@ -80,10 +80,17 @@ type MessageLookup = {
   drawingFinished: '',
 };
 
+let queue: unknown[][] = [];
+let prevQueue: string = '';
+
 const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
   const functionName = message[0];
   if (functionName === 'setOverlay') {
     const overlayName = message[1] as keyof Overlays;
+    // No need to swap overlays if it's the same overlay.
+    if (overlays[overlayName] === currentOverlay) {
+      return;
+    }
     if (currentOverlay) {
       currentOverlay.uninstall();
     }
@@ -97,9 +104,16 @@ const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLooku
   } else if (functionName === 'setPlatform') {
     platformName = message[1];
   } else if (functionName === 'drawingFinished') {
-    // TODO The logic needs to be added here once the backend starts sending this event.
+    const currentQueue = JSON.stringify(queue);
+    if (currentQueue !== prevQueue) {
+      for (const message of queue) {
+        currentOverlay.dispatch(message);
+      }
+    }
+    prevQueue = currentQueue;
+    queue = [];
   } else {
-    currentOverlay.dispatch(message);
+    queue.push(message);
   }
 };
 

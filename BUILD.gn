@@ -62,10 +62,7 @@ devtools_test_files = [
 
 application_templates = [ "front_end/entrypoint_template.html" ]
 
-devtools_applications = [
-  "js_app",
-  "ndb_app",
-]
+devtools_applications = [ "js_app" ]
 
 gen_generated_applications_js = []
 applications_js = []

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 import '../shell/shell.js';
 
+import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
-import * as Startup from '../startup/startup.js';
 
 new Main.MainImpl.MainImpl();
-Startup.RuntimeInstantiator.startApplication('ndb_app');
+Root.Runtime.appStartedPromiseCallback();

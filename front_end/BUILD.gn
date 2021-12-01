@@ -23,7 +23,7 @@ group("front_end") {
     "entrypoints/inspector:entrypoint",
     "entrypoints/js_app",
     "entrypoints/lighthouse_worker:bundle",
-    "entrypoints/ndb_app",
+    "entrypoints/ndb_app:entrypoint",
     "entrypoints/node_app:entrypoint",
     "entrypoints/shell",
     "entrypoints/wasmparser_worker:worker_entrypoint",

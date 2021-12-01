@@ -16,6 +16,7 @@ import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import type {RequestTimeRange} from './RequestTimingView.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const BAR_SPACING = 1;
 
@@ -271,6 +272,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       show: (popover: UI.GlassPane.GlassPane): Promise<true> => {
         const content =
             RequestTimingView.createTimingTable((request as SDK.NetworkRequest.NetworkRequest), this.calculator);
+        popover.registerCSSFiles([networkingTimingTableStyles]);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       },

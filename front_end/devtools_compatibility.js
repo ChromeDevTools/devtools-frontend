@@ -400,6 +400,7 @@
     RecordingReplayFinished: 'DevTools.RecordingReplayFinished',
     RecordingReplayStarted: 'DevTools.RecordingReplayStarted',
     RecordingToggled: 'DevTools.RecordingToggled',
+    SyncSetting: 'DevTools.SyncSetting',
   };
 
   /**

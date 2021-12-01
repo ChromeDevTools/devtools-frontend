@@ -214,7 +214,6 @@ grd_files_release_sources = [
   "front_end/entrypoints/inspector/inspector.js",
   "front_end/entrypoints/inspector_main/inspector_main-meta.js",
   "front_end/entrypoints/inspector_main/inspector_main.js",
-  "front_end/entrypoints/js_app/JsMain.js",
   "front_end/entrypoints/js_app/js_app.js",
   "front_end/entrypoints/lighthouse_worker/lighthouse_worker.js",
   "front_end/entrypoints/main/main-legacy.js",

@@ -1019,7 +1019,7 @@
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Ŝh́ôẃŝ ĺâýêŕ b̂ór̂d́êŕŝ (ór̂án̂ǵê/ól̂ív̂é) âńd̂ t́îĺêś (ĉýâń)."
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "M̂áîń"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {

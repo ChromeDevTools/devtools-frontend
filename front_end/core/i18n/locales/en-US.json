@@ -1019,7 +1019,7 @@
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Shows layer borders (orange/olive) and tiles (cyan)."
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Main"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {

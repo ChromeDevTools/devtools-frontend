@@ -2,33 +2,23 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
-ts_library("js_app") {
-  no_emit = true
-  sources = [ "js_app.js" ]
-
-  deps = [
-    ":js_main",
-    "../../entrypoints/startup:bundle",
-    "../../panels/js_profiler:meta",
-    "../main:bundle",
-    "../shell",
-  ]
-}
-
-devtools_entrypoint("js_main") {
-  entrypoint = "JsMain.ts"
+devtools_entrypoint("entrypoint") {
+  entrypoint = "js_app.ts"
 
   deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../entrypoints/startup:bundle",
     "../../generated:protocol",
+    "../../panels/js_profiler:meta",
     "../../ui/legacy/components/utils:bundle",
+    "../main:bundle",
+    "../shell",
   ]
 
-  visibility = [ ":*" ]
+  visibility = [ "../../:*" ]
 }

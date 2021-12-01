@@ -10,82 +10,9 @@ import("./scripts/build/ninja/node.gni")
 import("./scripts/build/ninja/vars.gni")
 import("./third_party/blink/public/public_features.gni")
 
-devtools_test_files = [
-  "front_end/third_party/axe-core/axe.js",
-  "front_end/legacy_test_runner/accessibility_test_runner/accessibility_test_runner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/bindings_test_runner.js",
-  "front_end/legacy_test_runner/application_test_runner/application_test_runner.js",
-  "front_end/legacy_test_runner/application_test_runner/CacheStorageTestRunner.js",
-  "front_end/legacy_test_runner/application_test_runner/IndexedDBTestRunner.js",
-  "front_end/legacy_test_runner/application_test_runner/ResourcesTestRunner.js",
-  "front_end/legacy_test_runner/application_test_runner/ResourceTreeTestRunner.js",
-  "front_end/legacy_test_runner/application_test_runner/ServiceWorkersTestRunner.js",
-  "front_end/legacy_test_runner/application_test_runner/StorageTestRunner.js",
-  "front_end/legacy_test_runner/lighthouse_test_runner/lighthouse_test_runner.js",
-  "front_end/legacy_test_runner/axe_core_test_runner/axe_core_test_runner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/AutomappingTestRunner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/BindingsTestRunner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/IsolatedFilesystemTestRunner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/OverridesTestRunner.js",
-  "front_end/legacy_test_runner/bindings_test_runner/PersistenceTestRunner.js",
-  "front_end/legacy_test_runner/console_test_runner/console_test_runner.js",
-  "front_end/legacy_test_runner/coverage_test_runner/coverage_test_runner.js",
-  "front_end/legacy_test_runner/cpu_profiler_test_runner/cpu_profiler_test_runner.js",
-  "front_end/legacy_test_runner/data_grid_test_runner/data_grid_test_runner.js",
-  "front_end/legacy_test_runner/device_mode_test_runner/device_mode_test_runner.js",
-  "front_end/legacy_test_runner/elements_test_runner/elements_test_runner.js",
-  "front_end/legacy_test_runner/elements_test_runner/EditDOMTestRunner.js",
-  "front_end/legacy_test_runner/elements_test_runner/ElementsPanelShadowSelectionOnRefreshTestRunner.js",
-  "front_end/legacy_test_runner/elements_test_runner/ElementsTestRunner.js",
-  "front_end/legacy_test_runner/elements_test_runner/SetOuterHTMLTestRunner.js",
-  "front_end/legacy_test_runner/elements_test_runner/StylesUpdateLinksTestRunner.js",
-  "front_end/legacy_test_runner/extensions_test_runner/extensions_test_runner.js",
-  "front_end/legacy_test_runner/extensions_test_runner/ExtensionsNetworkTestRunner.js",
-  "front_end/legacy_test_runner/extensions_test_runner/ExtensionsTestRunner.js",
-  "front_end/legacy_test_runner/heap_profiler_test_runner/heap_profiler_test_runner.js",
-  "front_end/integration_test_runner.html",
-  "front_end/legacy_test_runner/layers_test_runner/layers_test_runner.js",
-  "front_end/legacy_test_runner/network_test_runner/network_test_runner.js",
-  "front_end/legacy_test_runner/performance_test_runner/performance_test_runner.js",
-  "front_end/legacy_test_runner/performance_test_runner/TimelineDataTestRunner.js",
-  "front_end/legacy_test_runner/performance_test_runner/TimelineTestRunner.js",
-  "front_end/legacy_test_runner/sdk_test_runner/sdk_test_runner.js",
-  "front_end/legacy_test_runner/security_test_runner/security_test_runner.js",
-  "front_end/legacy_test_runner/sources_test_runner/sources_test_runner.js",
-  "front_end/legacy_test_runner/sources_test_runner/AutocompleteTestRunner.js",
-  "front_end/legacy_test_runner/sources_test_runner/DebuggerTestRunner.js",
-  "front_end/legacy_test_runner/sources_test_runner/EditorTestRunner.js",
-  "front_end/legacy_test_runner/sources_test_runner/LiveEditTestRunner.js",
-  "front_end/legacy_test_runner/sources_test_runner/SearchTestRunner.js",
-  "front_end/legacy_test_runner/sources_test_runner/SourcesTestRunner.js",
-]
-
-application_templates = [ "front_end/entrypoint_template.html" ]
-
-devtools_applications = [ "js_app" ]
-
-gen_generated_applications_js = []
-applications_js = []
-
-foreach(application, devtools_applications) {
-  applications_js += [ "entrypoints/$application/$application.js" ]
-  gen_generated_applications_js +=
-      [ "$target_gen_dir/front_end/entrypoints/$application/$application.js" ]
-}
-
-non_autostart_non_remote_modules = []
-
-gen_non_autostart_non_remote_modules = []
-
-foreach(module_file, non_autostart_non_remote_modules) {
-  gen_non_autostart_non_remote_modules +=
-      [ "$target_gen_dir/front_end/$module_file" ]
-}
-
 #-------------------------------------------------------------------------------
 
 devtools_frontend_resources_deps = [
-  ":build_release_devtools",
   "front_end",
   "test",
 ]
@@ -155,10 +82,7 @@ generated_file("input_grd_files") {
   output_conversion = "json"
   rebase = target_gen_dir
 
-  deps = [
-    ":build_release_devtools",
-    "front_end",
-  ]
+  deps = [ "front_end" ]
 }
 
 _compressable_grd_files = filter_include(_expected_grd_files,
@@ -233,37 +157,5 @@ action("generate_devtools_grd") {
     # Compression is slow, particularly in debug builds, so only compress in
     # non-debug builds.
     args += [ "--compress" ]
-  }
-}
-
-build_release_devtools_args = []
-
-if (!is_debug) {
-  build_release_devtools_args += [ "--rollup" ]
-}
-
-action("build_release_devtools") {
-  script = "scripts/build/build_release_applications.py"
-
-  helper_scripts = [
-    "scripts/build/modular_build.py",
-    "scripts/build/rjsmin.py",
-  ]
-
-  deps = [ "front_end" ]
-
-  inputs = helper_scripts + all_devtools_files + devtools_test_files +
-           application_templates
-  outputs = gen_generated_applications_js + gen_non_autostart_non_remote_modules
-
-  args = devtools_applications + [
-           "--input_path",
-           rebase_path("front_end", root_build_dir),
-           "--output_path_gen",
-           rebase_path("$target_gen_dir/front_end", root_build_dir),
-         ] + build_release_devtools_args
-
-  metadata = {
-    grd_files = outputs
   }
 }

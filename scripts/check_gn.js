@@ -9,7 +9,7 @@ const path = require('path');
 const FRONTEND_PATH = path.resolve(__dirname, '..', 'front_end');
 
 const manifestModules = [];
-for (const config of ['js_app']) {
+for (const config of []) {
   manifestModules.push(...require(path.resolve(FRONTEND_PATH, 'entrypoints', config, `${config}.json`)).modules);
 }
 

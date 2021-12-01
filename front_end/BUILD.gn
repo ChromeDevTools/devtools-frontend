@@ -21,7 +21,7 @@ group("front_end") {
     "entrypoints/formatter_worker:worker_entrypoint",
     "entrypoints/heap_snapshot_worker:worker_entrypoint",
     "entrypoints/inspector:entrypoint",
-    "entrypoints/js_app",
+    "entrypoints/js_app:entrypoint",
     "entrypoints/lighthouse_worker:bundle",
     "entrypoints/ndb_app:entrypoint",
     "entrypoints/node_app:entrypoint",

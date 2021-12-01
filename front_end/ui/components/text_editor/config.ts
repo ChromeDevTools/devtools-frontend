@@ -26,9 +26,10 @@ const empty: CM.Extension = [];
 export const dynamicSetting = CM.Facet.define<DynamicSetting<unknown>>();
 
 // The code below is used to wire up dynamic settings to editors. When
-// you include one of these objects in an editor configuration, the
-// TextEditor class will take care of listening to changes in the
-// setting, and updating the configuration as appropriate.
+// you include the result of calling `instance()` in an editor
+// configuration, the TextEditor class will take care of listening to
+// changes in the setting, and updating the configuration as
+// appropriate.
 
 export class DynamicSetting<T> {
   compartment = new CM.Compartment();
@@ -246,7 +247,7 @@ export const closeBrackets: CM.Extension = [
 // element with the editor styles mounted in it for them. This is
 // annoying, but necessary because a scrollable parent node clips them
 // otherwise, `position: fixed` doesn't work due to `contain` styles,
-// and appending them diretly to `document.body` doesn't work because
+// and appending them directly to `document.body` doesn't work because
 // the necessary style sheets aren't available there.
 let tooltipHost: ShadowRoot|null = null;
 

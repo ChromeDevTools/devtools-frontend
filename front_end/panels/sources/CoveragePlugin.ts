@@ -14,6 +14,8 @@ import * as Coverage from '../coverage/coverage.js';
 
 import {Plugin} from './Plugin.js';
 
+// Plugin that shows a gutter with coverage information when available.
+
 const UIStrings = {
   /**
   *@description Text for Coverage Status Bar Item in Sources Panel

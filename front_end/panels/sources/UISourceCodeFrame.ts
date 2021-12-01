@@ -52,7 +52,8 @@ import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
 function sourceFramePlugins(): (typeof Plugin)[] {
-  // The order of these plugins matters for toolbar items
+  // The order of these plugins matters for toolbar items and editor
+  // extension precedence
   return [
     CSSPlugin,
     DebuggerPlugin,
@@ -74,6 +75,8 @@ export class UISourceCodeFrame extends
   private uiSourceCodeEventListeners: Common.EventTarget.EventDescriptor[];
   private messageAndDecorationListeners: Common.EventTarget.EventDescriptor[];
   private readonly boundOnBindingChanged: () => void;
+  // The active plugins. These are created in setContent, and
+  // recreated when the binding changes
   private plugins: Plugin[] = [];
   private readonly errorPopoverHelper: UI.PopoverHelper.PopoverHelper;
 
@@ -114,6 +117,7 @@ export class UISourceCodeFrame extends
     return [
       super.editorConfiguration(doc),
       rowMessages([...this.allMessages()]),
+      // Inject editor extensions from plugins
       pluginCompartment.of(this.plugins.map(plugin => plugin.editorExtension())),
     ];
   }
@@ -547,7 +551,11 @@ export type EventTypes = {
 
 const pluginCompartment = new CodeMirror.Compartment();
 
-// Row message management and display logic
+// Row message management and display logic. The frame manages a
+// collection of messages, organized by line (row), as a wavy
+// underline starting at the start of the first message, up to the end
+// of the line, with icons indicating the message severity and content
+// at the end of the line.
 
 function addMessage(rows: Workspace.UISourceCode.Message[][], message: Workspace.UISourceCode.Message):
     Workspace.UISourceCode.Message[][] {
@@ -608,6 +616,7 @@ const setRowMessages = CodeMirror.StateEffect.define<RowMessages>();
 
 const underlineMark = CodeMirror.Decoration.mark({class: 'cm-waveUnderline'});
 
+// The widget shown at the end of a message annotation.
 class MessageWidget extends CodeMirror.WidgetType {
   constructor(readonly messages: Workspace.UISourceCode.Message[]) {
     super();

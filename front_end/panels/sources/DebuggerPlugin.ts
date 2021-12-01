@@ -158,24 +158,37 @@ type BreakpointDescription = {
 
 export class DebuggerPlugin extends Plugin {
   private editor: TextEditor.TextEditor.TextEditor|undefined = undefined;
+  // Set if the debugger is stopped on a breakpoint in this file
   private executionLocation: Workspace.UISourceCode.UILocation|null = null;
+  // Track state of the control key because holding it makes debugger
+  // target locations show up in the editor
   private controlDown: boolean = false;
-  private sourceMapInfobar: UI.Infobar.Infobar|null = null;
   private controlTimeout: number|undefined = undefined;
+  private sourceMapInfobar: UI.Infobar.Infobar|null = null;
   private readonly scriptsPanel: SourcesPanel;
   private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  // Manages pop-overs shown when the debugger is active and the user
+  // hovers over an expression
   private readonly popoverHelper: UI.PopoverHelper.PopoverHelper;
   private scriptFileForDebuggerModel:
       Map<SDK.DebuggerModel.DebuggerModel, Bindings.ResourceScriptMapping.ResourceScriptFile>;
   // The current set of breakpoints for this file. The locations in
-  // here are only in sync with editor positions when `this.muted` is
-  // false.
+  // here are kept in sync with their editor position. When a file's
+  // content is edited and later saved, these are used as a source of
+  // truth for re-creating the breakpoints.
   private breakpoints: BreakpointDescription[] = [];
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private continueToLocations: {from: number, to: number, async: boolean, click: () => void}[]|null = null;
   private readonly liveLocationPool: Bindings.LiveLocation.LiveLocationPool;
+  // When the editor content is changed by the user, this becomes
+  // true. When the plugin is muted, breakpoints show up as disabled
+  // and can't be manipulated. It is cleared again when the content is
+  // saved.
   private muted: boolean;
+  // If the plugin is initialized in muted state, we cannot correlated
+  // breakpoint position in the breakpoint manager with editor
+  // locations, so breakpoint manipulation is permanently disabled.
   private initializedMuted: boolean;
   private ignoreListInfobar: UI.Infobar.Infobar|null;
   private prettyPrintInfobar!: UI.Infobar.Infobar|null;
@@ -236,6 +249,8 @@ export class DebuggerPlugin extends Plugin {
   }
 
   editorExtension(): CodeMirror.Extension {
+    // Kludge to hook editor keyboard events into the ShortcutRegistry
+    // system.
     const handlers = this.shortcutHandlers();
 
     return [
@@ -309,6 +324,8 @@ export class DebuggerPlugin extends Plugin {
   }
 
   editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
+    // Start asynchronous actions that require access to the editor
+    // instance
     this.editor = editor;
     computeNonBreakableLines(editor.state, this.uiSourceCode).then(linePositions => {
       if (linePositions.length) {
@@ -685,6 +702,8 @@ export class DebuggerPlugin extends Plugin {
 
   private onEditorUpdate(update: CodeMirror.ViewUpdate): void {
     if (!update.changes.empty) {
+      // If the document changed, adjust known breakpoint positions
+      // for that change
       for (const breakpointDesc of this.breakpoints) {
         breakpointDesc.position = update.changes.mapPos(breakpointDesc.position);
       }
@@ -811,6 +830,7 @@ export class DebuggerPlugin extends Plugin {
     dialog.focusEditor();
   }
 
+  // Create decorations to indicate the current debugging position
   private computeExecutionDecorations(editorState: CodeMirror.EditorState, lineNumber: number, columnNumber: number):
       CodeMirror.DecorationSet {
     const {doc} = editorState;
@@ -957,6 +977,8 @@ export class DebuggerPlugin extends Plugin {
     return namesPerLine;
   }
 
+  // Highlight the locations the debugger can continue to (when
+  // Control is held)
   private async showContinueToLocations(): Promise<void> {
     this.popoverHelper.hidePopover();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
@@ -1098,6 +1120,8 @@ export class DebuggerPlugin extends Plugin {
     return this.breakpoints.filter(b => b.position >= line.from && b.position <= line.to).map(b => b.breakpoint);
   }
 
+  // Compute the decorations for existing breakpoints (both on the
+  // gutter and inline in the code)
   private async computeBreakpointDecoration(state: CodeMirror.EditorState, breakpoints: BreakpointDescription[]):
       Promise<BreakpointDecoration> {
     const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [];
@@ -1520,7 +1544,7 @@ export class DebuggerPlugin extends Plugin {
   }
 }
 
-// Infobar panel state
+// Infobar panel state, used to show additional panels below the editor.
 
 const addInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
 const removeInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();

@@ -12,6 +12,9 @@ import * as Snippets from '../snippets/snippets.js';
 
 import {Plugin} from './Plugin.js';
 
+// Plugin that tries to compile the editor content and highlights
+// compilation errors.
+
 export class JavaScriptCompilerPlugin extends Plugin {
   private compiling: boolean = false;
   private recompileScheduled: boolean = false;

@@ -11,6 +11,9 @@ import type * as TextEditor from '../../ui/components/text_editor/text_editor.js
 
 import {Plugin} from './Plugin.js';
 
+// Defines plugins that show profiling information in the editor
+// gutter when available.
+
 const UIStrings = {
   /**
   *@description The milisecond unit

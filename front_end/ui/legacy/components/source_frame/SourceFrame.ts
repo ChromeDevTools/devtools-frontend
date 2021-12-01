@@ -112,8 +112,9 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private shouldAutoPrettyPrint: boolean;
   private readonly progressToolbarItem: UI.Toolbar.ToolbarItem;
   private textEditorInternal: TextEditor.TextEditor.TextEditor;
-  private prettyBaseDoc: CodeMirror.Text|null = null;
+  // The 'clean' document, before editing
   private baseDoc: CodeMirror.Text;
+  private prettyBaseDoc: CodeMirror.Text|null = null;
   private displayedSelection: CodeMirror.EditorSelection|null = null;
   private searchConfig: UI.SearchableView.SearchConfig|null;
   private delayedFindSearchMatches: (() => void)|null;
@@ -212,27 +213,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       TextEditor.Config.allowScrollPastEof.instance(),
       TextEditor.Config.codeFolding.instance(),
       TextEditor.Config.autoDetectIndent.instance(),
-      CodeMirror.EditorView.theme({
-        '&.cm-editor': {height: '100%'},
-        '.cm-scroller': {overflow: 'auto'},
-        '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--color-non-breakable-line)'},
-        '.cm-searchMatch': {
-          border: '1px solid var(--color-search-match-border)',
-          borderRadius: '3px',
-          margin: '0 -1px',
-          '&.cm-searchMatch-selected': {
-            borderRadius: '1px',
-            backgroundColor: 'var(--color-selected-search-match-background)',
-            borderColor: 'var(--color-selected-search-match-background)',
-            '&, & *': {
-              color: 'var(--color-selected-search-match) !important',
-            },
-          },
-        },
-        ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
-          color: 'var(--legacy-accent-color)',
-        },
-      }),
+      sourceFrameTheme,
       CodeMirror.EditorView.domEventHandlers({
         focus: () => this.onFocus(),
         blur: () => this.onBlur(),
@@ -352,6 +333,9 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.updatePrettyPrintState();
   }
 
+  // If this is a disassembled WASM file or a pretty-printed file,
+  // wire in a line number formatter that shows binary offsets or line
+  // numbers in the original source.
   private getLineNumberFormatter(): CodeMirror.Extension {
     if (this.options.lineNumbers === false) {
       return [];
@@ -1165,3 +1149,25 @@ function markNonBreakableLines(disassembly: Common.WasmDisassembly.WasmDisassemb
     return CodeMirror.RangeSet.of(marks);
   });
 }
+
+const sourceFrameTheme = CodeMirror.EditorView.theme({
+  '&.cm-editor': {height: '100%'},
+  '.cm-scroller': {overflow: 'auto'},
+  '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--color-non-breakable-line)'},
+  '.cm-searchMatch': {
+    border: '1px solid var(--color-search-match-border)',
+    borderRadius: '3px',
+    margin: '0 -1px',
+    '&.cm-searchMatch-selected': {
+      borderRadius: '1px',
+      backgroundColor: 'var(--color-selected-search-match-background)',
+      borderColor: 'var(--color-selected-search-match-background)',
+      '&, & *': {
+        color: 'var(--color-selected-search-match) !important',
+      },
+    },
+  },
+  ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
+    color: 'var(--legacy-accent-color)',
+  },
+});

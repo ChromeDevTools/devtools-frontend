@@ -13,6 +13,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {Plugin} from './Plugin.js';
 
+// Plugin to add CSS completion, shortcuts, and color/curve swatches
+// to editors with CSS content.
+
 const UIStrings = {
   /**
   *@description Swatch icon element title in CSSPlugin of the Sources panel

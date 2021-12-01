@@ -1,15 +1,19 @@
 # Copyright 2021 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-import("../../../third_party/typescript/typescript.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
 
-ts_library("inspector") {
-  no_emit = true
-  sources = [ "inspector.js" ]
+devtools_entrypoint("entrypoint") {
+  entrypoint = "inspector.ts"
 
   deps = [
     "../../entrypoints/startup:bundle",
     "../../panels/screencast:meta",
     "../devtools_app",
   ]
+
+  visibility = [ "../../:*" ]
+
+  visibility += devtools_entrypoints_visibility
 }

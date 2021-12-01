@@ -20,7 +20,7 @@ group("front_end") {
     "entrypoints/devtools_app",
     "entrypoints/formatter_worker:worker_entrypoint",
     "entrypoints/heap_snapshot_worker:worker_entrypoint",
-    "entrypoints/inspector",
+    "entrypoints/inspector:entrypoint",
     "entrypoints/js_app",
     "entrypoints/lighthouse_worker:bundle",
     "entrypoints/ndb_app",

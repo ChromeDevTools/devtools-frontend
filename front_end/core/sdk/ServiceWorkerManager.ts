@@ -98,7 +98,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ServiceWorkerManager extends SDKModel<EventTypes> {
-  readonly #lastAnonymousTargetId: number;
   readonly #agent: ProtocolProxyApi.ServiceWorkerApi;
   readonly #registrationsInternal: Map<string, ServiceWorkerRegistration>;
   #enabled: boolean;
@@ -111,7 +110,6 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
   constructor(target: Target) {
     super(target);
     target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
-    this.#lastAnonymousTargetId = 0;
     this.#agent = target.serviceWorkerAgent();
     this.#registrationsInternal = new Map();
     this.#enabled = false;

@@ -203,11 +203,9 @@ export class CSSStyleRule extends CSSRule {
 }
 
 export class CSSKeyframesRule {
-  readonly #cssModel: CSSModel;
   readonly #animationName: CSSValue;
   readonly #keyframesInternal: CSSKeyframeRule[];
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframesRule) {
-    this.#cssModel = cssModel;
     this.#animationName = new CSSValue(payload.animationName);
     this.#keyframesInternal = payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule));
   }

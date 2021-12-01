@@ -36,7 +36,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #mediaQueries!: Map<string, Protocol.CSS.CSSMedia[]>;
   #unusedDeclarations!: Map<string, UnusedDeclaration[]>;
   #elementCount!: number;
-  #cancelled?: boolean;
   #globalStyleStats!: GlobalStyleStats;
   #textColorContrastIssues!: Map<string, ContrastIssue[]>;
 
@@ -58,7 +57,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
       this.startOverview();
     }, this);
-    this.#controller.addEventListener(Events.RequestOverviewCancel, this.cancelOverview, this);
     this.#controller.addEventListener(Events.OverviewCompleted, this.overviewCompleted, this);
     this.#controller.addEventListener(Events.Reset, this.reset, this);
     this.#controller.addEventListener(Events.RequestNodeHighlight, this.requestNodeHighlight, this);
@@ -102,7 +100,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     this.#mediaQueries = new Map();
     this.#unusedDeclarations = new Map();
     this.#elementCount = 0;
-    this.#cancelled = false;
     this.#globalStyleStats = {
       styleRules: 0,
       inlineStyles: 0,
@@ -221,10 +218,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     }
 
     return item[0].value;
-  }
-
-  private cancelOverview(): void {
-    this.#cancelled = true;
   }
 
   private overviewCompleted(): void {

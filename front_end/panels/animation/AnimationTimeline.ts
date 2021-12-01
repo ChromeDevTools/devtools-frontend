@@ -107,7 +107,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #uiAnimations: AnimationUI[];
   #groupBuffer: AnimationGroup[];
   readonly #previewMap: Map<AnimationGroup, AnimationGroupPreviewUI>;
-  readonly #symbol: symbol;
   readonly #animationsMap: Map<string, AnimationImpl>;
   #timelineScrubberLine?: HTMLElement;
   #pauseButton?: UI.Toolbar.ToolbarToggle;
@@ -143,7 +142,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#uiAnimations = [];
     this.#groupBuffer = [];
     this.#previewMap = new Map();
-    this.#symbol = Symbol('animationTimeline');
     this.#animationsMap = new Map();
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);

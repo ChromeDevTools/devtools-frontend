@@ -42,7 +42,6 @@ type CachedElement = {
 export class AnimationUI {
   #animationInternal: AnimationImpl;
   #timeline: AnimationTimeline;
-  readonly #parentElement: Element;
   #keyframes?: KeyframeStyle[];
   #nameElement: HTMLElement;
   readonly #svg: Element;
@@ -62,7 +61,6 @@ export class AnimationUI {
   constructor(animation: AnimationImpl, timeline: AnimationTimeline, parentElement: Element) {
     this.#animationInternal = animation;
     this.#timeline = timeline;
-    this.#parentElement = parentElement;
 
     const keyframesRule = this.#animationInternal.source().keyframesRule();
     if (keyframesRule) {

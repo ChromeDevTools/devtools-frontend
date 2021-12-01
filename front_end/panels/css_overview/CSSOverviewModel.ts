@@ -44,7 +44,6 @@ export interface GlobalStyleStats {
 export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
   readonly #runtimeAgent: ProtocolProxyApi.RuntimeApi;
   readonly #cssAgent: ProtocolProxyApi.CSSApi;
-  readonly #domAgent: ProtocolProxyApi.DOMApi;
   readonly #domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
   readonly #overlayAgent: ProtocolProxyApi.OverlayApi;
 
@@ -53,7 +52,6 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
 
     this.#runtimeAgent = target.runtimeAgent();
     this.#cssAgent = target.cssAgent();
-    this.#domAgent = target.domAgent();
     this.#domSnapshotAgent = target.domsnapshotAgent();
     this.#overlayAgent = target.overlayAgent();
   }

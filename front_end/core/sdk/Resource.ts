@@ -52,7 +52,6 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   #lastModifiedInternal: Date|null;
   readonly #contentSizeInternal: number|null;
   #contentInternal!: string|null;
-  #contentLoadError!: string|null;
   #contentEncodedInternal!: boolean;
   readonly #pendingContentCallbacks: ((arg0: Object|null) => void)[];
   #parsedURLInternal?: Common.ParsedURL.ParsedURL;
@@ -245,12 +244,10 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
           {frameId: this.frameId as Protocol.Page.FrameId, url: this.url});
       const protocolError = response.getError();
       if (protocolError) {
-        this.#contentLoadError = protocolError;
         this.#contentInternal = null;
         loadResult = {content: null, error: protocolError, isEncoded: false};
       } else {
         this.#contentInternal = response.content;
-        this.#contentLoadError = null;
         loadResult = {content: response.content, isEncoded: response.base64Encoded};
       }
       this.#contentEncodedInternal = response.base64Encoded;

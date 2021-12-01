@@ -68,13 +68,9 @@ export class Runtime {
   modulesMap: {
     [x: string]: Module,
   };
-  readonly #descriptorsMap: {
-    [x: string]: ModuleDescriptor,
-  };
   private constructor(descriptors: ModuleDescriptor[]) {
     this.#modules = [];
     this.modulesMap = {};
-    this.#descriptorsMap = {};
 
     for (const descriptor of descriptors) {
       this.registerModule(descriptor);

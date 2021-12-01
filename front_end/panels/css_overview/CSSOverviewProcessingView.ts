@@ -19,13 +19,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
-  readonly #formatter: Intl.NumberFormat;
   readonly #controller: OverviewController;
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
 
-    this.#formatter = new Intl.NumberFormat('en-US');
     this.#controller = controller;
     this.render();
   }

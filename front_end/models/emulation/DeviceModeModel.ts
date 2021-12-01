@@ -99,7 +99,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #touchMobile: boolean;
   #emulationModel: SDK.EmulationModel.EmulationModel|null;
   #onModelAvailable: (() => void)|null;
-  #emulatedPageSize?: UI.Geometry.Size;
   #outlineRectInternal?: Rect;
 
   private constructor() {
@@ -622,7 +621,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     let pageWidth: 0|number = screenSize.width - insets.left - insets.right;
     let pageHeight: 0|number = screenSize.height - insets.top - insets.bottom;
-    this.#emulatedPageSize = new UI.Geometry.Size(pageWidth, pageHeight);
 
     const positionX = insets.left;
     const positionY = insets.top;

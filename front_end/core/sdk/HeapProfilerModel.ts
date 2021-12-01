@@ -15,7 +15,6 @@ import {SDKModel} from './SDKModel.js';
 export class HeapProfilerModel extends SDKModel<EventTypes> {
   #enabled: boolean;
   readonly #heapProfilerAgent: ProtocolProxyApi.HeapProfilerApi;
-  readonly #memoryAgent: ProtocolProxyApi.MemoryApi;
   readonly #runtimeModelInternal: RuntimeModel;
   #samplingProfilerDepth: number;
 
@@ -24,7 +23,6 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
     target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
     this.#enabled = false;
     this.#heapProfilerAgent = target.heapProfilerAgent();
-    this.#memoryAgent = target.memoryAgent();
     this.#runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
     this.#samplingProfilerDepth = 0;
   }

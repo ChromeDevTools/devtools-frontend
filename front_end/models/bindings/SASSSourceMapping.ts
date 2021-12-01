@@ -165,7 +165,6 @@ class Binding {
   readonly #project: ContentProviderBasedProject;
   readonly #url: string;
   referringSourceMaps: SDK.SourceMap.TextSourceMap[];
-  readonly #activeSourceMap?: SDK.SourceMap.TextSourceMap|null;
   uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
 
   constructor(project: ContentProviderBasedProject, url: string) {

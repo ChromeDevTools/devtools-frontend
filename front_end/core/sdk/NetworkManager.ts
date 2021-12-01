@@ -1575,7 +1575,6 @@ class ExtraInfoBuilder {
   #requestExtraInfos: (ExtraRequestInfo|null)[];
   #responseExtraInfos: (ExtraResponseInfo|null)[];
   #finishedInternal: boolean;
-  #hasExtraInfo: boolean;
   #webBundleInfo: WebBundleInfo|null;
   #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null;
 
@@ -1584,7 +1583,6 @@ class ExtraInfoBuilder {
     this.#requestExtraInfos = [];
     this.#responseExtraInfos = [];
     this.#finishedInternal = false;
-    this.#hasExtraInfo = false;
     this.#webBundleInfo = null;
     this.#webBundleInnerRequestInfo = null;
   }
@@ -1595,7 +1593,6 @@ class ExtraInfoBuilder {
   }
 
   addRequestExtraInfo(info: ExtraRequestInfo): void {
-    this.#hasExtraInfo = true;
     this.#requestExtraInfos.push(info);
     this.sync(this.#requestExtraInfos.length - 1);
   }

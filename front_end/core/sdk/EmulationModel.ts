@@ -15,7 +15,6 @@ import {SDKModel} from './SDKModel.js';
 
 export class EmulationModel extends SDKModel<void> {
   readonly #emulationAgent: ProtocolProxyApi.EmulationApi;
-  readonly #pageAgent: ProtocolProxyApi.PageApi;
   readonly #deviceOrientationAgent: ProtocolProxyApi.DeviceOrientationApi;
   #cssModel: CSSModel|null;
   readonly #overlayModelInternal: OverlayModel|null;
@@ -31,7 +30,6 @@ export class EmulationModel extends SDKModel<void> {
   constructor(target: Target) {
     super(target);
     this.#emulationAgent = target.emulationAgent();
-    this.#pageAgent = target.pageAgent();
     this.#deviceOrientationAgent = target.deviceOrientationAgent();
     this.#cssModel = target.model(CSSModel);
     this.#overlayModelInternal = target.model(OverlayModel);

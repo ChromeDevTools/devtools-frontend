@@ -604,7 +604,6 @@ export class ResourceTreeFrame {
   #urlInternal: string;
   #domainAndRegistryInternal: string;
   #securityOriginInternal: string|null;
-  #mimeType: string|null;
   #unreachableUrlInternal: string;
   #adFrameStatusInternal?: Protocol.Page.AdFrameStatus;
   #secureContextType: Protocol.Page.SecureContextType|null;
@@ -632,7 +631,6 @@ export class ResourceTreeFrame {
     this.#urlInternal = (payload && payload.url) || '';
     this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
     this.#securityOriginInternal = payload && payload.securityOrigin;
-    this.#mimeType = payload && payload.mimeType;
     this.#unreachableUrlInternal = (payload && payload.unreachableUrl) || '';
     this.#adFrameStatusInternal = payload?.adFrameStatus;
     this.#secureContextType = payload && payload.secureContextType;
@@ -685,7 +683,6 @@ export class ResourceTreeFrame {
     this.#urlInternal = framePayload.url;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
     this.#securityOriginInternal = framePayload.securityOrigin;
-    this.#mimeType = framePayload.mimeType;
     this.#unreachableUrlInternal = framePayload.unreachableUrl || '';
     this.#adFrameStatusInternal = framePayload?.adFrameStatus;
     this.#secureContextType = framePayload.secureContextType;

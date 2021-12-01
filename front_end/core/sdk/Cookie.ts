@@ -269,14 +269,10 @@ export enum Attributes {
  * included to make it clear which site under Application>Cookies should be opened when revealing a `CookieReference`.
  */
 export class CookieReference {
-  readonly #name: string;
   readonly #domainInternal: string;
-  readonly #path: string;
   readonly #contextUrlInternal: string|undefined;
-  constructor(name: string, domain: string, path: string, contextUrl: string|undefined) {
-    this.#name = name;
+  constructor(_name: string, domain: string, _path: string, contextUrl: string|undefined) {
     this.#domainInternal = domain;
-    this.#path = path;
     this.#contextUrlInternal = contextUrl;
   }
 

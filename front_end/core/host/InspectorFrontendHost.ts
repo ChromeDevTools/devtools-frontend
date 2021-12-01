@@ -55,7 +55,6 @@ const MAX_RECORDED_HISTOGRAMS_SIZE = 100;
 export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   readonly #urlsBeingSaved: Map<string, string[]>;
   events!: Common.EventTarget.EventTarget<EventTypes>;
-  #windowVisible?: boolean;
 
   recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
   recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
@@ -89,11 +88,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   bringToFront(): void {
-    this.#windowVisible = true;
   }
 
   closeWindow(): void {
-    this.#windowVisible = false;
   }
 
   setIsDocked(isDocked: boolean, callback: () => void): void {

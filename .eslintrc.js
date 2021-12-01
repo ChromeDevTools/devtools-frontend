@@ -106,6 +106,7 @@ module.exports = {
 
     // no-implicit-globals will prevent accidental globals
     'no-implicit-globals': [0],
+    'no-unused-private-class-members': 2,
 
     // forbids interfaces starting with an I prefix.
     '@typescript-eslint/naming-convention':

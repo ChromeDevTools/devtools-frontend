@@ -27,7 +27,6 @@ export interface CoreOrProtocolAxProperty {
 
 export class AccessibilityNode {
   readonly #accessibilityModelInternal: AccessibilityModel;
-  readonly #agent: ProtocolProxyApi.AccessibilityApi;
   readonly #idInternal: Protocol.Accessibility.AXNodeId;
   readonly #backendDOMNodeIdInternal: Protocol.DOM.BackendNodeId|null;
   readonly #deferredDOMNodeInternal: DeferredDOMNode|null;
@@ -44,7 +43,6 @@ export class AccessibilityNode {
 
   constructor(accessibilityModel: AccessibilityModel, payload: Protocol.Accessibility.AXNode) {
     this.#accessibilityModelInternal = accessibilityModel;
-    this.#agent = accessibilityModel.getAgent();
 
     this.#idInternal = payload.nodeId;
     accessibilityModel.setAXNodeForAXId(this.#idInternal, this);

@@ -614,15 +614,12 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
   variables: Chrome.DevTools.Variable[];
   #callFrame: SDK.DebuggerModel.CallFrame;
   #plugin: DebuggerLanguagePlugin;
-  readonly #location: Chrome.DevTools.RawLocation;
 
-  constructor(
-      callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
+  constructor(callFrame: SDK.DebuggerModel.CallFrame, plugin: DebuggerLanguagePlugin) {
     super(callFrame.debuggerModel.runtimeModel(), undefined, 'object', undefined, null);
     this.variables = [];
     this.#callFrame = callFrame;
     this.#plugin = plugin;
-    this.#location = location;
   }
 
   async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
@@ -691,18 +688,16 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   readonly #typeNameInternal: string;
   readonly #iconInternal: string|undefined;
   readonly #objectInternal: SourceScopeRemoteObject;
-  readonly #nameInternal: string;
   readonly #startLocationInternal: SDK.DebuggerModel.Location|null;
   readonly #endLocationInternal: SDK.DebuggerModel.Location|null;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, type: string, typeName: string, icon: string|undefined,
-      plugin: DebuggerLanguagePlugin, location: Chrome.DevTools.RawLocation) {
+      plugin: DebuggerLanguagePlugin) {
     this.#callFrameInternal = callFrame;
     this.#typeInternal = type;
     this.#typeNameInternal = typeName;
     this.#iconInternal = icon;
-    this.#objectInternal = new SourceScopeRemoteObject(callFrame, plugin, location);
-    this.#nameInternal = type;
+    this.#objectInternal = new SourceScopeRemoteObject(callFrame, plugin);
     this.#startLocationInternal = null;
     this.#endLocationInternal = null;
   }
@@ -1154,7 +1149,7 @@ export class DebuggerLanguagePluginManager implements
         let scope = scopes.get(variable.scope);
         if (!scope) {
           const {type, typeName, icon} = await plugin.getScopeInfo(variable.scope);
-          scope = new SourceScope(callFrame, type, typeName, icon, plugin, location);
+          scope = new SourceScope(callFrame, type, typeName, icon, plugin);
           scopes.set(variable.scope, scope);
         }
         scope.object().variables.push(variable);
@@ -1292,11 +1287,9 @@ export class DebuggerLanguagePluginManager implements
 }
 
 class ModelData {
-  readonly #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   project: ContentProviderBasedProject;
   readonly uiSourceCodeToScripts: Map<Workspace.UISourceCode.UISourceCode, SDK.Script.Script[]>;
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel, workspace: Workspace.Workspace.WorkspaceImpl) {
-    this.#debuggerModel = debuggerModel;
     this.project = new ContentProviderBasedProject(
         workspace, 'language_plugins::' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);

@@ -27,7 +27,6 @@ export class CSSProperty {
   #active: boolean;
   #nameRangeInternal: TextUtils.TextRange.TextRange|null;
   #valueRangeInternal: TextUtils.TextRange.TextRange|null;
-  readonly #invalidProperty: string|null;
   #invalidString?: Common.UIString.LocalizedString;
 
   constructor(
@@ -46,7 +45,6 @@ export class CSSProperty {
     this.#active = true;
     this.#nameRangeInternal = null;
     this.#valueRangeInternal = null;
-    this.#invalidProperty = null;
   }
 
   static parsePayload(ownerStyle: CSSStyleDeclaration, index: number, payload: Protocol.CSS.CSSProperty): CSSProperty {

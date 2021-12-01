@@ -159,6 +159,7 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   }
 
   let result: CompletionSet;
+  let quote: string|undefined = undefined;
   if (query.type === QueryType.Expression) {
     const [scope, global] = await Promise.all([
       completeExpressionInScope(),
@@ -174,7 +175,6 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
     }
   } else if (query.type === QueryType.PropertyName || query.type === QueryType.PropertyExpression) {
     const objectExpr = (query.relatedNode as CodeMirror.SyntaxNode).getChild('Expression');
-    let quote = undefined;
     if (query.type === QueryType.PropertyExpression) {
       quote = query.from === undefined ? '\'' : cx.state.sliceDoc(query.from, query.from + 1);
     }
@@ -189,9 +189,12 @@ export async function javascriptCompletionSource(cx: CodeMirror.CompletionContex
   return {
     from: query.from ?? cx.pos,
     options: result.completions,
-    span: /^#?[\w\P{ASCII}]*/u,
+    span: !quote ? SPAN_IDENT : quote === '\'' ? SPAN_SINGLE_QUOTE : SPAN_DOUBLE_QUOTE,
   };
 }
+
+const SPAN_IDENT = /^#?[\w\P{ASCII}]*$/u, SPAN_SINGLE_QUOTE = /^\'(\\.|[^\\'\n])*'?$/,
+      SPAN_DOUBLE_QUOTE = /^"(\\.|[^\\"\n])*"?$/;
 
 function getExecutionContext(): SDK.RuntimeModel.ExecutionContext|null {
   return UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
@@ -330,8 +333,9 @@ async function completePropertiesInner(
     const isFunction = object.type === 'function';
     for (const prop of properties.properties || []) {
       if (!prop.symbol && !(isFunction && (prop.name === 'arguments' || prop.name === 'caller')) &&
-          (!prop.private || expression === 'this')) {
-        const label = quoted ? quoted + prop.name + quoted : prop.name;
+          (!prop.private || expression === 'this') && (quoted || SPAN_IDENT.test(prop.name))) {
+        const label =
+            quoted ? quoted + prop.name.replaceAll('\\', '\\\\').replaceAll(quoted, '\\' + quoted) + quoted : prop.name;
         const completion: CodeMirror.Completion = {
           label,
           type: prop.value?.type === 'function' ? functionType : otherType,

@@ -325,11 +325,12 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
     if (pos !== lineBefore.to) {
       return null;
     }
-    const wordBefore = /#?[\w$]+$/.exec(lineBefore.text);
-    if (wordBefore && !label.startsWith(wordBefore[0])) {
+    const partBefore = (label[0] === '\'' ? /'(\\.|[^'\\])*$/ : label[0] === '"' ? /"(\\.|[^"\\])*$/ : /#?[\w$]+$/)
+                           .exec(lineBefore.text);
+    if (partBefore && !label.startsWith(partBefore[0])) {
       return null;
     }
-    return label.slice(wordBefore ? wordBefore[0].length : 0);
+    return label.slice(partBefore ? partBefore[0].length : 0);
   }
 }, {decorations: p => p.decorations});
 

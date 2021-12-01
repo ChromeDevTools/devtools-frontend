@@ -1099,18 +1099,20 @@ const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
     const {doc} = view.state;
     for (const {from, to} of view.visibleRanges) {
       let pos = from;
-      for (const line of doc.iterLines(doc.lineAt(from).number, doc.lineAt(to).number + 1)) {
-        active.regexp.lastIndex = 0;
-        for (;;) {
-          const match = active.regexp.exec(line);
-          if (!match) {
-            break;
+      for (const part of doc.iterRange(from, to)) {
+        if (part !== '\n') {
+          active.regexp.lastIndex = 0;
+          for (;;) {
+            const match = active.regexp.exec(part);
+            if (!match) {
+              break;
+            }
+            const start = pos + match.index, end = start + match[0].length;
+            const current = active.currentRange && active.currentRange.from === start && active.currentRange.to === end;
+            builder.add(start, end, current ? currentSearchMatchDeco : searchMatchDeco);
           }
-          const start = pos + match.index, end = start + match[0].length;
-          const current = active.currentRange && active.currentRange.from === start && active.currentRange.to === end;
-          builder.add(start, end, current ? currentSearchMatchDeco : searchMatchDeco);
         }
-        pos += line.length + 1;
+        pos += part.length;
       }
     }
     return builder.finish();

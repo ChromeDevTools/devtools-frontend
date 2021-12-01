@@ -5,9 +5,6 @@
 'use strict';
 
 const path = require('path');
-const {devtoolsRootPath} = require('../../devtools_paths.js');
-
-const DEFAULT_FRONT_END_DIRECTORY = path.join(devtoolsRootPath(), 'front_end');
 
 function isModuleScope(context) {
   return context.getScope().type === 'module';
@@ -60,9 +57,12 @@ module.exports = {
           return;
         }
 
-        let frontEndDirectory = DEFAULT_FRONT_END_DIRECTORY;
+        let frontEndDirectory = '';
         if (context.options && context.options[0]?.rootFrontendDirectory) {
           frontEndDirectory = context.options[0].rootFrontendDirectory;
+        }
+        if (!frontEndDirectory) {
+          throw new Error('rootFrontendDirectory must be provided.');
         }
         const currentSourceFile = path.resolve(context.getFilename());
         const currentFileRelativeToFrontEnd = path.relative(frontEndDirectory, currentSourceFile);

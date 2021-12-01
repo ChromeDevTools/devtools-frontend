@@ -9,7 +9,11 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules',
 module.exports = {
   'rules': {
     // L10n rules are only relevant in 'front_end'.
-    'rulesdir/l10n_filename_matches': 2,
+    'rulesdir/l10n_filename_matches': [
+      2, {
+        rootFrontendDirectory: __dirname,
+      }
+    ],
     'rulesdir/l10n_i18nString_call_only_with_uistrings': 2,
     'rulesdir/l10n_no_i18nString_calls_module_instantiation': 2,
     'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 2,

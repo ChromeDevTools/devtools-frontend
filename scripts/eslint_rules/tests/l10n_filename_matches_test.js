@@ -17,14 +17,17 @@ ruleTester.run('l10n_filename_matches', rule, {
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
+      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/ModuleUIStrings.js\', UIStrings);',
       filename: 'front_end/components/test.ts',
+      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/ModuleUIStrings.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
+      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'ModuleUIStrings.ts\', UIStrings);',
@@ -41,6 +44,7 @@ ruleTester.run('l10n_filename_matches', rule, {
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/foo.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
+      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}],
       errors: [{
         message:
             'First argument to \'registerUIStrings\' call must be \'components/test.ts\' or the ModuleUIStrings.(js|ts)'

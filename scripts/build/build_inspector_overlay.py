@@ -12,7 +12,6 @@ Builds inspector overlay:
 
 from os import path
 from os.path import join
-from modular_build import read_file, write_file
 from itertools import tee
 
 import os
@@ -27,6 +26,21 @@ try:
     import devtools_paths
 finally:
     sys.path = original_sys_path
+
+
+def read_file(filename):
+    with open(path.normpath(filename), 'rt', encoding='utf-8') as input:
+        return input.read()
+
+
+def write_file(filename, content):
+    if path.exists(filename):
+        os.remove(filename)
+    directory = path.dirname(filename)
+    if not path.exists(directory):
+        os.makedirs(directory)
+    with open(filename, 'wt', encoding='utf-8') as output:
+        output.write(content)
 
 
 def check_size(filename, data, max_size):

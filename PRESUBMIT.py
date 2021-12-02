@@ -145,14 +145,6 @@ def _CheckBugAssociation(input_api, output_api, is_committing):
     return results
 
 
-def _CheckBuildGN(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Running BUILD.GN check:')]
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                         'scripts', 'check_gn.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
-    return results
-
-
 def _CheckExperimentTelemetry(input_api, output_api):
     experiment_telemetry_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
@@ -529,7 +521,6 @@ def _CommonChecks(input_api, output_api):
     results.extend(
         input_api.canned_checks.CheckAuthorizedAuthor(
             input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT]))
-    results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckExperimentTelemetry(input_api, output_api))
     results.extend(_CheckGeneratedFiles(input_api, output_api))
     results.extend(_CheckDevToolsStyleJS(input_api, output_api))

@@ -6,15 +6,13 @@ import("../../../third_party/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("shell") {
-  entrypoint = "shell.js"
+  entrypoint = "shell.ts"
 
   deps = [
     "../../Images:optimize_images",
     "../../core/dom_extension:bundle",
     "../../core/root:legacy",
     "../../core/sdk:meta",
-    "../../core/sdk:meta",
-    "../../entrypoints/main:meta",
     "../../entrypoints/main:meta",
     "../../models/logs:meta",
     "../../models/persistence:meta",

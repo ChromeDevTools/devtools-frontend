@@ -86,13 +86,7 @@ async function getChildren(node: SDK.AccessibilityModel.AccessibilityNode):
     const localRoot = await getRootNode(frameId);
     return [localRoot];
   }
-  if (node.hasUnloadedChildren()) {
-    await node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || undefined);
-    if (node.numChildren() !== node.children().length) {
-      throw new Error('Once loaded, number of children and length of children must match.');
-    }
-  }
-  return node.children();
+  return node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || undefined);
 }
 
 export async function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.AccessibilityNode): Promise<AXTreeNode[]> {

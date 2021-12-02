@@ -450,7 +450,7 @@ export const createSearchRegex = function(query: string, caseSensitive: boolean,
   }
 
   if (!regexObject) {
-    regexObject = self.createPlainTextSearchRegex(query, regexFlags);
+    regexObject = createPlainTextSearchRegex(query, regexFlags);
   }
 
   return regexObject;
@@ -601,4 +601,17 @@ export const findUnclosedCssQuote = function(str: string): string {
     }
   }
   return unmatchedQuote;
+};
+
+export const createPlainTextSearchRegex = function(query: string, flags?: string): RegExp {
+  // This should be kept the same as the one in StringUtil.cpp.
+  let regex = '';
+  for (let i = 0; i < query.length; ++i) {
+    const c = query.charAt(i);
+    if (regexSpecialCharacters().indexOf(c) !== -1) {
+      regex += '\\';
+    }
+    regex += c;
+  }
+  return new RegExp(regex, flags || '');
 };

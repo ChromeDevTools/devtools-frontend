@@ -909,7 +909,8 @@ export abstract class HeapSnapshot {
       return matchedStringIndexes;
     }
 
-    const regexp = searchConfig.isRegex ? new RegExp(query) : createPlainTextSearchRegex(query, 'i');
+    const regexp =
+        searchConfig.isRegex ? new RegExp(query) : Platform.StringUtilities.createPlainTextSearchRegex(query, 'i');
 
     function filterRegexp(matchedStringIndexes: Set<number>, string: string, index: number): Set<number> {
       if (regexp.test(string)) {

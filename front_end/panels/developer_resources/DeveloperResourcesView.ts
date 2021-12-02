@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -125,7 +126,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
     }
 
     const text = this.filterInput.value();
-    this.textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
+    this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
     this.listView.updateFilterAndHighlight(this.textFilterRegExp);
     this.updateStats();
   }

@@ -1899,7 +1899,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.hideSearchHighlight();
 
     const text = this.listItemElement.textContent || '';
-    const regexObject = createPlainTextSearchRegex(this.searchQuery, 'gi');
+    const regexObject = Platform.StringUtilities.createPlainTextSearchRegex(this.searchQuery, 'gi');
 
     let match = regexObject.exec(text);
     const matchRanges = [];

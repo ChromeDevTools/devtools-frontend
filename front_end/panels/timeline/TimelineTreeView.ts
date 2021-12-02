@@ -284,7 +284,8 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
         new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), this.getToolbarInputAccessiblePlaceHolder());
     textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
       const searchQuery = textFilterUI.value();
-      this.textFilterInternal.setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
+      this.textFilterInternal.setRegExp(
+          searchQuery ? Platform.StringUtilities.createPlainTextSearchRegex(searchQuery, 'i') : null);
       this.refreshTree();
     }, this);
     this.textFilterUI = textFilterUI;

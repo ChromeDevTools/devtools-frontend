@@ -4,7 +4,6 @@
 
 import '../../Images/Images.js';
 import '../../core/root/root-legacy.js';
-import '../../core/platform/platform.js';
 import '../../core/dom_extension/dom_extension.js';
 
 import '../../panels/sources/sources-meta.js';

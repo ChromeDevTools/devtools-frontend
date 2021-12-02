@@ -35,6 +35,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {HistoryInput} from './HistoryInput.js';
@@ -629,7 +630,7 @@ export class SearchConfig {
 
     // Otherwise just do a plain text search.
     if (!regex) {
-      regex = createPlainTextSearchRegex(query, modifiers);
+      regex = Platform.StringUtilities.createPlainTextSearchRegex(query, modifiers);
     }
 
     return regex;

@@ -31,35 +31,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* The long term goal here is to remove all functions in this file and
- * replace them with ES Module functions rather than prototype
- * extensions but in the mean time if an old func in here depends on one
- * that has been migrated, it will need to be imported.
- */
-
-import {caseInsensetiveComparator, regexSpecialCharacters, sprintf} from './string-utilities.js';
-
-// Still used in the test runners that can't use ES modules :(
-String.sprintf = sprintf;
-
-// @ts-ignore https://crbug.com/1050549
-String.regexSpecialCharacters = regexSpecialCharacters;
-// @ts-ignore https://crbug.com/1050549
-String.caseInsensetiveComparator = caseInsensetiveComparator;
-
-self.createPlainTextSearchRegex = function(query: string, flags?: string): RegExp {
-  // This should be kept the same as the one in StringUtil.cpp.
-  let regex = '';
-  for (let i = 0; i < query.length; ++i) {
-    const c = query.charAt(i);
-    if (regexSpecialCharacters().indexOf(c) !== -1) {
-      regex += '\\';
-    }
-    regex += c;
-  }
-  return new RegExp(regex, flags || '');
-};
-
 export function runOnWindowLoad(callback: () => void): void {
   function windowLoaded(): void {
     window.removeEventListener('DOMContentLoaded', windowLoaded, false);

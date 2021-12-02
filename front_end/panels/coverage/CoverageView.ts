@@ -470,7 +470,7 @@ export class CoverageView extends UI.Widget.VBox {
       return;
     }
     const text = this.filterInput.value();
-    this.textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
+    this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
     this.listView.updateFilterAndHighlight(this.textFilterRegExp);
     this.updateStats();
   }

@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import './utilities.js';
-
 import * as ArrayUtilities from './array-utilities.js';
 import * as DateUtilities from './date-utilities.js';
 import * as DevToolsPath from './DevToolsPath.js';

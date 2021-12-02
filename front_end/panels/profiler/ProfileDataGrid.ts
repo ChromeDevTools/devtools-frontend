@@ -28,6 +28,7 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
@@ -528,7 +529,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
       equalTo = true;
     }
 
-    const matcher = createPlainTextSearchRegex(query, 'i');
+    const matcher = Platform.StringUtilities.createPlainTextSearchRegex(query, 'i');
 
     function matchesQuery(profileDataGridNode: ProfileDataGridNode): boolean {
       profileDataGridNode.searchMatchedSelfColumn = false;

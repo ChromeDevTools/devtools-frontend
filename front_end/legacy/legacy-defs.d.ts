@@ -1,9 +1,6 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-interface StringConstructor {
-  sprintf(format: string, ...var_arg: any): string;
-}
 
 interface Window {
   UI: {themeSupport: unknown}
@@ -124,7 +121,6 @@ interface Node {
 
 declare function isEnterOrSpaceKey(event: Event): boolean;
 declare function isEscKey(event: Event): boolean;
-declare function createPlainTextSearchRegex(query: string, flags?: string): RegExp;
 declare function onInvokeElement(element: Element, callback: (event: Event) => void): void;
 
 interface ServicePort {

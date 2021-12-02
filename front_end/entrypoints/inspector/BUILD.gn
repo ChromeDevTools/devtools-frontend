@@ -8,7 +8,6 @@ devtools_entrypoint("entrypoint") {
   entrypoint = "inspector.ts"
 
   deps = [
-    "../../entrypoints/startup:bundle",
     "../../panels/screencast:meta",
     "../devtools_app:entrypoint",
   ]

@@ -22,7 +22,6 @@ devtools_entrypoint("entrypoint") {
 
   deps = [
     ":worker_main",
-    "../../entrypoints/startup:bundle",
     "../../panels/application:meta",
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",

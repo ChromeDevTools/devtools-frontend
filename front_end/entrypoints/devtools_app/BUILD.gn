@@ -9,7 +9,6 @@ devtools_entrypoint("entrypoint") {
 
   deps = [
     "../../entrypoints/inspector_main:meta",
-    "../../entrypoints/startup:bundle",
     "../../panels/accessibility:meta",
     "../../panels/animation:meta",
     "../../panels/application:meta",

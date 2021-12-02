@@ -11,11 +11,11 @@ devtools_entrypoint("shell") {
   deps = [
     "../../Images:optimize_images",
     "../../core/dom_extension:bundle",
+    "../../core/root:legacy",
     "../../core/sdk:meta",
     "../../core/sdk:meta",
     "../../entrypoints/main:meta",
     "../../entrypoints/main:meta",
-    "../../entrypoints/startup:bundle",
     "../../models/logs:meta",
     "../../models/persistence:meta",
     "../../panels/application:meta",
@@ -33,7 +33,6 @@ devtools_entrypoint("shell") {
     "../../ui/legacy/components/perf_ui:meta",
     "../../ui/legacy/components/quick_open:meta",
     "../../ui/legacy/components/source_frame:meta",
-    "../startup:bundle",
   ]
 
   visibility = [

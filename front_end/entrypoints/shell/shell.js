@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../../Images/Images.js';
-import '../startup/startup.js';
 import '../../core/root/root-legacy.js';
 import '../../core/platform/platform.js';
 import '../../core/dom_extension/dom_extension.js';

@@ -27,7 +27,6 @@ devtools_entrypoint("legacy") {
   visibility = [
     "../..:legacy_entrypoints",
     "../../entrypoints/shell/*",
-    "../../entrypoints/startup/*",
     "../../legacy_test_runner/*",
   ]
 }

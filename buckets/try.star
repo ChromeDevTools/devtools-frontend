@@ -29,14 +29,14 @@ luci.bucket(
 
 try_builders = []
 
-def try_builder(**kvargs):
+def try_builder(**kwargs):
     builder(
         bucket = BUCKET_NAME,
         builder_group = "tryserver.devtools-frontend",
         service_account = SERVICE_ACCOUNT,
-        **kvargs
+        **kwargs
     )
-    try_builders.append(kvargs["name"])
+    try_builders.append(kwargs["name"])
 
 def presubmit_builder(name, dimensions, **kvargs):
     try_builder(

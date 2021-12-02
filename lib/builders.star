@@ -77,9 +77,14 @@ def builder(
 
     kwargs["executable"] = recipe(recipe_name)
     kwargs["resultdb_settings"] = resultdb.settings(enable = True)
-
+    experiments = None
+    if recipe_name == "chromium_integration":
+        experiments = {
+            "chromium.chromium_tests.use_rdb_results": 100,
+        }
     luci.builder(
         swarming_tags = swarming_tags,
+        experiments = experiments,
         **kwargs
     )
 

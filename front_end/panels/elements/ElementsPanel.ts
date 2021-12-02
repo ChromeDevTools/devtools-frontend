@@ -291,8 +291,16 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private showDOMTree(): void {
-    // TODO(meredithl): Scroll to inspected DOM node.
     this.splitWidget.setMainWidget(this.searchableViewInternal);
+    const selectedNode = this.selectedDOMNode();
+    if (!selectedNode) {
+      return;
+    }
+    const treeElement = this.treeElementForNode(selectedNode);
+    if (!treeElement) {
+      return;
+    }
+    treeElement.select();
   }
 
   static instance(opts: {

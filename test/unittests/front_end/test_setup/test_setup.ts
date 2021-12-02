@@ -17,6 +17,11 @@ before(async function() {
   this.timeout(10000);
 });
 
+afterEach(() => {
+  // Clear out any Sinon stubs or spies between individual tests.
+  sinon.restore();
+});
+
 beforeEach(() => {
   // Some unit tests exercise code that assumes a ThemeSupport instance is available.
   // Run this in a beforeEach in case an individual test overrides it.

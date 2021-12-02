@@ -56,6 +56,7 @@ devtools_svg_sources = [
   "chevrons.svg",
   "chromeSelect.svg",
   "chromeSelectDark.svg",
+  "circled_backslash_icon.svg",
   "circled_exclamation_icon.svg",
   "close-icon.svg",
   "copy_icon.svg",

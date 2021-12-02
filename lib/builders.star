@@ -78,7 +78,7 @@ def builder(
     kwargs["executable"] = recipe(recipe_name)
     kwargs["resultdb_settings"] = resultdb.settings(enable = True)
     experiments = None
-    if recipe_name == "chromium_integration":
+    if recipe_name in ["chromium_integration", "chromium_trybot"]:
         experiments = {
             "chromium.chromium_tests.use_rdb_results": 100,
         }

@@ -73,7 +73,7 @@ UI.ViewManager.registerViewExtension({
   },
 });
 
-const runtimeInstance = Root.Runtime.Runtime.instance({forceNew: true, moduleDescriptors: []});
+const runtimeInstance = Root.Runtime.Runtime.instance({forceNew: true});
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = runtimeInstance;
 Common.Runnable.registerEarlyInitializationRunnable(NodeMainImpl.instance);

@@ -7,9 +7,6 @@ const originalAssert = console.assert;
 
 const queryParamsObject = new URLSearchParams(location.search);
 
-// The following variable are initialized all the way at the bottom of this file
-let importScriptPathPrefix: string;
-
 let runtimePlatform = '';
 
 let runtimeInstance: Runtime|undefined;
@@ -32,62 +29,16 @@ export function getRemoteBase(location: string = self.location.toString()): {
   return {base: `${url.origin}/remote/serve_file/${version[1]}/`, version: version[1]};
 }
 
-export const mappingForLayoutTests = new Map<string, string>([
-  ['panels/animation', 'animation'],
-  ['panels/browser_debugger', 'browser_debugger'],
-  ['panels/changes', 'changes'],
-  ['panels/console', 'console'],
-  ['panels/elements', 'elements'],
-  ['panels/emulation', 'emulation'],
-  ['panels/mobile_throttling', 'mobile_throttling'],
-  ['panels/network', 'network'],
-  ['panels/profiler', 'profiler'],
-  ['panels/application', 'resources'],
-  ['panels/search', 'search'],
-  ['panels/sources', 'sources'],
-  ['panels/snippets', 'snippets'],
-  ['panels/settings', 'settings'],
-  ['panels/timeline', 'timeline'],
-  ['panels/web_audio', 'web_audio'],
-  ['models/persistence', 'persistence'],
-  ['models/workspace_diff', 'workspace_diff'],
-  ['entrypoints/main', 'main'],
-  ['third_party/diff', 'diff'],
-  ['ui/legacy/components/inline_editor', 'inline_editor'],
-  ['ui/legacy/components/data_grid', 'data_grid'],
-  ['ui/legacy/components/perf_ui', 'perf_ui'],
-  ['ui/legacy/components/source_frame', 'source_frame'],
-  ['ui/legacy/components/color_picker', 'color_picker'],
-  ['ui/legacy/components/cookie_table', 'cookie_table'],
-  ['ui/legacy/components/quick_open', 'quick_open'],
-  ['ui/legacy/components/utils', 'components'],
-]);
-
 export class Runtime {
-  readonly #modules: Module[];
-  modulesMap: {
-    [x: string]: Module,
-  };
-  private constructor(descriptors: ModuleDescriptor[]) {
-    this.#modules = [];
-    this.modulesMap = {};
-
-    for (const descriptor of descriptors) {
-      this.registerModule(descriptor);
-    }
+  private constructor() {
   }
 
   static instance(opts: {
     forceNew: boolean|null,
-    moduleDescriptors: Array<ModuleDescriptor>|null,
-  }|undefined = {forceNew: null, moduleDescriptors: null}): Runtime {
-    const {forceNew, moduleDescriptors} = opts;
+  }|undefined = {forceNew: null}): Runtime {
+    const {forceNew} = opts;
     if (!runtimeInstance || forceNew) {
-      if (!moduleDescriptors) {
-        throw new Error(`Unable to create runtime: moduleDescriptors must be provided: ${new Error().stack}`);
-      }
-
-      runtimeInstance = new Runtime(moduleDescriptors);
+      runtimeInstance = new Runtime();
     }
 
     return runtimeInstance;
@@ -198,142 +149,16 @@ export class Runtime {
     return '\n/*# sourceURL=' + sourceURL + ' */';
   }
 
-  module(moduleName: string): Module {
-    return this.modulesMap[moduleName];
-  }
-
-  private registerModule(descriptor: ModuleDescriptor): void {
-    const module = new Module(this, descriptor);
-    this.#modules.push(module);
-    this.modulesMap[descriptor['name']] = module;
-    const mappedName = mappingForLayoutTests.get(descriptor['name']);
-    if (mappedName !== undefined) {
-      this.modulesMap[mappedName] = module;
-    }
-  }
-
-  loadModulePromise(moduleName: string): Promise<boolean> {
-    return this.modulesMap[moduleName].loadPromise();
-  }
-
-  loadAutoStartModules(moduleNames: string[]): Promise<boolean[]> {
-    const promises = [];
-    for (const moduleName of moduleNames) {
-      promises.push(this.loadModulePromise(moduleName));
-    }
-    return Promise.all(promises);
-  }
-
-  getModulesMap(): {[x: string]: Module} {
-    return this.modulesMap;
-  }
-
   loadLegacyModule(modulePath: string): Promise<void> {
     return import(`../../${modulePath}`);
   }
 }
 
-export class ModuleDescriptor {
-  name!: string;
-  dependencies!: string[]|undefined;
-  modules!: string[];
-  resources!: string[];
-  condition!: string|undefined;
-  experiment!: string|null;
-  constructor() {
-  }
-}
 export interface Option {
   title: string;
   value: string|boolean;
   raw?: boolean;
   text?: string;
-}
-
-function computeContainingFolderName(name: string): string {
-  if (name.includes('/')) {
-    return name.substring(name.lastIndexOf('/') + 1, name.length);
-  }
-  return name;
-}
-
-export class Module {
-  readonly #manager: Runtime;
-  readonly descriptor: ModuleDescriptor;
-  readonly #nameInternal: string;
-  #loadedForTest: boolean;
-  #pendingLoadPromise?: Promise<boolean>;
-  constructor(manager: Runtime, descriptor: ModuleDescriptor) {
-    this.#manager = manager;
-    this.descriptor = descriptor;
-    this.#nameInternal = descriptor.name;
-    this.#loadedForTest = false;
-  }
-
-  name(): string {
-    return this.#nameInternal;
-  }
-
-  enabled(): boolean {
-    return Runtime.isDescriptorEnabled(this.descriptor);
-  }
-
-  resource(name: string): string {
-    const fullName = this.#nameInternal + '/' + name;
-    const content = cachedResources.get(fullName);
-    if (!content) {
-      throw new Error(fullName + ' not preloaded. Check module.json');
-    }
-    return content;
-  }
-
-  loadPromise(): Promise<boolean> {
-    if (!this.enabled()) {
-      return Promise.reject(new Error('Module ' + this.#nameInternal + ' is not enabled'));
-    }
-
-    if (this.#pendingLoadPromise) {
-      return this.#pendingLoadPromise;
-    }
-
-    const dependencies = this.descriptor.dependencies;
-    const dependencyPromises = [];
-    for (let i = 0; dependencies && i < dependencies.length; ++i) {
-      dependencyPromises.push(this.#manager.getModulesMap()[dependencies[i]].loadPromise());
-    }
-
-    this.#pendingLoadPromise = Promise.all(dependencyPromises).then(this.loadModules.bind(this)).then(() => {
-      this.#loadedForTest = true;
-      return this.#loadedForTest;
-    });
-
-    return this.#pendingLoadPromise;
-  }
-
-  private async loadModules(): Promise<void> {
-    const containingFolderName = computeContainingFolderName(this.#nameInternal);
-
-    const moduleFileName = `${containingFolderName}_module.js`;
-    const entrypointFileName = `${containingFolderName}.js`;
-
-    // If a module has resources, they are part of the `_module.js` files that are generated
-    // by `build_release_applications`. These need to be loaded before any other code is
-    // loaded, to make sure that the resource content is properly cached in `cachedResources`.
-    if (this.descriptor.modules && this.descriptor.modules.includes(moduleFileName)) {
-      await import(`../../${this.#nameInternal}/${moduleFileName}`);
-    }
-
-    await import(`../../${this.#nameInternal}/${entrypointFileName}`);
-  }
-
-  private modularizeURL(resourceName: string): string {
-    return Runtime.normalizePath(this.#nameInternal + '/' + resourceName);
-  }
-
-  fetchResource(resourceName: string): Promise<string> {
-    const sourceURL = getResourceURL(this.modularizeURL(resourceName));
-    return loadResourcePromise(sourceURL);
-  }
 }
 
 export class ExperimentsSupport {
@@ -508,21 +333,6 @@ export function loadResourcePromise(url: string): Promise<string> {
     xhr.send(null);
   }
 }
-
-function getResourceURL(scriptName: string, base?: string): string {
-  const sourceURL = (base || importScriptPathPrefix) + scriptName;
-  const schemaIndex = sourceURL.indexOf('://') + 3;
-  let pathIndex = sourceURL.indexOf('/', schemaIndex);
-  if (pathIndex === -1) {
-    pathIndex = sourceURL.length;
-  }
-  return sourceURL.substring(0, pathIndex) + Runtime.normalizePath(sourceURL.substring(pathIndex));
-}
-
-(function(): void {
-const baseUrl = self.location ? self.location.origin + self.location.pathname : '';
-importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
-})();
 
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();

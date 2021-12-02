@@ -155,10 +155,6 @@ const UIStrings = {
       */
   backForwardCacheDisabledForDelegate: 'Back/forward cache is not supported by delegate.',
   /**
-      * @description Description text for not restored reason OptInUnloadHeaderNotPresent.
-      */
-  optInUnloadHeaderNotPresent: 'The page has unload handler without the back/forward cache opt-in header.',
-  /**
       * @description Description text for not restored reason UnloadHandlerExistsInMainFrame.
       */
   unloadHandlerExistsInMainFrame: 'The page has an unload handler in the main frame.',
@@ -466,7 +462,7 @@ export const NotRestoredReasonDescription = {
   'UserAgentOverrideDiffers': {name: i18nLazyString(UIStrings.userAgentOverrideDiffers)},
   'ForegroundCacheLimit': {name: i18nLazyString(UIStrings.foregroundCacheLimit)},
   'BackForwardCacheDisabledForDelegate': {name: i18nLazyString(UIStrings.backForwardCacheDisabledForDelegate)},
-  'OptInUnloadHeaderNotPresent': {name: i18nLazyString(UIStrings.optInUnloadHeaderNotPresent)},
+  'OptInUnloadHeaderNotPresent': {name: i18nLazyString(UIStrings.unloadHandlerExistsInMainFrame)},
   'UnloadHandlerExistsInMainFrame': {name: i18nLazyString(UIStrings.unloadHandlerExistsInMainFrame)},
   'UnloadHandlerExistsInSubFrame': {name: i18nLazyString(UIStrings.unloadHandlerExistsInSubFrame)},
   'ServiceWorkerUnregistration': {name: i18nLazyString(UIStrings.serviceWorkerUnregistration)},

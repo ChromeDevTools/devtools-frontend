@@ -2498,9 +2498,6 @@
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Navigation happened in a frame other than the main frame."
   },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "The page has unload handler without the back/forward cache opt-in header."
-  },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "Page with ongoing indexed DB transactions are not currently eligible for back/forward cache."
   },

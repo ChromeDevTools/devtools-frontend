@@ -2498,9 +2498,6 @@
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "N̂áv̂íĝát̂íôń ĥáp̂ṕêńêd́ îń â f́r̂ám̂é ôt́ĥér̂ t́ĥán̂ t́ĥé m̂áîń f̂ŕâḿê."
   },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "T̂h́ê ṕâǵê h́âś ûńl̂óâd́ ĥán̂d́l̂ér̂ ẃît́ĥóût́ t̂h́ê b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê óp̂t́-îń ĥéâd́êŕ."
-  },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "P̂áĝé ŵít̂h́ ôńĝóîńĝ ín̂d́êx́êd́ D̂B́ t̂ŕâńŝáĉt́îón̂ś âŕê ńôt́ ĉúr̂ŕêńt̂ĺŷ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
   },

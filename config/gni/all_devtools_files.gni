@@ -80,7 +80,7 @@ all_devtools_files = [
   "front_end/models/issues_manager/descriptions/mixedContent.md",
   "front_end/models/issues_manager/descriptions/sharedArrayBuffer.md",
   "front_end/models/issues_manager/descriptions/corsInsecurePrivateNetwork.md",
-  "front_end/models/issues_manager/descriptions/corsInsecurePrivateNetworkPreflight.md",
+  "front_end/models/issues_manager/descriptions/corsPreflightAllowPrivateNetworkError.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeContextDowngradeSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteExcludeNavigationContextDowngrade.md",

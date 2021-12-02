@@ -674,7 +674,6 @@ export const IssueCreated: {
   'TrustedWebActivityIssue::kDigitalAssetLinks': 40,
   LowTextContrastIssue: 41,
   'CorsIssue::InsecurePrivateNetwork': 42,
-  'CorsIssue::InsecurePrivateNetworkPreflight': 43,
   'CorsIssue::InvalidHeaders': 44,
   'CorsIssue::WildcardOriginWithCredentials': 45,
   'CorsIssue::PreflightResponseInvalid': 46,
@@ -692,6 +691,7 @@ export const IssueCreated: {
   'QuirksModeIssue::QuirksMode': 58,
   'QuirksModeIssue::LimitedQuirksMode': 59,
   DeprecationIssue: 60,
+  'CorsIssue::PreflightAllowPrivateNetworkError': 61,
 };
 
 // TODO(crbug.com/1167717): Make this a const enum again

@@ -1340,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ĉŕôśŝ-Ór̂íĝín̂ Ŕêśôúr̂ćê Śĥár̂ín̂ǵ (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "ĈÓR̂Ś f̂ór̂ ṕr̂ív̂át̂é n̂ét̂ẃôŕk̂ś (R̂F́Ĉ1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "P̂ŕîv́ât́ê Ńêt́ŵór̂ḱ Âćĉéŝś"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "ĈÓÔṔ âńd̂ ĆÔÉP̂"

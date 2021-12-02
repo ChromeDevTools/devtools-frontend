@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../components/helpers/helpers.js';
-import * as Utils from './utils/utils.js';
 
 import {XElement} from './XElement.js';
 
@@ -53,10 +52,6 @@ export class XWidget extends XElement {
 
   isShowing(): boolean {
     return this.visible;
-  }
-
-  registerRequiredCSS(cssFile: string): void {
-    Utils.appendStyle(this.shadowRootInternal || this, cssFile);
   }
 
   setOnShown(callback: (() => void)|null): void {

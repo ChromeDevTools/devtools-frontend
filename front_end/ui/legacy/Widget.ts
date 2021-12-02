@@ -458,7 +458,7 @@ export class Widget {
     this.doResize();
   }
 
-  registerRequiredCSS(cssFile: string|{cssContent: string}): void {
+  registerRequiredCSS(cssFile: {cssContent: string}): void {
     if (this.isWebComponent) {
       Utils.appendStyle((this.shadowRoot as DocumentFragment), cssFile);
     } else {

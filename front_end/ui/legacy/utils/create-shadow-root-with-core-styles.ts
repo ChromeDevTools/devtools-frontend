@@ -7,7 +7,7 @@ import {focusChanged} from './focus-changed.js';
 import {injectCoreStyles} from './inject-core-styles.js';
 
 interface Options {
-  cssFile?: string|CSSStyleSheet[]|{cssContent: string};
+  cssFile?: CSSStyleSheet[]|{cssContent: string};
   delegatesFocus?: boolean;
 }
 
@@ -22,10 +22,12 @@ export function createShadowRootWithCoreStyles(element: Element, options: Option
 
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
   injectCoreStyles(shadowRoot);
-  if (typeof cssFile === 'string' || (cssFile !== undefined && 'cssContent' in cssFile)) {
-    appendStyle(shadowRoot, cssFile);
-  } else if (cssFile) {
-    shadowRoot.adoptedStyleSheets = cssFile;
+  if (cssFile) {
+    if ('cssContent' in cssFile) {
+      appendStyle(shadowRoot, cssFile);
+    } else {
+      shadowRoot.adoptedStyleSheets = cssFile;
+    }
   }
   shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;

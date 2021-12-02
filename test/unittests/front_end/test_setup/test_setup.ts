@@ -7,55 +7,14 @@
  * loads and injects all *.js files it finds.
  */
 import type * as Common from '../../../../front_end/core/common/common.js';
-import * as Root from '../../../../front_end/core/root/root.js';
-import * as ComponentHelpers from '../../../../front_end/ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 
 beforeEach(resetTestDOM);
 
-interface KarmaConfig {
-  config: {targetDir: string};
-}
-
 before(async function() {
-  /* This value comes from the `client.targetDir` setting in `karma.conf.js` */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const {targetDir} = ((globalThis as unknown as {__karma__: KarmaConfig}).__karma__).config;
-
   /* Larger than normal timeout because we've seen some slowness on the bots */
   this.timeout(10000);
-
-  /*
- * This is now legacy. We only use this to load in the required legacy CSS files. Refer to
- * https://crbug.com/1106746 for the new way of implementing CSS in DevTools.
- *
- * The legacyGetStylesheet helper in components reads styles out of the runtime cache.
- * In a proper build this is populated but in test runs because we don't load
- * all of DevTools it's not. Therefore we fetch the required CSS files and populate
- * the cache before any tests are run.
- *
- * The out/Release/gen/front_end URL is prepended so within the Karma config we can proxy
- * them through to the right place, respecting Karma's ROOT_DIRECTORY setting.
- */
-  const allPromises = ComponentHelpers.LegacyGetStylesheet.CSS_RESOURCES_TO_LOAD_INTO_RUNTIME.map(resourcePath => {
-    const pathWithKarmaPrefix = `/base/${targetDir}/front_end/${resourcePath}`;
-    return fetch(pathWithKarmaPrefix)
-        .then(response => {
-          if (response.status > 399) {
-            throw new Error(`Error preloading CSS file: ${pathWithKarmaPrefix}: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then(cssText => {
-          Root.Runtime.cachedResources.set(resourcePath, cssText);
-        });
-  });
-  return Promise.all(allPromises);
-});
-
-after(() => {
-  Root.Runtime.cachedResources.clear();
 });
 
 beforeEach(() => {

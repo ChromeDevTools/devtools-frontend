@@ -139,7 +139,6 @@ export class MainImpl {
 
   private async loaded(): Promise<void> {
     console.timeStamp('Main._loaded');
-    await Root.Runtime.appStarted;
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
     const prefs = await new Promise<{[key: string]: string}>(resolve => {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve);

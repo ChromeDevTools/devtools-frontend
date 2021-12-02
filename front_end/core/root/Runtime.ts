@@ -345,11 +345,6 @@ export const cachedResources = new Map<string, string>();
 // @ts-ignore
 globalThis.EXPORTED_CACHED_RESOURCES_ONLY_FOR_LIGHTHOUSE = cachedResources;
 
-export let appStartedPromiseCallback: () => void;
-export const appStarted = new Promise<void>(fulfill => {
-  appStartedPromiseCallback = fulfill;
-});
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum ExperimentName {

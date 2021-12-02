@@ -17,8 +17,6 @@ import './WorkerMain.js';
 import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
 
-const runtimeInstance = Root.Runtime.Runtime.instance({forceNew: true});
 // @ts-ignore Exposed for legacy layout tests
-self.runtime = runtimeInstance;
+self.runtime = Root.Runtime.Runtime.instance({forceNew: true});
 new Main.MainImpl.MainImpl();
-Root.Runtime.appStartedPromiseCallback();

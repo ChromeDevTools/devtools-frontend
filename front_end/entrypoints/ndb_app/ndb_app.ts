@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 import '../shell/shell.js';
 
-import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
 
 new Main.MainImpl.MainImpl();
-Root.Runtime.appStartedPromiseCallback();

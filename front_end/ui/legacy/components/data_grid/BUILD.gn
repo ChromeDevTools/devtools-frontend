@@ -27,10 +27,6 @@ devtools_module("data_grid") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [ "dataGrid.css" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "data_grid.ts"
 

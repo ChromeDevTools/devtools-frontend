@@ -93,10 +93,6 @@ devtools_module("elements") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [ "layoutPane.css" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "elements.ts"
 

@@ -30,10 +30,6 @@ devtools_module("mobile_throttling") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [ "throttlingSettingsTab.css" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "mobile_throttling.ts"
 

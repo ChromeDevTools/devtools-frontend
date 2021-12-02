@@ -4,7 +4,6 @@
 
 group("front_end") {
   deps = [
-    "../../../front_end:legacy_css",
     "../../../front_end/Images",
     "client_variations",
     "core/common",

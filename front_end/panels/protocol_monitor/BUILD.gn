@@ -52,7 +52,3 @@ devtools_entrypoint("meta") {
 
   visibility = [ "../../entrypoints/*" ]
 }
-
-copy_to_gen("legacy_css") {
-  sources = [ "protocolMonitor.css" ]
-}

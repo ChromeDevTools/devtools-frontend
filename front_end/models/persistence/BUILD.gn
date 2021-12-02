@@ -44,13 +44,6 @@ devtools_module("persistence") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [
-    "editFileSystemView.css",
-    "workspaceSettingsTab.css",
-  ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "persistence.ts"
 

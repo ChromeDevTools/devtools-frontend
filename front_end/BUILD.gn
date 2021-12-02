@@ -13,7 +13,6 @@ group("front_end") {
     ":embedder-scripts",
     ":html_entrypoints",
     ":integration_test_runner",
-    ":legacy_css",
     ":legacy_entrypoints",
     "Images",
     "entrypoints/device_mode_emulation_frame",
@@ -29,20 +28,6 @@ group("front_end") {
     "entrypoints/wasmparser_worker:worker_entrypoint",
     "entrypoints/worker_app:entrypoint",
     "legacy_test_runner",
-  ]
-}
-
-group("legacy_css") {
-  public_deps = [
-    "entrypoints/inspector_main:legacy_css",
-    "models/persistence:legacy_css",
-    "panels/application:legacy_css",
-    "panels/elements:legacy_css",
-    "panels/help:legacy_css",
-    "panels/mobile_throttling:legacy_css",
-    "panels/protocol_monitor:legacy_css",
-    "third_party/codemirror:legacy_css",
-    "ui/legacy/components/data_grid:legacy_css",
   ]
 }
 

@@ -106,10 +106,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-copy_to_gen("legacy_css") {
-  sources = [ "serviceWorkerUpdateCycleView.css" ]
-}
-
 devtools_entrypoint("legacy") {
   entrypoint = "application-legacy.ts"
 

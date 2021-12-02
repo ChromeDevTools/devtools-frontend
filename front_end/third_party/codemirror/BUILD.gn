@@ -23,10 +23,6 @@ devtools_pre_built("codemirror") {
   ]
 }
 
-copy_to_gen("legacy_css") {
-  sources = [ "codemirror.css" ]
-}
-
 copy_to_gen("codemirror-legacy-types") {
   sources = [
     "codemirror-legacy-types-tsconfig.json",

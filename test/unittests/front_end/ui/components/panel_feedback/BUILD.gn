@@ -9,6 +9,7 @@ ts_library("panel_feedback") {
   sources = [
     "feedback_button_test.ts",
     "panel_feedback_test.ts",
+    "preview_toggle_test.ts",
   ]
 
   deps = [

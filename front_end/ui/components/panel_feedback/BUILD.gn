@@ -8,17 +8,22 @@ import("../../../../scripts/build/ninja/generate_css.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "panelFeedback.css" ]
+  sources = [
+    "panelFeedback.css",
+    "previewToggle.css",
+  ]
 }
 
 devtools_module("panel_feedback") {
   sources = [
     "FeedbackButton.ts",
     "PanelFeedback.ts",
+    "PreviewToggle.ts",
   ]
   deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/root:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit-html:bundle",

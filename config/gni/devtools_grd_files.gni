@@ -1360,6 +1360,7 @@ grd_files_debug_sources = [
   "front_end/ui/components/report_view/ReportView.js",
   "front_end/ui/components/report_view/report.css.js",
   "front_end/ui/components/report_view/reportKey.css.js",
+  "front_end/ui/components/report_view/reportSection.css.js",
   "front_end/ui/components/report_view/reportSectionDivider.css.js",
   "front_end/ui/components/report_view/reportSectionHeader.css.js",
   "front_end/ui/components/report_view/reportValue.css.js",

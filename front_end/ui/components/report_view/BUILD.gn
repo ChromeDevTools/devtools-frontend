@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "report.css",
     "reportKey.css",
+    "reportSection.css",
     "reportSectionDivider.css",
     "reportSectionHeader.css",
     "reportValue.css",

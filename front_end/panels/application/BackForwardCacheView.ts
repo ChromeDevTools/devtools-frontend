@@ -31,25 +31,22 @@ const UIStrings = {
   /**
    * @description Entry name text in the back/forward cache view of the Application panel
    */
-  url: 'URL',
-  /**
-   * @description Entry name text in the back/forward cache view of the Application panel
-   */
-  bfcacheStatus: 'Back/forward cache Status',
+  url: 'URL:',
   /**
    * @description Status text for the status of the back/forward cache status
    */
-  unknown: 'unknown',
+  unknown: 'Unknown Status',
   /**
    * @description Status text for the status of the back/forward cache status indicating that
    * the back/forward cache was not used and a normal navigation occured instead.
    */
-  normalNavigation: 'Normal navigation (Not restored from back/forward cache)',
+  normalNavigation:
+      'Not served from back/forward cache: to trigger back/forward cache, use Chrome\'s back/forward buttons, or use the test button below to automatically navigate away and back.',
   /**
    * @description Status text for the status of the back/forward cache status indicating that
    * the back/forward cache was used to restore the page instead of reloading it.
    */
-  restoredFromBFCache: 'Restored from back/forward cache',
+  restoredFromBFCache: 'Successfully served from back/forward cache.',
   /**
    * @description Label for a list of reasons which prevent the page from being eligible for
    * back/forward cache. These reasons are actionable i.e. they can be cleaned up to make the
@@ -81,9 +78,17 @@ const UIStrings = {
    */
   supportPending: 'Pending Support',
   /**
-   * @description Button name for showing whether BFCache is available in the pages.
+   * @description Label for the button to test whether BFCache is available for the page
    */
-  runTest: 'Run Test',
+  runTest: 'Test back/forward cache',
+  /**
+   * @description Label for the disabled button while the test is running
+   */
+  runningTest: 'Running test',
+  /**
+   * @description Link Text about explanation of back/forward cache
+   */
+  learnMore: 'Learn more: back/forward cache eligibility',
   /**
    * @description Explanation for 'pending support' items which prevent the page from being eligible
    * for back/forward cache.
@@ -94,6 +99,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const enum ScreenStatusType {
+  Running = 'Running',
+  Result = 'Result',
+}
+
 export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true, 1000);
@@ -102,7 +112,10 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     this.getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.onBackForwardCacheUpdate, this);
     this.update();
+    this.screenStatus = ScreenStatusType.Result;
   }
+
+  private screenStatus: ScreenStatusType;
 
   wasShown(): void {
     super.wasShown();
@@ -117,7 +130,7 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     const data = {reportTitle: i18nString(UIStrings.backForwardCacheTitle)};
     const html = LitHtml.html`
       <${ReportView.ReportView.Report.litTagName} .data=${data as ReportView.ReportView.ReportData}>
-      ${this.renderMainFrameInformation(this.getMainFrame())}
+        ${this.renderMainFrameInformation(this.getMainFrame())}
       </${ReportView.ReportView.Report.litTagName}>
     `;
     LitHtml.render(html, this.contentElement, {host: this});
@@ -132,10 +145,20 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     return this.getMainResourceTreeModel()?.mainFrame || null;
   }
 
+  private renderBackForwardCacheTestResult(): void {
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
+        this.renderBackForwardCacheTestResult, this);
+    this.screenStatus = ScreenStatusType.Result;
+    this.update();
+  }
+
   private async goBackOneHistoryEntry(): Promise<void> {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.goBackOneHistoryEntry, this);
+    this.screenStatus = ScreenStatusType.Running;
+    this.update();
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
@@ -148,6 +171,9 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     if (!historyResults) {
       return;
     }
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
+        this.renderBackForwardCacheTestResult, this);
     resourceTreeModel.navigateToHistoryEntry(historyResults.entries[historyResults.currentIndex - 1]);
   }
 
@@ -176,41 +202,97 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
 
   private renderMainFrameInformation(mainFrame: SDK.ResourceTreeModel.ResourceTreeFrame|null): LitHtml.TemplateResult {
     if (!mainFrame) {
-      return LitHtml.html`<${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.mainFrame)}</${
-          ReportView.ReportView.ReportKey.litTagName}>
-      <${ReportView.ReportView.ReportValue.litTagName}>
-      ${i18nString(UIStrings.unavailable)}
-      </${ReportView.ReportView.ReportValue.litTagName}>`;
+      // clang-format off
+      return LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>
+          ${i18nString(UIStrings.mainFrame)}
+        </${ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          ${i18nString(UIStrings.unavailable)}
+        </${ReportView.ReportView.ReportValue.litTagName}>
+      `;
+      // clang-format on
     }
+    const isDisabled = this.screenStatus === ScreenStatusType.Running;
+    // clang-format off
     return LitHtml.html`
-      <${ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${Buttons.Button.Button.litTagName}
-            .variant=${Buttons.Button.Variant.PRIMARY}
-            @click=${this.navigateAwayAndBack}>
+      ${this.renderBackForwardCacheStatus(mainFrame.backForwardCacheDetails.restoredFromCache)}
+      <div class='url'>
+        <div class='url-key'>
+          ${i18nString(UIStrings.url)}
+        </div>
+        <div class='url-value'>
+          ${mainFrame.url}
+        </div>
+      </div>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        <${Buttons.Button.Button.litTagName}
+          .disabled=${isDisabled}
+          .spinner=${isDisabled}
+          .variant=${Buttons.Button.Variant.PRIMARY}
+          @click=${this.navigateAwayAndBack}>
+          ${isDisabled ? LitHtml.html`
+            ${i18nString(UIStrings.runningTest)}`:`
             ${i18nString(UIStrings.runTest)}
-      </${Buttons.Button.Button.litTagName}>
-      </${ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
-        ReportView.ReportView.ReportKey.litTagName}>
-      <${ReportView.ReportView.ReportValue.litTagName}>${mainFrame.url}</${
-        ReportView.ReportView.ReportValue.litTagName}>
-      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.bfcacheStatus)}</${
-        ReportView.ReportView.ReportKey.litTagName}>
-      <${ReportView.ReportView.ReportValue.litTagName}>${
-        this.renderBackForwardCacheStatus(
-            mainFrame.backForwardCacheDetails.restoredFromCache)}</${ReportView.ReportView.ReportValue.litTagName}>
-       ${this.maybeRenderExplanations(mainFrame.backForwardCacheDetails.explanations)}
+          `}
+        </${Buttons.Button.Button.litTagName}>
+      </${ReportView.ReportView.ReportSection.litTagName}>
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}>
+      </${ReportView.ReportView.ReportSectionDivider.litTagName}>
+        ${this.maybeRenderExplanations(mainFrame.backForwardCacheDetails.explanations)}
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        <x-link href="https://web.dev/bfcache/" class="link">
+          ${i18nString(UIStrings.learnMore)}
+        </x-link>
+      </${ReportView.ReportView.ReportSection.litTagName}>
     `;
+    // clang-format on
   }
 
-  private renderBackForwardCacheStatus(status: boolean|undefined): Platform.UIString.LocalizedString {
+  private renderBackForwardCacheStatus(status: boolean|undefined): LitHtml.TemplateResult {
     switch (status) {
       case true:
-        return i18nString(UIStrings.restoredFromBFCache);
+        // clang-format off
+        return LitHtml.html`
+          <${ReportView.ReportView.ReportSection.litTagName}>
+            <div class='status'>
+              <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+                iconName: 'ic_checkmark_16x16',
+                color: 'green',
+                width: '16px',
+                height: '16px',
+                } as IconButton.Icon.IconData}>
+              </${IconButton.Icon.Icon.litTagName}>
+            </div>
+            ${i18nString(UIStrings.restoredFromBFCache)}
+          </${ReportView.ReportView.ReportSection.litTagName}>
+        `;
+        // clang-format on
       case false:
-        return i18nString(UIStrings.normalNavigation);
+        // clang-format off
+        return LitHtml.html`
+          <${ReportView.ReportView.ReportSection.litTagName}>
+            <div class='status'>
+              <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+                  iconName: 'circled_backslash_icon',
+                  color: 'var(--color-text-secondary)',
+                  width: '16px',
+                  height: '16px',
+                  } as IconButton.Icon.IconData}>
+              </${IconButton.Icon.Icon.litTagName}>
+            </div>
+            ${i18nString(UIStrings.normalNavigation)}
+          </${ReportView.ReportView.ReportSection.litTagName}>
+        `;
+        // clang-format on
     }
-    return i18nString(UIStrings.unknown);
+    // clang-format off
+    return LitHtml.html`
+    <${ReportView.ReportView.ReportSection.litTagName}>
+      ${i18nString(UIStrings.unknown)}
+    </${ReportView.ReportView.ReportSection.litTagName}>
+    `;
+    // clang-format on
   }
 
   private maybeRenderExplanations(explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]):
@@ -243,36 +325,46 @@ export class BackForwardCacheView extends UI.ThrottledWidget.ThrottledWidget {
     // clang-format off
     return LitHtml.html`
       ${explanations.length > 0 ? LitHtml.html`
-        <${ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportSectionHeader.litTagName}>
           ${category}
-          <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'help_outline',
-            color: 'var(--color-text-secondary)',
-            width: '16px',
-            height: '16px',
-            } as IconButton.Icon.IconData} title=${explainerText}></${IconButton.Icon.Icon.litTagName}>
-        </${ReportView.ReportView.ReportKey.litTagName}>
-        <${ReportView.ReportView.ReportValue.litTagName}>
-          <ul class='not-restored-reason-list'>${explanations.map(explanation => this.renderReason(explanation))}</ul>
-        </${ReportView.ReportView.ReportValue.litTagName}>
+          <div class='help-outline-icon'>
+            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+              iconName: 'help_outline',
+              color: 'var(--color-text-secondary)',
+              width: '16px',
+              height: '16px',
+              } as IconButton.Icon.IconData} title=${explainerText}>
+            </${IconButton.Icon.Icon.litTagName}>
+          </div>
+        </${ReportView.ReportView.ReportSectionHeader.litTagName}>
+        ${explanations.map(explanation => this.renderReason(explanation))}
       ` : LitHtml.nothing}
     `;
     // clang-format on
   }
 
   private renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
+    // clang-format off
     return LitHtml.html`
-      <li>
-      <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-      iconName: 'circled_exclamation_icon',
-      color: 'orange',
-      width: '16px',
-      height: '16px',
-    } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
-        ${explanation.reason} : ${
-        (explanation.reason in NotRestoredReasonDescription) ?
-            LitHtml.html`${NotRestoredReasonDescription[explanation.reason].name()}` :
-            LitHtml.nothing} </li>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        ${(explanation.reason in NotRestoredReasonDescription) ?
+          LitHtml.html`
+            <div class='circled-exclamation-icon'>
+              <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+                iconName: 'circled_exclamation_icon',
+                color: 'orange',
+                width: '16px',
+                height: '16px',
+              } as IconButton.Icon.IconData}>
+              </${IconButton.Icon.Icon.litTagName}>
+            </div>
+            ${NotRestoredReasonDescription[explanation.reason].name()}` :
+            LitHtml.nothing}
+      </${ReportView.ReportView.ReportSection.litTagName}>
+      <div class='gray-text'>
+        ${explanation.reason}
+      </div>
     `;
+    // clang-format on
   }
 }

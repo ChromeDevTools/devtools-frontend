@@ -3,12 +3,50 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.not-restored-reason-list {
-  margin: 0;
-  list-style-type: none;
-  padding-inline-start: 0;
-}
-
 .inline-icon {
   vertical-align: sub;
+}
+
+.gray-text {
+  color: var(--color-text-secondary);
+  margin: 0 0 15px 56px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: auto;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
+.help-outline-icon {
+  margin: 0 2px;
+}
+
+.circled-exclamation-icon {
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.status {
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.url {
+  grid-column-start: span 2;
+  display: flex;
+  align-items: center;
+  margin: 0 30px;
+  line-height: 28px;
+}
+
+.url-key {
+  color: var(--color-text-secondary);
+  min-width: auto;
+  overflow-wrap: break-word;
+}
+
+.url-value {
+  padding: 0 6px;
+  overflow-wrap: break-word;
 }

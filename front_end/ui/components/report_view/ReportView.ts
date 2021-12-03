@@ -7,6 +7,7 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import reportStyles from './report.css.js';
 import reportKeyStyles from './reportKey.css.js';
+import reportSectionStyles from './reportSection.css.js';
 import reportSectionDividerStyles from './reportSectionDivider.css.js';
 import reportSectionHeaderStyles from './reportSectionHeader.css.js';
 import reportValueStyles from './reportValue.css.js';
@@ -64,6 +65,25 @@ export class Report extends HTMLElement {
 
 export interface ReportSectionData {
   sectionTitle: string;
+}
+
+export class ReportSection extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-report-section`;
+  private readonly shadow = this.attachShadow({mode: 'open'});
+  connectedCallback(): void {
+    this.shadow.adoptedStyleSheets = [reportSectionStyles];
+    this.render();
+  }
+  private render(): void {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    LitHtml.render(LitHtml.html`
+      <div class="section">
+        <slot></slot>
+      </div>
+    `, this.shadow, {host: this});
+    // clang-format on
+  }
 }
 
 export class ReportSectionHeader extends HTMLElement {
@@ -146,6 +166,7 @@ export class ReportValue extends HTMLElement {
 }
 
 ComponentHelpers.CustomElements.defineComponent('devtools-report', Report);
+ComponentHelpers.CustomElements.defineComponent('devtools-report-section', ReportSection);
 ComponentHelpers.CustomElements.defineComponent('devtools-report-section-header', ReportSectionHeader);
 ComponentHelpers.CustomElements.defineComponent('devtools-report-key', ReportKey);
 ComponentHelpers.CustomElements.defineComponent('devtools-report-value', ReportValue);
@@ -155,6 +176,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-report': Report;
+    'devtools-report-section': ReportSection;
     'devtools-report-section-header': ReportSectionHeader;
     'devtools-report-key': ReportKey;
     'devtools-report-value': ReportValue;

@@ -10,7 +10,6 @@ const ruleTester = new (require('eslint').RuleTester)({
 ruleTester.run('no_only_eslint_tests', rule, {
   valid: [
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           code: 'foo',
@@ -20,7 +19,6 @@ ruleTester.run('no_only_eslint_tests', rule, {
       filename: 'scripts/eslint_rules/tests/foo_test.js',
     },
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         invalid: [{
           code: 'foo',
@@ -33,7 +31,6 @@ ruleTester.run('no_only_eslint_tests', rule, {
 
   invalid: [
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           only: true,
@@ -45,7 +42,6 @@ ruleTester.run('no_only_eslint_tests', rule, {
       errors: [{messageId: 'noOnlyInESLintTest'}],
     },
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         invalid: [{
           only: true,
@@ -58,7 +54,6 @@ ruleTester.run('no_only_eslint_tests', rule, {
       errors: [{messageId: 'noOnlyInESLintTest'}],
     },
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           only: true,
@@ -76,7 +71,6 @@ ruleTester.run('no_only_eslint_tests', rule, {
       errors: [{messageId: 'noOnlyInESLintTest'}, {messageId: 'noOnlyInESLintTest'}],
     },
     {
-      only: true,
       code: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           only: true,

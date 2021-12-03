@@ -105,13 +105,13 @@ const tokenRenderers = new Map<string, (token: any) => LitHtml.TemplateResult>([
   ['space', (): LitHtml.TemplateResult => html``],
   [
     'link',
-    (token): LitHtml.TemplateResult => html`<${MarkdownLink.litTagName} .data="${
-        {key: token.href, title: token.text} as MarkdownLinkData}"></${MarkdownLink.litTagName}>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownLink.litTagName} .data=${
+        {key: token.href, title: token.text} as MarkdownLinkData}></${MarkdownLink.litTagName}>`,
   ],
   [
     'image',
-    (token): LitHtml.TemplateResult => html`<${MarkdownImage.litTagName} .data="${
-        {key: token.href, title: token.text} as MarkdownImageData}"></${MarkdownImage.litTagName}>`,
+    (token): LitHtml.TemplateResult => html`<${MarkdownImage.litTagName} .data=${
+        {key: token.href, title: token.text} as MarkdownImageData}></${MarkdownImage.litTagName}>`,
   ],
 ]);
 

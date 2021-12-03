@@ -64,7 +64,7 @@ export class StackTraceRow extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
       <div class="stack-trace-row">
-              <div class="stack-trace-function-name text-ellipsis" title="${this.stackTraceRowItem.functionName}">
+              <div class="stack-trace-function-name text-ellipsis" title=${this.stackTraceRowItem.functionName}>
                 ${this.stackTraceRowItem.functionName}
               </div>
               <div class="stack-trace-source-location">

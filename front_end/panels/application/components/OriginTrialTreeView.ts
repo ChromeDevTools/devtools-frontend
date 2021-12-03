@@ -229,7 +229,7 @@ export class OriginTrialTokenRows extends HTMLElement {
   }
 
   private renderTokenField = (fieldValue: string, hasError?: boolean): LitHtml.TemplateResult => LitHtml.html`
-        <div class="${LitHtml.Directives.ifDefined(hasError ? 'error-text' : undefined)}">
+        <div class=${LitHtml.Directives.ifDefined(hasError ? 'error-text' : undefined)}>
           ${fieldValue}
         </div>`;
 
@@ -334,10 +334,10 @@ export class OriginTrialTreeView extends HTMLElement {
 
     LitHtml.render(
         LitHtml.html`
-      <${TreeOutline.TreeOutline.TreeOutline.litTagName} .data="${{
+      <${TreeOutline.TreeOutline.TreeOutline.litTagName} .data=${{
           tree: trials.map(constructOriginTrialTree),
           defaultRenderer,
-        } as TreeOutline.TreeOutline.TreeOutlineData<OriginTrialTreeNodeData>}">
+        } as TreeOutline.TreeOutline.TreeOutlineData<OriginTrialTreeNodeData>}>
       </${TreeOutline.TreeOutline.TreeOutline.litTagName}>
     `,
         this.shadow, {host: this});

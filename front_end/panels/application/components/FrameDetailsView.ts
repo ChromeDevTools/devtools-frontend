@@ -318,7 +318,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.html`
     <${ReportView.ReportView.ReportSectionHeader.litTagName}>
       ${i18n.i18n.lockedString('Origin Trials')}
-      <${IconButton.IconButton.IconButton.litTagName} class="inline-button" .data="${{
+      <${IconButton.IconButton.IconButton.litTagName} class="inline-button" .data=${{
       clickHandler: refreshOriginTrials,
       groups: [
         {
@@ -326,7 +326,7 @@ export class FrameDetailsReportView extends HTMLElement {
           text: 'Refresh',
         } as IconButton.IconButton.IconWithTextData,
       ],
-    } as IconButton.IconButton.IconButtonData}">
+    } as IconButton.IconButton.IconButtonData}>
       </${IconButton.IconButton.IconButton.litTagName}>
     </${ReportView.ReportView.ReportSectionHeader.litTagName}>
     ${this.originTrialTreeView}
@@ -541,7 +541,7 @@ export class FrameDetailsReportView extends HTMLElement {
       return LitHtml.nothing;
     }
     const typeStrings = this.getAdFrameTypeStrings(adFrameType);
-    const rows = [LitHtml.html`<div title="${typeStrings.description}">${typeStrings.value}</div>`];
+    const rows = [LitHtml.html`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
     for (const explanation of this.frame.adFrameStatus()?.explanations || []) {
       rows.push(LitHtml.html`<div>${this.getAdFrameExplanationString(explanation)}</div>`);
     }

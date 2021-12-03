@@ -356,9 +356,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <input
           class="input-field"
           type="text"
-          @input="${handleInputChange}"
-          .value="${value}"
-          placeholder="${placeholder}"
+          @input=${handleInputChange}
+          .value=${value}
+          placeholder=${placeholder}
         />
       </label>
     `;
@@ -376,22 +376,22 @@ export class UserAgentClientHintsForm extends HTMLElement {
     };
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
-      <div class="full-row brand-row" aria-label="${i18nString(UIStrings.platformProperties)}" role="group">
+      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.platformProperties)} role="group">
         <input
           class="input-field half-row"
           type="text"
-          @input="${handlePlatformNameChange}"
-          .value="${platform}"
-          placeholder="${i18nString(UIStrings.platformPlaceholder)}"
-          aria-label="${i18nString(UIStrings.platformLabel)}"
+          @input=${handlePlatformNameChange}
+          .value=${platform}
+          placeholder=${i18nString(UIStrings.platformPlaceholder)}
+          aria-label=${i18nString(UIStrings.platformLabel)}
         />
         <input
           class="input-field half-row"
           type="text"
-          @input="${handlePlatformVersionChange}"
-          .value="${platformVersion}"
-          placeholder="${i18nString(UIStrings.platformVersion)}"
-          aria-label="${i18nString(UIStrings.platformVersion)}"
+          @input=${handlePlatformVersionChange}
+          .value=${platformVersion}
+          placeholder=${i18nString(UIStrings.platformVersion)}
+          aria-label=${i18nString(UIStrings.platformVersion)}
         />
       </div>
     `;
@@ -409,20 +409,20 @@ export class UserAgentClientHintsForm extends HTMLElement {
     };
     const mobileCheckboxInput = this.showMobileCheckbox ? LitHtml.html`
       <label class="mobile-checkbox-container">
-        <input type="checkbox" @input="${handleMobileChange}" .checked="${mobile}" />
+        <input type="checkbox" @input=${handleMobileChange} .checked=${mobile} />
         ${i18nString(UIStrings.mobileCheckboxLabel)}
       </label>
     ` :
                                                           LitHtml.html``;
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
-      <div class="full-row brand-row" aria-label="${i18nString(UIStrings.deviceProperties)}" role="group">
+      <div class="full-row brand-row" aria-label=${i18nString(UIStrings.deviceProperties)} role="group">
         <input
           class="input-field ${this.showMobileCheckbox ? 'device-model-input' : 'full-row'}"
           type="text"
-          @input="${handleDeviceModelChange}"
-          .value="${model}"
-          placeholder="${i18nString(UIStrings.deviceModel)}"
+          @input=${handleDeviceModelChange}
+          .value=${model}
+          placeholder=${i18nString(UIStrings.deviceModel)}
         />
         ${mobileCheckboxInput}
       </div>
@@ -459,41 +459,41 @@ export class UserAgentClientHintsForm extends HTMLElement {
         this.handleBrandInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
-        <div class="full-row brand-row" aria-label="${i18nString(UIStrings.brandProperties)}" role="group">
+        <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
           <input
             class="input-field brand-name-input"
             type="text"
-            @input="${handleBrandBrowserChange}"
-            .value="${brand}"
+            @input=${handleBrandBrowserChange}
+            .value=${brand}
             id="brand-${index + 1}-input"
-            placeholder="${i18nString(UIStrings.brandName)}"
-            aria-label="${i18nString(UIStrings.brandNameAriaLabel, {
+            placeholder=${i18nString(UIStrings.brandName)}
+            aria-label=${i18nString(UIStrings.brandNameAriaLabel, {
         PH1: index + 1,
-      })}"
+      })}
           />
           <input
             class="input-field"
             type="text"
-            @input="${handleBrandVersionChange}"
-            .value="${version}"
-            placeholder="${i18nString(UIStrings.version)}"
-            aria-label="${i18nString(UIStrings.brandVersionAriaLabel, {
+            @input=${handleBrandVersionChange}
+            .value=${version}
+            placeholder=${i18nString(UIStrings.version)}
+            aria-label=${i18nString(UIStrings.brandVersionAriaLabel, {
         PH1: index + 1,
-      })}"
+      })}
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
           {color: 'var(--client-hints-form-icon-color)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
           IconButton.Icon.IconData}
-            title="${i18nString(UIStrings.deleteTooltip)}"
+            title=${i18nString(UIStrings.deleteTooltip)}
             class="delete-icon"
             tabindex="0"
             role="button"
-            @click="${handleDeleteClick}"
-            @keypress="${handleKeyPress}"
-            aria-label="${i18nString(UIStrings.brandDeleteAriaLabel, {
+            @click=${handleDeleteClick}
+            @keypress=${handleKeyPress}
+            aria-label=${i18nString(UIStrings.brandDeleteAriaLabel, {
         PH1: index + 1,
-      })}"
+      })}
           >
           </${IconButton.Icon.Icon.litTagName}>
         </div>
@@ -507,9 +507,9 @@ export class UserAgentClientHintsForm extends HTMLElement {
         role="button"
         tabindex="0"
         id="add-brand-button"
-        aria-label="${i18nString(UIStrings.addBrand)}"
-        @click="${this.handleAddBrandClick}"
-        @keypress="${this.handleAddBrandKeyPress}"
+        aria-label=${i18nString(UIStrings.addBrand)}
+        @click=${this.handleAddBrandClick}
+        @keypress=${this.handleAddBrandKeyPress}
       >
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
@@ -547,16 +547,16 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <div
           class="tree-title"
           role="button"
-          @click="${this.handleTreeClick}"
+          @click=${this.handleTreeClick}
           tabindex="0"
-          @keydown="${this.handleTreeExpand}"
-          aria-expanded="${this.isFormOpened}"
+          @keydown=${this.handleTreeExpand}
+          aria-expanded=${this.isFormOpened}
           aria-controls="form-container"
-          @disabled="${this.isFormDisabled}"
-          aria-disabled="${this.isFormDisabled}"
+          @disabled=${this.isFormDisabled}
+          aria-disabled=${this.isFormDisabled}
         >
           <${IconButton.Icon.Icon.litTagName}
-            class="${this.isFormOpened ? '' : 'rotate-icon'}"
+            class=${this.isFormOpened ? '' : 'rotate-icon'}
             .data=${
         {color: 'var(--client-hints-form-icon-color)', iconName: 'chromeSelect', width: '20px'} as
         IconButton.Icon.IconData}
@@ -568,8 +568,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
            href="https://web.dev/user-agent-client-hints/"
            target="_blank"
            class="info-link"
-           @keypress="${this.handleLinkPress}"
-           aria-label="${i18nString(UIStrings.userAgentClientHintsInfo)}"
+           @keypress=${this.handleLinkPress}
+           aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)}
           >
             <${IconButton.Icon.Icon.litTagName}
               .data=${
@@ -582,7 +582,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <form
           id="form-container"
           class="form-container ${this.isFormOpened ? '' : 'hide-container'}"
-          @submit="${this.handleSubmit}"
+          @submit=${this.handleSubmit}
         >
           ${brandSection}
           ${fullBrowserInput}
@@ -591,7 +591,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           ${deviceModelSection}
           ${submitButton}
         </form>
-        <div aria-live="polite" aria-label="${this.brandsModifiedAriaMessage}"></div>
+        <div aria-live="polite" aria-label=${this.brandsModifiedAriaMessage}></div>
       </section>
     `;
     // clang-format off

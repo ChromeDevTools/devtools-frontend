@@ -60,10 +60,10 @@ describe('MarkdownView', async () => {
     it('renders link with valid key', () => {
       MarkdownView.MarkdownLinksMap.markdownLinks.set('exampleLink', 'https://web.dev/');
       const renderResult =
-          MarkdownView.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'});
+          MarkdownView.MarkdownView.renderToken({type: 'link', text: 'learn more', href: 'exampleLink'})
+              .strings.join('');
 
-      assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-link .data="', '"></devtools-markdown-link>']);
+      assert.isTrue(renderResult.includes('<devtools-markdown-link'));
     });
 
     it('throws an error if invalid link key is provided', () => {
@@ -76,9 +76,9 @@ describe('MarkdownView', async () => {
         isIcon: true,
       });
       const renderResult =
-          MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'testExampleImage'});
-      assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-image .data="', '"></devtools-markdown-image>']);
+          MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'testExampleImage'})
+              .strings.join('');
+      assert.isTrue(renderResult.includes('<devtools-markdown-image'));
     });
 
     it('renders image with valid key', () => {
@@ -86,9 +86,9 @@ describe('MarkdownView', async () => {
         src: 'Images/phone-logo.png',
         isIcon: false,
       });
-      const renderResult = MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'exampleImage'});
-      assert.deepStrictEqual(
-          renderResult.strings.raw, ['<devtools-markdown-image .data="', '"></devtools-markdown-image>']);
+      const renderResult =
+          MarkdownView.MarkdownView.renderToken({type: 'image', text: 'phone', href: 'exampleImage'}).strings.join('');
+      assert.isTrue(renderResult.includes('<devtools-markdown-image'));
     });
 
     it('throws an error if invalid image key is provided', () => {

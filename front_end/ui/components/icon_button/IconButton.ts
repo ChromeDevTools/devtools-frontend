@@ -80,7 +80,7 @@ export class IconButton extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button class="${buttonClasses}" @click=${this.onClickHandler} aria-label="${LitHtml.Directives.ifDefined(this.#accessibleName)}">
+      <button class=${buttonClasses} @click=${this.onClickHandler} aria-label=${LitHtml.Directives.ifDefined(this.#accessibleName)}>
       ${(!this.#compact && this.#leadingText) ? LitHtml.html`<span class="icon-button-title">${this.#leadingText}</span>` : LitHtml.nothing}
       ${filteredGroups.map(counter =>
       LitHtml.html`

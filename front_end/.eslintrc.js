@@ -40,6 +40,7 @@ module.exports = {
         'rulesdir/check_was_shown_methods': 2,
         'rulesdir/static_custom_event_names': 2,
         'rulesdir/lit_html_host_this': 2,
+        'rulesdir/lit_html_no_attribute_quotes': 2,
         '@typescript-eslint/naming-convention': [
           'error', {
             'selector': ['property', 'parameterProperty'],

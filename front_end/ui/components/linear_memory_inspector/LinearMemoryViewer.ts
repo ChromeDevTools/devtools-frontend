@@ -212,7 +212,7 @@ export class LinearMemoryViewer extends HTMLElement {
     };
     return html`
     <div class="row">
-      <span class="${LitHtml.Directives.classMap(classMap)}">${toHexString({number: startIndex + this.#memoryOffset, pad: 8, prefix: false})}</span>
+      <span class=${LitHtml.Directives.classMap(classMap)}>${toHexString({number: startIndex + this.#memoryOffset, pad: 8, prefix: false})}</span>
       <span class="divider"></span>
       ${this.renderByteValues(startIndex, endIndex)}
       <span class="divider"></span>
@@ -237,7 +237,7 @@ export class LinearMemoryViewer extends HTMLElement {
       const byteValue = isSelectableCell ? html`${toHexString({number: this.#memory[i], pad: 2, prefix: false})}` : '';
       const actualIndex = i + this.#memoryOffset;
       const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, actualIndex) : '';
-      cells.push(html`<span class="${LitHtml.Directives.classMap(classMap)}" @click=${onSelectedByte}>${byteValue}</span>`);
+      cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte}>${byteValue}</span>`);
     }
     return html`${cells}`;
   }
@@ -253,7 +253,7 @@ export class LinearMemoryViewer extends HTMLElement {
       const isSelectableCell = i < this.#memory.length;
       const value = isSelectableCell ? html`${this.toAscii(this.#memory[i])}` : '';
       const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, i + this.#memoryOffset) : '';
-      cells.push(html`<span class="${LitHtml.Directives.classMap(classMap)}" @click=${onSelectedByte}>${value}</span>`);
+      cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte}>${value}</span>`);
     }
     return html`${cells}`;
   }

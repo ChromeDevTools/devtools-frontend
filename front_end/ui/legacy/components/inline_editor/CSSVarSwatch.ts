@@ -113,7 +113,7 @@ export class CSSVarSwatch extends HTMLElement {
     // The this.variableName's space must be removed, otherwise it cannot be triggered when clicked.
     const onActivate = isDefined ? this.onLinkActivate.bind(this, this.variableName.trim()) : null;
 
-    return html`<span class="${classes}" title="${title}" @mousedown=${onActivate} @keydown=${
+    return html`<span class=${classes} title=${title} @mousedown=${onActivate} @keydown=${
         onActivate} role="link" tabindex="-1">${variableName}</span>`;
   }
 
@@ -129,7 +129,7 @@ export class CSSVarSwatch extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
-      html`<span title="${this.computedValue || ''}">${functionParts.pre}${link}${functionParts.post}</span>`,
+      html`<span title=${this.computedValue || ''}>${functionParts.pre}${link}${functionParts.post}</span>`,
       this.shadow, { host: this });
     // clang-format on
   }

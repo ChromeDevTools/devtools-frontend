@@ -179,7 +179,7 @@ export class RequestLinkIcon extends HTMLElement {
       return LitHtml.nothing;
     }
     const filename = extractShortPath(url);
-    return LitHtml.html`<span aria-label="${i18nString(UIStrings.shortenedURL)}" title="${url}">${filename}</span>`;
+    return LitHtml.html`<span aria-label=${i18nString(UIStrings.shortenedURL)} title=${url}>${filename}</span>`;
   }
 
   private render(): Promise<void> {

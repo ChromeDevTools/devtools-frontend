@@ -191,7 +191,7 @@ class DiffRenderer {
 
   private render(rows: readonly Row[]): LitHtml.TemplateResult {
     return LitHtml.html`
-      <div class="diff-listing" aria-label="${i18nString(UIStrings.changesDiffViewer)}">
+      <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)}>
         ${rows.map(row => this.renderRow(row))}
       </div>`;
   }
@@ -213,7 +213,7 @@ class DiffRenderer {
     return LitHtml.html`
       <div class="diff-line-number" aria-hidden="true">${baseNumber}</div>
       <div class="diff-line-number" aria-hidden="true">${curNumber}</div>
-      <div class="${markerClass}" aria-hidden="true">${marker}</div>
+      <div class=${markerClass} aria-hidden="true">${marker}</div>
       <div class="diff-line-content diff-line-${row.type}" data-line-number=${curNumber}>${screenReaderText}${
         this.renderRowContent(row)}</div>`;
   }
@@ -230,10 +230,10 @@ class DiffRenderer {
     for (const token of row.tokens) {
       const tokenContent: (LitHtml.TemplateResult|string)[] = [];
       doc.highlightRange(pos, pos + token.text.length, (text, style) => {
-        tokenContent.push(style ? LitHtml.html`<span class="${style}">${text}</span>` : text);
+        tokenContent.push(style ? LitHtml.html`<span class=${style}>${text}</span>` : text);
       });
       content.push(
-          token.className ? LitHtml.html`<span class="${token.className}">${tokenContent}</span>` :
+          token.className ? LitHtml.html`<span class=${token.className}>${tokenContent}</span>` :
                             LitHtml.html`${tokenContent}`);
       pos += token.text.length;
     }

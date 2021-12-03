@@ -276,7 +276,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <nav class="crumbs" aria-label="${i18nString(UIStrings.breadcrumbs)}">
+        <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)}>
           ${this.renderOverflowButton('left', this.userScrollPosition === 'start')}
 
           <div class="crumbs-window" @scroll=${this.onCrumbsWindowScroll}>

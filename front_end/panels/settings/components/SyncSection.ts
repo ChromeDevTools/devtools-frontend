@@ -92,7 +92,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     // clang-format off
     return LitHtml.html`
       <span class="warning">
-        ${i18nString(UIStrings.syncDisabled)} <a href="${link}" class="link" target="_blank"
+        ${i18nString(UIStrings.syncDisabled)} <a href=${link} class="link" target="_blank"
           @click=${(e: Event): void => openSettingsTab(link, e)}
           @keydown=${(e: Event): void => openSettingsTab(link, e)}>${i18nString(UIStrings.settings)}</x-link>
       </span>`;
@@ -104,7 +104,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     // clang-format off
     return LitHtml.html`
       <span class="warning">
-        ${i18nString(UIStrings.preferencesSyncDisabled)} <a href="${link}" class="link" target="_blank"
+        ${i18nString(UIStrings.preferencesSyncDisabled)} <a href=${link} class="link" target="_blank"
           @click=${(e: Event): void => openSettingsTab(link, e)}
           @keydown=${(e: Event): void => openSettingsTab(link, e)}>${i18nString(UIStrings.settings)}</x-link>
       </span>`;

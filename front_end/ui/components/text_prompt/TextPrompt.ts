@@ -127,8 +127,8 @@ export class TextPrompt extends HTMLElement {
     const output = LitHtml.html`
       <span class="prefix">${this.#prefixText} </span>
       <span class="text-prompt-input"><input aria-label=${this.#ariaLabelText} spellcheck="false" @input=${
-        this.onInput} @keydown=${this.onKeyDown}/><span class='suggestion' suggestion="${
-        this.#suggestionText}"></span></span>`;
+        this.onInput} @keydown=${this.onKeyDown}/><span class='suggestion' suggestion=${
+        this.#suggestionText}></span></span>`;
     LitHtml.render(output, this.#shadow, {host: this});
   }
 }

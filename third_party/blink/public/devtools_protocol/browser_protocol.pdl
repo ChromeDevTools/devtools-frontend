@@ -703,6 +703,11 @@ experimental domain Audits
       AttributionUntrustworthyOrigin
       AttributionTriggerDataTooLarge
       AttributionEventSourceTriggerDataTooLarge
+      InvalidAttributionSourceExpiry
+      InvalidAttributionSourcePriority
+      InvalidEventSourceTriggerData
+      InvalidTriggerPriority
+      InvalidTriggerDedupKey
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/conversion-measurement-api
@@ -1946,6 +1951,11 @@ experimental domain Cast
   # Sets a sink to be used when the web page requests the browser to choose a
   # sink via Presentation API, Remote Playback API, or Cast SDK.
   command setSinkToUse
+    parameters
+      string sinkName
+
+  # Starts mirroring the desktop to the sink.
+  command startDesktopMirroring
     parameters
       string sinkName
 

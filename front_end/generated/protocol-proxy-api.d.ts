@@ -752,6 +752,12 @@ declare namespace ProtocolProxyApi {
     invoke_setSinkToUse(params: Protocol.Cast.SetSinkToUseRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Starts mirroring the desktop to the sink.
+     */
+    invoke_startDesktopMirroring(params: Protocol.Cast.StartDesktopMirroringRequest):
+        Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Starts mirroring the tab to the sink.
      */
     invoke_startTabMirroring(params: Protocol.Cast.StartTabMirroringRequest):

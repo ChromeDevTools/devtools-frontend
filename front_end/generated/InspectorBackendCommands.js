@@ -270,7 +270,12 @@ export function registerCommands(inspectorBackend) {
     AttributionSourceUntrustworthyOrigin: 'AttributionSourceUntrustworthyOrigin',
     AttributionUntrustworthyOrigin: 'AttributionUntrustworthyOrigin',
     AttributionTriggerDataTooLarge: 'AttributionTriggerDataTooLarge',
-    AttributionEventSourceTriggerDataTooLarge: 'AttributionEventSourceTriggerDataTooLarge'
+    AttributionEventSourceTriggerDataTooLarge: 'AttributionEventSourceTriggerDataTooLarge',
+    InvalidAttributionSourceExpiry: 'InvalidAttributionSourceExpiry',
+    InvalidAttributionSourcePriority: 'InvalidAttributionSourcePriority',
+    InvalidEventSourceTriggerData: 'InvalidEventSourceTriggerData',
+    InvalidTriggerPriority: 'InvalidTriggerPriority',
+    InvalidTriggerDedupKey: 'InvalidTriggerDedupKey'
   });
   inspectorBackend.registerEnum(
       'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
@@ -591,6 +596,8 @@ export function registerCommands(inspectorBackend) {
   inspectorBackend.registerCommand('Cast.disable', [], []);
   inspectorBackend.registerCommand(
       'Cast.setSinkToUse', [{'name': 'sinkName', 'type': 'string', 'optional': false}], []);
+  inspectorBackend.registerCommand(
+      'Cast.startDesktopMirroring', [{'name': 'sinkName', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand(
       'Cast.startTabMirroring', [{'name': 'sinkName', 'type': 'string', 'optional': false}], []);
   inspectorBackend.registerCommand('Cast.stopCasting', [{'name': 'sinkName', 'type': 'string', 'optional': false}], []);

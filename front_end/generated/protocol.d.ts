@@ -967,6 +967,11 @@ declare namespace Protocol {
       AttributionUntrustworthyOrigin = 'AttributionUntrustworthyOrigin',
       AttributionTriggerDataTooLarge = 'AttributionTriggerDataTooLarge',
       AttributionEventSourceTriggerDataTooLarge = 'AttributionEventSourceTriggerDataTooLarge',
+      InvalidAttributionSourceExpiry = 'InvalidAttributionSourceExpiry',
+      InvalidAttributionSourcePriority = 'InvalidAttributionSourcePriority',
+      InvalidEventSourceTriggerData = 'InvalidEventSourceTriggerData',
+      InvalidTriggerPriority = 'InvalidTriggerPriority',
+      InvalidTriggerDedupKey = 'InvalidTriggerDedupKey',
     }
 
     /**
@@ -2770,6 +2775,10 @@ declare namespace Protocol {
     }
 
     export interface SetSinkToUseRequest {
+      sinkName: string;
+    }
+
+    export interface StartDesktopMirroringRequest {
       sinkName: string;
     }
 

@@ -17,8 +17,13 @@ export const enum IssueCode {
   AttributionSourceUntrustworthyOrigin = 'AttributionReportingIssue::AttributionSourceUntrustworthyOrigin',
   AttributionUntrustworthyFrameOrigin = 'AttributionReportingIssue::AttributionUntrustworthyFrameOrigin',
   AttributionUntrustworthyOrigin = 'AttributionReportingIssue::AttributionUntrustworthyOrigin',
-  AttributionTriggerDataTooLarge = 'AttrubtionReportingIssue::AttributionTriggerDataTooLarge',
-  AttributionEventSourceTriggerDataTooLarge = 'AttrubtionReportingIssue::AttributionEventSourceTriggerDataTooLarge',
+  AttributionTriggerDataTooLarge = 'AttributionReportingIssue::AttributionTriggerDataTooLarge',
+  AttributionEventSourceTriggerDataTooLarge = 'AttributionReportingIssue::AttributionEventSourceTriggerDataTooLarge',
+  InvalidAttributionSourceExpiry = 'AttributionReportingIssue::InvalidAttributionSourceExpiry',
+  InvalidAttributionSourcePriority = 'AttributionReportingIssue::InvalidAttributionSourcePriority',
+  InvalidEventSourceTriggerData = 'AttributionReportingIssue::InvalidEventSourceTriggerData',
+  InvalidTriggerPriority = 'AttributionReportingIssue::InvalidTriggerPriority',
+  InvalidTriggerDedupKey = 'AttributionReportingIssue::InvalidTriggerDedupKey',
 }
 
 function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails): IssueCode {
@@ -40,6 +45,16 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.AttributionTriggerDataTooLarge;
     case Protocol.Audits.AttributionReportingIssueType.AttributionEventSourceTriggerDataTooLarge:
       return IssueCode.AttributionEventSourceTriggerDataTooLarge;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourceExpiry:
+      return IssueCode.InvalidAttributionSourceExpiry;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidAttributionSourcePriority:
+      return IssueCode.InvalidAttributionSourcePriority;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidEventSourceTriggerData:
+      return IssueCode.InvalidEventSourceTriggerData;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidTriggerPriority:
+      return IssueCode.InvalidTriggerPriority;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidTriggerDedupKey:
+      return IssueCode.InvalidTriggerDedupKey;
   }
 }
 
@@ -108,6 +123,16 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arAttributionEventSourceTriggerDataTooLarge.md',
           links: [],
         };
+      case IssueCode.InvalidAttributionSourceExpiry:
+        return null;
+      case IssueCode.InvalidAttributionSourcePriority:
+        return null;
+      case IssueCode.InvalidEventSourceTriggerData:
+        return null;
+      case IssueCode.InvalidTriggerPriority:
+        return null;
+      case IssueCode.InvalidTriggerDedupKey:
+        return null;
     }
   }
 

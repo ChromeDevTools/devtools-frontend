@@ -259,7 +259,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     } else {
       this.editor.dispatch({scrollIntoView: true});
     }
-    this.enterProcessedForTest();
     return true;
   }
 
@@ -281,9 +280,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
       }
     }
-  }
-
-  private enterProcessedForTest(): void {
   }
 
   private editorUpdate(update: CodeMirror.ViewUpdate): void {

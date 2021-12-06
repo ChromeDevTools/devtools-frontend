@@ -4973,36 +4973,6 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
   },
-  "panels/help/help-meta.ts | bug": {
-    "message": "bug"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Do not show What's New after each update"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Release notes"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Report a DevTools issue"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Report a translation issue"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Show What's New"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Show What's New after each update"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "What's New"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Close"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Learn more"
-  },
   "panels/input/input-meta.ts | inputs": {
     "message": "Inputs"
   },

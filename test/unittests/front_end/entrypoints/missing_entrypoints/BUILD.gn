@@ -22,7 +22,6 @@ ts_library("missing_entrypoints") {
     "../../../../../front_end/panels/console_counters:bundle",
     "../../../../../front_end/panels/css_overview:bundle",
     "../../../../../front_end/panels/developer_resources:bundle",
-    "../../../../../front_end/panels/help:bundle",
     "../../../../../front_end/panels/input:bundle",
     "../../../../../front_end/panels/layer_viewer:bundle",
     "../../../../../front_end/panels/layers:bundle",

@@ -15,7 +15,6 @@ import '../../panels/developer_resources/developer_resources-meta.js';
 import '../inspector_main/inspector_main-meta.js';
 import '../../panels/application/application-meta.js';
 import '../../panels/issues/issues-meta.js';
-import '../../panels/help/help-meta.js';
 import '../../panels/layers/layers-meta.js';
 import '../../panels/lighthouse/lighthouse-meta.js';
 import '../../panels/media/media-meta.js';

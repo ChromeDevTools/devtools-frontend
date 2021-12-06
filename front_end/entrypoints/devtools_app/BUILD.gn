@@ -17,7 +17,6 @@ devtools_entrypoint("entrypoint") {
     "../../panels/developer_resources:meta",
     "../../panels/elements:meta",
     "../../panels/emulation:meta",
-    "../../panels/help:meta",
     "../../panels/issues:meta",
     "../../panels/layer_viewer:meta",
     "../../panels/layers:meta",

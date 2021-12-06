@@ -30,7 +30,6 @@ group("front_end") {
     "panels/application",
     "panels/coverage",
     "panels/elements",
-    "panels/help",
     "panels/issues",
     "panels/media",
     "panels/network/components",

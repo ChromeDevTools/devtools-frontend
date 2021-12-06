@@ -26,7 +26,6 @@ devtools_entrypoint("entrypoint") {
     "../../panels/browser_debugger:meta",
     "../../panels/developer_resources:meta",
     "../../panels/elements:meta",
-    "../../panels/help:meta",
     "../../panels/issues:meta",
     "../../panels/layer_viewer:meta",
     "../../panels/mobile_throttling:meta",

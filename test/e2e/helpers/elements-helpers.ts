@@ -5,7 +5,7 @@ import {assert} from 'chai';
 import {performance} from 'perf_hooks';
 import type * as puppeteer from 'puppeteer';
 
-import {$, $$, click, getBrowserAndPages, step, timeout, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {$, $$, click, getBrowserAndPages, pressKey, step, timeout, typeText, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
 const CSS_PROPERTY_NAME_SELECTOR = '.webkit-css-property';
@@ -474,10 +474,19 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
 // Edit a media or container query rule text for the given styles section
 export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHandle<Element>, newQueryText: string) {
   await click(STYLE_QUERY_RULE_TEXT_SELECTOR, {root: queryStylesSections});
-
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.type(newQueryText, {delay: 100});
-  await frontend.keyboard.press('Enter');
+  await waitForFunction(async () => {
+    // Wait until the value element has been marked as a text-prompt.
+    const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
+    if (!queryText) {
+      assert.fail('Could not find any query in the given styles section');
+    }
+    const check = await queryText.evaluate(node => {
+      return node.classList.contains('being-edited') && node.hasAttribute('contenteditable');
+    });
+    return check;
+  });
+  await typeText(newQueryText);
+  await pressKey('Enter');
 
   await waitForFunction(async () => {
     // Wait until the value element is not a text-prompt anymore.
@@ -485,9 +494,10 @@ export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHa
     if (!queryText) {
       assert.fail('Could not find any query in the given styles section');
     }
-    return await queryText.evaluate(node => {
-      return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
+    const check = await queryText.evaluate(node => {
+      return !node.classList.contains('being-edited') && !node.hasAttribute('contenteditable');
     });
+    return check;
   });
 }
 

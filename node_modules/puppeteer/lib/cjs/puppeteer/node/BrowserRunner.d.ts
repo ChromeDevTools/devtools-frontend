@@ -20,13 +20,14 @@ export declare class BrowserRunner {
     private _product;
     private _executablePath;
     private _processArguments;
-    private _tempDirectory?;
+    private _userDataDir;
+    private _isTempUserDataDir?;
     proc: any;
     connection: any;
     private _closed;
     private _listeners;
     private _processClosing;
-    constructor(product: Product, executablePath: string, processArguments: string[], tempDirectory?: string);
+    constructor(product: Product, executablePath: string, processArguments: string[], userDataDir: string, isTempUserDataDir?: boolean);
     start(options: LaunchOptions): void;
     close(): Promise<void>;
     kill(): void;

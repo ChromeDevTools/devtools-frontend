@@ -5,7 +5,7 @@ const { Duplex } = require('stream');
 /**
  * Emits the `'close'` event on a stream.
  *
- * @param {stream.Duplex} The stream.
+ * @param {Duplex} stream The stream.
  * @private
  */
 function emitClose(stream) {
@@ -43,11 +43,12 @@ function duplexOnError(err) {
  *
  * @param {WebSocket} ws The `WebSocket` to wrap
  * @param {Object} [options] The options for the `Duplex` constructor
- * @return {stream.Duplex} The duplex stream
+ * @return {Duplex} The duplex stream
  * @public
  */
 function createWebSocketStream(ws, options) {
   let resumeOnReceiverDrain = true;
+  let terminateOnDestroy = true;
 
   function receiverOnDrain() {
     if (resumeOnReceiverDrain) ws._socket.resume();
@@ -71,8 +72,11 @@ function createWebSocketStream(ws, options) {
     writableObjectMode: false
   });
 
-  ws.on('message', function message(msg) {
-    if (!duplex.push(msg)) {
+  ws.on('message', function message(msg, isBinary) {
+    const data =
+      !isBinary && duplex._readableState.objectMode ? msg.toString() : msg;
+
+    if (!duplex.push(data)) {
       resumeOnReceiverDrain = false;
       ws._socket.pause();
     }
@@ -81,6 +85,16 @@ function createWebSocketStream(ws, options) {
   ws.once('error', function error(err) {
     if (duplex.destroyed) return;
 
+    // Prevent `ws.terminate()` from being called by `duplex._destroy()`.
+    //
+    // - If the `'error'` event is emitted before the `'open'` event, then
+    //   `ws.terminate()` is a noop as no socket is assigned.
+    // - Otherwise, the error is re-emitted by the listener of the `'error'`
+    //   event of the `Receiver` object. The listener already closes the
+    //   connection by calling `ws.close()`. This allows a close frame to be
+    //   sent to the other peer. If `ws.terminate()` is called right after this,
+    //   then the close frame might not be sent.
+    terminateOnDestroy = false;
     duplex.destroy(err);
   });
 
@@ -108,7 +122,8 @@ function createWebSocketStream(ws, options) {
       if (!called) callback(err);
       process.nextTick(emitClose, duplex);
     });
-    ws.terminate();
+
+    if (terminateOnDestroy) ws.terminate();
   };
 
   duplex._final = function (callback) {

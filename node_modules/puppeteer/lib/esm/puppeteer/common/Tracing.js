@@ -59,16 +59,22 @@ export class Tracing {
             'latencyInfo',
             'disabled-by-default-devtools.timeline.stack',
             'disabled-by-default-v8.cpu_profiler',
-            'disabled-by-default-v8.cpu_profiler.hires',
         ];
         const { path = null, screenshots = false, categories = defaultCategories, } = options;
         if (screenshots)
             categories.push('disabled-by-default-devtools.screenshot');
+        const excludedCategories = categories
+            .filter((cat) => cat.startsWith('-'))
+            .map((cat) => cat.slice(1));
+        const includedCategories = categories.filter((cat) => !cat.startsWith('-'));
         this._path = path;
         this._recording = true;
         await this._client.send('Tracing.start', {
             transferMode: 'ReturnAsStream',
-            categories: categories.join(','),
+            traceConfig: {
+                excludedCategories,
+                includedCategories,
+            },
         });
     }
     /**
@@ -82,10 +88,15 @@ export class Tracing {
             fulfill = x;
             reject = y;
         });
-        this._client.once('Tracing.tracingComplete', (event) => {
-            helper
-                .readProtocolStream(this._client, event.stream, this._path)
-                .then(fulfill, reject);
+        this._client.once('Tracing.tracingComplete', async (event) => {
+            try {
+                const readable = await helper.getReadableFromProtocolStream(this._client, event.stream);
+                const buffer = await helper.getReadableAsBuffer(readable, this._path);
+                fulfill(buffer);
+            }
+            catch (error) {
+                reject(error);
+            }
         });
         await this._client.send('Tracing.end');
         this._recording = false;

@@ -84,7 +84,7 @@ DEPS = {
     # Purposefully not the latest; we keep this in sync with what stylelint
     # depends on
     "postcss": "8.3.11",
-    "puppeteer": "10.0.0",
+    "puppeteer": "12.0.1",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
     "rollup": "2.56.3",

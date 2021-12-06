@@ -134,8 +134,8 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * The browser binary might not be there if the download was skipped with
      * the `PUPPETEER_SKIP_DOWNLOAD` environment variable.
      */
-    executablePath() {
-        return this._launcher.executablePath();
+    executablePath(channel) {
+        return this._launcher.executablePath(channel);
     }
     /**
      * @internal
@@ -153,7 +153,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
                     this._preferredRevision = revisions_js_1.PUPPETEER_REVISIONS.chromium;
             }
             this._changedProduct = false;
-            this._lazyLauncher = Launcher_js_1.default(this._projectRoot, this._preferredRevision, this._isPuppeteerCore, this._productName);
+            this._lazyLauncher = (0, Launcher_js_1.default)(this._projectRoot, this._preferredRevision, this._isPuppeteerCore, this._productName);
         }
         return this._lazyLauncher;
     }

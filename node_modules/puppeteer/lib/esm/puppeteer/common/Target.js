@@ -22,13 +22,14 @@ export class Target {
     /**
      * @internal
      */
-    constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport) {
+    constructor(targetInfo, browserContext, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
         this._targetInfo = targetInfo;
         this._browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this._sessionFactory = sessionFactory;
         this._ignoreHTTPSErrors = ignoreHTTPSErrors;
         this._defaultViewport = defaultViewport;
+        this._screenshotTaskQueue = screenshotTaskQueue;
         /** @type {?Promise<!Puppeteer.Page>} */
         this._pagePromise = null;
         /** @type {?Promise<!WebWorker>} */
@@ -66,7 +67,7 @@ export class Target {
             this._targetInfo.type === 'background_page' ||
             this._targetInfo.type === 'webview') &&
             !this._pagePromise) {
-            this._pagePromise = this._sessionFactory().then((client) => Page.create(client, this, this._ignoreHTTPSErrors, this._defaultViewport));
+            this._pagePromise = this._sessionFactory().then((client) => Page.create(client, this, this._ignoreHTTPSErrors, this._defaultViewport, this._screenshotTaskQueue));
         }
         return this._pagePromise;
     }

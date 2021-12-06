@@ -35,16 +35,6 @@ const FileChooser_js_1 = require("./FileChooser.js");
 const ConsoleMessage_js_1 = require("./ConsoleMessage.js");
 const PDFOptions_js_1 = require("./PDFOptions.js");
 const environment_js_1 = require("../environment.js");
-class ScreenshotTaskQueue {
-    constructor() {
-        this._chain = Promise.resolve(undefined);
-    }
-    postTask(task) {
-        const result = this._chain.then(task);
-        this._chain = result.catch(() => { });
-        return result;
-    }
-}
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page} in Chromium.
@@ -92,7 +82,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    constructor(client, target, ignoreHTTPSErrors) {
+    constructor(client, target, ignoreHTTPSErrors, screenshotTaskQueue) {
         super();
         this._closed = false;
         this._timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
@@ -102,6 +92,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
         // TODO: improve this typedef - it's a function that takes a file chooser or
         // something?
         this._fileChooserInterceptors = new Set();
+        this._userDragInterceptionEnabled = false;
+        this._handlerMap = new WeakMap();
         this._client = client;
         this._target = target;
         this._keyboard = new Input_js_1.Keyboard(client);
@@ -112,7 +104,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         this._emulationManager = new EmulationManager_js_1.EmulationManager(client);
         this._tracing = new Tracing_js_1.Tracing(client);
         this._coverage = new Coverage_js_1.Coverage(client);
-        this._screenshotTaskQueue = new ScreenshotTaskQueue();
+        this._screenshotTaskQueue = screenshotTaskQueue;
         this._viewport = null;
         client.on('Target.attachedToTarget', (event) => {
             if (event.targetInfo.type !== 'worker' &&
@@ -121,7 +113,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
                 // We still want to attach to workers for emitting events.
                 // We still want to attach to iframes so sessions may interact with them.
                 // We detach from all other types out of an abundance of caution.
-                // See https://source.chromium.org/chromium/chromium/src/+/master:content/browser/devtools/devtools_agent_host_impl.cc?q=f:devtools%20-f:out%20%22::kTypePage%5B%5D%22&ss=chromium
+                // See https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypePage%5B%5D%22
                 // for the complete list of available types.
                 client
                     .send('Target.detachFromTarget', {
@@ -130,10 +122,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
                     .catch(helper_js_1.debugError);
                 return;
             }
-            const session = Connection_js_1.Connection.fromSession(client).session(event.sessionId);
-            const worker = new WebWorker_js_1.WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
-            this._workers.set(event.sessionId, worker);
-            this.emit("workercreated" /* WorkerCreated */, worker);
+            if (event.targetInfo.type === 'worker') {
+                const session = Connection_js_1.Connection.fromSession(client).session(event.sessionId);
+                const worker = new WebWorker_js_1.WebWorker(session, event.targetInfo.url, this._addConsoleMessage.bind(this), this._handleException.bind(this));
+                this._workers.set(event.sessionId, worker);
+                this.emit("workercreated" /* WorkerCreated */, worker);
+            }
         });
         client.on('Target.detachedFromTarget', (event) => {
             const worker = this._workers.get(event.sessionId);
@@ -170,8 +164,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
-    static async create(client, target, ignoreHTTPSErrors, defaultViewport) {
-        const page = new Page(client, target, ignoreHTTPSErrors);
+    static async create(client, target, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
+        const page = new Page(client, target, ignoreHTTPSErrors, screenshotTaskQueue);
         await page._initialize();
         if (defaultViewport)
             await page.setViewport(defaultViewport);
@@ -202,6 +196,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
             interceptor.call(null, fileChooser);
     }
     /**
+     * @returns `true` if drag events are being intercepted, `false` otherwise.
+     */
+    isDragInterceptionEnabled() {
+        return this._userDragInterceptionEnabled;
+    }
+    /**
      * @returns `true` if the page has JavaScript enabled, `false` otherwise.
      */
     isJavaScriptEnabled() {
@@ -210,9 +210,17 @@ class Page extends EventEmitter_js_1.EventEmitter {
     /**
      * Listen to page events.
      */
+    // Note: this method exists to define event typings and handle
+    // proper wireup of cooperative request interception. Actual event listening and
+    // dispatching is delegated to EventEmitter.
     on(eventName, handler) {
-        // Note: this method only exists to define the types; we delegate the impl
-        // to EventEmitter.
+        if (eventName === 'request') {
+            const wrap = (event) => {
+                event.enqueueInterceptAction(() => handler(event));
+            };
+            this._handlerMap.set(handler, wrap);
+            return super.on(eventName, wrap);
+        }
         return super.on(eventName, handler);
     }
     once(eventName, handler) {
@@ -220,9 +228,33 @@ class Page extends EventEmitter_js_1.EventEmitter {
         // to EventEmitter.
         return super.once(eventName, handler);
     }
+    off(eventName, handler) {
+        if (eventName === 'request') {
+            handler = this._handlerMap.get(handler) || handler;
+        }
+        return super.off(eventName, handler);
+    }
     /**
+     * This method is typically coupled with an action that triggers file
+     * choosing. The following example clicks a button that issues a file chooser
+     * and then responds with `/tmp/myfile.pdf` as if a user has selected this file.
+     *
+     * ```js
+     * const [fileChooser] = await Promise.all([
+     * page.waitForFileChooser(),
+     * page.click('#upload-file-button'),
+     * // some button that triggers file selection
+     * ]);
+     * await fileChooser.accept(['/tmp/myfile.pdf']);
+     * ```
+     *
+     * NOTE: This must be called before the file chooser is launched. It will not
+     * return a currently active file chooser.
      * @param options - Optional waiting parameters
      * @returns Resolves after a page requests a file picker.
+     * @remarks
+     * NOTE: In non-headless Chromium, this method results in the native file picker
+     * dialog `not showing up` for the user.
      */
     async waitForFileChooser(options = {}) {
         if (!this._fileChooserInterceptors.size)
@@ -242,11 +274,9 @@ class Page extends EventEmitter_js_1.EventEmitter {
     }
     /**
      * Sets the page's geolocation.
-     *
      * @remarks
-     * Consider using {@link BrowserContext.overridePermissions} to grant
+     * NOTE: Consider using {@link BrowserContext.overridePermissions} to grant
      * permissions for the page to read its geolocation.
-     *
      * @example
      * ```js
      * await page.setGeolocation({latitude: 59.95, longitude: 30.31667});
@@ -273,13 +303,20 @@ class Page extends EventEmitter_js_1.EventEmitter {
         return this._target;
     }
     /**
-     * @returns The browser this page belongs to.
+     * Get the CDP session client the page belongs to.
+     * @internal
+     */
+    client() {
+        return this._client;
+    }
+    /**
+     * Get the browser the page belongs to.
      */
     browser() {
         return this._target.browser();
     }
     /**
-     * @returns The browser context that the page belongs to
+     * Get the browser context that the page belongs to.
      */
     browserContext() {
         return this._target.browserContext();
@@ -296,6 +333,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
     }
     /**
      * @returns The page's main frame.
+     * @remarks
+     * Page is guaranteed to have a main frame which persists during navigations.
      */
     mainFrame() {
         return this._frameManager.mainFrame();
@@ -323,8 +362,11 @@ class Page extends EventEmitter_js_1.EventEmitter {
     }
     /**
      * @returns all of the dedicated
-     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorkers}
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
+     * WebWorkers}
      * associated with the page.
+     * @remarks
+     * NOTE: This does not contain ServiceWorkers
      */
     workers() {
         return Array.from(this._workers.values());
@@ -359,22 +401,74 @@ class Page extends EventEmitter_js_1.EventEmitter {
      *   await browser.close();
      * })();
      * ```
+     * NOTE: Enabling request interception disables page caching.
      */
     async setRequestInterception(value) {
         return this._frameManager.networkManager().setRequestInterception(value);
     }
     /**
+     * @param enabled - Whether to enable drag interception.
+     *
+     * @remarks
+     * Activating drag interception enables the `Input.drag`,
+     * methods  This provides the capability to capture drag events emitted
+     * on the page, which can then be used to simulate drag-and-drop.
+     */
+    async setDragInterception(enabled) {
+        this._userDragInterceptionEnabled = enabled;
+        return this._client.send('Input.setInterceptDrags', { enabled });
+    }
+    /**
      * @param enabled - When `true`, enables offline mode for the page.
+     * @remarks
+     * NOTE: while this method sets the network connection to offline, it does
+     * not change the parameters used in [page.emulateNetworkConditions(networkConditions)]
+     * (#pageemulatenetworkconditionsnetworkconditions)
      */
     setOfflineMode(enabled) {
         return this._frameManager.networkManager().setOfflineMode(enabled);
     }
+    /**
+     * @param networkConditions - Passing `null` disables network condition emulation.
+     * @example
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * const slow3G = puppeteer.networkConditions['Slow 3G'];
+     *
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.emulateNetworkConditions(slow3G);
+     * await page.goto('https://www.google.com');
+     * // other actions...
+     * await browser.close();
+     * })();
+     * ```
+     * @remarks
+     * NOTE: This does not affect WebSockets and WebRTC PeerConnections (see
+     * https://crbug.com/563644). To set the page offline, you can use
+     * [page.setOfflineMode(enabled)](#pagesetofflinemodeenabled).
+     */
     emulateNetworkConditions(networkConditions) {
         return this._frameManager
             .networkManager()
             .emulateNetworkConditions(networkConditions);
     }
     /**
+     * This setting will change the default maximum navigation time for the
+     * following methods and related shortcuts:
+     *
+     * - {@link Page.goBack | page.goBack(options)}
+     *
+     * - {@link Page.goForward | page.goForward(options)}
+     *
+     * - {@link Page.goto | page.goto(url,options)}
+     *
+     * - {@link Page.reload | page.reload(options)}
+     *
+     * - {@link Page.setContent | page.setContent(html,options)}
+     *
+     * - {@link Page.waitForNavigation | page.waitForNavigation(options)}
      * @param timeout - Maximum navigation time in milliseconds.
      */
     setDefaultNavigationTimeout(timeout) {
@@ -458,6 +552,9 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * given prototype.
      *
      * @remarks
+     * Shortcut for
+     * {@link ExecutionContext.queryObjects |
+     * page.mainFrame().executionContext().queryObjects(prototypeHandle)}.
      *
      * @example
      *
@@ -474,6 +571,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * await mapPrototype.dispose();
      * ```
      * @param prototypeHandle - a handle to the object prototype.
+     * @returns Promise which resolves to a handle to an array of objects with
+     * this prototype.
      */
     async queryObjects(prototypeHandle) {
         const context = await this.mainFrame().executionContext();
@@ -605,9 +704,24 @@ class Page extends EventEmitter_js_1.EventEmitter {
     async $$eval(selector, pageFunction, ...args) {
         return this.mainFrame().$$eval(selector, pageFunction, ...args);
     }
+    /**
+     * The method runs `document.querySelectorAll` within the page. If no elements
+     * match the selector, the return value resolves to `[]`.
+     * @remarks
+     * Shortcut for {@link Frame.$$ | Page.mainFrame().$$(selector) }.
+     * @param selector - A `selector` to query page for
+     */
     async $$(selector) {
         return this.mainFrame().$$(selector);
     }
+    /**
+     * The method evaluates the XPath expression relative to the page document as
+     * its context node. If there are no such elements, the method resolves to an
+     * empty array.
+     * @remarks
+     * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
+     * @param expression - Expression to evaluate
+     */
     async $x(expression) {
         return this.mainFrame().$x(expression);
     }
@@ -636,6 +750,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
             await this._client.send('Network.deleteCookies', item);
         }
     }
+    /**
+     * @example
+     * ```js
+     * await page.setCookie(cookieObject1, cookieObject2);
+     * ```
+     */
     async setCookie(...cookies) {
         const pageURL = this.url();
         const startsWithHTTP = pageURL.startsWith('http');
@@ -643,24 +763,106 @@ class Page extends EventEmitter_js_1.EventEmitter {
             const item = Object.assign({}, cookie);
             if (!item.url && startsWithHTTP)
                 item.url = pageURL;
-            assert_js_1.assert(item.url !== 'about:blank', `Blank page can not have cookie "${item.name}"`);
-            assert_js_1.assert(!String.prototype.startsWith.call(item.url || '', 'data:'), `Data URL page can not have cookie "${item.name}"`);
+            (0, assert_js_1.assert)(item.url !== 'about:blank', `Blank page can not have cookie "${item.name}"`);
+            (0, assert_js_1.assert)(!String.prototype.startsWith.call(item.url || '', 'data:'), `Data URL page can not have cookie "${item.name}"`);
             return item;
         });
         await this.deleteCookie(...items);
         if (items.length)
             await this._client.send('Network.setCookies', { cookies: items });
     }
+    /**
+     * Adds a `<script>` tag into the page with the desired URL or content.
+     * @remarks
+     * Shortcut for {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options) }.
+     * @returns Promise which resolves to the added tag when the script's onload fires or
+     * when the script content was injected into frame.
+     */
     async addScriptTag(options) {
         return this.mainFrame().addScriptTag(options);
     }
+    /**
+     * Adds a `<link rel="stylesheet">` tag into the page with the desired URL or a
+     * `<style type="text/css">` tag with the content.
+     * @returns Promise which resolves to the added tag when the stylesheet's
+     * onload fires or when the CSS content was injected into frame.
+     */
     async addStyleTag(options) {
         return this.mainFrame().addStyleTag(options);
     }
+    /**
+     * The method adds a function called `name` on the page's `window` object. When
+     * called, the function executes `puppeteerFunction` in node.js and returns a
+     * `Promise` which resolves to the return value of `puppeteerFunction`.
+     *
+     * If the puppeteerFunction returns a `Promise`, it will be awaited.
+     *
+     * NOTE: Functions installed via `page.exposeFunction` survive navigations.
+     * @param name - Name of the function on the window object
+     * @param puppeteerFunction -  Callback function which will be called in
+     * Puppeteer's context.
+     * @example
+     * An example of adding an `md5` function into the page:
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * const crypto = require('crypto');
+     *
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * page.on('console', (msg) => console.log(msg.text()));
+     * await page.exposeFunction('md5', (text) =>
+     * crypto.createHash('md5').update(text).digest('hex')
+     * );
+     * await page.evaluate(async () => {
+     * // use window.md5 to compute hashes
+     * const myString = 'PUPPETEER';
+     * const myHash = await window.md5(myString);
+     * console.log(`md5 of ${myString} is ${myHash}`);
+     * });
+     * await browser.close();
+     * })();
+     * ```
+     * An example of adding a `window.readfile` function into the page:
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * const fs = require('fs');
+     *
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * page.on('console', (msg) => console.log(msg.text()));
+     * await page.exposeFunction('readfile', async (filePath) => {
+     * return new Promise((resolve, reject) => {
+     * fs.readFile(filePath, 'utf8', (err, text) => {
+     *    if (err) reject(err);
+     *    else resolve(text);
+     *  });
+     * });
+     * });
+     * await page.evaluate(async () => {
+     * // use window.readfile to read contents of a file
+     * const content = await window.readfile('/etc/hosts');
+     * console.log(content);
+     * });
+     * await browser.close();
+     * })();
+     * ```
+     */
     async exposeFunction(name, puppeteerFunction) {
         if (this._pageBindings.has(name))
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
-        this._pageBindings.set(name, puppeteerFunction);
+        let exposedFunction;
+        if (typeof puppeteerFunction === 'function') {
+            exposedFunction = puppeteerFunction;
+        }
+        else if (typeof puppeteerFunction.default === 'function') {
+            exposedFunction = puppeteerFunction.default;
+        }
+        else {
+            throw new Error(`Failed to add page binding with name ${name}: ${puppeteerFunction} is not a function or a module with a default export.`);
+        }
+        this._pageBindings.set(name, exposedFunction);
         const expression = helper_js_1.helper.pageBindingInitString('exposedFun', name);
         await this._client.send('Runtime.addBinding', { name: name });
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
@@ -668,15 +870,71 @@ class Page extends EventEmitter_js_1.EventEmitter {
         });
         await Promise.all(this.frames().map((frame) => frame.evaluate(expression).catch(helper_js_1.debugError)));
     }
+    /**
+     * Provide credentials for `HTTP authentication`.
+     * @remarks To disable authentication, pass `null`.
+     */
     async authenticate(credentials) {
         return this._frameManager.networkManager().authenticate(credentials);
     }
+    /**
+     * The extra HTTP headers will be sent with every request the page initiates.
+     * NOTE: All HTTP header names are lowercased. (HTTP headers are
+     * case-insensitive, so this shouldn’t impact your server code.)
+     * NOTE: page.setExtraHTTPHeaders does not guarantee the order of headers in
+     * the outgoing requests.
+     * @param headers - An object containing additional HTTP headers to be sent
+     * with every request. All header values must be strings.
+     * @returns
+     */
     async setExtraHTTPHeaders(headers) {
         return this._frameManager.networkManager().setExtraHTTPHeaders(headers);
     }
-    async setUserAgent(userAgent) {
-        return this._frameManager.networkManager().setUserAgent(userAgent);
+    /**
+     * @param userAgent - Specific user agent to use in this page
+     * @param userAgentData - Specific user agent client hint data to use in this
+     * page
+     * @returns Promise which resolves when the user agent is set.
+     */
+    async setUserAgent(userAgent, userAgentMetadata) {
+        return this._frameManager
+            .networkManager()
+            .setUserAgent(userAgent, userAgentMetadata);
     }
+    /**
+     * @returns Object containing metrics as key/value pairs.
+     *
+     * - `Timestamp` : The timestamp when the metrics sample was taken.
+     *
+     * - `Documents` : Number of documents in the page.
+     *
+     * - `Frames` : Number of frames in the page.
+     *
+     * - `JSEventListeners` : Number of events in the page.
+     *
+     * - `Nodes` : Number of DOM nodes in the page.
+     *
+     * - `LayoutCount` : Total number of full or partial page layout.
+     *
+     * - `RecalcStyleCount` : Total number of page style recalculations.
+     *
+     * - `LayoutDuration` : Combined durations of all page layouts.
+     *
+     * - `RecalcStyleDuration` : Combined duration of all page style
+     *   recalculations.
+     *
+     * - `ScriptDuration` : Combined duration of JavaScript execution.
+     *
+     * - `TaskDuration` : Combined duration of all tasks performed by the browser.
+     *
+     *
+     * - `JSHeapUsedSize` : Used JavaScript heap size.
+     *
+     * - `JSHeapTotalSize` : Total JavaScript heap size.
+     * @remarks
+     * NOTE: All timestamps are in monotonic time: monotonically increasing time
+     * in seconds since an arbitrary point in the past.
+     */
     async metrics() {
         const response = await this._client.send('Performance.getMetrics');
         return this._buildMetricsObject(response.metrics);
@@ -718,8 +976,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
             // @see https://github.com/puppeteer/puppeteer/issues/3865
             return;
         }
-        const context = this._frameManager.executionContextById(event.executionContextId);
-        const values = event.args.map((arg) => JSHandle_js_1.createJSHandle(context, arg));
+        const context = this._frameManager.executionContextById(event.executionContextId, this._client);
+        const values = event.args.map((arg) => (0, JSHandle_js_1.createJSHandle)(context, arg));
         this._addConsoleMessage(event.type, values, event.stackTrace);
     }
     async _onBindingCalled(event) {
@@ -790,7 +1048,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         if (validDialogTypes.has(event.type)) {
             dialogType = event.type;
         }
-        assert_js_1.assert(dialogType, 'Unknown javascript dialog type: ' + event.type);
+        (0, assert_js_1.assert)(dialogType, 'Unknown javascript dialog type: ' + event.type);
         const dialog = new Dialog_js_1.Dialog(this._client, dialogType, event.message, event.defaultPrompt);
         this.emit("dialog" /* Dialog */, dialog);
     }
@@ -808,18 +1066,134 @@ class Page extends EventEmitter_js_1.EventEmitter {
             color: { r: 0, g: 0, b: 0, a: 0 },
         });
     }
+    /**
+     *
+     * @returns
+     * @remarks Shortcut for
+     * {@link Frame.url | page.mainFrame().url()}.
+     */
     url() {
         return this.mainFrame().url();
     }
     async content() {
         return await this._frameManager.mainFrame().content();
     }
+    /**
+     * @param html - HTML markup to assign to the page.
+     * @param options - Parameters that has some properties.
+     * @remarks
+     * The parameter `options` might have the following options.
+     *
+     * - `timeout` : Maximum time in milliseconds for resources to load, defaults
+     *   to 30 seconds, pass `0` to disable timeout. The default value can be
+     *   changed by using the
+     *   {@link Page.setDefaultNavigationTimeout |
+     *   page.setDefaultNavigationTimeout(timeout)}
+     *   or {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)}
+     *   methods.
+     *
+     * - `waitUntil`: When to consider setting markup succeeded, defaults to `load`.
+     *    Given an array of event strings, setting content is considered to be
+     *    successful after all events have been fired. Events can be either:<br/>
+     *  - `load` : consider setting content to be finished when the `load` event is
+     *    fired.<br/>
+     *  - `domcontentloaded` : consider setting content to be finished when the
+     *   `DOMContentLoaded` event is fired.<br/>
+     *  - `networkidle0` : consider setting content to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     *  - `networkidle2` : consider setting content to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
+     */
     async setContent(html, options = {}) {
         await this._frameManager.mainFrame().setContent(html, options);
     }
+    /**
+     * @param url - URL to navigate page to. The URL should include scheme, e.g.
+     * `https://`
+     * @param options - Navigation Parameter
+     * @returns Promise which resolves to the main resource response. In case of
+     * multiple redirects, the navigation will resolve with the response of the
+     * last redirect.
+     * @remarks
+     * The argument `options` might have the following properties:
+     *
+     * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
+     *   seconds, pass 0 to disable timeout. The default value can be changed by
+     *   using the
+     *   {@link Page.setDefaultNavigationTimeout |
+     *   page.setDefaultNavigationTimeout(timeout)}
+     *   or {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)}
+     *   methods.
+     *
+     * - `waitUntil`:When to consider navigation succeeded, defaults to `load`.
+     *    Given an array of event strings, navigation is considered to be successful
+     *    after all events have been fired. Events can be either:<br/>
+     *  - `load` : consider navigation to be finished when the load event is
+     *    fired.<br/>
+     *  - `domcontentloaded` : consider navigation to be finished when the
+     *    DOMContentLoaded event is fired.<br/>
+     *  - `networkidle0` : consider navigation to be finished when there are no
+     *    more than 0 network connections for at least `500` ms.<br/>
+     *  - `networkidle2` : consider navigation to be finished when there are no
+     *    more than 2 network connections for at least `500` ms.
+     *
+     * - `referer` : Referer header value. If provided it will take preference
+     *   over the referer header value set by
+     *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.
+     *
+     * `page.goto` will throw an error if:
+     * - there's an SSL error (e.g. in case of self-signed certificates).
+     * - target URL is invalid.
+     * - the timeout is exceeded during navigation.
+     * - the remote server does not respond or is unreachable.
+     * - the main resource failed to load.
+     *
+     * `page.goto` will not throw an error when any valid HTTP status code is
+     *   returned by the remote server, including 404 "Not Found" and 500
+     *   "Internal Server Error". The status code for such responses can be
+     *   retrieved by calling response.status().
+     *
+     * NOTE: `page.goto` either throws an error or returns a main resource
+     * response. The only exceptions are navigation to about:blank or navigation
+     * to the same URL with a different hash, which would succeed and return null.
+     *
+     * NOTE: Headless mode doesn't support navigation to a PDF document. See the
+     * {@link https://bugs.chromium.org/p/chromium/issues/detail?id=761295
+     * | upstream issue}.
+     *
+     * Shortcut for {@link Frame.goto | page.mainFrame().goto(url, options)}.
+     */
     async goto(url, options = {}) {
         return await this._frameManager.mainFrame().goto(url, options);
     }
+    /**
+     * @param options - Navigation parameters which might have the following
+     * properties:
+     * @returns Promise which resolves to the main resource response. In case of
+     * multiple redirects, the navigation will resolve with the response of the
+     * last redirect.
+     * @remarks
+     * The argument `options` might have the following properties:
+     *
+     * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
+     *   seconds, pass 0 to disable timeout. The default value can be changed by
+     *   using the
+     *   {@link Page.setDefaultNavigationTimeout |
+     *   page.setDefaultNavigationTimeout(timeout)}
+     *   or {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)}
+     *   methods.
+     *
+     * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
+     *    Given an array of event strings, navigation is considered to be
+     *    successful after all events have been fired. Events can be either:<br/>
+     *  - `load` : consider navigation to be finished when the load event is fired.<br/>
+     *  - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     *  - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     *  - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
+     */
     async reload(options) {
         const result = await Promise.all([
             this.waitForNavigation(options),
@@ -827,6 +1201,30 @@ class Page extends EventEmitter_js_1.EventEmitter {
         ]);
         return result[0];
     }
+    /**
+     * This resolves when the page navigates to a new URL or reloads. It is useful
+     * when you run code that will indirectly cause the page to navigate. Consider
+     * this example:
+     * ```js
+     * const [response] = await Promise.all([
+     * page.waitForNavigation(), // The promise resolves after navigation has finished
+     * page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+     * ]);
+     * ```
+     *
+     * @param options - Navigation parameters which might have the following properties:
+     * @returns Promise which resolves to the main resource response. In case of
+     * multiple redirects, the navigation will resolve with the response of the
+     * last redirect. In case of navigation to a different anchor or navigation
+     * due to History API usage, the navigation will resolve with `null`.
+     * @remarks
+     * NOTE: Usage of the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API}
+     * to change the URL is considered a navigation.
+     *
+     * Shortcut for
+     * {@link Frame.waitForNavigation | page.mainFrame().waitForNavigation(options)}.
+     */
     async waitForNavigation(options = {}) {
         return await this._frameManager.mainFrame().waitForNavigation(options);
     }
@@ -835,6 +1233,31 @@ class Page extends EventEmitter_js_1.EventEmitter {
             this._disconnectPromise = new Promise((fulfill) => this._client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => fulfill(new Error('Target closed'))));
         return this._disconnectPromise;
     }
+    /**
+     * @param urlOrPredicate - A URL or predicate to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched response
+     * @example
+     * ```js
+     * const firstResponse = await page.waitForResponse(
+     * 'https://example.com/resource'
+     * );
+     * const finalResponse = await page.waitForResponse(
+     * (response) =>
+     * response.url() === 'https://example.com' && response.status() === 200
+     * );
+     * const finalResponse = await page.waitForResponse(async (response) => {
+     * return (await response.text()).includes('<html>');
+     * });
+     * return finalResponse.ok();
+     * ```
+     * @remarks
+     * Optional Waiting Parameters have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds, pass
+     * `0` to disable the timeout. The default value can be changed by using the
+     * {@link Page.setDefaultTimeout} method.
+     */
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
         return helper_js_1.helper.waitForEvent(this._frameManager.networkManager(), NetworkManager_js_1.NetworkManagerEmittedEvents.Request, (request) => {
@@ -845,6 +1268,31 @@ class Page extends EventEmitter_js_1.EventEmitter {
             return false;
         }, timeout, this._sessionClosePromise());
     }
+    /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched response.
+     * @example
+     * ```js
+     * const firstResponse = await page.waitForResponse(
+     * 'https://example.com/resource'
+     * );
+     * const finalResponse = await page.waitForResponse(
+     * (response) =>
+     * response.url() === 'https://example.com' && response.status() === 200
+     * );
+     * const finalResponse = await page.waitForResponse(async (response) => {
+     * return (await response.text()).includes('<html>');
+     * });
+     * return finalResponse.ok();
+     * ```
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     * pass `0` to disable the timeout. The default value can be changed by using
+     * the {@link Page.setDefaultTimeout} method.
+     */
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
         return helper_js_1.helper.waitForEvent(this._frameManager.networkManager(), NetworkManager_js_1.NetworkManagerEmittedEvents.Response, async (response) => {
@@ -855,9 +1303,144 @@ class Page extends EventEmitter_js_1.EventEmitter {
             return false;
         }, timeout, this._sessionClosePromise());
     }
+    /**
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when network is idle
+     */
+    async waitForNetworkIdle(options = {}) {
+        const { idleTime = 500, timeout = this._timeoutSettings.timeout() } = options;
+        const networkManager = this._frameManager.networkManager();
+        let idleResolveCallback;
+        const idlePromise = new Promise((resolve) => {
+            idleResolveCallback = resolve;
+        });
+        let abortRejectCallback;
+        const abortPromise = new Promise((_, reject) => {
+            abortRejectCallback = reject;
+        });
+        let idleTimer;
+        const onIdle = () => idleResolveCallback();
+        const cleanup = () => {
+            idleTimer && clearTimeout(idleTimer);
+            abortRejectCallback(new Error('abort'));
+        };
+        const evaluate = () => {
+            idleTimer && clearTimeout(idleTimer);
+            if (networkManager.numRequestsInProgress() === 0)
+                idleTimer = setTimeout(onIdle, idleTime);
+        };
+        evaluate();
+        const eventHandler = () => {
+            evaluate();
+            return false;
+        };
+        const listenToEvent = (event) => helper_js_1.helper.waitForEvent(networkManager, event, eventHandler, timeout, abortPromise);
+        const eventPromises = [
+            listenToEvent(NetworkManager_js_1.NetworkManagerEmittedEvents.Request),
+            listenToEvent(NetworkManager_js_1.NetworkManagerEmittedEvents.Response),
+        ];
+        await Promise.race([
+            idlePromise,
+            ...eventPromises,
+            this._sessionClosePromise(),
+        ]).then((r) => {
+            cleanup();
+            return r;
+        }, (error) => {
+            cleanup();
+            throw error;
+        });
+    }
+    /**
+     * @param urlOrPredicate - A URL or predicate to wait for.
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves to the matched frame.
+     * @example
+     * ```js
+     * const frame = await page.waitForFrame(async (frame) => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     * @remarks
+     * Optional Parameter have:
+     *
+     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
+     * pass `0` to disable the timeout. The default value can be changed by using
+     * the {@link Page.setDefaultTimeout} method.
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+        const { timeout = this._timeoutSettings.timeout() } = options;
+        async function predicate(frame) {
+            if (helper_js_1.helper.isString(urlOrPredicate))
+                return urlOrPredicate === frame.url();
+            if (typeof urlOrPredicate === 'function')
+                return !!(await urlOrPredicate(frame));
+            return false;
+        }
+        return Promise.race([
+            helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, this._sessionClosePromise()),
+            helper_js_1.helper.waitForEvent(this._frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, this._sessionClosePromise()),
+        ]);
+    }
+    /**
+     * This method navigate to the previous page in history.
+     * @param options - Navigation parameters
+     * @returns Promise which resolves to the main resource response. In case of
+     * multiple redirects, the navigation will resolve with the response of the
+     * last redirect. If can not go back, resolves to `null`.
+     * @remarks
+     * The argument `options` might have the following properties:
+     *
+     * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
+     *   seconds, pass 0 to disable timeout. The default value can be changed by
+     *   using the
+     *   {@link Page.setDefaultNavigationTimeout
+     *   | page.setDefaultNavigationTimeout(timeout)}
+     *   or {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)}
+     *   methods.
+     *
+     * - `waitUntil` : When to consider navigation succeeded, defaults to `load`.
+     *    Given an array of event strings, navigation is considered to be
+     *    successful after all events have been fired. Events can be either:<br/>
+     *  - `load` : consider navigation to be finished when the load event is fired.<br/>
+     *  - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     *  - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     *  - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
+     */
     async goBack(options = {}) {
         return this._go(-1, options);
     }
+    /**
+     * This method navigate to the next page in history.
+     * @param options - Navigation Parameter
+     * @returns Promise which resolves to the main resource response. In case of
+     * multiple redirects, the navigation will resolve with the response of the
+     * last redirect. If can not go forward, resolves to `null`.
+     * @remarks
+     * The argument `options` might have the following properties:
+     *
+     * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
+     *   seconds, pass 0 to disable timeout. The default value can be changed by
+     *   using the
+     *   {@link Page.setDefaultNavigationTimeout
+     *   | page.setDefaultNavigationTimeout(timeout)}
+     *   or {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)}
+     *   methods.
+     *
+     * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
+     *    Given an array of event strings, navigation is considered to be
+     *    successful after all events have been fired. Events can be either:<br/>
+     *  - `load` : consider navigation to be finished when the load event is fired.<br/>
+     *  - `domcontentloaded` : consider navigation to be finished when the
+     *   DOMContentLoaded event is fired.<br/>
+     *  - `networkidle0` : consider navigation to be finished when there are no
+     *   more than 0 network connections for at least `500` ms.<br/>
+     *  - `networkidle2` : consider navigation to be finished when there are no
+     *   more than 2 network connections for at least `500` ms.
+     */
     async goForward(options = {}) {
         return this._go(+1, options);
     }
@@ -872,15 +1455,48 @@ class Page extends EventEmitter_js_1.EventEmitter {
         ]);
         return result[0];
     }
+    /**
+     * Brings page to front (activates tab).
+     */
     async bringToFront() {
         await this._client.send('Page.bringToFront');
     }
+    /**
+     * Emulates given device metrics and user agent. This method is a shortcut for
+     * calling two methods: {@link Page.setUserAgent} and {@link Page.setViewport}
+     * To aid emulation, Puppeteer provides a list of device descriptors that can
+     * be obtained via the {@link Puppeteer.devices} `page.emulate` will resize
+     * the page. A lot of websites don't expect phones to change size, so you
+     * should emulate before navigating to the page.
+     * @example
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * const iPhone = puppeteer.devices['iPhone 6'];
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * await page.emulate(iPhone);
+     * await page.goto('https://www.google.com');
+     * // other actions...
+     * await browser.close();
+     * })();
+     * ```
+     * @remarks List of all available devices is available in the source code:
+     * {@link https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts | src/common/DeviceDescriptors.ts}.
+     */
     async emulate(options) {
         await Promise.all([
             this.setViewport(options.viewport),
             this.setUserAgent(options.userAgent),
         ]);
     }
+    /**
+     * @param enabled - Whether or not to enable JavaScript on the page.
+     * @returns
+     * @remarks
+     * NOTE: changing this value won't affect scripts that have already been run.
+     * It will take full effect on the next navigation.
+     */
     async setJavaScriptEnabled(enabled) {
         if (this._javascriptEnabled === enabled)
             return;
@@ -889,22 +1505,116 @@ class Page extends EventEmitter_js_1.EventEmitter {
             value: !enabled,
         });
     }
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     * @param enabled - sets bypassing of page's Content-Security-Policy.
+     * @remarks
+     * NOTE: CSP bypassing happens at the moment of CSP initialization rather than
+     * evaluation. Usually, this means that `page.setBypassCSP` should be called
+     * before navigating to the domain.
+     */
     async setBypassCSP(enabled) {
         await this._client.send('Page.setBypassCSP', { enabled });
     }
+    /**
+     * @param type - Changes the CSS media type of the page. The only allowed
+     * values are `screen`, `print` and `null`. Passing `null` disables CSS media
+     * emulation.
+     * @example
+     * ```
+     * await page.evaluate(() => matchMedia('screen').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('print').matches);
+     * // → false
+     *
+     * await page.emulateMediaType('print');
+     * await page.evaluate(() => matchMedia('screen').matches);
+     * // → false
+     * await page.evaluate(() => matchMedia('print').matches);
+     * // → true
+     *
+     * await page.emulateMediaType(null);
+     * await page.evaluate(() => matchMedia('screen').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('print').matches);
+     * // → false
+     * ```
+     */
     async emulateMediaType(type) {
-        assert_js_1.assert(type === 'screen' || type === 'print' || type === null, 'Unsupported media type: ' + type);
+        (0, assert_js_1.assert)(type === 'screen' || type === 'print' || type === null, 'Unsupported media type: ' + type);
         await this._client.send('Emulation.setEmulatedMedia', {
             media: type || '',
         });
     }
+    /**
+     * Enables CPU throttling to emulate slow CPUs.
+     * @param factor - slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+     */
+    async emulateCPUThrottling(factor) {
+        (0, assert_js_1.assert)(factor === null || factor >= 1, 'Throttling rate should be greater or equal to 1');
+        await this._client.send('Emulation.setCPUThrottlingRate', {
+            rate: factor !== null ? factor : 1,
+        });
+    }
+    /**
+     * @param features - `<?Array<Object>>` Given an array of media feature
+     * objects, emulates CSS media features on the page. Each media feature object
+     * must have the following properties:
+     * @example
+     * ```js
+     * await page.emulateMediaFeatures([
+     * { name: 'prefers-color-scheme', value: 'dark' },
+     * ]);
+     * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
+     * // → false
+     *
+     * await page.emulateMediaFeatures([
+     * { name: 'prefers-reduced-motion', value: 'reduce' },
+     * ]);
+     * await page.evaluate(
+     * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     * );
+     * // → true
+     * await page.evaluate(
+     * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     * );
+     * // → false
+     *
+     * await page.emulateMediaFeatures([
+     * { name: 'prefers-color-scheme', value: 'dark' },
+     * { name: 'prefers-reduced-motion', value: 'reduce' },
+     * ]);
+     * await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('(prefers-color-scheme: light)').matches);
+     * // → false
+     * await page.evaluate(
+     * () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     * );
+     * // → true
+     * await page.evaluate(
+     * () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     * );
+     * // → false
+     *
+     * await page.emulateMediaFeatures([{ name: 'color-gamut', value: 'p3' }]);
+     * await page.evaluate(() => matchMedia('(color-gamut: srgb)').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('(color-gamut: p3)').matches);
+     * // → true
+     * await page.evaluate(() => matchMedia('(color-gamut: rec2020)').matches);
+     * // → false
+     * ```
+     */
     async emulateMediaFeatures(features) {
         if (features === null)
             await this._client.send('Emulation.setEmulatedMedia', { features: null });
         if (Array.isArray(features)) {
             features.every((mediaFeature) => {
                 const name = mediaFeature.name;
-                assert_js_1.assert(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
+                (0, assert_js_1.assert)(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
                 return true;
             });
             await this._client.send('Emulation.setEmulatedMedia', {
@@ -912,6 +1622,12 @@ class Page extends EventEmitter_js_1.EventEmitter {
             });
         }
     }
+    /**
+     * @param timezoneId - Changes the timezone of the page. See
+     * {@link https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt | ICU’s metaZones.txt}
+     * for a list of supported timezone IDs. Passing
+     * `null` disables timezone emulation.
+     */
     async emulateTimezone(timezoneId) {
         try {
             await this._client.send('Emulation.setTimezoneOverride', {
@@ -941,8 +1657,6 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * ```
      *
      * @param overrides - Mock idle state. If not set, clears idle overrides
-     * @param isUserActive - Mock isUserActive
-     * @param isScreenUnlocked - Mock isScreenUnlocked
      */
     async emulateIdleState(overrides) {
         if (overrides) {
@@ -992,7 +1706,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
             'tritanopia',
         ]);
         try {
-            assert_js_1.assert(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
+            (0, assert_js_1.assert)(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
             await this._client.send('Emulation.setEmulatedVisionDeficiency', {
                 type: type || 'none',
             });
@@ -1001,12 +1715,70 @@ class Page extends EventEmitter_js_1.EventEmitter {
             throw error;
         }
     }
+    /**
+     * `page.setViewport` will resize the page. A lot of websites don't expect
+     * phones to change size, so you should set the viewport before navigating to
+     * the page.
+     *
+     * In the case of multiple pages in a single browser, each page can have its
+     * own viewport size.
+     * @example
+     * ```js
+     * const page = await browser.newPage();
+     * await page.setViewport({
+     * width: 640,
+     * height: 480,
+     * deviceScaleFactor: 1,
+     * });
+     * await page.goto('https://example.com');
+     * ```
+     *
+     * @param viewport -
+     * @remarks
+     * Argument viewport have following properties:
+     *
+     * - `width`: page width in pixels. required
+     *
+     * - `height`: page height in pixels. required
+     *
+     * - `deviceScaleFactor`: Specify device scale factor (can be thought of as
+     *   DPR). Defaults to `1`.
+     *
+     * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
+     *   to `false`.
+     *
+     * - `hasTouch`: Specifies if viewport supports touch events. Defaults to `false`
+     *
+     * - `isLandScape`: Specifies if viewport is in landscape mode. Defaults to false.
+     *
+     * NOTE: in certain cases, setting viewport will reload the page in order to
+     * set the isMobile or hasTouch properties.
+     */
     async setViewport(viewport) {
         const needsReload = await this._emulationManager.emulateViewport(viewport);
         this._viewport = viewport;
         if (needsReload)
             await this.reload();
     }
+    /**
+     * @returns
+     *
+     * - `width`: page's width in pixels
+     *
+     * - `height`: page's height in pixels
+     *
+     * - `deviceScalarFactor`: Specify device scale factor (can be though of as
+     *   dpr). Defaults to `1`.
+     *
+     * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
+     *   to `false`.
+     *
+     * - `hasTouch`: Specifies if viewport supports touch events. Defaults to
+     *   `false`.
+     *
+     * - `isLandScape`: Specifies if viewport is in landscape mode. Defaults to
+     *   `false`.
+     */
     viewport() {
         return this._viewport;
     }
@@ -1061,22 +1833,100 @@ class Page extends EventEmitter_js_1.EventEmitter {
     async evaluate(pageFunction, ...args) {
         return this._frameManager.mainFrame().evaluate(pageFunction, ...args);
     }
+    /**
+     * Adds a function which would be invoked in one of the following scenarios:
+     *
+     * - whenever the page is navigated
+     *
+     * - whenever the child frame is attached or navigated. In this case, the
+     * function is invoked in the context of the newly attached frame.
+     *
+     * The function is invoked after the document was created but before any of
+     * its scripts were run. This is useful to amend the JavaScript environment,
+     * e.g. to seed `Math.random`.
+     * @param pageFunction - Function to be evaluated in browser context
+     * @param args - Arguments to pass to `pageFunction`
+     * @example
+     * An example of overriding the navigator.languages property before the page loads:
+     * ```js
+     * // preload.js
+     *
+     * // overwrite the `languages` property to use a custom getter
+     * Object.defineProperty(navigator, 'languages', {
+     * get: function () {
+     * return ['en-US', 'en', 'bn'];
+     * },
+     * });
+     *
+     * // In your puppeteer script, assuming the preload.js file is
+     * in same folder of our script
+     * const preloadFile = fs.readFileSync('./preload.js', 'utf8');
+     * await page.evaluateOnNewDocument(preloadFile);
+     * ```
+     */
     async evaluateOnNewDocument(pageFunction, ...args) {
         const source = helper_js_1.helper.evaluationString(pageFunction, ...args);
         await this._client.send('Page.addScriptToEvaluateOnNewDocument', {
             source,
         });
     }
+    /**
+     * Toggles ignoring cache for each request based on the enabled state. By
+     * default, caching is enabled.
+     * @param enabled - sets the `enabled` state of cache
+     */
     async setCacheEnabled(enabled = true) {
         await this._frameManager.networkManager().setCacheEnabled(enabled);
     }
+    /**
+     * @remarks
+     * Options object which might have the following properties:
+     *
+     * - `path` : The file path to save the image to. The screenshot type
+     *   will be inferred from file extension. If `path` is a relative path, then
+     *   it is resolved relative to
+     *   {@link https://nodejs.org/api/process.html#process_process_cwd
+     *   | current working directory}.
+     *   If no path is provided, the image won't be saved to the disk.
+     *
+     * - `type` : Specify screenshot type, can be either `jpeg` or `png`.
+     *   Defaults to 'png'.
+     *
+     * - `quality` : The quality of the image, between 0-100. Not
+     *   applicable to `png` images.
+     *
+     * - `fullPage` : When true, takes a screenshot of the full
+     *   scrollable page. Defaults to `false`
+     *
+     * - `clip` : An object which specifies clipping region of the page.
+     *   Should have the following fields:<br/>
+     *  - `x` : x-coordinate of top-left corner of clip area.<br/>
+     *  - `y` :  y-coordinate of top-left corner of clip area.<br/>
+     *  - `width` : width of clipping area.<br/>
+     *  - `height` : height of clipping area.
+     *
+     * - `omitBackground` : Hides default white background and allows
+     *   capturing screenshots with transparency. Defaults to `false`
+     *
+     * - `encoding` : The encoding of the image, can be either base64 or
+     *   binary. Defaults to `binary`.
+     *
+     *
+     * NOTE: Screenshots take at least 1/6 second on OS X. See
+     * {@link https://crbug.com/741689} for discussion.
+     * @returns Promise which resolves to buffer or a base64 string (depending on
+     * the value of `encoding`) with captured screenshot.
+     */
     async screenshot(options = {}) {
         let screenshotType = null;
         // options.type takes precedence over inferring the type from options.path
         // because it may be a 0-length file with no extension created beforehand
         // (i.e. as a temp file).
         if (options.type) {
-            assert_js_1.assert(options.type === 'png' || options.type === 'jpeg', 'Unknown options.type value: ' + options.type);
+            const type = options.type;
+            if (type !== 'png' && type !== 'jpeg' && type !== 'webp') {
+                (0, assert_js_1.assertNever)(type, 'Unknown options.type value: ' + type);
+            }
             screenshotType = options.type;
         }
         else if (options.path) {
@@ -1088,32 +1938,34 @@ class Page extends EventEmitter_js_1.EventEmitter {
                 screenshotType = 'png';
             else if (extension === 'jpg' || extension === 'jpeg')
                 screenshotType = 'jpeg';
-            assert_js_1.assert(screenshotType, `Unsupported screenshot type for extension \`.${extension}\``);
+            else if (extension === 'webp')
+                screenshotType = 'webp';
+            (0, assert_js_1.assert)(screenshotType, `Unsupported screenshot type for extension \`.${extension}\``);
         }
         if (!screenshotType)
             screenshotType = 'png';
         if (options.quality) {
-            assert_js_1.assert(screenshotType === 'jpeg', 'options.quality is unsupported for the ' +
+            (0, assert_js_1.assert)(screenshotType === 'jpeg' || screenshotType === 'webp', 'options.quality is unsupported for the ' +
                 screenshotType +
                 ' screenshots');
-            assert_js_1.assert(typeof options.quality === 'number', 'Expected options.quality to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.quality === 'number', 'Expected options.quality to be a number but found ' +
                 typeof options.quality);
-            assert_js_1.assert(Number.isInteger(options.quality), 'Expected options.quality to be an integer');
-            assert_js_1.assert(options.quality >= 0 && options.quality <= 100, 'Expected options.quality to be between 0 and 100 (inclusive), got ' +
+            (0, assert_js_1.assert)(Number.isInteger(options.quality), 'Expected options.quality to be an integer');
+            (0, assert_js_1.assert)(options.quality >= 0 && options.quality <= 100, 'Expected options.quality to be between 0 and 100 (inclusive), got ' +
                 options.quality);
         }
-        assert_js_1.assert(!options.clip || !options.fullPage, 'options.clip and options.fullPage are exclusive');
+        (0, assert_js_1.assert)(!options.clip || !options.fullPage, 'options.clip and options.fullPage are exclusive');
         if (options.clip) {
-            assert_js_1.assert(typeof options.clip.x === 'number', 'Expected options.clip.x to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.x === 'number', 'Expected options.clip.x to be a number but found ' +
                 typeof options.clip.x);
-            assert_js_1.assert(typeof options.clip.y === 'number', 'Expected options.clip.y to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.y === 'number', 'Expected options.clip.y to be a number but found ' +
                 typeof options.clip.y);
-            assert_js_1.assert(typeof options.clip.width === 'number', 'Expected options.clip.width to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.width === 'number', 'Expected options.clip.width to be a number but found ' +
                 typeof options.clip.width);
-            assert_js_1.assert(typeof options.clip.height === 'number', 'Expected options.clip.height to be a number but found ' +
+            (0, assert_js_1.assert)(typeof options.clip.height === 'number', 'Expected options.clip.height to be a number but found ' +
                 typeof options.clip.height);
-            assert_js_1.assert(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
-            assert_js_1.assert(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
+            (0, assert_js_1.assert)(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
+            (0, assert_js_1.assert)(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
         }
         return this._screenshotTaskQueue.postTask(() => this._screenshotTask(screenshotType, options));
     }
@@ -1127,8 +1979,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
             typeof captureBeyondViewport === 'boolean' ? captureBeyondViewport : true;
         if (options.fullPage) {
             const metrics = await this._client.send('Page.getLayoutMetrics');
-            const width = Math.ceil(metrics.contentSize.width);
-            const height = Math.ceil(metrics.contentSize.height);
+            // Fallback to `contentSize` in case of using Firefox.
+            const { width, height } = metrics.cssContentSize || metrics.contentSize;
             // Overwrite clip for full page.
             clip = { x: 0, y: 0, width, height, scale: 1 };
             if (!captureBeyondViewport) {
@@ -1145,7 +1997,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
                 });
             }
         }
-        const shouldSetDefaultBackground = options.omitBackground && format === 'png';
+        const shouldSetDefaultBackground = options.omitBackground && (format === 'png' || format === 'webp');
         if (shouldSetDefaultBackground) {
             await this._setTransparentBackgroundColor();
         }
@@ -1183,7 +2035,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
      * Generatees a PDF of the page with the `print` CSS media type.
      * @remarks
      *
-     * IMPORTANT: PDF generation is only supported in Chrome headless mode.
+     * NOTE: PDF generation is only supported in Chrome headless mode.
      *
      * To generate a PDF with the `screen` media type, call
      * {@link Page.emulateMediaType | `page.emulateMediaType('screen')`} before
@@ -1197,13 +2049,13 @@ class Page extends EventEmitter_js_1.EventEmitter {
      *
      * @param options - options for generating the PDF.
      */
-    async pdf(options = {}) {
-        const { scale = 1, displayHeaderFooter = false, headerTemplate = '', footerTemplate = '', printBackground = false, landscape = false, pageRanges = '', preferCSSPageSize = false, margin = {}, path = null, omitBackground = false, } = options;
+    async createPDFStream(options = {}) {
+        const { scale = 1, displayHeaderFooter = false, headerTemplate = '', footerTemplate = '', printBackground = false, landscape = false, pageRanges = '', preferCSSPageSize = false, margin = {}, omitBackground = false, timeout = 30000, } = options;
         let paperWidth = 8.5;
         let paperHeight = 11;
         if (options.format) {
             const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()];
-            assert_js_1.assert(format, 'Unknown paper format: ' + options.format);
+            (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
             paperWidth = format.width;
             paperHeight = format.height;
         }
@@ -1219,7 +2071,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         if (omitBackground) {
             await this._setTransparentBackgroundColor();
         }
-        const result = await this._client.send('Page.printToPDF', {
+        const printCommandPromise = this._client.send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
             landscape,
             displayHeaderFooter,
@@ -1236,16 +2088,31 @@ class Page extends EventEmitter_js_1.EventEmitter {
             pageRanges,
             preferCSSPageSize,
         });
+        const result = await helper_js_1.helper.waitWithTimeout(printCommandPromise, 'Page.printToPDF', timeout);
         if (omitBackground) {
             await this._resetDefaultBackgroundColor();
         }
-        return await helper_js_1.helper.readProtocolStream(this._client, result.stream, path);
+        return helper_js_1.helper.getReadableFromProtocolStream(this._client, result.stream);
     }
+    /**
+     * @param options -
+     * @returns
+     */
+    async pdf(options = {}) {
+        const { path = undefined } = options;
+        const readable = await this.createPDFStream(options);
+        return await helper_js_1.helper.getReadableAsBuffer(readable, path);
+    }
+    /**
+     * @returns The page's title
+     * @remarks
+     * Shortcut for {@link Frame.title | page.mainFrame().title()}.
+     */
     async title() {
         return this.mainFrame().title();
     }
     async close(options = { runBeforeUnload: undefined }) {
-        assert_js_1.assert(!!this._client._connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
+        (0, assert_js_1.assert)(!!this._client._connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
         const runBeforeUnload = !!options.runBeforeUnload;
         if (runBeforeUnload) {
             await this._client.send('Page.close');
@@ -1257,27 +2124,136 @@ class Page extends EventEmitter_js_1.EventEmitter {
             await this._target._isClosedPromise;
         }
     }
+    /**
+     * Indicates that the page has been closed.
+     * @returns
+     */
     isClosed() {
         return this._closed;
     }
     get mouse() {
         return this._mouse;
     }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.mouse} to click in the center of the
+     * element. If there's no element matching `selector`, the method throws an
+     * error.
+     * @remarks Bear in mind that if `click()` triggers a navigation event and
+     * there's a separate `page.waitForNavigation()` promise to be resolved, you
+     * may end up with a race condition that yields unexpected results. The
+     * correct pattern for click and wait for navigation is the following:
+     * ```js
+     * const [response] = await Promise.all([
+     * page.waitForNavigation(waitOptions),
+     * page.click(selector, clickOptions),
+     * ]);
+     * ```
+     * Shortcut for {@link Frame.click | page.mainFrame().click(selector[, options]) }.
+     * @param selector - A `selector` to search for element to click. If there are
+     * multiple elements satisfying the `selector`, the first will be clicked
+     * @param options - `Object`
+     * @returns Promise which resolves when the element matching `selector` is
+     * successfully clicked. The Promise will be rejected if there is no element
+     * matching `selector`.
+     */
     click(selector, options = {}) {
         return this.mainFrame().click(selector, options);
     }
+    /**
+     * This method fetches an element with `selector` and focuses it. If there's no
+     * element matching `selector`, the method throws an error.
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector }
+     * of an element to focus. If there are multiple elements satisfying the
+     * selector, the first will be focused.
+     * @returns  Promise which resolves when the element matching selector is
+     * successfully focused. The promise will be rejected if there is no element
+     * matching selector.
+     * @remarks
+     * Shortcut for {@link Frame.focus | page.mainFrame().focus(selector)}.
+     */
     focus(selector) {
         return this.mainFrame().focus(selector);
     }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.mouse} to hover over the center of the element.
+     * If there's no element matching `selector`, the method throws an error.
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * to search for element to hover. If there are multiple elements satisfying
+     * the selector, the first will be hovered.
+     * @returns Promise which resolves when the element matching `selector` is
+     * successfully hovered. Promise gets rejected if there's no element matching
+     * `selector`.
+     * @remarks
+     * Shortcut for {@link Page.hover | page.mainFrame().hover(selector)}.
+     */
     hover(selector) {
         return this.mainFrame().hover(selector);
     }
+    /**
+     * Triggers a `change` and `input` event once all the provided options have been
+     * selected. If there's no `<select>` element matching `selector`, the method
+     * throws an error.
+     *
+     * @example
+     * ```js
+     * page.select('select#colors', 'blue'); // single selection
+     * page.select('select#colors', 'red', 'green', 'blue'); // multiple selections
+     * ```
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
+     * to query the page for
+     * @param values - Values of options to select. If the `<select>` has the
+     * `multiple` attribute, all values are considered, otherwise only the first one
+     * is taken into account.
+     * @returns
+     *
+     * @remarks
+     * Shortcut for {@link Frame.select | page.mainFrame().select()}
+     */
     select(selector, ...values) {
         return this.mainFrame().select(selector, ...values);
     }
+    /**
+     * This method fetches an element with `selector`, scrolls it into view if
+     * needed, and then uses {@link Page.touchscreen} to tap in the center of the element.
+     * If there's no element matching `selector`, the method throws an error.
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
+     * to search for element to tap. If there are multiple elements satisfying the
+     * selector, the first will be tapped.
+     * @returns
+     * @remarks
+     * Shortcut for {@link Frame.tap | page.mainFrame().tap(selector)}.
+     */
     tap(selector) {
         return this.mainFrame().tap(selector);
     }
+    /**
+     * Sends a `keydown`, `keypress/input`, and `keyup` event for each character
+     * in the text.
+     *
+     * To press a special key, like `Control` or `ArrowDown`, use {@link Keyboard.press}.
+     * @example
+     * ```
+     * await page.type('#mytextarea', 'Hello');
+     * // Types instantly
+     * await page.type('#mytextarea', 'World', { delay: 100 });
+     * // Types slower, like a user
+     * ```
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * of an element to type into. If there are multiple elements satisfying the
+     * selector, the first will be used.
+     * @param text - A text to type into a focused element.
+     * @param options - have property `delay` which is the Time to wait between
+     * key presses in milliseconds. Defaults to `0`.
+     * @returns
+     * @remarks
+     */
     type(selector, text, options) {
         return this.mainFrame().type(selector, text, options);
     }
@@ -1331,12 +2307,174 @@ class Page extends EventEmitter_js_1.EventEmitter {
     waitForTimeout(milliseconds) {
         return this.mainFrame().waitForTimeout(milliseconds);
     }
+    /**
+     * Wait for the `selector` to appear in page. If at the moment of calling the
+     * method the `selector` already exists, the method will return immediately. If
+     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * This method works across navigations:
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     * .waitForSelector('img')
+     * .then(() => console.log('First URL with image: ' + currentURL));
+     * for (currentURL of [
+     * 'https://example.com',
+     * 'https://google.com',
+     * 'https://bbc.com',
+     * ]) {
+     * await page.goto(currentURL);
+     * }
+     * await browser.close();
+     * })();
+     * ```
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * of an element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by selector string
+     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
+     * selector is not found in DOM.
+     * @remarks
+     * The optional Parameter in Arguments `options` are :
+     *
+     * - `Visible`: A boolean wait for element to be present in DOM and to be
+     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     * properties. Defaults to `false`.
+     *
+     * - `hidden`: ait for element to not be found in the DOM or to be hidden,
+     * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+     * `false`.
+     *
+     * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
+     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     * by using the {@link Page.setDefaultTimeout} method.
+     */
     waitForSelector(selector, options = {}) {
         return this.mainFrame().waitForSelector(selector, options);
     }
+    /**
+     * Wait for the `xpath` to appear in page. If at the moment of calling the
+     * method the `xpath` already exists, the method will return immediately. If
+     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * This method works across navigation
+     * ```js
+     * const puppeteer = require('puppeteer');
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * let currentURL;
+     * page
+     * .waitForXPath('//img')
+     * .then(() => console.log('First URL with image: ' + currentURL));
+     * for (currentURL of [
+     * 'https://example.com',
+     * 'https://google.com',
+     * 'https://bbc.com',
+     * ]) {
+     * await page.goto(currentURL);
+     * }
+     * await browser.close();
+     * })();
+     * ```
+     * @param xpath - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
+     * element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by xpath string is
+     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
+     * not found in DOM.
+     * @remarks
+     * The optional Argument `options` have properties:
+     *
+     * - `visible`: A boolean to wait for element to be present in DOM and to be
+     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     * properties. Defaults to `false`.
+     *
+     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
+     * hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+     * Defaults to `false`.
+     *
+     * - `timeout`: A number which is maximum time to wait for in milliseconds.
+     * Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
+     * value can be changed by using the {@link Page.setDefaultTimeout} method.
+     */
     waitForXPath(xpath, options = {}) {
         return this.mainFrame().waitForXPath(xpath, options);
     }
+    /**
+     * The `waitForFunction` can be used to observe viewport size change:
+     *
+     * ```
+     * const puppeteer = require('puppeteer');
+     * (async () => {
+     * const browser = await puppeteer.launch();
+     * const page = await browser.newPage();
+     * const watchDog = page.waitForFunction('window.innerWidth < 100');
+     * await page.setViewport({ width: 50, height: 50 });
+     * await watchDog;
+     * await browser.close();
+     * })();
+     * ```
+     * To pass arguments from node.js to the predicate of `page.waitForFunction` function:
+     * ```
+     * const selector = '.foo';
+     * await page.waitForFunction(
+     * (selector) => !!document.querySelector(selector),
+     * {},
+     * selector
+     * );
+     * ```
+     * The predicate of `page.waitForFunction` can be asynchronous too:
+     * ```
+     * const username = 'github-username';
+     * await page.waitForFunction(
+     * async (username) => {
+     * const githubResponse = await fetch(
+     *  `https://api.github.com/users/${username}`
+     * );
+     * const githubUser = await githubResponse.json();
+     * // show the avatar
+     * const img = document.createElement('img');
+     * img.src = githubUser.avatar_url;
+     * // wait 3 seconds
+     * await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+     * img.remove();
+     * },
+     * {},
+     * username
+     * );
+     * ```
+     * @param pageFunction - Function to be evaluated in browser context
+     * @param options - Optional waiting parameters
+     * @param args -  Arguments to pass to `pageFunction`
+     * @returns Promise which resolves when the `pageFunction` returns a truthy
+     * value. It resolves to a JSHandle of the truthy value.
+     *
+     * The optional waiting parameter can be:
+     *
+     * - `Polling`: An interval at which the `pageFunction` is executed, defaults to
+     *   `raf`. If `polling` is a number, then it is treated as an interval in
+     *   milliseconds at which the function would be executed. If polling is a
+     *   string, then it can be one of the following values:<br/>
+     *    - `raf`: to constantly execute `pageFunction` in `requestAnimationFrame`
+     *      callback. This is the tightest polling mode which is suitable to
+     *      observe styling changes.<br/>
+     *    - `mutation`: to execute pageFunction on every DOM mutation.
+     *
+     * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
+     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     * by using the
+     * {@link Page.setDefaultTimeout | page.setDefaultTimeout(timeout)} method.
+     *
+     */
     waitForFunction(pageFunction, options = {}, ...args) {
         return this.mainFrame().waitForFunction(pageFunction, options, ...args);
     }
@@ -1385,7 +2523,7 @@ function convertPrintParameterToInches(parameter) {
             valueText = text;
         }
         const value = Number(valueText);
-        assert_js_1.assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
+        (0, assert_js_1.assert)(!isNaN(value), 'Failed to parse parameter value: ' + text);
         pixels = value * unitToPixels[unit];
     }
     else {

@@ -20,7 +20,7 @@ fs.createReadStream('./test.bz2').pipe(bz2()).pipe(process.stdout);
 
 Also see [test/browser/download.js](https://github.com/regular/unbzip2-stream/blob/master/test/browser/download.js) for an example of decompressing a file while downloading.
 
-Or, using a <script> tag
+Or, using a &lt;script&gt; tag
 ---
 
 ```

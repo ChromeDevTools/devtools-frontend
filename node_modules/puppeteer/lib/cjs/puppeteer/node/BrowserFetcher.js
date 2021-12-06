@@ -53,7 +53,7 @@ const URL = __importStar(require("url"));
 const https_proxy_agent_1 = __importDefault(require("https-proxy-agent"));
 const proxy_from_env_1 = require("proxy-from-env");
 const assert_js_1 = require("../common/assert.js");
-const debugFetcher = Debug_js_1.debug(`puppeteer:fetcher`);
+const debugFetcher = (0, Debug_js_1.debug)('puppeteer:fetcher');
 const downloadURLs = {
     chrome: {
         linux: '%s/chromium-browser-snapshots/Linux_x64/%d/%s.zip',
@@ -108,20 +108,20 @@ function handleArm64() {
         if (stats === undefined) {
             fs.stat('/usr/bin/chromium', function (err, stats) {
                 if (stats === undefined) {
-                    console.error(`The chromium binary is not available for arm64.`);
-                    console.error(`If you are on Ubuntu, you can install with: `);
-                    console.error(`\n sudo apt install chromium\n`);
-                    console.error(`\n sudo apt install chromium-browser\n`);
+                    console.error('The chromium binary is not available for arm64.' +
+                        '\nIf you are on Ubuntu, you can install with: ' +
+                        '\n\n sudo apt install chromium\n' +
+                        '\n\n sudo apt install chromium-browser\n');
                     throw new Error();
                 }
             });
         }
     });
 }
-const readdirAsync = util_1.promisify(fs.readdir.bind(fs));
-const mkdirAsync = util_1.promisify(fs.mkdir.bind(fs));
-const unlinkAsync = util_1.promisify(fs.unlink.bind(fs));
-const chmodAsync = util_1.promisify(fs.chmod.bind(fs));
+const readdirAsync = (0, util_1.promisify)(fs.readdir.bind(fs));
+const mkdirAsync = (0, util_1.promisify)(fs.mkdir.bind(fs));
+const unlinkAsync = (0, util_1.promisify)(fs.unlink.bind(fs));
+const chmodAsync = (0, util_1.promisify)(fs.chmod.bind(fs));
 function existsAsync(filePath) {
     return new Promise((resolve) => {
         fs.access(filePath, (err) => resolve(!err));
@@ -156,13 +156,13 @@ class BrowserFetcher {
      */
     constructor(projectRoot, options = {}) {
         this._product = (options.product || 'chrome').toLowerCase();
-        assert_js_1.assert(this._product === 'chrome' || this._product === 'firefox', `Unknown product: "${options.product}"`);
+        (0, assert_js_1.assert)(this._product === 'chrome' || this._product === 'firefox', `Unknown product: "${options.product}"`);
         this._downloadsFolder =
             options.path ||
                 path.join(projectRoot, browserConfig[this._product].destination);
         this._downloadHost = options.host || browserConfig[this._product].host;
         this.setPlatform(options.platform);
-        assert_js_1.assert(downloadURLs[this._product][this._platform], 'Unsupported platform: ' + this._platform);
+        (0, assert_js_1.assert)(downloadURLs[this._product][this._platform], 'Unsupported platform: ' + this._platform);
     }
     setPlatform(platformFromOptions) {
         if (platformFromOptions) {
@@ -177,7 +177,7 @@ class BrowserFetcher {
         else if (platform === 'win32')
             this._platform = os.arch() === 'x64' ? 'win64' : 'win32';
         else
-            assert_js_1.assert(this._platform, 'Unsupported platform: ' + os.platform());
+            (0, assert_js_1.assert)(this._platform, 'Unsupported platform: ' + platform);
     }
     /**
      * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
@@ -281,8 +281,8 @@ class BrowserFetcher {
      */
     async remove(revision) {
         const folderPath = this._getFolderPath(revision);
-        assert_js_1.assert(await existsAsync(folderPath), `Failed to remove: revision ${revision} is not downloaded`);
-        await new Promise((fulfill) => rimraf_1.default(folderPath, fulfill));
+        (0, assert_js_1.assert)(await existsAsync(folderPath), `Failed to remove: revision ${revision} is not downloaded`);
+        await new Promise((fulfill) => (0, rimraf_1.default)(folderPath, fulfill));
     }
     /**
      * @param revision - The revision to get info for.
@@ -311,9 +311,8 @@ class BrowserFetcher {
             else
                 throw new Error('Unsupported platform: ' + this._platform);
         }
-        else {
+        else
             throw new Error('Unsupported product: ' + this._product);
-        }
         const url = downloadURL(this._product, this._platform, this._downloadHost, revision);
         const local = fs.existsSync(folderPath);
         debugFetcher({
@@ -337,7 +336,7 @@ class BrowserFetcher {
      * @internal
      */
     _getFolderPath(revision) {
-        return path.join(this._downloadsFolder, this._platform + '-' + revision);
+        return path.resolve(this._downloadsFolder, `${this._platform}-${revision}`);
     }
 }
 exports.BrowserFetcher = BrowserFetcher;
@@ -390,7 +389,7 @@ function downloadFile(url, destinationPath, progressCallback) {
 function install(archivePath, folderPath) {
     debugFetcher(`Installing ${archivePath} to ${folderPath}`);
     if (archivePath.endsWith('.zip'))
-        return extract_zip_1.default(archivePath, { dir: folderPath });
+        return (0, extract_zip_1.default)(archivePath, { dir: folderPath });
     else if (archivePath.endsWith('.tar.bz2'))
         return extractTar(archivePath, folderPath);
     else if (archivePath.endsWith('.dmg'))
@@ -430,7 +429,7 @@ function installDMG(dmgPath, folderPath) {
             mountPath = volumes[0];
             readdirAsync(mountPath)
                 .then((fileNames) => {
-                const appName = fileNames.filter((item) => typeof item === 'string' && item.endsWith('.app'))[0];
+                const appName = fileNames.find((item) => typeof item === 'string' && item.endsWith('.app'));
                 if (!appName)
                     return reject(new Error(`Cannot find app in ${mountPath}`));
                 const copyPath = path.join(mountPath, appName);
@@ -467,7 +466,7 @@ function httpRequest(url, method, response) {
         ...urlParsed,
         method,
     };
-    const proxyURL = proxy_from_env_1.getProxyForUrl(url);
+    const proxyURL = (0, proxy_from_env_1.getProxyForUrl)(url);
     if (proxyURL) {
         if (url.startsWith('http:')) {
             const proxy = URL.parse(proxyURL);
@@ -483,7 +482,7 @@ function httpRequest(url, method, response) {
                 ...parsedProxyURL,
                 secureProxy: parsedProxyURL.protocol === 'https:',
             };
-            options.agent = https_proxy_agent_1.default(proxyOptions);
+            options.agent = (0, https_proxy_agent_1.default)(proxyOptions);
             options.rejectUnauthorized = false;
         }
     }

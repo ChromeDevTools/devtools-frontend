@@ -39,7 +39,7 @@ class LifecycleWatcher {
             waitUntil = [waitUntil];
         this._expectedLifecycle = waitUntil.map((value) => {
             const protocolEvent = puppeteerToProtocolLifecycle.get(value);
-            assert_js_1.assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
+            (0, assert_js_1.assert)(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
         });
         this._frameManager = frameManager;
@@ -81,7 +81,8 @@ class LifecycleWatcher {
         }
         this._checkLifecycleComplete();
     }
-    navigationResponse() {
+    async navigationResponse() {
+        // We may need to wait for ExtraInfo events before the request is complete.
         return this._navigationRequest ? this._navigationRequest.response() : null;
     }
     _terminate(error) {

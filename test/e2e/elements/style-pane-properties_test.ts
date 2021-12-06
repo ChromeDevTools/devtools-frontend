@@ -286,8 +286,7 @@ describe('The Styles pane', async () => {
     assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });
 
-  // Consistently timing out on Mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1218736] can display and edit container queries', async () => {
+  it('can display and edit container queries', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResourceAndWaitForStyleSection('elements/css-container-queries.html');
 

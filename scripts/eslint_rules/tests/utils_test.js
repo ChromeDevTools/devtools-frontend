@@ -7,7 +7,7 @@ const parser = require('@typescript-eslint/parser');
 const utils = require('../lib/utils.js');
 const {assert} = require('chai');
 
-describe.only('eslint utils', () => {
+describe('eslint utils', () => {
   describe('isLitHtmlTemplateCall', () => {
     it('returns true if the code is LitHtml.html``', () => {
       const code = 'LitHtml.html`<span>foo</span>`';

@@ -543,11 +543,17 @@ export class TimelineModelImpl {
   }
 
   private buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const thread = tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
+    // COHERENT BEGIN
+    //const thread = tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
+    const  thread = tracingModel.getThreadByName('Cohtml GPU', 'GPU Thread');
+    // COHERENT END
     if (!thread) {
       return;
     }
-    const gpuEventName = RecordType.GPUTask;
+    // COHERENT BEGIN
+    //const gpuEventName = RecordType.GPUTask;
+    const gpuEventName = RecordType.Coherent_GPU;
+    // COHERENT END
     const track = this.ensureNamedTrack(TrackType.GPU);
     track.thread = thread;
     track.events = thread.events().filter(event => event.name === gpuEventName);

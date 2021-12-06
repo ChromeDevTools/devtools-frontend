@@ -4664,6 +4664,21 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Rendered Fonts"
   },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Filter Properties"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "No matching property"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Show all"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "When unchecked, only properties whose values are neither null nor undefined will be shown"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copy all declarations as JS"
   },

@@ -33,7 +33,7 @@
  */
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js';
 import type {RuntimeModel} from './RuntimeModel.js';
@@ -60,6 +60,20 @@ export class RemoteObject {
     }
 
     return remoteObject.type;
+  }
+
+  static isNullOrUndefined(remoteObject: RemoteObject|null|undefined): boolean {
+    if (remoteObject === null || remoteObject === undefined) {
+      return true;
+    }
+    switch (remoteObject.type) {
+      case Protocol.Runtime.RemoteObjectType.Object:
+        return remoteObject.subtype === Protocol.Runtime.RemoteObjectSubtype.Null;
+      case Protocol.Runtime.RemoteObjectType.Undefined:
+        return true;
+      default:
+        return false;
+    }
   }
 
   static arrayNameFromDescription(description: string): string {

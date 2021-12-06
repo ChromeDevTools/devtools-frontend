@@ -4664,6 +4664,21 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "R̂én̂d́êŕêd́ F̂ón̂t́ŝ"
   },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "F̂íl̂t́êŕ"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "F̂íl̂t́êŕ P̂ŕôṕêŕt̂íêś"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "N̂ó m̂át̂ćĥín̂ǵ p̂ŕôṕêŕt̂ý"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Ŝh́ôẃ âĺl̂"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "Ŵh́êń ûńĉh́êćk̂éd̂, ón̂ĺŷ ṕr̂óp̂ér̂t́îéŝ ẃĥóŝé v̂ál̂úêś âŕê ńêít̂h́êŕ n̂úl̂ĺ n̂ór̂ ún̂d́êf́îńêd́ ŵíl̂ĺ b̂é ŝh́ôẃn̂"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Ĉóp̂ý âĺl̂ d́êćl̂ár̂át̂íôńŝ áŝ J́Ŝ"
   },

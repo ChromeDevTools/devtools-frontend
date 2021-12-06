@@ -3,19 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
-  // Match LitHtml.html``
-  const {tag} = taggedTemplateExpressionNode;
-  if (!tag) {
-    return false;
-  }
-  // Match LitHtml.html``
-  const isLitHtmlDotHtmlCall = tag.object?.name === 'LitHtml' && tag.property?.name === 'html';
-  // Match html`` (and guess that it's Lit)
-  const isDestructuredHtmlCall = tag.type === 'Identifier' && tag.name === 'html';
-
-  return isLitHtmlDotHtmlCall || isDestructuredHtmlCall;
-}
+const {isLitHtmlTemplateCall} = require('./utils.js');
 
 function templateElementPartStartsWithDoubleQuote(templateElementPartNode) {
   return templateElementPartNode.value.raw.startsWith('"');

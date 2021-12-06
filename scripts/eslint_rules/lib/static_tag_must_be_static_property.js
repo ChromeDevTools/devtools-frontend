@@ -3,16 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-function isLitHtmlTemplateCall(taggedTemplateExpression) {
-  if (taggedTemplateExpression.name) {
-    // Call to html`` and we assume that html = LitHtml's html function.
-    return taggedTemplateExpression.name === 'html';
-  }
-
-  // Match calls to LitHtml.html``
-  return taggedTemplateExpression.object && taggedTemplateExpression.object.name === 'LitHtml' &&
-      taggedTemplateExpression.property.name === 'html';
-}
+const {isLitHtmlTemplateCall} = require('./utils.js');
 
 module.exports = {
   meta: {
@@ -52,7 +43,7 @@ module.exports = {
 
     return {
       TaggedTemplateExpression(node) {
-        if (!isLitHtmlTemplateCall(node.tag)) {
+        if (!isLitHtmlTemplateCall(node)) {
           return;
         }
 

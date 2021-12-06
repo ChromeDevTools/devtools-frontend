@@ -3,16 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-function isLitHtmlTemplateCall(taggedTemplateExpression) {
-  if (taggedTemplateExpression.name) {
-    // Call to html`` and we assume that html = LitHtml's html function.
-    return taggedTemplateExpression.name === 'html';
-  }
-
-  // Match calls to LitHtml.html``
-  return taggedTemplateExpression.object && taggedTemplateExpression.object.name === 'LitHtml' &&
-      taggedTemplateExpression.property.name === 'html';
-}
+const {isLitHtmlTemplateCall} = require('./utils.js');
 
 function findIndexOfDataSetterUsageForNode(taggedTemplateExpression) {
   const dataSetterText = '.data=';
@@ -66,7 +57,7 @@ module.exports = {
   create: function(context) {
     return {
       TaggedTemplateExpression(node) {
-        const isLitHtmlCall = isLitHtmlTemplateCall(node.tag);
+        const isLitHtmlCall = isLitHtmlTemplateCall(node);
         if (!isLitHtmlCall) {
           return;
         }

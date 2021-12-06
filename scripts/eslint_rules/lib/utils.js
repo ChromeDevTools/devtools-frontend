@@ -10,6 +10,9 @@
  * @returns {boolean} - `true` if the code matches LitHtml.html`` or html``, and false otherwise.
 */
 function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
+  if (taggedTemplateExpressionNode.type !== 'TaggedTemplateExpression') {
+    throw new Error('Node of type other than TaggedTemplateExpression passed to isLitHtmlTemplateCall.');
+  }
   // Match LitHtml.html``
   const {tag} = taggedTemplateExpressionNode;
   if (!tag) {

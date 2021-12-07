@@ -81,7 +81,11 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidAttributionSourceEventId:
         return {
           file: 'arInvalidAttributionSourceEventId.md',
-          links: [],
+          links: [{
+            link:
+                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionsourceeventid-required',
+            linkTitle: 'attributionsourceeventid attribute',
+          }],
         };
       case IssueCode.InvalidAttributionData:
         return {
@@ -101,7 +105,18 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.AttributionSourceUntrustworthyOrigin:
         return {
           file: 'arAttributionSourceUntrustworthyOrigin.md',
-          links: [],
+          links: [
+            {
+              link:
+                  'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributiondestination-required',
+              linkTitle: 'attributiondestination attribute',
+            },
+            {
+              link:
+                  'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionreportto',
+              linkTitle: 'attributionreportto attribute',
+            },
+          ],
         };
       case IssueCode.AttributionUntrustworthyFrameOrigin:
         return {
@@ -126,12 +141,20 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidAttributionSourceExpiry:
         return {
           file: 'arInvalidAttributionSourceExpiry.md',
-          links: [],
+          links: [{
+            link:
+                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionexpiry',
+            linkTitle: 'attributionexpiry attribute',
+          }],
         };
       case IssueCode.InvalidAttributionSourcePriority:
         return {
           file: 'arInvalidAttributionSourcePriority.md',
-          links: [],
+          links: [{
+            link:
+                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#html-attribute-attributionsourcepriority',
+            linkTitle: 'attributionsourcepriority attribute',
+          }],
         };
       case IssueCode.InvalidEventSourceTriggerData:
         return {
@@ -141,12 +164,20 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidTriggerPriority:
         return {
           file: 'arInvalidTriggerPriority.md',
-          links: [],
+          links: [{
+            link:
+                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#prioritize-specific-conversions',
+            linkTitle: 'Prioritizing specific conversions',
+          }],
         };
       case IssueCode.InvalidTriggerDedupKey:
         return {
           file: 'arInvalidTriggerDedupKey.md',
-          links: [],
+          links: [{
+            link:
+                'https://developer.chrome.com/docs/privacy-sandbox/attribution-reporting-event-guide/#deduplicate-reports',
+            linkTitle: 'Deduplicating reports',
+          }],
         };
     }
   }

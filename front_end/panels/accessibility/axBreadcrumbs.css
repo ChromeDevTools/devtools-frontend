@@ -99,6 +99,10 @@
   background-color: var(--color-background-elevation-0);
 }
 
+.ax-breadcrumbs .ax-node:not(.inspected):focus {
+  background-color: var(--color-background-elevation-1);
+}
+
 .ax-breadcrumbs .ax-node.inspected:focus * {
   color: inherit;
 }

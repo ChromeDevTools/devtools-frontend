@@ -3,11 +3,10 @@
 // found in the LICENSE file.
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer';
-
-import {click, tabForward, waitForAria, getBrowserAndPages, goToResource, pressKey, typeText, waitFor} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, pressKey, tabForward, typeText, waitFor, waitForAria} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
-import {openDeviceToolbar, selectDevice, reloadDockableFrontEnd, selectEdit, selectTestDevice} from '../helpers/emulation-helpers.js';
+import {clickZoomDropDown, openDeviceToolbar, reloadDockableFrontEnd, selectDevice, selectEdit, selectTestDevice} from '../helpers/emulation-helpers.js';
 
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
@@ -183,5 +182,17 @@ describe('Custom devices', async () => {
 
     const zoomButton = await waitForAria('Zoom');
     assert.strictEqual(await elementTextContent(zoomButton), '51%');
+
+    // Check fit-to-window text.
+    await clickZoomDropDown();
+
+    const fitButton = await waitFor('[aria-label*="Fit to window"]');
+    assert.strictEqual(await elementTextContent(fitButton), 'Fit to window (51%)');
+    assert.strictEqual(await elementTextContent(zoomButton), '51%');
+
+    const zoomTo100Button = await waitFor('[aria-label*="100%"]');
+    await click(zoomTo100Button);
+    assert.strictEqual(await elementTextContent(fitButton), 'Fit to window (51%)');
+    assert.strictEqual(await elementTextContent(zoomButton), '100%');
   });
 });

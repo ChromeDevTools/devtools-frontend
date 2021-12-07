@@ -10,6 +10,7 @@ const DEVICE_TOOLBAR_SELECTOR = '.device-mode-toolbar';
 const DEVICE_TOOLBAR_OPTIONS_SELECTOR = '.device-mode-toolbar .device-mode-toolbar-options';
 const MEDIA_QUERY_INSPECTOR_SELECTOR = '.media-inspector-view';
 const DEVICE_LIST_DROPDOWN_SELECTOR = '.toolbar-button';
+const ZOOM_LIST_DROPDOWN_SELECTOR = '[aria-label*="Zoom"]';
 const SURFACE_DUO_MENU_ITEM_SELECTOR = '[aria-label*="Surface Duo"]';
 const EDIT_MENU_ITEM_SELECTOR = '[aria-label*="Edit"]';
 const TEST_DEVICE_MENU_ITEM_SELECTOR = '[aria-label*="Test device, unchecked"]';
@@ -56,9 +57,15 @@ export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTML
   });
 };
 
-const clickDevicesDropDown = async () => {
+export const clickDevicesDropDown = async () => {
   const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
   const button = await waitFor(DEVICE_LIST_DROPDOWN_SELECTOR, toolbar);
+  await click(button);
+};
+
+export const clickZoomDropDown = async () => {
+  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
+  const button = await waitFor(ZOOM_LIST_DROPDOWN_SELECTOR, toolbar);
   await click(button);
 };
 

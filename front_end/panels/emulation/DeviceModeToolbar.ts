@@ -402,7 +402,7 @@ export class DeviceModeToolbar {
   private appendScaleMenuItems(contextMenu: UI.ContextMenu.ContextMenu): void {
     if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
       contextMenu.footerSection().appendItem(
-          i18nString(UIStrings.fitToWindowF, {PH1: this.getPrettyZoomPercentage()}),
+          i18nString(UIStrings.fitToWindowF, {PH1: this.getPrettyFitZoomPercentage()}),
           this.onScaleMenuChanged.bind(this, this.model.fitScale()), false);
     }
     contextMenu.footerSection().appendCheckboxItem(
@@ -691,6 +691,10 @@ export class DeviceModeToolbar {
       const scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
       model.emulate(model.type(), model.device(), mode, scale);
     }
+  }
+
+  private getPrettyFitZoomPercentage(): string {
+    return `${(this.model.fitScale() * 100).toFixed(0)}`;
   }
 
   private getPrettyZoomPercentage(): string {

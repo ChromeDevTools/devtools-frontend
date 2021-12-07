@@ -226,7 +226,8 @@ describe('The Memory Panel', async function() {
     assert.isTrue(childText[1].includes('inEventListener'));
   });
 
-  it('Shows the correct output for a detached iframe', async () => {
+  // Flaky test causing build failures
+  it.skip('[crbug.com/1239550] Shows the correct output for a detached iframe', async () => {
     await goToResource('memory/detached-iframe.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

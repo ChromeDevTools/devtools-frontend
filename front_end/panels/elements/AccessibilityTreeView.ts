@@ -120,16 +120,14 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
 
   // Selected node in the DOM tree has changed.
   async selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void> {
-    if (this.isShowing()) {
+    if (this.isShowing() || (inspectedNode === this.inspectedDOMNode)) {
       return;
     }
     if (inspectedNode.ownerDocument && (inspectedNode.nodeName() === 'HTML' || inspectedNode.nodeName() === 'BODY')) {
-      inspectedNode = inspectedNode.ownerDocument;
+      this.inspectedDOMNode = inspectedNode.ownerDocument;
+    } else {
+      this.inspectedDOMNode = inspectedNode;
     }
-    if (inspectedNode === this.inspectedDOMNode) {
-      return;
-    }
-    this.inspectedDOMNode = inspectedNode;
   }
 
   treeUpdated({data}: Common.EventTarget

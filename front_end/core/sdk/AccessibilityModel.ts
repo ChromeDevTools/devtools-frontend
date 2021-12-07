@@ -291,25 +291,25 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
   async requestAXChildren(nodeId: Protocol.Accessibility.AXNodeId, frameId?: Protocol.Page.FrameId):
       Promise<AccessibilityNode[]> {
     const parent = this.#axIdToAXNode.get(nodeId);
-    if (parent && !parent.hasUnloadedChildren()) {
+    if (!parent) {
+      throw Error('Cannot request children before parent');
+    }
+    if (!parent.hasUnloadedChildren()) {
       return parent.children();
     }
 
     let nodes;
     const request = this.#pendingChildRequests.get(nodeId);
     if (request) {
-      nodes = (await request).nodes;
+      await request;
     } else {
       const req = this.agent.invoke_getChildAXNodes({id: nodeId, frameId});
       this.#pendingChildRequests.set(nodeId, req);
       nodes = (await req).nodes;
+      this.createNodesFromPayload(nodes);
       this.#pendingChildRequests.delete(nodeId);
     }
-    if (!nodes) {
-      return [];
-    }
-    const axNodes = this.createNodesFromPayload(nodes);
-    return axNodes;
+    return parent.children();
   }
 
   async requestAndLoadSubTreeToNode(node: DOMNode): Promise<AccessibilityNode[]|null> {

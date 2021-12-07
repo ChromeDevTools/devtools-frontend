@@ -124,15 +124,30 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           links: [],
         };
       case IssueCode.InvalidAttributionSourceExpiry:
-        return null;
+        return {
+          file: 'arInvalidAttributionSourceExpiry.md',
+          links: [],
+        };
       case IssueCode.InvalidAttributionSourcePriority:
-        return null;
+        return {
+          file: 'arInvalidAttributionSourcePriority.md',
+          links: [],
+        };
       case IssueCode.InvalidEventSourceTriggerData:
-        return null;
+        return {
+          file: 'arInvalidEventSourceTriggerData.md',
+          links: [],
+        };
       case IssueCode.InvalidTriggerPriority:
-        return null;
+        return {
+          file: 'arInvalidTriggerPriority.md',
+          links: [],
+        };
       case IssueCode.InvalidTriggerDedupKey:
-        return null;
+        return {
+          file: 'arInvalidTriggerDedupKey.md',
+          links: [],
+        };
     }
   }
 

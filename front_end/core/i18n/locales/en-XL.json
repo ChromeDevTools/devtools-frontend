@@ -1955,8 +1955,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Âćĉéŝśîb́îĺît́ŷ T́r̂éê"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "T̂h́ê áĉćêśŝíb̂íl̂ít̂ý t̂ŕêé m̂óv̂éd̂ t́ô t́ĥé t̂óp̂ ŕîǵĥt́ ĉór̂ńêŕ ôf́ t̂h́ê D́ÔḾ t̂ŕêé."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Êńâb́l̂é f̂úl̂ĺ-p̂áĝé âćĉéŝśîb́îĺît́ŷ t́r̂éê"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Îǵn̂ór̂éd̂"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "R̂él̂óâd́ r̂éq̂úîŕêd́ b̂éf̂ór̂é t̂h́ê ćĥán̂ǵê t́âḱêś êf́f̂éĉt́."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Ŝćr̂ól̂ĺ îńt̂ó v̂íêẃ"

@@ -351,6 +351,7 @@ export enum ExperimentName {
   PROTOCOL_MONITOR = 'protocolMonitor',
   WEBAUTHN_PANE = 'webauthnPane',
   SYNC_SETTINGS = 'syncSettings',
+  FULL_ACCESSIBILITY_TREE = 'fullAccessibilityTree',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

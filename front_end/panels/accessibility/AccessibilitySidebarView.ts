@@ -31,10 +31,8 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.axNodeInternal = null;
     this.skipNextPullNode = false;
     this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation();
-    if (!Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
-      this.breadcrumbsSubPane = new AXBreadcrumbsPane(this);
-      this.sidebarPaneStack.showView(this.breadcrumbsSubPane);
-    }
+    this.breadcrumbsSubPane = new AXBreadcrumbsPane(this);
+    this.sidebarPaneStack.showView(this.breadcrumbsSubPane);
     this.ariaSubPane = new ARIAAttributesPane();
     this.sidebarPaneStack.showView(this.ariaSubPane);
     this.axNodeSubPane = new AXNodeSubPane();

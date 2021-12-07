@@ -13,6 +13,10 @@
       enabled: false,
       selector: ':not(.tabbed-pane-header-tabs)'
     },
+    'aria-allowed-attr': {
+      enabled: false,
+      selector: '.cm-content'
+    }
   };
 
   await TestRunner.loadTestModule('axe_core_test_runner');

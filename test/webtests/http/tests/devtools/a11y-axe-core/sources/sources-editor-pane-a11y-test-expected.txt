@@ -4,25 +4,6 @@ Script snippet #1
 Script snippet #2
 
 
-aXe violations: [
-  {
-    "ruleDescription": "Ensures ARIA attributes are allowed for an element's role",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/3.3/aria-allowed-attr?application=axeAPI",
-    "ruleId": "aria-allowed-attr",
-    "impact": "critical",
-    "failedNodes": [
-      {
-        "target": [
-          [
-            "devtools-text-editor",
-            ".cm-content"
-          ]
-        ],
-        "html": "<div spellcheck=\"false\" autocorrect=\"off\" autocapitalize=\"off\" translate=\"no\" contenteditable=\"true\" class=\"cm-content\" style=\"tab-size: 4;\" role=\"textbox\" aria-multiline=\"true\" aria-label=\"Code editor\" aria-autocomplete=\"list\" aria-expanded=\"false\"><div class=\"cm-line\"><br></div></div>",
-        "failureSummary": "Fix any of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\""
-      }
-    ]
-  }
-]
+aXe violations: []
 
 

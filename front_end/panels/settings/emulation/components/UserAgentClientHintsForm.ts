@@ -554,6 +554,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           aria-controls="form-container"
           @disabled=${this.isFormDisabled}
           aria-disabled=${this.isFormDisabled}
+          aria-label=${i18nString(UIStrings.title)}
         >
           <${IconButton.Icon.Icon.litTagName}
             class=${this.isFormOpened ? '' : 'rotate-icon'}

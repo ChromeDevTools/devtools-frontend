@@ -26,7 +26,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  align-items: center;
+  align-items: flex-start;
+  white-space: nowrap;
   flex: 0 0 150px;
 }
 

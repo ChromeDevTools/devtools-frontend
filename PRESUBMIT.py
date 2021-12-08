@@ -75,6 +75,8 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
         return False
 
     def FileIsInDir(file, dirs):
+        if file.endswith('OWNERS') and 'OWNERS' in dirs:
+            return True
         for dir in dirs:
             if IsParentDir(file, dir):
                 return True
@@ -89,7 +91,7 @@ def _CheckChangesAreExclusiveToDirectory(input_api, output_api):
             'package-lock.json',
             input_api.os_path.join('scripts', 'deps', 'manage_node_deps.py'),
         ],
-        ['OWNERS', input_api.os_path.join('config', 'owner')],
+        ['OWNERS'],
     ]
 
     affected_files = input_api.LocalPaths()

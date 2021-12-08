@@ -106,11 +106,14 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const content = oldCondition || '';
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
-      if (TextEditor.JavaScript.isExpressionComplete(view.state)) {
-        this.finishEditing(true, this.editor.state.doc.toString());
-        return true;
-      }
-      return false;
+      TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete): void => {
+        if (complete) {
+          this.finishEditing(true, this.editor.state.doc.toString());
+        } else {
+          CodeMirror.insertNewlineAndIndent(view);
+        }
+      });
+      return true;
     };
     const keymap = [
       {

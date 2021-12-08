@@ -402,13 +402,22 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
   return fetchNames;
 }
 
-export function isExpressionComplete(state: CodeMirror.EditorState): boolean {
-  for (const cursor = CodeMirror.syntaxTree(state).cursor(); cursor.next();) {
-    if (cursor.type.isError) {
-      return false;
-    }
+export async function isExpressionComplete(expression: string): Promise<boolean> {
+  const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+  if (!currentExecutionContext) {
+    return true;
   }
-  return true;
+  const result =
+      await currentExecutionContext.runtimeModel.compileScript(expression, '', false, currentExecutionContext.id);
+  if (!result || !result.exceptionDetails || !result.exceptionDetails.exception) {
+    return true;
+  }
+  const description = result.exceptionDetails.exception.description;
+  if (description) {
+    return !description.startsWith('SyntaxError: Unexpected end of input') &&
+        !description.startsWith('SyntaxError: Unterminated template literal');
+  }
+  return false;
 }
 
 export function argumentHints(): CodeMirror.Extension {

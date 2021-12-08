@@ -207,7 +207,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       {key: 'ArrowDown', run: (): boolean => this.moveHistory(1)},
       {mac: 'Ctrl-p', run: (): boolean => this.moveHistory(-1, true)},
       {mac: 'Ctrl-n', run: (): boolean => this.moveHistory(1, true)},
-      {key: 'Enter', run: (): boolean => this.evaluate(), shift: CodeMirror.insertNewlineAndIndent},
+      {
+        key: 'Enter',
+        run: (): boolean => {
+          this.handleEnter();
+          return true;
+        },
+        shift: CodeMirror.insertNewlineAndIndent,
+      },
     ];
   }
 
@@ -242,29 +249,28 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return true;
   }
 
-  private enterWillEvaluate(): boolean {
+  private async enterWillEvaluate(): Promise<boolean> {
     const {state} = this.editor;
-    return state.doc.length > 0 && TextEditor.JavaScript.isExpressionComplete(state);
+    return state.doc.length > 0 && await TextEditor.JavaScript.isExpressionComplete(state.doc.toString());
   }
 
-  private evaluate(): boolean {
-    if (this.enterWillEvaluate()) {
+  private async handleEnter(): Promise<void> {
+    if (await this.enterWillEvaluate()) {
       this.appendCommand(this.text(), true);
       this.editor.dispatch({
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,
       });
     } else if (this.editor.state.doc.length) {
-      return CodeMirror.insertNewlineAndIndent(this.editor.editor);
+      CodeMirror.insertNewlineAndIndent(this.editor.editor);
     } else {
       this.editor.dispatch({scrollIntoView: true});
     }
-    return true;
   }
 
   private updatePromptIcon(): void {
     this.iconThrottler.schedule(async () => {
-      this.promptIcon.classList.toggle('console-prompt-incomplete', !this.enterWillEvaluate());
+      this.promptIcon.classList.toggle('console-prompt-incomplete', !(await this.enterWillEvaluate()));
     });
   }
 

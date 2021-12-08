@@ -5240,6 +5240,9 @@
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "D̂íŝál̂ĺôẃêd́ R̂éq̂úêśt̂ Ḿêt́ĥód̂"
   },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "F̂áîĺêd́ R̂éq̂úêśt̂"
+  },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Ĥéâd́êŕ"
   },

@@ -234,4 +234,50 @@ describe('Cors Private Network issue', async () => {
     ];
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
+
+  it('should display correct information for failed preflight requests', async () => {
+    await navigateToIssuesTab();
+    const {frontend} = getBrowserAndPages();
+    frontend.evaluate(() => {
+      const issue = {
+        code: 'CorsIssue',
+        details: {
+          corsIssueDetails: {
+            clientSecurityState: {
+              initiatorIsSecureContext: true,
+              initiatorIPAddressSpace: 'Public',
+              privateNetworkRequestPolicy: 'PreflightWarn',
+            },
+            corsErrorStatus: {corsError: 'InvalidResponse', failedParameter: ''},
+            isWarning: true,
+            request: {requestId: 'request-1', url: 'http://localhost/'},
+            resourceIPAddressSpace: 'Local',
+          },
+        },
+      };
+      // @ts-ignore
+      window.addIssueForTest(issue);
+    });
+
+    await expandIssue();
+    const issueElement = await getIssueByTitle('Ensure preflight responses are valid');
+    assertNotNullOrUndefined(issueElement);
+    const section = await getResourcesElement('1 request', issueElement, '.cors-issue-affected-resource-label');
+    await ensureResourceSectionIsExpanded(section);
+    const expectedTableRows = [
+      [
+        'Request',
+        'Status',
+        'Preflight Request',
+        'Problem',
+      ],
+      [
+        'localhost/',
+        'warning',
+        'localhost/',
+        'Failed Request',
+      ],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+  });
 });

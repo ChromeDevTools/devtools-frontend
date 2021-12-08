@@ -5240,6 +5240,9 @@
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Disallowed Request Method"
   },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Failed Request"
+  },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Header"
   },

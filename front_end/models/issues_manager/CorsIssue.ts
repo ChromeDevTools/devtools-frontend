@@ -40,7 +40,6 @@ export enum IssueCode {
   PreflightMissingAllowExternal = 'CorsIssue::PreflightMissingAllowExternal',
   // TODO(https://crbug.com/1263483): Remove this once it's removed from CDP.
   PreflightInvalidAllowExternal = 'CorsIssue::PreflightInvalidAllowExternal',
-  InvalidResponse = 'CorsIssue::InvalidResponse',
   NoCorsRedirectModeNotFollow = 'CorsIssue::NoCorsRedirectModeNotFollow',
   InvalidPrivateNetworkAccess = 'CorsIssue::InvalidPrivateNetworkAccess',
   UnexpectedPrivateNetworkAccess = 'CorsIssue::UnexpectedPrivateNetworkAccess',
@@ -63,6 +62,7 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
       return IssueCode.WildcardOriginNotAllowed;
     case Protocol.Network.CorsError.PreflightInvalidStatus:
     case Protocol.Network.CorsError.PreflightDisallowedRedirect:
+    case Protocol.Network.CorsError.InvalidResponse:
       return IssueCode.PreflightResponseInvalid;
     case Protocol.Network.CorsError.AllowOriginMismatch:
     case Protocol.Network.CorsError.PreflightAllowOriginMismatch:
@@ -84,8 +84,6 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
       return IssueCode.PreflightMissingAllowExternal;
     case Protocol.Network.CorsError.PreflightInvalidAllowExternal:
       return IssueCode.PreflightInvalidAllowExternal;
-    case Protocol.Network.CorsError.InvalidResponse:
-      return IssueCode.InvalidResponse;
     case Protocol.Network.CorsError.InsecurePrivateNetwork:
       return IssueCode.InsecurePrivateNetwork;
     case Protocol.Network.CorsError.NoCorsRedirectModeNotFollow:
@@ -226,7 +224,6 @@ export class CorsIssue extends Issue<IssueCode> {
         };
       case IssueCode.PreflightMissingAllowExternal:
       case IssueCode.PreflightInvalidAllowExternal:
-      case IssueCode.InvalidResponse:
       case IssueCode.InvalidPrivateNetworkAccess:
       case IssueCode.UnexpectedPrivateNetworkAccess:
         return null;

@@ -119,6 +119,10 @@ const UIStrings = {
   *@description Header for the column with the URL scheme that is not supported by fetch
   */
   unsupportedScheme: 'Unsupported Scheme',
+  /**
+  *@description A failed network request.
+  */
+  failedRequest: 'Failed Request',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -210,7 +214,6 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       default:
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
-                                 IssuesManager.CorsIssue.IssueCode.InvalidResponse|
                                  IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess|
                                  IssuesManager.CorsIssue.IssueCode.UnexpectedPrivateNetworkAccess>(issueCode);
     }
@@ -283,6 +286,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         return i18nString(UIStrings.preflightInvalidStatus);
       case Protocol.Network.CorsError.PreflightDisallowedRedirect:
         return i18nString(UIStrings.preflightDisallowedRedirect);
+      case Protocol.Network.CorsError.InvalidResponse:
+        return i18nString(UIStrings.failedRequest);
     }
     throw new Error('Invalid Argument');
   }
@@ -447,7 +452,6 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.appendStatus(element, details.isWarning);
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
-                                 IssuesManager.CorsIssue.IssueCode.InvalidResponse|
                                  IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess|
                                  IssuesManager.CorsIssue.IssueCode.UnexpectedPrivateNetworkAccess>(issueCode);
         break;

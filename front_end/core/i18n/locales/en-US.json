@@ -2846,6 +2846,9 @@
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "No"
   },
+  "panels/application/components/FrameDetailsView.ts | origin": {
+    "message": "Origin"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Owner Element"
   },
@@ -2896,6 +2899,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
     "message": "Unreachable URL"
+  },
+  "panels/application/components/FrameDetailsView.ts | url": {
+    "message": "URL"
   },
   "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
     "message": "⚠️ will require cross-origin isolated context in the future"

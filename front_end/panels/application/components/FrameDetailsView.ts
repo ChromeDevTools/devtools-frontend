@@ -47,6 +47,11 @@ const UIStrings = {
   */
   document: 'Document',
   /**
+  *@description A web URL (for a lot of languages this does not need to be translated, please translate only where necessary)
+  */
+  url: 'URL',
+  /**
+  /**
   *@description Title for a link to the Sources panel
   */
   clickToRevealInSourcesPanel: 'Click to reveal in Sources panel',
@@ -62,6 +67,12 @@ const UIStrings = {
   *@description Title for a link that applies a filter to the network panel
   */
   clickToRevealInNetworkPanelMight: 'Click to reveal in Network panel (might require page reload)',
+  /**
+  *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
+  *(for a lot of languages this does not need to be translated, please translate only where necessary)
+  */
+  origin: 'Origin',
+  /**
   /**
   *@description Related node label in Timeline UIUtils of the Performance panel
   */
@@ -107,9 +118,11 @@ const UIStrings = {
   */
   no: 'No',
   /**
-  *@description Row title for in the Frame Details view
+  *@description Label for whether a frame is cross-origin isolated
+  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+  *(for a lot of languages this does not need to be translated, please translate only where necessary)
   */
-  crossoriginIsolated: '`Cross-Origin` Isolated',
+  crossoriginIsolated: 'Cross-Origin Isolated',
   /**
   *@description Explanatory text in the Frame Details view
   */
@@ -132,10 +145,11 @@ const UIStrings = {
   */
   apiAvailability: 'API availability',
   /**
-  *@description Explanatory text in the Frame Details view for the API availability section
+  *@description Explanation of why cross-origin isolation is important
+  *(https://web.dev/why-coop-coep/)
+  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
   */
-  availabilityOfCertainApisDepends:
-      'Availability of certain APIs depends on the document being `cross-origin` isolated.',
+  availabilityOfCertainApisDepends: 'Availability of certain APIs depends on the document being cross-origin isolated.',
   /**
   *@description Description of the SharedArrayBuffer status
   */
@@ -159,13 +173,17 @@ const UIStrings = {
   sharedarraybufferConstructorIsAvailable:
       '`SharedArrayBuffer` constructor is available but `SABs` cannot be transferred via `postMessage`',
   /**
-  *@description Explanation for the SharedArrayBuffer availability status
+  *@description Explanation why SharedArrayBuffer will not be available in the future
+  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary)
   */
-  willRequireCrossoriginIsolated: '⚠️ will require `cross-origin` isolated context in the future',
+  willRequireCrossoriginIsolated: '⚠️ will require cross-origin isolated context in the future',
   /**
-  *@description Explanation for the SharedArrayBuffer availability status
+  *@description Explanation why SharedArrayBuffer is not available
+  *(https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/)
+  *(for a lot of languages 'cross-origin isolation' does not need to be translated, please translate only where necessary).
   */
-  requiresCrossoriginIsolated: 'requires `cross-origin` isolated context',
+  requiresCrossoriginIsolated: 'requires cross-origin isolated context',
   /**
    *@description Explanation for the SharedArrayBuffer availability status in case the transfer of a SAB requires the
    * permission policy `cross-origin-isolated` to be enabled (e.g. because the message refers to the situation in an iframe).
@@ -218,10 +236,6 @@ const UIStrings = {
   */
   createdByAdScriptExplanation:
       'There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.',
-  /**
-   *@description Label for a list of origin trials that associated with at least one token.
-   */
-  // originTrials: 'Origin Trials',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -343,7 +357,7 @@ export class FrameDetailsReportView extends HTMLElement {
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.document)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
         <div class="inline-items">
@@ -449,7 +463,7 @@ export class FrameDetailsReportView extends HTMLElement {
   private maybeRenderOrigin(): LitHtml.TemplateResult|{} {
     if (this.frame && this.frame.securityOrigin && this.frame.securityOrigin !== '://') {
       return LitHtml.html`
-        <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('Origin')}</${
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
           <div class="text-ellipsis" title=${this.frame.securityOrigin}>${this.frame.securityOrigin}</div>

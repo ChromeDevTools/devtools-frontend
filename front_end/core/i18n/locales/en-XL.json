@@ -2784,7 +2784,7 @@
     "message": "ÂṔÎ áv̂áîĺâb́îĺît́ŷ"
   },
   "panels/application/components/FrameDetailsView.ts | availabilityOfCertainApisDepends": {
-    "message": "Âv́âíl̂áb̂íl̂ít̂ý ôf́ ĉér̂t́âín̂ ÁP̂Íŝ d́êṕêńd̂ś ôń t̂h́ê d́ôćûḿêńt̂ b́êín̂ǵ cross-origin îśôĺât́êd́."
+    "message": "Âv́âíl̂áb̂íl̂ít̂ý ôf́ ĉér̂t́âín̂ ÁP̂Íŝ d́êṕêńd̂ś ôń t̂h́ê d́ôćûḿêńt̂ b́êín̂ǵ ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂."
   },
   "panels/application/components/FrameDetailsView.ts | available": {
     "message": "âv́âíl̂áb̂ĺê"
@@ -2823,7 +2823,7 @@
     "message": "T̂h́îś f̂ŕâḿê ẃâś ĉŕêát̂éd̂ ṕr̂óĝŕâḿm̂át̂íĉál̂ĺŷ. T́ĥé stack trace ŝh́ôẃŝ ẃĥér̂é t̂h́îś ĥáp̂ṕêńêd́."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
-    "message": "Cross-Origin Îśôĺât́êd́"
+    "message": "Ĉŕôśŝ-Ór̂íĝín̂ Íŝól̂át̂éd̂"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "D̂óĉúm̂én̂t́"
@@ -2846,6 +2846,9 @@
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "N̂ó"
   },
+  "panels/application/components/FrameDetailsView.ts | origin": {
+    "message": "Ôŕîǵîń"
+  },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Ôẃn̂ér̂ Él̂ém̂én̂t́"
   },
@@ -2856,7 +2859,7 @@
     "message": "r̂ép̂ór̂t́îńĝ t́ô"
   },
   "panels/application/components/FrameDetailsView.ts | requiresCrossoriginIsolated": {
-    "message": "r̂éq̂úîŕêś cross-origin îśôĺât́êd́ ĉón̂t́êx́t̂"
+    "message": "r̂éq̂úîŕêś ĉŕôśŝ-ór̂íĝín̂ íŝól̂át̂éd̂ ćôńt̂éx̂t́"
   },
   "panels/application/components/FrameDetailsView.ts | root": {
     "message": "r̂óôt́"
@@ -2897,8 +2900,11 @@
   "panels/application/components/FrameDetailsView.ts | unreachableUrl": {
     "message": "Ûńr̂éâćĥáb̂ĺê ÚR̂Ĺ"
   },
+  "panels/application/components/FrameDetailsView.ts | url": {
+    "message": "ÛŔL̂"
+  },
   "panels/application/components/FrameDetailsView.ts | willRequireCrossoriginIsolated": {
-    "message": "⚠️ ŵíl̂ĺ r̂éq̂úîŕê cross-origin íŝól̂át̂éd̂ ćôńt̂éx̂t́ îń t̂h́ê f́ût́ûŕê"
+    "message": "⚠️ ŵíl̂ĺ r̂éq̂úîŕê ćr̂óŝś-ôŕîǵîń îśôĺât́êd́ ĉón̂t́êx́t̂ ín̂ t́ĥé f̂út̂úr̂é"
   },
   "panels/application/components/FrameDetailsView.ts | yes": {
     "message": "Ŷéŝ"

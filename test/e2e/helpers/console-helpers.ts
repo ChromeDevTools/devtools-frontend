@@ -68,6 +68,14 @@ export async function waitForLastConsoleMessageToHaveContent(expectedTextContent
   });
 }
 
+export async function waitForAutocompletionTooltipToHaveContent(expectedAutocompletion: string) {
+  await waitForFunction(async () => {
+    const preview = await waitFor('.console-eager-inner-preview > span');
+    return preview.evaluate(
+        (node, expectedAutocompletion) => node.innerHTML === expectedAutocompletion, expectedAutocompletion);
+  });
+}
+
 export async function getConsoleMessages(testName: string, withAnchor = false, callback?: () => Promise<void>) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
   await getCurrentConsoleMessages();

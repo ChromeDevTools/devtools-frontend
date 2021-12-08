@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
+import {click, getBrowserAndPages, tabForward, timeout, typeText, waitFor, waitForNone} from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt, waitForAutocompletionTooltipToHaveContent, waitForLastConsoleMessageToHaveContent} from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Console Tab', async () => {
@@ -14,12 +14,15 @@ describe('The Console Tab', async () => {
     await click(CONSOLE_TAB_SELECTOR);
     await focusConsolePrompt();
 
-    await typeText('let object = {a:1, b:2};');
+    await typeText(`let object = {a:1, b:2};
+let objectWithSingleQuoteKey = {\'foo"bar\': "with single quotes"};
+let objectWithDoubleQuoteKey = {"foo\'bar": "with double quotes"};
+`);
     await frontend.keyboard.press('Enter');
 
     // Wait for the console to be usable again.
     await frontend.waitForFunction(() => {
-      return document.querySelectorAll('.console-user-command-result').length === 1;
+      return document.querySelectorAll('.console-user-command-result').length === 3;
     });
   });
 
@@ -30,11 +33,12 @@ describe('The Console Tab', async () => {
   });
 
   // See the comments in console-repl-mode_test to see why this is necessary.
-  async function objectAutocompleteTest(textAfterObject: string) {
+  async function objectAutocompleteTest(
+      {textAfterObject, evaluatedString = 'object'}: {textAfterObject: string, evaluatedString?: string}) {
     const {frontend} = getBrowserAndPages();
 
     const appearPromise = waitFor(CONSOLE_TOOLTIP_SELECTOR);
-    await typeText('object');
+    await typeText(evaluatedString);
     await appearPromise;
 
     const disappearPromise = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
@@ -52,14 +56,42 @@ describe('The Console Tab', async () => {
   }
 
   it('triggers autocompletion for `object.`', async () => {
-    await objectAutocompleteTest('.');
+    await objectAutocompleteTest({textAfterObject: '.'});
   });
 
   it('triggers autocompletion for `object?.`', async () => {
-    await objectAutocompleteTest('?.');
+    await objectAutocompleteTest({textAfterObject: '?.'});
   });
 
   it('triggers autocompletion for `object[`', async () => {
-    await objectAutocompleteTest('[');
+    await objectAutocompleteTest({textAfterObject: '['});
+  });
+
+  describe('triggers autocompletion for quoted properties', async () => {
+    async function evaluateQuotedKeyExpression(evaluatedString: string, expectedAutocompletion: string) {
+      await objectAutocompleteTest({evaluatedString, textAfterObject: '['});
+
+      await waitForAutocompletionTooltipToHaveContent(expectedAutocompletion);
+
+      // FIXME(crbug/1112692): Refactor test to remove the timeout.
+      await timeout(100);
+
+      const disappearPromise = waitForNone(CONSOLE_TOOLTIP_SELECTOR);
+      await tabForward();
+      await disappearPromise;
+
+      const {frontend} = getBrowserAndPages();
+      await frontend.keyboard.press('Enter');
+
+      await waitForLastConsoleMessageToHaveContent(expectedAutocompletion);
+    }
+
+    it('handles single quotes', async () => {
+      await evaluateQuotedKeyExpression('objectWithSingleQuoteKey', '\'with single quotes\'');
+    });
+
+    it('handles double quotes', async () => {
+      await evaluateQuotedKeyExpression('objectWithDoubleQuoteKey', '\'with double quotes\'');
+    });
   });
 });

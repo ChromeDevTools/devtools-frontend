@@ -842,7 +842,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private recordingFailed(error: string): void {
     if (this.statusPane) {
-      this.statusPane.hide();
+      this.statusPane.remove();
     }
     this.statusPane = new StatusPane(
         {
@@ -1036,7 +1036,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.hideLandingPage();
 
     if (this.statusPane) {
-      this.statusPane.hide();
+      this.statusPane.remove();
     }
     this.statusPane = new StatusPane(
         {
@@ -1073,7 +1073,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.setState(State.Idle);
 
     if (this.statusPane) {
-      this.statusPane.hide();
+      this.statusPane.remove();
     }
     this.statusPane = null;
 
@@ -1405,9 +1405,10 @@ export class StatusPane extends UI.Widget.VBox {
     this.button.disabled = true;
   }
 
-  hide(): void {
+  remove(): void {
     (this.element.parentNode as HTMLElement).classList.remove('tinted');
     this.arrangeDialog((this.element.parentNode as HTMLElement));
+    this.stopTimer();
     this.element.remove();
   }
 

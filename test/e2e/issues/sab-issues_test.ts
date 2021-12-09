@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {ensureResourceSectionIsExpanded, expandIssue, getIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
+import {ensureResourceSectionIsExpanded, getAndExpandSpecificIssueByTitle, getResourcesElement, navigateToIssuesTab, waitForTableFromResourceSectionContents} from '../helpers/issues-helpers.js';
 
 describe('SAB issues test', async () => {
   beforeEach(async () => {
@@ -15,8 +15,8 @@ describe('SAB issues test', async () => {
 
   it('should display SharedArrayBuffer violations with the correct affected resources', async () => {
     await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('SharedArrayBuffer usage is restricted to cross-origin isolated sites');
+    const issueElement =
+        await getAndExpandSpecificIssueByTitle('SharedArrayBuffer usage is restricted to cross-origin isolated sites');
     assert.isNotNull(issueElement);
     if (issueElement) {
       const section = await getResourcesElement('violation', issueElement);

@@ -73,10 +73,8 @@ export async function assertIssueTitle(issueMessage: string) {
   assert.strictEqual(selectedIssueMessage, issueMessage);
 }
 
-export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
-  const issueMessageElement = await waitFor(ISSUE_TITLE);
-  const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
-  assert.strictEqual(selectedIssueMessage, issueMessage);
+async function getIssueByTitleElement(issueMessageElement: puppeteer.ElementHandle<Element>):
+    Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
   const header =
       await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
   if (header) {
@@ -88,6 +86,32 @@ export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.E
     }
   }
   return undefined;
+}
+
+// Only works if there is just a single issue.
+export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
+  const issueMessageElement = await waitFor(ISSUE_TITLE);
+  const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
+  assert.strictEqual(selectedIssueMessage, issueMessage);
+  return getIssueByTitleElement(issueMessageElement);
+}
+
+// Works also if there are multiple issues.
+export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
+    Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
+  const issueMessageElement = await waitForFunction(async () => {
+    const issueElements = await $$(ISSUE_TITLE);
+    for (const issueElement of issueElements) {
+      const message = await issueElement.evaluate(issueElement => issueElement.textContent);
+      if (message === issueMessage) {
+        return issueElement;
+      }
+    }
+    return undefined;
+  });
+  await click(issueMessageElement);
+  await waitFor('.message');
+  return getIssueByTitleElement(issueMessageElement);
 }
 
 export async function getIssueHeaderByTitle(issueMessage: string):

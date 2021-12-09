@@ -10,9 +10,9 @@ import {getGroupByKindChecked, getHiddenIssuesRow, getHiddenIssuesRowBody, getHi
 
 describe('Hide issues menu', async () => {
   it('should be appended to the issue header', async () => {
-    await goToResource('issues/sab-issue.rawresponse');
+    await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();
-    const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
+    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     const hideIssuesMenu = await getHideIssuesMenu();

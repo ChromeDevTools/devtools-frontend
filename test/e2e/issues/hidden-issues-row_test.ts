@@ -28,10 +28,10 @@ describe('Hide issues row', async () => {
     assert.isFalse(isHidden);
   });
   it('should expand after clicking', async () => {
-    await goToResource('issues/sab-issue.rawresponse');
+    await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
+    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     await issueHeader.hover();
@@ -78,10 +78,10 @@ describe('Hide issues row', async () => {
   });
 
   it('should contain Unhide all issues button', async () => {
-    await goToResource('issues/sab-issue.rawresponse');
+    await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
+    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     await issueHeader.hover();
@@ -99,10 +99,10 @@ describe('Hide issues row', async () => {
   });
 
   it('should get hidden and unhide all issues upon clicking unhide all issues button', async () => {
-    await goToResource('issues/sab-issue.rawresponse');
+    await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();
 
-    const issueTitle = 'SharedArrayBuffer usage is restricted to cross-origin isolated sites';
+    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     await issueHeader.hover();

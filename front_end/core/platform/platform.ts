@@ -45,8 +45,7 @@ export {DCHECK} from './dcheck.js';
  * (e.g. `Platform.TypeScriptUtilities.assertNotNull` causes a
  * compiler error)
  */
-export {assertNotNullOrUndefined, assertUnhandled} from './typescript-utilities.js';
-export {assertNever, runOnWindowLoad} from './utilities.js';
+export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './typescript-utilities.js';
 export {
   ArrayUtilities,
   DateUtilities,

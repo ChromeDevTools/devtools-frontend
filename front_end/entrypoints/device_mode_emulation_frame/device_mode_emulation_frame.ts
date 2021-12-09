@@ -5,13 +5,8 @@
 import '../../core/dom_extension/dom_extension.js';
 import '../../Images/Images.js';
 
-import * as Platform from '../../core/platform/platform.js';
-
-Platform.runOnWindowLoad(() => {
-  if (!window.opener) {
-    return;
-  }
+if (window.opener) {
   // @ts-ignore TypeScript doesn't know about `Emulation` on `Window`.
   const app = window.opener.Emulation.AdvancedApp.instance();
   app.deviceModeEmulationFrameLoaded(document);
-});
+}

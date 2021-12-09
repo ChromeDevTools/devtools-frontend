@@ -554,7 +554,6 @@ grd_files_debug_sources = [
   "front_end/core/platform/set-utilities.js",
   "front_end/core/platform/string-utilities.js",
   "front_end/core/platform/typescript-utilities.js",
-  "front_end/core/platform/utilities.js",
   "front_end/core/protocol_client/InspectorBackend.js",
   "front_end/core/protocol_client/NodeURL.js",
   "front_end/core/root/Runtime.js",

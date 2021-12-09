@@ -48,7 +48,6 @@ devtools_module("platform") {
     "set-utilities.ts",
     "string-utilities.ts",
     "typescript-utilities.ts",
-    "utilities.ts",
   ]
 
   deps = [ ":dcheck" ]

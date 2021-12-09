@@ -13,6 +13,10 @@ export function assertNotNullOrUndefined<T>(val: T): asserts val is NonNullable<
   }
 }
 
+export function assertNever(type: never, message: string): never {
+  throw new Error(message);
+}
+
 /**
  * This is useful to check on the type-level that the unhandled cases of
  * a switch are exactly `T` (where T is usually a union type of enum values).

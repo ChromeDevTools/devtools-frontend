@@ -118,9 +118,7 @@ export class MainImpl {
 
   constructor() {
     MainImpl.instanceForTest = this;
-    Platform.runOnWindowLoad(() => {
-      this.loaded();
-    });
+    this.loaded();
   }
 
   static time(label: string): void {

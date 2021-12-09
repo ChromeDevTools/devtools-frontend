@@ -70,6 +70,22 @@ const UIStrings = {
   */
   hideNavigator: 'Hide navigator',
   /**
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   */
+  navigatorShown: 'Navigator sidebar shown',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   */
+  navigatorHidden: 'Navigator sidebar hidden',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is shown in the Sources panel.
+   */
+  debuggerShown: 'Debugger sidebar shown',
+  /**
+   * @description Screen reader announcement when the navigator sidebar is hidden in the Sources panel.
+   */
+  debuggerHidden: 'Debugger sidebar hidden',
+  /**
   * @description Tooltip for the the debugger toggle in the Sources panel. Command to open/show the
   * sidebar containing the debugger tool.
   */
@@ -252,9 +268,11 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.sourcesViewInternal.addEventListener(Events.EditorSelected, this.editorSelected.bind(this));
 
     this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(
-        i18nString(UIStrings.showNavigator), i18nString(UIStrings.hideNavigator));
+        i18nString(UIStrings.showNavigator), i18nString(UIStrings.hideNavigator), i18nString(UIStrings.navigatorShown),
+        i18nString(UIStrings.navigatorHidden));
     this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(
-        i18nString(UIStrings.showDebugger), i18nString(UIStrings.hideDebugger));
+        i18nString(UIStrings.showDebugger), i18nString(UIStrings.hideDebugger), i18nString(UIStrings.debuggerShown),
+        i18nString(UIStrings.debuggerHidden));
     this.editorView.setMainWidget(this.sourcesViewInternal);
 
     this.threadsSidebarPane = null;

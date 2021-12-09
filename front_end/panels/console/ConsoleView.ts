@@ -108,6 +108,14 @@ const UIStrings = {
   */
   hideConsoleSidebar: 'Hide console sidebar',
   /**
+   * @description Screen reader announcement when the sidebar is shown in the Console panel.
+   */
+  consoleSidebarShown: 'Console sidebar shown',
+  /**
+   * @description Screen reader announcement when the sidebar is hidden in the Console panel.
+   */
+  consoleSidebarHidden: 'Console sidebar hidden',
+  /**
   *@description Tooltip text that appears on the setting to preserve log when hovering over the item
   */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
@@ -382,7 +390,8 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     toolbar.makeWrappable(true);
     const rightToolbar = new UI.Toolbar.Toolbar('', this.consoleToolbarContainer);
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
-        i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar)));
+        i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar),
+        i18nString(UIStrings.consoleSidebarShown), i18nString(UIStrings.consoleSidebarHidden)));
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(
         (UI.ActionRegistry.ActionRegistry.instance().action('console.clear') as UI.ActionRegistration.Action)));
     toolbar.appendSeparator();

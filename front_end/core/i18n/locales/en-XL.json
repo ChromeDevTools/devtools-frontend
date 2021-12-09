@@ -3806,6 +3806,12 @@
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Ĉón̂śôĺê śêt́t̂ín̂ǵŝ"
   },
+  "panels/console/ConsoleView.ts | consoleSidebarHidden": {
+    "message": "Ĉón̂śôĺê śîd́êb́âŕ ĥíd̂d́êń"
+  },
+  "panels/console/ConsoleView.ts | consoleSidebarShown": {
+    "message": "Ĉón̂śôĺê śîd́êb́âŕ ŝh́ôẃn̂"
+  },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "Ĉóp̂ý v̂íŝíb̂ĺê śt̂ýl̂éd̂ śêĺêćt̂íôń"
   },
@@ -4498,6 +4504,12 @@
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Ĉóm̂ṕût́êd́"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesHidden": {
+    "message": "Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂ h́îd́d̂én̂"
+  },
+  "panels/elements/ElementsPanel.ts | computedStylesShown": {
+    "message": "Ĉóm̂ṕût́êd́ Ŝt́ŷĺêś ŝíd̂éb̂ár̂ śĥóŵń"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "D̂ÓM̂ t́r̂éê éx̂ṕl̂ór̂ér̂"
@@ -9794,6 +9806,12 @@
   "panels/sources/SourcesPanel.ts | copyStringContents": {
     "message": "Ĉóp̂ý ŝt́r̂ín̂ǵ ĉón̂t́êńt̂ś"
   },
+  "panels/sources/SourcesPanel.ts | debuggerHidden": {
+    "message": "D̂éb̂úĝǵêŕ ŝíd̂éb̂ár̂ h́îd́d̂én̂"
+  },
+  "panels/sources/SourcesPanel.ts | debuggerShown": {
+    "message": "D̂éb̂úĝǵêŕ ŝíd̂éb̂ár̂ śĥóŵń"
+  },
   "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
     "message": "D̂ón̂'t́ p̂áûśê ón̂ éx̂ćêṕt̂íôńŝ"
   },
@@ -9811,6 +9829,12 @@
   },
   "panels/sources/SourcesPanel.ts | moreOptions": {
     "message": "M̂ór̂é ôṕt̂íôńŝ"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorHidden": {
+    "message": "N̂áv̂íĝát̂ór̂ śîd́êb́âŕ ĥíd̂d́êń"
+  },
+  "panels/sources/SourcesPanel.ts | navigatorShown": {
+    "message": "N̂áv̂íĝát̂ór̂ śîd́êb́âŕ ŝh́ôẃn̂"
   },
   "panels/sources/SourcesPanel.ts | openInSourcesPanel": {
     "message": "Ôṕêń îń Ŝóûŕĉéŝ ṕâńêĺ"
@@ -10345,6 +10369,12 @@
   },
   "panels/timeline/TimelineTreeView.ts | heaviestStack": {
     "message": "Ĥéâv́îéŝt́ ŝt́âćk̂"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackHidden": {
+    "message": "Ĥéâv́îéŝt́ ŝt́âćk̂ śîd́êb́âŕ ĥíd̂d́êń"
+  },
+  "panels/timeline/TimelineTreeView.ts | heaviestStackShown": {
+    "message": "Ĥéâv́îéŝt́ ŝt́âćk̂ śîd́êb́âŕ ŝh́ôẃn̂"
   },
   "panels/timeline/TimelineTreeView.ts | hideHeaviestStack": {
     "message": "Ĥíd̂é Ĥéâv́îéŝt́ ŝt́âćk̂"

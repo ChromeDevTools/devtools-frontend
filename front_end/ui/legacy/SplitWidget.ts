@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
+import * as ARIAUtils from './ARIAUtils.js';
 import {Constraints} from './Geometry.js';
 import type {ResizeUpdatePositionEvent} from './ResizerWidget.js';
 import {Events as ResizerWidgetEvents, SimpleResizerWidget} from './ResizerWidget.js';
@@ -815,8 +816,9 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.forceUpdateLayout();
   }
 
-  createShowHideSidebarButton(showTitle: Common.UIString.LocalizedString, hideTitle: Common.UIString.LocalizedString):
-      ToolbarButton {
+  createShowHideSidebarButton(
+      showTitle: Common.UIString.LocalizedString, hideTitle: Common.UIString.LocalizedString,
+      shownString: Common.UIString.LocalizedString, hiddenString: Common.UIString.LocalizedString): ToolbarButton {
     this.showSidebarButtonTitle = showTitle;
     this.hideSidebarButtonTitle = hideTitle;
     this.showHideSidebarButton = new ToolbarButton('', '');
@@ -826,8 +828,10 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     function buttonClicked(this: SplitWidget): void {
       if (this.showModeInternal !== ShowMode.Both) {
         this.showBoth(true);
+        ARIAUtils.alert(shownString);
       } else {
         this.hideSidebar(true);
+        ARIAUtils.alert(hiddenString);
       }
     }
 

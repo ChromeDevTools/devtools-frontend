@@ -89,6 +89,14 @@ const UIStrings = {
   */
   hideComputedStylesSidebar: 'Hide Computed Styles sidebar',
   /**
+   * @description Screen reader announcement when the computed styles sidebar is shown in the Elements panel.
+   */
+  computedStylesShown: 'Computed Styles sidebar shown',
+  /**
+   * @description Screen reader announcement when the computed styles sidebar is hidden in the Elements panel.
+   */
+  computedStylesHidden: 'Computed Styles sidebar hidden',
+  /**
   * @description Title of a pane in the Elements panel that shows computed styles for the selected
   * HTML element. Computed styles are the final, actual styles of the element, including all
   * implicit and specified styles.
@@ -962,7 +970,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     });
     this.stylesWidget.addEventListener(StylesSidebarPaneEvents.InitialUpdateCompleted, () => {
       this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(
-          i18nString(UIStrings.showComputedStylesSidebar), i18nString(UIStrings.hideComputedStylesSidebar)));
+          i18nString(UIStrings.showComputedStylesSidebar), i18nString(UIStrings.hideComputedStylesSidebar),
+          i18nString(UIStrings.computedStylesShown), i18nString(UIStrings.computedStylesHidden)));
     });
 
     const showMetricsWidgetInComputedPane = (): void => {

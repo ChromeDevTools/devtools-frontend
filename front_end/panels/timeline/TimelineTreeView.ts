@@ -138,6 +138,14 @@ const UIStrings = {
   */
   hideHeaviestStack: 'Hide Heaviest stack',
   /**
+   * @description Screen reader announcement when the heaviest stack sidebar is shown in the Performance panel.
+   */
+  heaviestStackShown: 'Heaviest stack sidebar shown',
+  /**
+   * @description Screen reader announcement when the heaviest stack sidebar is hidden in the Performance panel.
+   */
+  heaviestStackHidden: 'Heaviest stack sidebar hidden',
+  /**
   *@description Data grid name for Timeline Stack data grids
   */
   timelineStack: 'Timeline Stack',
@@ -832,7 +840,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         new UI.Toolbar.ToolbarSettingComboBox(options, this.groupBySetting, i18nString(UIStrings.groupBy)));
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
-        i18nString(UIStrings.showHeaviestStack), i18nString(UIStrings.hideHeaviestStack)));
+        i18nString(UIStrings.showHeaviestStack), i18nString(UIStrings.hideHeaviestStack),
+        i18nString(UIStrings.heaviestStackShown), i18nString(UIStrings.heaviestStackHidden)));
   }
 
   private buildHeaviestStack(treeNode: TimelineModel.TimelineProfileTree.Node):

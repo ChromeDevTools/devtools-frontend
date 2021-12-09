@@ -52,6 +52,10 @@ const yargsObject =
           desc:
               'Mocha\'s fgrep option [https://mochajs.org/#-fgrep-string-f-string] which only runs teses whose titles contain the provided string',
         })
+        .option('mocha-reporter', {
+          type: 'string',
+          desc: 'Mocha\'s reporter option',
+        })
         // test-file-pattern can be provided as a flag or as a positional
         // argument. $0 here is Yarg's syntax for the default command:
         // https://github.com/yargs/yargs/blob/master/docs/advanced.md#default-commands
@@ -286,6 +290,7 @@ function main() {
       cwd: configurationFlags['cwd'],
       mochaOptions: {
         fgrep: configurationFlags['mocha-fgrep'],
+        reporter: configurationFlags['mocha-reporter'],
       }
     });
   } catch (error) {

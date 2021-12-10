@@ -16,8 +16,8 @@ template("copy_to_gen") {
 
     script = "scripts/build/ninja/copy-files.js"
 
-    _copy_src = rebase_path(get_path_info(target_name, "dir"))
-    _copy_dest = rebase_path(target_gen_dir)
+    _copy_src = rebase_path(get_path_info(target_name, "dir"), root_build_dir)
+    _copy_dest = rebase_path(target_gen_dir, root_build_dir)
 
     args = [
       _copy_src,

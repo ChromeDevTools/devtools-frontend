@@ -2,13 +2,14 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 import argparse
+import collections
 import errno
-import sys
-import subprocess
 import json
+import logging
 import os
 import shutil
-import collections
+import subprocess
+import sys
 
 from os import path
 _CURRENT_DIR = path.join(path.dirname(__file__))
@@ -47,12 +48,17 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
 ]
 
 
+logging.basicConfig(
+    level=logging.DEBUG if os.environ.get('TSC_DEBUG') else logging.WARNING)
+
+
 def runTsc(tsconfig_location):
-    process = subprocess.Popen(
-        [NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        universal_newlines=True)
+    cmd = [NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location]
+    logging.info("runTsc: %s", ' '.join(cmd))
+    process = subprocess.Popen(cmd,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               universal_newlines=True)
     stdout, stderr = process.communicate()
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
     return process.returncode, stdout + stderr
@@ -118,7 +124,7 @@ def maybe_update_tsconfig_file(tsconfig_output_location, tsconfig):
         with open(tsconfig_output_location, encoding="utf8") as fp:
             old_contents = fp.read()
 
-    new_contents = json.dumps(tsconfig)
+    new_contents = json.dumps(tsconfig, sort_keys=True, indent=2)
     if old_contents is None or new_contents != old_contents:
         try:
             with open(tsconfig_output_location, 'w', encoding="utf8") as fp:

@@ -6,7 +6,6 @@
 
 :host {
   display: block;
-  overflow: auto;
 }
 
 .content {

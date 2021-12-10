@@ -137,7 +137,7 @@
   color: var(--color-text-secondary);
 }
 
-.cycled-ancessor-node {
+.heap-snapshot-view tr:not(.selected) .cycled-ancessor-node {
   opacity: 60%;
 }
 

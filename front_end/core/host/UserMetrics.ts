@@ -686,6 +686,7 @@ export const IssueCreated: {
   'CorsIssue::CorsDisabledScheme': 53,
   'CorsIssue::PreflightMissingAllowExternal': 54,
   'CorsIssue::PreflightInvalidAllowExternal': 55,
+  'CorsIssue::InvalidResponse': 56,
   'CorsIssue::NoCorsRedirectModeNotFollow': 57,
   'QuirksModeIssue::QuirksMode': 58,
   'QuirksModeIssue::LimitedQuirksMode': 59,

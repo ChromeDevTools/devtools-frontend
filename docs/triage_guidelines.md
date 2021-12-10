@@ -45,8 +45,8 @@ Issues in the untriaged queue should receive a meaningful response within a busi
 
 - Close issues as `WontFix` if they don't reproduce (in simple cases) or are requests for features we've already concluded not to pursue.
 - Close issues as `Archived` that are valid, but it seems unlikely that we will get there anytime soon.
-- Move issues out of `Platform>DevTools` if they are not DevTools issues (but just reported via the menu item in DevTools), put on the `Hotlist-DevTools-Triaged` and leave the `Untriaged` status as is.
-- Assign regression bugs with bisects to individuals directly and set the status to `Assigned`.  
+- Move issues out of `Platform>DevTools` if they are not DevTools issues (but just reported via the menu item in DevTools), put on the `DevTools-Triaged` label and leave the `Untriaged` status as is.
+- Assign regression bugs with bisects to individuals directly and set the status to `Assigned`.
 - Put proper `Platform>DevTools>XXX` component(s) on the issue and do an initial check-in regarding the priority.
 - Put one of the following labels on it and set the status to `Available`:
   - `Hotlist-DevTools-ProductReview` if it's controversial or clear that consensus needs to be built first.

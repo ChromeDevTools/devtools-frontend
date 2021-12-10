@@ -2029,6 +2029,11 @@ declare abstract class WidgetType {
     events.
     */
     ignoreEvent(_event: Event): boolean;
+    /**
+    This is called when the an instance of the widget is removed
+    from the editor view.
+    */
+    destroy(_dom: HTMLElement): void;
 }
 /**
 A decoration set represents a collection of decorated ranges,
@@ -2759,6 +2764,11 @@ declare class EditorView {
     Find the DOM parent node and offset (child offset if `node` is
     an element, character offset when it is a text node) at the
     given document position.
+
+    Note that for positions that aren't currently in
+    `visibleRanges`, the resulting DOM position isn't necessarily
+    meaningful (it may just point before or after a placeholder
+    element).
     */
     domAtPos(pos: number): {
         node: Node;
@@ -4639,6 +4649,11 @@ declare abstract class GutterMarker extends RangeValue {
     element that contains this marker.
     */
     elementClass: string;
+    /**
+    Called if the marker has a `toDOM` method and its representation
+    was removed from a gutter.
+    */
+    destroy(dom: Node): void;
 }
 declare type Handlers = {
     [event: string]: (view: EditorView, line: BlockInfo, event: Event) => boolean;

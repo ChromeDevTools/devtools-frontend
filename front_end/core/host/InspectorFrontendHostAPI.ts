@@ -357,7 +357,6 @@ export enum EnumeratedHistogram {
   IssuesPanelOpenedFrom = 'DevTools.IssuesPanelOpenedFrom',
   IssuesPanelResourceOpened = 'DevTools.IssuesPanelResourceOpened',
   KeybindSetSettingChanged = 'DevTools.KeybindSetSettingChanged',
-  DualScreenDeviceEmulated = 'DevTools.DualScreenDeviceEmulated',
   ExperimentEnabledAtLaunch = 'DevTools.ExperimentEnabledAtLaunch',
   ExperimentEnabled = 'DevTools.ExperimentEnabled',
   ExperimentDisabled = 'DevTools.ExperimentDisabled',

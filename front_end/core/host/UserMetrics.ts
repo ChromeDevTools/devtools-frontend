@@ -158,12 +158,6 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.IssueCreated, issueCreated, size);
   }
 
-  dualScreenDeviceEmulated(emulationAction: DualScreenDeviceEmulated): void {
-    const size = Object.keys(DualScreenDeviceEmulated).length + 1;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.DualScreenDeviceEmulated, emulationAction, size);
-  }
-
   experimentEnabledAtLaunch(experimentId: string): void {
     const size = DevtoolsExperiments['__lastValidEnumPosition'] + 1;
     const experiment = DevtoolsExperiments[experimentId];
@@ -535,14 +529,6 @@ export enum IssueOpener {
   HamburgerMenu = 3,
   Adorner = 4,
   CommandMenu = 5,
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum DualScreenDeviceEmulated {
-  DualScreenDeviceSelected = 0,
-  SpanButtonClicked = 1,
-  PlatformSupportUsed = 2,  // user starts to use platform dual screen support feature.
 }
 
 /**

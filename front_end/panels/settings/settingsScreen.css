@@ -137,12 +137,13 @@ fieldset {
 }
 
 #experiments-tab-content .settings-container {
-  column-width: 470px;
+  column-width: auto;
 }
 
 #experiments-tab-content .settings-block {
-  width: 470px;
+  width: auto;
   margin-left: 0;
+  margin-right: 10px;
 }
 
 .settings-tab-container header > h1 {
@@ -172,7 +173,11 @@ fieldset {
 
 .settings-experiment {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto min-content 1fr;
+}
+
+.settings-experiment [is="dt-checkbox"] {
+  padding-right: 10px;
 }
 
 .settings-experiment .devtools-link {

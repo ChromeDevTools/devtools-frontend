@@ -54,7 +54,11 @@ const yargsObject =
         })
         .option('mocha-reporter', {
           type: 'string',
-          desc: 'Mocha\'s reporter option',
+          desc: 'Mocha\'s --reporter option',
+        })
+        .option('mocha-reporter-option', {
+          type: 'string',
+          desc: 'Mocha\'s --reporter-option flag to pass options through to the Mocha reporter',
         })
         // test-file-pattern can be provided as a flag or as a positional
         // argument. $0 here is Yarg's syntax for the default command:
@@ -291,6 +295,7 @@ function main() {
       mochaOptions: {
         fgrep: configurationFlags['mocha-fgrep'],
         reporter: configurationFlags['mocha-reporter'],
+        'reporter-option': configurationFlags['mocha-reporter-option'],
       }
     });
   } catch (error) {

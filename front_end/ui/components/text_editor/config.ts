@@ -70,10 +70,13 @@ export const tabMovesFocus = DynamicSetting.bool('textEditorTabMovesFocus', [], 
   shift: (view: CM.EditorView): boolean => view.state.doc.length ? CM.indentLess(view) : false,
 }]));
 
-export const autocompletion = CM.autocompletion({
-  icons: false,
-  optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
-});
+export const autocompletion: CM.Extension = [
+  CM.autocompletion({
+    icons: false,
+    optionClass: (option: CM.Completion): string => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+  }),
+  CM.Prec.highest(CM.keymap.of([{key: 'ArrowRight', run: CM.acceptCompletion}])),
+];
 
 export const sourcesAutocompletion = DynamicSetting.bool('textEditorAutocompletion', autocompletion);
 

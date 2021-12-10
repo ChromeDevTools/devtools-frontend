@@ -59,7 +59,7 @@ describe('The Sources Tab', async function() {
       '    }',
       '}',
       ';notFormattedFunction();',
-      ​ '',
+      '',
     ];
 
     const updatedTextContent = await retrieveCodeMirrorEditorContent();

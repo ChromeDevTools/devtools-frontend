@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as childProcess from 'child_process';
-import extractZip from 'extract-zip';
-import * as fs from 'fs';
-import * as http from 'http';
-import * as https from 'https';
-import createHttpsProxyAgent from 'https-proxy-agent';
 import * as os from 'os';
+import * as fs from 'fs';
 import * as path from 'path';
-import { getProxyForUrl } from 'proxy-from-env';
+import * as util from 'util';
+import * as childProcess from 'child_process';
+import * as https from 'https';
+import * as http from 'http';
+import extractZip from 'extract-zip';
+import { debug } from '../common/Debug.js';
+import { promisify } from 'util';
 import removeRecursive from 'rimraf';
 import * as URL from 'url';
-import * as util from 'util';
-import { promisify } from 'util';
-
+import createHttpsProxyAgent from 'https-proxy-agent';
+import { getProxyForUrl } from 'proxy-from-env';
 import { assert } from '../common/assert.js';
-import { debug } from '../common/Debug.js';
-
 const debugFetcher = debug('puppeteer:fetcher');
 const downloadURLs = {
     chrome: {

@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { ChildProcess } from 'child_process';
-import { Protocol } from 'devtools-protocol';
-
-import { Connection } from './Connection.js';
-import { EventEmitter } from './EventEmitter.js';
-import { Page } from './Page.js';
-import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
-
+import { EventEmitter } from './EventEmitter.js';
+import { Connection } from './Connection.js';
+import { Protocol } from 'devtools-protocol';
+import { Page } from './Page.js';
+import { ChildProcess } from 'child_process';
+import { Viewport } from './PuppeteerViewport.js';
 /**
  * BrowserContext options.
  *

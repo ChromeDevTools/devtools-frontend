@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { debug } from '../common/Debug.js';
 import * as childProcess from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 import * as readline from 'readline';
 import removeFolder from 'rimraf';
 import { promisify } from 'util';
-
 import { assert } from '../common/assert.js';
+import { helper, debugError } from '../common/helper.js';
 import { Connection } from '../common/Connection.js';
-import { debug } from '../common/Debug.js';
-import { TimeoutError } from '../common/Errors.js';
-import { debugError , helper} from '../common/helper.js';
 import { NodeWebSocketTransport as WebSocketTransport } from '../node/NodeWebSocketTransport.js';
-
 import { PipeTransport } from './PipeTransport.js';
-
+import { TimeoutError } from '../common/Errors.js';
 const removeFolderAsync = promisify(removeFolder);
+const renameAsync = promisify(fs.rename);
+const unlinkAsync = promisify(fs.unlink);
 const debugLauncher = debug('puppeteer:launcher');
 const PROCESS_ERROR_EXPLANATION = `Puppeteer was unable to kill the process which ran the browser binary.
 This means that, on future Puppeteer launches, Puppeteer might not be able to launch the browser.
 Please check your open processes and ensure that the browser processes that Puppeteer launched have been killed.
 If you think this is a bug, please report it on the Puppeteer issue tracker.`;
 export class BrowserRunner {
-    constructor(product, executablePath, processArguments, tempDirectory) {
+    constructor(product, executablePath, processArguments, userDataDir, isTempUserDataDir) {
         this.proc = null;
         this.connection = null;
         this._closed = true;
@@ -42,7 +43,8 @@ export class BrowserRunner {
         this._product = product;
         this._executablePath = executablePath;
         this._processArguments = processArguments;
-        this._tempDirectory = tempDirectory;
+        this._userDataDir = userDataDir;
+        this._isTempUserDataDir = isTempUserDataDir;
     }
     start(options) {
         const { handleSIGINT, handleSIGTERM, handleSIGHUP, dumpio, env, pipe } = options;
@@ -76,18 +78,37 @@ export class BrowserRunner {
         }
         this._closed = false;
         this._processClosing = new Promise((fulfill, reject) => {
-            this.proc.once('exit', () => {
+            this.proc.once('exit', async () => {
                 this._closed = true;
                 // Cleanup as processes exit.
-                if (this._tempDirectory) {
-                    removeFolderAsync(this._tempDirectory)
-                        .then(() => fulfill())
-                        .catch((error) => {
+                if (this._isTempUserDataDir) {
+                    try {
+                        await removeFolderAsync(this._userDataDir);
+                        fulfill();
+                    }
+                    catch (error) {
                         console.error(error);
                         reject(error);
-                    });
+                    }
                 }
                 else {
+                    if (this._product === 'firefox') {
+                        try {
+                            // When an existing user profile has been used remove the user
+                            // preferences file and restore possibly backuped preferences.
+                            await unlinkAsync(path.join(this._userDataDir, 'user.js'));
+                            const prefsBackupPath = path.join(this._userDataDir, 'prefs.js.puppeteer');
+                            if (fs.existsSync(prefsBackupPath)) {
+                                const prefsPath = path.join(this._userDataDir, 'prefs.js');
+                                await unlinkAsync(prefsPath);
+                                await renameAsync(prefsBackupPath, prefsPath);
+                            }
+                        }
+                        catch (error) {
+                            console.error(error);
+                            reject(error);
+                        }
+                    }
                     fulfill();
                 }
             });
@@ -108,7 +129,7 @@ export class BrowserRunner {
     close() {
         if (this._closed)
             return Promise.resolve();
-        if (this._tempDirectory && this._product !== 'firefox') {
+        if (this._isTempUserDataDir && this._product !== 'firefox') {
             this.kill();
         }
         else if (this.connection) {
@@ -124,11 +145,6 @@ export class BrowserRunner {
         return this._processClosing;
     }
     kill() {
-        // Attempt to remove temporary profile directory to avoid littering.
-        try {
-            removeFolder.sync(this._tempDirectory);
-        }
-        catch (error) { }
         // If the process failed to launch (for example if the browser executable path
         // is invalid), then the process does not get a pid assigned. A call to
         // `proc.kill` would error, as the `pid` to-be-killed can not be found.
@@ -140,6 +156,13 @@ export class BrowserRunner {
                 throw new Error(`${PROCESS_ERROR_EXPLANATION}\nError cause: ${error.stack}`);
             }
         }
+        // Attempt to remove temporary profile directory to avoid littering.
+        try {
+            if (this._isTempUserDataDir) {
+                removeFolder.sync(this._userDataDir);
+            }
+        }
+        catch (error) { }
         // Cleanup this listener last, as that makes sure the full callback runs. If we
         // perform this earlier, then the previous function calls would not happen.
         helper.removeEventListeners(this._listeners);

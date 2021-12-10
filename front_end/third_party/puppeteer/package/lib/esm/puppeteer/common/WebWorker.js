@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { EventEmitter } from './EventEmitter.js';
-import { ExecutionContext } from './ExecutionContext.js';
 import { debugError } from './helper.js';
+import { ExecutionContext } from './ExecutionContext.js';
 import { JSHandle } from './JSHandle.js';
-
 /**
  * The WebWorker class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.

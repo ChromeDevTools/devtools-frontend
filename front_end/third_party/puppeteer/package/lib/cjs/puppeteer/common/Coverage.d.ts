@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-
-import { CDPSession } from './Connection.js';
 import { PuppeteerEventListener } from './helper.js';
-
+import { Protocol } from 'devtools-protocol';
+import { CDPSession } from './Connection.js';
 /**
  * @internal
  */
 export { PuppeteerEventListener };
-
 /**
  * The CoverageEntry class represents one entry of the coverage report.
  * @public

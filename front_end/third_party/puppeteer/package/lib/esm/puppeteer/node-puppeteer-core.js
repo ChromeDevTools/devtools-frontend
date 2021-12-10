@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isNode } from './environment.js';
 import { initializePuppeteerNode } from './initialize-node.js';
-
+import { isNode } from './environment.js';
 if (!isNode) {
     throw new Error('Cannot run puppeteer-core outside of Node.js');
 }

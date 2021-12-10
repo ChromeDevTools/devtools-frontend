@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { connectToBrowser } from './BrowserConnector.js';
-import { devicesMap } from './DeviceDescriptors.js';
 import { puppeteerErrors } from './Errors.js';
+import { devicesMap } from './DeviceDescriptors.js';
+import { registerCustomQueryHandler, unregisterCustomQueryHandler, customQueryHandlerNames, clearCustomQueryHandlers, } from './QueryHandler.js';
+import { connectToBrowser } from './BrowserConnector.js';
 import { networkConditions, } from './NetworkConditions.js';
-import { clearCustomQueryHandlers, customQueryHandlerNames, registerCustomQueryHandler, unregisterCustomQueryHandler, } from './QueryHandler.js';
-
 /**
  * The main Puppeteer class.
  *

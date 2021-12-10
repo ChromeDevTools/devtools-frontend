@@ -142,7 +142,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         watcher.dispose();
         if (error)
             throw error;
-        return watcher.navigationResponse();
+        return await watcher.navigationResponse();
         async function navigate(client, url, referrer, frameId) {
             try {
                 const response = await client.send('Page.navigate', {
@@ -172,7 +172,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         watcher.dispose();
         if (error)
             throw error;
-        return watcher.navigationResponse();
+        return await watcher.navigationResponse();
     }
     async _onAttachedToTarget(event) {
         if (event.targetInfo.type !== 'iframe') {
@@ -331,7 +331,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 world = frame._secondaryWorld;
             }
         }
-        const context = new ExecutionContext_js_1.ExecutionContext(frame._client || this._client, contextPayload, world);
+        const context = new ExecutionContext_js_1.ExecutionContext((frame === null || frame === void 0 ? void 0 : frame._client) || this._client, contextPayload, world);
         if (world)
             world._setContext(context);
         const key = `${session.id()}:${contextPayload.id}`;

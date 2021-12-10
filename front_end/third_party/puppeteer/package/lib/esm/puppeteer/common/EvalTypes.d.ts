@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle , JSHandle} from './JSHandle.js';
-
+import { JSHandle, ElementHandle } from './JSHandle.js';
 /**
  * @public
  */

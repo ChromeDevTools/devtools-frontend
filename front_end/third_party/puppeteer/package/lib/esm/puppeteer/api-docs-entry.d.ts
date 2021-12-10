@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from './common/Browser.js';
+import { LaunchOptions, BrowserLaunchArgumentOptions } from './node/LaunchOptions.js';
 import { BrowserConnectOptions } from './common/BrowserConnector.js';
+import { Product } from './common/Product.js';
+import { Browser } from './common/Browser.js';
+import { ConnectOptions } from './common/Puppeteer.js';
 import { DevicesMap } from './common/DeviceDescriptors.js';
 import { PuppeteerErrors } from './common/Errors.js';
 import { PredefinedNetworkConditions } from './common/NetworkConditions.js';
-import { Product } from './common/Product.js';
-import { ConnectOptions } from './common/Puppeteer.js';
 import { CustomQueryHandler } from './common/QueryHandler.js';
-import { BrowserLaunchArgumentOptions , LaunchOptions} from './node/LaunchOptions.js';
-
 export * from './common/Accessibility.js';
 export * from './common/Browser.js';
 export * from './node/BrowserFetcher.js';

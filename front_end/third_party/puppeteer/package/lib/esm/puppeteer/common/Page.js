@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isNode } from '../environment.js';
-
-import { Accessibility } from './Accessibility.js';
-import { assert, assertNever } from './assert.js';
-import { CDPSessionEmittedEvents, Connection, } from './Connection.js';
-import { ConsoleMessage } from './ConsoleMessage.js';
-import { Coverage } from './Coverage.js';
+import { EventEmitter } from './EventEmitter.js';
+import { Connection, CDPSessionEmittedEvents, } from './Connection.js';
 import { Dialog } from './Dialog.js';
 import { EmulationManager } from './EmulationManager.js';
-import { EventEmitter } from './EventEmitter.js';
-import { FileChooser } from './FileChooser.js';
 import { FrameManager, FrameManagerEmittedEvents, } from './FrameManager.js';
-import { debugError , helper} from './helper.js';
 import { Keyboard, Mouse, Touchscreen } from './Input.js';
+import { Tracing } from './Tracing.js';
+import { assert, assertNever } from './assert.js';
+import { helper, debugError } from './helper.js';
+import { Coverage } from './Coverage.js';
+import { WebWorker } from './WebWorker.js';
 import { createJSHandle } from './JSHandle.js';
 import { NetworkManagerEmittedEvents, } from './NetworkManager.js';
-import { paperFormats } from './PDFOptions.js';
+import { Accessibility } from './Accessibility.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
-import { Tracing } from './Tracing.js';
-import { WebWorker } from './WebWorker.js';
-
+import { FileChooser } from './FileChooser.js';
+import { ConsoleMessage } from './ConsoleMessage.js';
+import { paperFormats } from './PDFOptions.js';
+import { isNode } from '../environment.js';
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page} in Chromium.

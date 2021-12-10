@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import { assert } from './assert.js';
+import { helper, debugError } from './helper.js';
 import { EVALUATION_SCRIPT_URL } from './ExecutionContext.js';
-import { debugError , helper} from './helper.js';
-
 /**
  * The Coverage class provides methods to gathers information about parts of
  * JavaScript and CSS that were used by the page.

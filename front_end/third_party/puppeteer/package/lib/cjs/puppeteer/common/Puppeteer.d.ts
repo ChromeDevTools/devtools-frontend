@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from './Browser.js';
-import { BrowserConnectOptions } from './BrowserConnector.js';
+import { PuppeteerErrors } from './Errors.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { DevicesMap } from './DeviceDescriptors.js';
-import { PuppeteerErrors } from './Errors.js';
-import { PredefinedNetworkConditions } from './NetworkConditions.js';
-import { Product } from './Product.js';
+import { Browser } from './Browser.js';
 import { CustomQueryHandler } from './QueryHandler.js';
-
+import { Product } from './Product.js';
+import { BrowserConnectOptions } from './BrowserConnector.js';
+import { PredefinedNetworkConditions } from './NetworkConditions.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of enviroment.
  * @internal

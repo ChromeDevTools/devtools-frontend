@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { assert } from './assert.js';
-import { Connection } from './Connection.js';
-import { DOMWorld } from './DOMWorld.js';
 import { EventEmitter } from './EventEmitter.js';
-import { EVALUATION_SCRIPT_URL , ExecutionContext} from './ExecutionContext.js';
+import { assert } from './assert.js';
 import { helper } from './helper.js';
+import { ExecutionContext, EVALUATION_SCRIPT_URL } from './ExecutionContext.js';
 import { LifecycleWatcher, } from './LifecycleWatcher.js';
+import { DOMWorld } from './DOMWorld.js';
 import { NetworkManager } from './NetworkManager.js';
-
+import { Connection } from './Connection.js';
 const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
 const xPathPattern = /^\(\/\/[^\)]+\)|^\/\//;
 /**
@@ -140,7 +139,7 @@ export class FrameManager extends EventEmitter {
         watcher.dispose();
         if (error)
             throw error;
-        return watcher.navigationResponse();
+        return await watcher.navigationResponse();
         async function navigate(client, url, referrer, frameId) {
             try {
                 const response = await client.send('Page.navigate', {
@@ -170,7 +169,7 @@ export class FrameManager extends EventEmitter {
         watcher.dispose();
         if (error)
             throw error;
-        return watcher.navigationResponse();
+        return await watcher.navigationResponse();
     }
     async _onAttachedToTarget(event) {
         if (event.targetInfo.type !== 'iframe') {
@@ -329,7 +328,7 @@ export class FrameManager extends EventEmitter {
                 world = frame._secondaryWorld;
             }
         }
-        const context = new ExecutionContext(frame._client || this._client, contextPayload, world);
+        const context = new ExecutionContext((frame === null || frame === void 0 ? void 0 : frame._client) || this._client, contextPayload, world);
         if (world)
             world._setContext(context);
         const key = `${session.id()}:${contextPayload.id}`;

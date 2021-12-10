@@ -1,6 +1,5 @@
-import { ProtocolError } from './Errors.js';
 import { SecurityDetails } from './SecurityDetails.js';
-
+import { ProtocolError } from './Errors.js';
 /**
  * The HTTPResponse class represents responses which are received by the
  * {@link Page} class.
@@ -11,7 +10,7 @@ export class HTTPResponse {
     /**
      * @internal
      */
-    constructor(client, request, responsePayload) {
+    constructor(client, request, responsePayload, extraInfo) {
         this._contentPromise = null;
         this._headers = {};
         this._client = client;
@@ -23,16 +22,36 @@ export class HTTPResponse {
             ip: responsePayload.remoteIPAddress,
             port: responsePayload.remotePort,
         };
-        this._status = responsePayload.status;
-        this._statusText = responsePayload.statusText;
+        this._statusText =
+            this._parseStatusTextFromExtrInfo(extraInfo) ||
+                responsePayload.statusText;
         this._url = request.url();
         this._fromDiskCache = !!responsePayload.fromDiskCache;
         this._fromServiceWorker = !!responsePayload.fromServiceWorker;
-        for (const key of Object.keys(responsePayload.headers))
-            this._headers[key.toLowerCase()] = responsePayload.headers[key];
+        this._status = extraInfo ? extraInfo.statusCode : responsePayload.status;
+        const headers = extraInfo ? extraInfo.headers : responsePayload.headers;
+        for (const key of Object.keys(headers))
+            this._headers[key.toLowerCase()] = headers[key];
         this._securityDetails = responsePayload.securityDetails
             ? new SecurityDetails(responsePayload.securityDetails)
             : null;
+    }
+    /**
+     * @internal
+     */
+    _parseStatusTextFromExtrInfo(extraInfo) {
+        if (!extraInfo || !extraInfo.headersText)
+            return;
+        const firstLine = extraInfo.headersText.split('\r', 1)[0];
+        if (!firstLine)
+            return;
+        const match = firstLine.match(/[^ ]* [^ ]* (.*)/);
+        if (!match)
+            return;
+        const statusText = match[1];
+        if (!statusText)
+            return;
+        return statusText;
     }
     /**
      * @internal

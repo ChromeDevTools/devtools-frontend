@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import https from 'https';
-import createHttpsProxyAgent from 'https-proxy-agent';
 import os from 'os';
+import https from 'https';
 import ProgressBar from 'progress';
-import { getProxyForUrl } from 'proxy-from-env';
 import URL from 'url';
-
 import puppeteer from '../node.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
-
+import createHttpsProxyAgent from 'https-proxy-agent';
+import { getProxyForUrl } from 'proxy-from-env';
 const supportedProducts = {
     chrome: 'Chromium',
     firefox: 'Firefox Nightly',

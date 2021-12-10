@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionTransport } from '../common/ConnectionTransport.js';
 import { PuppeteerEventListener } from '../common/helper.js';
-
+import { ConnectionTransport } from '../common/ConnectionTransport.js';
 export declare class PipeTransport implements ConnectionTransport {
     _pipeWrite: NodeJS.WritableStream;
     _pendingMessage: string;

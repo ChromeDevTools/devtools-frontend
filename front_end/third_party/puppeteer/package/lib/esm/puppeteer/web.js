@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isNode } from './environment.js';
 import { initializePuppeteerWeb } from './initialize-web.js';
-
+import { isNode } from './environment.js';
 if (isNode) {
     throw new Error('Trying to run Puppeteer-Web in a Node environment');
 }

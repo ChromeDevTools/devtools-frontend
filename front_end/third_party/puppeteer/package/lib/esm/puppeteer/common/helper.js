@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isNode } from '../environment.js';
-
-import { assert } from './assert.js';
-import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
-
+import { debug } from './Debug.js';
+import { assert } from './assert.js';
+import { isNode } from '../environment.js';
 export const debugError = debug('puppeteer:error');
 function getExceptionMessage(exceptionDetails) {
     if (exceptionDetails.exception)

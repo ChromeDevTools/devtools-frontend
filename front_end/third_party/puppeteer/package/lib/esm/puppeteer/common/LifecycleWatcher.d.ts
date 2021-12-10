@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { TimeoutError } from './Errors.js';
-import { Frame , FrameManager} from './FrameManager.js';
 import { PuppeteerEventListener } from './helper.js';
+import { TimeoutError } from './Errors.js';
+import { FrameManager, Frame } from './FrameManager.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
-
 /**
  * @public
  */
@@ -53,7 +52,7 @@ export declare class LifecycleWatcher {
     constructor(frameManager: FrameManager, frame: Frame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number);
     _onRequest(request: HTTPRequest): void;
     _onFrameDetached(frame: Frame): void;
-    navigationResponse(): HTTPResponse | null;
+    navigationResponse(): Promise<HTTPResponse | null>;
     _terminate(error: Error): void;
     sameDocumentNavigationPromise(): Promise<Error | null>;
     newDocumentNavigationPromise(): Promise<Error | null>;

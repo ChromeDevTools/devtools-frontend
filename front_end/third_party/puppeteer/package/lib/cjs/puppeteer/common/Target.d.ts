@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-
-import { Browser, BrowserContext } from './Browser.js';
-import { CDPSession } from './Connection.js';
 import { Page } from './Page.js';
-import { Viewport } from './PuppeteerViewport.js';
-import { TaskQueue } from './TaskQueue.js';
 import { WebWorker } from './WebWorker.js';
-
+import { CDPSession } from './Connection.js';
+import { Browser, BrowserContext } from './Browser.js';
+import { Viewport } from './PuppeteerViewport.js';
+import { Protocol } from 'devtools-protocol';
+import { TaskQueue } from './TaskQueue.js';
 /**
  * @public
  */

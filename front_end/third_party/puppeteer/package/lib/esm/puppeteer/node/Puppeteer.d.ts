@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from '../common/Browser.js';
-import { BrowserConnectOptions } from '../common/BrowserConnector.js';
-import { Product } from '../common/Product.js';
-import { CommonPuppeteerSettings, ConnectOptions , Puppeteer} from '../common/Puppeteer.js';
-
+import { Puppeteer, CommonPuppeteerSettings, ConnectOptions } from '../common/Puppeteer.js';
 import { BrowserFetcher, BrowserFetcherOptions } from './BrowserFetcher.js';
+import { LaunchOptions, BrowserLaunchArgumentOptions } from './LaunchOptions.js';
+import { BrowserConnectOptions } from '../common/BrowserConnector.js';
+import { Browser } from '../common/Browser.js';
 import { ProductLauncher } from './Launcher.js';
-import { BrowserLaunchArgumentOptions , LaunchOptions} from './LaunchOptions.js';
-
+import { Product } from '../common/Product.js';
 /**
  * Extends the main {@link Puppeteer} class with Node specific behaviour for fetching and
  * downloading browsers.

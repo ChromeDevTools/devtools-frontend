@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-
 import { CDPSession } from './Connection.js';
-import { Point } from './JSHandle.js';
 import { KeyInput } from './USKeyboardLayout.js';
-
+import { Protocol } from 'devtools-protocol';
+import { Point } from './JSHandle.js';
 /**
  * Keyboard provides an api for managing a virtual keyboard.
  * The high level api is {@link Keyboard."type"},

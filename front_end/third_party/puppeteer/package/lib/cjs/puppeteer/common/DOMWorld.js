@@ -410,10 +410,10 @@ class DOMWorld {
         const { visible: waitForVisible = false, hidden: waitForHidden = false, timeout = this._timeoutSettings.timeout(), } = options;
         const polling = waitForVisible || waitForHidden ? 'raf' : 'mutation';
         const title = `selector \`${selector}\`${waitForHidden ? ' to be hidden' : ''}`;
-        async function predicate(selector, waitForVisible, waitForHidden) {
+        async function predicate(root, selector, waitForVisible, waitForHidden) {
             const node = predicateQueryHandler
-                ? (await predicateQueryHandler(document, selector))
-                : document.querySelector(selector);
+                ? (await predicateQueryHandler(root, selector))
+                : root.querySelector(selector);
             return checkWaitForOptions(node, waitForVisible, waitForHidden);
         }
         const waitTaskOptions = {
@@ -424,6 +424,7 @@ class DOMWorld {
             timeout,
             args: [selector, waitForVisible, waitForHidden],
             binding,
+            root: options.root,
         };
         const waitTask = new WaitTask(waitTaskOptions);
         const jsHandle = await waitTask.promise;
@@ -438,8 +439,8 @@ class DOMWorld {
         const { visible: waitForVisible = false, hidden: waitForHidden = false, timeout = this._timeoutSettings.timeout(), } = options;
         const polling = waitForVisible || waitForHidden ? 'raf' : 'mutation';
         const title = `XPath \`${xpath}\`${waitForHidden ? ' to be hidden' : ''}`;
-        function predicate(xpath, waitForVisible, waitForHidden) {
-            const node = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        function predicate(root, xpath, waitForVisible, waitForHidden) {
+            const node = document.evaluate(xpath, root, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             return checkWaitForOptions(node, waitForVisible, waitForHidden);
         }
         const waitTaskOptions = {
@@ -449,6 +450,7 @@ class DOMWorld {
             polling,
             timeout,
             args: [xpath, waitForVisible, waitForHidden],
+            root: options.root,
         };
         const waitTask = new WaitTask(waitTaskOptions);
         const jsHandle = await waitTask.promise;
@@ -499,6 +501,7 @@ class WaitTask {
         this._domWorld = options.domWorld;
         this._polling = options.polling;
         this._timeout = options.timeout;
+        this._root = options.root;
         this._predicateBody = getPredicateBody(options.predicateBody);
         this._args = options.args;
         this._binding = options.binding;
@@ -537,7 +540,12 @@ class WaitTask {
         if (this._terminated || runCount !== this._runCount)
             return;
         try {
-            success = await context.evaluateHandle(waitForPredicatePageFunction, this._predicateBody, this._polling, this._timeout, ...this._args);
+            if (this._root) {
+                success = await this._root.evaluateHandle(waitForPredicatePageFunction, this._predicateBody, this._polling, this._timeout, ...this._args);
+            }
+            else {
+                success = await context.evaluateHandle(waitForPredicatePageFunction, null, this._predicateBody, this._polling, this._timeout, ...this._args);
+            }
         }
         catch (error_) {
             error = error_;
@@ -587,7 +595,8 @@ class WaitTask {
     }
 }
 exports.WaitTask = WaitTask;
-async function waitForPredicatePageFunction(predicateBody, polling, timeout, ...args) {
+async function waitForPredicatePageFunction(root, predicateBody, polling, timeout, ...args) {
+    root = root || document;
     const predicate = new Function('...args', predicateBody);
     let timedOut = false;
     if (timeout)
@@ -602,7 +611,7 @@ async function waitForPredicatePageFunction(predicateBody, polling, timeout, ...
      * @returns {!Promise<*>}
      */
     async function pollMutation() {
-        const success = await predicate(...args);
+        const success = await predicate(root, ...args);
         if (success)
             return Promise.resolve(success);
         let fulfill;
@@ -612,13 +621,13 @@ async function waitForPredicatePageFunction(predicateBody, polling, timeout, ...
                 observer.disconnect();
                 fulfill();
             }
-            const success = await predicate(...args);
+            const success = await predicate(root, ...args);
             if (success) {
                 observer.disconnect();
                 fulfill(success);
             }
         });
-        observer.observe(document, {
+        observer.observe(root, {
             childList: true,
             subtree: true,
             attributes: true,
@@ -635,7 +644,7 @@ async function waitForPredicatePageFunction(predicateBody, polling, timeout, ...
                 fulfill();
                 return;
             }
-            const success = await predicate(...args);
+            const success = await predicate(root, ...args);
             if (success)
                 fulfill(success);
             else
@@ -652,7 +661,7 @@ async function waitForPredicatePageFunction(predicateBody, polling, timeout, ...
                 fulfill();
                 return;
             }
-            const success = await predicate(...args);
+            const success = await predicate(root, ...args);
             if (success)
                 fulfill(success);
             else

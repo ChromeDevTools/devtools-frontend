@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-
-import { CDPSession } from './Connection.js';
-import { DOMWorld, WaitForSelectorOptions } from './DOMWorld.js';
-import { EvaluateFn, EvaluateFnReturnType, EvaluateHandleFn, SerializableOrJSHandle, UnwrapPromiseLike , WrapElementHandle} from './EvalTypes.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { HTTPResponse } from './HTTPResponse.js';
-import { MouseButton } from './Input.js';
-import { ElementHandle , JSHandle} from './JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
+import { DOMWorld, WaitForSelectorOptions } from './DOMWorld.js';
 import { NetworkManager } from './NetworkManager.js';
-import { Page } from './Page.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
-
+import { CDPSession } from './Connection.js';
+import { JSHandle, ElementHandle } from './JSHandle.js';
+import { MouseButton } from './Input.js';
+import { Page } from './Page.js';
+import { HTTPResponse } from './HTTPResponse.js';
+import { Protocol } from 'devtools-protocol';
+import { SerializableOrJSHandle, EvaluateHandleFn, WrapElementHandle, EvaluateFn, EvaluateFnReturnType, UnwrapPromiseLike } from './EvalTypes.js';
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.

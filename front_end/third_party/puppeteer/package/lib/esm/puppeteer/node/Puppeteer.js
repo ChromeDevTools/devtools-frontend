@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 import { Puppeteer, } from '../common/Puppeteer.js';
-import { PUPPETEER_REVISIONS } from '../revisions.js';
-
 import { BrowserFetcher } from './BrowserFetcher.js';
 import Launcher from './Launcher.js';
-
+import { PUPPETEER_REVISIONS } from '../revisions.js';
 /**
  * Extends the main {@link Puppeteer} class with Node specific behaviour for fetching and
  * downloading browsers.

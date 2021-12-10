@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DOMWorld , WaitForSelectorOptions} from './DOMWorld.js';
+import { WaitForSelectorOptions, DOMWorld } from './DOMWorld.js';
 import { ElementHandle, JSHandle } from './JSHandle.js';
-
 /**
  * @internal
  */

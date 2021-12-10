@@ -1,20 +1,3 @@
-/**
- * These global declarations exist so puppeteer can work without the need to use `"dom"`
- * types.
- *
- * To get full type information for these interfaces, add `"types": "dom"`in your
- * `tsconfig.json` file.
- */
-declare global {
-    interface Document {
-    }
-    interface Element {
-    }
-    interface NodeListOf<TNode> {
-    }
-}
-export {};
-//# sourceMappingURL=global.d.ts.map
 /// <reference types="node" />
 
 import { ChildProcess } from 'child_process';
@@ -725,7 +708,7 @@ export declare interface BrowserLaunchArgumentOptions {
     userDataDir?: string;
     /**
      * Whether to auto-open a DevTools panel for each tab. If this is set to
-     * `true`, then `headless` will be set to `false` automatically.
+     * `true`, then `headless` will be forced to `false`.
      * @defaultValue `false`
      */
     devtools?: boolean;
@@ -795,6 +778,18 @@ export declare class CDPSession extends EventEmitter {
      * @internal
      */
     id(): string;
+}
+
+declare interface CDPSession_2 extends EventEmitter {
+    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+}
+
+declare interface CDPSession_3 extends EventEmitter {
+    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+}
+
+declare interface CDPSession_4 extends EventEmitter {
+    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
 }
 
 /**
@@ -1251,6 +1246,13 @@ export declare interface CustomQueryHandler {
 export declare function customQueryHandlerNames(): string[];
 
 /**
+ * The default cooperative request interception resolution priority
+ *
+ * @public
+ */
+export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
+
+/**
  * Copyright 2017 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -1502,6 +1504,41 @@ export declare class ElementHandle<ElementType extends Element = Element> extend
      * @internal
      */
     constructor(context: ExecutionContext, client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject, page: Page, frameManager: FrameManager);
+    /**
+     * Wait for the `selector` to appear within the element. If at the moment of calling the
+     * method the `selector` already exists, the method will return immediately. If
+     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * This method does not work across navigations or if the element is detached from DOM.
+     *
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * of an element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by selector string
+     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
+     * selector is not found in DOM.
+     * @remarks
+     * The optional parameters in `options` are:
+     *
+     * - `visible`: wait for the selected element to be present in DOM and to be
+     * visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     * properties. Defaults to `false`.
+     *
+     * - `hidden`: wait for the selected element to not be found in the DOM or to be hidden,
+     * i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+     * `false`.
+     *
+     * - `timeout`: maximum time to wait in milliseconds. Defaults to `30000`
+     * (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     * by using the {@link Page.setDefaultTimeout} method.
+     */
+    waitForSelector(selector: string, options?: {
+        visible?: boolean;
+        hidden?: boolean;
+        timeout?: number;
+    }): Promise<ElementHandle | null>;
     asElement(): ElementHandle<ElementType> | null;
     /**
      * Resolves to the content frame for element handles referencing
@@ -1990,6 +2027,8 @@ export declare class ExecutionContext {
      */
     _adoptElementHandle(elementHandle: ElementHandle): Promise<ElementHandle>;
 }
+
+declare type FetchRequestId = string;
 
 /**
  * File choosers let you react to the page requesting for a file.
@@ -2714,6 +2753,10 @@ export declare class FrameManager extends EventEmitter {
     private _removeFramesRecursively;
 }
 
+declare interface FrameManager_2 {
+    frame(frameId: string): Frame | null;
+}
+
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.
@@ -2856,14 +2899,13 @@ export declare class HTTPRequest {
     private _continueRequestOverrides;
     private _responseForRequest;
     private _abortErrorReason;
-    private _currentStrategy;
-    private _currentPriority;
-    private _interceptActions;
+    private _interceptResolutionState;
+    private _interceptHandlers;
     private _initiator;
     /**
      * @internal
      */
-    constructor(client: CDPSession, frame: Frame, interceptionId: string, allowInterception: boolean, event: Protocol.Network.RequestWillBeSentEvent, redirectChain: HTTPRequest[]);
+    constructor(client: CDPSession_4, frame: Frame, interceptionId: string, allowInterception: boolean, event: Protocol.Network.RequestWillBeSentEvent, redirectChain: HTTPRequest[]);
     /**
      * @returns the URL of the request
      */
@@ -2884,11 +2926,22 @@ export declare class HTTPRequest {
      */
     abortErrorReason(): Protocol.Network.ErrorReason;
     /**
-     * @returns An array of the current intercept resolution strategy and priority
-     * `[strategy,priority]`. Strategy is one of: `abort`, `respond`, `continue`,
+     * @returns An InterceptResolutionState object describing the current resolution
+     *  action and priority.
+     *
+     *  InterceptResolutionState contains:
+     *    action: InterceptResolutionAction
+     *    priority?: number
+     *
+     *  InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
      *  `disabled`, `none`, or `already-handled`.
      */
-    private interceptResolution;
+    interceptResolutionState(): InterceptResolutionState;
+    /**
+     * @returns `true` if the intercept resolution has already been handled,
+     * `false` otherwise.
+     */
+    isInterceptResolutionHandled(): boolean;
     /**
      * Adds an async request handler to the processing queue.
      * Deferred handlers are not guaranteed to execute in any particular order,
@@ -3091,7 +3144,11 @@ export declare class HTTPResponse {
     /**
      * @internal
      */
-    constructor(client: CDPSession, request: HTTPRequest, responsePayload: Protocol.Network.Response);
+    constructor(client: CDPSession_3, request: HTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null);
+    /**
+     * @internal
+     */
+    _parseStatusTextFromExtrInfo(extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null): string | undefined;
     /**
      * @internal
      */
@@ -3169,7 +3226,29 @@ export declare class HTTPResponse {
     /**
      * @public
      */
-    export declare type InterceptResolutionStrategy = 'abort' | 'respond' | 'continue' | 'disabled' | 'none' | 'alreay-handled';
+    export declare enum InterceptResolutionAction {
+        Abort = "abort",
+        Respond = "respond",
+        Continue = "continue",
+        Disabled = "disabled",
+        None = "none",
+        AlreadyHandled = "already-handled"
+    }
+
+    /**
+     * @public
+     */
+    export declare interface InterceptResolutionState {
+        action: InterceptResolutionAction;
+        priority?: number;
+    }
+
+    /**
+     * @public
+     *
+     * @deprecated please use {@link InterceptResolutionAction} instead.
+     */
+    export declare type InterceptResolutionStrategy = InterceptResolutionAction;
 
     /**
      * @public
@@ -3676,7 +3755,7 @@ export declare class HTTPResponse {
         constructor(frameManager: FrameManager, frame: Frame, waitUntil: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[], timeout: number);
         _onRequest(request: HTTPRequest): void;
         _onFrameDetached(frame: Frame): void;
-        navigationResponse(): HTTPResponse | null;
+        navigationResponse(): Promise<HTTPResponse | null>;
         _terminate(error: Error): void;
         sameDocumentNavigationPromise(): Promise<Error | null>;
         newDocumentNavigationPromise(): Promise<Error | null>;
@@ -3905,14 +3984,43 @@ export declare class HTTPResponse {
 
     /**
      * @internal
+     *
+     * Helper class to track network events by request ID
+     */
+    declare class NetworkEventManager {
+        private _requestWillBeSentMap;
+        private _requestPausedMap;
+        private _httpRequestsMap;
+        private _responseReceivedExtraInfoMap;
+        private _queuedRedirectInfoMap;
+        private _queuedEventGroupMap;
+        forget(networkRequestId: NetworkRequestId): void;
+        responseExtraInfo(networkRequestId: NetworkRequestId): Protocol.Network.ResponseReceivedExtraInfoEvent[];
+        private queuedRedirectInfo;
+        queueRedirectInfo(fetchRequestId: FetchRequestId, redirectInfo: RedirectInfo): void;
+        takeQueuedRedirectInfo(fetchRequestId: FetchRequestId): RedirectInfo | undefined;
+        numRequestsInProgress(): number;
+        storeRequestWillBeSent(networkRequestId: NetworkRequestId, event: Protocol.Network.RequestWillBeSentEvent): void;
+        getRequestWillBeSent(networkRequestId: NetworkRequestId): Protocol.Network.RequestWillBeSentEvent | undefined;
+        forgetRequestWillBeSent(networkRequestId: NetworkRequestId): void;
+        getRequestPaused(networkRequestId: NetworkRequestId): Protocol.Fetch.RequestPausedEvent | undefined;
+        forgetRequestPaused(networkRequestId: NetworkRequestId): void;
+        storeRequestPaused(networkRequestId: NetworkRequestId, event: Protocol.Fetch.RequestPausedEvent): void;
+        getRequest(networkRequestId: NetworkRequestId): HTTPRequest | undefined;
+        storeRequest(networkRequestId: NetworkRequestId, request: HTTPRequest): void;
+        forgetRequest(networkRequestId: NetworkRequestId): void;
+        getQueuedEventGroup(networkRequestId: NetworkRequestId): QueuedEventGroup | undefined;
+        queueEventGroup(networkRequestId: NetworkRequestId, event: QueuedEventGroup): void;
+    }
+
+    /**
+     * @internal
      */
     export declare class NetworkManager extends EventEmitter {
-        _client: CDPSession;
+        _client: CDPSession_2;
         _ignoreHTTPSErrors: boolean;
-        _frameManager: FrameManager;
-        _requestIdToRequestWillBeSentEvent: Map<string, Protocol.Network.RequestWillBeSentEvent>;
-        _requestIdToRequestPausedEvent: Map<string, Protocol.Fetch.RequestPausedEvent>;
-        _requestIdToRequest: Map<string, HTTPRequest>;
+        _frameManager: FrameManager_2;
+        _networkEventManager: NetworkEventManager;
         _extraHTTPHeaders: Record<string, string>;
         _credentials?: Credentials;
         _attemptedAuthentications: Set<string>;
@@ -3920,7 +4028,7 @@ export declare class HTTPResponse {
         _protocolRequestInterceptionEnabled: boolean;
         _userCacheDisabled: boolean;
         _emulatedNetworkConditions: InternalNetworkConditions;
-        constructor(client: CDPSession, ignoreHTTPSErrors: boolean, frameManager: FrameManager);
+        constructor(client: CDPSession_2, ignoreHTTPSErrors: boolean, frameManager: FrameManager_2);
         initialize(): Promise<void>;
         authenticate(credentials?: Credentials): Promise<void>;
         setExtraHTTPHeaders(extraHTTPHeaders: Record<string, string>): Promise<void>;
@@ -3937,14 +4045,27 @@ export declare class HTTPResponse {
         _updateProtocolCacheDisabled(): Promise<void>;
         _onRequestWillBeSent(event: Protocol.Network.RequestWillBeSentEvent): void;
         _onAuthRequired(event: Protocol.Fetch.AuthRequiredEvent): void;
+        /**
+         * CDP may send a Fetch.requestPaused without or before a
+         * Network.requestWillBeSent
+         *
+         * CDP may send multiple Fetch.requestPaused
+         * for the same Network.requestWillBeSent.
+         *
+         *
+         */
         _onRequestPaused(event: Protocol.Fetch.RequestPausedEvent): void;
-        _onRequest(event: Protocol.Network.RequestWillBeSentEvent, interceptionId?: string): void;
+        _onRequest(event: Protocol.Network.RequestWillBeSentEvent, fetchRequestId?: FetchRequestId): void;
         _onRequestServedFromCache(event: Protocol.Network.RequestServedFromCacheEvent): void;
-        _handleRequestRedirect(request: HTTPRequest, responsePayload: Protocol.Network.Response): void;
+        _handleRequestRedirect(request: HTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent): void;
+        _emitResponseEvent(responseReceived: Protocol.Network.ResponseReceivedEvent, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null): void;
         _onResponseReceived(event: Protocol.Network.ResponseReceivedEvent): void;
+        _onResponseReceivedExtraInfo(event: Protocol.Network.ResponseReceivedExtraInfoEvent): void;
         _forgetRequest(request: HTTPRequest, events: boolean): void;
         _onLoadingFinished(event: Protocol.Network.LoadingFinishedEvent): void;
+        _emitLoadingFinished(event: Protocol.Network.LoadingFinishedEvent): void;
         _onLoadingFailed(event: Protocol.Network.LoadingFailedEvent): void;
+        _emitLoadingFailed(event: Protocol.Network.LoadingFailedEvent): void;
     }
 
     /**
@@ -3960,6 +4081,8 @@ export declare class HTTPResponse {
         readonly RequestFailed: symbol;
         readonly RequestFinished: symbol;
     };
+
+    declare type NetworkRequestId = string;
 
     /**
      * @public
@@ -6415,6 +6538,17 @@ export declare class HTTPResponse {
      */
     export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
 
+    declare type QueuedEventGroup = {
+        responseReceivedEvent: Protocol.Network.ResponseReceivedEvent;
+        loadingFinishedEvent?: Protocol.Network.LoadingFinishedEvent;
+        loadingFailedEvent?: Protocol.Network.LoadingFailedEvent;
+    };
+
+    declare type RedirectInfo = {
+        event: Protocol.Network.RequestWillBeSentEvent;
+        fetchRequestId?: FetchRequestId;
+    };
+
     /**
      * @public
      * {@inheritDoc Puppeteer.registerCustomQueryHandler}
@@ -6954,6 +7088,7 @@ export declare class HTTPResponse {
              visible?: boolean;
              hidden?: boolean;
              timeout?: number;
+             root?: ElementHandle;
          }
 
          /**
@@ -6983,6 +7118,7 @@ export declare class HTTPResponse {
              _reject: (x: Error) => void;
              _timeoutTimer?: NodeJS.Timeout;
              _terminated: boolean;
+             _root: ElementHandle;
              constructor(options: WaitTaskOptions);
              terminate(error: Error): void;
              rerun(): Promise<void>;
@@ -7000,6 +7136,7 @@ export declare class HTTPResponse {
              timeout: number;
              binding?: PageBinding;
              args: SerializableOrJSHandle[];
+             root?: ElementHandle;
          }
 
          /**

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { assert } from './assert.js';
-import { CDPSessionEmittedEvents } from './Connection.js';
+import { helper } from './helper.js';
 import { TimeoutError } from './Errors.js';
 import { FrameManagerEmittedEvents, } from './FrameManager.js';
-import { helper } from './helper.js';
 import { NetworkManagerEmittedEvents } from './NetworkManager.js';
-
+import { CDPSessionEmittedEvents } from './Connection.js';
 const puppeteerToProtocolLifecycle = new Map([
     ['load', 'load'],
     ['domcontentloaded', 'DOMContentLoaded'],
@@ -79,7 +78,8 @@ export class LifecycleWatcher {
         }
         this._checkLifecycleComplete();
     }
-    navigationResponse() {
+    async navigationResponse() {
+        // We may need to wait for ExtraInfo events before the request is complete.
         return this._navigationRequest ? this._navigationRequest.response() : null;
     }
     _terminate(error) {

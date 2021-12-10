@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import { assert } from './assert.js';
-import { ConnectionEmittedEvents } from './Connection.js';
-import { EventEmitter } from './EventEmitter.js';
 import { helper } from './helper.js';
 import { Target } from './Target.js';
+import { EventEmitter } from './EventEmitter.js';
+import { ConnectionEmittedEvents } from './Connection.js';
 import { TaskQueue } from './TaskQueue.js';
-
 const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
     ['geolocation', 'geolocation'],
     ['midi', 'midi'],

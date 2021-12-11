@@ -249,6 +249,10 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     let currentCategory: string;
     actions.forEach(action => {
+      if (action.id() === 'elements.toggle-element-search') {
+        return;
+      }
+
       if (currentCategory !== action.category()) {
         items.push(action.category());
       }

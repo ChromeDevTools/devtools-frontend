@@ -12,8 +12,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js';
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
-const defaultColor =
-    ThemeSupport.ThemeSupport.instance().patchColorText('#444', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+const defaultColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
 
 const DefaultStyle = {
   height: 20,

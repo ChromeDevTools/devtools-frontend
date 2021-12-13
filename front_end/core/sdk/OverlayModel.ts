@@ -59,27 +59,13 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   #hideHighlightTimeout: number|null;
   #defaultHighlighter: Highlighter;
   #highlighter: Highlighter;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showPaintRectsSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showLayoutShiftRegionsSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showAdHighlightsSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showDebugBordersSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showFPSCounterSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showScrollBottleneckRectsSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #showWebVitalsSetting: Common.Settings.Setting<any>;
+  #showPaintRectsSetting: Common.Settings.Setting<boolean>;
+  #showLayoutShiftRegionsSetting: Common.Settings.Setting<boolean>;
+  #showAdHighlightsSetting: Common.Settings.Setting<boolean>;
+  #showDebugBordersSetting: Common.Settings.Setting<boolean>;
+  #showFPSCounterSetting: Common.Settings.Setting<boolean>;
+  #showScrollBottleneckRectsSetting: Common.Settings.Setting<boolean>;
+  #showWebVitalsSetting: Common.Settings.Setting<boolean>;
   #registeredListeners: Common.EventTarget.EventDescriptor[];
   #showViewportSizeOnResize: boolean;
   #persistentHighlighter: OverlayPersistentHighlighter|null;
@@ -113,14 +99,15 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
-    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting('showPaintRects');
-    this.#showLayoutShiftRegionsSetting = Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions');
-    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting('showAdHighlights');
-    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting('showDebugBorders');
-    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting('showFPSCounter');
+    this.#showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showPaintRects');
+    this.#showLayoutShiftRegionsSetting =
+        Common.Settings.Settings.instance().moduleSetting<boolean>('showLayoutShiftRegions');
+    this.#showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showAdHighlights');
+    this.#showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showDebugBorders');
+    this.#showFPSCounterSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showFPSCounter');
     this.#showScrollBottleneckRectsSetting =
-        Common.Settings.Settings.instance().moduleSetting('showScrollBottleneckRects');
-    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting('showWebVitals');
+        Common.Settings.Settings.instance().moduleSetting<boolean>('showScrollBottleneckRects');
+    this.#showWebVitalsSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('showWebVitals');
 
     this.#registeredListeners = [];
     this.#showViewportSizeOnResize = true;
@@ -178,18 +165,15 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     return this.#domModel;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  highlightRect({x, y, width, height, color, outlineColor}: HighlightRect): Promise<any> {
+  highlightRect({x, y, width, height, color, outlineColor}: HighlightRect):
+      Promise<Protocol.ProtocolResponseWithError> {
     const highlightColor = color || {r: 255, g: 0, b: 255, a: 0.3};
     const highlightOutlineColor = outlineColor || {r: 255, g: 0, b: 255, a: 0.5};
     return this.overlayAgent.invoke_highlightRect(
         {x, y, width, height, color: highlightColor, outlineColor: highlightOutlineColor});
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clearHighlight(): Promise<any> {
+  clearHighlight(): Promise<Protocol.ProtocolResponseWithError> {
     return this.overlayAgent.invoke_hideHighlight();
   }
 

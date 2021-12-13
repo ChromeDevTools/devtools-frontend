@@ -9,6 +9,7 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "backForwardCacheView.css",
     "badge.css",
     "frameDetailsReportView.css",
     "originTrialTokenRows.css",
@@ -24,6 +25,8 @@ generate_css("css_files") {
 
 devtools_module("components") {
   sources = [
+    "BackForwardCacheStrings.ts",
+    "BackForwardCacheView.ts",
     "EndpointsGrid.ts",
     "FrameDetailsView.ts",
     "OriginTrialTreeView.ts",
@@ -43,6 +46,7 @@ devtools_module("components") {
     "../../../models/bindings:bundle",
     "../../../panels/network/forward:bundle",
     "../../../ui/components/adorners:bundle",
+    "../../../ui/components/buttons:bundle",
     "../../../ui/components/data_grid:bundle",
     "../../../ui/components/expandable_list:bundle",
     "../../../ui/components/icon_button:bundle",

@@ -10,7 +10,6 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "appManifestView.css",
-    "backForwardCacheView.css",
     "backgroundServiceView.css",
     "cookieItemsView.css",
     "frameDetailsReportView.css",
@@ -31,8 +30,6 @@ devtools_module("application") {
     "ApplicationPanelCacheSection.ts",
     "ApplicationPanelSidebar.ts",
     "ApplicationPanelTreeElement.ts",
-    "BackForwardCacheStrings.ts",
-    "BackForwardCacheView.ts",
     "BackgroundServiceModel.ts",
     "BackgroundServiceView.ts",
     "CookieItemsView.ts",

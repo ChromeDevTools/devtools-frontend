@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
 .inline-icon {
   vertical-align: sub;
 }
@@ -49,4 +50,12 @@
 .url-value {
   padding: 0 6px;
   overflow-wrap: break-word;
+}
+
+.link,
+.devtools-link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 2px 0; /* adjust focus ring size */
 }

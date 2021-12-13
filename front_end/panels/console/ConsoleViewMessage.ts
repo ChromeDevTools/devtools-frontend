@@ -49,7 +49,6 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
@@ -1006,11 +1005,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         wrapper.style.setProperty('max-width', '100%');
         wrapper.appendChild(lineFragment);
         applyCurrentStyle(wrapper);
-        for (const child of wrapper.children) {
-          if (child.classList.contains('devtools-link') && child instanceof HTMLElement) {
-            this.applyForcedVisibleStyle(child);
-          }
-        }
+
         a.appendChild(wrapper);
         if (i < lines.length - 1) {
           a.appendChild(document.createElement('br'));
@@ -1030,25 +1025,6 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     // Platform.StringUtilities.format does treat formattedResult like a Builder, result is an object.
     return Platform.StringUtilities.format(format, parameters, formatters, formattedResult, append.bind(this));
-  }
-
-  private applyForcedVisibleStyle(element: HTMLElement): void {
-    element.style.setProperty('-webkit-text-stroke', '0', 'important');
-    element.style.setProperty('text-decoration', 'underline', 'important');
-
-    const themedColor = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgb(33%, 33%, 33%)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
-    element.style.setProperty('color', themedColor, 'important');
-
-    let backgroundColor = 'hsl(0, 0%, 100%)';
-    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
-      backgroundColor = 'hsl(0, 100%, 97%)';
-    } else if (this.message.level === Protocol.Log.LogEntryLevel.Warning || this.shouldRenderAsWarning()) {
-      backgroundColor = 'hsl(50, 100%, 95%)';
-    }
-    const themedBackgroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
-        backgroundColor, ThemeSupport.ThemeSupport.ColorUsage.Background);
-    element.style.setProperty('background-color', themedBackgroundColor, 'important');
   }
 
   matchesFilterRegex(regexObject: RegExp): boolean {

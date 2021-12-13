@@ -49,6 +49,7 @@
   --override-focused-message-background-color: hsl(214deg 19% 20%);
   --override-console-warning-background-color: hsl(50deg 100% 10%);
   --override-console-warning-text-color: hsl(39deg 89% 55%);
+  --override-console-link-color: var(--color-background-inverted);
 }
 
 .console-toolbar-container {
@@ -458,6 +459,10 @@
 .message-count {
   width: 0;
   height: 0;
+}
+
+.-theme-with-dark-background #console-messages .console-message-text .devtools-link {
+  color: var(--override-console-link-color);
 }
 
 @media (forced-colors: active) {

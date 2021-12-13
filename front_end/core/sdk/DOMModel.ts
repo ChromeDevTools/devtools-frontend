@@ -408,11 +408,7 @@ export class DOMNode {
     return this.localName();
   }
 
-  setNodeName(
-      name: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
+  setNodeName(name: string, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)): void {
     this.#agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -435,9 +431,7 @@ export class DOMNode {
     this.nodeValueInternal = nodeValue;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setNodeValue(value: string, callback?: ((arg0: string|null) => any)): void {
+  setNodeValue(value: string, callback?: ((arg0: string|null) => void)): void {
     this.#agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -453,11 +447,7 @@ export class DOMNode {
     return attr ? attr.value : undefined;
   }
 
-  setAttribute(
-      name: string, text: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: string|null) => any)): void {
+  setAttribute(name: string, text: string, callback?: ((arg0: string|null) => void)): void {
     this.#agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -468,11 +458,7 @@ export class DOMNode {
     });
   }
 
-  setAttributeValue(
-      name: string, value: string,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: string|null) => any)): void {
+  setAttributeValue(name: string, value: string, callback?: ((arg0: string|null) => void)): void {
     this.#agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -520,9 +506,7 @@ export class DOMNode {
     return outerHTML;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setOuterHTML(html: string, callback?: ((arg0: string|null) => any)): void {
+  setOuterHTML(html: string, callback?: ((arg0: string|null) => void)): void {
     this.#agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -533,10 +517,7 @@ export class DOMNode {
     });
   }
 
-  removeNode(callback?: (
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (arg0: string|null, arg1?: Protocol.DOM.NodeId|undefined) => any)): Promise<void> {
+  removeNode(callback?: ((arg0: string|null, arg1?: Protocol.DOM.NodeId|undefined) => void)): Promise<void> {
     return this.#agent.invoke_removeNode({nodeId: this.id}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
@@ -738,11 +719,8 @@ export class DOMNode {
     this.#attributesInternal.delete(name);
   }
 
-  copyTo(
-      targetNode: DOMNode, anchorNode: DOMNode|null,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
+  copyTo(targetNode: DOMNode, anchorNode: DOMNode|null, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)):
+      void {
     this.#agent
         .invoke_copyTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
@@ -756,11 +734,8 @@ export class DOMNode {
         });
   }
 
-  moveTo(
-      targetNode: DOMNode, anchorNode: DOMNode|null,
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback?: ((arg0: string|null, arg1: DOMNode|null) => any)): void {
+  moveTo(targetNode: DOMNode, anchorNode: DOMNode|null, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)):
+      void {
     this.#agent
         .invoke_moveTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})

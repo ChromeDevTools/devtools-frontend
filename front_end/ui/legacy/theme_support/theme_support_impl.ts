@@ -41,6 +41,8 @@ import inspectorSyntaxHighlightDarkStyles from '../inspectorSyntaxHighlightDark.
 
 let themeSupportInstance: ThemeSupport;
 
+const themeValuesCache = new Map<string, string>();
+
 export class ThemeSupport {
   private readonly themeNameInternal: string;
   private themableProperties: Set<string>;
@@ -101,7 +103,16 @@ export class ThemeSupport {
       throw new Error(`Computed value for property (${variableName}) could not be found on :root.`);
     }
 
-    return computedRoot.getPropertyValue(variableName);
+    // Since theme changes trigger a reload, we can avoid repeatedly looking up color values
+    // dynamically. Instead we can look up the first time and cache them for future use,
+    // knowing that the cache will be invalidated by virtue of a reload when the theme changes.
+    let cachedValue = themeValuesCache.get(variableName);
+    if (!cachedValue) {
+      cachedValue = computedRoot.getPropertyValue(variableName);
+      themeValuesCache.set(variableName, cachedValue);
+    }
+
+    return cachedValue;
   }
 
   hasTheme(): boolean {

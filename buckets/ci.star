@@ -8,8 +8,17 @@ load(
     "dimensions",
     "generate_ci_configs",
 )
+load("//definitions.star", "versions")
 
 defaults.build_numbers.set(True)
+
+def branch_section(name):
+    return config_section(
+        name = name,
+        branch = "refs/heads/chromium/%s" % versions[name],
+        notifiers = ["devtools notifier"],
+        priority = 50,
+    )
 
 generate_ci_configs(
     configurations = [
@@ -30,24 +39,9 @@ generate_ci_configs(
             notifiers = ["devtools tree closer"],
             priority = 30,  # default
         ),
-        config_section(
-            name = "beta",
-            branch = "refs/heads/chromium/4692",
-            notifiers = ["devtools notifier"],
-            priority = 50,
-        ),
-        config_section(
-            name = "stable",
-            branch = "refs/heads/chromium/4664",
-            notifiers = ["devtools notifier"],
-            priority = 50,
-        ),
-        config_section(
-            name = "extended",
-            branch = "refs/heads/chromium/4638",
-            notifiers = ["devtools notifier"],
-            priority = 50,
-        ),
+        branch_section("beta"),
+        branch_section("stable"),
+        branch_section("extended"),
     ],
     builders = [
         builder_descriptor(

@@ -640,7 +640,6 @@ self.injectedExtensionAPI = function(
   };
 
   function LanguageServicesAPIImpl(this: APIImpl.LanguageExtensions): void {
-    /** @type {!Map<*, !MessagePort>} */
     this._plugins = new Map();
   }
 

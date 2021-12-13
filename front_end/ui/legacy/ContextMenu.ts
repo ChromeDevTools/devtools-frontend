@@ -472,9 +472,8 @@ export class ContextMenu extends SubMenu {
   }
 
   private buildMenuDescriptors(): (SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[] {
-    return /** @type {!Array.<!Host.InspectorFrontendHostAPI.ContextMenuDescriptor|!SoftContextMenuDescriptor>} */ super
-               .buildDescriptor()
-               .subItems as (SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
+    return super.buildDescriptor().subItems as (
+               SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
   }
 
   private onItemSelected(event: Common.EventTarget.EventTargetEvent<number>): void {

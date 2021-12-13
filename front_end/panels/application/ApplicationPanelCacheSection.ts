@@ -125,7 +125,6 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     super(resourcesPanel, cache.cacheName + ' - ' + cache.securityOrigin, false);
     this.model = model;
     this.cache = cache;
-    /** @type {?} */
     this.view = null;
     const icon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([icon]);

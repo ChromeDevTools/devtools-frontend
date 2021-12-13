@@ -1263,11 +1263,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
         (node as SDK.DOMModel.DeferredDOMNode).resolve(checkDeferredDOMNodeThenReveal);
       } else if (node instanceof SDK.RemoteObject.RemoteObject) {
-        const domModel =
-            /** @type {!SDK.RemoteObject.RemoteObject} */ (node as SDK.RemoteObject.RemoteObject)
-                .runtimeModel()
-                .target()
-                .model(SDK.DOMModel.DOMModel);
+        const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {
           domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {

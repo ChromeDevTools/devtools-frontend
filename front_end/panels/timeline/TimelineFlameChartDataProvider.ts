@@ -259,8 +259,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       nestingLevel: 0,
       shareHeaderLine: true,
     };
-    return /** @type {!PerfUI.FlameChart.GroupStyle} */ Object.assign(defaultGroupStyle, extra) as
-        PerfUI.FlameChart.GroupStyle;
+    return Object.assign(defaultGroupStyle, extra);
   }
 
   setModel(performanceModel: PerformanceModel|null): void {
@@ -933,9 +932,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private entryType(entryIndex: number): EntryType {
-    return this.entryTypeByLevel[/** @type {!PerfUI.FlameChart.TimelineData} */ (
-                                     this.timelineDataInternal as PerfUI.FlameChart.TimelineData)
-                                     .entryLevels[entryIndex]];
+    return this.entryTypeByLevel[(this.timelineDataInternal as PerfUI.FlameChart.TimelineData).entryLevels[entryIndex]];
   }
 
   prepareHighlightedEntryInfo(entryIndex: number): Element|null {

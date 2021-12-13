@@ -162,7 +162,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   fileViews(): UI.Widget.Widget[] {
-    return /** @type {!Array.<!UI.Widget.Widget>} */ this.tabbedPane.tabViews() as UI.Widget.Widget[];
+    return this.tabbedPane.tabViews();
   }
 
   leftToolbar(): UI.Toolbar.Toolbar {

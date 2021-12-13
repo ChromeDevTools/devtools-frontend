@@ -896,7 +896,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         continue;
       }
       if (pos.x <= x && x < pos.x + pos.width) {
-        return /** @type {number} */ index as number;
+        return index as number;
       }
     }
 
@@ -2204,7 +2204,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
-    /** @type {!Map<string,!Map<string,number>>} */
     this.textWidth = new Map();
     this.chartViewport.scheduleUpdate();
   }

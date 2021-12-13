@@ -677,8 +677,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
       properties.push(makeProperty(namespace, (namespaces[namespace] as SDK.RemoteObject.RemoteObject)));
     }
 
-    return /** @type {!SDK.RemoteObject.GetPropertiesResult} */ {properties: properties, internalProperties: []} as
-        SDK.RemoteObject.GetPropertiesResult;
+    return {properties: properties, internalProperties: []};
   }
 }
 

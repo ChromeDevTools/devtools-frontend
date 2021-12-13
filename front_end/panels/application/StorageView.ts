@@ -178,9 +178,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
-    /** @type {?SDK.Target.Target} */
     this.target = null;
-    /** @type {?string} */
     this.securityOrigin = null;
 
     this.settings = new Map();
@@ -213,7 +211,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
     this.quotaOverrideCheckbox.checkboxElement.addEventListener('click', this.onClickCheckbox.bind(this), false);
     this.quotaOverrideControlRow = quota.appendRow();
-    /** @type {!HTMLInputElement} */
     this.quotaOverrideEditor =
         this.quotaOverrideControlRow.createChild('input', 'quota-override-notification-editor') as HTMLInputElement;
     this.quotaOverrideControlRow.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.mb)));
@@ -446,7 +443,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
 
-    const securityOrigin = /** @type {string} */ (this.securityOrigin);
+    const securityOrigin = this.securityOrigin;
     const response = await this.target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
     this.quotaRow.textContent = '';
     if (response.getError()) {
@@ -475,8 +472,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (this.quotaUsage === null || this.quotaUsage !== response.usage) {
       this.quotaUsage = response.usage;
-      /** @type {!Array<!PerfUI.PieChart.Slice>} */
-      const slices = [];
+      const slices: PerfUI.PieChart.Slice[] = [];
       for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
         const value = usageForType.usage;
         if (!value) {

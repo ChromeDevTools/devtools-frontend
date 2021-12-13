@@ -178,7 +178,6 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
         payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
     this.drawsContentInternal = Boolean(payload.draws_content);
     this.gpuMemoryUsageInternal = payload.gpu_memory_usage;
-    /** @type {!Array<!LayerPaintEvent>} */
     this.paints = [];
   }
 

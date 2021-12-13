@@ -2616,8 +2616,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
   }
 
   getStatistics(): HeapSnapshotModel.HeapSnapshotModel.Statistics {
-    return /** @type {!HeapSnapshotModel.HeapSnapshotModel.Statistics} */ this.statistics as
-        HeapSnapshotModel.HeapSnapshotModel.Statistics;
+    return this.statistics as HeapSnapshotModel.HeapSnapshotModel.Statistics;
   }
 }
 

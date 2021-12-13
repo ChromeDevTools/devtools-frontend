@@ -69,7 +69,6 @@ const renderChildTokens = (token: any): string => {
 const unescape = (text: string): string => {
   // Unescape will get rid of the escaping done by Marked to avoid double escaping due to escaping it also with Lit-html
   // Table taken from: front_end/third_party/marked/package/src/helpers.js
-  /** @type {Map<string,string>} */
   const escapeReplacements = new Map<string, string>([
     ['&amp;', '&'],
     ['&lt;', '<'],

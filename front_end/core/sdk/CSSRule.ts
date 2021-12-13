@@ -73,7 +73,7 @@ export class CSSRule {
   getStyleSheetHeader(styleSheetId: Protocol.CSS.StyleSheetId): CSSStyleSheetHeader {
     const styleSheetHeader = this.cssModelInternal.styleSheetHeaderForId(styleSheetId);
     console.assert(styleSheetHeader !== null);
-    return /** @type {!CSSStyleSheetHeader} */ styleSheetHeader as CSSStyleSheetHeader;
+    return styleSheetHeader as CSSStyleSheetHeader;
   }
 }
 

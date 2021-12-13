@@ -130,8 +130,7 @@ export class SearchableView extends VBox {
 
     this.searchProvider = searchable;
     this.replaceProvider = replaceable;
-    this.setting =
-        settingName ? Common.Settings.Settings.instance().createSetting(settingName, /** @type {*} */ ({})) : null;
+    this.setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
     this.replaceable = false;
 
     this.contentElement.createChild('slot');

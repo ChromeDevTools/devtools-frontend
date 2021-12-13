@@ -1521,7 +1521,7 @@ export class TimelineUIUtils {
       if (!color) {
         throw new Error('Unable to parse color from TimelineUIUtils.categories().scripting.color');
       }
-      return /** @type {string} */ color.setAlpha(0.3).asString(null) as string;
+      return color.setAlpha(0.3).asString(null) as string;
     }
 
     return color;

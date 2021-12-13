@@ -347,7 +347,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         case 'ArrowUp':
           return elementPosition.right + 1;
         default:
-          return /** @type {!MouseEvent} */ (event as MouseEvent).x;
+          return (event as MouseEvent).x;
       }
     }
 
@@ -1089,7 +1089,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   /**
    * If the pasted input is parsable as a color, applies it converting to the current user format
    */
-  private pasted(/** @type {!ClipboardEvent} */ event: ClipboardEvent): void {
+  private pasted(event: ClipboardEvent): void {
     if (!event.clipboardData) {
       return;
     }

@@ -83,8 +83,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   private getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
-    return /** @type {!Common.Settings.RegExpSetting} */ Common.Settings.Settings.instance().moduleSetting(
-               'skipStackFramesPattern') as Common.Settings.RegExpSetting;
+    return Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
   }
 
   private setIgnoreListPatterns(debuggerModel: SDK.DebuggerModel.DebuggerModel): Promise<boolean> {

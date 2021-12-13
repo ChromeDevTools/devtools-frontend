@@ -46,7 +46,6 @@ class MainSplitWidget extends UI.SplitWidget.SplitWidget {
   }
 
   setWebVitals(webVitals: WebVitalsIntegrator): void {
-    /** @type {!WebVitalsIntegrator} */
     this.webVitals = webVitals;
     this.webVitals.setMinimumSize(0, 120);
   }

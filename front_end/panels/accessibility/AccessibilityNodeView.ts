@@ -203,8 +203,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
       };
       addProperty(roleProperty);
     }
-    for (const property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ axNode.properties() as
-         Protocol.Accessibility.AXProperty[]) {
+    for (const property of axNode.properties() as Protocol.Accessibility.AXProperty[]) {
       addProperty(property);
     }
 

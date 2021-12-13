@@ -116,7 +116,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     const slider = UI.UIUtils.createSlider(0, maxRange, -1);
     slider.addEventListener('input', this.onSliderInput.bind(this), false);
     field.appendChild(slider);
-    return /** @type {!HTMLInputElement} */ slider as HTMLInputElement;
+    return slider as HTMLInputElement;
   }
 
   wasShown(): void {

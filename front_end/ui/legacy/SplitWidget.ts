@@ -100,8 +100,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.defaultSidebarHeight = defaultSidebarHeight || this.defaultSidebarWidth;
     this.constraintsInDip = Boolean(constraintsInDip);
     this.resizeStartSizeDIP = 0;
-    this.setting =
-        settingName ? Common.Settings.Settings.instance().createSetting(settingName, /** @type {*} */ ({})) : null;
+    this.setting = settingName ? Common.Settings.Settings.instance().createSetting(settingName, {}) : null;
 
     this.totalSizeCSS = 0;
     this.totalSizeOtherDimensionCSS = 0;
@@ -223,7 +222,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   sidebarElement(): HTMLElement {
-    return /** @type {!HTMLElement} */ this.sidebarElementInternal as HTMLElement;
+    return this.sidebarElementInternal;
   }
 
   childWasDetached(widget: Widget): void {

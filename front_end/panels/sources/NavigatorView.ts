@@ -559,7 +559,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       if (target) {
         return this.domainNode(uiSourceCode, project, target, frame, projectOrigin);
       }
-      return /** @type {!NavigatorTreeNode} */ this.rootNode.child(project.id()) as NavigatorTreeNode;
+      return this.rootNode.child(project.id()) as NavigatorTreeNode;
     }
 
     const parentNode =

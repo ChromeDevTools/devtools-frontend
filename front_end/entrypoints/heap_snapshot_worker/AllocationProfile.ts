@@ -190,14 +190,14 @@ export class AllocationProfile {
   }
 
   private ensureBottomUpNode(nodeId: number): BottomUpAllocationNode {
-    let node: (BottomUpAllocationNode|null) = this.idToNode[nodeId];
+    let node = this.idToNode[nodeId];
     if (!node) {
       const functionInfo = this.collapsedTopNodeIdToFunctionInfo[nodeId];
       node = functionInfo.bottomUpRoot();
       delete this.collapsedTopNodeIdToFunctionInfo[nodeId];
       this.idToNode[nodeId] = node;
     }
-    return /** @type {!BottomUpAllocationNode} */ node as BottomUpAllocationNode;
+    return node as BottomUpAllocationNode;
   }
 
   private serializeCaller(node: BottomUpAllocationNode): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode {
@@ -331,7 +331,7 @@ export class FunctionAllocationInfo {
     if (!this.bottomUpTree) {
       this.buildAllocationTraceTree();
     }
-    return /** @type {!BottomUpAllocationNode} */ this.bottomUpTree as BottomUpAllocationNode;
+    return this.bottomUpTree as BottomUpAllocationNode;
   }
 
   private buildAllocationTraceTree(): void {

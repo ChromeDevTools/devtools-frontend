@@ -452,7 +452,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
     let sectionToFocus: (StylePropertiesSection|null)|null = null;
     let willIterateForward = false;
-    switch (/** @type {!KeyboardEvent} */ (event as KeyboardEvent).key) {
+    switch ((event as KeyboardEvent).key) {
       case 'ArrowUp':
       case 'ArrowLeft': {
         sectionToFocus = section.previousSibling() || section.lastSibling();

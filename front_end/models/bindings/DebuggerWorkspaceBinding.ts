@@ -421,7 +421,7 @@ class ModelData {
     uiLocation = uiLocation || this.resourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || ResourceMapping.instance().jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this.#defaultMapping.rawLocationToUILocation(rawLocation);
-    return /** @type {!Workspace.UISourceCode.UILocation} */ uiLocation as Workspace.UISourceCode.UILocation;
+    return uiLocation;
   }
 
   uiLocationToRawLocations(

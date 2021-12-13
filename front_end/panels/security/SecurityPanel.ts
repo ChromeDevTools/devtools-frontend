@@ -797,11 +797,11 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   }
 
   private originGroupTitle(originGroup: OriginGroup): string {
-    return /** @type {string} */ this.originGroupTitles.get(originGroup) as string;
+    return this.originGroupTitles.get(originGroup) as string;
   }
 
   private originGroupElement(originGroup: OriginGroup): UI.TreeOutline.TreeElement {
-    return /** @type {!UI.TreeOutline.TreeElement} */ this.originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
+    return this.originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
   }
 
   private createOriginGroupElement(originGroupTitle: string): UI.TreeOutline.TreeElement {

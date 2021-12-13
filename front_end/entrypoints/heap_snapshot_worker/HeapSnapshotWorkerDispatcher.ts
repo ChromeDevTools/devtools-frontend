@@ -58,7 +58,7 @@ export class HeapSnapshotWorkerDispatcher {
     for (let i = 0; i < path.length; ++i) {
       result = result[path[i]];
     }
-    return /** @type {!Function} */ result as Function;
+    return result as Function;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

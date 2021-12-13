@@ -30,7 +30,7 @@ export class XLink extends XElement {
   <x-link href='${url}' tabindex="0" class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
   >${Platform.StringUtilities.trimMiddle(linkText, MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
-    return /** @type {!HTMLElement} */ element as HTMLElement;
+    return element as HTMLElement;
   }
 
   constructor() {

@@ -101,7 +101,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (this.timelineDataInternal) {
       return this.timelineDataInternal;
     }
-    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this.requests = [];
     this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
     if (this.model) {

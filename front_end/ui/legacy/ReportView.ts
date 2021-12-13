@@ -155,7 +155,7 @@ export class Section extends VBox {
     if (textValue && row.lastElementChild) {
       row.lastElementChild.textContent = textValue;
     }
-    return /** @type {!HTMLElement} */ row.lastElementChild as HTMLElement;
+    return row.lastElementChild as HTMLElement;
   }
 
   appendFlexedField(title: string, textValue?: string): Element {
@@ -185,12 +185,11 @@ export class Section extends VBox {
   }
 
   appendRow(): HTMLElement {
-    return /** @type {!HTMLElement} */ this.fieldList.createChild('div', 'report-row') as HTMLElement;
+    return this.fieldList.createChild('div', 'report-row') as HTMLElement;
   }
 
   appendSelectableRow(): HTMLElement {
-    return /** @type {!HTMLElement} */ this.fieldList.createChild('div', 'report-row report-row-selectable') as
-        HTMLElement;
+    return this.fieldList.createChild('div', 'report-row report-row-selectable') as HTMLElement;
   }
 
   clearContent(): void {

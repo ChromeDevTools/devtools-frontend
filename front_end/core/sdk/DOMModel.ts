@@ -1076,11 +1076,11 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   cssModel(): CSSModel {
-    return /** @type {!CSSModel} */ this.target().model(CSSModel) as CSSModel;
+    return this.target().model(CSSModel) as CSSModel;
   }
 
   overlayModel(): OverlayModel {
-    return /** @type {!OverlayModel} */ this.target().model(OverlayModel) as OverlayModel;
+    return this.target().model(OverlayModel) as OverlayModel;
   }
 
   static cancelSearch(): void {

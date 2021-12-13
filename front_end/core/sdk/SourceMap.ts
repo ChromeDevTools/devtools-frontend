@@ -303,7 +303,7 @@ export class TextSourceMap implements SourceMap {
       this.eachSection(this.parseMap.bind(this));
       this.#json = null;
     }
-    return /** @type {!Array<!SourceMapEntry>} */ this.#mappingsInternal as SourceMapEntry[];
+    return this.#mappingsInternal;
   }
 
   private reversedMappings(sourceURL: string): number[] {

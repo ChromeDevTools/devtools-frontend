@@ -284,8 +284,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
     }
 
     if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
-      const valueNode = /** @type {!Bindings.DebuggerLanguagePlugins.ValueNode} */ obj;
-      return valueNode.inspectableAddress !== undefined;
+      return obj.inspectableAddress !== undefined;
     }
 
     return false;
@@ -307,7 +306,7 @@ export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.Cont
     let memoryObj: SDK.RemoteObject.RemoteObject = obj;
 
     if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
-      const valueNode = /** @type {!Bindings.DebuggerLanguagePlugins.ValueNode} */ obj;
+      const valueNode = obj;
       address = valueNode.inspectableAddress || 0;
       const callFrame = valueNode.callFrame;
       const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({

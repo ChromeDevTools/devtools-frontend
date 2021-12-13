@@ -255,7 +255,7 @@ export class SamplingHeapProfileTypeBase extends
   }
 
   profileBeingRecorded(): SamplingHeapProfileHeader|null {
-    return /** @type {?SamplingHeapProfileHeader} */ super.profileBeingRecorded() as SamplingHeapProfileHeader | null;
+    return super.profileBeingRecorded() as SamplingHeapProfileHeader | null;
   }
 
   typeName(): string {

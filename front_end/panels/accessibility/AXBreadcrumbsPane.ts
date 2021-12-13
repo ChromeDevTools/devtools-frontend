@@ -499,11 +499,11 @@ export class AXBreadcrumb {
   }
 
   element(): HTMLElement {
-    return /** @type {!HTMLElement} */ this.elementInternal as HTMLElement;
+    return this.elementInternal;
   }
 
   nodeElement(): HTMLElement {
-    return /** @type {!HTMLElement} */ this.nodeElementInternal as HTMLElement;
+    return this.nodeElementInternal;
   }
 
   appendChild(breadcrumb: AXBreadcrumb): void {

@@ -1117,7 +1117,7 @@ export function createInput(className?: string, type?: string): HTMLInputElement
   if (type) {
     element.type = type;
   }
-  return /** @type {!HTMLInputElement} */ element as HTMLInputElement;
+  return element;
 }
 
 export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {

@@ -209,7 +209,7 @@ export class NetworkLogViewColumns {
 
   private static convertToDataGridDescriptor(columnConfig: Descriptor): DataGrid.DataGrid.ColumnDescriptor {
     const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
-    return /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ {
+    return {
       id: columnConfig.id,
       title,
       sortable: columnConfig.sortable,

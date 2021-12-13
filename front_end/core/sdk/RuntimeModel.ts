@@ -644,7 +644,6 @@ export class ExecutionContext {
       return this.evaluateGlobal(options, userGesture, awaitPromise);
     }
 
-    /** @type {!EvaluationResult} */
     if (this.runtimeModel.hasSideEffectSupport() !== false) {
       await this.runtimeModel.checkSideEffectSupport();
       if (this.runtimeModel.hasSideEffectSupport()) {

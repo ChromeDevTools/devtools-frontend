@@ -67,8 +67,7 @@ export class SameSiteCookieIssue extends Issue {
   static createIssuesFromSameSiteDetails(
       sameSiteDetails: Protocol.Audits.SameSiteCookieIssueDetails,
       issuesModel: SDK.IssuesModel.IssuesModel): SameSiteCookieIssue[] {
-    /** @type {!Array<!Issue>} */
-    const issues = [];
+    const issues: SameSiteCookieIssue[] = [];
 
     // Exclusion reasons have priority. It means a cookie was blocked. Create an issue
     // for every exclusion reason but ignore warning reasons if the cookie was blocked.

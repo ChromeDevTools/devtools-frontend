@@ -470,7 +470,7 @@ export class ElementsTreeOutline extends
       treeElement = this.lookUpTreeElement(node.parentNode);
     }
 
-    return /** @type {?ElementsTreeElement} */ treeElement as ElementsTreeElement | null;
+    return treeElement as ElementsTreeElement | null;
   }
 
   private lookUpTreeElement(node: SDK.DOMModel.DOMNode|null): UI.TreeOutline.TreeElement|null {
@@ -1197,7 +1197,7 @@ export class ElementsTreeOutline extends
     if (index >= treeElement.expandedChildrenLimit()) {
       this.setExpandedChildrenLimit(treeElement, index + 1);
     }
-    return /** @type {!ElementsTreeElement} */ treeElement.childAt(index) as ElementsTreeElement;
+    return treeElement.childAt(index) as ElementsTreeElement;
   }
 
   private visibleChildren(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {

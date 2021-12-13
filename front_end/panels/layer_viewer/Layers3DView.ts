@@ -231,8 +231,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     if (selection.type() === Type.Snapshot) {
       const snapshotWithRect = (selection as SnapshotSelection).snapshot();
       snapshotWithRect.snapshot.addReference();
-      return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ Promise.resolve(snapshotWithRect) as
-          Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
+      return Promise.resolve(snapshotWithRect);
     }
     if (selection.layer()) {
       const promise = selection.layer().snapshots()[0];
@@ -240,8 +239,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
         return promise;
       }
     }
-    return /** @type {!Promise<?SDK.PaintProfiler.SnapshotWithRect>} */ Promise.resolve(null) as
-        Promise<SDK.PaintProfiler.SnapshotWithRect|null>;
+    return Promise.resolve(null);
   }
 
   private initGL(canvas: HTMLCanvasElement): WebGLRenderingContext|null {
@@ -253,7 +251,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     gl.enable(gl.BLEND);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.enable(gl.DEPTH_TEST);
-    return /** @type {!WebGLRenderingContext} */ gl as WebGLRenderingContext;
+    return gl;
   }
 
   private createShader(type: number, script: string): void {
@@ -434,7 +432,6 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   private calculateDepthsAndVisibility(): void {
-    /** @type {!Map<string, number>} */
     this.depthByLayerId = new Map();
     let depth = 0;
     const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
@@ -449,7 +446,6 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     const queue = [root];
     this.depthByLayerId.set(root.id(), 0);
-    /** @type {!Set<!SDK.LayerTreeBase.Layer>} */
     this.visibleLayers = new Set();
     while (queue.length > 0) {
       const layer = queue.shift();
@@ -983,9 +979,7 @@ export class LayerTextureManager {
       this.setLayerTree(null);
     }
 
-    /** @type {!Map<!SDK.LayerTreeBase.Layer, !Array<!Tile>>} */
     this.tilesByLayer = new Map();
-    /** @type {!Array<!SDK.LayerTreeBase.Layer>} */
     this.queue = [];
   }
 

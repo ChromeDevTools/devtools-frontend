@@ -240,7 +240,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     UI.ARIAUtils.markAsListBox(playbackRateControl);
     UI.ARIAUtils.setAccessibleName(playbackRateControl, i18nString(UIStrings.playbackRates));
 
-    /** @type {!Array<!HTMLElement>} */
     this.#playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
       const button = (playbackRateControl.createChild('button', 'animation-playback-rate-button') as HTMLElement);

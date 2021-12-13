@@ -861,8 +861,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   }
 
   getPopoverRequest(event: Event): UI.PopoverHelper.PopoverRequest|null {
-    const span =
-        /** @type {?HTMLElement} */ (UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'span'));
+    const span = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'span');
     const row = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'tr');
     if (!row) {
       return null;

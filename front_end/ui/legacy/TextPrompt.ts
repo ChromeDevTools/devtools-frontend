@@ -167,7 +167,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     if (!this.elementInternal) {
       throw new Error('Expected an already attached element!');
     }
-    return /** @type {!HTMLElement} */ this.elementInternal as HTMLElement;
+    return this.elementInternal as HTMLElement;
   }
 
   detach(): void {

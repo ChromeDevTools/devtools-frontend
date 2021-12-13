@@ -1258,7 +1258,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
 
-    if (/** @type {!MouseEvent} */ (event as MouseEvent).metaKey) {
+    if ((event as MouseEvent).metaKey) {
       if (gridNode.selected) {
         gridNode.deselect();
       } else {
@@ -1378,13 +1378,13 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     if (gridNode.expanded) {
-      if (/** @type {!MouseEvent}*/ (event as MouseEvent).altKey) {
+      if ((event as MouseEvent).altKey) {
         gridNode.collapseRecursively();
       } else {
         gridNode.collapse();
       }
     } else {
-      if (/** @type {!MouseEvent}*/ (event as MouseEvent).altKey) {
+      if ((event as MouseEvent).altKey) {
         gridNode.expandRecursively();
       } else {
         gridNode.expand();

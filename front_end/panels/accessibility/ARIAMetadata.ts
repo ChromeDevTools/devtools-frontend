@@ -39,7 +39,6 @@ export class ARIAMetadata {
       this.attributes.set(attributeConfig.name, new Attribute(attributeConfig));
     }
 
-    /** @type {!Array<string>} */
     this.roleNames = config['roles'].map(roleConfig => roleConfig.name);
   }
 

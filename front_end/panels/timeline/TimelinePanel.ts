@@ -772,7 +772,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private async getCoverageViewWidget(): Promise<Coverage.CoverageView.CoverageView> {
     const view = (UI.ViewManager.ViewManager.instance().view('coverage') as UI.View.View);
-    return /** @type {!Coverage.CoverageView.CoverageView} */ await view.widget() as Coverage.CoverageView.CoverageView;
+    return await view.widget() as Coverage.CoverageView.CoverageView;
   }
 
   private async startRecording(): Promise<void> {
@@ -1160,8 +1160,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private frameForSelection(selection: TimelineSelection): TimelineModel.TimelineFrameModel.TimelineFrame|null {
     switch (selection.type()) {
       case TimelineSelection.Type.Frame:
-        return /** @type {!TimelineModel.TimelineFrameModel.TimelineFrame} */ selection.object() as
-            TimelineModel.TimelineFrameModel.TimelineFrame;
+        return selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame;
       case TimelineSelection.Type.Range:
         return null;
       case TimelineSelection.Type.TraceEvent:

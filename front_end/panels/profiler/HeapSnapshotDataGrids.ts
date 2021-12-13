@@ -472,7 +472,6 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
       if (selectedNode.parent) {
         selectedNode.select(true);
       } else {
-        /** @type {?HeapSnapshotGridNode} */
         this.selectedNode = selectedNode;
       }
     }

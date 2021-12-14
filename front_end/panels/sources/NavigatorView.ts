@@ -982,15 +982,11 @@ const boostOrderForNode = new WeakSet<UI.TreeOutline.TreeElement>();
 export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   private readonly nodeType: string;
   private readonly navigatorView: NavigatorView;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private hoverCallback: ((arg0: boolean) => any)|undefined;
+  private hoverCallback: ((arg0: boolean) => void)|undefined;
   node!: NavigatorTreeNode;
   private hovered?: boolean;
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => any)) {
+  constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
     super('', true);
     this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
     UI.ARIAUtils.setAccessibleName(this.listItemElement, `${title}, ${type}`);
@@ -1392,9 +1388,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rename(callback?: ((arg0: boolean) => any)): void {
+  rename(callback?: ((arg0: boolean) => void)): void {
     if (!this.treeElement) {
       return;
     }

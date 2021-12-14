@@ -1811,9 +1811,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.nodeInternal.removeNode();
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  toggleEditAsHTML(callback?: ((arg0: boolean) => any), startEditing?: boolean): void {
+  toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void {
     if (this.editing && this.htmlEditElement) {
       this.editing.commit();
       return;
@@ -2220,7 +2218,5 @@ export interface EditorHandles {
   commit: () => void;
   cancel: () => void;
   editor?: TextEditor.TextEditor.TextEditor;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  resize: () => any;
+  resize: () => void;
 }

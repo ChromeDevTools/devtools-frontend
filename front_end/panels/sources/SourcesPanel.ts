@@ -956,9 +956,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       return;
     }
     const openText = i18nString(UIStrings.openInSourcesPanel);
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const callback: () => any = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
+    const callback: () => void = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
     contextMenu.revealSection().appendItem(openText, callback);
   }
 

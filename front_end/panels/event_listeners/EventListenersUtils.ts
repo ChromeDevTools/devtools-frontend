@@ -347,8 +347,9 @@ export function frameworkEventListeners(object: SDK.RemoteObject.RemoteObject): 
       }
     }
 
+    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function checkInternalHandler(handler: any): (() => any)|null {
+    function checkInternalHandler(handler: any): (() => void)|null {
       if (handler && (typeof handler === 'function')) {
         return handler;
       }

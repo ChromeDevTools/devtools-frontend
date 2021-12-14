@@ -304,8 +304,9 @@ namespace APIImpl {
   // We cannot use the stronger `unknown` type in place of `any` in the following type definition. The type is used as
   // the right-hand side of `extends` in a few places, which doesn't narrow `unknown`. Without narrowing, overload
   // resolution and meaningful type inference of arguments break, for example.
+  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export type Callable = (...args: any) => any;
+  export type Callable = (...args: any) => void;
 
   export interface EventSink<ListenerT extends Callable> extends PublicAPI.Chrome.DevTools.EventSink<ListenerT> {
     _type: string;

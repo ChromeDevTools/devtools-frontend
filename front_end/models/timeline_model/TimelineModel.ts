@@ -122,7 +122,7 @@ export class TimelineModelImpl {
   static forEachEvent(
       events: SDK.TracingModel.Event[], onStartEvent: (arg0: SDK.TracingModel.Event) => void,
       onEndEvent: (arg0: SDK.TracingModel.Event) => void,
-      onInstantEvent?: ((arg0: SDK.TracingModel.Event, arg1: SDK.TracingModel.Event|null) => any), startTime?: number,
+      onInstantEvent?: ((arg0: SDK.TracingModel.Event, arg1: SDK.TracingModel.Event|null) => void), startTime?: number,
       endTime?: number, filter?: ((arg0: SDK.TracingModel.Event) => boolean)): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;

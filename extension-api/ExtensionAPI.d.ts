@@ -4,7 +4,7 @@
 
 export namespace Chrome {
   export namespace DevTools {
-    export interface EventSink<ListenerT extends(...args: any) => any> {
+    export interface EventSink<ListenerT extends(...args: any) => void> {
       addListener(listener: ListenerT): void;
     }
 

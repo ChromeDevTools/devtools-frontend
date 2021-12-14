@@ -2280,9 +2280,7 @@ export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
     const ascending1 = comparator.ascending1 ? 1 : -1;
     const ascending2 = comparator.ascending2 ? 1 : -1;
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function sortByNodeField(fieldAccessor: () => any, ascending: number): number {
+    function sortByNodeField(fieldAccessor: () => void, ascending: number): number {
       const valueA = fieldAccessor.call(nodeA);
       const valueB = fieldAccessor.call(nodeB);
       return valueA < valueB ? -ascending : (valueA > valueB ? ascending : 0);

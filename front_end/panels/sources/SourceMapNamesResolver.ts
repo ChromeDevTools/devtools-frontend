@@ -390,16 +390,16 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-let _scopeResolvedForTest: (...arg0: any[]) => any = function(): void {};
+let _scopeResolvedForTest: (...arg0: any[]) => void = function(): void {};
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-export const getScopeResolvedForTest = (): (...arg0: any[]) => any => {
+export const getScopeResolvedForTest = (): (...arg0: any[]) => void => {
   return _scopeResolvedForTest;
 };
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-export const setScopeResolvedForTest = (scope: (...arg0: any[]) => any): void => {
+export const setScopeResolvedForTest = (scope: (...arg0: any[]) => void): void => {
   _scopeResolvedForTest = scope;
 };

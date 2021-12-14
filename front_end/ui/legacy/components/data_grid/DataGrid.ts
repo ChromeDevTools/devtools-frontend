@@ -123,9 +123,9 @@ const elementToIndexMap = new WeakMap<Element, number>();
 export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
   private displayName: string;
-  private editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => any)|undefined;
-  private readonly deleteCallback: ((arg0: any) => any)|undefined;
-  private readonly refreshCallback: (() => any)|undefined;
+  private editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => void)|undefined;
+  private readonly deleteCallback: ((arg0: any) => void)|undefined;
+  private readonly refreshCallback: (() => void)|undefined;
   private readonly headerTable: Element;
   private headerTableHeaders: {
     [x: string]: Element,
@@ -2371,9 +2371,9 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
 export interface Parameters {
   displayName: string;
   columns: ColumnDescriptor[];
-  editCallback?: ((arg0: any, arg1: string, arg2: any, arg3: any) => any);
-  deleteCallback?: ((arg0: any) => any);
-  refreshCallback?: (() => any);
+  editCallback?: ((arg0: any, arg1: string, arg2: any, arg3: any) => void);
+  deleteCallback?: ((arg0: any) => void);
+  refreshCallback?: (() => void);
 }
 export interface ColumnDescriptor {
   id: string;

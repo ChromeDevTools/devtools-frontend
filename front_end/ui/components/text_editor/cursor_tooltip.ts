@@ -8,6 +8,7 @@ export function cursorTooltip(
     source: (state: CodeMirror.EditorState, pos: number) => Promise<(() => CodeMirror.TooltipView)|null>,
     ): CodeMirror.Extension {
   const openTooltip = CodeMirror.StateEffect.define<() => CodeMirror.TooltipView>();
+  const closeTooltip = CodeMirror.StateEffect.define<null>();
 
   const state = CodeMirror.StateField.define<null|CodeMirror.Tooltip>({
     create() {
@@ -18,11 +19,14 @@ export function cursorTooltip(
         val = null;
       }
       if (val && !tr.changes.empty) {
-        val = {pos: tr.changes.mapPos(val.pos), create: val.create, above: true};
+        const newPos = tr.changes.mapPos(val.pos, -1, CodeMirror.MapMode.TrackDel);
+        val = newPos === null ? null : {pos: newPos, create: val.create, above: true};
       }
       for (const effect of tr.effects) {
         if (effect.is(openTooltip)) {
           val = {pos: tr.state.selection.main.from, create: effect.value, above: true};
+        } else if (effect.is(closeTooltip)) {
+          val = null;
         }
       }
       return val;
@@ -60,6 +64,8 @@ export function cursorTooltip(
             }
           } else if (tooltip) {
             view.dispatch({effects: openTooltip.of(tooltip)});
+          } else {
+            view.dispatch({effects: closeTooltip.of(null)});
           }
         });
       }

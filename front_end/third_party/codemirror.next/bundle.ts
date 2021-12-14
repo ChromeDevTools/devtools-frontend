@@ -33,10 +33,10 @@ export {Range, RangeSet, RangeSetBuilder} from '@codemirror/rangeset';
 export {selectNextOccurrence} from '@codemirror/search';
 export {
   Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Compartment,
-  EditorSelection, EditorState, EditorStateConfig, Extension, Facet, Prec,
+  EditorSelection, EditorState, EditorStateConfig, Extension, Facet, MapMode
+, Prec,
   SelectionRange, StateEffect, StateEffectType, StateField, Transaction,
-  TransactionSpec
-} from '@codemirror/state';
+  TransactionSpec} from '@codemirror/state';
 export {StreamLanguage, StreamParser, StringStream} from '@codemirror/stream-parser';
 export {Line, Text, TextIterator} from '@codemirror/text';
 export { repositionTooltips,showTooltip, Tooltip, tooltips, TooltipView} from '@codemirror/tooltip';

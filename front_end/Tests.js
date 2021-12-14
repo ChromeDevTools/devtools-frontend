@@ -1562,6 +1562,16 @@
     return names.join(',');
   };
 
+  TestSuite.prototype.testSourceMapsFromExtension = function(extensionId) {
+    this.takeControl();
+    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
+    debuggerModel.sourceMapManager().addEventListener(
+        SDK.SourceMapManager.Events.SourceMapAttached, this.releaseControl.bind(this));
+
+    this.evaluateInConsole_(
+        `console.log(1) //# sourceMappingURL=chrome-extension://${extensionId}/source.map`, () => {});
+  };
+
   /**
    * Returns all loaded non anonymous uiSourceCodes.
    * @return {!Array.<!Workspace.UISourceCode>}

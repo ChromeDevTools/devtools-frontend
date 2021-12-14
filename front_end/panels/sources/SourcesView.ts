@@ -596,9 +596,6 @@ export type EventTypes = {
   [Events.EditorSelected]: Workspace.UISourceCode.UISourceCode,
 };
 
-/**
- * @interface
- */
 export interface EditorAction {
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
 }

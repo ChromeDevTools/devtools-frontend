@@ -2271,9 +2271,6 @@ export class TimelineData {
   }
 }
 
-/**
- * @interface
- */
 export interface FlameChartDataProvider {
   minimumBoundary(): number;
 

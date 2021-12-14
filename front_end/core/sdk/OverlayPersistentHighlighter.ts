@@ -360,15 +360,9 @@ export class OverlayPersistentHighlighter {
   }
 }
 
-/**
- * @interface
- */
 export interface DOMModel {
   nodeForId(nodeId: Protocol.DOM.NodeId): void;
 }
-/**
- * @interface
- */
 export interface OverlayAgent {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -415,16 +409,10 @@ export interface OverlayAgent {
   }): void;
 }
 
-/**
- * @interface
- */
 export interface Target {
   overlayAgent(): OverlayAgent;
 }
 
-/**
- * @interface
- */
 export interface OverlayModel {
   getDOMModel(): DOMModel;
 

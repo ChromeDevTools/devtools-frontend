@@ -561,9 +561,6 @@ export interface RawLocationRange {
   end: SDK.DebuggerModel.Location;
 }
 
-/**
- * @interface
- */
 export interface DebuggerSourceMapping {
   rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location): Workspace.UISourceCode.UILocation|null;
 

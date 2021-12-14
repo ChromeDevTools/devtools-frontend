@@ -94,9 +94,6 @@ export class TracingManager extends SDKModel<void> {
   }
 }
 
-/**
- * @interface
- */
 export interface TracingManagerClient {
   traceEventsCollected(events: EventPayload[]): void;
 

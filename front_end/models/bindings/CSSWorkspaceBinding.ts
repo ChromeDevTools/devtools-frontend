@@ -152,9 +152,6 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 }
 
-/**
- * @interface
- */
 export interface SourceMapping {
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null;
 

@@ -159,9 +159,6 @@ export class QueryTerm {
   }
 }
 
-/**
- * @interface
- */
 export interface SearchResult {
   label(): string;
 
@@ -176,9 +173,6 @@ export interface SearchResult {
   matchRevealable(index: number): Object;
 }
 
-/**
- * @interface
- */
 export interface SearchScope {
   performSearch(
       searchConfig: SearchConfig, progress: Common.Progress.Progress,

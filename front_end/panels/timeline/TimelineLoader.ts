@@ -256,9 +256,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
 export const TransferChunkLengthBytes = 5000000;
 
-/**
- * @interface
- */
 export interface Client {
   loadingStarted(): void;
 

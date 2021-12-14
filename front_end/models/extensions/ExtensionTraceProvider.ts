@@ -42,9 +42,6 @@ export class ExtensionTraceProvider {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 let _lastSessionId = 0;
 
-/**
- * @interface
- */
 export interface TracingSession {
   complete(url: string, timeOffsetMicroseconds: number): void;
 }

@@ -53,29 +53,29 @@ export interface AccessibilityTreeNodeData {
 
 export class AccessibilityTreeNode extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-accessibility-tree-node`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
-  private ignored = true;
-  private name = '';
-  private role = '';
-  private properties: Protocol.Accessibility.AXProperty[] = [];
+  #ignored = true;
+  #name = '';
+  #role = '';
+  #properties: Protocol.Accessibility.AXProperty[] = [];
 
   set data(data: AccessibilityTreeNodeData) {
-    this.ignored = data.ignored;
-    this.name = data.name;
-    this.role = data.role;
-    this.properties = data.properties;
-    this.render();
+    this.#ignored = data.ignored;
+    this.#name = data.name;
+    this.#role = data.role;
+    this.#properties = data.properties;
+    this.#render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [accessibilityTreeNodeStyles];
+    this.#shadow.adoptedStyleSheets = [accessibilityTreeNodeStyles];
   }
 
-  private async render(): Promise<void> {
-    const role = LitHtml.html`<span class='role-value'>${truncateTextIfNeeded(this.role)}</span>`;
-    const name = LitHtml.html`"<span class='attribute-value'>${this.name}</span>"`;
-    const properties = this.properties.map(
+  async #render(): Promise<void> {
+    const role = LitHtml.html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
+    const name = LitHtml.html`"<span class='attribute-value'>${this.#name}</span>"`;
+    const properties = this.#properties.map(
         ({name, value}) => isPrintable(value.type) ?
             LitHtml.html`&nbsp<span class='attribute-name'>${name}</span>:&nbsp<span class='attribute-value'>${
                 value.value}</span>` :
@@ -84,10 +84,10 @@ export class AccessibilityTreeNode extends HTMLElement {
     await Coordinator.RenderCoordinator.RenderCoordinator.instance().write('Accessibility node render', () => {
       // clang-format off
       LitHtml.render(
-        this.ignored ?
+        this.#ignored ?
           LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>` :
           LitHtml.html`${role}&nbsp${name}${properties}`,
-        this.shadow,
+        this.#shadow,
         {host: this});
       // clang-format on
     });

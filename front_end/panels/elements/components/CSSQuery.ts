@@ -21,44 +21,44 @@ export interface CSSQueryData {
 export class CSSQuery extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-query`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private queryPrefix: string = '';
-  private queryName?: string;
-  private queryText: string = '';
-  private onQueryTextClick?: (event: Event) => void;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #queryPrefix: string = '';
+  #queryName?: string;
+  #queryText: string = '';
+  #onQueryTextClick?: (event: Event) => void;
 
   set data(data: CSSQueryData) {
-    this.queryPrefix = data.queryPrefix;
-    this.queryName = data.queryName;
-    this.queryText = data.queryText;
-    this.onQueryTextClick = data.onQueryTextClick;
-    this.render();
+    this.#queryPrefix = data.queryPrefix;
+    this.#queryName = data.queryName;
+    this.#queryText = data.queryText;
+    this.#onQueryTextClick = data.onQueryTextClick;
+    this.#render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [
+    this.#shadow.adoptedStyleSheets = [
       cssQueryStyles,
       inspectorCommonStyles,
     ];
   }
 
-  private render(): void {
+  #render(): void {
     const queryClasses = LitHtml.Directives.classMap({
       query: true,
-      editable: Boolean(this.onQueryTextClick),
+      editable: Boolean(this.#onQueryTextClick),
     });
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const queryText = html`
-      <span class="query-text" @click=${this.onQueryTextClick}>${this.queryText}</span>
+      <span class="query-text" @click=${this.#onQueryTextClick}>${this.#queryText}</span>
     `;
 
     render(html`
       <div class=${queryClasses}>
-        ${this.queryPrefix ? html`<span>${this.queryPrefix + ' '}</span>` : LitHtml.nothing}${this.queryName ? html`<span>${this.queryName + ' '}</span>` : LitHtml.nothing}${queryText}
+        ${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : LitHtml.nothing}${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : LitHtml.nothing}${queryText}
       </div>
-    `, this.shadow, {
+    `, this.#shadow, {
       host: this,
     });
     // clang-format on

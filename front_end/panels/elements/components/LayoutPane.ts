@@ -95,27 +95,27 @@ export interface LayoutPaneData {
 
 export class LayoutPane extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-layout-pane`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private settings: Readonly<Setting[]> = [];
-  private gridElements: Readonly<LayoutElement[]> = [];
-  private flexContainerElements?: Readonly<LayoutElement[]> = [];
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #settings: Readonly<Setting[]> = [];
+  #gridElements: Readonly<LayoutElement[]> = [];
+  #flexContainerElements?: Readonly<LayoutElement[]> = [];
 
   constructor() {
     super();
-    this.shadow.adoptedStyleSheets = [
+    this.#shadow.adoptedStyleSheets = [
       layoutPaneStyles,
       inspectorCommonStyles,
     ];
   }
 
   set data(data: LayoutPaneData) {
-    this.settings = data.settings;
-    this.gridElements = data.gridElements;
-    this.flexContainerElements = data.flexContainerElements;
-    this.render();
+    this.#settings = data.settings;
+    this.#gridElements = data.gridElements;
+    this.#flexContainerElements = data.flexContainerElements;
+    this.#render();
   }
 
-  private onSummaryKeyDown(event: KeyboardEvent): void {
+  #onSummaryKeyDown(event: KeyboardEvent): void {
     if (!event.target) {
       return;
     }
@@ -134,109 +134,109 @@ export class LayoutPane extends HTMLElement {
     }
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <details open>
-        <summary class="header" @keydown=${this.onSummaryKeyDown}>
+        <summary class="header" @keydown=${this.#onSummaryKeyDown}>
           ${i18nString(UIStrings.grid)}
         </summary>
         <div class="content-section">
           <h3 class="content-section-title">${i18nString(UIStrings.overlayDisplaySettings)}</h3>
           <div class="select-settings">
-            ${this.getEnumSettings().map(setting => this.renderEnumSetting(setting))}
+            ${this.#getEnumSettings().map(setting => this.#renderEnumSetting(setting))}
           </div>
           <div class="checkbox-settings">
-            ${this.getBooleanSettings().map(setting => this.renderBooleanSetting(setting))}
+            ${this.#getBooleanSettings().map(setting => this.#renderBooleanSetting(setting))}
           </div>
         </div>
-        ${this.gridElements ?
+        ${this.#gridElements ?
           html`<div class="content-section">
             <h3 class="content-section-title">
-              ${this.gridElements.length ? i18nString(UIStrings.gridOverlays) : i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
+              ${this.#gridElements.length ? i18nString(UIStrings.gridOverlays) : i18nString(UIStrings.noGridLayoutsFoundOnThisPage)}
             </h3>
-            ${this.gridElements.length ?
+            ${this.#gridElements.length ?
               html`<div class="elements">
-                ${this.gridElements.map(element => this.renderElement(element))}
+                ${this.#gridElements.map(element => this.#renderElement(element))}
               </div>` : ''}
           </div>` : ''}
       </details>
-      ${this.flexContainerElements !== undefined ?
+      ${this.#flexContainerElements !== undefined ?
         html`
         <details open>
-          <summary class="header" @keydown=${this.onSummaryKeyDown}>
+          <summary class="header" @keydown=${this.#onSummaryKeyDown}>
             ${i18nString(UIStrings.flexbox)}
           </summary>
-          ${this.flexContainerElements ?
+          ${this.#flexContainerElements ?
             html`<div class="content-section">
               <h3 class="content-section-title">
-                ${this.flexContainerElements.length ? i18nString(UIStrings.flexboxOverlays) : i18nString(UIStrings.noFlexboxLayoutsFoundOnThisPage)}
+                ${this.#flexContainerElements.length ? i18nString(UIStrings.flexboxOverlays) : i18nString(UIStrings.noFlexboxLayoutsFoundOnThisPage)}
               </h3>
-              ${this.flexContainerElements.length ?
+              ${this.#flexContainerElements.length ?
                 html`<div class="elements">
-                  ${this.flexContainerElements.map(element => this.renderElement(element))}
+                  ${this.#flexContainerElements.map(element => this.#renderElement(element))}
                 </div>` : ''}
             </div>` : ''}
         </details>
         `
       : ''}
-    `, this.shadow, {
+    `, this.#shadow, {
       host: this,
     });
     // clang-format on
   }
 
-  private getEnumSettings(): EnumSetting[] {
-    return this.settings.filter(isEnumSetting);
+  #getEnumSettings(): EnumSetting[] {
+    return this.#settings.filter(isEnumSetting);
   }
 
-  private getBooleanSettings(): BooleanSetting[] {
-    return this.settings.filter(isBooleanSetting);
+  #getBooleanSettings(): BooleanSetting[] {
+    return this.#settings.filter(isBooleanSetting);
   }
 
-  private onBooleanSettingChange(setting: BooleanSetting, event: HTMLInputElementEvent): void {
+  #onBooleanSettingChange(setting: BooleanSetting, event: HTMLInputElementEvent): void {
     event.preventDefault();
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.checked));
   }
 
-  private onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent): void {
+  #onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent): void {
     event.preventDefault();
     this.dispatchEvent(new SettingChangedEvent(setting.name, event.target.value));
   }
 
-  private onElementToggle(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onElementToggle(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.toggle(event.target.checked);
   }
 
-  private onElementClick(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onElementClick(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.reveal();
   }
 
-  private onColorChange(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onColorChange(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.setColor(event.target.value);
-    this.render();
+    this.#render();
   }
 
-  private onElementMouseEnter(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onElementMouseEnter(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.highlight();
   }
 
-  private onElementMouseLeave(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onElementMouseLeave(element: LayoutElement, event: HTMLInputElementEvent): void {
     event.preventDefault();
     element.hideHighlight();
   }
 
-  private renderElement(element: LayoutElement): LitHtml.TemplateResult {
-    const onElementToggle = this.onElementToggle.bind(this, element);
-    const onElementClick = this.onElementClick.bind(this, element);
-    const onColorChange = this.onColorChange.bind(this, element);
-    const onMouseEnter = this.onElementMouseEnter.bind(this, element);
-    const onMouseLeave = this.onElementMouseLeave.bind(this, element);
+  #renderElement(element: LayoutElement): LitHtml.TemplateResult {
+    const onElementToggle = this.#onElementToggle.bind(this, element);
+    const onElementClick = this.#onElementClick.bind(this, element);
+    const onColorChange = this.#onColorChange.bind(this, element);
+    const onMouseEnter = this.#onElementMouseEnter.bind(this, element);
+    const onMouseLeave = this.#onElementMouseLeave.bind(this, element);
     const onColorLabelKeyUp = (event: KeyboardEvent): void => {
       // Handle Enter and Space events to make the color picker accessible.
       if (event.key !== 'Enter' && event.key !== ' ') {
@@ -275,16 +275,16 @@ export class LayoutPane extends HTMLElement {
     // clang-format on
   }
 
-  private renderBooleanSetting(setting: BooleanSetting): LitHtml.TemplateResult {
-    const onBooleanSettingChange = this.onBooleanSettingChange.bind(this, setting);
+  #renderBooleanSetting(setting: BooleanSetting): LitHtml.TemplateResult {
+    const onBooleanSettingChange = this.#onBooleanSettingChange.bind(this, setting);
     return html`<label data-boolean-setting="true" class="checkbox-label" title=${setting.title}>
       <input data-input="true" type="checkbox" .checked=${setting.value} @change=${onBooleanSettingChange} />
       <span data-label="true">${setting.title}</span>
     </label>`;
   }
 
-  private renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
-    const onEnumSettingChange = this.onEnumSettingChange.bind(this, setting);
+  #renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
+    const onEnumSettingChange = this.#onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
       <select class="chrome-select" data-input="true" @change=${onEnumSettingChange}>
         ${

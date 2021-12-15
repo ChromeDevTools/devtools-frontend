@@ -17,40 +17,40 @@ export interface NodeTextData {
 export class NodeText extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-node-text`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private nodeTitle: string = '';
-  private nodeId?: string = '';
-  private nodeClasses?: string[] = [];
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #nodeTitle: string = '';
+  #nodeId?: string = '';
+  #nodeClasses?: string[] = [];
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [nodeTextStyles];
+    this.#shadow.adoptedStyleSheets = [nodeTextStyles];
   }
 
   set data(data: NodeTextData) {
-    this.nodeTitle = data.nodeTitle;
-    this.nodeId = data.nodeId;
-    this.nodeClasses = data.nodeClasses;
-    this.render();
+    this.#nodeTitle = data.nodeTitle;
+    this.#nodeId = data.nodeId;
+    this.#nodeClasses = data.nodeClasses;
+    this.#render();
   }
 
-  private render(): void {
-    const hasId = Boolean(this.nodeId);
-    const hasNodeClasses = Boolean(this.nodeClasses && this.nodeClasses.length > 0);
+  #render(): void {
+    const hasId = Boolean(this.#nodeId);
+    const hasNodeClasses = Boolean(this.#nodeClasses && this.#nodeClasses.length > 0);
 
     const parts = [
-      html`<span class="node-label-name">${this.nodeTitle}</span>`,
+      html`<span class="node-label-name">${this.#nodeTitle}</span>`,
     ];
 
-    if (this.nodeId) {
+    if (this.#nodeId) {
       const classes = LitHtml.Directives.classMap({
         'node-label-id': true,
         'node-multiple-descriptors': hasNodeClasses,
       });
-      parts.push(html`<span class=${classes}>#${CSS.escape(this.nodeId)}</span>`);
+      parts.push(html`<span class=${classes}>#${CSS.escape(this.#nodeId)}</span>`);
     }
 
-    if (this.nodeClasses && this.nodeClasses.length > 0) {
-      const text = this.nodeClasses.map(c => `.${CSS.escape(c)}`).join('');
+    if (this.#nodeClasses && this.#nodeClasses.length > 0) {
+      const text = this.#nodeClasses.map(c => `.${CSS.escape(c)}`).join('');
       const classes = LitHtml.Directives.classMap({
         'node-label-class': true,
         'node-multiple-descriptors': hasId,
@@ -62,7 +62,7 @@ export class NodeText extends HTMLElement {
     // clang-format off
     render(html`
       ${parts}
-    `, this.shadow, {
+    `, this.#shadow, {
       host: this,
     });
     // clang-format on

@@ -38,27 +38,27 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SameSiteCookieIs
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class SameSiteCookieIssue extends Issue {
-  private issueDetails: Protocol.Audits.SameSiteCookieIssueDetails;
+  #issueDetails: Protocol.Audits.SameSiteCookieIssueDetails;
 
   constructor(
       code: string, issueDetails: Protocol.Audits.SameSiteCookieIssueDetails,
       issuesModel: SDK.IssuesModel.IssuesModel) {
     super(code, issuesModel);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
-  private cookieId(): string {
-    if (this.issueDetails.cookie) {
-      const {domain, path, name} = this.issueDetails.cookie;
+  #cookieId(): string {
+    if (this.#issueDetails.cookie) {
+      const {domain, path, name} = this.#issueDetails.cookie;
       const cookieId = `${domain};${path};${name}`;
       return cookieId;
     }
-    return this.issueDetails.rawCookieLine ?? 'no-cookie-info';
+    return this.#issueDetails.rawCookieLine ?? 'no-cookie-info';
   }
 
   primaryKey(): string {
-    const requestId = this.issueDetails.request ? this.issueDetails.request.requestId : 'no-request';
-    return `${this.code()}-(${this.cookieId()})-(${requestId})`;
+    const requestId = this.#issueDetails.request ? this.#issueDetails.request.requestId : 'no-request';
+    return `${this.code()}-(${this.#cookieId()})-(${requestId})`;
   }
 
   /**
@@ -162,22 +162,22 @@ export class SameSiteCookieIssue extends Issue {
   }
 
   cookies(): Iterable<Protocol.Audits.AffectedCookie> {
-    if (this.issueDetails.cookie) {
-      return [this.issueDetails.cookie];
+    if (this.#issueDetails.cookie) {
+      return [this.#issueDetails.cookie];
     }
     return [];
   }
 
   rawCookieLines(): Iterable<string> {
-    if (this.issueDetails.rawCookieLine) {
-      return [this.issueDetails.rawCookieLine];
+    if (this.#issueDetails.rawCookieLine) {
+      return [this.#issueDetails.rawCookieLine];
     }
     return [];
   }
 
   requests(): Iterable<Protocol.Audits.AffectedRequest> {
-    if (this.issueDetails.request) {
-      return [this.issueDetails.request];
+    if (this.#issueDetails.request) {
+      return [this.#issueDetails.request];
     }
     return [];
   }
@@ -196,11 +196,11 @@ export class SameSiteCookieIssue extends Issue {
 
   isCausedByThirdParty(): boolean {
     const topFrame = SDK.FrameManager.FrameManager.instance().getTopFrame();
-    return isCausedByThirdParty(topFrame, this.issueDetails.cookieUrl);
+    return isCausedByThirdParty(topFrame, this.#issueDetails.cookieUrl);
   }
 
   getKind(): IssueKind {
-    if (this.issueDetails.cookieExclusionReasons?.length > 0) {
+    if (this.#issueDetails.cookieExclusionReasons?.length > 0) {
       return IssueKind.PageError;
     }
     return IssueKind.BreakingChange;

@@ -9,9 +9,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 let contrastCheckTriggerInstance: ContrastCheckTrigger|null = null;
 
 export class ContrastCheckTrigger {
-  private pageLoadListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
+  #pageLoadListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
       new WeakMap();
-  private frameAddedListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
+  #frameAddedListeners: WeakMap<SDK.ResourceTreeModel.ResourceTreeModel, Common.EventTarget.EventDescriptor> =
       new WeakMap();
 
   constructor() {
@@ -27,40 +27,40 @@ export class ContrastCheckTrigger {
   }
 
   async modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): Promise<void> {
-    this.pageLoadListeners.set(
+    this.#pageLoadListeners.set(
         resourceTreeModel,
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this.pageLoaded, this));
-    this.frameAddedListeners.set(
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this.#pageLoaded, this));
+    this.#frameAddedListeners.set(
         resourceTreeModel,
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this.frameAdded, this));
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this.#frameAdded, this));
   }
 
   modelRemoved(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
-    const pageLoadListener = this.pageLoadListeners.get(resourceTreeModel);
+    const pageLoadListener = this.#pageLoadListeners.get(resourceTreeModel);
     if (pageLoadListener) {
       Common.EventTarget.removeEventListeners([pageLoadListener]);
     }
-    const frameAddedListeners = this.frameAddedListeners.get(resourceTreeModel);
+    const frameAddedListeners = this.#frameAddedListeners.get(resourceTreeModel);
     if (frameAddedListeners) {
       Common.EventTarget.removeEventListeners([frameAddedListeners]);
     }
   }
 
-  private checkContrast(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
+  #checkContrast(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {
     if (!Root.Runtime.experiments.isEnabled('contrastIssues')) {
       return;
     }
     resourceTreeModel.target().auditsAgent().invoke_checkContrast({});
   }
 
-  private pageLoaded(
-      event: Common.EventTarget
-          .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>): void {
+  #pageLoaded(event: Common.EventTarget
+                  .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>):
+      void {
     const {resourceTreeModel} = event.data;
-    this.checkContrast(resourceTreeModel);
+    this.#checkContrast(resourceTreeModel);
   }
 
-  private async frameAdded(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
+  async #frameAdded(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>):
       Promise<void> {
     if (!Root.Runtime.experiments.isEnabled('contrastIssues')) {
       return;
@@ -74,7 +74,7 @@ export class ContrastCheckTrigger {
     const response = await frame.resourceTreeModel().target().runtimeAgent().invoke_evaluate(
         {expression: 'document.readyState', returnByValue: true});
     if (response.result && response.result.value === 'complete') {
-      this.checkContrast(frame.resourceTreeModel());
+      this.#checkContrast(frame.resourceTreeModel());
     }
   }
 }

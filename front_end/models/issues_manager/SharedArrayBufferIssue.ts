@@ -20,12 +20,12 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBuffe
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SharedArrayBufferIssue extends Issue {
-  private issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
+  #issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.SharedArrayBufferIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const umaCode = [Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, issueDetails.type].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue, umaCode}, issuesModel);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -33,7 +33,7 @@ export class SharedArrayBufferIssue extends Issue {
   }
 
   details(): Protocol.Audits.SharedArrayBufferIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription {
@@ -47,11 +47,11 @@ export class SharedArrayBufferIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.#issueDetails);
   }
 
   getKind(): IssueKind {
-    if (this.issueDetails.isWarning) {
+    if (this.#issueDetails.isWarning) {
       return IssueKind.BreakingChange;
     }
     return IssueKind.PageError;

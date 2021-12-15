@@ -99,13 +99,13 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
 }
 
 export class CorsIssue extends Issue<IssueCode> {
-  private issueDetails: Protocol.Audits.CorsIssueDetails;
+  #issueDetails: Protocol.Audits.CorsIssueDetails;
 
   constructor(
       issueDetails: Protocol.Audits.CorsIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
       issueId: Protocol.Audits.IssueId|undefined) {
     super(getIssueCode(issueDetails), issuesModel, issueId);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -113,11 +113,11 @@ export class CorsIssue extends Issue<IssueCode> {
   }
 
   details(): Protocol.Audits.CorsIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    switch (getIssueCode(this.issueDetails)) {
+    switch (getIssueCode(this.#issueDetails)) {
       case IssueCode.InsecurePrivateNetwork:
         return {
           file: 'corsInsecurePrivateNetwork.md',
@@ -231,15 +231,15 @@ export class CorsIssue extends Issue<IssueCode> {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.#issueDetails);
   }
 
   getKind(): IssueKind {
-    if (this.issueDetails.isWarning &&
-        (this.issueDetails.corsErrorStatus.corsError === Protocol.Network.CorsError.InsecurePrivateNetwork ||
-         this.issueDetails.corsErrorStatus.corsError ===
+    if (this.#issueDetails.isWarning &&
+        (this.#issueDetails.corsErrorStatus.corsError === Protocol.Network.CorsError.InsecurePrivateNetwork ||
+         this.#issueDetails.corsErrorStatus.corsError ===
              Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork ||
-         this.issueDetails.corsErrorStatus.corsError ===
+         this.#issueDetails.corsErrorStatus.corsError ===
              Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork)) {
       return IssueKind.BreakingChange;
     }

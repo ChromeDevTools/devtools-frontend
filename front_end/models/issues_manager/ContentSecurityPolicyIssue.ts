@@ -36,7 +36,7 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ContentSecurityP
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class ContentSecurityPolicyIssue extends Issue {
-  private issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
+  #issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails;
 
   constructor(
       issueDetails: Protocol.Audits.ContentSecurityPolicyIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
@@ -46,7 +46,7 @@ export class ContentSecurityPolicyIssue extends Issue {
       issueDetails.contentSecurityPolicyViolationType,
     ].join('::');
     super(issueCode, issuesModel, issueId);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -54,7 +54,7 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails, [
+    return JSON.stringify(this.#issueDetails, [
       'blockedURL',
       'contentSecurityPolicyViolationType',
       'violatedDirective',
@@ -68,7 +68,7 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.issueDetails.contentSecurityPolicyViolationType);
+    const description = issueDescriptions.get(this.#issueDetails.contentSecurityPolicyViolationType);
     if (!description) {
       return null;
     }
@@ -76,11 +76,11 @@ export class ContentSecurityPolicyIssue extends Issue {
   }
 
   details(): Protocol.Audits.ContentSecurityPolicyIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getKind(): IssueKind {
-    if (this.issueDetails.isReportOnly) {
+    if (this.#issueDetails.isReportOnly) {
       return IssueKind.Improvement;
     }
     return IssueKind.PageError;

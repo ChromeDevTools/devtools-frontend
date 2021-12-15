@@ -20,21 +20,21 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/TrustedWebActivi
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class TrustedWebActivityIssue extends Issue {
-  private issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails;
+  #issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.TrustedWebActivityIssueDetails) {
     const issueCode =
         [Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue, issueDetails.violationType].join('::');
     super(issueCode);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   details(): Protocol.Audits.TrustedWebActivityIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.issueDetails.violationType);
+    const description = issueDescriptions.get(this.#issueDetails.violationType);
     if (!description) {
       return null;
     }
@@ -46,7 +46,7 @@ export class TrustedWebActivityIssue extends Issue {
   }
 
   primaryKey(): string {
-    return `${Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue}-${JSON.stringify(this.issueDetails)}`;
+    return `${Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue}-${JSON.stringify(this.#issueDetails)}`;
   }
 
   getKind(): IssueKind {

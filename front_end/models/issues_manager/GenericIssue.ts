@@ -20,7 +20,7 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts'
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class GenericIssue extends Issue {
-  private issueDetails: Protocol.Audits.GenericIssueDetails;
+  #issueDetails: Protocol.Audits.GenericIssueDetails;
 
   constructor(
       issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
@@ -30,7 +30,7 @@ export class GenericIssue extends Issue {
       issueDetails.errorType,
     ].join('::');
     super(issueCode, issuesModel, issueId);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -38,11 +38,11 @@ export class GenericIssue extends Issue {
   }
 
   primaryKey(): string {
-    return `${this.code()}-(${this.issueDetails.frameId})`;
+    return `${this.code()}-(${this.#issueDetails.frameId})`;
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    const description = issueDescriptions.get(this.issueDetails.errorType);
+    const description = issueDescriptions.get(this.#issueDetails.errorType);
     if (!description) {
       return null;
     }
@@ -50,7 +50,7 @@ export class GenericIssue extends Issue {
   }
 
   details(): Protocol.Audits.GenericIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getKind(): IssueKind {

@@ -20,13 +20,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class WasmCrossOriginModuleSharingIssue extends
     Issue<Protocol.Audits.InspectorIssueCode.WasmCrossOriginModuleSharingIssue> {
-  private issueDetails: Protocol.Audits.WasmCrossOriginModuleSharingIssueDetails;
+  #issueDetails: Protocol.Audits.WasmCrossOriginModuleSharingIssueDetails;
 
   constructor(
       issueDetails: Protocol.Audits.WasmCrossOriginModuleSharingIssueDetails,
       issuesModel: SDK.IssuesModel.IssuesModel) {
     super(Protocol.Audits.InspectorIssueCode.WasmCrossOriginModuleSharingIssue, issuesModel);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -34,7 +34,7 @@ export class WasmCrossOriginModuleSharingIssue extends
   }
 
   details(): Protocol.Audits.WasmCrossOriginModuleSharingIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription|null {
@@ -48,11 +48,11 @@ export class WasmCrossOriginModuleSharingIssue extends
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.#issueDetails);
   }
 
   getKind(): IssueKind {
-    return this.issueDetails.isWarning ? IssueKind.BreakingChange : IssueKind.PageError;
+    return this.#issueDetails.isWarning ? IssueKind.BreakingChange : IssueKind.PageError;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

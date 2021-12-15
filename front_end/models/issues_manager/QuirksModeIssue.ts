@@ -19,17 +19,17 @@ const str_ = i18n.i18n.registerUIStrings('models/issues_manager/QuirksModeIssue.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class QuirksModeIssue extends Issue {
-  private issueDetails: Protocol.Audits.QuirksModeIssueDetails;
+  #issueDetails: Protocol.Audits.QuirksModeIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.QuirksModeIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     const mode = issueDetails.isLimitedQuirksMode ? 'LimitedQuirksMode' : 'QuirksMode';
     const umaCode = [Protocol.Audits.InspectorIssueCode.QuirksModeIssue, mode].join('::');
     super({code: Protocol.Audits.InspectorIssueCode.QuirksModeIssue, umaCode}, issuesModel);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   primaryKey(): string {
-    return `${this.code()}-(${this.issueDetails.documentNodeId})-(${this.issueDetails.url})`;
+    return `${this.code()}-(${this.#issueDetails.documentNodeId})-(${this.#issueDetails.url})`;
   }
 
   getCategory(): IssueCategory {
@@ -37,7 +37,7 @@ export class QuirksModeIssue extends Issue {
   }
 
   details(): Protocol.Audits.QuirksModeIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription {

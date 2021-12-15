@@ -27,11 +27,11 @@ export enum IssueCode {
 }
 
 export class NavigatorUserAgentIssue extends Issue<IssueCode> {
-  private issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails;
+  #issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.NavigatorUserAgentIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(IssueCode.NavigatorUserAgentIssue, issuesModel);
-    this.issueDetails = issueDetails;
+    this.#issueDetails = issueDetails;
   }
 
   getCategory(): IssueCategory {
@@ -39,7 +39,7 @@ export class NavigatorUserAgentIssue extends Issue<IssueCode> {
   }
 
   details(): Protocol.Audits.NavigatorUserAgentIssueDetails {
-    return this.issueDetails;
+    return this.#issueDetails;
   }
 
   getDescription(): MarkdownIssueDescription|null {
@@ -53,14 +53,14 @@ export class NavigatorUserAgentIssue extends Issue<IssueCode> {
   }
 
   sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
-    if (this.issueDetails.location) {
-      return [this.issueDetails.location];
+    if (this.#issueDetails.location) {
+      return [this.#issueDetails.location];
     }
     return [];
   }
 
   primaryKey(): string {
-    return JSON.stringify(this.issueDetails);
+    return JSON.stringify(this.#issueDetails);
   }
 
   getKind(): IssueKind {
@@ -69,7 +69,7 @@ export class NavigatorUserAgentIssue extends Issue<IssueCode> {
 
   isCausedByThirdParty(): boolean {
     const topFrame = SDK.FrameManager.FrameManager.instance().getTopFrame();
-    return isCausedByThirdParty(topFrame, this.issueDetails.url);
+    return isCausedByThirdParty(topFrame, this.#issueDetails.url);
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

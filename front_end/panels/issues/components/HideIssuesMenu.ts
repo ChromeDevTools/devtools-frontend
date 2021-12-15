@@ -29,18 +29,18 @@ export interface HiddenIssuesMenuData {
 
 export class HideIssuesMenu extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-hide-issues-menu`;
-  private readonly shadow: ShadowRoot = this.attachShadow({mode: 'open'});
-  private menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
-  private menuItemAction: () => void = () => {};
+  readonly #shadow: ShadowRoot = this.attachShadow({mode: 'open'});
+  #menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
+  #menuItemAction: () => void = () => {};
 
   set data(data: HiddenIssuesMenuData) {
-    this.menuItemLabel = data.menuItemLabel;
-    this.menuItemAction = data.menuItemAction;
-    this.render();
+    this.#menuItemLabel = data.menuItemLabel;
+    this.#menuItemAction = data.menuItemAction;
+    this.#render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [hideIssuesMenuStyles];
+    this.#shadow.adoptedStyleSheets = [hideIssuesMenuStyles];
   }
 
   onMenuOpen(event: Event): void {
@@ -51,12 +51,12 @@ export class HideIssuesMenu extends HTMLElement {
         this.classList.toggle('has-context-menu-opened', false);
       },
     });
-    contextMenu.headerSection().appendItem(this.menuItemLabel, () => this.menuItemAction());
+    contextMenu.headerSection().appendItem(this.#menuItemLabel, () => this.#menuItemAction());
     contextMenu.show();
     this.classList.toggle('has-context-menu-opened', true);
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       LitHtml.render(LitHtml.html`
@@ -66,7 +66,7 @@ export class HideIssuesMenu extends HTMLElement {
         >
         </${IconButton.Icon.Icon.litTagName}>
         </button>
-      `, this.shadow, {host: this});
+      `, this.#shadow, {host: this});
     }
   }
 

@@ -1,0 +1,13 @@
+{
+"version": 3,
+"file": "worker-relative-sourcemap.js",
+"lineCount": 2,
+"mappings": "",
+"sources": [
+  "worker-relative-sourcemap.ts"
+],
+"sourcesContent": [
+  "\nconsole.log('Worker');\n"
+],
+"names": []
+}

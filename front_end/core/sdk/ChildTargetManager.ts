@@ -143,6 +143,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
 
     const target = this.#targetManager.createTarget(
         targetInfo.targetId, targetName, type, this.#parentTarget, sessionId, undefined, undefined, targetInfo);
+    target.setInspectedURL(this.#parentTarget.inspectedURL());
     this.#childTargetsBySessionId.set(sessionId, target);
     this.#childTargetsById.set(target.id(), target);
 

@@ -80,6 +80,8 @@ copy_to_gen("sources") {
     "wasm/wasm-with-sourcemap.wasm",
     "wasm/with-sourcemap.ll",
     "wasm/worker-stepping-with-state-and-threads.js",
+    "worker-relative-sourcemap.html",
+    "worker-relative-sourcemap.js.map",
     "worker1.js",
     "worker2.js",
   ]

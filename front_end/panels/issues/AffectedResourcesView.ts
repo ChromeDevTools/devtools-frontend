@@ -62,27 +62,27 @@ export interface CreateRequestCellOptions {
  * as well as machinery for resolving request and frame ids to SDK objects.
  */
 export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
-  private readonly parentView: IssueView;
+  readonly #parentView: IssueView;
   protected issue: AggregatedIssue;
   protected affectedResourcesCountElement: HTMLElement;
   protected affectedResources: HTMLElement;
-  private affectedResourcesCount: number;
-  private frameListeners: Common.EventTarget.EventDescriptor[];
-  private unresolvedFrameIds: Set<string>;
+  #affectedResourcesCount: number;
+  #frameListeners: Common.EventTarget.EventDescriptor[];
+  #unresolvedFrameIds: Set<string>;
   protected requestResolver: Logs.RequestResolver.RequestResolver;
 
   constructor(parent: IssueView, issue: AggregatedIssue) {
     super();
-    this.parentView = parent;
+    this.#parentView = parent;
     this.issue = issue;
     this.toggleOnClick = true;
     this.affectedResourcesCountElement = this.createAffectedResourcesCounter();
 
     this.affectedResources = this.createAffectedResources();
-    this.affectedResourcesCount = 0;
+    this.#affectedResourcesCount = 0;
     this.requestResolver = new Logs.RequestResolver.RequestResolver();
-    this.frameListeners = [];
-    this.unresolvedFrameIds = new Set();
+    this.#frameListeners = [];
+    this.#unresolvedFrameIds = new Set();
   }
 
   /**
@@ -113,14 +113,14 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   protected abstract getResourceNameWithCount(count: number): string;
 
   protected updateAffectedResourceCount(count: number): void {
-    this.affectedResourcesCount = count;
+    this.#affectedResourcesCount = count;
     this.affectedResourcesCountElement.textContent = this.getResourceNameWithCount(count);
-    this.hidden = this.affectedResourcesCount === 0;
-    this.parentView.updateAffectedResourceVisibility();
+    this.hidden = this.#affectedResourcesCount === 0;
+    this.#parentView.updateAffectedResourceVisibility();
   }
 
   isEmpty(): boolean {
-    return this.affectedResourcesCount === 0;
+    return this.#affectedResourcesCount === 0;
   }
 
   clear(): void {
@@ -129,7 +129,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
   }
 
   expandIfOneResource(): void {
-    if (this.affectedResourcesCount === 1) {
+    if (this.#affectedResourcesCount === 1) {
       this.expand();
     }
   }
@@ -139,32 +139,31 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
    * a listener is installed that takes care of updating the view if the frame is added. This is useful if the issue is
    * added before the frame gets reported.
    */
-  private resolveFrameId(frameId: Protocol.Page.FrameId): SDK.ResourceTreeModel.ResourceTreeFrame|null {
+  #resolveFrameId(frameId: Protocol.Page.FrameId): SDK.ResourceTreeModel.ResourceTreeFrame|null {
     const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
     if (!frame || !frame.url) {
-      this.unresolvedFrameIds.add(frameId);
-      if (!this.frameListeners.length) {
+      this.#unresolvedFrameIds.add(frameId);
+      if (!this.#frameListeners.length) {
         const addListener = SDK.FrameManager.FrameManager.instance().addEventListener(
-            SDK.FrameManager.Events.FrameAddedToTarget, this.onFrameChanged, this);
+            SDK.FrameManager.Events.FrameAddedToTarget, this.#onFrameChanged, this);
         const navigateListener = SDK.FrameManager.FrameManager.instance().addEventListener(
-            SDK.FrameManager.Events.FrameNavigated, this.onFrameChanged, this);
-        this.frameListeners = [addListener, navigateListener];
+            SDK.FrameManager.Events.FrameNavigated, this.#onFrameChanged, this);
+        this.#frameListeners = [addListener, navigateListener];
       }
     }
     return frame;
   }
 
-  private onFrameChanged(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
-      void {
+  #onFrameChanged(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>): void {
     const frame = event.data.frame;
     if (!frame.url) {
       return;
     }
-    const frameWasUnresolved = this.unresolvedFrameIds.delete(frame.id);
-    if (this.unresolvedFrameIds.size === 0 && this.frameListeners.length) {
+    const frameWasUnresolved = this.#unresolvedFrameIds.delete(frame.id);
+    if (this.#unresolvedFrameIds.size === 0 && this.#frameListeners.length) {
       // Stop listening once all requests are resolved.
-      Common.EventTarget.removeEventListeners(this.frameListeners);
-      this.frameListeners = [];
+      Common.EventTarget.removeEventListeners(this.#frameListeners);
+      this.#frameListeners = [];
     }
     if (frameWasUnresolved) {
       this.update();
@@ -173,7 +172,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
 
   protected createFrameCell(frameId: Protocol.Page.FrameId, issueCategory: IssuesManager.Issue.IssueCategory):
       HTMLElement {
-    const frame = this.resolveFrameId(frameId);
+    const frame = this.#resolveFrameId(frameId);
     const url = frame && (frame.unreachableUrl() || frame.url) || i18nString(UIStrings.unknown);
 
     const frameCell = document.createElement('td');

@@ -22,18 +22,18 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/HiddenIssuesRow.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
-  private numHiddenAggregatedIssues: HTMLElement;
+  #numHiddenAggregatedIssues: HTMLElement;
 
   constructor() {
     super(undefined, true);
-    this.numHiddenAggregatedIssues = document.createElement('span');
+    this.#numHiddenAggregatedIssues = document.createElement('span');
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue-category', 'hidden-issues');
     this.childrenListElement.classList.add('hidden-issues-body');
-    this.appendHeader();
+    this.#appendHeader();
   }
 
-  private appendHeader(): void {
+  #appendHeader(): void {
     const unhideAllIssuesBtn = UI.UIUtils.createTextButton(
         i18nString(UIStrings.unhideAll),
         (): void => IssuesManager.IssuesManager.IssuesManager.instance().unhideAllIssues(),
@@ -42,10 +42,10 @@ export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
-      content: this.numHiddenAggregatedIssues,
+      content: this.#numHiddenAggregatedIssues,
     };
     countAdorner.classList.add('aggregated-issues-count');
-    this.numHiddenAggregatedIssues.textContent = '0';
+    this.#numHiddenAggregatedIssues.textContent = '0';
     const header = document.createElement('div');
     const title = document.createElement('div');
     header.classList.add('header');
@@ -58,6 +58,6 @@ export class HiddenIssuesRow extends UI.TreeOutline.TreeElement {
   }
 
   update(count: number): void {
-    this.numHiddenAggregatedIssues.textContent = `${count}`;
+    this.#numHiddenAggregatedIssues.textContent = `${count}`;
   }
 }

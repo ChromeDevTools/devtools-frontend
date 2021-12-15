@@ -6,52 +6,52 @@ import type * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
-  private options = new Array<MenuOption>();
-  private headers = new Array<MenuHeader>();
-  private onOptionClicked = (): void => {};
+  #options = new Array<MenuOption>();
+  #headers = new Array<MenuHeader>();
+  #onOptionClicked = (): void => {};
   constructor(title: string) {
     super(title);
     this.turnIntoSelect();
-    this.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.showLevelContextMenu.bind(this));
+    this.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#showLevelContextMenu.bind(this));
     UI.ARIAUtils.markAsMenuButton(this.element);
   }
 
   addOption(option: string, value: string, defaultEnabled: boolean): void {
-    this.options.push({'title': option, 'value': value, default: defaultEnabled, 'enabled': defaultEnabled});
+    this.#options.push({'title': option, 'value': value, default: defaultEnabled, 'enabled': defaultEnabled});
   }
 
   setOptionEnabled(index: number, enabled: boolean): void {
-    const option = this.options[index];
+    const option = this.#options[index];
     if (!option) {
       return;
     }
     option.enabled = enabled;
-    this.onOptionClicked();
+    this.#onOptionClicked();
   }
 
   addHeader(headerName: string, callback: (() => void)): void {
-    this.headers.push({title: headerName, callback: callback});
+    this.#headers.push({title: headerName, callback: callback});
   }
 
   setOnOptionClicked(onOptionClicked: (() => void)): void {
-    this.onOptionClicked = onOptionClicked;
+    this.#onOptionClicked = onOptionClicked;
   }
 
   getOptions(): Array<MenuOption> {
-    return this.options;
+    return this.#options;
   }
 
-  private showLevelContextMenu({data: mouseEvent}: Common.EventTarget.EventTargetEvent<Event>): void {
+  #showLevelContextMenu({data: mouseEvent}: Common.EventTarget.EventTargetEvent<Event>): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
       useSoftMenu: true,
       x: this.element.totalOffsetLeft(),
       y: this.element.totalOffsetTop() + this.element.offsetHeight,
     });
 
-    for (const {title, callback} of this.headers) {
+    for (const {title, callback} of this.#headers) {
       contextMenu.headerSection().appendCheckboxItem(title, () => callback());
     }
-    for (const [index, {title, enabled}] of this.options.entries()) {
+    for (const [index, {title, enabled}] of this.#options.entries()) {
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
         this.setOptionEnabled(index, !enabled);
       }, enabled);

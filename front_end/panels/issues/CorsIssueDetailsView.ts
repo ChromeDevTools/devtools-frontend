@@ -133,7 +133,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     this.affectedResourcesCountElement.classList.add('cors-issue-affected-resource-label');
   }
 
-  private appendStatus(element: HTMLElement, isWarning: boolean): void {
+  #appendStatus(element: HTMLElement, isWarning: boolean): void {
     const status = document.createElement('td');
     if (isWarning) {
       status.classList.add('affected-resource-report-only-status');
@@ -149,8 +149,8 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     return i18nString(UIStrings.nRequests, {n: count});
   }
 
-  private appendDetails(
-      issueCode: IssuesManager.CorsIssue.IssueCode, issues: Iterable<IssuesManager.CorsIssue.CorsIssue>): void {
+  #appendDetails(issueCode: IssuesManager.CorsIssue.IssueCode, issues: Iterable<IssuesManager.CorsIssue.CorsIssue>):
+      void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.request));
     this.appendColumnTitle(header, i18nString(UIStrings.status));
@@ -222,12 +222,12 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     let count = 0;
     for (const issue of issues) {
       count++;
-      this.appendDetail(issueCode, issue);
+      this.#appendDetail(issueCode, issue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  private appendSecureContextCell(element: HTMLElement, isSecureContext: boolean|undefined): void {
+  #appendSecureContextCell(element: HTMLElement, isSecureContext: boolean|undefined): void {
     if (isSecureContext === undefined) {
       this.appendIssueDetailCell(element, '');
       return;
@@ -292,7 +292,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     throw new Error('Invalid Argument');
   }
 
-  private appendDetail(issueCode: IssuesManager.CorsIssue.IssueCode, issue: IssuesManager.CorsIssue.CorsIssue): void {
+  #appendDetail(issueCode: IssuesManager.CorsIssue.IssueCode, issue: IssuesManager.CorsIssue.CorsIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
@@ -314,7 +314,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     switch (issueCode) {
       case IssuesManager.CorsIssue.IssueCode.InvalidHeaderValues:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         if (corsError.includes('Preflight')) {
           element.appendChild(
               this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
@@ -327,7 +327,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         break;
       case IssuesManager.CorsIssue.IssueCode.WildcardOriginNotAllowed:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         if (corsError.includes('Preflight')) {
           element.appendChild(
               this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
@@ -337,7 +337,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         break;
       case IssuesManager.CorsIssue.IssueCode.PreflightResponseInvalid: {
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         const specialHighlightHeader = corsError === Protocol.Network.CorsError.PreflightInvalidStatus ?
             {
               section: NetworkForward.UIRequestLocation.UIHeaderSection.General,
@@ -351,7 +351,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
       }
       case IssuesManager.CorsIssue.IssueCode.OriginMismatch:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         if (corsError.includes('Preflight')) {
           element.appendChild(
               this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
@@ -363,7 +363,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         break;
       case IssuesManager.CorsIssue.IssueCode.AllowCredentialsRequired:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         if (corsError.includes('Preflight')) {
           element.appendChild(
               this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
@@ -374,23 +374,23 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         break;
       case IssuesManager.CorsIssue.IssueCode.InsecurePrivateNetwork:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         this.appendIssueDetailCell(element, details.resourceIPAddressSpace ?? '');
         this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');
-        this.appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
+        this.#appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
         break;
       case IssuesManager.CorsIssue.IssueCode.PreflightAllowPrivateNetworkError: {
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         element.appendChild(this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
         this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
         this.appendIssueDetailCell(element, details.clientSecurityState?.initiatorIPAddressSpace ?? '');
-        this.appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
+        this.#appendSecureContextCell(element, details.clientSecurityState?.initiatorIsSecureContext);
         break;
       }
       case IssuesManager.CorsIssue.IssueCode.MethodDisallowedByPreflightResponse:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         element.appendChild(this.createRequestCell(details.request, {...opts, linkToPreflight: true, highlightHeader}));
         this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter, 'code-example');
         break;
@@ -402,7 +402,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
             name: corsErrorStatus.failedParameter,
           },
         }));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           linkToPreflight: true,
@@ -421,11 +421,11 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         break;
       case IssuesManager.CorsIssue.IssueCode.DisallowedByMode:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         break;
@@ -437,19 +437,19 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         this.appendIssueDetailCell(element, details.initiatorOrigin ?? '', 'code-example');
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         this.appendIssueDetailCell(element, details.corsErrorStatus.failedParameter ?? '', 'code-example');
         break;
       case IssuesManager.CorsIssue.IssueCode.NoCorsRedirectModeNotFollow:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         this.appendSourceLocation(element, details.location, issue.model()?.getTargetIfNotDisposed());
         break;
       default:
         element.appendChild(this.createRequestCell(details.request, opts));
-        this.appendStatus(element, details.isWarning);
+        this.#appendStatus(element, details.isWarning);
         Platform.assertUnhandled<IssuesManager.CorsIssue.IssueCode.PreflightMissingAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.PreflightInvalidAllowExternal|
                                  IssuesManager.CorsIssue.IssueCode.InvalidPrivateNetworkAccess|
@@ -464,7 +464,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     this.clear();
     const issues = this.issue.getCorsIssues();
     if (issues.size > 0) {
-      this.appendDetails(issues.values().next().value.code(), issues);
+      this.#appendDetails(issues.values().next().value.code(), issues);
     } else {
       this.updateAffectedResourceCount(0);
     }

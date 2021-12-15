@@ -27,7 +27,7 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     return i18nString(UIStrings.nResources, {n: count});
   }
 
-  private appendDetails(genericIssues: ReadonlySet<IssuesManager.GenericIssue.GenericIssue>): void {
+  #appendDetails(genericIssues: ReadonlySet<IssuesManager.GenericIssue.GenericIssue>): void {
     const header = document.createElement('tr');
 
     const sampleIssueDetails = genericIssues.values().next().value.details();
@@ -39,12 +39,12 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     let count = 0;
     for (const genericIssue of genericIssues) {
       count++;
-      this.appendDetail(genericIssue);
+      this.#appendDetail(genericIssue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  private appendDetail(genericIssue: IssuesManager.GenericIssue.GenericIssue): void {
+  #appendDetail(genericIssue: IssuesManager.GenericIssue.GenericIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
@@ -60,7 +60,7 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
     this.clear();
     const issues = this.issue.getGenericIssues();
     if (issues.size > 0) {
-      this.appendDetails(issues);
+      this.#appendDetails(issues);
     } else {
       this.updateAffectedResourceCount(0);
     }

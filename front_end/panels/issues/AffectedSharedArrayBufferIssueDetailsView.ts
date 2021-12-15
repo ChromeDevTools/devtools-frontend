@@ -58,7 +58,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     return i18nString(UIStrings.nViolations, {n: count});
   }
 
-  private appendStatus(element: HTMLElement, isWarning: boolean): void {
+  #appendStatus(element: HTMLElement, isWarning: boolean): void {
     const status = document.createElement('td');
     if (isWarning) {
       status.classList.add('affected-resource-report-only-status');
@@ -70,7 +70,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     element.appendChild(status);
   }
 
-  private appendType(element: HTMLElement, type: Protocol.Audits.SharedArrayBufferIssueType): void {
+  #appendType(element: HTMLElement, type: Protocol.Audits.SharedArrayBufferIssueType): void {
     const status = document.createElement('td');
     switch (type) {
       case Protocol.Audits.SharedArrayBufferIssueType.CreationIssue:
@@ -85,7 +85,7 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     element.appendChild(status);
   }
 
-  private appendDetails(sabIssues: Iterable<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>): void {
+  #appendDetails(sabIssues: Iterable<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.sourceLocation));
     this.appendColumnTitle(header, i18nString(UIStrings.trigger));
@@ -95,26 +95,26 @@ export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResources
     let count = 0;
     for (const sabIssue of sabIssues) {
       count++;
-      this.appendDetail(sabIssue);
+      this.#appendDetail(sabIssue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  private appendDetail(sabIssue: IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue): void {
+  #appendDetail(sabIssue: IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-directive');
 
     const sabIssueDetails = sabIssue.details();
     const location = IssuesManager.Issue.toZeroBasedLocation(sabIssueDetails.sourceCodeLocation);
     this.appendSourceLocation(element, location, sabIssue.model()?.getTargetIfNotDisposed());
-    this.appendType(element, sabIssueDetails.type);
-    this.appendStatus(element, sabIssueDetails.isWarning);
+    this.#appendType(element, sabIssueDetails.type);
+    this.#appendStatus(element, sabIssueDetails.isWarning);
 
     this.affectedResources.appendChild(element);
   }
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.getSharedArrayBufferIssues());
+    this.#appendDetails(this.issue.getSharedArrayBufferIssues());
   }
 }

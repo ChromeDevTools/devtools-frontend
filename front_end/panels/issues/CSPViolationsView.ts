@@ -23,8 +23,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/CSPViolationsView.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let cspViolationsViewInstance: CSPViolationsView;
 export class CSPViolationsView extends UI.Widget.VBox {
-  private listView = new CSPViolationsListView();
-  private issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+  #listView = new CSPViolationsListView();
+  #issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
 
   /**
    * @private
@@ -37,7 +37,7 @@ export class CSPViolationsView extends UI.Widget.VBox {
     const topToolbar = new UI.Toolbar.Toolbar('csp-violations-toolbar', this.contentElement);
     const textFilterUI = new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), '', 1, .2, '');
     textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
-      this.listView.updateTextFilter(textFilterUI.value());
+      this.#listView.updateTextFilter(textFilterUI.value());
     });
     topToolbar.appendToolbarItem(textFilterUI);
 
@@ -55,16 +55,16 @@ export class CSPViolationsView extends UI.Widget.VBox {
     });
     levelMenuButton.setOnOptionClicked(() => {
       const categories = new Set(levelMenuButton.getOptions().filter(x => x.enabled).map(x => x.value));
-      this.listView.updateCategoryFilter(categories);
+      this.#listView.updateCategoryFilter(categories);
     });
     topToolbar.appendToolbarItem(levelMenuButton);
-    this.listView.show(this.contentElement);
+    this.#listView.show(this.contentElement);
 
-    this.issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.onIssueAdded, this);
-    this.issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.FullUpdateRequired, this.onFullUpdateRequired, this);
+    this.#issuesManager.addEventListener(IssuesManager.IssuesManager.Events.IssueAdded, this.#onIssueAdded, this);
+    this.#issuesManager.addEventListener(
+        IssuesManager.IssuesManager.Events.FullUpdateRequired, this.#onFullUpdateRequired, this);
 
-    this.addAllIssues();
+    this.#addAllIssues();
   }
 
   static instance(opts = {forceNew: null}): CSPViolationsView {
@@ -76,22 +76,22 @@ export class CSPViolationsView extends UI.Widget.VBox {
     return cspViolationsViewInstance;
   }
 
-  private onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
+  #onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
     const {issue} = event.data;
     if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
-      this.listView.addIssue(issue);
+      this.#listView.addIssue(issue);
     }
   }
 
-  private onFullUpdateRequired(): void {
-    this.listView.clearIssues();
-    this.addAllIssues();
+  #onFullUpdateRequired(): void {
+    this.#listView.clearIssues();
+    this.#addAllIssues();
   }
 
-  private addAllIssues(): void {
-    for (const issue of this.issuesManager.issues()) {
+  #addAllIssues(): void {
+    for (const issue of this.#issuesManager.issues()) {
       if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
-        this.listView.addIssue(issue);
+        this.#listView.addIssue(issue);
       }
     }
   }

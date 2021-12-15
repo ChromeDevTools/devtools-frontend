@@ -37,7 +37,7 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
     return i18nString(UIStrings.nResources, {n: count});
   }
 
-  private appendDetail(twaIssue: IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue): void {
+  #appendDetail(twaIssue: IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-row');
 
@@ -56,7 +56,7 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
     this.affectedResources.appendChild(element);
   }
 
-  private appendDetails(twaIssues: Iterable<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>): void {
+  #appendDetails(twaIssues: Iterable<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>): void {
     const header = document.createElement('tr');
     if (this.issue.code() === IssuesManager.TrustedWebActivityIssue.httpViolationCode) {
       this.appendColumnTitle(header, i18nString(UIStrings.statusCode));
@@ -72,7 +72,7 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
 
     let count = 0;
     for (const twaIssue of twaIssues) {
-      this.appendDetail(twaIssue);
+      this.#appendDetail(twaIssue);
       count++;
     }
     this.updateAffectedResourceCount(count);
@@ -80,6 +80,6 @@ export class AffectedTrustedWebActivityIssueDetailsView extends AffectedResource
 
   update(): void {
     this.clear();
-    this.appendDetails(this.issue.getTrustedWebActivityIssues());
+    this.#appendDetails(this.issue.getTrustedWebActivityIssues());
   }
 }

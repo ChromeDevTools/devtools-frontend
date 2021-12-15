@@ -59,13 +59,13 @@ export function getClassNameFromKind(kind: IssuesManager.Issue.IssueKind): strin
 }
 
 export class IssueKindView extends UI.TreeOutline.TreeElement {
-  private kind: IssuesManager.Issue.IssueKind;
-  private issueCount: HTMLElement;
+  #kind: IssuesManager.Issue.IssueKind;
+  #issueCount: HTMLElement;
 
   constructor(kind: IssuesManager.Issue.IssueKind) {
     super(undefined, true);
-    this.kind = kind;
-    this.issueCount = document.createElement('span');
+    this.#kind = kind;
+    this.#issueCount = document.createElement('span');
 
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue-kind');
@@ -74,11 +74,11 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
   }
 
   getKind(): IssuesManager.Issue.IssueKind {
-    return this.kind;
+    return this.#kind;
   }
 
   getHideAllCurrentKindString(): Common.UIString.LocalizedString {
-    switch (this.kind) {
+    switch (this.#kind) {
       case IssuesManager.Issue.IssueKind.PageError:
         return i18nString(UIStrings.hideAllCurrentPageErrors);
       case IssuesManager.Issue.IssueKind.Improvement:
@@ -88,25 +88,25 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private appendHeader(): void {
+  #appendHeader(): void {
     const header = document.createElement('div');
     header.classList.add('header');
 
     const issueKindIcon = new IconButton.Icon.Icon();
-    issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(this.kind);
+    issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(this.#kind);
     issueKindIcon.classList.add('leading-issue-icon');
 
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
-      content: this.issueCount,
+      content: this.#issueCount,
     };
     countAdorner.classList.add('aggregated-issues-count');
-    this.issueCount.textContent = '0';
+    this.#issueCount.textContent = '0';
 
     const title = document.createElement('div');
     title.classList.add('title');
-    title.textContent = IssuesManager.Issue.getIssueKindName(this.kind);
+    title.textContent = IssuesManager.Issue.getIssueKindName(this.#kind);
 
     const hideAvailableIssuesBtn = new Components.HideIssuesMenu.HideIssuesMenu();
     hideAvailableIssuesBtn.classList.add('hide-available-issues');
@@ -116,7 +116,7 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
         const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
         const values = setting.get();
         for (const issue of IssuesManager.IssuesManager.IssuesManager.instance().issues()) {
-          if (issue.getKind() === this.kind) {
+          if (issue.getKind() === this.#kind) {
             values[issue.code()] = IssuesManager.IssuesManager.IssueStatus.Hidden;
           }
         }
@@ -133,11 +133,11 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
   }
 
   onattach(): void {
-    this.appendHeader();
+    this.#appendHeader();
     this.expand();
   }
 
   update(count: number): void {
-    this.issueCount.textContent = `${count}`;
+    this.#issueCount.textContent = `${count}`;
   }
 }

@@ -55,7 +55,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedHeavyAdView.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedHeavyAdView extends AffectedResourcesView {
-  private appendAffectedHeavyAds(heavyAds: Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue>): void {
+  #appendAffectedHeavyAds(heavyAds: Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.limitExceeded));
     this.appendColumnTitle(header, i18nString(UIStrings.resolutionStatus));
@@ -65,7 +65,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
 
     let count = 0;
     for (const heavyAd of heavyAds) {
-      this.appendAffectedHeavyAd(heavyAd.details());
+      this.#appendAffectedHeavyAd(heavyAd.details());
       count++;
     }
     this.updateAffectedResourceCount(count);
@@ -75,7 +75,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     return i18nString(UIStrings.nResources, {n: count});
   }
 
-  private statusToString(status: Protocol.Audits.HeavyAdResolutionStatus): string {
+  #statusToString(status: Protocol.Audits.HeavyAdResolutionStatus): string {
     switch (status) {
       case Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked:
         return i18nString(UIStrings.removed);
@@ -85,7 +85,7 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     return '';
   }
 
-  private limitToString(status: Protocol.Audits.HeavyAdReason): string {
+  #limitToString(status: Protocol.Audits.HeavyAdReason): string {
     switch (status) {
       case Protocol.Audits.HeavyAdReason.CpuPeakLimit:
         return i18nString(UIStrings.cpuPeakLimit);
@@ -97,18 +97,18 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
     return '';
   }
 
-  private appendAffectedHeavyAd(heavyAd: Protocol.Audits.HeavyAdIssueDetails): void {
+  #appendAffectedHeavyAd(heavyAd: Protocol.Audits.HeavyAdIssueDetails): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-heavy-ad');
 
     const reason = document.createElement('td');
     reason.classList.add('affected-resource-heavy-ad-info');
-    reason.textContent = this.limitToString(heavyAd.reason);
+    reason.textContent = this.#limitToString(heavyAd.reason);
     element.appendChild(reason);
 
     const status = document.createElement('td');
     status.classList.add('affected-resource-heavy-ad-info');
-    status.textContent = this.statusToString(heavyAd.resolution);
+    status.textContent = this.#statusToString(heavyAd.resolution);
     element.appendChild(status);
 
     const frameId = heavyAd.frame.frameId;
@@ -120,6 +120,6 @@ export class AffectedHeavyAdView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendAffectedHeavyAds(this.issue.getHeavyAdIssues());
+    this.#appendAffectedHeavyAds(this.issue.getHeavyAdIssues());
   }
 }

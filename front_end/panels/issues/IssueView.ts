@@ -88,7 +88,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class AffectedRequestsView extends AffectedResourcesView {
-  private appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
+  #appendAffectedRequests(affectedRequests: Iterable<Protocol.Audits.AffectedRequest>): void {
     let count = 0;
     for (const affectedRequest of affectedRequests) {
       const element = document.createElement('tr');
@@ -125,7 +125,7 @@ class AffectedRequestsView extends AffectedResourcesView {
       this.updateAffectedResourceCount(0);
       return;
     }
-    this.appendAffectedRequests(this.issue.requests());
+    this.#appendAffectedRequests(this.issue.requests());
   }
 }
 
@@ -146,8 +146,8 @@ const issueTypeToNetworkHeaderMap =
     ]);
 
 class AffectedMixedContentView extends AffectedResourcesView {
-  private appendAffectedMixedContentDetails(mixedContentIssues:
-                                                Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>): void {
+  #appendAffectedMixedContentDetails(mixedContentIssues: Iterable<IssuesManager.MixedContentIssue.MixedContentIssue>):
+      void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(header, i18nString(UIStrings.restrictionStatus));
@@ -207,60 +207,60 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendAffectedMixedContentDetails(this.issue.getMixedContentIssues());
+    this.#appendAffectedMixedContentDetails(this.issue.getMixedContentIssues());
   }
 }
 
 export class IssueView extends UI.TreeOutline.TreeElement {
-  private issue: AggregatedIssue;
-  private description: IssuesManager.MarkdownIssueDescription.IssueDescription;
+  #issue: AggregatedIssue;
+  #description: IssuesManager.MarkdownIssueDescription.IssueDescription;
   toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
-  private readonly affectedResourceViews: AffectedResourcesView[];
-  private aggregatedIssuesCount: HTMLElement|null;
-  private issueKindIcon: IconButton.Icon.Icon|null = null;
-  private hasBeenExpandedBefore: boolean;
-  private throttle: Common.Throttler.Throttler;
-  private needsUpdateOnExpand = true;
-  private hiddenIssuesMenu?: Components.HideIssuesMenu.HideIssuesMenu;
-  private contentCreated: boolean = false;
+  readonly #affectedResourceViews: AffectedResourcesView[];
+  #aggregatedIssuesCount: HTMLElement|null;
+  #issueKindIcon: IconButton.Icon.Icon|null = null;
+  #hasBeenExpandedBefore: boolean;
+  #throttle: Common.Throttler.Throttler;
+  #needsUpdateOnExpand = true;
+  #hiddenIssuesMenu?: Components.HideIssuesMenu.HideIssuesMenu;
+  #contentCreated: boolean = false;
 
   constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super();
-    this.issue = issue;
-    this.description = description;
-    this.throttle = new Common.Throttler.Throttler(250);
+    this.#issue = issue;
+    this.#description = description;
+    this.#throttle = new Common.Throttler.Throttler(250);
 
     this.toggleOnClick = true;
     this.listItemElement.classList.add('issue');
     this.childrenListElement.classList.add('body');
-    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(this.issue.getKind()));
+    this.childrenListElement.classList.add(IssueView.getBodyCSSClass(this.#issue.getKind()));
 
-    this.affectedResources = this.createAffectedResources();
-    this.affectedResourceViews = [
-      new AffectedCookiesView(this, this.issue),
-      new AffectedElementsView(this, this.issue),
-      new AffectedRequestsView(this, this.issue),
-      new AffectedMixedContentView(this, this.issue),
-      new AffectedSourcesView(this, this.issue),
-      new AffectedHeavyAdView(this, this.issue),
-      new AffectedDirectivesView(this, this.issue),
-      new AffectedBlockedByResponseView(this, this.issue),
-      new AffectedSharedArrayBufferIssueDetailsView(this, this.issue),
-      new AffectedElementsWithLowContrastView(this, this.issue),
-      new AffectedTrustedWebActivityIssueDetailsView(this, this.issue),
-      new CorsIssueDetailsView(this, this.issue),
-      new GenericIssueDetailsView(this, this.issue),
-      new AffectedDocumentsInQuirksModeView(this, this.issue),
-      new AttributionReportingIssueDetailsView(this, this.issue),
-      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this.issue),
-      new AffectedRawCookieLinesView(this, this.issue),
+    this.affectedResources = this.#createAffectedResources();
+    this.#affectedResourceViews = [
+      new AffectedCookiesView(this, this.#issue),
+      new AffectedElementsView(this, this.#issue),
+      new AffectedRequestsView(this, this.#issue),
+      new AffectedMixedContentView(this, this.#issue),
+      new AffectedSourcesView(this, this.#issue),
+      new AffectedHeavyAdView(this, this.#issue),
+      new AffectedDirectivesView(this, this.#issue),
+      new AffectedBlockedByResponseView(this, this.#issue),
+      new AffectedSharedArrayBufferIssueDetailsView(this, this.#issue),
+      new AffectedElementsWithLowContrastView(this, this.#issue),
+      new AffectedTrustedWebActivityIssueDetailsView(this, this.#issue),
+      new CorsIssueDetailsView(this, this.#issue),
+      new GenericIssueDetailsView(this, this.#issue),
+      new AffectedDocumentsInQuirksModeView(this, this.#issue),
+      new AttributionReportingIssueDetailsView(this, this.#issue),
+      new WasmCrossOriginModuleSharingAffectedResourcesView(this, this.#issue),
+      new AffectedRawCookieLinesView(this, this.#issue),
     ];
     if (Root.Runtime.experiments.isEnabled('hideIssuesFeature')) {
-      this.hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
+      this.#hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
     }
-    this.aggregatedIssuesCount = null;
-    this.hasBeenExpandedBefore = false;
+    this.#aggregatedIssuesCount = null;
+    this.#hasBeenExpandedBefore = false;
   }
 
   /**
@@ -269,11 +269,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
    * title and issue description will not be updated.
    */
   setIssue(issue: AggregatedIssue): void {
-    if (this.issue !== issue) {
-      this.needsUpdateOnExpand = true;
+    if (this.#issue !== issue) {
+      this.#needsUpdateOnExpand = true;
     }
-    this.issue = issue;
-    this.affectedResourceViews.forEach(view => view.setIssue(issue));
+    this.#issue = issue;
+    this.#affectedResourceViews.forEach(view => view.setIssue(issue));
   }
 
   private static getBodyCSSClass(issueKind: IssuesManager.Issue.IssueKind): string {
@@ -288,11 +288,11 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   getIssueTitle(): string {
-    return this.description.title;
+    return this.#description.title;
   }
 
   onattach(): void {
-    if (!this.contentCreated) {
+    if (!this.#contentCreated) {
       this.createContent();
       return;
     }
@@ -300,96 +300,96 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   createContent(): void {
-    this.appendHeader();
-    this.createBody();
+    this.#appendHeader();
+    this.#createBody();
     this.appendChild(this.affectedResources);
-    for (const view of this.affectedResourceViews) {
+    for (const view of this.#affectedResourceViews) {
       this.appendAffectedResource(view);
       view.update();
     }
 
-    this.createReadMoreLinks();
+    this.#createReadMoreLinks();
     this.updateAffectedResourceVisibility();
-    this.contentCreated = true;
+    this.#contentCreated = true;
   }
 
   appendAffectedResource(resource: UI.TreeOutline.TreeElement): void {
     this.affectedResources.appendChild(resource);
   }
 
-  private appendHeader(): void {
+  #appendHeader(): void {
     const header = document.createElement('div');
     header.classList.add('header');
-    this.issueKindIcon = new IconButton.Icon.Icon();
-    this.issueKindIcon.classList.add('leading-issue-icon');
-    this.aggregatedIssuesCount = document.createElement('span');
+    this.#issueKindIcon = new IconButton.Icon.Icon();
+    this.#issueKindIcon.classList.add('leading-issue-icon');
+    this.#aggregatedIssuesCount = document.createElement('span');
     const countAdorner = new Adorners.Adorner.Adorner();
     countAdorner.data = {
       name: 'countWrapper',
-      content: this.aggregatedIssuesCount,
+      content: this.#aggregatedIssuesCount,
     };
     countAdorner.classList.add('aggregated-issues-count');
-    header.appendChild(this.issueKindIcon);
+    header.appendChild(this.#issueKindIcon);
     header.appendChild(countAdorner);
 
     const title = document.createElement('div');
     title.classList.add('title');
-    title.textContent = this.description.title;
+    title.textContent = this.#description.title;
     header.appendChild(title);
-    if (this.hiddenIssuesMenu) {
-      header.appendChild(this.hiddenIssuesMenu);
+    if (this.#hiddenIssuesMenu) {
+      header.appendChild(this.#hiddenIssuesMenu);
     }
-    this.updateFromIssue();
+    this.#updateFromIssue();
     this.listItemElement.appendChild(header);
   }
 
   onexpand(): void {
-    Host.userMetrics.issuesPanelIssueExpanded(this.issue.getCategory());
+    Host.userMetrics.issuesPanelIssueExpanded(this.#issue.getCategory());
 
-    if (this.needsUpdateOnExpand) {
-      this.doUpdate();
+    if (this.#needsUpdateOnExpand) {
+      this.#doUpdate();
     }
 
-    if (!this.hasBeenExpandedBefore) {
-      this.hasBeenExpandedBefore = true;
-      for (const view of this.affectedResourceViews) {
+    if (!this.#hasBeenExpandedBefore) {
+      this.#hasBeenExpandedBefore = true;
+      for (const view of this.#affectedResourceViews) {
         view.expandIfOneResource();
       }
     }
   }
 
-  private updateFromIssue(): void {
-    if (this.issueKindIcon) {
-      const kind = this.issue.getKind();
-      this.issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
-      this.issueKindIcon.title = IssuesManager.Issue.getIssueKindDescription(kind);
+  #updateFromIssue(): void {
+    if (this.#issueKindIcon) {
+      const kind = this.#issue.getKind();
+      this.#issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(kind);
+      this.#issueKindIcon.title = IssuesManager.Issue.getIssueKindDescription(kind);
     }
-    if (this.aggregatedIssuesCount) {
-      this.aggregatedIssuesCount.textContent = `${this.issue.getAggregatedIssuesCount()}`;
+    if (this.#aggregatedIssuesCount) {
+      this.#aggregatedIssuesCount.textContent = `${this.#issue.getAggregatedIssuesCount()}`;
     }
-    this.listItemElement.classList.toggle('hidden-issue', this.issue.isHidden());
-    if (this.hiddenIssuesMenu) {
+    this.listItemElement.classList.toggle('hidden-issue', this.#issue.isHidden());
+    if (this.#hiddenIssuesMenu) {
       const data: HiddenIssuesMenuData = {
-        menuItemLabel: this.issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
-                                               i18nString(UIStrings.hideIssuesLikeThis),
+        menuItemLabel: this.#issue.isHidden() ? i18nString(UIStrings.unhideIssuesLikeThis) :
+                                                i18nString(UIStrings.hideIssuesLikeThis),
         menuItemAction: () => {
           const setting = IssuesManager.IssuesManager.getHideIssueByCodeSetting();
           const values = setting.get();
-          values[this.issue.code()] = this.issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.Unhidden :
-                                                              IssuesManager.IssuesManager.IssueStatus.Hidden;
+          values[this.#issue.code()] = this.#issue.isHidden() ? IssuesManager.IssuesManager.IssueStatus.Unhidden :
+                                                                IssuesManager.IssuesManager.IssueStatus.Hidden;
           setting.set(values);
         },
       };
-      this.hiddenIssuesMenu.data = data;
+      this.#hiddenIssuesMenu.data = data;
     }
   }
 
   updateAffectedResourceVisibility(): void {
-    const noResources = this.affectedResourceViews.every(view => view.isEmpty());
+    const noResources = this.#affectedResourceViews.every(view => view.isEmpty());
     this.affectedResources.hidden = noResources;
   }
 
-  private createAffectedResources(): UI.TreeOutline.TreeElement {
+  #createAffectedResources(): UI.TreeOutline.TreeElement {
     const wrapper = new UI.TreeOutline.TreeElement();
     wrapper.setCollapsible(false);
     wrapper.setExpandable(true);
@@ -401,18 +401,18 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     return wrapper;
   }
 
-  private createBody(): void {
+  #createBody(): void {
     const messageElement = new UI.TreeOutline.TreeElement();
     messageElement.setCollapsible(false);
     messageElement.selectable = false;
     const markdownComponent = new MarkdownView.MarkdownView.MarkdownView();
-    markdownComponent.data = {tokens: this.description.markdown};
+    markdownComponent.data = {tokens: this.#description.markdown};
     messageElement.listItemElement.appendChild(markdownComponent);
     this.appendChild(messageElement);
   }
 
-  private createReadMoreLinks(): void {
-    if (this.description.links.length === 0) {
+  #createReadMoreLinks(): void {
+    if (this.#description.links.length === 0) {
       return;
     }
 
@@ -421,7 +421,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     linkWrapper.listItemElement.classList.add('link-wrapper');
 
     const linkList = linkWrapper.listItemElement.createChild('ul', 'link-list');
-    for (const description of this.description.links) {
+    for (const description of this.#description.links) {
       const link = UI.Fragment.html`<x-link class="link devtools-link" tabindex="0" href=${description.link}>${
                        i18nString(UIStrings.learnMoreS, {PH1: description.linkTitle})}</x-link>` as UI.XLink.XLink;
       const linkIcon = new IconButton.Icon.Icon();
@@ -429,7 +429,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
       link.addEventListener('x-link-invoke', () => {
-        Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.LearnMore);
+        Host.userMetrics.issuesPanelResourceOpened(this.#issue.getCategory(), AffectedItem.LearnMore);
       });
 
       const linkListItem = linkList.createChild('li');
@@ -438,25 +438,25 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.appendChild(linkWrapper);
   }
 
-  private doUpdate(): void {
+  #doUpdate(): void {
     if (this.expanded) {
-      this.affectedResourceViews.forEach(view => view.update());
+      this.#affectedResourceViews.forEach(view => view.update());
       this.updateAffectedResourceVisibility();
     }
-    this.needsUpdateOnExpand = !this.expanded;
-    this.updateFromIssue();
+    this.#needsUpdateOnExpand = !this.expanded;
+    this.#updateFromIssue();
   }
 
   update(): void {
-    this.throttle.schedule(async () => this.doUpdate());
+    this.#throttle.schedule(async () => this.#doUpdate());
   }
 
   getIssueKind(): IssuesManager.Issue.IssueKind {
-    return this.issue.getKind();
+    return this.#issue.getKind();
   }
 
   isForHiddenIssue(): boolean {
-    return this.issue.isHidden();
+    return this.#issue.isHidden();
   }
 
   toggle(expand?: boolean): void {

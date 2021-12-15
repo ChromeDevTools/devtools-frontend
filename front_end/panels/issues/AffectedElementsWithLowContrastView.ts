@@ -9,21 +9,20 @@ import type * as IssuesManager from '../../models/issues_manager/issues_manager.
 import {AffectedElementsView} from './AffectedElementsView.js';
 
 export class AffectedElementsWithLowContrastView extends AffectedElementsView {
-  private runningUpdatePromise: Promise<void> = Promise.resolve();
+  #runningUpdatePromise: Promise<void> = Promise.resolve();
 
   update(): void {
     // Ensure that doUpdate is invoked atomically by serializing the update calls
     // because it's not re-entrace safe.
-    this.runningUpdatePromise = this.runningUpdatePromise.then(this.doUpdate.bind(this));
+    this.#runningUpdatePromise = this.#runningUpdatePromise.then(this.#doUpdate.bind(this));
   }
 
-  private async doUpdate(): Promise<void> {
+  async #doUpdate(): Promise<void> {
     this.clear();
-    await this.appendLowContrastElements(this.issue.getLowContrastIssues());
+    await this.#appendLowContrastElements(this.issue.getLowContrastIssues());
   }
 
-  private async appendLowContrastElement(issue: IssuesManager.LowTextContrastIssue.LowTextContrastIssue):
-      Promise<void> {
+  async #appendLowContrastElement(issue: IssuesManager.LowTextContrastIssue.LowTextContrastIssue): Promise<void> {
     const row = document.createElement('tr');
     row.classList.add('affected-resource-low-contrast');
 
@@ -41,7 +40,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
     this.affectedResources.appendChild(row);
   }
 
-  private async appendLowContrastElements(issues: Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>):
+  async #appendLowContrastElements(issues: Iterable<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>):
       Promise<void> {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.element));
@@ -55,7 +54,7 @@ export class AffectedElementsWithLowContrastView extends AffectedElementsView {
     let count = 0;
     for (const lowContrastIssue of issues) {
       count++;
-      await this.appendLowContrastElement(lowContrastIssue);
+      await this.#appendLowContrastElement(lowContrastIssue);
     }
     this.updateAffectedResourceCount(count);
   }

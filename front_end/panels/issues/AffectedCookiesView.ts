@@ -45,8 +45,7 @@ export class AffectedCookiesView extends AffectedResourcesView {
     return i18nString(UIStrings.nCookies, {n: count});
   }
 
-  private appendAffectedCookies(cookies: Iterable<{cookie: Protocol.Audits.AffectedCookie, hasRequest: boolean}>):
-      void {
+  #appendAffectedCookies(cookies: Iterable<{cookie: Protocol.Audits.AffectedCookie, hasRequest: boolean}>): void {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.name));
     this.appendColumnTitle(
@@ -58,12 +57,12 @@ export class AffectedCookiesView extends AffectedResourcesView {
     let count = 0;
     for (const cookie of cookies) {
       count++;
-      this.appendAffectedCookie(cookie.cookie, cookie.hasRequest);
+      this.#appendAffectedCookie(cookie.cookie, cookie.hasRequest);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  private appendAffectedCookie(cookie: Protocol.Audits.AffectedCookie, hasAssociatedRequest: boolean): void {
+  #appendAffectedCookie(cookie: Protocol.Audits.AffectedCookie, hasAssociatedRequest: boolean): void {
     const element = document.createElement('tr');
     element.classList.add('affected-resource-cookie');
     const name = document.createElement('td');
@@ -96,7 +95,7 @@ export class AffectedCookiesView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendAffectedCookies(this.issue.cookiesWithRequestIndicator());
+    this.#appendAffectedCookies(this.issue.cookiesWithRequestIndicator());
   }
 }
 

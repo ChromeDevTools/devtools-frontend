@@ -31,24 +31,24 @@ const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDocumentsInQuirk
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
-  private runningUpdatePromise: Promise<void> = Promise.resolve();
+  #runningUpdatePromise: Promise<void> = Promise.resolve();
 
   update(): void {
     // Ensure that doUpdate is invoked atomically by serializing the update calls
     // because it's not re-entrace safe.
-    this.runningUpdatePromise = this.runningUpdatePromise.then(this.doUpdate.bind(this));
+    this.#runningUpdatePromise = this.#runningUpdatePromise.then(this.#doUpdate.bind(this));
   }
 
   protected getResourceName(count: number): Platform.UIString.LocalizedString {
     return i18nString(UIStrings.nDocuments, {n: count});
   }
 
-  private async doUpdate(): Promise<void> {
+  async #doUpdate(): Promise<void> {
     this.clear();
-    await this.appendQuirksModeDocuments(this.issue.getQuirksModeIssues());
+    await this.#appendQuirksModeDocuments(this.issue.getQuirksModeIssues());
   }
 
-  private async appendQuirksModeDocument(issue: IssuesManager.QuirksModeIssue.QuirksModeIssue): Promise<void> {
+  async #appendQuirksModeDocument(issue: IssuesManager.QuirksModeIssue.QuirksModeIssue): Promise<void> {
     const row = document.createElement('tr');
     row.classList.add('affected-resource-quirks-mode');
 
@@ -64,8 +64,7 @@ export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
     this.affectedResources.appendChild(row);
   }
 
-  private async appendQuirksModeDocuments(issues: Iterable<IssuesManager.QuirksModeIssue.QuirksModeIssue>):
-      Promise<void> {
+  async #appendQuirksModeDocuments(issues: Iterable<IssuesManager.QuirksModeIssue.QuirksModeIssue>): Promise<void> {
     const header = document.createElement('tr');
     this.appendColumnTitle(header, i18nString(UIStrings.documentInTheDOMTree));
     this.appendColumnTitle(header, i18nString(UIStrings.mode));
@@ -75,7 +74,7 @@ export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
     let count = 0;
     for (const issue of issues) {
       count++;
-      await this.appendQuirksModeDocument(issue);
+      await this.#appendQuirksModeDocument(issue);
     }
     this.updateAffectedResourceCount(count);
   }

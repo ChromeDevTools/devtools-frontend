@@ -17,10 +17,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedElementsView extends AffectedResourcesView {
-  private async appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): Promise<void> {
+  async #appendAffectedElements(affectedElements: Iterable<IssuesManager.Issue.AffectedElement>): Promise<void> {
     let count = 0;
     for (const element of affectedElements) {
-      await this.appendAffectedElement(element);
+      await this.#appendAffectedElement(element);
       count++;
     }
     this.updateAffectedResourceCount(count);
@@ -30,7 +30,7 @@ export class AffectedElementsView extends AffectedResourcesView {
     return i18nString(UIStrings.nElements, {n: count});
   }
 
-  private async appendAffectedElement(element: IssuesManager.Issue.AffectedElement): Promise<void> {
+  async #appendAffectedElement(element: IssuesManager.Issue.AffectedElement): Promise<void> {
     const cellElement = await this.createElementCell(element, this.issue.getCategory());
     const rowElement = document.createElement('tr');
     rowElement.appendChild(cellElement);
@@ -39,6 +39,6 @@ export class AffectedElementsView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.appendAffectedElements(this.issue.elements());
+    this.#appendAffectedElements(this.issue.elements());
   }
 }

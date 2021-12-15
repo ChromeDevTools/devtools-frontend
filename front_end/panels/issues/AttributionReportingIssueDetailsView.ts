@@ -80,13 +80,13 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     this.clear();
     const issues = this.issue.getAttributionReportingIssues();
     if (issues.size > 0) {
-      this.appendDetails(issues.values().next().value.code(), issues);
+      this.#appendDetails(issues.values().next().value.code(), issues);
     } else {
       this.updateAffectedResourceCount(0);
     }
   }
 
-  private appendDetails(
+  #appendDetails(
       issueCode: IssuesManager.AttributionReportingIssue.IssueCode,
       issues: Iterable<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>): void {
     const header = document.createElement('tr');
@@ -156,12 +156,12 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     let count = 0;
     for (const issue of issues) {
       count++;
-      this.appendDetail(issueCode, issue);
+      this.#appendDetail(issueCode, issue);
     }
     this.updateAffectedResourceCount(count);
   }
 
-  private async appendDetail(
+  async #appendDetail(
       issueCode: IssuesManager.AttributionReportingIssue.IssueCode,
       issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): Promise<void> {
     const element = document.createElement('tr');
@@ -171,12 +171,12 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionUntrustworthyFrameOrigin:
-        this.appendFrameOrEmptyCell(element, issue);
-        this.appendRequestOrEmptyCell(element, details.request);
+        this.#appendFrameOrEmptyCell(element, issue);
+        this.#appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyOrigin:
-        await this.appendElementOrEmptyCell(element, issue);
+        await this.#appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionTriggerDataTooLarge:
@@ -186,31 +186,31 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEventSourceTriggerData:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidTriggerPriority:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidTriggerDedupKey:
-        this.appendRequestOrEmptyCell(element, details.request);
+        this.#appendRequestOrEmptyCell(element, details.request);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.AttributionSourceUntrustworthyFrameOrigin:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceEventId:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourceExpiry:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidAttributionSourcePriority:
-        this.appendFrameOrEmptyCell(element, issue);
-        await this.appendElementOrEmptyCell(element, issue);
+        this.#appendFrameOrEmptyCell(element, issue);
+        await this.#appendElementOrEmptyCell(element, issue);
         this.appendIssueDetailCell(element, details.invalidParameter || '');
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.MissingAttributionData:
-        this.appendRequestOrEmptyCell(element, details.request);
+        this.#appendRequestOrEmptyCell(element, details.request);
         break;
       case IssuesManager.AttributionReportingIssue.IssueCode.PermissionPolicyDisabled:
-        this.appendFrameOrEmptyCell(element, issue);
-        await this.appendElementOrEmptyCell(element, issue);
-        this.appendRequestOrEmptyCell(element, details.request);
+        this.#appendFrameOrEmptyCell(element, issue);
+        await this.#appendElementOrEmptyCell(element, issue);
+        this.#appendRequestOrEmptyCell(element, details.request);
         break;
     }
 
     this.affectedResources.appendChild(element);
   }
 
-  private appendFrameOrEmptyCell(
+  #appendFrameOrEmptyCell(
       parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): void {
     const details = issue.issueDetails;
     if (details.frame) {
@@ -220,7 +220,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     }
   }
 
-  private async appendElementOrEmptyCell(
+  async #appendElementOrEmptyCell(
       parent: HTMLElement, issue: IssuesManager.AttributionReportingIssue.AttributionReportingIssue): Promise<void> {
     const details = issue.issueDetails;
     if (details.violatingNodeId !== undefined) {
@@ -233,7 +233,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     }
   }
 
-  private appendRequestOrEmptyCell(parent: HTMLElement, request?: Protocol.Audits.AffectedRequest): void {
+  #appendRequestOrEmptyCell(parent: HTMLElement, request?: Protocol.Audits.AffectedRequest): void {
     if (!request) {
       this.appendIssueDetailCell(parent, '');
       return;

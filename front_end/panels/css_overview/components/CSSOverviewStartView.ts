@@ -58,7 +58,7 @@ export class CSSOverviewStartView extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
-    this.render();
+    this.#render();
   }
 
   show(): void {
@@ -69,11 +69,11 @@ export class CSSOverviewStartView extends HTMLElement {
     this.classList.add('hidden');
   }
 
-  private onStartCaptureClick(): void {
+  #onStartCaptureClick(): void {
     this.dispatchEvent(new OverviewStartRequestedEvent());
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -88,7 +88,7 @@ export class CSSOverviewStartView extends HTMLElement {
           <${Buttons.Button.Button.litTagName}
             class="start-capture"
             .variant=${Buttons.Button.Variant.PRIMARY}
-            @click=${this.onStartCaptureClick}>
+            @click=${this.#onStartCaptureClick}>
             ${i18nString(UIStrings.captureOverview)}
           </${Buttons.Button.Button.litTagName}>
         </div>

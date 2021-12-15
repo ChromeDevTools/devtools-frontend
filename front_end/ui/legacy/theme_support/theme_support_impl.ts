@@ -291,6 +291,12 @@ export class ThemeSupport {
     output.push(';');
   }
 
+  /**
+   * This legacy function has been supeseded by CSS custom properties. Wherever possible, please use
+   * the values declared in global stylesheets.
+   *
+   * @deprecated
+   */
   patchColorText(text: string, colorUsage: number): string {
     const color = Common.Color.Color.parse(text);
     if (!color) {
@@ -304,6 +310,12 @@ export class ThemeSupport {
     return outText || text;
   }
 
+  /**
+   * This legacy function has been supeseded by CSS custom properties. Wherever possible, please use
+   * the values declared in global stylesheets.
+   *
+   * @deprecated
+   */
   patchColor(color: Common.Color.Color, colorUsage: number): Common.Color.Color {
     const hsla = color.hsla();
     this.patchHSLA(hsla, colorUsage);

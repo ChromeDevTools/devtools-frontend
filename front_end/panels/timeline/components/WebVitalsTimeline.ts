@@ -138,84 +138,84 @@ export function assertInstanceOf<T>(instance: any, constructor: Constructor<T>):
 
 export class WebVitalsTimeline extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-timeline-webvitals`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private mainFrameNavigations: readonly number[] = [];
-  private startTime = 0;
-  private duration = 1000;
-  private maxDuration = 1000;
-  private width = 0;
-  private height = 0;
-  private canvas: HTMLCanvasElement;
-  private hoverLane: number|null = null;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #mainFrameNavigations: readonly number[] = [];
+  #startTime = 0;
+  #duration = 1000;
+  #maxDuration = 1000;
+  #width = 0;
+  #height = 0;
+  #canvas: HTMLCanvasElement;
+  #hoverLane: number|null = null;
 
-  private fcpLane: WebVitalsEventLane;
-  private lcpLane: WebVitalsEventLane;
-  private layoutShiftsLane: WebVitalsEventLane;
-  private longTasksLane: WebVitalsTimeboxLane;
+  #fcpLane: WebVitalsEventLane;
+  #lcpLane: WebVitalsEventLane;
+  #layoutShiftsLane: WebVitalsEventLane;
+  #longTasksLane: WebVitalsTimeboxLane;
 
-  private context: CanvasRenderingContext2D;
-  private animationFrame: number|null = null;
+  #context: CanvasRenderingContext2D;
+  #animationFrame: number|null = null;
 
-  private overlay: WebVitalsTooltip;
+  #overlay: WebVitalsTooltip;
 
   constructor() {
     super();
 
-    this.canvas = document.createElement('canvas');
-    this.canvas.style.width = '100%';
-    this.canvas.style.height = `${Math.max(LINE_HEIGHT * NUMBER_OF_LANES, 120)}px`;
-    this.shadow.appendChild(this.canvas);
-    this.canvas.addEventListener('pointermove', this.handlePointerMove.bind(this));
-    this.canvas.addEventListener('pointerout', this.handlePointerOut.bind(this));
-    this.canvas.addEventListener('click', this.handleClick.bind(this));
+    this.#canvas = document.createElement('canvas');
+    this.#canvas.style.width = '100%';
+    this.#canvas.style.height = `${Math.max(LINE_HEIGHT * NUMBER_OF_LANES, 120)}px`;
+    this.#shadow.appendChild(this.#canvas);
+    this.#canvas.addEventListener('pointermove', this.#handlePointerMove.bind(this));
+    this.#canvas.addEventListener('pointerout', this.#handlePointerOut.bind(this));
+    this.#canvas.addEventListener('click', this.#handleClick.bind(this));
 
-    const context = this.canvas.getContext('2d');
+    const context = this.#canvas.getContext('2d');
 
     assertInstanceOf(context, CanvasRenderingContext2D);
 
-    this.context = context;
+    this.#context = context;
 
-    this.fcpLane = new WebVitalsEventLane(
-        this, i18nString(UIStrings.fcp), e => this.getMarkerTypeForFCPEvent(e), this.getFCPMarkerOverlay);
-    this.lcpLane = new WebVitalsEventLane(
-        this, i18nString(UIStrings.lcp), e => this.getMarkerTypeForLCPEvent(e), this.getLCPMarkerOverlay);
-    this.layoutShiftsLane = new WebVitalsEventLane(this, i18nString(UIStrings.ls), _ => MarkerType.Bad);
-    this.longTasksLane = new WebVitalsTimeboxLane(this, i18nString(UIStrings.longTasks), this.getLongTaskOverlay);
+    this.#fcpLane = new WebVitalsEventLane(
+        this, i18nString(UIStrings.fcp), e => this.#getMarkerTypeForFCPEvent(e), this.#getFCPMarkerOverlay);
+    this.#lcpLane = new WebVitalsEventLane(
+        this, i18nString(UIStrings.lcp), e => this.#getMarkerTypeForLCPEvent(e), this.#getLCPMarkerOverlay);
+    this.#layoutShiftsLane = new WebVitalsEventLane(this, i18nString(UIStrings.ls), _ => MarkerType.Bad);
+    this.#longTasksLane = new WebVitalsTimeboxLane(this, i18nString(UIStrings.longTasks), this.#getLongTaskOverlay);
 
-    this.overlay = document.createElement('devtools-timeline-webvitals-tooltip');
-    this.overlay.style.position = 'absolute';
-    this.overlay.style.visibility = 'hidden';
+    this.#overlay = document.createElement('devtools-timeline-webvitals-tooltip');
+    this.#overlay.style.position = 'absolute';
+    this.#overlay.style.visibility = 'hidden';
 
-    this.ownerDocument.body.appendChild(this.overlay);
+    this.ownerDocument.body.appendChild(this.#overlay);
   }
 
   set data(data: WebVitalsTimelineData) {
-    this.startTime = data.startTime || this.startTime;
-    this.duration = data.duration || this.duration;
-    this.maxDuration = data.maxDuration || this.maxDuration;
-    this.mainFrameNavigations = data.mainFrameNavigations || this.mainFrameNavigations;
+    this.#startTime = data.startTime || this.#startTime;
+    this.#duration = data.duration || this.#duration;
+    this.#maxDuration = data.maxDuration || this.#maxDuration;
+    this.#mainFrameNavigations = data.mainFrameNavigations || this.#mainFrameNavigations;
 
     if (data.fcps) {
-      this.fcpLane.setEvents(data.fcps);
+      this.#fcpLane.setEvents(data.fcps);
     }
 
     if (data.lcps) {
-      this.lcpLane.setEvents(data.lcps);
+      this.#lcpLane.setEvents(data.lcps);
     }
 
     if (data.layoutShifts) {
-      this.layoutShiftsLane.setEvents(data.layoutShifts);
+      this.#layoutShiftsLane.setEvents(data.layoutShifts);
     }
 
     if (data.longTasks) {
-      this.longTasksLane.setTimeboxes(data.longTasks);
+      this.#longTasksLane.setTimeboxes(data.longTasks);
     }
 
-    this.scheduleRender();
+    this.#scheduleRender();
   }
 
   getContext(): CanvasRenderingContext2D {
-    return this.context;
+    return this.#context;
   }
 
   getLineHeight(): number {
@@ -223,62 +223,62 @@ export class WebVitalsTimeline extends HTMLElement {
   }
 
   hideOverlay(): void {
-    this.overlay.style.visibility = 'hidden';
+    this.#overlay.style.visibility = 'hidden';
   }
 
   showOverlay(content: LitHtml.TemplateResult): void {
-    this.overlay.data = {content};
-    this.overlay.style.visibility = 'visible';
+    this.#overlay.data = {content};
+    this.#overlay.style.visibility = 'visible';
   }
 
-  private handlePointerMove(e: MouseEvent): void {
-    this.updateOverlayPosition(e.clientX, e.clientY);
+  #handlePointerMove(e: MouseEvent): void {
+    this.#updateOverlayPosition(e.clientX, e.clientY);
 
     const x = e.offsetX, y = e.offsetY;
     const lane = Math.floor(y / LINE_HEIGHT);
 
-    this.hoverLane = lane;
-    this.fcpLane.handlePointerMove(this.hoverLane === 1 ? x : null);
-    this.lcpLane.handlePointerMove(this.hoverLane === 2 ? x : null);
-    this.layoutShiftsLane.handlePointerMove(this.hoverLane === 3 ? x : null);
-    this.longTasksLane.handlePointerMove(this.hoverLane === 4 ? x : null);
+    this.#hoverLane = lane;
+    this.#fcpLane.handlePointerMove(this.#hoverLane === 1 ? x : null);
+    this.#lcpLane.handlePointerMove(this.#hoverLane === 2 ? x : null);
+    this.#layoutShiftsLane.handlePointerMove(this.#hoverLane === 3 ? x : null);
+    this.#longTasksLane.handlePointerMove(this.#hoverLane === 4 ? x : null);
 
-    this.scheduleRender();
+    this.#scheduleRender();
   }
 
-  private updateOverlayPosition(clientX: number, clientY: number): void {
+  #updateOverlayPosition(clientX: number, clientY: number): void {
     coordinator.read(() => {
       const bb1 = this.getBoundingClientRect();
-      const bb2 = this.overlay.getBoundingClientRect();
+      const bb2 = this.#overlay.getBoundingClientRect();
 
       const x = clientX + 10 + bb2.width > bb1.x + bb1.width ? clientX - bb2.width - 10 : clientX + 10;
 
       coordinator.write(() => {
-        this.overlay.style.top = `${clientY + 10}px`;
-        this.overlay.style.left = `${x}px`;
+        this.#overlay.style.top = `${clientY + 10}px`;
+        this.#overlay.style.left = `${x}px`;
       });
     });
   }
 
-  private handlePointerOut(_: MouseEvent): void {
-    this.fcpLane.handlePointerMove(null);
-    this.lcpLane.handlePointerMove(null);
-    this.layoutShiftsLane.handlePointerMove(null);
-    this.longTasksLane.handlePointerMove(null);
+  #handlePointerOut(_: MouseEvent): void {
+    this.#fcpLane.handlePointerMove(null);
+    this.#lcpLane.handlePointerMove(null);
+    this.#layoutShiftsLane.handlePointerMove(null);
+    this.#longTasksLane.handlePointerMove(null);
 
-    this.scheduleRender();
+    this.#scheduleRender();
   }
 
-  private handleClick(e: MouseEvent): void {
+  #handleClick(e: MouseEvent): void {
     const x = e.offsetX;
 
     this.focus();
-    this.fcpLane.handleClick(this.hoverLane === 1 ? x : null);
-    this.lcpLane.handleClick(this.hoverLane === 2 ? x : null);
-    this.layoutShiftsLane.handleClick(this.hoverLane === 3 ? x : null);
-    this.longTasksLane.handleClick(this.hoverLane === 4 ? x : null);
+    this.#fcpLane.handleClick(this.#hoverLane === 1 ? x : null);
+    this.#lcpLane.handleClick(this.#hoverLane === 2 ? x : null);
+    this.#layoutShiftsLane.handleClick(this.#hoverLane === 3 ? x : null);
+    this.#longTasksLane.handleClick(this.#hoverLane === 4 ? x : null);
 
-    this.scheduleRender();
+    this.#scheduleRender();
   }
 
   /**
@@ -286,7 +286,7 @@ export class WebVitalsTimeline extends HTMLElement {
    * @param x
    */
   tX(x: number): number {
-    return (x - this.startTime) / this.duration * this.width;
+    return (x - this.#startTime) / this.#duration * this.#width;
   }
 
   /**
@@ -294,21 +294,21 @@ export class WebVitalsTimeline extends HTMLElement {
    * @param duration
    */
   tD(duration: number): number {
-    return duration / this.duration * this.width;
+    return duration / this.#duration * this.#width;
   }
 
   setSize(width: number, height: number): void {
     const scale = window.devicePixelRatio;
 
-    this.width = width;
-    this.height = Math.max(height, 120);
+    this.#width = width;
+    this.#height = Math.max(height, 120);
 
-    this.canvas.width = Math.floor(this.width * scale);
-    this.canvas.height = Math.floor(this.height * scale);
-    this.context.scale(scale, scale);
+    this.#canvas.width = Math.floor(this.#width * scale);
+    this.#canvas.height = Math.floor(this.#height * scale);
+    this.#context.scale(scale, scale);
 
-    this.style.width = this.width + 'px';
-    this.style.height = this.height + 'px';
+    this.style.width = this.#width + 'px';
+    this.style.height = this.#height + 'px';
     this.render();
   }
 
@@ -316,7 +316,7 @@ export class WebVitalsTimeline extends HTMLElement {
     this.style.display = 'block';
     this.tabIndex = 0;
 
-    const boundingClientRect = this.canvas.getBoundingClientRect();
+    const boundingClientRect = this.#canvas.getBoundingClientRect();
     const width = boundingClientRect.width;
     const height = boundingClientRect.height;
 
@@ -325,10 +325,10 @@ export class WebVitalsTimeline extends HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.overlay.remove();
+    this.#overlay.remove();
   }
 
-  private getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent): MarkerType {
+  #getMarkerTypeForFCPEvent(event: WebVitalsFCPEvent): MarkerType {
     const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
     if (t <= FCP_GOOD_TIMING) {
       return MarkerType.Good;
@@ -339,7 +339,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return MarkerType.Bad;
   }
 
-  private getMarkerTypeForLCPEvent(event: WebVitalsLCPEvent): MarkerType {
+  #getMarkerTypeForLCPEvent(event: WebVitalsLCPEvent): MarkerType {
     const t = this.getTimeSinceLastMainFrameNavigation(event.timestamp);
     if (t <= LCP_GOOD_TIMING) {
       return MarkerType.Good;
@@ -350,7 +350,7 @@ export class WebVitalsTimeline extends HTMLElement {
     return MarkerType.Bad;
   }
 
-  private getFCPMarkerOverlay(): LitHtml.TemplateResult {
+  #getFCPMarkerOverlay(): LitHtml.TemplateResult {
     return LitHtml.html`
       <table class="table">
         <thead>
@@ -378,7 +378,7 @@ export class WebVitalsTimeline extends HTMLElement {
     `;
   }
 
-  private getLCPMarkerOverlay(): LitHtml.TemplateResult {
+  #getLCPMarkerOverlay(): LitHtml.TemplateResult {
     return LitHtml.html`
       <table class="table">
         <thead>
@@ -406,7 +406,7 @@ export class WebVitalsTimeline extends HTMLElement {
     `;
   }
 
-  private getLongTaskOverlay(timebox: Timebox): LitHtml.TemplateResult {
+  #getLongTaskOverlay(timebox: Timebox): LitHtml.TemplateResult {
     return LitHtml.html`
         <table class="table">
           <thead>
@@ -433,75 +433,75 @@ export class WebVitalsTimeline extends HTMLElement {
     `;
   }
 
-  private renderMainFrameNavigations(markers: readonly number[]): void {
-    this.context.save();
-    this.context.strokeStyle = 'blue';
-    this.context.beginPath();
+  #renderMainFrameNavigations(markers: readonly number[]): void {
+    this.#context.save();
+    this.#context.strokeStyle = 'blue';
+    this.#context.beginPath();
     for (const marker of markers) {
-      this.context.moveTo(this.tX(marker), 0);
-      this.context.lineTo(this.tX(marker), this.height);
+      this.#context.moveTo(this.tX(marker), 0);
+      this.#context.lineTo(this.tX(marker), this.#height);
     }
-    this.context.stroke();
-    this.context.restore();
+    this.#context.stroke();
+    this.#context.restore();
   }
 
   getTimeSinceLastMainFrameNavigation(time: number): number {
     let i = 0, prev = 0;
-    while (i < this.mainFrameNavigations.length && this.mainFrameNavigations[i] <= time) {
-      prev = this.mainFrameNavigations[i];
+    while (i < this.#mainFrameNavigations.length && this.#mainFrameNavigations[i] <= time) {
+      prev = this.#mainFrameNavigations[i];
       i++;
     }
     return time - prev;
   }
 
   render(): void {
-    this.context.save();
-    this.context.clearRect(0, 0, this.width, this.height);
+    this.#context.save();
+    this.#context.clearRect(0, 0, this.#width, this.#height);
 
-    this.context.strokeStyle = '#dadce0';
+    this.#context.strokeStyle = '#dadce0';
 
     // Render the grid in the background.
-    this.context.beginPath();
+    this.#context.beginPath();
     for (let i = 0; i < NUMBER_OF_LANES; i++) {
-      this.context.moveTo(0, (i * LINE_HEIGHT) + 0.5);
-      this.context.lineTo(this.width, (i * LINE_HEIGHT) + 0.5);
+      this.#context.moveTo(0, (i * LINE_HEIGHT) + 0.5);
+      this.#context.lineTo(this.#width, (i * LINE_HEIGHT) + 0.5);
     }
-    this.context.moveTo(0, NUMBER_OF_LANES * LINE_HEIGHT - 0.5);
-    this.context.lineTo(this.width, NUMBER_OF_LANES * LINE_HEIGHT - 0.5);
-    this.context.stroke();
-    this.context.restore();
+    this.#context.moveTo(0, NUMBER_OF_LANES * LINE_HEIGHT - 0.5);
+    this.#context.lineTo(this.#width, NUMBER_OF_LANES * LINE_HEIGHT - 0.5);
+    this.#context.stroke();
+    this.#context.restore();
 
     // Render the WebVitals label.
-    this.context.save();
-    this.context.font = '11px ' + Host.Platform.fontFamily();
-    const text = this.context.measureText('Web Vitals');
+    this.#context.save();
+    this.#context.font = '11px ' + Host.Platform.fontFamily();
+    const text = this.#context.measureText('Web Vitals');
     const height = text.actualBoundingBoxAscent - text.actualBoundingBoxDescent;
-    this.context.fillStyle = '#202124';
-    this.context.fillText('Web Vitals', 6, 4 + height);
-    this.context.restore();
+    this.#context.fillStyle = '#202124';
+    this.#context.fillText('Web Vitals', 6, 4 + height);
+    this.#context.restore();
 
     // Render all the lanes.
-    this.context.save();
-    this.context.translate(0, Number(LINE_HEIGHT));
-    this.fcpLane.render();
-    this.context.translate(0, Number(LINE_HEIGHT));
-    this.lcpLane.render();
-    this.context.translate(0, Number(LINE_HEIGHT));
-    this.layoutShiftsLane.render();
-    this.context.translate(0, Number(LINE_HEIGHT));
-    this.longTasksLane.render();
-    this.context.restore();
+    this.#context.save();
+    this.#context.translate(0, Number(LINE_HEIGHT));
+    this.#fcpLane.render();
+    this.#context.translate(0, Number(LINE_HEIGHT));
+    this.#lcpLane.render();
+    this.#context.translate(0, Number(LINE_HEIGHT));
+    this.#layoutShiftsLane.render();
+    this.#context.translate(0, Number(LINE_HEIGHT));
+    this.#longTasksLane.render();
+    this.#context.restore();
 
-    this.renderMainFrameNavigations(this.mainFrameNavigations);
+    this.#renderMainFrameNavigations(this.#mainFrameNavigations);
   }
 
-  private scheduleRender(): void {
-    if (this.animationFrame) {
+  #scheduleRender(): void {
+    if (this.#animationFrame) {
       return;
     }
 
-    this.animationFrame = window.requestAnimationFrame(() => {
-      this.animationFrame = null;
+    this.#animationFrame = window.requestAnimationFrame(() => {
+      this.#animationFrame = null;
       this.render();
     });
   }

@@ -18,25 +18,25 @@ export interface WebVitalsTooltipData {
 
 export class WebVitalsTooltip extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-timeline-webvitals-tooltip`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private content: LitHtml.TemplateResult|null = null;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #content: LitHtml.TemplateResult|null = null;
 
   set data(data: WebVitalsTooltipData) {
-    this.content = data.content;
-    this.render();
+    this.#content = data.content;
+    this.#render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [webVitalsTooltipStyles];
-    this.render();
+    this.#shadow.adoptedStyleSheets = [webVitalsTooltipStyles];
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // clang-format off
     LitHtml.render(LitHtml.html`<div class="tooltip">
-        ${this.content}
+        ${this.#content}
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format off
   }
 }

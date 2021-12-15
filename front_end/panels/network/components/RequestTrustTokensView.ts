@@ -88,30 +88,30 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrust
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RequestTrustTokensView extends UI.Widget.VBox {
-  private readonly reportView = new RequestTrustTokensReport();
-  private readonly request: SDK.NetworkRequest.NetworkRequest;
+  readonly #reportView = new RequestTrustTokensReport();
+  readonly #request: SDK.NetworkRequest.NetworkRequest;
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
-    this.request = request;
+    this.#request = request;
 
-    this.contentElement.appendChild(this.reportView);
+    this.contentElement.appendChild(this.#reportView);
   }
 
   wasShown(): void {
-    this.request.addEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
+    this.#request.addEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.#refreshReportView, this);
 
-    this.refreshReportView();
+    this.#refreshReportView();
   }
 
   willHide(): void {
-    this.request.removeEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.refreshReportView, this);
+    this.#request.removeEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.#refreshReportView, this);
   }
 
-  private refreshReportView(): void {
-    this.reportView.data = {
-      params: this.request.trustTokenParams(),
-      result: this.request.trustTokenOperationDoneEvent(),
+  #refreshReportView(): void {
+    this.#reportView.data = {
+      params: this.#request.trustTokenParams(),
+      result: this.#request.trustTokenOperationDoneEvent(),
     };
   }
 }
@@ -123,58 +123,58 @@ export interface RequestTrustTokensReportData {
 
 export class RequestTrustTokensReport extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-trust-token-report`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private trustTokenData?: Readonly<RequestTrustTokensReportData>;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #trustTokenData?: Readonly<RequestTrustTokensReportData>;
 
   set data(data: RequestTrustTokensReportData) {
-    this.trustTokenData = data;
-    this.render();
+    this.#trustTokenData = data;
+    this.#render();
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [requestTrustTokensViewStyles];
+    this.#shadow.adoptedStyleSheets = [requestTrustTokensViewStyles];
   }
 
-  private render(): void {
-    if (!this.trustTokenData) {
+  #render(): void {
+    if (!this.#trustTokenData) {
       throw new Error('Trying to render a Trust Token report without providing data');
     }
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`<${ReportView.ReportView.Report.litTagName}>
-        ${this.renderParameterSection()}
-        ${this.renderResultSection()}
+        ${this.#renderParameterSection()}
+        ${this.#renderResultSection()}
       </${ReportView.ReportView.Report.litTagName}>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  private renderParameterSection(): LitHtml.TemplateResult|{} {
-    if (!this.trustTokenData || !this.trustTokenData.params) {
+  #renderParameterSection(): LitHtml.TemplateResult|{} {
+    if (!this.#trustTokenData || !this.#trustTokenData.params) {
       return LitHtml.nothing;
     }
 
     return LitHtml.html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.parameters)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
-      ${renderRowWithCodeValue(i18nString(UIStrings.type), this.trustTokenData.params.type.toString())}
-      ${this.renderRefreshPolicy(this.trustTokenData.params)}
-      ${this.renderIssuers(this.trustTokenData.params)}
-      ${this.renderIssuerAndTopLevelOriginFromResult()}
+      ${renderRowWithCodeValue(i18nString(UIStrings.type), this.#trustTokenData.params.type.toString())}
+      ${this.#renderRefreshPolicy(this.#trustTokenData.params)}
+      ${this.#renderIssuers(this.#trustTokenData.params)}
+      ${this.#renderIssuerAndTopLevelOriginFromResult()}
       <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
         ReportView.ReportView.ReportSectionDivider.litTagName}>
     `;
   }
 
-  private renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
+  #renderRefreshPolicy(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
     if (params.type !== Protocol.Network.TrustTokenOperationType.Redemption) {
       return LitHtml.nothing;
     }
     return renderRowWithCodeValue(i18nString(UIStrings.refreshPolicy), params.refreshPolicy.toString());
   }
 
-  private renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
+  #renderIssuers(params: Protocol.Network.TrustTokenParams): LitHtml.TemplateResult|{} {
     if (!params.issuers || params.issuers.length === 0) {
       return LitHtml.nothing;
     }
@@ -193,18 +193,18 @@ export class RequestTrustTokensReport extends HTMLElement {
   // The issuer and top level origin are technically parameters but reported in the
   // result structure due to the timing when they are calculated in the backend.
   // Nonetheless, we show them as part of the parameter section.
-  private renderIssuerAndTopLevelOriginFromResult(): LitHtml.TemplateResult|{} {
-    if (!this.trustTokenData || !this.trustTokenData.result) {
+  #renderIssuerAndTopLevelOriginFromResult(): LitHtml.TemplateResult|{} {
+    if (!this.#trustTokenData || !this.#trustTokenData.result) {
       return LitHtml.nothing;
     }
 
     return LitHtml.html`
-      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.topLevelOrigin), this.trustTokenData.result.topLevelOrigin)}
-      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), this.trustTokenData.result.issuerOrigin)}`;
+      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.topLevelOrigin), this.#trustTokenData.result.topLevelOrigin)}
+      ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), this.#trustTokenData.result.issuerOrigin)}`;
   }
 
-  private renderResultSection(): LitHtml.TemplateResult|{} {
-    if (!this.trustTokenData || !this.trustTokenData.result) {
+  #renderResultSection(): LitHtml.TemplateResult|{} {
+    if (!this.#trustTokenData || !this.#trustTokenData.result) {
       return LitHtml.nothing;
     }
     return LitHtml.html`
@@ -215,19 +215,19 @@ export class RequestTrustTokensReport extends HTMLElement {
       <${ReportView.ReportView.ReportValue.litTagName}>
         <span>
           <${IconButton.Icon.Icon.litTagName} class="status-icon"
-            .data=${getIconForStatusCode(this.trustTokenData.result.status) as IconButton.Icon.IconData}>
+            .data=${getIconForStatusCode(this.#trustTokenData.result.status) as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}>
-          <strong>${getSimplifiedStatusTextForStatusCode(this.trustTokenData.result.status)}</strong>
-          ${getDetailedTextForStatusCode(this.trustTokenData.result.status)}
+          <strong>${getSimplifiedStatusTextForStatusCode(this.#trustTokenData.result.status)}</strong>
+          ${getDetailedTextForStatusCode(this.#trustTokenData.result.status)}
         </span>
       </${ReportView.ReportView.ReportValue.litTagName}>
-      ${this.renderIssuedTokenCount(this.trustTokenData.result)}
+      ${this.#renderIssuedTokenCount(this.#trustTokenData.result)}
       <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
         ReportView.ReportView.ReportSectionDivider.litTagName}>
       `;
   }
 
-  private renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.TemplateResult|{} {
+  #renderIssuedTokenCount(result: Protocol.Network.TrustTokenOperationDoneEvent): LitHtml.TemplateResult|{} {
     if (result.type !== Protocol.Network.TrustTokenOperationType.Issuance) {
       return LitHtml.nothing;
     }

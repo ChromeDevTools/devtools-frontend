@@ -2265,15 +2265,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   static getDCLEventColor(): string {
-    if (ThemeSupport.ThemeSupport.instance().themeName() === 'dark') {
-      return '#03A9F4';
-    }
-    return '#0867CB';
+    return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-syntax-3');
   }
 
   static getLoadEventColor(): string {
-    return ThemeSupport.ThemeSupport.instance().patchColorText(
-        '#B31412', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-syntax-1');
   }
 }
 

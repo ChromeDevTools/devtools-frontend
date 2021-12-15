@@ -91,17 +91,17 @@ export class SizeInputElement extends HTMLElement {
              placeholder=${this.#placeholder}
              ?disabled=${this.#disabled}
              .value=${this.#size}
-             @change=${this.fireSizeChange}
-             @keydown=${this.handleModifierKeys} />
+             @change=${this.#fireSizeChange}
+             @keydown=${this.#handleModifierKeys} />
     `,
         this.#root, {host: this});
   }
 
-  private fireSizeChange(event: Event): void {
+  #fireSizeChange(event: Event): void {
     this.dispatchEvent(new SizeChangedEvent(getInputValue(event)));
   }
 
-  private handleModifierKeys(event: Event): void {
+  #handleModifierKeys(event: Event): void {
     const modifiedValue = UILegacy.UIUtils.modifiedFloatNumber(getInputValue(event), event);
     if (modifiedValue === null) {
       return;

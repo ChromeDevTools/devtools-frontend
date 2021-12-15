@@ -172,12 +172,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
   private onTypeChanged(): void {
     const type = this.breakpointType;
+    this.isLogpoint = type === BreakpointType.Logpoint;
     if (type === BreakpointType.Breakpoint) {
       this.finishEditing(true, '');
-    } else {
-      this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
-      this.updateTooltip();
+      return;
     }
+    this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
+    this.updateTooltip();
   }
 
   private get breakpointType(): string|null {

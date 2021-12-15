@@ -31,7 +31,7 @@ export class Adorner extends HTMLElement {
     this.#content?.remove();
     this.append(data.content);
     this.#content = data.content;
-    this.render();
+    this.#render();
   }
 
   connectedCallback(): void {
@@ -106,7 +106,7 @@ export class Adorner extends HTMLElement {
     });
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`

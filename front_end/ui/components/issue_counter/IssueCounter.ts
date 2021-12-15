@@ -97,9 +97,9 @@ export class IssueCounter extends HTMLElement {
 
   scheduleUpdate(): void {
     if (this.#throttler) {
-      this.#throttler.schedule(async () => this.render());
+      this.#throttler.schedule(async () => this.#render());
     } else {
-      this.render();
+      this.#render();
     }
   }
 
@@ -143,7 +143,7 @@ export class IssueCounter extends HTMLElement {
     };
   }
 
-  private render(): void {
+  #render(): void {
     if (!this.#issuesManager) {
       return;
     }

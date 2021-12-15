@@ -189,14 +189,14 @@ class DiffRenderer {
   ) {
   }
 
-  private render(rows: readonly Row[]): LitHtml.TemplateResult {
+  #render(rows: readonly Row[]): LitHtml.TemplateResult {
     return LitHtml.html`
       <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)}>
-        ${rows.map(row => this.renderRow(row))}
+        ${rows.map(row => this.#renderRow(row))}
       </div>`;
   }
 
-  private renderRow(row: Row): LitHtml.TemplateResult {
+  #renderRow(row: Row): LitHtml.TemplateResult {
     const baseNumber =
         row.type === RowType.Equal || row.type === RowType.Deletion ? String(row.originalLineNumber) : '';
     const curNumber = row.type === RowType.Equal || row.type === RowType.Addition ? String(row.currentLineNumber) : '';
@@ -215,10 +215,10 @@ class DiffRenderer {
       <div class="diff-line-number" aria-hidden="true">${curNumber}</div>
       <div class=${markerClass} aria-hidden="true">${marker}</div>
       <div class="diff-line-content diff-line-${row.type}" data-line-number=${curNumber}>${screenReaderText}${
-        this.renderRowContent(row)}</div>`;
+        this.#renderRowContent(row)}</div>`;
   }
 
-  private renderRowContent(row: Row): LitHtml.TemplateResult[] {
+  #renderRowContent(row: Row): LitHtml.TemplateResult[] {
     if (row.type === RowType.Spacer) {
       return row.tokens.map(tok => LitHtml.html`${tok.text}`);
     }
@@ -249,7 +249,7 @@ class DiffRenderer {
         await CodeHighlighter.CodeHighlighter.create(currentLines.join('\n'), mimeType),
         documentMap(currentLines),
     );
-    LitHtml.render(renderer.render(rows), parent, {host: this});
+    LitHtml.render(renderer.#render(rows), parent, {host: this});
   }
 }
 

@@ -36,10 +36,10 @@ export class MarkdownLink extends HTMLElement {
     const markdownLink = getMarkdownLink(key);
     this.#linkText = title;
     this.#linkUrl = markdownLink;
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // clang-format off
     const output = LitHtml.html`
       <x-link class="devtools-link" href=${this.#linkUrl}>${this.#linkText}</x-link>

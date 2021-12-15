@@ -108,33 +108,33 @@ export class ValueInterpreterDisplay extends HTMLElement {
       });
     }
 
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <div class="value-types">
-        ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.showValue(type) : '')}
+        ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.#showValue(type) : '')}
       </div>
     `, this.#shadow, {host: this},
     );
     // clang-format on
   }
 
-  private showValue(type: ValueType): LitHtml.TemplateResult {
+  #showValue(type: ValueType): LitHtml.TemplateResult {
     if (isNumber(type)) {
-      return this.renderNumberValues(type);
+      return this.#renderNumberValues(type);
     }
     if (isPointer(type)) {
-      return this.renderPointerValue(type);
+      return this.#renderPointerValue(type);
     }
     throw new Error(`No known way to format ${type}`);
   }
 
-  private renderPointerValue(type: ValueType): LitHtml.TemplateResult {
-    const unsignedValue = this.parse({type, signed: false});
+  #renderPointerValue(type: ValueType): LitHtml.TemplateResult {
+    const unsignedValue = this.#parse({type, signed: false});
     const address = getPointerAddress(type, this.#buffer, this.#endianness);
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
     const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
@@ -149,7 +149,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           ${
             html`
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
-                @click=${this.onJumpToAddressClicked.bind(this, Number(address))}>
+                @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
                 <${IconButton.Icon.Icon.litTagName} .data=${
                   {iconName: 'link_icon', color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
                 </${IconButton.Icon.Icon.litTagName}>
@@ -160,11 +160,11 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format on
   }
 
-  private onJumpToAddressClicked(address: number): void {
+  #onJumpToAddressClicked(address: number): void {
     this.dispatchEvent(new JumpToPointerAddressEvent(address));
   }
 
-  private renderNumberValues(type: ValueType): LitHtml.TemplateResult {
+  #renderNumberValues(type: ValueType): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -174,7 +174,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
           data-mode-settings="true"
           class="chrome-select"
           style="border: none; background-color: transparent; cursor: pointer; color: var(--color-text-secondary);"
-          @change=${this.onValueTypeModeChange.bind(this, type)}>
+          @change=${this.#onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`
                 <option value=${mode} .selected=${this.#valueTypeModeConfig.get(type) === mode}>${
@@ -183,14 +183,14 @@ export class ValueInterpreterDisplay extends HTMLElement {
             })}
         </select>
       </div>
-      ${this.renderSignedAndUnsigned(type)}
+      ${this.#renderSignedAndUnsigned(type)}
     `;
     // clang-format on
   }
 
-  private renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
-    const unsignedValue = this.parse({type, signed: false});
-    const signedValue = this.parse({type, signed: true});
+  #renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
+    const unsignedValue = this.#parse({type, signed: false});
+    const signedValue = this.#parse({type, signed: true});
     const mode = this.#valueTypeModeConfig.get(type);
     const showSignedAndUnsigned =
         signedValue !== unsignedValue && mode !== ValueTypeMode.Hexadecimal && mode !== ValueTypeMode.Octal;
@@ -224,14 +224,14 @@ export class ValueInterpreterDisplay extends HTMLElement {
     `;
   }
 
-  private onValueTypeModeChange(type: ValueType, event: Event): void {
+  #onValueTypeModeChange(type: ValueType, event: Event): void {
     event.preventDefault();
     const select = event.target as HTMLInputElement;
     const mode = select.value as ValueTypeMode;
     this.dispatchEvent(new ValueTypeModeChangedEvent(type, mode));
   }
 
-  private parse(data: {type: ValueType, signed?: boolean}): string {
+  #parse(data: {type: ValueType, signed?: boolean}): string {
     const mode = this.#valueTypeModeConfig.get(data.type);
     return format(
         {buffer: this.#buffer, type: data.type, endianness: this.#endianness, signed: data.signed || false, mode});

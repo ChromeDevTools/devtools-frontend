@@ -69,10 +69,10 @@ export class SurveyLink extends HTMLElement {
     this.#canShowSurvey = data.canShowSurvey;
     this.#showSurvey = data.showSurvey;
 
-    this.checkSurvey();
+    this.#checkSurvey();
   }
 
-  private checkSurvey(): void {
+  #checkSurvey(): void {
     this.#state = State.Checking;
     this.#canShowSurvey(this.#trigger, ({canShowSurvey}) => {
       if (!canShowSurvey) {
@@ -80,24 +80,24 @@ export class SurveyLink extends HTMLElement {
       } else {
         this.#state = State.ShowLink;
       }
-      this.render();
+      this.#render();
     });
   }
 
-  private sendSurvey(): void {
+  #sendSurvey(): void {
     this.#state = State.Sending;
-    this.render();
+    this.#render();
     this.#showSurvey(this.#trigger, ({surveyShown}) => {
       if (!surveyShown) {
         this.#state = State.Failed;
       } else {
         this.#state = State.SurveyShown;
       }
-      this.render();
+      this.#render();
     });
   }
 
-  private render(): void {
+  #render(): void {
     if (this.#state === State.Checking || this.#state === State.DontShowLink) {
       return;
     }
@@ -123,7 +123,7 @@ export class SurveyLink extends HTMLElement {
     // clang-format off
     // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
     const output = LitHtml.html`
-      <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.sendSurvey}>
+      <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
         <${IconButton.Icon.Icon.litTagName} class="link-icon" .data=${{iconName: 'feedback_button_icon', color: 'var(--color-link)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}><!--
       -->${linkText}
       </button>

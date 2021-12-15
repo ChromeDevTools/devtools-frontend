@@ -32,14 +32,14 @@ export class MarkdownView extends HTMLElement {
 
   set data(data: MarkdownViewData) {
     this.#tokenData = data.tokens;
-    this.update();
+    this.#update();
   }
 
-  private update(): void {
-    this.render();
+  #update(): void {
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`

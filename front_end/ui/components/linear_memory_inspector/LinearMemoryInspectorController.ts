@@ -81,11 +81,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     super();
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.onGlobalObjectClear, this);
-    this.#paneInstance.addEventListener(LmiEvents.ViewClosed, this.viewClosed.bind(this));
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this.#onGlobalObjectClear, this);
+    this.#paneInstance.addEventListener(LmiEvents.ViewClosed, this.#viewClosed.bind(this));
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.onDebuggerPause, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.#onDebuggerPause, this);
 
     const defaultValueTypeModes = getDefaultValueTypeMapping();
     const defaultSettings: SerializableSettings = {
@@ -189,7 +189,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
   }
 
-  private onDebuggerPause(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+  #onDebuggerPause(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     const debuggerModel = event.data;
     for (const [bufferId, remoteObject] of this.#bufferIdToRemoteObject) {
       if (debuggerModel.runtimeModel() === remoteObject.runtimeModel()) {
@@ -198,11 +198,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     }
   }
 
-  private onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+  #onGlobalObjectClear(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     this.modelRemoved(event.data.runtimeModel());
   }
 
-  private viewClosed({data: bufferId}: Common.EventTarget.EventTargetEvent<string>): void {
+  #viewClosed({data: bufferId}: Common.EventTarget.EventTargetEvent<string>): void {
     const remoteObj = this.#bufferIdToRemoteObject.get(bufferId);
     if (remoteObj) {
       remoteObj.release();

@@ -71,8 +71,8 @@ export class Button extends HTMLElement {
   static formAssociated = true;
   static readonly litTagName = LitHtml.literal`devtools-button`;
   readonly #shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
-  readonly #boundRender = this.render.bind(this);
-  readonly #boundOnClick = this.onClick.bind(this);
+  readonly #boundRender = this.#render.bind(this);
+  readonly #boundOnClick = this.#onClick.bind(this);
   readonly #props: ButtonState = {
     size: Size.MEDIUM,
     disabled: false,
@@ -100,7 +100,7 @@ export class Button extends HTMLElement {
     this.#props.active = Boolean(data.active);
     this.#props.spinner = Boolean(data.spinner);
     this.#props.type = data.type || 'button';
-    this.setDisabledProperty(data.disabled || false);
+    this.#setDisabledProperty(data.disabled || false);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -125,7 +125,7 @@ export class Button extends HTMLElement {
   }
 
   set disabled(disabled: boolean) {
-    this.setDisabledProperty(disabled);
+    this.#setDisabledProperty(disabled);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -139,7 +139,7 @@ export class Button extends HTMLElement {
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  private setDisabledProperty(disabled: boolean): void {
+  #setDisabledProperty(disabled: boolean): void {
     this.#props.disabled = disabled;
     this.toggleAttribute('disabled', disabled);
   }
@@ -153,7 +153,7 @@ export class Button extends HTMLElement {
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  private onClick(event: Event): void {
+  #onClick(event: Event): void {
     if (this.#props.disabled) {
       event.stopPropagation();
       event.preventDefault();
@@ -171,14 +171,14 @@ export class Button extends HTMLElement {
     }
   }
 
-  private onSlotChange(event: Event): void {
+  #onSlotChange(event: Event): void {
     const slot = event.target as HTMLSlotElement | undefined;
     const nodes = slot?.assignedNodes();
     this.#isEmpty = !nodes || !Boolean(nodes.length);
     ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  private render(): void {
+  #render(): void {
     if (!this.#props.variant) {
       throw new Error('Button requires a variant to be defined');
     }
@@ -217,7 +217,7 @@ export class Button extends HTMLElement {
           >
           </${IconButton.Icon.Icon.litTagName}>` : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
-          <slot @slotchange=${this.onSlotChange}></slot>
+          <slot @slotchange=${this.#onSlotChange}></slot>
         </button>
       `, this.#shadow, {host: this});
     // clang-format on

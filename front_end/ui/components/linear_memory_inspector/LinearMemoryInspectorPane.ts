@@ -61,7 +61,7 @@ export class LinearMemoryInspectorPaneImpl extends Common.ObjectWrapper.eventMix
     this.#tabbedPane.setPlaceholderElement(placeholder);
     this.#tabbedPane.setCloseableTabs(true);
     this.#tabbedPane.setAllowTabReorder(true, true);
-    this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this.tabClosed, this);
+    this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this.#tabClosed, this);
     this.#tabbedPane.show(this.contentElement);
 
     this.#tabIdToInspectorView = new Map();
@@ -106,7 +106,7 @@ export class LinearMemoryInspectorPaneImpl extends Common.ObjectWrapper.eventMix
     view.refreshData();
   }
 
-  private tabClosed(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
+  #tabClosed(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
     const {tabId} = event.data;
     this.#tabIdToInspectorView.delete(tabId);
     this.dispatchEventToListeners(Events.ViewClosed, tabId);
@@ -137,7 +137,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#address = address;
     this.#inspector = new LinearMemoryInspector();
     this.#inspector.addEventListener('memoryrequest', (event: MemoryRequestEvent) => {
-      this.memoryRequested(event);
+      this.#memoryRequested(event);
     });
     this.#inspector.addEventListener('addresschanged', (event: AddressChangedEvent) => {
       this.updateAddress(event.data);
@@ -190,7 +190,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     });
   }
 
-  private memoryRequested(event: MemoryRequestEvent): void {
+  #memoryRequested(event: MemoryRequestEvent): void {
     const {start, end, address} = event.data;
     if (address < start || address >= end) {
       throw new Error('Requested address is out of bounds.');

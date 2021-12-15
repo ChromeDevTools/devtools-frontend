@@ -141,16 +141,16 @@ export class LinearMemoryInspector extends HTMLElement {
     this.#valueTypeModes = data.valueTypeModes || this.#valueTypeModes;
     this.#valueTypes = data.valueTypes || this.#valueTypes;
     this.#endianness = data.endianness || this.#endianness;
-    this.setAddress(data.address);
-    this.render();
+    this.#setAddress(data.address);
+    this.#render();
   }
 
-  private render(): void {
-    const {start, end} = this.getPageRangeForAddress(this.#address, this.#numBytesPerPage);
+  #render(): void {
+    const {start, end} = this.#getPageRangeForAddress(this.#address, this.#numBytesPerPage);
 
     const navigatorAddressToShow = this.#currentNavigatorMode === Mode.Submitted ? formatAddress(this.#address) :
                                                                                    this.#currentNavigatorAddressLine;
-    const navigatorAddressIsValid = this.isValidAddress(navigatorAddressToShow);
+    const navigatorAddressIsValid = this.#isValidAddress(navigatorAddressToShow);
 
     const invalidAddressMsg = i18nString(
         UIStrings.addressHasToBeANumberBetweenSAnd,
@@ -166,14 +166,14 @@ export class LinearMemoryInspector extends HTMLElement {
       <div class="view">
         <${LinearMemoryNavigator.litTagName}
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.#currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory} as LinearMemoryNavigatorData}
-          @refreshrequested=${this.onRefreshRequest}
-          @addressinputchanged=${this.onAddressChange}
-          @pagenavigation=${this.navigatePage}
-          @historynavigation=${this.navigateHistory}></${LinearMemoryNavigator.litTagName}>
+          @refreshrequested=${this.#onRefreshRequest}
+          @addressinputchanged=${this.#onAddressChange}
+          @pagenavigation=${this.#navigatePage}
+          @historynavigation=${this.#navigateHistory}></${LinearMemoryNavigator.litTagName}>
         <${LinearMemoryViewer.litTagName}
           .data=${{memory: this.#memory.slice(start - this.#memoryOffset, end - this.#memoryOffset), address: this.#address, memoryOffset: start, focus: this.#currentNavigatorMode === Mode.Submitted} as LinearMemoryViewerData}
-          @byteselected=${this.onByteSelected}
-          @resize=${this.resize}>
+          @byteselected=${this.#onByteSelected}
+          @resize=${this.#resize}>
         </${LinearMemoryViewer.litTagName}>
       </div>
       <div class="value-interpreter">
@@ -184,10 +184,10 @@ export class LinearMemoryInspector extends HTMLElement {
             valueTypeModes: this.#valueTypeModes,
             endianness: this.#endianness,
             memoryLength: this.#outerMemoryLength } as LinearMemoryValueInterpreterData}
-          @valuetypetoggled=${this.onValueTypeToggled}
-          @valuetypemodechanged=${this.onValueTypeModeChanged}
-          @endiannesschanged=${this.onEndiannessChanged}
-          @jumptopointeraddress=${this.onJumpToPointerAddress}
+          @valuetypetoggled=${this.#onValueTypeToggled}
+          @valuetypemodechanged=${this.#onValueTypeModeChanged}
+          @endiannesschanged=${this.#onEndiannessChanged}
+          @jumptopointeraddress=${this.#onJumpToPointerAddress}
           >
         </${LinearMemoryValueInterpreter.litTagName}/>
       </div>
@@ -197,49 +197,49 @@ export class LinearMemoryInspector extends HTMLElement {
     // clang-format on
   }
 
-  private onJumpToPointerAddress(e: JumpToPointerAddressEvent): void {
+  #onJumpToPointerAddress(e: JumpToPointerAddressEvent): void {
     // Stop event from bubbling up, since no element further up needs the event.
     e.stopPropagation();
     this.#currentNavigatorMode = Mode.Submitted;
     const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
-    this.jumpToAddress(addressInRange);
+    this.#jumpToAddress(addressInRange);
   }
 
-  private onRefreshRequest(): void {
-    const {start, end} = this.getPageRangeForAddress(this.#address, this.#numBytesPerPage);
+  #onRefreshRequest(): void {
+    const {start, end} = this.#getPageRangeForAddress(this.#address, this.#numBytesPerPage);
     this.dispatchEvent(new MemoryRequestEvent(start, end, this.#address));
   }
 
-  private onByteSelected(e: ByteSelectedEvent): void {
+  #onByteSelected(e: ByteSelectedEvent): void {
     this.#currentNavigatorMode = Mode.Submitted;
     const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
-    this.jumpToAddress(addressInRange);
+    this.#jumpToAddress(addressInRange);
   }
 
-  private createSettings(): Settings {
+  #createSettings(): Settings {
     return {valueTypes: this.#valueTypes, modes: this.#valueTypeModes, endianness: this.#endianness};
   }
 
-  private onEndiannessChanged(e: EndiannessChangedEvent): void {
+  #onEndiannessChanged(e: EndiannessChangedEvent): void {
     this.#endianness = e.data;
-    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
-    this.render();
+    this.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.#render();
   }
 
-  private isValidAddress(address: string): boolean {
+  #isValidAddress(address: string): boolean {
     const newAddress = parseAddress(address);
     return newAddress !== undefined && newAddress >= 0 && newAddress < this.#outerMemoryLength;
   }
 
-  private onAddressChange(e: AddressInputChangedEvent): void {
+  #onAddressChange(e: AddressInputChangedEvent): void {
     const {address, mode} = e.data;
-    const isValid = this.isValidAddress(address);
+    const isValid = this.#isValidAddress(address);
     const newAddress = parseAddress(address);
     this.#currentNavigatorAddressLine = address;
 
     if (newAddress !== undefined && isValid) {
       this.#currentNavigatorMode = mode;
-      this.jumpToAddress(newAddress);
+      this.#jumpToAddress(newAddress);
       return;
     }
 
@@ -249,75 +249,75 @@ export class LinearMemoryInspector extends HTMLElement {
       this.#currentNavigatorMode = Mode.Edit;
     }
 
-    this.render();
+    this.#render();
   }
 
-  private onValueTypeToggled(e: ValueTypeToggledEvent): void {
+  #onValueTypeToggled(e: ValueTypeToggledEvent): void {
     const {type, checked} = e.data;
     if (checked) {
       this.#valueTypes.add(type);
     } else {
       this.#valueTypes.delete(type);
     }
-    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
-    this.render();
+    this.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.#render();
   }
 
-  private onValueTypeModeChanged(e: ValueTypeModeChangedEvent): void {
+  #onValueTypeModeChanged(e: ValueTypeModeChangedEvent): void {
     e.stopImmediatePropagation();
     const {type, mode} = e.data;
     this.#valueTypeModes.set(type, mode);
-    this.dispatchEvent(new SettingsChangedEvent(this.createSettings()));
-    this.render();
+    this.dispatchEvent(new SettingsChangedEvent(this.#createSettings()));
+    this.#render();
   }
 
-  private navigateHistory(e: HistoryNavigationEvent): boolean {
+  #navigateHistory(e: HistoryNavigationEvent): boolean {
     return e.data === Navigation.Forward ? this.#history.rollover() : this.#history.rollback();
   }
 
-  private navigatePage(e: PageNavigationEvent): void {
+  #navigatePage(e: PageNavigationEvent): void {
     const newAddress =
         e.data === Navigation.Forward ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
     const addressInRange = Math.max(0, Math.min(newAddress, this.#outerMemoryLength - 1));
-    this.jumpToAddress(addressInRange);
+    this.#jumpToAddress(addressInRange);
   }
 
-  private jumpToAddress(address: number): void {
+  #jumpToAddress(address: number): void {
     if (address < 0 || address >= this.#outerMemoryLength) {
       console.warn(`Specified address is out of bounds: ${address}`);
       return;
     }
-    this.setAddress(address);
-    this.update();
+    this.#setAddress(address);
+    this.#update();
   }
 
-  private getPageRangeForAddress(address: number, numBytesPerPage: number): {start: number, end: number} {
+  #getPageRangeForAddress(address: number, numBytesPerPage: number): {start: number, end: number} {
     const pageNumber = Math.floor(address / numBytesPerPage);
     const pageStartAddress = pageNumber * numBytesPerPage;
     const pageEndAddress = Math.min(pageStartAddress + numBytesPerPage, this.#outerMemoryLength);
     return {start: pageStartAddress, end: pageEndAddress};
   }
 
-  private resize(event: ResizeEvent): void {
+  #resize(event: ResizeEvent): void {
     this.#numBytesPerPage = event.data;
-    this.update();
+    this.#update();
   }
 
-  private update(): void {
-    const {start, end} = this.getPageRangeForAddress(this.#address, this.#numBytesPerPage);
+  #update(): void {
+    const {start, end} = this.#getPageRangeForAddress(this.#address, this.#numBytesPerPage);
     if (start < this.#memoryOffset || end > this.#memoryOffset + this.#memory.length) {
       this.dispatchEvent(new MemoryRequestEvent(start, end, this.#address));
     } else {
-      this.render();
+      this.#render();
     }
   }
 
-  private setAddress(address: number): void {
+  #setAddress(address: number): void {
     // If we are already showing the address that is requested, no need to act upon it.
     if (this.#address === address) {
       return;
     }
-    const historyEntry = new AddressHistoryEntry(address, () => this.jumpToAddress(address));
+    const historyEntry = new AddressHistoryEntry(address, () => this.#jumpToAddress(address));
     this.#history.push(historyEntry);
     this.#address = address;
     this.dispatchEvent(new AddressChangedEvent(this.#address));

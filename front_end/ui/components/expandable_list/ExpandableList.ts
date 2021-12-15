@@ -19,19 +19,19 @@ export class ExpandableList extends HTMLElement {
 
   set data(data: ExpandableListData) {
     this.#rows = data.rows;
-    this.render();
+    this.#render();
   }
 
-  private onArrowClick(): void {
+  #onArrowClick(): void {
     this.#expanded = !this.#expanded;
-    this.render();
+    this.#render();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [expandableListStyles];
   }
 
-  private render(): void {
+  #render(): void {
     if (this.#rows.length < 1) {
       return;
     }
@@ -44,7 +44,7 @@ export class ExpandableList extends HTMLElement {
         <div>
           ${this.#rows.length > 1 ?
             LitHtml.html`
-              <button @click=${(): void => this.onArrowClick()} class="arrow-icon-button">
+              <button @click=${(): void => this.#onArrowClick()} class="arrow-icon-button">
                 <span class="arrow-icon ${this.#expanded ? 'expanded' : ''}"></span>
               </button>
             `

@@ -39,7 +39,7 @@ export class TextPrompt extends HTMLElement {
     this.#ariaLabelText = data.ariaLabel;
     this.#prefixText = data.prefix;
     this.#suggestionText = data.suggestion;
-    this.render();
+    this.#render();
   }
 
   get data(): TextPromptData {
@@ -51,10 +51,10 @@ export class TextPrompt extends HTMLElement {
   }
 
   focus(): void {
-    this.input().focus();
+    this.#input().focus();
   }
 
-  private input(): HTMLInputElement {
+  #input(): HTMLInputElement {
     const inputElement = this.#shadow.querySelector<HTMLInputElement>('input');
     if (!inputElement) {
       throw new Error('Expected an input element!');
@@ -63,12 +63,12 @@ export class TextPrompt extends HTMLElement {
   }
 
   moveCaretToEndOfInput(): void {
-    this.setSelectedRange(this.text().length, this.text().length);
+    this.setSelectedRange(this.#text().length, this.#text().length);
   }
 
   onInput(): void {
-    this.suggestion().textContent = this.text();
-    this.dispatchEvent(new PromptInputEvent(this.text().trim()));
+    this.#suggestion().textContent = this.#text();
+    this.dispatchEvent(new PromptInputEvent(this.#text().trim()));
   }
 
   onKeyDown(event: KeyboardEvent): void {
@@ -81,37 +81,37 @@ export class TextPrompt extends HTMLElement {
     if (startIndex < 0) {
       throw new RangeError('Selected range start must be a nonnegative integer');
     }
-    const textContentLength = this.text().length;
+    const textContentLength = this.#text().length;
     if (endIndex > textContentLength) {
       endIndex = textContentLength;
     }
     if (endIndex < startIndex) {
       endIndex = startIndex;
     }
-    this.input().setSelectionRange(startIndex, endIndex);
+    this.#input().setSelectionRange(startIndex, endIndex);
   }
 
   setPrefix(prefix: string): void {
     this.#prefixText = prefix;
-    this.render();
+    this.#render();
   }
 
   setSuggestion(suggestion: string): void {
     this.#suggestionText = suggestion;
-    this.render();
+    this.#render();
   }
 
   setText(text: string): void {
-    this.input().value = text;
-    this.suggestion().textContent = this.text();
+    this.#input().value = text;
+    this.#suggestion().textContent = this.#text();
 
-    if (this.input().hasFocus()) {
+    if (this.#input().hasFocus()) {
       this.moveCaretToEndOfInput();
-      this.input().scrollIntoView();
+      this.#input().scrollIntoView();
     }
   }
 
-  private suggestion(): HTMLSpanElement {
+  #suggestion(): HTMLSpanElement {
     const suggestionElement = this.#shadow.querySelector<HTMLSpanElement>('.suggestion');
     if (!suggestionElement) {
       throw new Error('Expected an suggestion element!');
@@ -119,11 +119,11 @@ export class TextPrompt extends HTMLElement {
     return suggestionElement;
   }
 
-  private text(): string {
-    return this.input().value || '';
+  #text(): string {
+    return this.#input().value || '';
   }
 
-  private render(): void {
+  #render(): void {
     const output = LitHtml.html`
       <span class="prefix">${this.#prefixText} </span>
       <span class="text-prompt-input"><input aria-label=${this.#ariaLabelText} spellcheck="false" @input=${

@@ -42,7 +42,7 @@ export class LinearMemoryViewer extends HTMLElement {
   private static readonly BYTE_GROUP_SIZE = 4;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  readonly #resizeObserver = new ResizeObserver(() => this.resize());
+  readonly #resizeObserver = new ResizeObserver(() => this.#resize());
   #isObservingResize = false;
 
   #memory = new Uint8Array();
@@ -69,7 +69,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#address = data.address;
     this.#memoryOffset = data.memoryOffset;
     this.#focusOnByte = data.focus;
-    this.update();
+    this.#update();
   }
 
   connectedCallback(): void {
@@ -82,14 +82,14 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#resizeObserver.disconnect();
   }
 
-  private update(): void {
-    this.updateDimensions();
-    this.render();
-    this.focusOnView();
-    this.engageResizeObserver();
+  #update(): void {
+    this.#updateDimensions();
+    this.#render();
+    this.#focusOnView();
+    this.#engageResizeObserver();
   }
 
-  private focusOnView(): void {
+  #focusOnView(): void {
     if (this.#focusOnByte) {
       const view = this.#shadow.querySelector<HTMLDivElement>('.view');
       if (view) {
@@ -98,13 +98,13 @@ export class LinearMemoryViewer extends HTMLElement {
     }
   }
 
-  private resize(): void {
-    this.update();
+  #resize(): void {
+    this.#update();
     this.dispatchEvent(new ResizeEvent(this.#numBytesInRow * this.#numRows));
   }
 
   /** Recomputes the number of rows and (byte) columns that fit into the current view. */
-  private updateDimensions(): void {
+  #updateDimensions(): void {
     if (this.clientWidth === 0 || this.clientHeight === 0 || !this.shadowRoot) {
       this.#numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
       this.#numRows = 1;
@@ -153,7 +153,7 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
   }
 
-  private engageResizeObserver(): void {
+  #engageResizeObserver(): void {
     if (!this.#resizeObserver || this.#isObservingResize) {
       return;
     }
@@ -162,17 +162,17 @@ export class LinearMemoryViewer extends HTMLElement {
     this.#isObservingResize = true;
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="view" tabindex="0" @keydown=${this.onKeyDown}>
-          ${this.renderView()}
+      <div class="view" tabindex="0" @keydown=${this.#onKeyDown}>
+          ${this.#renderView()}
       </div>
       `, this.#shadow, {host: this});
   }
 
-  private onKeyDown(event: Event): void {
+  #onKeyDown(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
     let newAddress = undefined;
     if (keyboardEvent.code === 'ArrowUp') {
@@ -195,15 +195,15 @@ export class LinearMemoryViewer extends HTMLElement {
     }
   }
 
-  private renderView(): LitHtml.TemplateResult {
+  #renderView(): LitHtml.TemplateResult {
     const itemTemplates = [];
     for (let i = 0; i < this.#numRows; ++i) {
-      itemTemplates.push(this.renderRow(i));
+      itemTemplates.push(this.#renderRow(i));
     }
     return html`${itemTemplates}`;
   }
 
-  private renderRow(row: number): LitHtml.TemplateResult {
+  #renderRow(row: number): LitHtml.TemplateResult {
     const {startIndex, endIndex} = {startIndex: row * this.#numBytesInRow, endIndex: (row + 1) * this.#numBytesInRow};
 
     const classMap = {
@@ -214,14 +214,14 @@ export class LinearMemoryViewer extends HTMLElement {
     <div class="row">
       <span class=${LitHtml.Directives.classMap(classMap)}>${toHexString({number: startIndex + this.#memoryOffset, pad: 8, prefix: false})}</span>
       <span class="divider"></span>
-      ${this.renderByteValues(startIndex, endIndex)}
+      ${this.#renderByteValues(startIndex, endIndex)}
       <span class="divider"></span>
-      ${this.renderCharacterValues(startIndex, endIndex)}
+      ${this.#renderCharacterValues(startIndex, endIndex)}
     </div>
     `;
   }
 
-  private renderByteValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
+  #renderByteValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
       // Add margin after each group of bytes of size byteGroupSize.
@@ -236,13 +236,13 @@ export class LinearMemoryViewer extends HTMLElement {
       const isSelectableCell = i < this.#memory.length;
       const byteValue = isSelectableCell ? html`${toHexString({number: this.#memory[i], pad: 2, prefix: false})}` : '';
       const actualIndex = i + this.#memoryOffset;
-      const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, actualIndex) : '';
+      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, actualIndex) : '';
       cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte}>${byteValue}</span>`);
     }
     return html`${cells}`;
   }
 
-  private renderCharacterValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
+  #renderCharacterValues(startIndex: number, endIndex: number): LitHtml.TemplateResult {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
       const classMap = {
@@ -251,21 +251,21 @@ export class LinearMemoryViewer extends HTMLElement {
         selected: this.#address - this.#memoryOffset === i,
       };
       const isSelectableCell = i < this.#memory.length;
-      const value = isSelectableCell ? html`${this.toAscii(this.#memory[i])}` : '';
-      const onSelectedByte = isSelectableCell ? this.onSelectedByte.bind(this, i + this.#memoryOffset) : '';
+      const value = isSelectableCell ? html`${this.#toAscii(this.#memory[i])}` : '';
+      const onSelectedByte = isSelectableCell ? this.#onSelectedByte.bind(this, i + this.#memoryOffset) : '';
       cells.push(html`<span class=${LitHtml.Directives.classMap(classMap)} @click=${onSelectedByte}>${value}</span>`);
     }
     return html`${cells}`;
   }
 
-  private toAscii(byte: number): string {
+  #toAscii(byte: number): string {
     if (byte >= 20 && byte <= 0x7F) {
       return String.fromCharCode(byte);
     }
     return '.';
   }
 
-  private onSelectedByte(index: number): void {
+  #onSelectedByte(index: number): void {
     this.dispatchEvent(new ByteSelectedEvent(index));
   }
 }

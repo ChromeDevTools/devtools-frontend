@@ -44,7 +44,7 @@ export class IconButton extends HTMLElement {
     this.#leadingText = data.leadingText ?? '';
     this.#accessibleName = data.accessibleName;
     this.#compact = Boolean(data.compact);
-    this.render();
+    this.#render();
   }
 
   get data(): IconButtonData {
@@ -62,14 +62,14 @@ export class IconButton extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [iconButtonStyles];
   }
 
-  private onClickHandler(event: Event): void {
+  #onClickHandler(event: Event): void {
     if (this.#clickHandler) {
       event.preventDefault();
       this.#clickHandler();
     }
   }
 
-  private render(): void {
+  #render(): void {
     const buttonClasses = LitHtml.Directives.classMap({
       'icon-button': true,
       'with-click-handler': Boolean(this.#clickHandler),
@@ -80,7 +80,7 @@ export class IconButton extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button class=${buttonClasses} @click=${this.onClickHandler} aria-label=${LitHtml.Directives.ifDefined(this.#accessibleName)}>
+      <button class=${buttonClasses} @click=${this.#onClickHandler} aria-label=${LitHtml.Directives.ifDefined(this.#accessibleName)}>
       ${(!this.#compact && this.#leadingText) ? LitHtml.html`<span class="icon-button-title">${this.#leadingText}</span>` : LitHtml.nothing}
       ${filteredGroups.map(counter =>
       LitHtml.html`

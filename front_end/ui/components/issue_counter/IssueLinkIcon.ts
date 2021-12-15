@@ -75,15 +75,15 @@ export class IssueLinkIcon extends HTMLElement {
       this.#reveal = data.revealOverride;
     }
     if (!this.#issue && this.#issueId) {
-      this.#issueResolvedPromise = this.resolveIssue(this.#issueId);
-      this.#issueTitlePromise = this.#issueResolvedPromise.then(() => this.fetchIssueTitle());
+      this.#issueResolvedPromise = this.#resolveIssue(this.#issueId);
+      this.#issueTitlePromise = this.#issueResolvedPromise.then(() => this.#fetchIssueTitle());
     } else {
-      this.#issueTitlePromise = this.fetchIssueTitle();
+      this.#issueTitlePromise = this.#fetchIssueTitle();
     }
-    this.render();
+    this.#render();
   }
 
-  private async fetchIssueTitle(): Promise<void> {
+  async #fetchIssueTitle(): Promise<void> {
     const description = this.#issue?.getDescription();
     if (!description) {
       return;
@@ -98,7 +98,7 @@ export class IssueLinkIcon extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [IssueLinkIconStyles];
   }
 
-  private resolveIssue(issueId: Protocol.Audits.IssueId): Promise<void> {
+  #resolveIssue(issueId: Protocol.Audits.IssueId): Promise<void> {
     if (!this.#issueResolver) {
       throw new Error('An `IssueResolver` must be provided if an `issueId` is provided.');
     }
@@ -138,7 +138,7 @@ export class IssueLinkIcon extends HTMLElement {
     this.#additionalOnClickAction?.();
   }
 
-  private getTooltip(): Platform.UIString.LocalizedString {
+  #getTooltip(): Platform.UIString.LocalizedString {
     if (this.#issueTitle) {
       return i18nString(UIStrings.clickToShowIssueWithTitle, {title: this.#issueTitle});
     }
@@ -148,25 +148,25 @@ export class IssueLinkIcon extends HTMLElement {
     return i18nString(UIStrings.issueUnavailable);
   }
 
-  private render(): Promise<void> {
+  #render(): Promise<void> {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        ${LitHtml.Directives.until(this.#issueTitlePromise.then(() => this.renderComponent()), this.#issueResolvedPromise.then(() => this.renderComponent()), this.renderComponent())}
+        ${LitHtml.Directives.until(this.#issueTitlePromise.then(() => this.#renderComponent()), this.#issueResolvedPromise.then(() => this.#renderComponent()), this.#renderComponent())}
       `,
       this.#shadow, {host: this});
       // clang-format on
     });
   }
 
-  private renderComponent(): LitHtml.TemplateResult {
+  #renderComponent(): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <span class=${LitHtml.Directives.classMap({'link': Boolean(this.#issue)})}
             tabindex="0"
             @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} .data=${this.iconData() as IconButton.Icon.IconData}
-          title=${this.getTooltip()}></${IconButton.Icon.Icon.litTagName}>
+          title=${this.#getTooltip()}></${IconButton.Icon.Icon.litTagName}>
       </span>`;
     // clang-format on
   }

@@ -52,7 +52,7 @@ export class Icon extends HTMLElement {
       this.#iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
       this.#iconName = data.iconName;
     }
-    this.render();
+    this.#render();
   }
 
   get data(): IconData {
@@ -73,7 +73,7 @@ export class Icon extends HTMLElement {
     };
   }
 
-  private getStyles(): {[key: string]: string} {
+  #getStyles(): {[key: string]: string} {
     const iconPath = this.#iconPath;
     const width = this.#width;
     const height = this.#height;
@@ -104,11 +104,11 @@ export class Icon extends HTMLElement {
     };
   }
 
-  private render(): void {
+  #render(): void {
     coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.getStyles())}></div>
+        <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.#getStyles())}></div>
       `, this.#shadow, {host: this});
       // clang-format on
     });

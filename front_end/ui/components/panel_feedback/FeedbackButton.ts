@@ -26,7 +26,7 @@ export interface FeedbackButtonData {
 export class FeedbackButton extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-feedback-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.render.bind(this);
+  readonly #boundRender = this.#render.bind(this);
 
   #props: FeedbackButtonData = {
     feedbackUrl: '',
@@ -41,7 +41,7 @@ export class FeedbackButton extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.#props.feedbackUrl);
   }
 
-  private render(): void {
+  #render(): void {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('FeedbackButton render was not scheduled');
     }

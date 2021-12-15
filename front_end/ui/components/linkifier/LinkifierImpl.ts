@@ -45,14 +45,14 @@ export class Linkifier extends HTMLElement {
       throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
     }
 
-    this.render();
+    this.#render();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [linkifierImplStyles];
   }
 
-  private onLinkActivation(event: Event): void {
+  #onLinkActivation(event: Event): void {
     event.preventDefault();
     const linkifierClickEvent = new LinkifierClick({
       url: this.#url,
@@ -62,12 +62,12 @@ export class Linkifier extends HTMLElement {
     this.dispatchEvent(linkifierClickEvent);
   }
 
-  private async render(): Promise<void> {
+  async #render(): Promise<void> {
     // Disabled until https://crbug.com/1079231 is fixed.
     await coordinator.write(() => {
       // clang-format off
       // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-      LitHtml.render(LitHtml.html`<a class="link" href=${this.#url} @click=${this.onLinkActivation}><slot>${LinkifierUtils.linkText(this.#url, this.#lineNumber)}</slot></a>`, this.#shadow, { host: this});
+      LitHtml.render(LitHtml.html`<a class="link" href=${this.#url} @click=${this.#onLinkActivation}><slot>${LinkifierUtils.linkText(this.#url, this.#lineNumber)}</slot></a>`, this.#shadow, { host: this});
       // clang-format on
     });
   }

@@ -50,17 +50,17 @@ export class PreviewToggle extends HTMLElement {
     this.#feedbackURL = data.feedbackURL;
     this.#experiment = data.experiment;
     this.#onChangeCallback = data.onChangeCallback;
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     const checked = Root.Runtime.experiments.isEnabled(this.#experiment);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(
       html`
       <div class="experiment-preview">
-        <input type="checkbox" ?checked=${checked} @change=${this.checkboxChanged} aria-label=${this.#name}/>
+        <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name}/>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: 'ic_preview_feature',
           width: '16px',
@@ -81,7 +81,7 @@ export class PreviewToggle extends HTMLElement {
     // clang-format on
   }
 
-  private checkboxChanged(event: Event): void {
+  #checkboxChanged(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
     Root.Runtime.experiments.setEnabled(this.#experiment, checked);
     this.#onChangeCallback?.(checked);

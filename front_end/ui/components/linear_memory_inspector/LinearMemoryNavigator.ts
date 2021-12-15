@@ -115,7 +115,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     this.#valid = data.valid;
     this.#canGoBackInHistory = data.canGoBackInHistory;
     this.#canGoForwardInHistory = data.canGoForwardInHistory;
-    this.render();
+    this.#render();
 
     const addressInput = this.#shadow.querySelector<HTMLInputElement>('.address-input');
     if (addressInput) {
@@ -127,25 +127,25 @@ export class LinearMemoryNavigator extends HTMLElement {
     }
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const result = html`
       <div class="navigator">
         <div class="navigator-item">
-          ${this.createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),
+          ${this.#createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),
               event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory})}
-          ${this.createButton({icon: 'ic_redo_16x16_icon', title: i18nString(UIStrings.goForwardInAddressHistory),
+          ${this.#createButton({icon: 'ic_redo_16x16_icon', title: i18nString(UIStrings.goForwardInAddressHistory),
               event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory})}
         </div>
         <div class="navigator-item">
-          ${this.createButton({icon: 'ic_page_prev_16x16_icon', title: i18nString(UIStrings.previousPage),
+          ${this.#createButton({icon: 'ic_page_prev_16x16_icon', title: i18nString(UIStrings.previousPage),
               event: new PageNavigationEvent(Navigation.Backward), enabled: true})}
-          ${this.createAddressInput()}
-          ${this.createButton({icon: 'ic_page_next_16x16_icon', title: i18nString(UIStrings.nextPage),
+          ${this.#createAddressInput()}
+          ${this.#createButton({icon: 'ic_page_next_16x16_icon', title: i18nString(UIStrings.nextPage),
               event: new PageNavigationEvent(Navigation.Forward), enabled: true})}
         </div>
-        ${this.createButton({icon: 'refresh_12x12_icon', title: i18nString(UIStrings.refresh),
+        ${this.#createButton({icon: 'refresh_12x12_icon', title: i18nString(UIStrings.refresh),
             event: new RefreshRequestedEvent(), enabled: true})}
       </div>
       `;
@@ -153,7 +153,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     // clang-format on
   }
 
-  private createAddressInput(): LitHtml.TemplateResult {
+  #createAddressInput(): LitHtml.TemplateResult {
     const classMap = {
       'address-input': true,
       invalid: !this.#valid,
@@ -161,15 +161,15 @@ export class LinearMemoryNavigator extends HTMLElement {
     return html`
       <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
         title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error} @change=${
-        this.onAddressChange.bind(this, Mode.Submitted)} @input=${this.onAddressChange.bind(this, Mode.Edit)}/>`;
+        this.#onAddressChange.bind(this, Mode.Submitted)} @input=${this.#onAddressChange.bind(this, Mode.Edit)}/>`;
   }
 
-  private onAddressChange(mode: Mode, event: Event): void {
+  #onAddressChange(mode: Mode, event: Event): void {
     const addressInput = event.target as HTMLInputElement;
     this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
-  private createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
+  #createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
     const iconColor = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}

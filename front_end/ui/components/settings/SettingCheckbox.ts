@@ -41,12 +41,12 @@ export class SettingCheckbox extends HTMLElement {
     this.#disabled = Boolean(data.disabled);
 
     this.#changeListenerDescriptor = this.#setting.addChangeListener(() => {
-      this.render();
+      this.#render();
     });
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     if (!this.#setting) {
       throw new Error('No "Setting" object provided for rendering');
     }
@@ -56,13 +56,13 @@ export class SettingCheckbox extends HTMLElement {
       <p>
         <label>
           <input type="checkbox" ?checked=${this.#setting.get()} ?disabled=${this.#disabled} @change=${
-            this.checkboxChanged} aria-label=${this.#setting.title()} /> ${this.#setting.title()}
+            this.#checkboxChanged} aria-label=${this.#setting.title()} /> ${this.#setting.title()}
         </label>
       </p>`,
         this.#shadow, {host: this});
   }
 
-  private checkboxChanged(e: Event): void {
+  #checkboxChanged(e: Event): void {
     this.#setting?.set((e.target as HTMLInputElement).checked);
   }
 }

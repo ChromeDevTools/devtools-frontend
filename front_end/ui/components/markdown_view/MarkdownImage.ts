@@ -40,10 +40,10 @@ export class MarkdownImage extends HTMLElement {
     const markdownImage = getMarkdownImage(key);
     this.#imageData = markdownImage;
     this.#imageTitle = title;
-    this.render();
+    this.#render();
   }
 
-  private getIconComponent(): LitHtml.TemplateResult {
+  #getIconComponent(): LitHtml.TemplateResult {
     if (!this.#imageData) {
       return LitHtml.html``;
     }
@@ -54,7 +54,7 @@ export class MarkdownImage extends HTMLElement {
     `;
   }
 
-  private getImageComponent(): LitHtml.TemplateResult {
+  #getImageComponent(): LitHtml.TemplateResult {
     if (!this.#imageData) {
       return LitHtml.html``;
     }
@@ -64,12 +64,12 @@ export class MarkdownImage extends HTMLElement {
     `;
   }
 
-  private render(): void {
+  #render(): void {
     if (!this.#imageData) {
       return;
     }
     const {isIcon} = this.#imageData;
-    const imageComponent = isIcon ? this.getIconComponent() : this.getImageComponent();
+    const imageComponent = isIcon ? this.#getIconComponent() : this.#getImageComponent();
     LitHtml.render(imageComponent, this.#shadow, {host: this});
   }
 }

@@ -42,15 +42,15 @@ export class Report extends HTMLElement {
 
   set data({reportTitle}: ReportData) {
     this.#reportTitle = reportTitle;
-    this.render();
+    this.#render();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportStyles];
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -69,19 +69,19 @@ export interface ReportSectionData {
 
 export class ReportSection extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-report-section`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportSectionStyles];
-    this.render();
+    this.#shadow.adoptedStyleSheets = [reportSectionStyles];
+    this.#render();
   }
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="section">
         <slot></slot>
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -92,10 +92,10 @@ export class ReportSectionHeader extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportSectionHeaderStyles];
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -113,10 +113,10 @@ export class ReportSectionDivider extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportSectionDividerStyles];
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -133,10 +133,10 @@ export class ReportKey extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportKeyStyles];
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
@@ -152,10 +152,10 @@ export class ReportValue extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportValueStyles];
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`

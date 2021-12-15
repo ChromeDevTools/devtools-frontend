@@ -83,17 +83,17 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.#valueTypes = data.valueTypes;
     this.#valueTypeModeConfig = data.valueTypeModes || new Map();
     this.#memoryLength = data.memoryLength;
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <div class="value-interpreter">
         <div class="settings-toolbar">
-          ${this.renderEndiannessSetting()}
-          <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.onSettingsToggle}>
+          ${this.#renderEndiannessSetting()}
+          <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}>
             <${IconButton.Icon.Icon.litTagName}
               .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as IconButton.Icon.IconWithName}>
             </${IconButton.Icon.Icon.litTagName}>
@@ -105,7 +105,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
             html`
               <${ValueInterpreterSettings.litTagName}
                 .data=${{ valueTypes: this.#valueTypes } as ValueInterpreterSettingsData}
-                @typetoggle=${this.onTypeToggle}>
+                @typetoggle=${this.#onTypeToggle}>
               </${ValueInterpreterSettings.litTagName}>` :
             html`
               <${ValueInterpreterDisplay.litTagName}
@@ -125,15 +125,15 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // clang-format on
   }
 
-  private onEndiannessChange(event: Event): void {
+  #onEndiannessChange(event: Event): void {
     event.preventDefault();
     const select = event.target as HTMLInputElement;
     const endianness = select.value as Endianness;
     this.dispatchEvent(new EndiannessChangedEvent(endianness));
   }
 
-  private renderEndiannessSetting(): LitHtml.TemplateResult {
-    const onEnumSettingChange = this.onEndiannessChange.bind(this);
+  #renderEndiannessSetting(): LitHtml.TemplateResult {
+    const onEnumSettingChange = this.#onEndiannessChange.bind(this);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -151,12 +151,12 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // clang-format on
   }
 
-  private onSettingsToggle(): void {
+  #onSettingsToggle(): void {
     this.#showSettings = !this.#showSettings;
-    this.render();
+    this.#render();
   }
 
-  private onTypeToggle(e: TypeToggleEvent): void {
+  #onTypeToggle(e: TypeToggleEvent): void {
     this.dispatchEvent(new ValueTypeToggledEvent(e.data.type, e.data.checked));
   }
 }

@@ -89,8 +89,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.scaleHeight = 16;
     /** @const */
     this.graphHeight = 90;
-    this.gridColor = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.08)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    this.gridColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--divider-line');
     this.controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this.canvas = chartContainer.createChild('canvas') as HTMLCanvasElement;
@@ -220,11 +219,9 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   private drawHorizontalGrid(ctx: CanvasRenderingContext2D): void {
     const labelDistanceSeconds = 10;
-    const lightGray = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.02)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    const lightGray = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-inverted-opacity-2');
     ctx.font = '10px ' + Host.Platform.fontFamily();
-    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-inverted-opacity-50');
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
       const x = this.width - ((currentTime - sec) * 1000 - this.pollIntervalMs) * this.pixelsPerMs;
@@ -277,8 +274,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
         ctx.restore();
       }
     }
-    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-inverted-opacity-50');
     ctx.font = `10px  ${Host.Platform.fontFamily()}`;
     ctx.fillText(chartInfo.title, 8, 10);
     this.drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
@@ -327,8 +323,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     const span = max;
     const topPadding = 18;
     const visibleHeight = height - topPadding;
-    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.55)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-inverted-opacity-50');
     ctx.strokeStyle = this.gridColor;
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
@@ -345,8 +340,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     ctx.beginPath();
     ctx.moveTo(0, height + 0.5);
     ctx.lineTo(this.width, height + 0.5);
-    ctx.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(0, 0, 0, 0.2)', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    ctx.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-inverted-opacity-2');
     ctx.stroke();
     function calcY(value: number): number {
       return Math.round(height - visibleHeight * value / span) + 0.5;

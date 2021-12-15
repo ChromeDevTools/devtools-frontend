@@ -10,36 +10,36 @@ import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
 
 export class HTMLFormatter {
-  private readonly builder: FormattedContentBuilder;
-  private readonly jsFormatter: JavaScriptFormatter;
-  private readonly cssFormatter: CSSFormatter;
-  private text?: string;
-  private lineEndings?: number[];
-  private model?: HTMLModel;
+  readonly #builder: FormattedContentBuilder;
+  readonly #jsFormatter: JavaScriptFormatter;
+  readonly #cssFormatter: CSSFormatter;
+  #text?: string;
+  #lineEndings?: number[];
+  #model?: HTMLModel;
 
   constructor(builder: FormattedContentBuilder) {
-    this.builder = builder;
-    this.jsFormatter = new JavaScriptFormatter(builder);
-    this.cssFormatter = new CSSFormatter(builder);
+    this.#builder = builder;
+    this.#jsFormatter = new JavaScriptFormatter(builder);
+    this.#cssFormatter = new CSSFormatter(builder);
   }
 
   format(text: string, lineEndings: number[]): void {
-    this.text = text;
-    this.lineEndings = lineEndings;
-    this.model = new HTMLModel(text);
-    this.walk(this.model.document());
+    this.#text = text;
+    this.#lineEndings = lineEndings;
+    this.#model = new HTMLModel(text);
+    this.walk(this.#model.document());
   }
 
   private formatTokensTill(element: FormatterElement, offset: number): void {
-    if (!this.model) {
+    if (!this.#model) {
       return;
     }
 
-    let nextToken = this.model.peekToken();
+    let nextToken = this.#model.peekToken();
     while (nextToken && nextToken.startOffset < offset) {
-      const token = (this.model.nextToken() as Token);
+      const token = (this.#model.nextToken() as Token);
       this.formatToken(element, token);
-      nextToken = this.model.peekToken();
+      nextToken = this.#model.peekToken();
     }
   }
 
@@ -65,42 +65,42 @@ export class HTMLFormatter {
   }
 
   private beforeOpenTag(element: FormatterElement): void {
-    if (!this.model) {
+    if (!this.#model) {
       return;
     }
 
-    if (!element.children.length || element === this.model.document()) {
+    if (!element.children.length || element === this.#model.document()) {
       return;
     }
-    this.builder.addNewLine();
+    this.#builder.addNewLine();
   }
 
   private afterOpenTag(element: FormatterElement): void {
-    if (!this.model) {
+    if (!this.#model) {
       return;
     }
 
-    if (!element.children.length || element === this.model.document()) {
+    if (!element.children.length || element === this.#model.document()) {
       return;
     }
-    this.builder.increaseNestingLevel();
-    this.builder.addNewLine();
+    this.#builder.increaseNestingLevel();
+    this.#builder.addNewLine();
   }
 
   private beforeCloseTag(element: FormatterElement): void {
-    if (!this.model) {
+    if (!this.#model) {
       return;
     }
 
-    if (!element.children.length || element === this.model.document()) {
+    if (!element.children.length || element === this.#model.document()) {
       return;
     }
-    this.builder.decreaseNestingLevel();
-    this.builder.addNewLine();
+    this.#builder.decreaseNestingLevel();
+    this.#builder.addNewLine();
   }
 
   private afterCloseTag(_element: FormatterElement): void {
-    this.builder.addNewLine();
+    this.#builder.addNewLine();
   }
 
   private formatToken(element: FormatterElement, token: Token): void {
@@ -108,9 +108,9 @@ export class HTMLFormatter {
       return;
     }
     if (hasTokenInSet(token.type, 'comment') || hasTokenInSet(token.type, 'meta')) {
-      this.builder.addNewLine();
-      this.builder.addToken(token.value.trim(), token.startOffset);
-      this.builder.addNewLine();
+      this.#builder.addNewLine();
+      this.#builder.addToken(token.value.trim(), token.startOffset);
+      this.#builder.addNewLine();
       return;
     }
 
@@ -121,30 +121,30 @@ export class HTMLFormatter {
     const isBodyToken =
         element.openTag.endOffset <= token.startOffset && token.startOffset < element.closeTag.startOffset;
     if (isBodyToken && element.name === 'style') {
-      this.builder.addNewLine();
-      this.builder.increaseNestingLevel();
-      this.cssFormatter.format(this.text || '', this.lineEndings || [], token.startOffset, token.endOffset);
-      this.builder.decreaseNestingLevel();
+      this.#builder.addNewLine();
+      this.#builder.increaseNestingLevel();
+      this.#cssFormatter.format(this.#text || '', this.#lineEndings || [], token.startOffset, token.endOffset);
+      this.#builder.decreaseNestingLevel();
       return;
     }
     if (isBodyToken && element.name === 'script') {
-      this.builder.addNewLine();
-      this.builder.increaseNestingLevel();
+      this.#builder.addNewLine();
+      this.#builder.increaseNestingLevel();
       if (this.scriptTagIsJavaScript(element)) {
-        this.jsFormatter.format(this.text || '', this.lineEndings || [], token.startOffset, token.endOffset);
+        this.#jsFormatter.format(this.#text || '', this.#lineEndings || [], token.startOffset, token.endOffset);
       } else {
-        this.builder.addToken(token.value, token.startOffset);
-        this.builder.addNewLine();
+        this.#builder.addToken(token.value, token.startOffset);
+        this.#builder.addNewLine();
       }
-      this.builder.decreaseNestingLevel();
+      this.#builder.decreaseNestingLevel();
       return;
     }
 
     if (!isBodyToken && hasTokenInSet(token.type, 'attribute')) {
-      this.builder.addSoftSpace();
+      this.#builder.addSoftSpace();
     }
 
-    this.builder.addToken(token.value, token.startOffset);
+    this.#builder.addToken(token.value, token.startOffset);
   }
 
   private scriptTagIsJavaScript(element: FormatterElement): boolean {
@@ -200,34 +200,34 @@ function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
 }
 
 export class HTMLModel {
-  private state: ParseState;
-  private readonly documentInternal: FormatterElement;
-  private stack: FormatterElement[];
-  private readonly tokens: Token[];
-  private tokenIndex: number;
-  private attributes: Map<string, string>;
-  private attributeName: string;
-  private tagName: string;
-  private isOpenTag: boolean;
-  private tagStartOffset?: number|null;
-  private tagEndOffset?: number|null;
+  #state: ParseState;
+  readonly #documentInternal: FormatterElement;
+  #stack: FormatterElement[];
+  readonly #tokens: Token[];
+  #tokenIndex: number;
+  #attributes: Map<string, string>;
+  #attributeName: string;
+  #tagName: string;
+  #isOpenTag: boolean;
+  #tagStartOffset?: number|null;
+  #tagEndOffset?: number|null;
 
   constructor(text: string) {
-    this.state = ParseState.Initial;
-    this.documentInternal = new FormatterElement('document');
-    this.documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
-    this.documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
+    this.#state = ParseState.Initial;
+    this.#documentInternal = new FormatterElement('document');
+    this.#documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
+    this.#documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
 
-    this.stack = [this.documentInternal];
+    this.#stack = [this.#documentInternal];
 
-    this.tokens = [];
-    this.tokenIndex = 0;
+    this.#tokens = [];
+    this.#tokenIndex = 0;
     this.build(text);
 
-    this.attributes = new Map();
-    this.attributeName = '';
-    this.tagName = '';
-    this.isOpenTag = false;
+    this.#attributes = new Map();
+    this.#attributeName = '';
+    this.#tagName = '';
+    this.#isOpenTag = false;
   }
 
   private build(text: string): void {
@@ -240,7 +240,7 @@ export class HTMLModel {
       if (lastOffset >= text.length) {
         break;
       }
-      const element = this.stack[this.stack.length - 1];
+      const element = this.#stack[this.#stack.length - 1];
       if (!element) {
         break;
       }
@@ -257,11 +257,11 @@ export class HTMLModel {
       const tokenStart = element.openTag.endOffset;
       const tokenEnd = lastOffset;
       const tokenValue = text.substring(tokenStart, tokenEnd);
-      this.tokens.push(new Token(tokenValue, new Set(), tokenStart, tokenEnd));
+      this.#tokens.push(new Token(tokenValue, new Set(), tokenStart, tokenEnd));
     }
 
-    while (this.stack.length > 1) {
-      const element = this.stack[this.stack.length - 1];
+    while (this.#stack.length > 1) {
+      const element = this.#stack[this.#stack.length - 1];
       if (!element) {
         break;
       }
@@ -278,10 +278,10 @@ export class HTMLModel {
 
       const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
       const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
-      this.tokens.push(token);
+      this.#tokens.push(token);
       this.updateDOM(token);
 
-      const element = this.stack[this.stack.length - 1];
+      const element = this.#stack[this.#stack.length - 1];
       if (element && (element.name === 'script' || element.name === 'style') && element.openTag &&
           element.openTag.endOffset === lastOffset) {
         return AbortTokenization;
@@ -294,68 +294,69 @@ export class HTMLModel {
   private updateDOM(token: Token): void {
     const value = token.value;
     const type = token.type;
-    switch (this.state) {
+    switch (this.#state) {
       case ParseState.Initial:
         if (hasTokenInSet(type, 'bracket') && (value === '<' || value === '</')) {
           this.onStartTag(token);
-          this.state = ParseState.Tag;
+          this.#state = ParseState.Tag;
         }
         return;
       case ParseState.Tag:
         if (hasTokenInSet(type, 'tag') && !hasTokenInSet(type, 'bracket')) {
-          this.tagName = value.trim().toLowerCase();
+          this.#tagName = value.trim().toLowerCase();
         } else if (hasTokenInSet(type, 'attribute')) {
-          this.attributeName = value.trim().toLowerCase();
-          this.attributes.set(this.attributeName, '');
-          this.state = ParseState.AttributeName;
+          this.#attributeName = value.trim().toLowerCase();
+          this.#attributes.set(this.#attributeName, '');
+          this.#state = ParseState.AttributeName;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.onEndTag(token);
-          this.state = ParseState.Initial;
+          this.#state = ParseState.Initial;
         }
         return;
       case ParseState.AttributeName:
         if (!type.size && value === '=') {
-          this.state = ParseState.AttributeValue;
+          this.#state = ParseState.AttributeValue;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.onEndTag(token);
-          this.state = ParseState.Initial;
+          this.#state = ParseState.Initial;
         }
         return;
       case ParseState.AttributeValue:
         if (hasTokenInSet(type, 'string')) {
-          this.attributes.set(this.attributeName, value);
-          this.state = ParseState.Tag;
+          this.#attributes.set(this.#attributeName, value);
+          this.#state = ParseState.Tag;
         } else if (hasTokenInSet(type, 'bracket') && (value === '>' || value === '/>')) {
           this.onEndTag(token);
-          this.state = ParseState.Initial;
+          this.#state = ParseState.Initial;
         }
         return;
     }
   }
 
   private onStartTag(token: Token): void {
-    this.tagName = '';
-    this.tagStartOffset = token.startOffset;
-    this.tagEndOffset = null;
-    this.attributes = new Map();
-    this.attributeName = '';
-    this.isOpenTag = token.value === '<';
+    this.#tagName = '';
+    this.#tagStartOffset = token.startOffset;
+    this.#tagEndOffset = null;
+    this.#attributes = new Map();
+    this.#attributeName = '';
+    this.#isOpenTag = token.value === '<';
   }
 
   private onEndTag(token: Token): void {
-    this.tagEndOffset = token.endOffset;
-    const selfClosingTag = token.value === '/>' || SelfClosingTags.has(this.tagName);
+    this.#tagEndOffset = token.endOffset;
+    const selfClosingTag = token.value === '/>' || SelfClosingTags.has(this.#tagName);
     const tag = new Tag(
-        this.tagName, this.tagStartOffset || 0, this.tagEndOffset, this.attributes, this.isOpenTag, selfClosingTag);
+        this.#tagName, this.#tagStartOffset || 0, this.#tagEndOffset, this.#attributes, this.#isOpenTag,
+        selfClosingTag);
     this.onTagComplete(tag);
   }
 
   private onTagComplete(tag: Tag): void {
     if (tag.isOpenTag) {
-      const topElement = this.stack[this.stack.length - 1];
+      const topElement = this.#stack[this.#stack.length - 1];
       if (topElement) {
         const tagSet = AutoClosingTags.get(topElement.name);
-        if (topElement !== this.documentInternal && topElement.openTag && topElement.openTag.selfClosingTag) {
+        if (topElement !== this.#documentInternal && topElement.openTag && topElement.openTag.selfClosingTag) {
           this.popElement(autocloseTag(topElement, topElement.openTag.endOffset));
         } else if (tagSet && tagSet.has(tag.name)) {
           this.popElement(autocloseTag(topElement, tag.startOffset));
@@ -365,12 +366,12 @@ export class HTMLModel {
       return;
     }
 
-    let lastTag = this.stack[this.stack.length - 1];
-    while (this.stack.length > 1 && lastTag && lastTag.name !== tag.name) {
+    let lastTag = this.#stack[this.#stack.length - 1];
+    while (this.#stack.length > 1 && lastTag && lastTag.name !== tag.name) {
       this.popElement(autocloseTag(lastTag, tag.startOffset));
-      lastTag = this.stack[this.stack.length - 1];
+      lastTag = this.#stack[this.#stack.length - 1];
     }
-    if (this.stack.length === 1) {
+    if (this.#stack.length === 1) {
       return;
     }
     this.popElement(tag);
@@ -381,7 +382,7 @@ export class HTMLModel {
   }
 
   private popElement(closeTag: Tag): void {
-    const element = this.stack.pop();
+    const element = this.#stack.pop();
     if (!element) {
       return;
     }
@@ -389,26 +390,26 @@ export class HTMLModel {
   }
 
   private pushElement(openTag: Tag): void {
-    const topElement = this.stack[this.stack.length - 1];
+    const topElement = this.#stack[this.#stack.length - 1];
     const newElement = new FormatterElement(openTag.name);
     if (topElement) {
       newElement.parent = topElement;
       topElement.children.push(newElement);
     }
     newElement.openTag = openTag;
-    this.stack.push(newElement);
+    this.#stack.push(newElement);
   }
 
   peekToken(): Token|null {
-    return this.tokenIndex < this.tokens.length ? this.tokens[this.tokenIndex] : null;
+    return this.#tokenIndex < this.#tokens.length ? this.#tokens[this.#tokenIndex] : null;
   }
 
   nextToken(): Token|null {
-    return this.tokens[this.tokenIndex++];
+    return this.#tokens[this.#tokenIndex++];
   }
 
   document(): FormatterElement {
-    return this.documentInternal;
+    return this.#documentInternal;
   }
 }
 

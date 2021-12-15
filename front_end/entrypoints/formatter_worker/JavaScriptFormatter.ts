@@ -36,23 +36,23 @@ import {ESTreeWalker} from './ESTreeWalker.js';
 import type {FormattedContentBuilder} from './FormattedContentBuilder.js';
 
 export class JavaScriptFormatter {
-  private readonly builder: FormattedContentBuilder;
-  private tokenizer!: AcornTokenizer;
-  private content!: string;
-  private fromOffset!: number;
-  private lastLineNumber!: number;
-  private toOffset?: number;
+  readonly #builder: FormattedContentBuilder;
+  #tokenizer!: AcornTokenizer;
+  #content!: string;
+  #fromOffset!: number;
+  #lastLineNumber!: number;
+  #toOffset?: number;
   constructor(builder: FormattedContentBuilder) {
-    this.builder = builder;
+    this.#builder = builder;
   }
 
   format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
-    this.fromOffset = fromOffset;
-    this.toOffset = toOffset;
-    this.content = text.substring(this.fromOffset, this.toOffset);
-    this.lastLineNumber = 0;
-    this.tokenizer = new AcornTokenizer(this.content);
-    const ast = Acorn.parse(this.content, {
+    this.#fromOffset = fromOffset;
+    this.#toOffset = toOffset;
+    this.#content = text.substring(this.#fromOffset, this.#toOffset);
+    this.#lastLineNumber = 0;
+    this.#tokenizer = new AcornTokenizer(this.#content);
+    const ast = Acorn.parse(this.#content, {
       ranges: false,
       preserveParens: true,
       allowImportExportEverywhere: true,
@@ -70,22 +70,22 @@ export class JavaScriptFormatter {
   private push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
     for (let i = 0; i < format.length; ++i) {
       if (format[i] === 's') {
-        this.builder.addSoftSpace();
+        this.#builder.addSoftSpace();
       } else if (format[i] === 'S') {
-        this.builder.addHardSpace();
+        this.#builder.addHardSpace();
       } else if (format[i] === 'n') {
-        this.builder.addNewLine();
+        this.#builder.addNewLine();
       } else if (format[i] === '>') {
-        this.builder.increaseNestingLevel();
+        this.#builder.increaseNestingLevel();
       } else if (format[i] === '<') {
-        this.builder.decreaseNestingLevel();
+        this.#builder.decreaseNestingLevel();
       } else if (format[i] === 't') {
-        if (this.tokenizer.tokenLineStart() - this.lastLineNumber > 1) {
-          this.builder.addNewLine(true);
+        if (this.#tokenizer.tokenLineStart() - this.#lastLineNumber > 1) {
+          this.#builder.addNewLine(true);
         }
-        this.lastLineNumber = this.tokenizer.tokenLineEnd();
+        this.#lastLineNumber = this.#tokenizer.tokenLineEnd();
         if (token) {
-          this.builder.addToken(this.content.substring(token.start, token.end), this.fromOffset + token.start);
+          this.#builder.addToken(this.#content.substring(token.start, token.end), this.#fromOffset + token.start);
         }
       }
     }
@@ -96,8 +96,8 @@ export class JavaScriptFormatter {
       return;
     }
     let token;
-    while ((token = this.tokenizer.peekToken()) && token.start < node.start) {
-      const token = (this.tokenizer.nextToken() as TokenOrComment);
+    while ((token = this.#tokenizer.peekToken()) && token.start < node.start) {
+      const token = (this.#tokenizer.nextToken() as TokenOrComment);
       // @ts-ignore Same reason as above about Acorn types and ESTree types
       const format = this.formatToken(node.parent, token);
       this.push(token, format);
@@ -107,8 +107,8 @@ export class JavaScriptFormatter {
 
   private afterVisit(node: Acorn.ESTree.Node): void {
     let token;
-    while ((token = this.tokenizer.peekToken()) && token.start < node.end) {
-      const token = (this.tokenizer.nextToken() as TokenOrComment);
+    while ((token = this.#tokenizer.peekToken()) && token.start < node.end) {
+      const token = (this.#tokenizer.nextToken() as TokenOrComment);
       const format = this.formatToken(node, token);
       this.push(token, format);
     }

@@ -145,20 +145,20 @@ export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.Action
 let nodeIndicatorInstance: NodeIndicator;
 
 export class NodeIndicator implements UI.Toolbar.Provider {
-  private readonly element: Element;
-  private readonly button: UI.Toolbar.ToolbarItem;
+  readonly #element: Element;
+  readonly #button: UI.Toolbar.ToolbarItem;
   private constructor() {
     const element = document.createElement('div');
     const shadowRoot =
         UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [nodeIconStyles], delegatesFocus: undefined});
-    this.element = shadowRoot.createChild('div', 'node-icon');
+    this.#element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener(
         'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openNodeFrontend(), false);
-    this.button = new UI.Toolbar.ToolbarItem(element);
-    this.button.setTitle(i18nString(UIStrings.openDedicatedTools));
+    this.#button = new UI.Toolbar.ToolbarItem(element);
+    this.#button.setTitle(i18nString(UIStrings.openDedicatedTools));
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.AvailableTargetsChanged, event => this.update(event.data));
-    this.button.setVisible(false);
+    this.#button.setVisible(false);
     this.update([]);
   }
   static instance(opts: {
@@ -174,14 +174,14 @@ export class NodeIndicator implements UI.Toolbar.Provider {
 
   private update(targetInfos: Protocol.Target.TargetInfo[]): void {
     const hasNode = Boolean(targetInfos.find(target => target.type === 'node' && !target.attached));
-    this.element.classList.toggle('inactive', !hasNode);
+    this.#element.classList.toggle('inactive', !hasNode);
     if (hasNode) {
-      this.button.setVisible(true);
+      this.#button.setVisible(true);
     }
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
-    return this.button;
+    return this.#button;
   }
 }
 
@@ -205,20 +205,20 @@ export class SourcesPanelIndicator {
 }
 
 export class BackendSettingsSync implements SDK.TargetManager.Observer {
-  private readonly autoAttachSetting: Common.Settings.Setting<boolean>;
-  private readonly adBlockEnabledSetting: Common.Settings.Setting<boolean>;
-  private readonly emulatePageFocusSetting: Common.Settings.Setting<boolean>;
+  readonly #autoAttachSetting: Common.Settings.Setting<boolean>;
+  readonly #adBlockEnabledSetting: Common.Settings.Setting<boolean>;
+  readonly #emulatePageFocusSetting: Common.Settings.Setting<boolean>;
 
   constructor() {
-    this.autoAttachSetting = Common.Settings.Settings.instance().moduleSetting('autoAttachToCreatedPages');
-    this.autoAttachSetting.addChangeListener(this.updateAutoAttach, this);
+    this.#autoAttachSetting = Common.Settings.Settings.instance().moduleSetting('autoAttachToCreatedPages');
+    this.#autoAttachSetting.addChangeListener(this.updateAutoAttach, this);
     this.updateAutoAttach();
 
-    this.adBlockEnabledSetting = Common.Settings.Settings.instance().moduleSetting('network.adBlockingEnabled');
-    this.adBlockEnabledSetting.addChangeListener(this.update, this);
+    this.#adBlockEnabledSetting = Common.Settings.Settings.instance().moduleSetting('network.adBlockingEnabled');
+    this.#adBlockEnabledSetting.addChangeListener(this.update, this);
 
-    this.emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulatePageFocus');
-    this.emulatePageFocusSetting.addChangeListener(this.update, this);
+    this.#emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulatePageFocus');
+    this.#emulatePageFocusSetting.addChangeListener(this.update, this);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
@@ -227,12 +227,12 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
       return;
     }
-    target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.adBlockEnabledSetting.get()});
-    target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this.emulatePageFocusSetting.get()});
+    target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.#adBlockEnabledSetting.get()});
+    target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this.#emulatePageFocusSetting.get()});
   }
 
   private updateAutoAttach(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setOpenNewWindowForPopups(this.autoAttachSetting.get());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.setOpenNewWindowForPopups(this.#autoAttachSetting.get());
   }
 
   private update(): void {

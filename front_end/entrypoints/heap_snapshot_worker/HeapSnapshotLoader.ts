@@ -34,27 +34,27 @@ import type {HeapSnapshotHeader, Profile} from './HeapSnapshot.js';
 import type {HeapSnapshotWorkerDispatcher} from './HeapSnapshotWorkerDispatcher.js';
 
 export class HeapSnapshotLoader {
-  private readonly progress: HeapSnapshotProgress;
-  private buffer: string;
-  private dataCallback: ((value: string|PromiseLike<string>) => void)|null;
-  private done: boolean;
+  readonly #progress: HeapSnapshotProgress;
+  #buffer: string;
+  #dataCallback: ((value: string|PromiseLike<string>) => void)|null;
+  #done: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private snapshot?: {[x: string]: any};
-  private array!: number[]|Uint32Array|null;
-  private arrayIndex!: number;
+  #snapshot?: {[x: string]: any};
+  #array!: number[]|Uint32Array|null;
+  #arrayIndex!: number;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private json?: any;
+  #json?: any;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private jsonTokenizer?: any;
+  #jsonTokenizer?: any;
   constructor(dispatcher: HeapSnapshotWorkerDispatcher) {
     this.reset();
-    this.progress = new HeapSnapshotProgress(dispatcher);
-    this.buffer = '';
-    this.dataCallback = null;
-    this.done = false;
+    this.#progress = new HeapSnapshotProgress(dispatcher);
+    this.#buffer = '';
+    this.#dataCallback = null;
+    this.#done = false;
     this.parseInput();
   }
 
@@ -63,22 +63,22 @@ export class HeapSnapshotLoader {
   }
 
   private reset(): void {
-    this.json = '';
-    this.snapshot = undefined;
+    this.#json = '';
+    this.#snapshot = undefined;
   }
 
   close(): void {
-    this.done = true;
-    if (this.dataCallback) {
-      this.dataCallback('');
+    this.#done = true;
+    if (this.#dataCallback) {
+      this.#dataCallback('');
     }
   }
 
   buildSnapshot(): JSHeapSnapshot {
-    this.snapshot = this.snapshot || {};
+    this.#snapshot = this.#snapshot || {};
 
-    this.progress.updateStatus('Processing snapshot…');
-    const result = new JSHeapSnapshot((this.snapshot as Profile), this.progress);
+    this.#progress.updateStatus('Processing snapshot…');
+    const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress);
     this.reset();
     return result;
   }
@@ -88,26 +88,26 @@ export class HeapSnapshotLoader {
     const char0 = '0'.charCodeAt(0);
     const char9 = '9'.charCodeAt(0);
     const closingBracket = ']'.charCodeAt(0);
-    const length = this.json.length;
+    const length = this.#json.length;
     while (true) {
       while (index < length) {
-        const code = this.json.charCodeAt(index);
+        const code = this.#json.charCodeAt(index);
         if (char0 <= code && code <= char9) {
           break;
         } else if (code === closingBracket) {
-          this.json = this.json.slice(index + 1);
+          this.#json = this.#json.slice(index + 1);
           return false;
         }
         ++index;
       }
       if (index === length) {
-        this.json = '';
+        this.#json = '';
         return true;
       }
       let nextNumber = 0;
       const startIndex = index;
       while (index < length) {
-        const code = this.json.charCodeAt(index);
+        const code = this.#json.charCodeAt(index);
         if (char0 > code || code > char9) {
           break;
         }
@@ -116,73 +116,73 @@ export class HeapSnapshotLoader {
         ++index;
       }
       if (index === length) {
-        this.json = this.json.slice(startIndex);
+        this.#json = this.#json.slice(startIndex);
         return true;
       }
-      if (!this.array) {
+      if (!this.#array) {
         throw new Error('Array not instantiated');
       }
-      this.array[this.arrayIndex++] = nextNumber;
+      this.#array[this.#arrayIndex++] = nextNumber;
     }
   }
 
   private parseStringsArray(): void {
-    this.progress.updateStatus('Parsing strings…');
-    const closingBracketIndex = this.json.lastIndexOf(']');
+    this.#progress.updateStatus('Parsing strings…');
+    const closingBracketIndex = this.#json.lastIndexOf(']');
     if (closingBracketIndex === -1) {
       throw new Error('Incomplete JSON');
     }
-    this.json = this.json.slice(0, closingBracketIndex + 1);
+    this.#json = this.#json.slice(0, closingBracketIndex + 1);
 
-    if (!this.snapshot) {
+    if (!this.#snapshot) {
       throw new Error('No snapshot in parseStringsArray');
     }
-    this.snapshot.strings = JSON.parse(this.json);
+    this.#snapshot.strings = JSON.parse(this.#json);
   }
 
   write(chunk: string): void {
-    this.buffer += chunk;
-    if (!this.dataCallback) {
+    this.#buffer += chunk;
+    if (!this.#dataCallback) {
       return;
     }
-    this.dataCallback(this.buffer);
-    this.dataCallback = null;
-    this.buffer = '';
+    this.#dataCallback(this.#buffer);
+    this.#dataCallback = null;
+    this.#buffer = '';
   }
 
   private fetchChunk(): Promise<string> {
-    return this.done ? Promise.resolve(this.buffer) : new Promise(r => {
-      this.dataCallback = r;
+    return this.#done ? Promise.resolve(this.#buffer) : new Promise(r => {
+      this.#dataCallback = r;
     });
   }
 
   private async findToken(token: string, startIndex?: number): Promise<number> {
     while (true) {
-      const pos = this.json.indexOf(token, startIndex || 0);
+      const pos = this.#json.indexOf(token, startIndex || 0);
       if (pos !== -1) {
         return pos;
       }
-      startIndex = this.json.length - token.length + 1;
-      this.json += await this.fetchChunk();
+      startIndex = this.#json.length - token.length + 1;
+      this.#json += await this.fetchChunk();
     }
   }
 
   private async parseArray(name: string, title: string, length?: number): Promise<number[]|Uint32Array> {
     const nameIndex = await this.findToken(name);
     const bracketIndex = await this.findToken('[', nameIndex);
-    this.json = this.json.slice(bracketIndex + 1);
-    this.array = length ? new Uint32Array(length) : [];
-    this.arrayIndex = 0;
+    this.#json = this.#json.slice(bracketIndex + 1);
+    this.#array = length ? new Uint32Array(length) : [];
+    this.#arrayIndex = 0;
     while (this.parseUintArray()) {
       if (length) {
-        this.progress.updateProgress(title, this.arrayIndex, this.array.length);
+        this.#progress.updateProgress(title, this.#arrayIndex, this.#array.length);
       } else {
-        this.progress.updateStatus(title);
+        this.#progress.updateStatus(title);
       }
-      this.json += await this.fetchChunk();
+      this.#json += await this.fetchChunk();
     }
-    const result = this.array;
-    this.array = null;
+    const result = this.#array;
+    this.#array = null;
     return result;
   }
 
@@ -193,63 +193,64 @@ export class HeapSnapshotLoader {
       throw new Error('Snapshot token not found');
     }
 
-    this.progress.updateStatus('Loading snapshot info…');
-    const json = this.json.slice(snapshotTokenIndex + snapshotToken.length + 1);
-    this.jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
-      this.json = this.jsonTokenizer.remainder();
-      this.jsonTokenizer = null;
+    this.#progress.updateStatus('Loading snapshot info…');
+    const json = this.#json.slice(snapshotTokenIndex + snapshotToken.length + 1);
+    this.#jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
+      this.#json = this.#jsonTokenizer.remainder();
+      this.#jsonTokenizer = null;
 
-      this.snapshot = this.snapshot || {};
-      this.snapshot.snapshot = (JSON.parse(metaJSON) as HeapSnapshotHeader);
+      this.#snapshot = this.#snapshot || {};
+      this.#snapshot.snapshot = (JSON.parse(metaJSON) as HeapSnapshotHeader);
     });
-    this.jsonTokenizer.write(json);
-    while (this.jsonTokenizer) {
-      this.jsonTokenizer.write(await this.fetchChunk());
+    this.#jsonTokenizer.write(json);
+    while (this.#jsonTokenizer) {
+      this.#jsonTokenizer.write(await this.fetchChunk());
     }
 
-    this.snapshot = this.snapshot || {};
+    this.#snapshot = this.#snapshot || {};
     const nodes = await this.parseArray(
         '"nodes"', 'Loading nodes… {PH1}%',
-        this.snapshot.snapshot.meta.node_fields.length * this.snapshot.snapshot.node_count);
-    this.snapshot.nodes = (nodes as Uint32Array);
+        this.#snapshot.snapshot.meta.node_fields.length * this.#snapshot.snapshot.node_count);
+    this.#snapshot.nodes = (nodes as Uint32Array);
 
     const edges = await this.parseArray(
         '"edges"', 'Loading edges… {PH1}%',
-        this.snapshot.snapshot.meta.edge_fields.length * this.snapshot.snapshot.edge_count);
-    this.snapshot.edges = (edges as Uint32Array);
+        this.#snapshot.snapshot.meta.edge_fields.length * this.#snapshot.snapshot.edge_count);
+    this.#snapshot.edges = (edges as Uint32Array);
 
-    if (this.snapshot.snapshot.trace_function_count) {
+    if (this.#snapshot.snapshot.trace_function_count) {
       const traceFunctionInfos = await this.parseArray(
           '"trace_function_infos"', 'Loading allocation traces… {PH1}%',
-          this.snapshot.snapshot.meta.trace_function_info_fields.length * this.snapshot.snapshot.trace_function_count);
-      this.snapshot.trace_function_infos = (traceFunctionInfos as Uint32Array);
+          this.#snapshot.snapshot.meta.trace_function_info_fields.length *
+              this.#snapshot.snapshot.trace_function_count);
+      this.#snapshot.trace_function_infos = (traceFunctionInfos as Uint32Array);
 
       const thisTokenEndIndex = await this.findToken(':');
       const nextTokenIndex = await this.findToken('"', thisTokenEndIndex);
-      const openBracketIndex = this.json.indexOf('[');
-      const closeBracketIndex = this.json.lastIndexOf(']', nextTokenIndex);
-      this.snapshot.trace_tree = JSON.parse(this.json.substring(openBracketIndex, closeBracketIndex + 1));
-      this.json = this.json.slice(closeBracketIndex + 1);
+      const openBracketIndex = this.#json.indexOf('[');
+      const closeBracketIndex = this.#json.lastIndexOf(']', nextTokenIndex);
+      this.#snapshot.trace_tree = JSON.parse(this.#json.substring(openBracketIndex, closeBracketIndex + 1));
+      this.#json = this.#json.slice(closeBracketIndex + 1);
     }
 
-    if (this.snapshot.snapshot.meta.sample_fields) {
+    if (this.#snapshot.snapshot.meta.sample_fields) {
       const samples = await this.parseArray('"samples"', 'Loading samples…');
-      this.snapshot.samples = (samples as number[]);
+      this.#snapshot.samples = (samples as number[]);
     }
 
-    if (this.snapshot.snapshot.meta['location_fields']) {
+    if (this.#snapshot.snapshot.meta['location_fields']) {
       const locations = await this.parseArray('"locations"', 'Loading locations…');
-      this.snapshot.locations = (locations as number[]);
+      this.#snapshot.locations = (locations as number[]);
     } else {
-      this.snapshot.locations = [];
+      this.#snapshot.locations = [];
     }
 
-    this.progress.updateStatus('Loading strings…');
+    this.#progress.updateStatus('Loading strings…');
     const stringsTokenIndex = await this.findToken('"strings"');
     const bracketIndex = await this.findToken('[', stringsTokenIndex);
-    this.json = this.json.slice(bracketIndex);
-    while (!this.done) {
-      this.json += await this.fetchChunk();
+    this.#json = this.#json.slice(bracketIndex);
+    while (!this.#done) {
+      this.#json += await this.fetchChunk();
     }
     this.parseStringsArray();
   }

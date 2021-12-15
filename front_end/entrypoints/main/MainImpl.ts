@@ -114,7 +114,7 @@ const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MainImpl {
-  private lateInitDonePromise!: Promise<void>;
+  #lateInitDonePromise!: Promise<void>;
 
   constructor() {
     MainImpl.instanceForTest = this;
@@ -606,12 +606,12 @@ export class MainImpl {
         Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(changeListener);
       }
     }
-    this.lateInitDonePromise = Promise.all(promises).then(() => undefined);
+    this.#lateInitDonePromise = Promise.all(promises).then(() => undefined);
     MainImpl.timeEnd('Main._lateInitialization');
   }
 
   lateInitDonePromiseForTest(): Promise<void>|null {
-    return this.lateInitDonePromise;
+    return this.#lateInitDonePromise;
   }
 
   private registerMessageSinkListener(): void {
@@ -769,11 +769,11 @@ export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegat
 let mainMenuItemInstance: MainMenuItem;
 
 export class MainMenuItem implements UI.Toolbar.Provider {
-  private readonly itemInternal: UI.Toolbar.ToolbarMenuButton;
+  readonly #itemInternal: UI.Toolbar.ToolbarMenuButton;
   constructor() {
-    this.itemInternal = new UI.Toolbar.ToolbarMenuButton(this.handleContextMenu.bind(this), true);
-    this.itemInternal.element.classList.add('main-menu');
-    this.itemInternal.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
+    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(this.handleContextMenu.bind(this), true);
+    this.#itemInternal.element.classList.add('main-menu');
+    this.#itemInternal.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
 
   static instance(opts: {
@@ -788,7 +788,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
-    return this.itemInternal;
+    return this.#itemInternal;
   }
 
   private handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
@@ -853,7 +853,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       contextMenu.headerSection().appendCustomItem(dockItemElement);
     }
 
-    const button = (this.itemInternal.element as HTMLButtonElement);
+    const button = (this.#itemInternal.element as HTMLButtonElement);
 
     function setDockSide(side: UI.DockController.DockState): void {
       UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
@@ -926,10 +926,10 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 let settingsButtonProviderInstance: SettingsButtonProvider;
 
 export class SettingsButtonProvider implements UI.Toolbar.Provider {
-  private readonly settingsButton: UI.Toolbar.ToolbarButton;
+  readonly #settingsButton: UI.Toolbar.ToolbarButton;
   private constructor() {
     const settingsActionId = 'settings.show';
-    this.settingsButton =
+    this.#settingsButton =
         UI.Toolbar.Toolbar.createActionButtonForId(settingsActionId, {showLabel: false, userActionCode: undefined});
   }
 
@@ -945,7 +945,7 @@ export class SettingsButtonProvider implements UI.Toolbar.Provider {
   }
 
   item(): UI.Toolbar.ToolbarItem|null {
-    return this.settingsButton;
+    return this.#settingsButton;
   }
 }
 

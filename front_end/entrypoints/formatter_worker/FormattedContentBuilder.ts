@@ -3,16 +3,16 @@
 // found in the LICENSE file.
 
 export class FormattedContentBuilder {
-  private lastOriginalPosition = 0;
-  private formattedContent: string[] = [];
-  private formattedContentLength = 0;
-  private lastFormattedPosition = 0;
-  private nestingLevel = 0;
-  private newLines = 0;
-  private enforceSpaceBetweenWords = true;
-  private softSpace = false;
-  private hardSpaces = 0;
-  private cachedIndents = new Map<number, string>();
+  #lastOriginalPosition = 0;
+  #formattedContent: string[] = [];
+  #formattedContentLength = 0;
+  #lastFormattedPosition = 0;
+  #nestingLevel = 0;
+  #newLines = 0;
+  #enforceSpaceBetweenWords = true;
+  #softSpace = false;
+  #hardSpaces = 0;
+  #cachedIndents = new Map<number, string>();
 
   mapping = {original: [0], formatted: [0]};
 
@@ -20,14 +20,14 @@ export class FormattedContentBuilder {
   }
 
   setEnforceSpaceBetweenWords(value: boolean): boolean {
-    const oldValue = this.enforceSpaceBetweenWords;
-    this.enforceSpaceBetweenWords = value;
+    const oldValue = this.#enforceSpaceBetweenWords;
+    this.#enforceSpaceBetweenWords = value;
     return oldValue;
   }
 
   addToken(token: string, offset: number): void {
-    const last = this.formattedContent[this.formattedContent.length - 1];
-    if (this.enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
+    const last = this.#formattedContent[this.#formattedContent.length - 1];
+    if (this.#enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
       this.addSoftSpace();
     }
 
@@ -39,91 +39,91 @@ export class FormattedContentBuilder {
   }
 
   addSoftSpace(): void {
-    if (!this.hardSpaces) {
-      this.softSpace = true;
+    if (!this.#hardSpaces) {
+      this.#softSpace = true;
     }
   }
 
   addHardSpace(): void {
-    this.softSpace = false;
-    ++this.hardSpaces;
+    this.#softSpace = false;
+    ++this.#hardSpaces;
   }
 
   addNewLine(noSquash?: boolean): void {
     // Avoid leading newlines.
-    if (!this.formattedContentLength) {
+    if (!this.#formattedContentLength) {
       return;
     }
     if (noSquash) {
-      ++this.newLines;
+      ++this.#newLines;
     } else {
-      this.newLines = this.newLines || 1;
+      this.#newLines = this.#newLines || 1;
     }
   }
 
   increaseNestingLevel(): void {
-    this.nestingLevel += 1;
+    this.#nestingLevel += 1;
   }
 
   decreaseNestingLevel(): void {
-    if (this.nestingLevel > 0) {
-      this.nestingLevel -= 1;
+    if (this.#nestingLevel > 0) {
+      this.#nestingLevel -= 1;
     }
   }
 
   content(): string {
-    return this.formattedContent.join('') + (this.newLines ? '\n' : '');
+    return this.#formattedContent.join('') + (this.#newLines ? '\n' : '');
   }
 
   private appendFormatting(): void {
-    if (this.newLines) {
-      for (let i = 0; i < this.newLines; ++i) {
+    if (this.#newLines) {
+      for (let i = 0; i < this.#newLines; ++i) {
         this.addText('\n');
       }
       this.addText(this.indent());
-    } else if (this.softSpace) {
+    } else if (this.#softSpace) {
       this.addText(' ');
     }
-    if (this.hardSpaces) {
-      for (let i = 0; i < this.hardSpaces; ++i) {
+    if (this.#hardSpaces) {
+      for (let i = 0; i < this.#hardSpaces; ++i) {
         this.addText(' ');
       }
     }
-    this.newLines = 0;
-    this.softSpace = false;
-    this.hardSpaces = 0;
+    this.#newLines = 0;
+    this.#softSpace = false;
+    this.#hardSpaces = 0;
   }
 
   private indent(): string {
-    const cachedValue = this.cachedIndents.get(this.nestingLevel);
+    const cachedValue = this.#cachedIndents.get(this.#nestingLevel);
     if (cachedValue) {
       return cachedValue;
     }
 
     let fullIndent = '';
-    for (let i = 0; i < this.nestingLevel; ++i) {
+    for (let i = 0; i < this.#nestingLevel; ++i) {
       fullIndent += this.indentString;
     }
 
     // Cache a maximum of 20 nesting level indents.
-    if (this.nestingLevel <= 20) {
-      this.cachedIndents.set(this.nestingLevel, fullIndent);
+    if (this.#nestingLevel <= 20) {
+      this.#cachedIndents.set(this.#nestingLevel, fullIndent);
     }
     return fullIndent;
   }
 
   private addText(text: string): void {
-    this.formattedContent.push(text);
-    this.formattedContentLength += text.length;
+    this.#formattedContent.push(text);
+    this.#formattedContentLength += text.length;
   }
 
   private addMappingIfNeeded(originalPosition: number): void {
-    if (originalPosition - this.lastOriginalPosition === this.formattedContentLength - this.lastFormattedPosition) {
+    if (originalPosition - this.#lastOriginalPosition === this.#formattedContentLength - this.#lastFormattedPosition) {
       return;
     }
     this.mapping.original.push(originalPosition);
-    this.lastOriginalPosition = originalPosition;
-    this.mapping.formatted.push(this.formattedContentLength);
-    this.lastFormattedPosition = this.formattedContentLength;
+    this.#lastOriginalPosition = originalPosition;
+    this.mapping.formatted.push(this.#formattedContentLength);
+    this.#lastFormattedPosition = this.#formattedContentLength;
   }
 }

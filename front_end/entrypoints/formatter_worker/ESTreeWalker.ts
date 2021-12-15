@@ -7,16 +7,16 @@ import type * as Acorn from '../../third_party/acorn/acorn.js';
 const SkipSubTreeObject: Object = {};
 
 export class ESTreeWalker {
-  private readonly beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined);
-  private readonly afterVisit: Function;
-  private walkNulls: boolean;
+  readonly #beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined);
+  readonly #afterVisit: Function;
+  #walkNulls: boolean;
 
   constructor(
       beforeVisit: (arg0: Acorn.ESTree.Node) => (Object | undefined),
       afterVisit?: ((arg0: Acorn.ESTree.Node) => void)) {
-    this.beforeVisit = beforeVisit;
-    this.afterVisit = afterVisit || function(): void {};
-    this.walkNulls = false;
+    this.#beforeVisit = beforeVisit;
+    this.#afterVisit = afterVisit || function(): void {};
+    this.#walkNulls = false;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -26,7 +26,7 @@ export class ESTreeWalker {
   }
 
   setWalkNulls(value: boolean): void {
-    this.walkNulls = value;
+    this.#walkNulls = value;
   }
 
   walk(ast: Acorn.ESTree.Node): void {
@@ -34,7 +34,7 @@ export class ESTreeWalker {
   }
 
   private innerWalk(node: Acorn.ESTree.Node, parent: Acorn.ESTree.Node|null): void {
-    if (!node && parent && this.walkNulls) {
+    if (!node && parent && this.#walkNulls) {
       const result = ({raw: 'null', value: null, parent: null} as Acorn.ESTree.SimpleLiteral);
       // Otherwise Closure can't handle the definition
       result.type = 'Literal';
@@ -47,8 +47,8 @@ export class ESTreeWalker {
     }
     node.parent = parent;
 
-    if (this.beforeVisit.call(null, node) === ESTreeWalker.SkipSubtree) {
-      this.afterVisit.call(null, node);
+    if (this.#beforeVisit.call(null, node) === ESTreeWalker.SkipSubtree) {
+      this.#afterVisit.call(null, node);
       return;
     }
 
@@ -82,7 +82,7 @@ export class ESTreeWalker {
       }
     }
 
-    this.afterVisit.call(null, node);
+    this.#afterVisit.call(null, node);
   }
 
   private walkArray(nodeArray: Acorn.ESTree.Node[], parentNode: Acorn.ESTree.Node|null): void {

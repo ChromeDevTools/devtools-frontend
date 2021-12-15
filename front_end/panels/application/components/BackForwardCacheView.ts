@@ -107,30 +107,30 @@ const enum ScreenStatusType {
 }
 
 export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly bfcacheView = new BackForwardCacheView();
+  readonly #bfcacheView = new BackForwardCacheView();
 
   constructor() {
     super(true, 1000);
-    this.getMainResourceTreeModel()?.addEventListener(
+    this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.MainFrameNavigated, this.update, this);
-    this.getMainResourceTreeModel()?.addEventListener(
+    this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.update, this);
     this.contentElement.classList.add('overflow-auto');
-    this.contentElement.appendChild(this.bfcacheView);
+    this.contentElement.appendChild(this.#bfcacheView);
     this.update();
   }
 
   async doUpdate(): Promise<void> {
-    this.bfcacheView.data = {frame: this.getMainFrame()};
+    this.#bfcacheView.data = {frame: this.#getMainFrame()};
   }
 
-  private getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
+  #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     return mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel) || null;
   }
 
-  private getMainFrame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
-    return this.getMainResourceTreeModel()?.mainFrame || null;
+  #getMainFrame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
+    return this.#getMainResourceTreeModel()?.mainFrame || null;
   }
 }
 
@@ -152,10 +152,10 @@ export class BackForwardCacheView extends HTMLElement {
 
   set data(data: BackForwardCacheViewData) {
     this.#frame = data.frame;
-    this.render();
+    this.#render();
   }
 
-  private async render(): Promise<void> {
+  async #render(): Promise<void> {
     await coordinator.write('BackForwardCacheView render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -163,27 +163,27 @@ export class BackForwardCacheView extends HTMLElement {
         <${ReportView.ReportView.Report.litTagName} .data=${
             {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
         }>
-          ${this.renderMainFrameInformation()}
+          ${this.#renderMainFrameInformation()}
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
       // clang-format on
     });
   }
 
-  private renderBackForwardCacheTestResult(): void {
+  #renderBackForwardCacheTestResult(): void {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
-        this.renderBackForwardCacheTestResult, this);
+        this.#renderBackForwardCacheTestResult, this);
     this.#screenStatus = ScreenStatusType.Result;
-    this.render();
+    this.#render();
   }
 
-  private async goBackOneHistoryEntry(): Promise<void> {
+  async #goBackOneHistoryEntry(): Promise<void> {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
-        this.goBackOneHistoryEntry, this);
+        this.#goBackOneHistoryEntry, this);
     this.#screenStatus = ScreenStatusType.Running;
-    this.render();
+    this.#render();
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
@@ -198,11 +198,11 @@ export class BackForwardCacheView extends HTMLElement {
     }
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
-        this.renderBackForwardCacheTestResult, this);
+        this.#renderBackForwardCacheTestResult, this);
     resourceTreeModel.navigateToHistoryEntry(historyResults.entries[historyResults.currentIndex - 1]);
   }
 
-  private async navigateAwayAndBack(): Promise<void> {
+  async #navigateAwayAndBack(): Promise<void> {
     // Checking BFCache Compatibility
 
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
@@ -215,7 +215,7 @@ export class BackForwardCacheView extends HTMLElement {
       // This event is removed by inside of goBackOneHistoryEntry().
       SDK.TargetManager.TargetManager.instance().addModelListener(
           SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
-          this.goBackOneHistoryEntry, this);
+          this.#goBackOneHistoryEntry, this);
 
       // We can know whether the current page can use BFCache
       // as the browser navigates to another unrelated page and goes back to the current page.
@@ -225,7 +225,7 @@ export class BackForwardCacheView extends HTMLElement {
     }
   }
 
-  private renderMainFrameInformation(): LitHtml.TemplateResult {
+  #renderMainFrameInformation(): LitHtml.TemplateResult {
     if (!this.#frame) {
       // clang-format off
       return LitHtml.html`
@@ -241,7 +241,7 @@ export class BackForwardCacheView extends HTMLElement {
     const isDisabled = this.#screenStatus === ScreenStatusType.Running;
     // clang-format off
     return LitHtml.html`
-      ${this.renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
+      ${this.#renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
       <div class='url'>
         <div class='url-key'>
           ${i18nString(UIStrings.url)}
@@ -255,7 +255,7 @@ export class BackForwardCacheView extends HTMLElement {
           .disabled=${isDisabled}
           .spinner=${isDisabled}
           .variant=${Buttons.Button.Variant.PRIMARY}
-          @click=${this.navigateAwayAndBack}>
+          @click=${this.#navigateAwayAndBack}>
           ${isDisabled ? LitHtml.html`
             ${i18nString(UIStrings.runningTest)}`:`
             ${i18nString(UIStrings.runTest)}
@@ -264,7 +264,7 @@ export class BackForwardCacheView extends HTMLElement {
       </${ReportView.ReportView.ReportSection.litTagName}>
       <${ReportView.ReportView.ReportSectionDivider.litTagName}>
       </${ReportView.ReportView.ReportSectionDivider.litTagName}>
-        ${this.maybeRenderExplanations(this.#frame.backForwardCacheDetails.explanations)}
+        ${this.#maybeRenderExplanations(this.#frame.backForwardCacheDetails.explanations)}
       <${ReportView.ReportView.ReportSection.litTagName}>
         <x-link href="https://web.dev/bfcache/" class="link">
           ${i18nString(UIStrings.learnMore)}
@@ -274,7 +274,7 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
-  private renderBackForwardCacheStatus(status: boolean|undefined): LitHtml.TemplateResult {
+  #renderBackForwardCacheStatus(status: boolean|undefined): LitHtml.TemplateResult {
     switch (status) {
       case true:
         // clang-format off
@@ -320,8 +320,8 @@ export class BackForwardCacheView extends HTMLElement {
     // clang-format on
   }
 
-  private maybeRenderExplanations(explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]):
-      LitHtml.TemplateResult|{} {
+  #maybeRenderExplanations(explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]): LitHtml.TemplateResult
+      |{} {
     if (explanations.length === 0) {
       return LitHtml.nothing;
     }
@@ -336,14 +336,14 @@ export class BackForwardCacheView extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-      ${this.renderExplanations(i18nString(UIStrings.pageSupportNeeded), i18nString(UIStrings.pageSupportNeededExplanation), pageSupportNeeded)}
-      ${this.renderExplanations(i18nString(UIStrings.supportPending), i18nString(UIStrings.supportPendingExplanation), supportPending)}
-      ${this.renderExplanations(i18nString(UIStrings.circumstantial), i18nString(UIStrings.circumstantialExplanation), circumstantial)}
+      ${this.#renderExplanations(i18nString(UIStrings.pageSupportNeeded), i18nString(UIStrings.pageSupportNeededExplanation), pageSupportNeeded)}
+      ${this.#renderExplanations(i18nString(UIStrings.supportPending), i18nString(UIStrings.supportPendingExplanation), supportPending)}
+      ${this.#renderExplanations(i18nString(UIStrings.circumstantial), i18nString(UIStrings.circumstantialExplanation), circumstantial)}
     `;
     // clang-format on
   }
 
-  private renderExplanations(
+  #renderExplanations(
       category: Platform.UIString.LocalizedString, explainerText: Platform.UIString.LocalizedString,
       explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[]): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -362,13 +362,13 @@ export class BackForwardCacheView extends HTMLElement {
             </${IconButton.Icon.Icon.litTagName}>
           </div>
         </${ReportView.ReportView.ReportSectionHeader.litTagName}>
-        ${explanations.map(explanation => this.renderReason(explanation))}
+        ${explanations.map(explanation => this.#renderReason(explanation))}
       ` : LitHtml.nothing}
     `;
     // clang-format on
   }
 
-  private renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
+  #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <${ReportView.ReportView.ReportSection.litTagName}>

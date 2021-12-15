@@ -27,14 +27,14 @@ const {render, html} = LitHtml;
 
 export class ReportsGridStatusHeader extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-reports-grid-status-header`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportingApiGridStyles];
-    this.render();
+    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles];
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
@@ -47,7 +47,7 @@ export class ReportsGridStatusHeader extends HTMLElement {
           height: '16px',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
       </x-link>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }
@@ -59,22 +59,22 @@ export interface ReportsGridData {
 export class ReportsGrid extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-reports-grid`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private reports: Protocol.Network.ReportingApiReport[] = [];
-  private protocolMonitorExperimentEnabled = false;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #reports: Protocol.Network.ReportingApiReport[] = [];
+  #protocolMonitorExperimentEnabled = false;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportingApiGridStyles];
-    this.protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
-    this.render();
+    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles];
+    this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
+    this.#render();
   }
 
   set data(data: ReportsGridData) {
-    this.reports = data.reports;
-    this.render();
+    this.#reports = data.reports;
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
@@ -123,10 +123,10 @@ export class ReportsGrid extends HTMLElement {
           visible: true,
         },
       ],
-      rows: this.buildReportRows(),
+      rows: this.#buildReportRows(),
     };
 
-    if (this.protocolMonitorExperimentEnabled) {
+    if (this.#protocolMonitorExperimentEnabled) {
       reportsGridData.columns.unshift(
           {id: 'id', title: 'ID', widthWeighting: 30, hideable: false, visible: true},
       );
@@ -137,7 +137,7 @@ export class ReportsGrid extends HTMLElement {
     render(html`
       <div class="reporting-container">
         <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
-        ${this.reports.length > 0 ? html`
+        ${this.#reports.length > 0 ? html`
           <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
               reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
           </${DataGrid.DataGridController.DataGridController.litTagName}>
@@ -147,22 +147,22 @@ export class ReportsGrid extends HTMLElement {
           </div>
         `}
       </div>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  private buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    return this.reports.map(report => ({
-                              cells: [
-                                {columnId: 'id', value: report.id},
-                                {columnId: 'url', value: report.initiatorUrl},
-                                {columnId: 'type', value: report.type},
-                                {columnId: 'status', value: report.status},
-                                {columnId: 'destination', value: report.destination},
-                                {columnId: 'timestamp', value: new Date(report.timestamp * 1000).toLocaleString()},
-                                {columnId: 'body', value: JSON.stringify(report.body)},
-                              ],
-                            }));
+  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
+    return this.#reports.map(report => ({
+                               cells: [
+                                 {columnId: 'id', value: report.id},
+                                 {columnId: 'url', value: report.initiatorUrl},
+                                 {columnId: 'type', value: report.type},
+                                 {columnId: 'status', value: report.status},
+                                 {columnId: 'destination', value: report.destination},
+                                 {columnId: 'timestamp', value: new Date(report.timestamp * 1000).toLocaleString()},
+                                 {columnId: 'body', value: JSON.stringify(report.body)},
+                               ],
+                             }));
   }
 }
 

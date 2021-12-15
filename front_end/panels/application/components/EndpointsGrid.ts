@@ -30,20 +30,20 @@ export interface EndpointsGridData {
 export class EndpointsGrid extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-endpoints-grid`;
 
-  private readonly shadow = this.attachShadow({mode: 'open'});
-  private endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]> = new Map();
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]> = new Map();
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [reportingApiGridStyles];
-    this.render();
+    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles];
+    this.#render();
   }
 
   set data(data: EndpointsGridData) {
-    this.endpoints = data.endpoints;
-    this.render();
+    this.#endpoints = data.endpoints;
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     const endpointsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
@@ -68,7 +68,7 @@ export class EndpointsGrid extends HTMLElement {
           visible: true,
         },
       ],
-      rows: this.buildReportRows(),
+      rows: this.#buildReportRows(),
     };
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -76,7 +76,7 @@ export class EndpointsGrid extends HTMLElement {
     render(html`
       <div class="reporting-container">
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
-        ${this.endpoints.size > 0 ? html`
+        ${this.#endpoints.size > 0 ? html`
           <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
               endpointsGridData as DataGrid.DataGridController.DataGridControllerData}>
           </${DataGrid.DataGridController.DataGridController.litTagName}>
@@ -86,12 +86,12 @@ export class EndpointsGrid extends HTMLElement {
           </div>
         `}
       </div>
-    `, this.shadow);
+    `, this.#shadow);
     // clang-format on
   }
 
-  private buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    return Array.from(this.endpoints)
+  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
+    return Array.from(this.#endpoints)
         .map(([origin, endpointArray]) => endpointArray.map(endpoint => {
           return {
             cells: [

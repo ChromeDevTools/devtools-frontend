@@ -14,19 +14,12 @@ describe('Media Tab', () => {
     await openPanelViaMoreTools('Media');
     await playMediaFile('fisch.webm');
     const entryName = await getPlayerButtonText();
-
-    // Names are glitched right now, and display 32-character unguessable tokens.
-    assert.strictEqual(entryName.length, 32);
+    assert.strictEqual(entryName.length, 11);
   });
 
   it('ensures video playback adds entry for web worker', async () => {
     await openPanelViaMoreTools('Media');
     await goToResource('media/codec_worker.html');
-    await waitForPlayerButtonTexts([
-      /AudioEncoder/,
-      /VideoDecoder/,
-      /VideoEncoder/,
-      /codec_worker.js/,
-    ]);
+    await waitForPlayerButtonTexts(4);
   });
 });

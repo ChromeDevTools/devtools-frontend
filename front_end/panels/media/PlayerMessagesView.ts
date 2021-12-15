@@ -317,6 +317,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
         this.bodyPanel.createChild('div', 'media-messages-message-container media-message-' + message.level);
     UI.UIUtils.createTextChild(container, message.message);
   }
+
   wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([playerMessagesViewStyles]);

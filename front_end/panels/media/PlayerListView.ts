@@ -45,123 +45,196 @@ export interface PlayerStatusMapElement {
   playerTitleElement: HTMLElement|null;
 }
 
-export class PlayerEntryTreeElement extends UI.TreeOutline.TreeElement {
-  titleFromUrl: boolean;
-  private readonly playerStatus: PlayerStatus;
-  private readonly displayContainer: MainView;
-
-  constructor(playerStatus: PlayerStatus, displayContainer: MainView, playerID: string) {
-    super(playerStatus.playerTitle, false);
-    this.titleFromUrl = true;
-    this.playerStatus = playerStatus;
-    this.displayContainer = displayContainer;
-    this.setLeadingIcons([UI.Icon.Icon.create('largeicon-play-animation', 'media-player')]);
-    this.listItemElement.classList.add('player-entry-tree-element');
-    this.listItemElement.addEventListener('contextmenu', this.rightClickContextMenu.bind(this, playerID), false);
-  }
-
-  onselect(_selectedByUser?: boolean): boolean {
-    this.displayContainer.renderMainPanel(this.playerStatus.playerID);
-    return true;
-  }
-
-  private rightClickContextMenu(playerID: string, event: Event): boolean {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString(UIStrings.hidePlayer), this.hidePlayer.bind(this, playerID));
-    contextMenu.headerSection().appendItem(i18nString(UIStrings.hideAllOthers), this.hideOthers.bind(this, playerID));
-    contextMenu.headerSection().appendItem(i18nString(UIStrings.savePlayerInfo), this.savePlayer.bind(this, playerID));
-    contextMenu.show();
-    return true;
-  }
-
-  private hidePlayer(playerID: string): void {
-    this.displayContainer.markPlayerForDeletion(playerID);
-  }
-
-  private savePlayer(playerID: string): void {
-    this.displayContainer.exportPlayerData(playerID);
-  }
-
-  private hideOthers(playerID: string): void {
-    this.displayContainer.markOtherPlayersForDeletion(playerID);
-  }
-}
-
 export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher {
-  private readonly playerStatuses: Map<string, PlayerEntryTreeElement>;
+  private readonly playerEntryFragments: Map<string, UI.Fragment.Fragment>;
+  private readonly playerEntriesWithHostnameFrameTitle: Set<string>;
   private readonly mainContainer: MainView;
-  private readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
-  private readonly playerList: UI.TreeOutline.TreeElement;
+  private currentlySelectedEntry: Element|null;
 
   constructor(mainContainer: MainView) {
     super(true);
 
-    this.playerStatuses = new Map();
+    this.playerEntryFragments = new Map();
+    this.playerEntriesWithHostnameFrameTitle = new Set();
 
     // Container where new panels can be added based on clicks.
     this.mainContainer = mainContainer;
 
-    // The parent tree for storing sections
-    this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-    this.contentElement.appendChild(this.sidebarTree.element);
-
-    // Players active in this tab.
-    this.playerList = this.addListSection(i18nString(UIStrings.players));
-    this.playerList.listItemElement.classList.add('player-entry-header');
+    this.currentlySelectedEntry = null;
+    this.contentElement.createChild('div', 'player-entry-header').textContent = i18nString(UIStrings.players);
   }
 
-  deletePlayer(playerID: string): void {
-    this.playerList.removeChild(this.playerStatuses.get(playerID) as UI.TreeOutline.TreeElement);
-    this.playerStatuses.delete(playerID);
+  private createPlayerListEntry(playerID: string): UI.Fragment.Fragment {
+    const entry = UI.Fragment.Fragment.build`
+    <div class="player-entry-row hbox">
+    <div class="player-entry-status-icon vbox">
+    <div $="icon" class="player-entry-status-icon-centering"></div>
+    </div>
+    <div $="frame-title" class="player-entry-frame-title">FrameTitle</div>
+    <div $="player-title" class="player-entry-player-title">PlayerTitle</div>
+    </div>
+    `;
+    const element = entry.element();
+
+    element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
+    element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
+
+    entry.$('icon').appendChild(UI.Icon.Icon.create('largeicon-pause-animation', 'media-player'));
+    return entry;
   }
 
-  private addListSection(title: string): UI.TreeOutline.TreeElement {
-    const treeElement = new UI.TreeOutline.TreeElement(title, true);
-    treeElement.listItemElement.classList.add('storage-group-list-item');
-    treeElement.setCollapsible(false);
-    treeElement.selectable = false;
-    this.sidebarTree.appendChild(treeElement);
-    return treeElement;
+  private selectPlayer(playerID: string, element: Element): void {
+    this.mainContainer.renderMainPanel(playerID);
+    if (this.currentlySelectedEntry !== null) {
+      this.currentlySelectedEntry.classList.remove('selected');
+    }
+    element.classList.add('selected');
+    this.currentlySelectedEntry = element;
+  }
+
+  private rightClickPlayer(playerID: string, event: Event): boolean {
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.headerSection().appendItem(
+        i18nString(UIStrings.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID));
+    contextMenu.headerSection().appendItem(
+        i18nString(UIStrings.hideAllOthers),
+        this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID));
+    contextMenu.headerSection().appendItem(
+        i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID));
+    contextMenu.show();
+    return true;
+  }
+
+  private setMediaElementFrameTitle(playerID: string, frameTitle: string, isHostname: boolean): void {
+    // Only remove the title from the set if we arent setting a hostname title.
+    // Otherwise, if it has a non-hostname title, and the requested new title is
+    // a hostname, just drop it.
+    if (this.playerEntriesWithHostnameFrameTitle.has(playerID)) {
+      if (!isHostname) {
+        this.playerEntriesWithHostnameFrameTitle.delete(playerID);
+      }
+    } else if (isHostname) {
+      return;
+    }
+
+    if (!this.playerEntryFragments.has(playerID)) {
+      return;
+    }
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment === undefined || fragment.element() === undefined) {
+      return;
+    }
+    fragment.$('frame-title').textContent = frameTitle;
+  }
+
+  private setMediaElementPlayerTitle(playerID: string, playerTitle: string): void {
+    if (!this.playerEntryFragments.has(playerID)) {
+      return;
+    }
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment === undefined) {
+      return;
+    }
+    fragment.$('player-title').textContent = playerTitle;
+  }
+
+  private setMediaElementPlayerIcon(playerID: string, iconName: string): void {
+    if (!this.playerEntryFragments.has(playerID)) {
+      return;
+    }
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment === undefined) {
+      return;
+    }
+    const icon = fragment.$('icon');
+    if (icon === undefined) {
+      return;
+    }
+    icon.textContent = '';
+    icon.appendChild(UI.Icon.Icon.create(iconName, 'media-player'));
+  }
+
+  private formatAndEvaluate(playerID: string, func: Function, candidate: string, min: number, max: number): void {
+    if (candidate.length <= min) {
+      return;
+    }
+    if (candidate.length >= max) {
+      candidate = candidate.substring(0, max - 3) + '...';
+    }
+    func.bind(this)(playerID, candidate);
   }
 
   addMediaElementItem(playerID: string): void {
-    const playerStatus = {playerTitle: playerID, playerID: playerID, exists: true, playing: false, titleEdited: false};
-    const playerElement = new PlayerEntryTreeElement(playerStatus, this.mainContainer, playerID);
-    this.playerStatuses.set(playerID, playerElement);
-    this.playerList.appendChild(playerElement);
+    const sidebarEntry = this.createPlayerListEntry(playerID);
+    this.contentElement.appendChild(sidebarEntry.element());
+    this.playerEntryFragments.set(playerID, sidebarEntry);
+    this.playerEntriesWithHostnameFrameTitle.add(playerID);
   }
 
-  setMediaElementPlayerTitle(playerID: string, newTitle: string, isTitleExtractedFromUrl: boolean): void {
-    if (this.playerStatuses.has(playerID)) {
-      const sidebarEntry = this.playerStatuses.get(playerID);
-      if (sidebarEntry && (!isTitleExtractedFromUrl || sidebarEntry.titleFromUrl)) {
-        sidebarEntry.title = newTitle;
-        sidebarEntry.titleFromUrl = isTitleExtractedFromUrl;
-      }
+  deletePlayer(playerID: string): void {
+    if (!this.playerEntryFragments.has(playerID)) {
+      return;
     }
+    const fragment = this.playerEntryFragments.get(playerID);
+    if (fragment === undefined || fragment.element() === undefined) {
+      return;
+    }
+    this.contentElement.removeChild(fragment.element());
+    this.playerEntryFragments.delete(playerID);
   }
 
-  setMediaElementPlayerIcon(playerID: string, iconName: string): void {
-    if (this.playerStatuses.has(playerID)) {
-      const sidebarEntry = this.playerStatuses.get(playerID);
-      if (!sidebarEntry) {
-        throw new Error('sidebarEntry is expected to not be null');
-      }
-      sidebarEntry.setLeadingIcons([UI.Icon.Icon.create(iconName, 'media-player')]);
+  onEvent(playerID: string, event: PlayerEvent): void {
+    const parsed = JSON.parse(event.value);
+    const eventType = parsed.event;
+
+    // Load events provide the actual underlying URL for the video, which makes
+    // a great way to identify a specific video within a page that potentially
+    // may have many videos. MSE videos have a special blob:http(s) protocol
+    // that we'd like to keep mind of, so we do prepend blob:
+    if (eventType === 'kLoad') {
+      const url = parsed.url as string;
+      const videoName = url.substring(url.lastIndexOf('/') + 1);
+      this.formatAndEvaluate(playerID, this.setMediaElementPlayerTitle, videoName, 1, 20);
+      return;
+    }
+
+    if (eventType === 'kPlay') {
+      this.setMediaElementPlayerIcon(playerID, 'largeicon-play-animation');
+      return;
+    }
+
+    if (eventType === 'kPause' || eventType === 'kEnded') {
+      this.setMediaElementPlayerIcon(playerID, 'largeicon-pause-animation');
+      return;
+    }
+
+    if (eventType === 'kWebMediaPlayerDestroyed') {
+      this.setMediaElementPlayerIcon(playerID, 'smallicon-videoplayer-destroyed');
+      return;
     }
   }
 
   onProperty(playerID: string, property: Protocol.Media.PlayerProperty): void {
-    // Sometimes the title will be an empty string, since this is provided
-    // by the website. We don't want to swap title to an empty string.
-    if (property.name === PlayerPropertyKeys.FrameTitle && property.value) {
-      this.setMediaElementPlayerTitle(playerID, property.value as string, false);
+    // FrameUrl is always present, and we can generate a basic frame title from
+    // it by grabbing the hostname. It's not possible to generate a "good" player
+    // title from the FrameUrl though, since the page location itself might not
+    // have any relevance to the video being played, and would be shared by all
+    // videos on the page.
+    if (property.name === PlayerPropertyKeys.FrameUrl) {
+      const frameTitle = new URL(property.value).hostname;
+      this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
+      return;
     }
 
-    // Url always has a value.
-    if (property.name === PlayerPropertyKeys.FrameUrl) {
-      const urlPathComponent = property.value.substring(property.value.lastIndexOf('/') + 1);
-      this.setMediaElementPlayerTitle(playerID, urlPathComponent, true);
+    // On the other hand, the page may set a title, which usually makes for a
+    // better frame title than a hostname. Unfortunately, its only "usually",
+    // since the site is free to set the title to _anything_, it might just be
+    // junk, or it might be super long. If it's empty, or 1 character, It's
+    // preferable to just drop it. Titles longer than 20 will have the first
+    // 17 characters kept and an elipsis appended.
+    if (property.name === PlayerPropertyKeys.FrameTitle && property.value) {
+      this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, property.value, 1, 20);
+      return;
     }
   }
 
@@ -173,18 +246,8 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     // TODO(tmathmeyer) show a message count number next to the player name.
   }
 
-  onEvent(playerID: string, event: PlayerEvent): void {
-    const eventType = JSON.parse(event.value).event;
-    if (eventType === 'kPlay') {
-      this.setMediaElementPlayerIcon(playerID, 'largeicon-play-animation');
-    } else if (eventType === 'kPause') {
-      this.setMediaElementPlayerIcon(playerID, 'largeicon-pause-animation');
-    } else if (eventType === 'kWebMediaPlayerDestroyed') {
-      this.setMediaElementPlayerIcon(playerID, 'smallicon-videoplayer-destroyed');
-    }
-  }
   wasShown(): void {
     super.wasShown();
-    this.sidebarTree.registerCSSFiles([playerListViewStyles]);
+    this.registerCSSFiles([playerListViewStyles]);
   }
 }

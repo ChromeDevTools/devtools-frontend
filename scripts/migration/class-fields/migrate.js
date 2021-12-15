@@ -33,7 +33,7 @@ for (const file of files) {
   }
   const classNodes = file.getClasses();
   for (const classNode of classNodes) {
-    for (const property of classNode.getInstanceProperties()) {
+    for (const property of classNode.getInstanceMembers()) {
       const name = property.getStructure().name;
       console.log(name);
       if (name.startsWith('#') || !property.hasModifier(SyntaxKind.PrivateKeyword)) {
@@ -44,8 +44,7 @@ for (const file of files) {
         continue;
       }
 
-      // https://github.com/dsherret/ts-morph/issues/1198
-      const newName = `SOME_STUPID_PREFIX_${name}`;
+      const newName = `#${name}`;
 
       property.toggleModifier('private', false);
       property.rename(newName);

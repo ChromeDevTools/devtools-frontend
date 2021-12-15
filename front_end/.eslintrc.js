@@ -139,6 +139,12 @@ module.exports = {
           }
         ]
       }
+    },
+    {
+      'files': ['panels/**/components/*.ts', 'ui/components/**/*.ts'],
+      'rules': {
+        'rulesdir/use_private_class_members': 2,
+      }
     }
   ]
 };

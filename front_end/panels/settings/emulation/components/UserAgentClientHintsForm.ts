@@ -183,66 +183,66 @@ const DEFAULT_METADATA = {
 // eslint-disable-next-line rulesdir/custom_element_definitions_location
 export class UserAgentClientHintsForm extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-user-agent-client-hints-form`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
-  private isFormOpened: boolean = false;
-  private isFormDisabled: boolean = false;
-  private metaData: Protocol.Emulation.UserAgentMetadata = DEFAULT_METADATA;
-  private showMobileCheckbox: boolean = false;
-  private showSubmitButton: boolean = false;
-  private brandsModifiedAriaMessage: string = '';
+  #isFormOpened: boolean = false;
+  #isFormDisabled: boolean = false;
+  #metaData: Protocol.Emulation.UserAgentMetadata = DEFAULT_METADATA;
+  #showMobileCheckbox: boolean = false;
+  #showSubmitButton: boolean = false;
+  #brandsModifiedAriaMessage: string = '';
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [userAgentClientHintsFormStyles];
+    this.#shadow.adoptedStyleSheets = [userAgentClientHintsFormStyles];
   }
 
   set value(data: UserAgentClientHintsFormData) {
     const {metaData = DEFAULT_METADATA, showMobileCheckbox = false, showSubmitButton = false} = data;
-    this.metaData = {
-      ...this.metaData,
+    this.#metaData = {
+      ...this.#metaData,
       ...metaData,
     };
-    this.showMobileCheckbox = showMobileCheckbox;
-    this.showSubmitButton = showSubmitButton;
-    this.render();
+    this.#showMobileCheckbox = showMobileCheckbox;
+    this.#showSubmitButton = showSubmitButton;
+    this.#render();
   }
 
   get value(): UserAgentClientHintsFormData {
     return {
-      metaData: this.metaData,
+      metaData: this.#metaData,
     };
   }
 
   set disabled(disableForm: boolean) {
-    this.isFormDisabled = disableForm;
-    this.isFormOpened = false;
-    this.render();
+    this.#isFormDisabled = disableForm;
+    this.#isFormOpened = false;
+    this.#render();
   }
 
   get disabled(): boolean {
-    return this.isFormDisabled;
+    return this.#isFormDisabled;
   }
 
-  private handleTreeExpand = (event: KeyboardEvent): void => {
+  #handleTreeExpand = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter' || event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
       event.stopPropagation();
-      this.handleTreeClick(event.code);
+      this.#handleTreeClick(event.code);
     }
   };
 
-  private handleTreeClick = (key: string): void => {
-    if (this.isFormDisabled) {
+  #handleTreeClick = (key: string): void => {
+    if (this.#isFormDisabled) {
       return;
     }
-    if ((key === 'ArrowLeft' && !this.isFormOpened) || (key === 'ArrowRight' && this.isFormOpened)) {
+    if ((key === 'ArrowLeft' && !this.#isFormOpened) || (key === 'ArrowRight' && this.#isFormOpened)) {
       return;
     }
-    this.isFormOpened = !this.isFormOpened;
-    this.render();
+    this.#isFormOpened = !this.#isFormOpened;
+    this.#render();
   };
 
-  private handleBrandInputChange = (value: string, index: number, brandInputType: 'brandName'|'brandVersion'): void => {
-    const updatedBrands = this.metaData.brands?.map((browserBrand, brandIndex) => {
+  #handleBrandInputChange = (value: string, index: number, brandInputType: 'brandName'|'brandVersion'): void => {
+    const updatedBrands = this.#metaData.brands?.map((browserBrand, brandIndex) => {
       if (brandIndex === index) {
         const {brand, version} = browserBrand;
         if (brandInputType === 'brandName') {
@@ -258,24 +258,24 @@ export class UserAgentClientHintsForm extends HTMLElement {
       }
       return browserBrand;
     });
-    this.metaData = {
-      ...this.metaData,
+    this.#metaData = {
+      ...this.#metaData,
       brands: updatedBrands,
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
-    this.render();
+    this.#render();
   };
 
-  private handleBrandDelete = (index: number): void => {
-    const {brands = []} = this.metaData;
+  #handleBrandDelete = (index: number): void => {
+    const {brands = []} = this.#metaData;
     brands.splice(index, 1);
-    this.metaData = {
-      ...this.metaData,
+    this.#metaData = {
+      ...this.#metaData,
       brands,
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
-    this.brandsModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
-    this.render();
+    this.#brandsModifiedAriaMessage = i18nString(UIStrings.deletedBrand);
+    this.#render();
 
     // after deleting a brand row, focus on next Brand input if available,
     // otherwise focus on the "Add Brand" button
@@ -286,10 +286,10 @@ export class UserAgentClientHintsForm extends HTMLElement {
     (nextFocusElement as HTMLElement)?.focus();
   };
 
-  private handleAddBrandClick = (): void => {
-    const {brands} = this.metaData;
-    this.metaData = {
-      ...this.metaData,
+  #handleAddBrandClick = (): void => {
+    const {brands} = this.#metaData;
+    this.#metaData = {
+      ...this.#metaData,
       brands: [
         ...(Array.isArray(brands) ? brands : []),
         {
@@ -299,8 +299,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
       ],
     };
     this.dispatchEvent(new ClientHintsChangeEvent());
-    this.brandsModifiedAriaMessage = i18nString(UIStrings.addedBrand);
-    this.render();
+    this.#brandsModifiedAriaMessage = i18nString(UIStrings.addedBrand);
+    this.#render();
     const brandInputElements = this.shadowRoot?.querySelectorAll('.brand-name-input');
     if (brandInputElements) {
       const lastBrandInputElement = Array.from(brandInputElements).pop();
@@ -310,45 +310,45 @@ export class UserAgentClientHintsForm extends HTMLElement {
     }
   };
 
-  private handleAddBrandKeyPress = (event: KeyboardEvent): void => {
+  #handleAddBrandKeyPress = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
-      this.handleAddBrandClick();
+      this.#handleAddBrandClick();
     }
   };
 
-  private handleInputChange = (stateKey: keyof Protocol.Emulation.UserAgentMetadata, value: string|boolean): void => {
-    if (stateKey in this.metaData) {
-      this.metaData = {
-        ...this.metaData,
+  #handleInputChange = (stateKey: keyof Protocol.Emulation.UserAgentMetadata, value: string|boolean): void => {
+    if (stateKey in this.#metaData) {
+      this.#metaData = {
+        ...this.#metaData,
         [stateKey]: value,
       };
-      this.render();
+      this.#render();
     }
     this.dispatchEvent(new ClientHintsChangeEvent());
   };
 
-  private handleLinkPress = (event: KeyboardEvent): void => {
+  #handleLinkPress = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter') {
       event.preventDefault();
       (event.target as HTMLAnchorElement).click();
     }
   };
 
-  private handleSubmit = (event: Event): void => {
+  #handleSubmit = (event: Event): void => {
     event.preventDefault();
-    if (this.showSubmitButton) {
-      this.dispatchEvent(new ClientHintsSubmitEvent(this.metaData));
-      this.render();
+    if (this.#showSubmitButton) {
+      this.dispatchEvent(new ClientHintsSubmitEvent(this.#metaData));
+      this.#render();
     }
   };
 
-  private renderInputWithLabel(
+  #renderInputWithLabel(
       label: string, placeholder: string, value: string,
       stateKey: keyof Protocol.Emulation.UserAgentMetadata): LitHtml.TemplateResult {
     const handleInputChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
-      this.handleInputChange(stateKey, value);
+      this.#handleInputChange(stateKey, value);
     };
     return LitHtml.html`
       <label class="full-row label input-field-label-container">
@@ -364,15 +364,15 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  private renderPlatformSection(): LitHtml.TemplateResult {
-    const {platform, platformVersion} = this.metaData;
+  #renderPlatformSection(): LitHtml.TemplateResult {
+    const {platform, platformVersion} = this.#metaData;
     const handlePlatformNameChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
-      this.handleInputChange('platform', value);
+      this.#handleInputChange('platform', value);
     };
     const handlePlatformVersionChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
-      this.handleInputChange('platformVersion', value);
+      this.#handleInputChange('platformVersion', value);
     };
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
@@ -397,28 +397,28 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  private renderDeviceModelSection(): LitHtml.TemplateResult {
-    const {model, mobile} = this.metaData;
+  #renderDeviceModelSection(): LitHtml.TemplateResult {
+    const {model, mobile} = this.#metaData;
     const handleDeviceModelChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
-      this.handleInputChange('model', value);
+      this.#handleInputChange('model', value);
     };
     const handleMobileChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).checked;
-      this.handleInputChange('mobile', value);
+      this.#handleInputChange('mobile', value);
     };
-    const mobileCheckboxInput = this.showMobileCheckbox ? LitHtml.html`
+    const mobileCheckboxInput = this.#showMobileCheckbox ? LitHtml.html`
       <label class="mobile-checkbox-container">
         <input type="checkbox" @input=${handleMobileChange} .checked=${mobile} />
         ${i18nString(UIStrings.mobileCheckboxLabel)}
       </label>
     ` :
-                                                          LitHtml.html``;
+                                                           LitHtml.html``;
     return LitHtml.html`
       <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
       <div class="full-row brand-row" aria-label=${i18nString(UIStrings.deviceProperties)} role="group">
         <input
-          class="input-field ${this.showMobileCheckbox ? 'device-model-input' : 'full-row'}"
+          class="input-field ${this.#showMobileCheckbox ? 'device-model-input' : 'full-row'}"
           type="text"
           @input=${handleDeviceModelChange}
           .value=${model}
@@ -429,7 +429,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  private renderBrands(): LitHtml.TemplateResult {
+  #renderBrands(): LitHtml.TemplateResult {
     const {
       brands =
           [
@@ -438,11 +438,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
               version: '',
             },
           ],
-    } = this.metaData;
+    } = this.#metaData;
     const brandElements = brands.map((brandRow, index) => {
       const {brand, version} = brandRow;
       const handleDeleteClick = (): void => {
-        this.handleBrandDelete(index);
+        this.#handleBrandDelete(index);
       };
       const handleKeyPress = (event: KeyboardEvent): void => {
         if (event.code === 'Space' || event.code === 'Enter') {
@@ -452,11 +452,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
       };
       const handleBrandBrowserChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
-        this.handleBrandInputChange(value, index, 'brandName');
+        this.#handleBrandInputChange(value, index, 'brandName');
       };
       const handleBrandVersionChange = (event: KeyboardEvent): void => {
         const value = (event.target as HTMLInputElement).value;
-        this.handleBrandInputChange(value, index, 'brandVersion');
+        this.#handleBrandInputChange(value, index, 'brandVersion');
       };
       return LitHtml.html`
         <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
@@ -508,8 +508,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         tabindex="0"
         id="add-brand-button"
         aria-label=${i18nString(UIStrings.addBrand)}
-        @click=${this.handleAddBrandClick}
-        @keypress=${this.handleAddBrandKeyPress}
+        @click=${this.#handleAddBrandClick}
+        @keypress=${this.#handleAddBrandKeyPress}
       >
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
@@ -522,18 +522,18 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  private render(): void {
-    const {fullVersion, architecture} = this.metaData;
-    const brandSection = this.renderBrands();
-    const fullBrowserInput = this.renderInputWithLabel(
+  #render(): void {
+    const {fullVersion, architecture} = this.#metaData;
+    const brandSection = this.#renderBrands();
+    const fullBrowserInput = this.#renderInputWithLabel(
         i18nString(UIStrings.fullBrowserVersion), i18nString(UIStrings.fullBrowserVersionPlaceholder),
         fullVersion || '', 'fullVersion');
-    const platformSection = this.renderPlatformSection();
-    const architectureInput = this.renderInputWithLabel(
+    const platformSection = this.#renderPlatformSection();
+    const architectureInput = this.#renderInputWithLabel(
         i18nString(UIStrings.architecture), i18nString(UIStrings.architecturePlaceholder), architecture,
         'architecture');
-    const deviceModelSection = this.renderDeviceModelSection();
-    const submitButton = this.showSubmitButton ? LitHtml.html`
+    const deviceModelSection = this.#renderDeviceModelSection();
+    const submitButton = this.#showSubmitButton ? LitHtml.html`
       <${Buttons.Button.Button.litTagName}
         .variant=${Buttons.Button.Variant.SECONDARY}
         .type=${'submit'}
@@ -541,23 +541,23 @@ export class UserAgentClientHintsForm extends HTMLElement {
         ${i18nString(UIStrings.update)}
       </${Buttons.Button.Button.litTagName}>
     ` :
-                                                 LitHtml.html``;
+                                                  LitHtml.html``;
     const output = LitHtml.html`
       <section class="root">
         <div
           class="tree-title"
           role="button"
-          @click=${this.handleTreeClick}
+          @click=${this.#handleTreeClick}
           tabindex="0"
-          @keydown=${this.handleTreeExpand}
-          aria-expanded=${this.isFormOpened}
+          @keydown=${this.#handleTreeExpand}
+          aria-expanded=${this.#isFormOpened}
           aria-controls="form-container"
-          @disabled=${this.isFormDisabled}
-          aria-disabled=${this.isFormDisabled}
+          @disabled=${this.#isFormDisabled}
+          aria-disabled=${this.#isFormDisabled}
           aria-label=${i18nString(UIStrings.title)}
         >
           <${IconButton.Icon.Icon.litTagName}
-            class=${this.isFormOpened ? '' : 'rotate-icon'}
+            class=${this.#isFormOpened ? '' : 'rotate-icon'}
             .data=${
         {color: 'var(--client-hints-form-icon-color)', iconName: 'chromeSelect', width: '20px'} as
         IconButton.Icon.IconData}
@@ -569,7 +569,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
            href="https://web.dev/user-agent-client-hints/"
            target="_blank"
            class="info-link"
-           @keypress=${this.handleLinkPress}
+           @keypress=${this.#handleLinkPress}
            aria-label=${i18nString(UIStrings.userAgentClientHintsInfo)}
           >
             <${IconButton.Icon.Icon.litTagName}
@@ -582,8 +582,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         </div>
         <form
           id="form-container"
-          class="form-container ${this.isFormOpened ? '' : 'hide-container'}"
-          @submit=${this.handleSubmit}
+          class="form-container ${this.#isFormOpened ? '' : 'hide-container'}"
+          @submit=${this.#handleSubmit}
         >
           ${brandSection}
           ${fullBrowserInput}
@@ -592,18 +592,18 @@ export class UserAgentClientHintsForm extends HTMLElement {
           ${deviceModelSection}
           ${submitButton}
         </form>
-        <div aria-live="polite" aria-label=${this.brandsModifiedAriaMessage}></div>
+        <div aria-live="polite" aria-label=${this.#brandsModifiedAriaMessage}></div>
       </section>
     `;
     // clang-format off
-    LitHtml.render(output, this.shadow, {host: this});
+    LitHtml.render(output, this.#shadow, {host: this});
     // clang-format on
   }
 
   validate = (): UI.ListWidget.ValidatorResult => {
-    for (const [metaDataKey, metaDataValue] of Object.entries(this.metaData)) {
+    for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === 'brands') {
-        const isBrandValid = this.metaData.brands?.every(({brand, version}) => {
+        const isBrandValid = this.#metaData.brands?.every(({brand, version}) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
               brand, i18nString(UIStrings.notRepresentable));
           const brandVersionResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(

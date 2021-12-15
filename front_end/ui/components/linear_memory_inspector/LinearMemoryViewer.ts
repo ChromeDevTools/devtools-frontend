@@ -35,11 +35,13 @@ export class ResizeEvent extends Event {
     this.data = numBytesPerPage;
   }
 }
+
+const BYTE_GROUP_MARGIN = 8;
+const BYTE_GROUP_SIZE = 4;
+
 export class LinearMemoryViewer extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-viewer`;
 
-  private static readonly BYTE_GROUP_MARGIN = 8;
-  private static readonly BYTE_GROUP_SIZE = 4;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   readonly #resizeObserver = new ResizeObserver(() => this.#resize());
@@ -50,7 +52,7 @@ export class LinearMemoryViewer extends HTMLElement {
   #memoryOffset = 0;
 
   #numRows = 1;
-  #numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
+  #numBytesInRow = BYTE_GROUP_SIZE;
 
   #focusOnByte = true;
 
@@ -73,7 +75,7 @@ export class LinearMemoryViewer extends HTMLElement {
   }
 
   connectedCallback(): void {
-    ComponentHelpers.SetCSSProperty.set(this, '--byte-group-margin', `${LinearMemoryViewer.BYTE_GROUP_MARGIN}px`);
+    ComponentHelpers.SetCSSProperty.set(this, '--byte-group-margin', `${BYTE_GROUP_MARGIN}px`);
     this.#shadow.adoptedStyleSheets = [linearMemoryViewerStyles];
   }
 
@@ -106,7 +108,7 @@ export class LinearMemoryViewer extends HTMLElement {
   /** Recomputes the number of rows and (byte) columns that fit into the current view. */
   #updateDimensions(): void {
     if (this.clientWidth === 0 || this.clientHeight === 0 || !this.shadowRoot) {
-      this.#numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
     }
@@ -126,7 +128,7 @@ export class LinearMemoryViewer extends HTMLElement {
     const rowElement = this.shadowRoot.querySelector('.row');
 
     if (!firstByteCell || !textCell || !divider || !rowElement) {
-      this.#numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
     }
@@ -134,8 +136,7 @@ export class LinearMemoryViewer extends HTMLElement {
     // Calculate the width required for each (unsplittable) group of bytes.
     const byteCellWidth = firstByteCell.getBoundingClientRect().width;
     const textCellWidth = textCell.getBoundingClientRect().width;
-    const groupWidth =
-        LinearMemoryViewer.BYTE_GROUP_SIZE * (byteCellWidth + textCellWidth) + LinearMemoryViewer.BYTE_GROUP_MARGIN;
+    const groupWidth = BYTE_GROUP_SIZE * (byteCellWidth + textCellWidth) + BYTE_GROUP_MARGIN;
 
     // Calculate the width to fill.
     const dividerWidth = divider.getBoundingClientRect().width;
@@ -144,12 +145,12 @@ export class LinearMemoryViewer extends HTMLElement {
     const widthToFill = this.clientWidth - 1 -
         (firstByteCell.getBoundingClientRect().left - this.getBoundingClientRect().left) - dividerWidth;
     if (widthToFill < groupWidth) {
-      this.#numBytesInRow = LinearMemoryViewer.BYTE_GROUP_SIZE;
+      this.#numBytesInRow = BYTE_GROUP_SIZE;
       this.#numRows = 1;
       return;
     }
 
-    this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * LinearMemoryViewer.BYTE_GROUP_SIZE;
+    this.#numBytesInRow = Math.floor(widthToFill / groupWidth) * BYTE_GROUP_SIZE;
     this.#numRows = Math.floor(this.clientHeight / rowElement.clientHeight);
   }
 
@@ -225,7 +226,7 @@ export class LinearMemoryViewer extends HTMLElement {
     const cells = [];
     for (let i = startIndex; i < endIndex; ++i) {
       // Add margin after each group of bytes of size byteGroupSize.
-      const addMargin = i !== startIndex && (i - startIndex) % LinearMemoryViewer.BYTE_GROUP_SIZE === 0;
+      const addMargin = i !== startIndex && (i - startIndex) % BYTE_GROUP_SIZE === 0;
       const selected = i === this.#address - this.#memoryOffset;
       const classMap = {
         'cell': true,

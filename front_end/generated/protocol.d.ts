@@ -1049,6 +1049,20 @@ declare namespace Protocol {
       message?: string;
     }
 
+    export const enum ClientHintIssueReason {
+      MetaTagAllowListInvalidOrigin = 'MetaTagAllowListInvalidOrigin',
+      MetaTagModifiedHTML = 'MetaTagModifiedHTML',
+    }
+
+    /**
+     * This issue tracks client hints related issues. It's used to deprecate old
+     * features, encourage the use of new ones, and provide general guidance.
+     */
+    export interface ClientHintIssueDetails {
+      sourceCodeLocation: SourceCodeLocation;
+      clientHintIssueReason: ClientHintIssueReason;
+    }
+
     /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
@@ -1070,6 +1084,7 @@ declare namespace Protocol {
       WasmCrossOriginModuleSharingIssue = 'WasmCrossOriginModuleSharingIssue',
       GenericIssue = 'GenericIssue',
       DeprecationIssue = 'DeprecationIssue',
+      ClientHintIssue = 'ClientHintIssue',
     }
 
     /**
@@ -1093,6 +1108,7 @@ declare namespace Protocol {
       wasmCrossOriginModuleSharingIssue?: WasmCrossOriginModuleSharingIssueDetails;
       genericIssueDetails?: GenericIssueDetails;
       deprecationIssueDetails?: DeprecationIssueDetails;
+      clientHintIssueDetails?: ClientHintIssueDetails;
     }
 
     /**

@@ -279,6 +279,9 @@ export function registerCommands(inspectorBackend) {
   });
   inspectorBackend.registerEnum(
       'Audits.GenericIssueErrorType', {CrossOriginPortalPostMessageError: 'CrossOriginPortalPostMessageError'});
+  inspectorBackend.registerEnum(
+      'Audits.ClientHintIssueReason',
+      {MetaTagAllowListInvalidOrigin: 'MetaTagAllowListInvalidOrigin', MetaTagModifiedHTML: 'MetaTagModifiedHTML'});
   inspectorBackend.registerEnum('Audits.InspectorIssueCode', {
     SameSiteCookieIssue: 'SameSiteCookieIssue',
     MixedContentIssue: 'MixedContentIssue',
@@ -294,7 +297,8 @@ export function registerCommands(inspectorBackend) {
     NavigatorUserAgentIssue: 'NavigatorUserAgentIssue',
     WasmCrossOriginModuleSharingIssue: 'WasmCrossOriginModuleSharingIssue',
     GenericIssue: 'GenericIssue',
-    DeprecationIssue: 'DeprecationIssue'
+    DeprecationIssue: 'DeprecationIssue',
+    ClientHintIssue: 'ClientHintIssue'
   });
   inspectorBackend.registerEvent('Audits.issueAdded', ['issue']);
   inspectorBackend.registerEnum('Audits.GetEncodedResponseRequestEncoding', {Webp: 'webp', Jpeg: 'jpeg', Png: 'png'});

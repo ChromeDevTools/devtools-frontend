@@ -25,10 +25,10 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
     super();
 
     this.#controller = controller;
-    this.render();
+    this.#render();
   }
 
-  private render(): void {
+  #render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.RequestOverviewCancel), '',
         true /* primary */);

@@ -33,11 +33,11 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     super(true);
 
     this.contentElement.classList.add('overview-sidebar-panel');
-    this.contentElement.addEventListener('click', this.onItemClick.bind(this));
+    this.contentElement.addEventListener('click', this.#onItemClick.bind(this));
 
     // Clear overview.
     const clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearOverview), 'largeicon-clear');
-    clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.reset, this);
+    clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#reset, this);
 
     // Toolbar.
     const toolbarElement = this.contentElement.createChild('div', 'overview-toolbar');
@@ -51,18 +51,18 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     item.dataset.id = id;
   }
 
-  private reset(): void {
+  #reset(): void {
     this.dispatchEventToListeners(SidebarEvents.Reset);
   }
 
-  private deselectAllItems(): void {
+  #deselectAllItems(): void {
     const items = this.contentElement.querySelectorAll(`.${CSSOverviewSidebarPanel.ITEM_CLASS_NAME}`);
     items.forEach(item => {
       item.classList.remove(CSSOverviewSidebarPanel.SELECTED);
     });
   }
 
-  private onItemClick(event: Event): void {
+  #onItemClick(event: Event): void {
     const target = (event.composedPath()[0] as HTMLElement);
     if (!target.classList.contains(CSSOverviewSidebarPanel.ITEM_CLASS_NAME)) {
       return;
@@ -86,7 +86,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
       return;
     }
 
-    this.deselectAllItems();
+    this.#deselectAllItems();
     target.classList.add(CSSOverviewSidebarPanel.SELECTED);
   }
   wasShown(): void {

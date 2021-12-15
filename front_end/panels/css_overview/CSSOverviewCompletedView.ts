@@ -271,11 +271,11 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#sideBar.addItem(i18nString(UIStrings.mediaQueries), 'media-queries');
     this.#sideBar.select('summary');
 
-    this.#sideBar.addEventListener(SidebarEvents.ItemSelected, this.sideBarItemSelected, this);
-    this.#sideBar.addEventListener(SidebarEvents.Reset, this.sideBarReset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.Reset, this.reset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.PopulateNodes, this.createElementsView, this);
-    this.#resultsContainer.element.addEventListener('click', this.onClick.bind(this));
+    this.#sideBar.addEventListener(SidebarEvents.ItemSelected, this.#sideBarItemSelected, this);
+    this.#sideBar.addEventListener(SidebarEvents.Reset, this.#sideBarReset, this);
+    this.#controller.addEventListener(CSSOverViewControllerEvents.Reset, this.#reset, this);
+    this.#controller.addEventListener(CSSOverViewControllerEvents.PopulateNodes, this.#createElementsView, this);
+    this.#resultsContainer.element.addEventListener('click', this.#onClick.bind(this));
 
     this.#data = null;
   }
@@ -298,7 +298,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#domModel = domModel;
   }
 
-  private sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<string>): void {
+  #sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<string>): void {
     const {data} = event;
     const section = (this.#fragment as UI.Fragment.Fragment).$(data);
     if (!section) {
@@ -308,11 +308,11 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     section.scrollIntoView();
   }
 
-  private sideBarReset(): void {
+  #sideBarReset(): void {
     this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.Reset);
   }
 
-  private reset(): void {
+  #reset(): void {
     this.#resultsContainer.element.removeChildren();
     this.#mainContainer.setSidebarMinimized(true);
     this.#elementContainer.closeTabs();
@@ -321,7 +321,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#sideBar.select('summary');
   }
 
-  private onClick(evt: Event): void {
+  #onClick(evt: Event): void {
     if (!evt.target) {
       return;
     }
@@ -453,19 +453,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#mainContainer.setSidebarMinimized(false);
   }
 
-  private onMouseOver(evt: Event): void {
-    // Traverse the event path on the grid to find the nearest element with a backend node ID attached. Use
-    // that for the highlighting.
-    const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset && el.dataset.backendNodeId);
-    if (!node) {
-      return;
-    }
-
-    const backendNodeId = Number(node.dataset.backendNodeId);
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.RequestNodeHighlight, backendNodeId);
-  }
-
-  private async render(data: OverviewData): Promise<void> {
+  async #render(data: OverviewData): Promise<void> {
     if (!data || !('backgroundColors' in data) || !('textColors' in data)) {
       return;
     }
@@ -485,10 +473,10 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     } = this.#data;
 
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
-    const sortedBackgroundColors = this.sortColorsByLuminance(backgroundColors);
-    const sortedTextColors = this.sortColorsByLuminance(textColors);
-    const sortedFillColors = this.sortColorsByLuminance(fillColors);
-    const sortedBorderColors = this.sortColorsByLuminance(borderColors);
+    const sortedBackgroundColors = this.#sortColorsByLuminance(backgroundColors);
+    const sortedTextColors = this.#sortColorsByLuminance(textColors);
+    const sortedFillColors = this.#sortColorsByLuminance(fillColors);
+    const sortedBorderColors = this.#sortColorsByLuminance(borderColors);
 
     this.#fragment = UI.Fragment.Fragment.build`
     <div class="vbox overview-completed-view">
@@ -549,44 +537,44 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       PH1: sortedBackgroundColors.length,
     })}</h2>
         <ul>
-          ${sortedBackgroundColors.map(this.colorsToFragment.bind(this, 'background'))}
+          ${sortedBackgroundColors.map(this.#colorsToFragment.bind(this, 'background'))}
         </ul>
 
         <h2>${i18nString(UIStrings.textColorsS, {
       PH1: sortedTextColors.length,
     })}</h2>
         <ul>
-          ${sortedTextColors.map(this.colorsToFragment.bind(this, 'text'))}
+          ${sortedTextColors.map(this.#colorsToFragment.bind(this, 'text'))}
         </ul>
 
-        ${textColorContrastIssues.size > 0 ? this.contrastIssuesToFragment(textColorContrastIssues) : ''}
+        ${textColorContrastIssues.size > 0 ? this.#contrastIssuesToFragment(textColorContrastIssues) : ''}
 
         <h2>${i18nString(UIStrings.fillColorsS, {
       PH1: sortedFillColors.length,
     })}</h2>
         <ul>
-          ${sortedFillColors.map(this.colorsToFragment.bind(this, 'fill'))}
+          ${sortedFillColors.map(this.#colorsToFragment.bind(this, 'fill'))}
         </ul>
 
         <h2>${i18nString(UIStrings.borderColorsS, {
       PH1: sortedBorderColors.length,
     })}</h2>
         <ul>
-          ${sortedBorderColors.map(this.colorsToFragment.bind(this, 'border'))}
+          ${sortedBorderColors.map(this.#colorsToFragment.bind(this, 'border'))}
         </ul>
       </div>
 
       <div $="font-info" class="results-section font-info">
         <h1>${i18nString(UIStrings.fontInfo)}</h1>
         ${
-        fontInfo.size > 0 ? this.fontInfoToFragment(fontInfo) :
+        fontInfo.size > 0 ? this.#fontInfoToFragment(fontInfo) :
                             UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`}
       </div>
 
       <div $="unused-declarations" class="results-section unused-declarations">
         <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
         ${
-        unusedDeclarations.size > 0 ? this.groupToFragment(unusedDeclarations, 'unused-declarations', 'declaration') :
+        unusedDeclarations.size > 0 ? this.#groupToFragment(unusedDeclarations, 'unused-declarations', 'declaration') :
                                       UI.Fragment.Fragment.build`<div class="horizontally-padded">${
                                           i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`}
       </div>
@@ -594,7 +582,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       <div $="media-queries" class="results-section media-queries">
         <h1>${i18nString(UIStrings.mediaQueries)}</h1>
         ${
-        mediaQueries.size > 0 ? this.groupToFragment(mediaQueries, 'media-queries', 'text') :
+        mediaQueries.size > 0 ? this.#groupToFragment(mediaQueries, 'media-queries', 'text') :
                                 UI.Fragment.Fragment.build`<div class="horizontally-padded">${
                                     i18nString(UIStrings.thereAreNoMediaQueries)}</div>`}
       </div>
@@ -603,7 +591,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#resultsContainer.element.appendChild(this.#fragment.element());
   }
 
-  private createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
+  #createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
     const {payload} = evt.data;
 
     let id = '';
@@ -659,17 +647,17 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#elementContainer.appendTab(id, tabTitle, view, true);
   }
 
-  private fontInfoToFragment(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
+  #fontInfoToFragment(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
     const fonts = Array.from(fontInfo.entries());
     return UI.Fragment.Fragment.build`
   ${fonts.map(([font, fontMetrics]) => {
       return UI.Fragment.Fragment.build`<section class="font-family"><h2>${font}</h2> ${
-          this.fontMetricsToFragment(font, fontMetrics)}</section>`;
+          this.#fontMetricsToFragment(font, fontMetrics)}</section>`;
     })}
   `;
   }
 
-  private fontMetricsToFragment(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
+  #fontMetricsToFragment(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
     const fontMetricInfo = Array.from(fontMetrics.entries());
 
     return UI.Fragment.Fragment.build`
@@ -679,13 +667,13 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
       return UI.Fragment.Fragment.build`
   <div>
   <h3>${label}</h3>
-  ${this.groupToFragment(values, 'font-info', 'value', sanitizedPath)}
+  ${this.#groupToFragment(values, 'font-info', 'value', sanitizedPath)}
   </div>`;
     })}
   </div>`;
   }
 
-  private groupToFragment(
+  #groupToFragment(
       items: Map<string, (number | UnusedDeclaration | Protocol.CSS.CSSMedia)[]>, type: string, dataLabel: string,
       path: string = ''): UI.Fragment.Fragment {
     // Sort by number of items descending.
@@ -715,18 +703,18 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     </ul>`;
   }
 
-  private contrastIssuesToFragment(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
+  #contrastIssuesToFragment(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
     return UI.Fragment.Fragment.build`
   <h2>${i18nString(UIStrings.contrastIssuesS, {
       PH1: issues.size,
     })}</h2>
   <ul>
-  ${[...issues.entries()].map(([key, value]) => this.contrastIssueToFragment(key, value))}
+  ${[...issues.entries()].map(([key, value]) => this.#contrastIssueToFragment(key, value))}
   </ul>
   `;
   }
 
-  private contrastIssueToFragment(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
+  #contrastIssueToFragment(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
     console.assert(issues.length > 0);
 
     let minContrastIssue: ContrastIssue = issues[0];
@@ -797,7 +785,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     return blockFragment;
   }
 
-  private colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
+  #colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button data-type="color" data-color="${color}" data-section="${section}" class="block" $="color"></button>
       <div class="block-title">${color}</div>
@@ -815,7 +803,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     return blockFragment;
   }
 
-  private sortColorsByLuminance(srcColors: Map<string, Set<number>>): string[] {
+  #sortColorsByLuminance(srcColors: Map<string, Set<number>>): string[] {
     return Array.from(srcColors.keys()).sort((colA, colB) => {
       const colorA = Common.Color.Color.parse(colA);
       const colorB = Common.Color.Color.parse(colB);
@@ -827,7 +815,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   }
 
   setOverviewData(data: OverviewData): void {
-    this.render(data);
+    this.#render(data);
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -967,14 +955,15 @@ export class ElementDetailsView extends UI.Widget.Widget {
       refreshCallback: undefined,
     });
     this.#elementGrid.element.classList.add('element-grid');
-    this.#elementGrid.element.addEventListener('mouseover', this.onMouseOver.bind(this));
+    this.#elementGrid.element.addEventListener('mouseover', this.#onMouseOver.bind(this));
     this.#elementGrid.setStriped(true);
-    this.#elementGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortMediaQueryDataGrid.bind(this));
+    this.#elementGrid.addEventListener(
+        DataGrid.DataGrid.Events.SortingChanged, this.#sortMediaQueryDataGrid.bind(this));
 
     this.#elementGrid.asWidget().show(this.element);
   }
 
-  private sortMediaQueryDataGrid(): void {
+  #sortMediaQueryDataGrid(): void {
     const sortColumnId = this.#elementGrid.sortColumnId();
     if (!sortColumnId) {
       return;
@@ -984,7 +973,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.#elementGrid.sortNodes(comparator, !this.#elementGrid.isSortOrderAscending());
   }
 
-  private onMouseOver(evt: Event): void {
+  #onMouseOver(evt: Event): void {
     // Traverse the event path on the grid to find the nearest element with a backend node ID attached. Use
     // that for the highlighting.
     const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset && el.dataset.backendNodeId);
@@ -1093,7 +1082,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
       const cell = this.createTD(columnId);
 
       if (this.data.range) {
-        const link = this.linkifyRuleLocation(
+        const link = this.#linkifyRuleLocation(
             this.#cssModel, this.#linkifier, this.data.styleSheetId,
             TextUtils.TextRange.TextRange.fromObject(this.data.range));
 
@@ -1153,7 +1142,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     return super.createCell(columnId);
   }
 
-  private linkifyRuleLocation(
+  #linkifyRuleLocation(
       cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier,
       styleSheetId: Protocol.CSS.StyleSheetId, ruleLocation: TextUtils.TextRange.TextRange): Element|undefined {
     const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);

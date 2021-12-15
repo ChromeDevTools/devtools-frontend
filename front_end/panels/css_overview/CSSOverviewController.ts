@@ -16,10 +16,10 @@ export class OverviewController extends Common.ObjectWrapper.ObjectWrapper<Event
 
     this.currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this.checkUrlAndResetIfChanged, this);
+        SDK.TargetManager.Events.InspectedURLChanged, this.#checkUrlAndResetIfChanged, this);
   }
 
-  private checkUrlAndResetIfChanged(): void {
+  #checkUrlAndResetIfChanged(): void {
     if (this.currentUrl === SDK.TargetManager.TargetManager.instance().inspectedURL()) {
       return;
     }

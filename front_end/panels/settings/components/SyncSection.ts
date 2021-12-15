@@ -44,40 +44,40 @@ export interface SyncSectionData {
 
 export class SyncSection extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-sync-section`;
-  private readonly shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open'});
 
-  private syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
-  private syncSetting?: Common.Settings.Setting<boolean>;
+  #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
+  #syncSetting?: Common.Settings.Setting<boolean>;
 
-  private boundRender = this.render.bind(this);
+  #boundRender = this.#render.bind(this);
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [syncSectionStyles];
+    this.#shadow.adoptedStyleSheets = [syncSectionStyles];
   }
 
   set data(data: SyncSectionData) {
-    this.syncInfo = data.syncInfo;
-    this.syncSetting = data.syncSetting;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.boundRender);
+    this.#syncInfo = data.syncInfo;
+    this.#syncSetting = data.syncSetting;
+    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  private render(): void {
-    if (!this.syncSetting) {
+  #render(): void {
+    if (!this.#syncSetting) {
       throw new Error('SyncSection not properly initialized');
     }
 
-    const checkboxDisabled = !this.syncInfo.isSyncActive || !this.syncInfo.arePreferencesSynced;
+    const checkboxDisabled = !this.#syncInfo.isSyncActive || !this.#syncInfo.arePreferencesSynced;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
       <fieldset>
         <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
-        ${renderAccountInfoOrWarning(this.syncInfo)}
+        ${renderAccountInfoOrWarning(this.#syncInfo)}
         <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
-            {setting: this.syncSetting, disabled: checkboxDisabled} as Settings.SettingCheckbox.SettingCheckboxData}>
+            {setting: this.#syncSetting, disabled: checkboxDisabled} as Settings.SettingCheckbox.SettingCheckboxData}>
         </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
       </fieldset>
-    `, this.shadow, {host: this});
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }

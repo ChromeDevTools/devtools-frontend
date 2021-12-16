@@ -256,3 +256,6 @@ export const calculateFirstFocusableCell =
 
       return [focusableColIndex, focusableRowIndex];
     };
+
+export const getCellTitleFromCellContent = (text: string): string =>
+    text.length < 25 ? text : text.substr(0, 20) + '\u2026';

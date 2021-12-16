@@ -398,7 +398,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     responseIcon.data = {iconName: 'ic_response', color: 'var(--color-text-disabled)', width: '16px', height: '16px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
-        {columnId: 'method', value: message.method},
+        {columnId: 'method', value: message.method, title: message.method},
         {columnId: 'request', value: '', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
         {
           columnId: 'response',
@@ -439,7 +439,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
         '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',
       },
       cells: [
-        {columnId: 'method', value: message.method},
+        {columnId: 'method', value: message.method, title: message.method},
         {
           columnId: 'request',
           value: JSON.stringify(message.params),

@@ -16,7 +16,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import type {CellPosition, Column, Row, SortState} from './DataGridUtils.js';
-import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, SortDirection} from './DataGridUtils.js';
+import {calculateColumnWidthPercentageFromWeighting, calculateFirstFocusableCell, getCellTitleFromCellContent, getRowEntryForColumnId, handleArrowKeyNavigation, renderCellValue, SortDirection} from './DataGridUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 const UIStrings = {
@@ -794,7 +794,7 @@ export class DataGrid extends HTMLElement {
                     style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
                     tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}
-                    title=${cell.title || String(cell.value).substr(0, 20)}
+                    title=${cell.title || getCellTitleFromCellContent(String(cell.value))}
                     data-row-index=${tableRowIndex}
                     data-col-index=${columnIndex}
                     data-grid-value-cell-for-column=${col.id}

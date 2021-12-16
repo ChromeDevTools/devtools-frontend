@@ -967,4 +967,16 @@ describe('DataGrid', () => {
       });
     });
   });
+
+  describe('DataGrid.DataGridUtils.getCellTitleFromCellContent', () => {
+    it('returns full cell content as title when content is short', async () => {
+      const title = DataGrid.DataGridUtils.getCellTitleFromCellContent('some shortish cell value');
+      assert.deepEqual(title, 'some shortish cell value');
+    });
+
+    it('returns truncated cell content as title when content is long', async () => {
+      const title = DataGrid.DataGridUtils.getCellTitleFromCellContent('This cell contains text which is a bit longer');
+      assert.deepEqual(title, 'This cell contains t…');
+    });
+  });
 });

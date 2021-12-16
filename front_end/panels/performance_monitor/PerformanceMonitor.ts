@@ -115,6 +115,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
       return;
     }
     this.registerCSSFiles([performanceMonitorStyles]);
+    this.controlPane.instantiateMetricData();
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
     this.model.enable();
@@ -437,8 +438,9 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   element: Element;
   private readonly enabledChartsSetting: Common.Settings.Setting<string[]>;
   private readonly enabledCharts: Set<string>;
-  private readonly chartsInfo: ChartInfo[];
-  private readonly indicators: Map<string, MetricIndicator>;
+
+  private chartsInfo: ChartInfo[] = [];
+  private indicators: Map<string, MetricIndicator> = new Map();
 
   constructor(parent: Element) {
     super();
@@ -447,7 +449,9 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.enabledChartsSetting = Common.Settings.Settings.instance().createSetting(
         'perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     this.enabledCharts = new Set(this.enabledChartsSetting.get());
+  }
 
+  instantiateMetricData(): void {
     const defaults = {
       color: undefined,
       format: undefined,
@@ -457,55 +461,112 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       stacked: undefined,
     };
 
+    // Get ThemeSupport instance here just to make things a little less verbose.
+    const themeSupport = ThemeSupport.ThemeSupport.instance();
     this.chartsInfo = [
       {
         ...defaults,
         title: i18nString(UIStrings.cpuUsage),
         metrics: [
-          {name: 'TaskDuration', color: '#999'},
-          {name: 'ScriptDuration', color: 'orange'},
-          {name: 'LayoutDuration', color: 'blueviolet'},
-          {name: 'RecalcStyleDuration', color: 'violet'},
+          {
+            name: 'TaskDuration',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-task-duration', this.element),
+          },
+          {
+            name: 'ScriptDuration',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-script-duration', this.element),
+          },
+          {
+            name: 'LayoutDuration',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu-layout-duration', this.element),
+          },
+          {
+            name: 'RecalcStyleDuration',
+            color:
+                themeSupport.getComputedValue('--override-color-perf-monitor-cpu-recalc-style-duration', this.element),
+          },
         ],
         format: Format.Percent,
         smooth: true,
         stacked: true,
-        color: 'red',
+        color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu', this.element),
         max: 1,
         currentMax: undefined,
       },
       {
         ...defaults,
         title: i18nString(UIStrings.jsHeapSize),
-        metrics: [{name: 'JSHeapTotalSize', color: '#99f'}, {name: 'JSHeapUsedSize', color: 'blue'}],
+        metrics: [
+          {
+            name: 'JSHeapTotalSize',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-total-size', this.element),
+          },
+          {
+            name: 'JSHeapUsedSize',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-used-size', this.element),
+          },
+        ],
         format: Format.Bytes,
-        color: 'blue',
+        color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap'),
       },
-      {...defaults, title: i18nString(UIStrings.domNodes), metrics: [{name: 'Nodes', color: 'green'}]},
+      {
+        ...defaults,
+        title: i18nString(UIStrings.domNodes),
+        metrics: [
+          {
+            name: 'Nodes',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-dom-nodes', this.element),
+          },
+        ],
+      },
       {
         ...defaults,
         title: i18nString(UIStrings.jsEventListeners),
-        metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}],
+        metrics: [
+          {
+            name: 'JSEventListeners',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-js-event-listeners', this.element),
+          },
+        ],
       },
-      {...defaults, title: i18nString(UIStrings.documents), metrics: [{name: 'Documents', color: 'darkblue'}]},
-      {...defaults, title: i18nString(UIStrings.documentFrames), metrics: [{name: 'Frames', color: 'darkcyan'}]},
-      {...defaults, title: i18nString(UIStrings.layoutsSec), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
+      {
+        ...defaults,
+        title: i18nString(UIStrings.documents),
+        metrics: [{
+          name: 'Documents',
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-documents', this.element),
+        }],
+      },
+      {
+        ...defaults,
+        title: i18nString(UIStrings.documentFrames),
+        metrics: [{
+          name: 'Frames',
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-document-frames', this.element),
+        }],
+      },
+      {
+        ...defaults,
+        title: i18nString(UIStrings.layoutsSec),
+        metrics: [{
+          name: 'LayoutCount',
+          color: themeSupport.getComputedValue('--override-color-perf-monitor-layout-count', this.element),
+        }],
+      },
       {
         ...defaults,
         title: i18nString(UIStrings.styleRecalcsSec),
-        metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}],
+        metrics: [
+          {
+            name: 'RecalcStyleCount',
+            color: themeSupport.getComputedValue('--override-color-perf-monitor-recalc-style-count', this.element),
+          },
+        ],
       },
     ];
-    for (const info of this.chartsInfo) {
-      if (info.color) {
-        info.color = ThemeSupport.ThemeSupport.instance().patchColorText(
-            info.color, ThemeSupport.ThemeSupport.ColorUsage.Foreground);
-      }
-      for (const metric of info.metrics) {
-        metric.color = ThemeSupport.ThemeSupport.instance().patchColorText(
-            metric.color, ThemeSupport.ThemeSupport.ColorUsage.Foreground);
-      }
-    }
+
+    // Clear any existing child elements.
+    this.element.removeChildren();
 
     this.indicators = new Map();
     for (const chartInfo of this.chartsInfo) {

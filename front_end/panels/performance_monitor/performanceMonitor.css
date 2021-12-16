@@ -6,6 +6,38 @@
 
 .perfmon-pane {
   overflow: hidden;
+
+  --override-color-perf-monitor-cpu: rgb(227 33 33);
+  --override-color-perf-monitor-cpu-task-duration: rgb(154 154 154);
+  --override-color-perf-monitor-cpu-script-duration: rgb(255 165 0);
+  --override-color-perf-monitor-cpu-layout-duration: rgb(138 43 226);
+  --override-color-perf-monitor-cpu-recalc-style-duration: rgb(238 130 238);
+  --override-color-perf-monitor-jsheap: rgb(0 0 255);
+  --override-color-perf-monitor-jsheap-total-size: rgb(153 153 255);
+  --override-color-perf-monitor-jsheap-used-size: rgb(0 0 255);
+  --override-color-perf-monitor-dom-nodes: rgb(11 154 11);
+  --override-color-perf-monitor-js-event-listeners: rgb(154 205 50);
+  --override-color-perf-monitor-documents: rgb(0 0 139);
+  --override-color-perf-monitor-document-frames: rgb(0 139 139);
+  --override-color-perf-monitor-layout-count: rgb(255 105 180);
+  --override-color-perf-monitor-recalc-style-count: rgb(255 20 147);
+}
+
+:host-context(.-theme-with-dark-background) .perfmon-pane {
+  --override-color-perf-monitor-cpu: rgb(242 113 113);
+  --override-color-perf-monitor-cpu-task-duration: rgb(201 201 201);
+  --override-color-perf-monitor-cpu-script-duration: rgb(255 165 0);
+  --override-color-perf-monitor-cpu-layout-duration: rgb(124 29 212);
+  --override-color-perf-monitor-cpu-recalc-style-duration: rgb(179 49 179);
+  --override-color-perf-monitor-jsheap: rgb(153 153 255);
+  --override-color-perf-monitor-jsheap-total-size: rgb(153 153 255);
+  --override-color-perf-monitor-jsheap-used-size: rgb(0 0 255);
+  --override-color-perf-monitor-dom-nodes: rgb(127 255 127);
+  --override-color-perf-monitor-js-event-listeners: rgb(154 205 50);
+  --override-color-perf-monitor-documents: rgb(116 116 255);
+  --override-color-perf-monitor-document-frames: rgb(116 255 255);
+  --override-color-perf-monitor-layout-count: rgb(255 105 180);
+  --override-color-perf-monitor-recalc-style-count: rgb(235 0 127);
 }
 
 .perfmon-pane.suspended {

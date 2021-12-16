@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const originalConsole = console;
-const originalAssert = console.assert;
+import * as Platform from '../platform/platform.js';
 
 const queryParamsObject = new URLSearchParams(location.search);
 
@@ -100,13 +99,6 @@ export class Runtime {
     }
   }
 
-  static assert(value: boolean|undefined, message: string): void {
-    if (value) {
-      return;
-    }
-    originalAssert.call(originalConsole, value, message + ' ' + new Error().stack);
-  }
-
   static setPlatform(platform: string): void {
     runtimePlatform = platform;
   }
@@ -197,8 +189,8 @@ export class ExperimentsSupport {
   }
 
   register(experimentName: string, experimentTitle: string, unstable?: boolean, docLink?: string): void {
-    Runtime.assert(
-        !this.#experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
+    Platform.DCHECK(
+        () => !this.#experimentNames.has(experimentName), 'Duplicate registration of experiment ' + experimentName);
     this.#experimentNames.add(experimentName);
     this.#experiments.push(new Experiment(this, experimentName, experimentTitle, Boolean(unstable), docLink ?? ''));
   }
@@ -278,7 +270,7 @@ export class ExperimentsSupport {
   }
 
   private checkExperiment(experimentName: string): void {
-    Runtime.assert(this.#experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
+    Platform.DCHECK(() => this.#experimentNames.has(experimentName), 'Unknown experiment ' + experimentName);
   }
 }
 

@@ -8,14 +8,13 @@ import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import {StubIssue} from '../../models/issues_manager/StubIssue.js';
 import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createFakeSetting, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment, enableFeatureForTest} from '../../helpers/EnvironmentHelpers.js';
 
-describe('AggregatedIssue', async () => {
+describeWithEnvironment('AggregatedIssue', async () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1', 'id2']);
@@ -44,7 +43,7 @@ describe('AggregatedIssue', async () => {
   });
 });
 
-describe('IssueAggregator', async () => {
+describeWithEnvironment('IssueAggregator', async () => {
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
@@ -152,7 +151,7 @@ describe('IssueAggregator', async () => {
   });
 });
 
-describe('IssueAggregator', async () => {
+describeWithEnvironment('IssueAggregator', async () => {
   it('aggregates heavy ad issues correctly', () => {
     const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     const details1 = {
@@ -225,7 +224,7 @@ describe('IssueAggregator', async () => {
   });
 });
 
-describe('IssueAggregator', () => {
+describeWithEnvironment('IssueAggregator', () => {
   let hideIssueByCodeSetting: Common.Settings.Setting<IssuesManager.IssuesManager.HideIssueMenuSetting>;
   let showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
@@ -241,10 +240,6 @@ describe('IssueAggregator', () => {
     mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
     issuesManager.modelAdded(mockModel);
     aggregator = new Issues.IssueAggregator.IssueAggregator(issuesManager);
-  });
-
-  afterEach(() => {
-    Root.Runtime.experiments.clearForTest();
   });
 
   it('aggregates hidden issues correctly', () => {

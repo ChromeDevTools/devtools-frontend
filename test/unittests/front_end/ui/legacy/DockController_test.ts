@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as LegacyUI from '../../../../../front_end/ui/legacy/legacy.js';
 
@@ -43,6 +44,7 @@ async function registerDockingSettings(currentValue: string) {
       },
     ],
   }]);
+  Root.Runtime.experiments.clearForTest();
   await initializeGlobalVars({reset: false});
 }
 
@@ -50,7 +52,6 @@ describe('DockController', () => {
   after(async () => {
     await deinitializeGlobalVars();
   });
-
   it('defaults the dockside to undefined when first created', async () => {
     /* Note: this seems like weird behaviour, but updating DockController to
      * explicitly set DockSide by default seems to cause issues in Chrome web

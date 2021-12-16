@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, describeWithEnvironment, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 let actionExecuted = false;
@@ -20,7 +21,7 @@ class MockActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
 class MockContextType {}
 
-describe('Action registration', () => {
+describeWithEnvironment('Action registration', () => {
   before(async () => {
     UI.ActionRegistration.registerActionExtension({
       actionId,
@@ -33,6 +34,7 @@ describe('Action registration', () => {
         return [MockContextType];
       },
     });
+    Root.Runtime.experiments.clearForTest();
     await initializeGlobalVars();
     // A ShortcutRegistry instance is needed to add a command to execute an action to the
     // command menu and an instance of ActionRegistry is needed to instatiate the ShorcutRegistry.

@@ -6,8 +6,9 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
-describe('CSSProperty', () => {
+describeWithEnvironment('CSSProperty', () => {
   describe('formatStyle', () => {
     const tokenizerFactory = TextUtils.CodeMirrorUtils.TokenizerFactory.instance();
     const formatStyle = (styleText: string) =>

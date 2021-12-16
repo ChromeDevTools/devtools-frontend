@@ -169,9 +169,10 @@ export async function initializeGlobalVars({reset = true} = {}) {
   UI.ZoomManager.ZoomManager.instance(
       {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
 
-  // Needed for any context menus which may be created - either in a test or via
-  // rendering a component in the component docs server.
-  UI.GlassPane.GlassPane.setContainer(document.body);
+  // Initialize theme support and context menus.
+  const defaultThemeSetting = 'systemPreferred';
+  const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
+  UI.UIUtils.initializeUIUtils(document, themeSetting);
 
   initializeTargetManagerIfNecessary();
 }

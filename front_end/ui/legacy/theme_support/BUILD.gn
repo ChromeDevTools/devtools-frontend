@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
     "../*",
     "../../../../test/unittests/front_end/test_setup/*",
     "../../../../test/unittests/front_end/ui/components/helpers/*",
+    "../../../../test/unittests/front_end/ui/legacy/theme_support/*",
     "../../../entrypoints/main/*",
     "../../../models/extensions/*",
     "../../../panels/*",

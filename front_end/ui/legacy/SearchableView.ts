@@ -597,6 +597,11 @@ export interface Replaceable {
   replaceAllWith(searchConfig: SearchConfig, replacement: string): void;
 }
 
+export interface SearchRegexResult {
+  regex: RegExp;
+  fromQuery: boolean;
+}
+
 export class SearchConfig {
   query: string;
   caseSensitive: boolean;
@@ -608,20 +613,21 @@ export class SearchConfig {
     this.isRegex = isRegex;
   }
 
-  toSearchRegex(global?: boolean): RegExp {
+  toSearchRegex(global?: boolean): SearchRegexResult {
     let modifiers = this.caseSensitive ? '' : 'i';
     if (global) {
       modifiers += 'g';
     }
     const query = this.isRegex ? '/' + this.query + '/' : this.query;
 
-    let regex;
+    let regex: RegExp|undefined;
+    let fromQuery = false;
 
     // First try creating regex if user knows the / / hint.
     try {
       if (/^\/.+\/$/.test(query)) {
         regex = new RegExp(query.substring(1, query.length - 1), modifiers);
-        regex.__fromRegExpQuery = true;
+        fromQuery = true;
       }
     } catch (e) {
       // Silent catch.
@@ -632,6 +638,9 @@ export class SearchConfig {
       regex = Platform.StringUtilities.createPlainTextSearchRegex(query, modifiers);
     }
 
-    return regex;
+    return {
+      regex,
+      fromQuery,
+    };
   }
 }

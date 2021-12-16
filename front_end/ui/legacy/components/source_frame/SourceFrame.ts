@@ -120,7 +120,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private delayedFindSearchMatches: (() => void)|null;
   private currentSearchResultIndex: number;
   private searchResults: SearchMatch[];
-  private searchRegex: RegExp|null;
+  private searchRegex: UI.SearchableView.SearchRegexResult|null;
   private loadError: boolean;
   private muteChangeEventsForSetContent: boolean;
   private readonly sourcePosition: UI.Toolbar.ToolbarText;
@@ -830,7 +830,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   jumpToSearchResult(index: number): void {
-    if (!this.loaded || !this.searchResults.length) {
+    if (!this.loaded || !this.searchResults.length || !this.searchRegex) {
       return;
     }
     this.currentSearchResultIndex = (index + this.searchResults.length) % this.searchResults.length;
@@ -840,7 +840,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const editor = this.textEditor;
     const range = this.searchResults[this.currentSearchResultIndex];
     editor.dispatch({
-      effects: setActiveSearch.of(new ActiveSearch(this.searchRegex as RegExp, range)),
+      effects: setActiveSearch.of(new ActiveSearch(this.searchRegex, range)),
       selection: {anchor: range.from, head: range.to},
       scrollIntoView: true,
       userEvent: 'select.search',
@@ -853,7 +853,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       return;
     }
 
-    const insert = (this.searchRegex as RegExp).__fromRegExpQuery ? range.insertPlaceholders(replacement) : replacement;
+    const insert = this.searchRegex?.fromQuery ? range.insertPlaceholders(replacement) : replacement;
     const editor = this.textEditor;
     const changes = editor.state.changes({from: range.from, to: range.to, insert});
     editor.dispatch(
@@ -869,7 +869,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       return;
     }
 
-    const isRegExp = regex.__fromRegExpQuery;
+    const isRegExp = regex.fromQuery;
     const changes = ranges.map(
         match =>
             ({from: match.from, to: match.to, insert: isRegExp ? match.insertPlaceholders(replacement) : replacement}));
@@ -877,13 +877,13 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.textEditor.dispatch({changes, scrollIntoView: true, userEvent: 'input.replace.all'});
   }
 
-  private collectRegexMatches(regexObject: RegExp): SearchMatch[] {
+  private collectRegexMatches({regex}: UI.SearchableView.SearchRegexResult): SearchMatch[] {
     const ranges = [];
     let pos = 0;
     for (const line of this.textEditor.state.doc.iterLines()) {
-      regexObject.lastIndex = 0;
+      regex.lastIndex = 0;
       for (;;) {
-        const match = regexObject.exec(line);
+        const match = regex.exec(line);
         if (!match) {
           break;
         }
@@ -1022,7 +1022,8 @@ const config = {
 };
 
 class ActiveSearch {
-  constructor(readonly regexp: RegExp, readonly currentRange: {from: number, to: number}|null) {
+  constructor(
+      readonly regexp: UI.SearchableView.SearchRegexResult, readonly currentRange: {from: number, to: number}|null) {
   }
 
   map(change: CodeMirror.ChangeDesc): ActiveSearch {
@@ -1036,7 +1037,7 @@ class ActiveSearch {
     return Boolean(
         a === b ||
         a && b && a.currentRange?.from === b.currentRange?.from && a.currentRange?.to === b.currentRange?.to &&
-            a.regexp.source === b.regexp.source && a.regexp.flags === b.regexp.flags);
+            a.regexp.regex.source === b.regexp.regex.source && a.regexp.regex.flags === b.regexp.regex.flags);
   }
 }
 
@@ -1084,9 +1085,9 @@ const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
       let pos = from;
       for (const part of doc.iterRange(from, to)) {
         if (part !== '\n') {
-          active.regexp.lastIndex = 0;
+          active.regexp.regex.lastIndex = 0;
           for (;;) {
-            const match = active.regexp.exec(part);
+            const match = active.regexp.regex.exec(part);
             if (!match) {
               break;
             }

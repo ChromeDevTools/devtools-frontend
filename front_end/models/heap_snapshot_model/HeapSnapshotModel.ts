@@ -280,7 +280,7 @@ export class SearchConfig {
     this.jumpBackward = jumpBackward;
   }
 
-  toSearchRegex(_global?: boolean): RegExp {
+  toSearchRegex(_global?: boolean): {regex: RegExp, fromQuery: boolean} {
     throw new Error('Unsupported operation on search config');
   }
 }

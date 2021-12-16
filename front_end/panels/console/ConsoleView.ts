@@ -1283,7 +1283,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.searchCanceled();
     this.searchableViewInternal.updateSearchMatchesCount(0);
 
-    this.searchRegex = searchConfig.toSearchRegex(true);
+    this.searchRegex = searchConfig.toSearchRegex(true).regex;
 
     this.regexMatchRanges = [];
     this.currentMatchRangeIndex = -1;

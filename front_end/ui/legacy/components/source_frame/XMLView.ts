@@ -78,7 +78,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     if (!this.searchConfig) {
       return;
     }
-    const regex = this.searchConfig.toSearchRegex(true);
+    const {regex} = this.searchConfig.toSearchRegex(true);
     const previousFocusElement = this.currentSearchTreeElements[this.currentSearchFocusIndex];
     if (previousFocusElement) {
       previousFocusElement.setSearchRegex(regex);
@@ -119,7 +119,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     const previousSearchFocusElement = this.currentSearchTreeElements[newIndex];
     this.innerSearchCanceled();
     this.currentSearchTreeElements = [];
-    const regex = this.searchConfig.toSearchRegex(true);
+    const {regex} = this.searchConfig.toSearchRegex(true);
 
     for (let element: (UI.TreeOutline.TreeElement|null) =
              (this.treeOutline.rootElement() as UI.TreeOutline.TreeElement | null);

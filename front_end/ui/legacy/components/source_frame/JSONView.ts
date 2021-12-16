@@ -231,7 +231,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     let newIndex: number = this.currentSearchFocusIndex;
     const previousSearchFocusElement = this.currentSearchTreeElements[newIndex];
     this.searchCanceled();
-    this.searchRegex = searchConfig.toSearchRegex(true);
+    this.searchRegex = searchConfig.toSearchRegex(true).regex;
 
     let element: UI.TreeOutline.TreeElement|null;
     for (element = this.treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {

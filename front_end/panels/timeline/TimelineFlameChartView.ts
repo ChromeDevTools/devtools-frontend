@@ -518,7 +518,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
-    this.searchRegex = searchConfig.toSearchRegex();
+    this.searchRegex = searchConfig.toSearchRegex().regex;
     this.updateSearchResults(shouldJump, jumpBackwards);
   }
 }

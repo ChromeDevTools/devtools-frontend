@@ -75,11 +75,11 @@ export class CSSFormatter {
     this.#lastLine = -1;
     const tokenize = createTokenizer('text/css');
     const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);
-    tokenize(text.substring(this.#fromOffset, this.#toOffset), this.tokenCallback.bind(this));
+    tokenize(text.substring(this.#fromOffset, this.#toOffset), this.#tokenCallback.bind(this));
     this.#builder.setEnforceSpaceBetweenWords(oldEnforce);
   }
 
-  private tokenCallback(token: string, type: string|null, startPosition: number): void {
+  #tokenCallback(token: string, type: string|null, startPosition: number): void {
     startPosition += this.#fromOffset;
     const startLine = Platform.ArrayUtilities.lowerBound(
         this.#lineEndings, startPosition, Platform.ArrayUtilities.DEFAULT_COMPARATOR);

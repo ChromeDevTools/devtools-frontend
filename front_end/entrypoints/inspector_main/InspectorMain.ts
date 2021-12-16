@@ -157,9 +157,9 @@ export class NodeIndicator implements UI.Toolbar.Provider {
     this.#button = new UI.Toolbar.ToolbarItem(element);
     this.#button.setTitle(i18nString(UIStrings.openDedicatedTools));
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged, event => this.update(event.data));
+        SDK.TargetManager.Events.AvailableTargetsChanged, event => this.#update(event.data));
     this.#button.setVisible(false);
-    this.update([]);
+    this.#update([]);
   }
   static instance(opts: {
     forceNew: boolean|null,
@@ -172,7 +172,7 @@ export class NodeIndicator implements UI.Toolbar.Provider {
     return nodeIndicatorInstance;
   }
 
-  private update(targetInfos: Protocol.Target.TargetInfo[]): void {
+  #update(targetInfos: Protocol.Target.TargetInfo[]): void {
     const hasNode = Boolean(targetInfos.find(target => target.type === 'node' && !target.attached));
     this.#element.classList.toggle('inactive', !hasNode);
     if (hasNode) {
@@ -211,19 +211,19 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
 
   constructor() {
     this.#autoAttachSetting = Common.Settings.Settings.instance().moduleSetting('autoAttachToCreatedPages');
-    this.#autoAttachSetting.addChangeListener(this.updateAutoAttach, this);
-    this.updateAutoAttach();
+    this.#autoAttachSetting.addChangeListener(this.#updateAutoAttach, this);
+    this.#updateAutoAttach();
 
     this.#adBlockEnabledSetting = Common.Settings.Settings.instance().moduleSetting('network.adBlockingEnabled');
-    this.#adBlockEnabledSetting.addChangeListener(this.update, this);
+    this.#adBlockEnabledSetting.addChangeListener(this.#update, this);
 
     this.#emulatePageFocusSetting = Common.Settings.Settings.instance().moduleSetting('emulatePageFocus');
-    this.#emulatePageFocusSetting.addChangeListener(this.update, this);
+    this.#emulatePageFocusSetting.addChangeListener(this.#update, this);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
-  private updateTarget(target: SDK.Target.Target): void {
+  #updateTarget(target: SDK.Target.Target): void {
     if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
       return;
     }
@@ -231,18 +231,18 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this.#emulatePageFocusSetting.get()});
   }
 
-  private updateAutoAttach(): void {
+  #updateAutoAttach(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setOpenNewWindowForPopups(this.#autoAttachSetting.get());
   }
 
-  private update(): void {
+  #update(): void {
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      this.updateTarget(target);
+      this.#updateTarget(target);
     }
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    this.updateTarget(target);
+    this.#updateTarget(target);
   }
 
   targetRemoved(_target: SDK.Target.Target): void {

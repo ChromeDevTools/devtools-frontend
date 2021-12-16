@@ -50,7 +50,7 @@ export class HeapSnapshotWorkerDispatcher {
     this.#postMessage = postMessage;
   }
 
-  private findFunction(name: string): Function {
+  #findFunction(name: string): Function {
     const path = name.split('.');
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,7 +73,7 @@ export class HeapSnapshotWorkerDispatcher {
     try {
       switch (data.disposition) {
         case 'create': {
-          const constructorFunction = this.findFunction(data.methodName);
+          const constructorFunction = this.#findFunction(data.methodName);
           // @ts-ignore
           this.#objects[data.objectId] = new constructorFunction(this);
           break;

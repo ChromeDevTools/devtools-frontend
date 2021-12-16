@@ -118,7 +118,7 @@ export class MainImpl {
 
   constructor() {
     MainImpl.instanceForTest = this;
-    this.loaded();
+    this.#loaded();
   }
 
   static time(label: string): void {
@@ -135,7 +135,7 @@ export class MainImpl {
     console.timeEnd(label);
   }
 
-  private async loaded(): Promise<void> {
+  async #loaded(): Promise<void> {
     console.timeStamp('Main._loaded');
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
     const prefs = await new Promise<{[key: string]: string}>(resolve => {
@@ -143,7 +143,7 @@ export class MainImpl {
     });
 
     console.timeStamp('Main._gotPreferences');
-    this.initializeGlobalsForLayoutTests();
+    this.#initializeGlobalsForLayoutTests();
     this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
 
@@ -152,10 +152,10 @@ export class MainImpl {
           Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
     }
 
-    this.createAppUI();
+    this.#createAppUI();
   }
 
-  private initializeGlobalsForLayoutTests(): void {
+  #initializeGlobalsForLayoutTests(): void {
     // @ts-ignore layout test global
     self.Common = self.Common || {};
     // @ts-ignore layout test global
@@ -209,10 +209,10 @@ export class MainImpl {
     }
   }
 
-  private createSettings(prefs: {
+  createSettings(prefs: {
     [x: string]: string,
   }): void {
-    this.initializeExperiments();
+    this.#initializeExperiments();
     let storagePrefix = '';
     if (Host.Platform.isCustomDevtoolsFrontend()) {
       storagePrefix = '__custom__';
@@ -260,7 +260,7 @@ export class MainImpl {
     }
   }
 
-  private initializeExperiments(): void {
+  #initializeExperiments(): void {
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
@@ -395,7 +395,7 @@ export class MainImpl {
       Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
     }
   }
-  private async createAppUI(): Promise<void> {
+  async #createAppUI(): Promise<void> {
     MainImpl.time('Main._createAppUI');
 
     // @ts-ignore layout test global
@@ -418,7 +418,7 @@ export class MainImpl {
     }
     UI.UIUtils.installComponentRootStyles((document.body as Element));
 
-    this.addMainEventListeners(document);
+    this.#addMainEventListeners(document);
 
     const canDock = Boolean(Root.Runtime.Runtime.queryParam('can_dock'));
     // @ts-ignore layout test global
@@ -450,7 +450,7 @@ export class MainImpl {
     // @ts-ignore layout test global
     self.SDK.domDebuggerManager = SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
     SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this.onSuspendStateChanged.bind(this));
+        SDK.TargetManager.Events.SuspendStateChanged, this.#onSuspendStateChanged.bind(this));
 
     // @ts-ignore layout test global
     self.Workspace.fileManager = Workspace.FileManager.FileManager.instance({forceNew: true});
@@ -522,7 +522,7 @@ export class MainImpl {
     // @ts-ignore layout test global
     self.UI.shortcutRegistry =
         UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-    this.registerMessageSinkListener();
+    this.#registerMessageSinkListener();
 
     MainImpl.timeEnd('Main._createAppUI');
 
@@ -530,10 +530,10 @@ export class MainImpl {
     if (!appProvider) {
       throw new Error('Unable to boot DevTools, as the appprovider is missing');
     }
-    await this.showAppUI(await appProvider.loadAppProvider());
+    await this.#showAppUI(await appProvider.loadAppProvider());
   }
 
-  private async showAppUI(appProvider: Object): Promise<void> {
+  async #showAppUI(appProvider: Object): Promise<void> {
     MainImpl.time('Main._showAppUI');
     const app = (appProvider as Common.AppProvider.AppProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
@@ -549,7 +549,7 @@ export class MainImpl {
           }, this);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this.revealSourceLine, this);
+        Host.InspectorFrontendHostAPI.Events.RevealSourceLine, this.#revealSourceLine, this);
 
     await UI.InspectorView.InspectorView.instance().createToolbars();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
@@ -563,11 +563,11 @@ export class MainImpl {
     UI.ARIAUtils.alertElementInstance();
 
     // Allow UI cycles to repaint prior to creating connection.
-    setTimeout(this.initializeTarget.bind(this), 0);
+    setTimeout(this.#initializeTarget.bind(this), 0);
     MainImpl.timeEnd('Main._showAppUI');
   }
 
-  private async initializeTarget(): Promise<void> {
+  async #initializeTarget(): Promise<void> {
     MainImpl.time('Main._initializeTarget');
 
     // We rely on having the early initialization runnables registered in Common when an app loads its
@@ -579,11 +579,11 @@ export class MainImpl {
     // Used for browser tests.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.readyForTest();
     // Asynchronously run the extensions.
-    setTimeout(this.lateInitialization.bind(this), 100);
+    setTimeout(this.#lateInitialization.bind(this), 100);
     MainImpl.timeEnd('Main._initializeTarget');
   }
 
-  private lateInitialization(): void {
+  #lateInitialization(): void {
     MainImpl.time('Main._lateInitialization');
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
     const promises: Promise<void>[] =
@@ -614,7 +614,7 @@ export class MainImpl {
     return this.#lateInitDonePromise;
   }
 
-  private registerMessageSinkListener(): void {
+  #registerMessageSinkListener(): void {
     Common.Console.Console.instance().addEventListener(Common.Console.Events.MessageAdded, messageAdded);
 
     function messageAdded({data: message}: Common.EventTarget.EventTargetEvent<Common.Console.Message>): void {
@@ -624,8 +624,8 @@ export class MainImpl {
     }
   }
 
-  private revealSourceLine(
-      event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.RevealSourceLineEvent>): void {
+  #revealSourceLine(event: Common.EventTarget.EventTargetEvent<Host.InspectorFrontendHostAPI.RevealSourceLineEvent>):
+      void {
     const {url, lineNumber, columnNumber} = event.data;
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
@@ -646,13 +646,13 @@ export class MainImpl {
         Workspace.Workspace.Events.UISourceCodeAdded, listener);
   }
 
-  private postDocumentKeyDown(event: Event): void {
+  #postDocumentKeyDown(event: Event): void {
     if (!event.handled) {
       UI.ShortcutRegistry.ShortcutRegistry.instance().handleShortcut((event as KeyboardEvent));
     }
   }
 
-  private redispatchClipboardEvent(event: Event): void {
+  #redispatchClipboardEvent(event: Event): void {
     const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true});
     // @ts-ignore Used in ElementsTreeOutline
     eventCopy['original'] = event;
@@ -666,22 +666,22 @@ export class MainImpl {
     }
   }
 
-  private contextMenuEventFired(event: Event): void {
+  #contextMenuEventFired(event: Event): void {
     if (event.handled || (event.target as HTMLElement).classList.contains('popup-glasspane')) {
       event.preventDefault();
     }
   }
 
-  private addMainEventListeners(document: Document): void {
-    document.addEventListener('keydown', this.postDocumentKeyDown.bind(this), false);
-    document.addEventListener('beforecopy', this.redispatchClipboardEvent.bind(this), true);
-    document.addEventListener('copy', this.redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('cut', this.redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('paste', this.redispatchClipboardEvent.bind(this), false);
-    document.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), true);
+  #addMainEventListeners(document: Document): void {
+    document.addEventListener('keydown', this.#postDocumentKeyDown.bind(this), false);
+    document.addEventListener('beforecopy', this.#redispatchClipboardEvent.bind(this), true);
+    document.addEventListener('copy', this.#redispatchClipboardEvent.bind(this), false);
+    document.addEventListener('cut', this.#redispatchClipboardEvent.bind(this), false);
+    document.addEventListener('paste', this.#redispatchClipboardEvent.bind(this), false);
+    document.addEventListener('contextmenu', this.#contextMenuEventFired.bind(this), true);
   }
 
-  private onSuspendStateChanged(): void {
+  #onSuspendStateChanged(): void {
     const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     UI.InspectorView.InspectorView.instance().onSuspendStateChanged(suspended);
   }
@@ -771,7 +771,7 @@ let mainMenuItemInstance: MainMenuItem;
 export class MainMenuItem implements UI.Toolbar.Provider {
   readonly #itemInternal: UI.Toolbar.ToolbarMenuButton;
   constructor() {
-    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(this.handleContextMenu.bind(this), true);
+    this.#itemInternal = new UI.Toolbar.ToolbarMenuButton(this.#handleContextMenu.bind(this), true);
     this.#itemInternal.element.classList.add('main-menu');
     this.#itemInternal.setTitle(i18nString(UIStrings.customizeAndControlDevtools));
   }
@@ -791,7 +791,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     return this.#itemInternal;
   }
 
-  private handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+  #handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     if (UI.DockController.DockController.instance().canDock()) {
       const dockItemElement = document.createElement('div');
       dockItemElement.classList.add('flex-centered');
@@ -952,12 +952,12 @@ export class SettingsButtonProvider implements UI.Toolbar.Provider {
 export class PauseListener {
   constructor() {
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.debuggerPaused, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.#debuggerPaused, this);
   }
 
-  private debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
+  #debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
-        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.debuggerPaused, this);
+        SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this.#debuggerPaused, this);
     const debuggerModel = event.data;
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());

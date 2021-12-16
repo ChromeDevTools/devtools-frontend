@@ -66,7 +66,7 @@ export class AcornTokenizer {
     // we see the comment itself. In that case, we should proceed and
     // initialize `bufferedToken` as normal, to allow us to fix the reordering.
     if (this.#comments.length === 0) {
-      this.nextTokenInternal();
+      this.#nextTokenInternal();
     }
   }
 
@@ -94,7 +94,7 @@ export class AcornTokenizer {
     return token.type === 'Block';
   }
 
-  private nextTokenInternal(): TokenOrComment|undefined {
+  #nextTokenInternal(): TokenOrComment|undefined {
     if (this.#comments.length) {
       const nextComment = this.#comments.shift();
       // If this was the last comment to process, we need to make
@@ -113,7 +113,7 @@ export class AcornTokenizer {
   }
 
   nextToken(): TokenOrComment|null {
-    const token = this.nextTokenInternal();
+    const token = this.#nextTokenInternal();
     if (!token || token.type === Acorn.tokTypes.eof) {
       return null;
     }

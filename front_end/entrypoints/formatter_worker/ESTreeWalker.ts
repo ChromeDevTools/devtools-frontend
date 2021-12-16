@@ -30,10 +30,10 @@ export class ESTreeWalker {
   }
 
   walk(ast: Acorn.ESTree.Node): void {
-    this.innerWalk(ast, null);
+    this.#innerWalk(ast, null);
   }
 
-  private innerWalk(node: Acorn.ESTree.Node, parent: Acorn.ESTree.Node|null): void {
+  #innerWalk(node: Acorn.ESTree.Node, parent: Acorn.ESTree.Node|null): void {
     if (!node && parent && this.#walkNulls) {
       const result = ({raw: 'null', value: null, parent: null} as Acorn.ESTree.SimpleLiteral);
       // Otherwise Closure can't handle the definition
@@ -62,10 +62,10 @@ export class ESTreeWalker {
       const templateLiteral = (node as Acorn.ESTree.TemplateLiteral);
       const expressionsLength = templateLiteral.expressions.length;
       for (let i = 0; i < expressionsLength; ++i) {
-        this.innerWalk(templateLiteral.quasis[i], templateLiteral);
-        this.innerWalk(templateLiteral.expressions[i], templateLiteral);
+        this.#innerWalk(templateLiteral.quasis[i], templateLiteral);
+        this.#innerWalk(templateLiteral.expressions[i], templateLiteral);
       }
-      this.innerWalk(templateLiteral.quasis[expressionsLength], templateLiteral);
+      this.#innerWalk(templateLiteral.quasis[expressionsLength], templateLiteral);
     } else {
       for (let i = 0; i < walkOrder.length; ++i) {
         // @ts-ignore We are doing type traversal here, but the strings
@@ -75,9 +75,9 @@ export class ESTreeWalker {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const entity = (node[walkOrder[i]] as any);
         if (Array.isArray(entity)) {
-          this.walkArray((entity as Acorn.ESTree.Node[]), node);
+          this.#walkArray((entity as Acorn.ESTree.Node[]), node);
         } else {
-          this.innerWalk((entity as Acorn.ESTree.Node), node);
+          this.#innerWalk((entity as Acorn.ESTree.Node), node);
         }
       }
     }
@@ -85,9 +85,9 @@ export class ESTreeWalker {
     this.#afterVisit.call(null, node);
   }
 
-  private walkArray(nodeArray: Acorn.ESTree.Node[], parentNode: Acorn.ESTree.Node|null): void {
+  #walkArray(nodeArray: Acorn.ESTree.Node[], parentNode: Acorn.ESTree.Node|null): void {
     for (let i = 0; i < nodeArray.length; ++i) {
-      this.innerWalk(nodeArray[i], parentNode);
+      this.#innerWalk(nodeArray[i], parentNode);
     }
   }
 }

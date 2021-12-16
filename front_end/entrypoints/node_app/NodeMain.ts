@@ -63,12 +63,12 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     this.#targetAgent.invoke_setDiscoverTargets({discover: true});
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.#devicesDiscoveryConfigChanged, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(false);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.setDevicesUpdatesEnabled(true);
   }
 
-  private devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
+  #devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
     const locations = [];
     for (const address of config.networkDiscoveryConfig) {
       const parts = address.split(':');
@@ -82,7 +82,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
 
   dispose(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
-        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.#devicesDiscoveryConfigChanged, this);
 
     for (const sessionId of this.#childTargets.keys()) {
       this.detachedFromTarget({sessionId});

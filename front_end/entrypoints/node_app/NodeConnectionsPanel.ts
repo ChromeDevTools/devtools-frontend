@@ -51,7 +51,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg';
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
-        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.devicesDiscoveryConfigChanged, this);
+        Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.#devicesDiscoveryConfigChanged, this);
 
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
@@ -78,7 +78,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     return nodeConnectionsPanelInstance;
   }
 
-  private devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
+  #devicesDiscoveryConfigChanged({data: config}: Common.EventTarget.EventTargetEvent<Adb.Config>): void {
     this.#config = config;
     this.#networkDiscoveryView.discoveryConfigChanged(this.#config.networkDiscoveryConfig);
   }
@@ -117,8 +117,8 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
     this.#editor = null;
 
     const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addConnection), this.addNetworkTargetButtonClicked.bind(this), 'add-network-target-button',
-        true /* primary */);
+        i18nString(UIStrings.addConnection), this.#addNetworkTargetButtonClicked.bind(this),
+        'add-network-target-button', true /* primary */);
     this.element.appendChild(addButton);
 
     this.#networkDiscoveryConfig = [];
@@ -126,12 +126,12 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
     this.element.classList.add('node-frontend');
   }
 
-  private update(): void {
+  #update(): void {
     const config = this.#networkDiscoveryConfig.map(item => item.address);
     this.#callback.call(null, config);
   }
 
-  private addNetworkTargetButtonClicked(): void {
+  #addNetworkTargetButtonClicked(): void {
     this.#list.addNewItem(this.#networkDiscoveryConfig.length, {address: '', port: ''});
   }
 
@@ -155,7 +155,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
   removeItemRequested(rule: Adb.PortForwardingRule, index: number): void {
     this.#networkDiscoveryConfig.splice(index, 1);
     this.#list.removeItem(index);
-    this.update();
+    this.#update();
   }
 
   commitEdit(rule: Adb.PortForwardingRule, editor: UI.ListWidget.Editor<Adb.PortForwardingRule>, isNew: boolean): void {
@@ -163,16 +163,16 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
     if (isNew) {
       this.#networkDiscoveryConfig.push(rule);
     }
-    this.update();
+    this.#update();
   }
 
   beginEdit(rule: Adb.PortForwardingRule): UI.ListWidget.Editor<Adb.PortForwardingRule> {
-    const editor = this.createEditor();
+    const editor = this.#createEditor();
     editor.control('address').value = rule.address;
     return editor;
   }
 
-  private createEditor(): UI.ListWidget.Editor<Adb.PortForwardingRule> {
+  #createEditor(): UI.ListWidget.Editor<Adb.PortForwardingRule> {
     if (this.#editor) {
       return this.#editor;
     }

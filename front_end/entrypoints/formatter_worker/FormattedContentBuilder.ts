@@ -31,11 +31,11 @@ export class FormattedContentBuilder {
       this.addSoftSpace();
     }
 
-    this.appendFormatting();
+    this.#appendFormatting();
 
     // Insert token.
-    this.addMappingIfNeeded(offset);
-    this.addText(token);
+    this.#addMappingIfNeeded(offset);
+    this.#addText(token);
   }
 
   addSoftSpace(): void {
@@ -75,18 +75,18 @@ export class FormattedContentBuilder {
     return this.#formattedContent.join('') + (this.#newLines ? '\n' : '');
   }
 
-  private appendFormatting(): void {
+  #appendFormatting(): void {
     if (this.#newLines) {
       for (let i = 0; i < this.#newLines; ++i) {
-        this.addText('\n');
+        this.#addText('\n');
       }
-      this.addText(this.indent());
+      this.#addText(this.#indent());
     } else if (this.#softSpace) {
-      this.addText(' ');
+      this.#addText(' ');
     }
     if (this.#hardSpaces) {
       for (let i = 0; i < this.#hardSpaces; ++i) {
-        this.addText(' ');
+        this.#addText(' ');
       }
     }
     this.#newLines = 0;
@@ -94,7 +94,7 @@ export class FormattedContentBuilder {
     this.#hardSpaces = 0;
   }
 
-  private indent(): string {
+  #indent(): string {
     const cachedValue = this.#cachedIndents.get(this.#nestingLevel);
     if (cachedValue) {
       return cachedValue;
@@ -112,12 +112,12 @@ export class FormattedContentBuilder {
     return fullIndent;
   }
 
-  private addText(text: string): void {
+  #addText(text: string): void {
     this.#formattedContent.push(text);
     this.#formattedContentLength += text.length;
   }
 
-  private addMappingIfNeeded(originalPosition: number): void {
+  #addMappingIfNeeded(originalPosition: number): void {
     if (originalPosition - this.#lastOriginalPosition === this.#formattedContentLength - this.#lastFormattedPosition) {
       return;
     }

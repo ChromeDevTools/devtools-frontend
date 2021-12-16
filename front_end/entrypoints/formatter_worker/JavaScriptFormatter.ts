@@ -59,7 +59,7 @@ export class JavaScriptFormatter {
       ecmaVersion: ECMA_VERSION,
       allowHashBang: true,
     });
-    const walker = new ESTreeWalker(this.beforeVisit.bind(this), this.afterVisit.bind(this));
+    const walker = new ESTreeWalker(this.#beforeVisit.bind(this), this.#afterVisit.bind(this));
     // @ts-ignore Technically, the acorn Node type is a subclass of Acorn.ESTree.Node.
     // However, the acorn package currently exports its type without specifying
     // this relationship. So while this is allowed on runtime, we can't properly
@@ -67,7 +67,7 @@ export class JavaScriptFormatter {
     walker.walk(ast);
   }
 
-  private push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
+  #push(token: Acorn.Token|Acorn.Comment|null, format: string): void {
     for (let i = 0; i < format.length; ++i) {
       if (format[i] === 's') {
         this.#builder.addSoftSpace();
@@ -91,7 +91,7 @@ export class JavaScriptFormatter {
     }
   }
 
-  private beforeVisit(node: Acorn.ESTree.Node): undefined {
+  #beforeVisit(node: Acorn.ESTree.Node): undefined {
     if (!node.parent) {
       return;
     }
@@ -99,23 +99,23 @@ export class JavaScriptFormatter {
     while ((token = this.#tokenizer.peekToken()) && token.start < node.start) {
       const token = (this.#tokenizer.nextToken() as TokenOrComment);
       // @ts-ignore Same reason as above about Acorn types and ESTree types
-      const format = this.formatToken(node.parent, token);
-      this.push(token, format);
+      const format = this.#formatToken(node.parent, token);
+      this.#push(token, format);
     }
     return;
   }
 
-  private afterVisit(node: Acorn.ESTree.Node): void {
+  #afterVisit(node: Acorn.ESTree.Node): void {
     let token;
     while ((token = this.#tokenizer.peekToken()) && token.start < node.end) {
       const token = (this.#tokenizer.nextToken() as TokenOrComment);
-      const format = this.formatToken(node, token);
-      this.push(token, format);
+      const format = this.#formatToken(node, token);
+      this.#push(token, format);
     }
-    this.push(null, this.finishNode(node));
+    this.#push(null, this.#finishNode(node));
   }
 
-  private inForLoopHeader(node: Acorn.ESTree.Node): boolean {
+  #inForLoopHeader(node: Acorn.ESTree.Node): boolean {
     const parent = node.parent;
     if (!parent) {
       return false;
@@ -131,7 +131,7 @@ export class JavaScriptFormatter {
     return false;
   }
 
-  private formatToken(node: Acorn.ESTree.Node, tokenOrComment: TokenOrComment): string {
+  #formatToken(node: Acorn.ESTree.Node, tokenOrComment: TokenOrComment): string {
     const AT = AcornTokenizer;
     if (AT.lineComment(tokenOrComment)) {
       return 'tn';
@@ -241,7 +241,7 @@ export class JavaScriptFormatter {
           // it exists. We can't fix that, unless we use proper typechecking
           allVariablesInitialized = allVariablesInitialized && Boolean(declarations[i].init);
         }
-        return !this.inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
+        return !this.#inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
     } else if (node.type === 'PropertyDefinition') {
       if (AT.punctuator(token, '=')) {
@@ -356,13 +356,13 @@ export class JavaScriptFormatter {
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }
 
-  private finishNode(node: Acorn.ESTree.Node): string {
+  #finishNode(node: Acorn.ESTree.Node): string {
     if (node.type === 'WithStatement') {
       if (node.body && node.body.type !== 'BlockStatement') {
         return 'n<';
       }
     } else if (node.type === 'VariableDeclaration') {
-      if (!this.inForLoopHeader(node)) {
+      if (!this.#inForLoopHeader(node)) {
         return 'n';
       }
     } else if (node.type === 'ForStatement' || node.type === 'ForOfStatement' || node.type === 'ForInStatement') {

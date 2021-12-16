@@ -57,13 +57,13 @@ export class AllocationProfile {
 
     this.#traceTops = null;
 
-    this.buildFunctionAllocationInfos(profile);
-    this.buildAllocationTree(profile, liveObjectStats);
+    this.#buildFunctionAllocationInfos(profile);
+    this.#buildAllocationTree(profile, liveObjectStats);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private buildFunctionAllocationInfos(profile: any): void {
+  #buildFunctionAllocationInfos(profile: any): void {
     const strings = this.#strings;
 
     const functionInfoFields = profile.snapshot.meta.trace_function_info_fields;
@@ -87,7 +87,7 @@ export class AllocationProfile {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private buildAllocationTree(profile: any, liveObjectStats: any): TopDownAllocationNode {
+  #buildAllocationTree(profile: any, liveObjectStats: any): TopDownAllocationNode {
     const traceTreeRaw = profile.trace_tree;
     const functionInfos = this.#functionInfos;
     const idToTopDownNode = this.#idToTopDownNode;
@@ -140,7 +140,7 @@ export class AllocationProfile {
       }
       const nodeId = this.#nextNodeId++;
       const isRoot = i === 0;
-      result.push(this.serializeNode(
+      result.push(this.#serializeNode(
           nodeId, info, info.totalCount, info.totalSize, info.totalLiveCount, info.totalLiveSize, !isRoot));
       this.#collapsedTopNodeIdToFunctionInfo[nodeId] = info;
     }
@@ -151,17 +151,17 @@ export class AllocationProfile {
   }
 
   serializeCallers(nodeId: number): HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers {
-    let node = this.ensureBottomUpNode(nodeId);
+    let node = this.#ensureBottomUpNode(nodeId);
     const nodesWithSingleCaller = [];
     while (node.callers().length === 1) {
       node = node.callers()[0];
-      nodesWithSingleCaller.push(this.serializeCaller(node));
+      nodesWithSingleCaller.push(this.#serializeCaller(node));
     }
 
     const branchingCallers = [];
     const callers = node.callers();
     for (let i = 0; i < callers.length; i++) {
-      branchingCallers.push(this.serializeCaller(callers[i]));
+      branchingCallers.push(this.#serializeCaller(callers[i]));
     }
 
     return new HeapSnapshotModel.HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
@@ -181,10 +181,10 @@ export class AllocationProfile {
   }
 
   traceIds(allocationNodeId: number): number[] {
-    return this.ensureBottomUpNode(allocationNodeId).traceTopIds;
+    return this.#ensureBottomUpNode(allocationNodeId).traceTopIds;
   }
 
-  private ensureBottomUpNode(nodeId: number): BottomUpAllocationNode {
+  #ensureBottomUpNode(nodeId: number): BottomUpAllocationNode {
     let node = this.#idToNode[nodeId];
     if (!node) {
       const functionInfo = this.#collapsedTopNodeIdToFunctionInfo[nodeId];
@@ -195,15 +195,15 @@ export class AllocationProfile {
     return node as BottomUpAllocationNode;
   }
 
-  private serializeCaller(node: BottomUpAllocationNode): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode {
+  #serializeCaller(node: BottomUpAllocationNode): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode {
     const callerId = this.#nextNodeId++;
     this.#idToNode[callerId] = node;
-    return this.serializeNode(
+    return this.#serializeNode(
         callerId, node.functionInfo, node.allocationCount, node.allocationSize, node.liveCount, node.liveSize,
         node.hasCallers());
   }
 
-  private serializeNode(
+  #serializeNode(
       nodeId: number, functionInfo: FunctionAllocationInfo, count: number, size: number, liveCount: number,
       liveSize: number, hasChildren: boolean): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode {
     return new HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode(
@@ -324,12 +324,12 @@ export class FunctionAllocationInfo {
       return null;
     }
     if (!this.#bottomUpTree) {
-      this.buildAllocationTraceTree();
+      this.#buildAllocationTraceTree();
     }
     return this.#bottomUpTree as BottomUpAllocationNode;
   }
 
-  private buildAllocationTraceTree(): void {
+  #buildAllocationTraceTree(): void {
     this.#bottomUpTree = new BottomUpAllocationNode(this);
 
     for (let i = 0; i < this.#traceTops.length; i++) {

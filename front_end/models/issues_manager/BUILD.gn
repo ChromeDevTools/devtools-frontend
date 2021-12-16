@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("issues_manager") {
   sources = [
     "AttributionReportingIssue.ts",
+    "ClientHintIssue.ts",
     "ContentSecurityPolicyIssue.ts",
     "ContrastCheckTrigger.ts",
     "CorsIssue.ts",
@@ -67,6 +68,8 @@ devtools_issue_description_files = [
   "arInvalidTriggerPriority.md",
   "arMissingAttributionData.md",
   "arPermissionPolicyDisabled.md",
+  "clientHintMetaTagAllowListInvalidOrigin.md",
+  "clientHintMetaTagModifiedHTML.md",
   "CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",
   "CoepCorpNotSameOrigin.md",
   "CoepCorpNotSameOriginAfterDefaultedToSameOriginByCoep.md",

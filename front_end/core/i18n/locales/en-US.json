@@ -1322,6 +1322,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Writing file…"
   },
+  "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
+    "message": "Client Hints Infrastructure"
+  },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyEval": {
     "message": "Content Security Policy - Eval"
   },

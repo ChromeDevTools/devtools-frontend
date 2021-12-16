@@ -560,6 +560,30 @@ describe('User Metrics for Issue Panel', () => {
       },
     ]);
   });
+
+  it('dispatches an event when a Client Hints are used with invalid origin', async () => {
+    await goToResource('issues/client-hint-issue-MetaTagAllowListInvalidOrigin.html');
+    await waitFor('.issue');
+
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 61,  // ClientHintIssue::MetaTagAllowListInvalidOrigin
+      },
+    ]);
+  });
+
+  it('dispatches an event when a Client Hints are modified by javascript', async () => {
+    await goToResource('issues/client-hint-issue-MetaTagModifiedHTML.html');
+    await waitFor('.issue');
+
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 62,  // ClientHintIssue::MetaTagModifiedHTML
+      },
+    ]);
+  });
 });
 
 describe('User Metrics for CSS custom properties in the Styles pane', () => {

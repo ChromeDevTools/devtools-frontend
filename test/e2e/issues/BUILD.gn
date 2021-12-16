@@ -6,6 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("issues") {
   sources = [
+    "client-hint-issues_test.ts",
     "cors-issues_test.ts",
     "cors-private-network-issues_test.ts",
     "csp-violations-tab_test.ts",

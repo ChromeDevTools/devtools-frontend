@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AttributionReportingIssue from './AttributionReportingIssue.js';
+import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
 import * as CorsIssue from './CorsIssue.js';
@@ -27,6 +28,7 @@ import * as WasmCrossOriginModuleSharingIssue from './WasmCrossOriginModuleShari
 
 export {
   AttributionReportingIssue,
+  ClientHintIssue,
   ContentSecurityPolicyIssue,
   ContrastCheckTrigger,
   CorsIssue,

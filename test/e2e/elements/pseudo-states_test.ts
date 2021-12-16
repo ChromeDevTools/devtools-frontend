@@ -13,7 +13,8 @@ const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
 describe('The Elements tab', async () => {
-  it('can force :hover state for selected DOM node', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763] can force :hover state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/hover.html');
@@ -69,7 +70,7 @@ describe('The Elements tab', async () => {
   });
 
   // Flaky test
-  it.skip('[crbug.com/1134593] can force :focus state for selected DOM node', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/1134593] can force :focus state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');
@@ -99,7 +100,8 @@ describe('The Elements tab', async () => {
     assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
   });
 
-  it('can remove :focus state', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763] can remove :focus state', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');

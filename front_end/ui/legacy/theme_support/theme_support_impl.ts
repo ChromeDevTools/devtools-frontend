@@ -41,7 +41,7 @@ import inspectorSyntaxHighlightDarkStyles from '../inspectorSyntaxHighlightDark.
 
 let themeSupportInstance: ThemeSupport;
 
-const themeValuesCache = new Map<string, string>();
+const themeValuesCache = new Map<CSSStyleDeclaration, Map<string, string>>();
 
 export class ThemeSupport {
   private readonly themeNameInternal: string;
@@ -96,20 +96,35 @@ export class ThemeSupport {
     return themeSupportInstance;
   }
 
-  getComputedValue(variableName: string): string {
-    const computedRoot = this.computedRoot();
-
+  getComputedValue(variableName: string, target: Element|null = null): string {
+    const computedRoot = target ? window.getComputedStyle(target) : this.computedRoot();
     if (typeof computedRoot === 'symbol') {
       throw new Error(`Computed value for property (${variableName}) could not be found on :root.`);
+    }
+
+    // Since we might query the same variable name from various targets we need to support
+    // per-target caching of computed values. Here we attempt to locate the particular computed
+    // value cache for the target. If no target was specified we use the default computed root,
+    // which belongs to the document element.
+    let computedRootCache = themeValuesCache.get(computedRoot);
+    if (!computedRootCache) {
+      computedRootCache = new Map<string, string>();
+      themeValuesCache.set(computedRoot, computedRootCache);
     }
 
     // Since theme changes trigger a reload, we can avoid repeatedly looking up color values
     // dynamically. Instead we can look up the first time and cache them for future use,
     // knowing that the cache will be invalidated by virtue of a reload when the theme changes.
-    let cachedValue = themeValuesCache.get(variableName);
+    let cachedValue = computedRootCache.get(variableName);
     if (!cachedValue) {
-      cachedValue = computedRoot.getPropertyValue(variableName);
-      themeValuesCache.set(variableName, cachedValue);
+      cachedValue = computedRoot.getPropertyValue(variableName).trim();
+
+      // If we receive back an empty value (nothing has been set) we don't store it for the future.
+      // This means that subsequent requests will continue to query the styles in case the value
+      // has been set.
+      if (cachedValue) {
+        computedRootCache.set(variableName, cachedValue);
+      }
     }
 
     return cachedValue;

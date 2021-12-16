@@ -2,16 +2,63 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../config/gni/all_devtools_files.gni")
 import("../../../scripts/build/ninja/copy.gni")
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../visibility.gni")
 
-_lighthouse_sources = lighthouse_locale_files + [
-                        "lighthouse-tsconfig.json",
-                        "lighthouse-dt-bundle.d.ts",
-                      ]
+_lighthouse_sources = [
+  "lighthouse-dt-bundle.d.ts",
+  "lighthouse-tsconfig.json",
+  "locales/ar-XB.json",
+  "locales/ar.json",
+  "locales/bg.json",
+  "locales/ca.json",
+  "locales/cs.json",
+  "locales/da.json",
+  "locales/de.json",
+  "locales/el.json",
+  "locales/en-GB.json",
+  "locales/en-US.json",
+  "locales/en-XA.json",
+  "locales/en-XL.json",
+  "locales/es-419.json",
+  "locales/es.json",
+  "locales/fi.json",
+  "locales/fil.json",
+  "locales/fr.json",
+  "locales/he.json",
+  "locales/hi.json",
+  "locales/hr.json",
+  "locales/hu.json",
+  "locales/id.json",
+  "locales/it.json",
+  "locales/ja.json",
+  "locales/ko.json",
+  "locales/lt.json",
+  "locales/lv.json",
+  "locales/nl.json",
+  "locales/no.json",
+  "locales/pl.json",
+  "locales/pt-PT.json",
+  "locales/pt.json",
+  "locales/ro.json",
+  "locales/ru.json",
+  "locales/sk.json",
+  "locales/sl.json",
+  "locales/sr-Latn.json",
+  "locales/sr.json",
+  "locales/sv.json",
+  "locales/ta.json",
+  "locales/te.json",
+  "locales/th.json",
+  "locales/tr.json",
+  "locales/uk.json",
+  "locales/vi.json",
+  "locales/zh-HK.json",
+  "locales/zh-TW.json",
+  "locales/zh.json",
+]
 
 copy_to_gen("lighthouse-locale-files") {
   sources = _lighthouse_sources

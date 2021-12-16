@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../config/gni/all_devtools_files.gni")
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
@@ -34,6 +33,94 @@ devtools_entrypoint("bundle") {
 
   visibility = [ "*" ]
 }
+
+remote_devtools_locale_files = [
+  "af.json",
+  "am.json",
+  "ar.json",
+  "as.json",
+  "az.json",
+  "be.json",
+  "bg.json",
+  "bn.json",
+  "bs.json",
+  "ca.json",
+  "cs.json",
+  "cy.json",
+  "da.json",
+  "de.json",
+  "el.json",
+  "en-GB.json",
+  "es-419.json",
+  "es.json",
+  "et.json",
+  "eu.json",
+  "fa.json",
+  "fi.json",
+  "fil.json",
+  "fr-CA.json",
+  "fr.json",
+  "gl.json",
+  "gu.json",
+  "he.json",
+  "hi.json",
+  "hr.json",
+  "hu.json",
+  "hy.json",
+  "id.json",
+  "is.json",
+  "it.json",
+  "ja.json",
+  "ka.json",
+  "kk.json",
+  "km.json",
+  "kn.json",
+  "ko.json",
+  "ky.json",
+  "lo.json",
+  "lt.json",
+  "lv.json",
+  "mk.json",
+  "ml.json",
+  "mn.json",
+  "mr.json",
+  "ms.json",
+  "my.json",
+  "ne.json",
+  "nl.json",
+  "no.json",
+  "or.json",
+  "pa.json",
+  "pl.json",
+  "pt-PT.json",
+  "pt.json",
+  "ro.json",
+  "ru.json",
+  "si.json",
+  "sk.json",
+  "sl.json",
+  "sq.json",
+  "sr-Latn.json",
+  "sr.json",
+  "sv.json",
+  "sw.json",
+  "ta.json",
+  "te.json",
+  "th.json",
+  "tr.json",
+  "uk.json",
+  "ur.json",
+  "uz.json",
+  "vi.json",
+  "zh-HK.json",
+  "zh-TW.json",
+  "zu.json",
+]
+
+bundled_devtools_locale_files = [
+  "en-US.json",
+  "zh.json",
+]
 
 copy_to_gen("i18n_remote_locales") {
   sources = []

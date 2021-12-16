@@ -2,7 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("./config/gni/all_devtools_files.gni")
 import("./config/gni/devtools_grd_files.gni")
 import("./config/gni/devtools_image_files.gni")
 import("./front_end/emulated_devices/optimized/optimized_images.gni")
@@ -19,8 +18,7 @@ devtools_frontend_resources_deps = [
 
 group("devtools_all_files") {
   testonly = true
-  data = all_devtools_files
-  data += [
+  data = [
     # This enables us to test bots with whitespace changes.
     "scripts/whitespaces.txt",
   ]

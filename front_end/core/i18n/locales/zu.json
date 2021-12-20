@@ -401,6 +401,21 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Vimba i-With"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Indali Yokusebenza Yesikhangiso"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Ukuqala Kwesigaba Sokubhida Ngobhidayo"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "Ukuqala Kwesigaba Sokubika Ngobhidayo"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Ukuqala Kwesigaba Sokubika Komthengisi"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Ukuqala Kwesigaba Somphumela Womthengisi"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "I-Cross-Origin Read Blocking (CORB) ivimbe impendulo ye-cross-origin {PH1} nge-MIME yohlobo lwe-{PH2}. Bheka ku-https://www.chromestatus.com/feature/5629709824032768 mayelana nemininingwane ebanzi."
   },
@@ -629,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Khubaza inqolobane (kuyilapho i-DevTools ivuliwe)"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Khubaza imodi emnyama ngokuzenzakalelayo"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Khubaza i-JavaScript"
   },
@@ -662,6 +680,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ungenzi i-emulate CSS yohlobo lwemidiya"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Ungayenzi i-emulation yemodi emnyama ezenzakalelayo"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Unganwebi imigqa yegridi"
   },
@@ -679,6 +700,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Ungabonisi osayizi bethrekhi yegridi"
+  },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Ungabonisi ababusi lapho kuhanjiswa phezulu"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Lingisa ikhasi eligxile kulo"
@@ -728,6 +752,9 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Nika amandla abafomethayo abangokwezifiso"
   },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Nika amandla imodi emnyama ezenzakalelayo"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Nika amandla i-JavaScript"
   },
@@ -754,9 +781,6 @@
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Fihla izinhlaka ngomzuzwana (FPS) imitha"
-  },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Fihla imingcele yokushaya uhlolo"
   },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Fihla imingcele yesendlalelo"
@@ -812,9 +836,6 @@
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Bonisa osayizi bethrekhi yegridi"
   },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Bonisa imingcele yokushaya uhlolo"
-  },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Bonisa umngcele wesendlalelo"
   },
@@ -833,8 +854,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Bonisa onxande ababenyezelayo bepende"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Bonisa izimiso"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Bonisa imithetho lapho kuhanjiswa phezulu"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Bonisa izingqinamba zokusebenza kokuskrola"
@@ -884,6 +905,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Imidiya yesakhi samandla we-CSS color-gamut"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssForcedColors": {
+    "message": "Iphoqelela isakhi semidiya semibala ephoqelelwe ye-CSS"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Imidiya yesakhi samandla we-CSS prefers-color-scheme"
   },
@@ -920,9 +944,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Igqamisa izinhlaka (ezibomvu) zitholwe njengezikhangiso"
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Imingcele ye-Hit-test"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Imingcele yesendlalelo"
   },
@@ -943,9 +964,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Ibonisa isembozo ngama-Core Web Vitals."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Kubonisa imingcele enxa zonke zokushaya kokuhlola"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Kubonisa imingcele yesendlalelo (okuwolintshi/okusamnqumo) nothayela (oluhlazana)."
@@ -1001,7 +1019,7 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "ukungaboni kahle"
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Okuyinhloko"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
@@ -1190,41 +1208,41 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Hlehlisa"
   },
-  "entrypoints/node_app/node_app-meta.ts | node": {
-    "message": "Inodi"
-  },
-  "entrypoints/node_app/node_app-meta.ts | showNode": {
-    "message": "i-node"
-  },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Engeza ukuxhumeka"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Ikheli lenethiwekhi (isb. localhost:9229)"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Akukho ukuxhuma okucacisiwe"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Umhlahlandlela wokulungisa amaphutha we-Node.js"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Cacisa iphoyinti lokuphela lenethiwekhi ne-DevTools kuzoyixhuma ngokuzenzakalelayo. Funda {PH1} ukuze ufunde kabanzi."
   },
-  "entrypoints/node_main/NodeMain.ts | main": {
+  "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Okuyinhloko"
   },
-  "entrypoints/node_main/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/NodeMain.ts | nodejsS": {
     "message": "I-Node.js: {PH1}"
   },
-  "entrypoints/node_main/node_main-meta.ts | connection": {
+  "entrypoints/node_app/node_app.ts | connection": {
     "message": "Uxhumo"
   },
-  "entrypoints/node_main/node_main-meta.ts | node": {
+  "entrypoints/node_app/node_app.ts | networkTitle": {
+    "message": "Inodi"
+  },
+  "entrypoints/node_app/node_app.ts | node": {
     "message": "i-node"
   },
-  "entrypoints/node_main/node_main-meta.ts | showConnection": {
+  "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Bonisa uxhumano"
+  },
+  "entrypoints/node_app/node_app.ts | showNode": {
+    "message": "i-node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Okuyinhloko"
@@ -1322,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Iphutha Lokwabelana Nensiza Yendabuko (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "I-CORS yamanethiwekhi agodliwe (RFC1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "Ukufinyeleleka Kwenethiwekhi Eyimfihlo"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "I-COOP ne-COEP"
@@ -1559,8 +1577,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Isihlahla sokutholakala"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "Isihlahla sokufinyeleleka sihanjiswe kukhona eliphezulu ngakwesokudla sesihlahla se-DOM."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Nika amandla isihlahla sokufinyeleleka sekhasi eligcwele"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Izitshiwe"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "Ukulayisha kabusha kuyadingeka ngaphambi kokuthi ushintsho lwenzeke."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Skrola ekubukeni"
@@ -2232,7 +2259,7 @@
     "message": "Umbala wetimu"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Inqolobane yasemuva-phambili"
+    "message": "Inqolobane yasemuva/phambili"
   },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Isitoreji senqolobane"
@@ -2396,51 +2423,6 @@
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "Idokhumenti aliqedanga ukulayisha ngaphambi kokuthi lizulazulele ekuhambeni."
   },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "EmbedderAppBannerManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "EmbedderDomDistillerViewerSource"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "EmbedderExtensionMessaging"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "EmbedderExtensionMessagingForOpenPort"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "EmbedderExtensionSentMessageToCachedFrame"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "EmbedderExtensions"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "EmbedderModalDialog"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "EmbedderOfflinePage"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "EmbedderOomInterventionTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "EmbedderPermissionRequestManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "EmbedderPopupBlockerTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "EmbedderSafeBrowsingThreatDetails"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
-  },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Isisebenzi sesevisi senziwe sasebenza ngenkathi ikhasi likwinqolobane yasemuva/phambili."
   },
@@ -2504,9 +2486,6 @@
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Ukuzulazula kwenzeke ohlakeni ngaphandle kohlaka oluyinhloko."
   },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "Ikhasi linesibambi sokukhipha ngaphandle kwesihloko sokungena senqolobane yasemuva/phambili."
-  },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "Ikhasi elinokwenziwe kwe-DB okunenkomba eqhubekayo okwamanje alifaneleki ukuthola inqolobane yasemuva/phambili."
   },
@@ -2535,7 +2514,7 @@
     "message": "Amakhasi abonise i-UI Yokuphrinta okwamanje awafaneleki kwinqolobane yasemuva/phambili."
   },
   "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Ikhasi belivuliwe kusetshenziswa i-window.open() futhi enye ithebhu inereferensi kuyo, noma ikhasi livule iwindi."
+    "message": "Ikhasi belivuliwe kusetshenziswa i-'window.open()' futhi enye ithebhu inereferensi kuyo, noma ikhasi livule iwindi."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
     "message": "Inqubo yomnikezeli wekhasi elikwinqolobane yasemuva/phambili iphahlazekile."
@@ -2649,10 +2628,7 @@
     "message": "Amakhasi asebenzisa i-WebXR awafaneleki okwamanje kwinqolobane yasemuva/phambili."
   },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Inqolobane yasemuva-phambili"
-  },
-  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Isimo senqolobane yasemuva-phambili"
+    "message": "Inqolobane yasemuva/phambili"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Akwenzeki"
@@ -2660,38 +2636,44 @@
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Lezi zizathu azikwazi ukusebenza okungukuthi ukugcinwa enqolobaneni kwesikhashana kuvinjwe okuthile okungaphandle kokulawula okuqondile kwekhasi."
   },
+  "panels/application/BackForwardCacheView.ts | learnMore": {
+    "message": "Funda kabanzi: ukufaneleka kwenqolobane yokuya emuva/phambili"
+  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Uhlaka oluyinhloko"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Ukuzulazula okufanayo (Akubuyiselwe kusuka kwinqolobane yasemuva-phambili)"
+    "message": "Akunikezwanga kusukela kunqolobane yasemuva/phambili: ukuze kuqaliswe inqolobane yasemuva/phambili, sebenzisa izinkinobho ze-Chrome zasemuva/phambili, noma sebenzisa inkinobho yokuhlola ngezansi ukuze uzulazulele ngokuzenzakalela usuke futhi uye emuva."
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Kuyenzeka"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "Lezi zizathu ziyasebenza i.e. zingahlanzwa ukuze kwenziwe ikhasi lifanelekele inqolobane yasemuva-phambili."
+    "message": "Lezi zizathu ziyasebenza okungukuthi zingahlanzwa ukuze kwenziwe ikhasi lifanelekele inqolobane yasemuva/phambili."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Kubuyiselwe kusuka kwinqolobane yasemuva-phambili"
+    "message": "Kunikezwe ngempumelelo kusukela kunqolobane yasemuva/phambili."
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Qalisa ukuhlolwa"
+    "message": "Hlola inqolobane yasemuva/phambili"
+  },
+  "panels/application/BackForwardCacheView.ts | runningTest": {
+    "message": "Iqalisa ukuhlola"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "Usekelo Olulindile"
   },
   "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Usekelo lwe-Chrome lwalezi zizathu lusalindile okungukuthi ngeke luvimbele ikhasi ukuthi lifanelekele inqolobane yasemuva-phambili ohlotsheni lwesikhathi esizayo ye-Chrome."
+    "message": "Usekelo lwe-Chrome lwalezi zizathu lusalindile okungukuthi ngeke luvimbele ikhasi ukuthi lifanelekele inqolobane yasemuva/phambili ohlotsheni lwesikhathi esizayo lwe-Chrome."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "ayitholakali"
   },
   "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "akwaziwa"
+    "message": "Isimo Esingaziwa"
   },
   "panels/application/BackForwardCacheView.ts | url": {
-    "message": "I-URL"
+    "message": "I-URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Ukulanda kwangemuva"
@@ -3297,22 +3279,16 @@
     "message": "Chofoza ukuze wembule kwiphaneli Yemithombo"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Kube nombhalo wesikhangiso kusitaki (i-async) uma lo zimele edalwa. Ukuhlola ukudalwa kokulandela isitaki kwalo zimele kunganikezela imininingwane eminingi."
+    "message": "Kube nombhalo wesikhangiso se-(async) stack lapho kwenziwa lolu hlaka. Ukuhlola ukudalwa stack trace kwalolu hlaka kunganikeza imininingwane eminingi."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Ukulandelela Istaki Sokudalwa Kohlaka"
+    "message": "Ukwenziwa Kohlaka Stack Trace"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Lolu hlaka ludalwe ngokohlaka. Ukulandelela istaki kubonisa ukuthi lokhu kwenzeke kuphi."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Inqubomgomo ye-Cross-Origin Embedder"
+    "message": "Lolu hlaka lwenziwe ngokohlelo. I-stack trace ibonisa lapho lokhu kwenzeke khona."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "I-Cross-Origin Ibekwe Yodwa"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Inqubomgomo Yesivuli Soqobo"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Idokhumenti"
@@ -3324,7 +3300,7 @@
     "message": "Funda kabanzi"
   },
   "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "I-Localhost ihlala ingokuqukethwe okuvikelekile"
+    "message": "I-Localhost ihlala iwumongo ovikelekile"
   },
   "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
     "message": "Lo zimele unakwa njengozimele wesikhangiso ngoba idokhumenti lakhona lamanje (noma langaphambilini) kuyisisetshenziswa sesikhangiso."
@@ -3337,9 +3313,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Umsuka"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Ukuhlolwa komdabu"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "I-elementi Yomnikazi"
@@ -3366,19 +3339,19 @@
     "message": "Ukuvikeleka Nokubekwa Wedwa"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Isakhi se-SharedArrayBuffer siyatholakala futhi ama-SAB angadluliswa nge-postMessage"
+    "message": "Umakhi we-SharedArrayBuffer uyatholakala futhi i-SABs ingadluliselwa nge-postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "I-SharedArrayBuffer umakhi uyatholakala kodwa i-SAB ayikwazi ukudluliselwa nge-postMessage"
+    "message": "Umakhi we-SharedArrayBuffer uyatholakala kodwa i-SABs ngeke idluliselwe nge-postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Iskimu sohlaka asivikelekile"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "I-API yeperformance.measureUserAgentSpecificMemory() iyatholakala"
+    "message": "I-performance.measureUserAgentSpecificMemory() API iyatholakala"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "I-API yeperformance.measureUserAgentSpecificMemory() ayitholakali"
+    "message": "I-performance.measureUserAgentSpecificMemory() API ayitholakali"
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "Ulwazi olungeziwe (ukulungisa amaphutha) luboniswa ngoba ukuhlolwa 'Kwemonitha ye-Protocol' kunikwe amandla."
@@ -4229,20 +4202,11 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "I-Width isetshenziswe ku-elementi esemgqeni"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Ithimba lethu lisebenza ngenkuthalo kulesi sakhi futhi sifuna i-{PH1} yakho!"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Thatha ukubuka konke"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Thatha ukubuka konke kwe-CSS yekhasi lakho"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "impendulo"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "Impendulo"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "Khomba ukuthuthukiswa okungenzeka kwe-CSS"
@@ -4253,14 +4217,8 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
     "message": "Thola izinto ezithintekile kuphaneli Yezinto"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "Isakhi sokuhlola kuqala"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
     "message": "Ukuqala okusheshayo: qalisa ngephaneli Yokubuka Konke ye-CSS entsha"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "Ividiyo nedokhumenti"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Ukubuka konke ku-CSS"
@@ -4591,6 +4549,21 @@
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Amafonti Anikezelwe"
+  },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Hlunga"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Hlunga Izakhiwo"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "Asikho isakhiwo esifanayo"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Bonisa konke"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "Uma kususwe ukumaka, izakhiwo kuphela inani lazo okuyiqada noma ezingachaziwe ezizoboniswa"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopisha zonke izimemezelo njenge-JS"
@@ -4980,7 +4953,7 @@
     "message": "Fihla imibuzo yemidiya"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Fihla izimiso"
+    "message": "Fihla ababusi kwibha yamathuluzi Yemodi Yedivayisi"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Bonisa uhlaka lwedivayisi"
@@ -4989,7 +4962,7 @@
     "message": "Bonisa imibuzo yemidiya"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Bonisa izimiso"
+    "message": "Bonisa ababusi kwibha yamathuluzi Yemodi Yedivayisi"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Guqula ibha yamathuluzi wedivayisi"
@@ -5014,36 +4987,6 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Guqula ukuthi umlaleli womcimbi uthulile yini noma uvimbile"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Vala"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Funda kabanzi"
-  },
-  "panels/help/help-meta.ts | bug": {
-    "message": "isiphazamisi"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Ungabonisi ukuthi Yini Okusha ngemva kwesibuyekezo ngasinye"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Amanothi okukhishwa"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Bika inkinga ye-DevTools"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Bika inkinga yokuhumusha"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Bonisa Lokho okusha"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Bonisa ukuthi yini okusha ngemuva kwesibuyekezo ngasinye"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "Yini okusha"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Sula konke"
@@ -5261,8 +5204,20 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "Okungavumelekile attributionsourceeventid"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
+    "message": "Okungavumelekile attributionexpiry"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
+    "message": "Okungavumelekile attributionsourcepriority"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
     "message": "Okungavumelekile trigger-data"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
+    "message": "Okungavumelekile dedup-key"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
+    "message": "Okungavumelekile priority"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{ukuphula okungu-#}one{ukuphulwa okungu-#}other{ukuphulwa okungu-#}}"
@@ -5290,6 +5245,9 @@
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Indlela yesicelo engavunyelwe"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Isicelo Esihlulekile"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Isihloko"
@@ -5366,8 +5324,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Ungafihli konke"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Fihla konke okwamanje {PH1}"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Fihla konke Ukuguqulwa Okuphulayo kwamanje"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Fihla zonke Izintuthuko zamanje"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Fihla wonke Amaphutha Ekhasi wamanje"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Imithombo Ethintekile"
@@ -6307,6 +6271,9 @@
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Ukulondoloza isikhashana…"
+  },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "Umsebenzisi ongumenzeli ubuyekeziwe."
   },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Ngokwezifiso..."
@@ -9153,7 +9120,7 @@
     "message": "Ukutholakala: n/a"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Ukusibekelwa: {PH1} %"
+    "message": "Ukusibekelwa: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Bonisa Imininingwane"
@@ -9412,6 +9379,15 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Vula ifayela le-JavaScript noma le-CSS ukuze ubone izimpawu"
+  },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "kB"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "MB"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "I-ms"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Ukuvala"
@@ -11429,6 +11405,24 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Bonisa Isihloli Senkumbulo"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Impendulo"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Isakhi sokuhlola kuqala"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Ithimba lethu lisebenza ngokuzimisela kulesi sakhi futhi singathanda ukwazi ukuthi ucabangani."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Sithumelele impendulo yakho."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Ividiyo nedokhumenti"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
+    "message": "Sithumelele impendulo yakho."
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Chofoza ukuze uvule iphaneli yenethiwekhi futhi ubonise isicelo se-URL: {url}"
   },
@@ -11500,6 +11494,12 @@
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Ikhabethe lamathuluzi"
+  },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Ikhabethe lifihliwe"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Ikhabethe libonisiwe"
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Ibha yamathuluzi eyinhloko"
@@ -11774,6 +11774,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Igama"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(i-opaque)"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Iseshini"
   },
@@ -11942,15 +11945,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Bonisa njengento ye-JavaScript"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Okhiye"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "amagama angukhiye"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Okuhlukile kohlelo lwe-lexical"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Goqa izingane"
   },
@@ -12037,15 +12031,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ukhethiwe"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "kB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "I-ms"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Phezulu"
@@ -12223,9 +12208,6 @@
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Uhlamvu lwethebhu"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Isihleli sekhodi"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Umthombo wamanje:"

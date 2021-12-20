@@ -401,6 +401,21 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With Blokker"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Arbeidsbok for annonseauksjon"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Start for budgivers budgivningsfase"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "Start for budgiverrapporteringsfase"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Start for selgerrapporteringsfase"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Start for selgerpoengsumfase"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) blokkerte kryssopprinnelse-respons {PH1} med MIME-type {PH2}. Se https://www.chromestatus.com/feature/5629709824032768 for mer informasjon."
   },
@@ -629,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Slå av bufferen (mens Utviklerverktøy er åpne)"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Deaktiver automatisk mørk modus"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Deaktiver JavaScript"
   },
@@ -662,6 +680,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ikke emuler CSS-mediatype"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Ikke emuler automatisk mørk modus"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ikke utvid rutenettlinjer"
   },
@@ -679,6 +700,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Ikke vis størrelser for rutenettsproing"
+  },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Ikke vis linjaler ved bevegelse over"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Emuler en fokusert side"
@@ -728,6 +752,9 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aktiver tilpassede formateringer"
   },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Aktiver automatisk mørk modus"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Slå på JavaScript"
   },
@@ -754,9 +781,6 @@
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Skjul bilder per sekund-måler"
-  },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Skjul kantlinjer for trefftest"
   },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Skjul kantlinjer for lag"
@@ -812,9 +836,6 @@
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Vis sporingsstørrelser for rutenett"
   },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Vis kantlinjer for trefftest"
-  },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Vis lagkantlinjer"
   },
@@ -833,8 +854,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Vis malingsblinkende rektangler"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Vis linjaler"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Vis linjaler ved bevegelse over"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Vis flaskehalser for rulleytelse"
@@ -884,6 +905,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Tvinger CSS color-gamut-mediafunksjon"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssForcedColors": {
+    "message": "Tvinger mediafunksjonen CSS tvungede farger"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Tvinger CSS prefers-color-scheme-mediafunksjon"
   },
@@ -920,9 +944,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Uthevingsrammer (rød) oppdaget å være annonser."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Kantlinjer for trykktest"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Kantlinjer for lag"
   },
@@ -943,9 +964,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Viser et overlegg med kjernestatistikk for nett"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Vis kantlinjer rundt trefftestregioner."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Viser lagkantlinjer (oransje/oliven) og fliser (cyan)."
@@ -1001,7 +1019,7 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "synsmangel"
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Primært"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
@@ -1190,41 +1208,41 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Zoom ut"
   },
-  "entrypoints/node_app/node_app-meta.ts | node": {
-    "message": "Node"
-  },
-  "entrypoints/node_app/node_app-meta.ts | showNode": {
-    "message": "Node"
-  },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Legg til tilkobling"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Nettverksadresse (f.eks. localhost:9229)"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Ingen tilkoblinger er spesifisert"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Feilsøkingsveiledning for Node.js"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Angi nettverksendepunktet, så kobler Utviklerverktøy til det automatisk. Les {PH1} for å finne ut mer."
   },
-  "entrypoints/node_main/NodeMain.ts | main": {
+  "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Primært"
   },
-  "entrypoints/node_main/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "entrypoints/node_main/node_main-meta.ts | connection": {
+  "entrypoints/node_app/node_app.ts | connection": {
     "message": "Tilkobling"
   },
-  "entrypoints/node_main/node_main-meta.ts | node": {
+  "entrypoints/node_app/node_app.ts | networkTitle": {
+    "message": "Node"
+  },
+  "entrypoints/node_app/node_app.ts | node": {
     "message": "node"
   },
-  "entrypoints/node_main/node_main-meta.ts | showConnection": {
+  "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Vis tilkobling"
+  },
+  "entrypoints/node_app/node_app.ts | showNode": {
+    "message": "Node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Primært"
@@ -1322,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Opphavsuavhengig ressursdeling (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "CORS for private nettverk (RFC1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "Privat nettverkstilgang"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP og COEP"
@@ -1559,8 +1577,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Tilgjengelighetstre"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "Tilgjengelighetstreet er flyttet til øvre høyre hjørne av DOM-treet."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Slå på tilgjengelighetstre for hele siden"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Ignorert"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "Må lastes inn på nytt før endringen trer i kraft."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Rull slik at innholdet blir synlig"
@@ -1704,7 +1731,7 @@
     "message": "Fra caption"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromDescription": {
-    "message": "From description"
+    "message": "Fra description"
   },
   "panels/accessibility/AccessibilityStrings.ts | fromLabel": {
     "message": "Fra label"
@@ -1857,7 +1884,7 @@
     "message": "Verdi fra attributt."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromDescriptionElement": {
-    "message": "Value from description element."
+    "message": "Verdi fra description-element."
   },
   "panels/accessibility/AccessibilityStrings.ts | valueFromElementContents": {
     "message": "Verdi fra elementinnhold."
@@ -2232,7 +2259,7 @@
     "message": "Temafarge"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Frem-og-tilbake-buffer"
+    "message": "frem-/tilbake-buffer"
   },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Bufferlagring"
@@ -2316,382 +2343,337 @@
     "message": "arbeider"
   },
   "panels/application/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
-    "message": "Only pages loaded via a GET request are eligible for back/forward cache."
+    "message": "Kun sider som lastes inn via GET-forespørsler, kan lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | HTTPStatusNotOK": {
-    "message": "Only pages with a status code of 2XX can be cached."
+    "message": "Kun sider med statuskode 2XX kan bufres."
   },
   "panels/application/BackForwardCacheStrings.ts | JavaScriptExecution": {
-    "message": "Chrome detected an attempt to execute JavaScript while in the cache."
+    "message": "Chrome oppdaget et forsøk på kjøring av JavaScript mens siden var i bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | appBanner": {
-    "message": "Pages that requested an AppBanner are not currently eligible for back/forward cache."
+    "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "Back/forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device."
+    "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
   },
   "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
-    "message": "Back/forward cache is disabled by the command line."
+    "message": "Frem-og-tilbake-bufferen er deaktivert via kommandolinjen."
   },
   "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledByLowMemory": {
-    "message": "Back/forward cache is disabled due to insufficient memory."
+    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av utilstrekkelig minne."
   },
   "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForDelegate": {
-    "message": "Back/forward cache is not supported by delegate."
+    "message": "Frem-og-tilbake-bufferen støttes ikke av den innbyggende nettleseren."
   },
   "panels/application/BackForwardCacheStrings.ts | backForwardCacheDisabledForPrerender": {
-    "message": "Back/forward cache is disabled for prerenderer."
+    "message": "Frem-og-tilbake-bufferen er deaktivert for forhåndsgjengivelse."
   },
   "panels/application/BackForwardCacheStrings.ts | broadcastChannel": {
-    "message": "The page cannot be cached because it has a BroadcastChannel instance with registered listeners."
+    "message": "Siden kan ikke bufres, ettersom den har en BroadcastChannel-forekomst med registrerte lyttere."
   },
   "panels/application/BackForwardCacheStrings.ts | cacheControlNoStore": {
-    "message": "Pages with cache-control:no-store header cannot enter back/forward cache."
+    "message": "Sider med hodet «cache-control:no-store» kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | cacheFlushed": {
-    "message": "The cache was intentionally cleared."
+    "message": "Bufferen ble tømt med vilje."
   },
   "panels/application/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "The page was evicted from the cache to allow another page to be cached."
+    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
   },
   "panels/application/BackForwardCacheStrings.ts | containsPlugins": {
-    "message": "Pages containing plugins are not currently eligible for back/forward cache."
+    "message": "Sider som inneholder programtillegg, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentFileChooser": {
-    "message": "Pages that use FileChooser API are not eligible for back/forward cache."
+    "message": "Sider som bruker FileChooser-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentFileSystemAccess": {
-    "message": "Pages that use File System Access API are not eligible for back/forward cache."
+    "message": "Sider som bruker File System Access-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentMediaDevicesDispatcherHost": {
-    "message": "Pages that use Media Device Dispatcher are not eligible for back/forward cache."
+    "message": "Sider som bruker Media Device Dispatcher, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentMediaPlay": {
-    "message": "A media player was playing upon navigating away."
+    "message": "En mediespiller holdt på å spille av da nettleseren navigerte bort."
   },
   "panels/application/BackForwardCacheStrings.ts | contentMediaSession": {
-    "message": "Pages that use MediaSession API and set a playback state are not eligible for back/forward cache."
+    "message": "Sider som bruker MediaSession-API-et og angir en avspillingsstatus, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentMediaSessionService": {
-    "message": "Pages that use MediaSession API and set action handlers are not eligible for back/forward cache."
+    "message": "Sider som bruker MediaSession-API-et og angir handlingsbehandlere, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentSecurityHandler": {
-    "message": "Pages that use SecurityHandler are not eligible for back/forward cache."
+    "message": "Sider som bruker SecurityHandler, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentSerial": {
-    "message": "Pages that use Serial API are not eligible for back/forward cache."
+    "message": "Sider som bruker Serial-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentWebAuthenticationAPI": {
-    "message": "Pages that use WebAuthetication API are not eligible for back/forward cache."
+    "message": "Sider som bruker WebAuthentication-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentWebBluetooth": {
-    "message": "Pages that use WebBluetooth API are not eligible for back/forward cache."
+    "message": "Sider som bruker WebBluetooth-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | contentWebUSB": {
-    "message": "Pages that use WebUSB API are not eligible for back/forward cache."
+    "message": "Sider som bruker WebUSB-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
-    "message": "Pages that use a dedicated worker or worklet are not currently eligible for back/forward cache."
+    "message": "Sider som bruker en dedikert Service Worker eller worklet, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
-    "message": "The document did not finish loading before navigating away."
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "EmbedderAppBannerManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "EmbedderDomDistillerViewerSource"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "EmbedderExtensionMessaging"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "EmbedderExtensionMessagingForOpenPort"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "EmbedderExtensionSentMessageToCachedFrame"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "EmbedderExtensions"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "EmbedderModalDialog"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "EmbedderOfflinePage"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "EmbedderOomInterventionTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "EmbedderPermissionRequestManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "EmbedderPopupBlockerTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "EmbedderSafeBrowsingThreatDetails"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
+    "message": "Dokumentet ble ikke ferdig innlastet før nettleseren navigerte bort."
   },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
-    "message": "A service worker was activated while the page was in back/forward cache."
+    "message": "En Service Worker ble aktivert mens siden var i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "The page was evicted from the cache to allow another page to be cached."
+    "message": "Siden ble fjernet fra bufferen slik at en annen side kunne bli bufret."
   },
   "panels/application/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
-    "message": "Pages that have granted media stream access are not currently eligible for back/forward cache."
+    "message": "Sider som har gitt mediestrømtilgang, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Pages that use portals are not currently eligible for back/forward cache."
+    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | idleManager": {
-    "message": "Pages that use IdleManager are not currently eligible for back/forward cache."
+    "message": "Sider som bruker IdleManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | indexedDBConnection": {
-    "message": "Pages that have an open IndexedDB connection are not currently eligible for back/forward cache."
+    "message": "Sider med åpne IndexedDB-tilkoblinger kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | ineligibleAPI": {
-    "message": "Ineligible APIs were used."
+    "message": "Det ble brukt API-er som ikke er kvalifisert."
   },
   "panels/application/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "IPages that JavaScript is injected into by extensions are not currently eligible for back/forward cache."
+    "message": "Sider som utvidelser har injisert JavaScript i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "Pages that StyleSheet is injected into by extensions are not currently eligible for back/forward cache."
+    "message": "Sider som utvidelser har injisert StyleSheet i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | internalError": {
-    "message": "Internal error."
+    "message": "Intern feil."
   },
   "panels/application/BackForwardCacheStrings.ts | keyboardLock": {
-    "message": "Pages that use Keyboard lock are not currently eligible for back/forward cache."
+    "message": "Sider som bruker tastaturlås, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | loading": {
-    "message": "The page did not finish loading before navigating away."
+    "message": "Siden ble ikke ferdig innlastet før nettleseren navigerte bort."
   },
   "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoCache": {
-    "message": "Pages whose main resource has cache-control:no-cache cannot enter back/forward cache."
+    "message": "Sider som har «cache-control:no-cache» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | mainResourceHasCacheControlNoStore": {
-    "message": "Pages whose main resource has cache-control:no-store cannot enter back/forward cache."
+    "message": "Sider som har «cache-control:no-store» i hovedressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | navigationCancelledWhileRestoring": {
-    "message": "Navigation was cancelled before the page could be restored from back/forward cache."
+    "message": "Navigeringen ble avbrutt før siden kunne gjenopprettes fra frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "The page was evicted from the cache because an active network connection received too much data. Chrome limits the amount of data that a page may receive while cached."
+    "message": "Siden ble fjernet fra bufferen fordi en aktiv nettverkstilkobling mottok for mye data. Chrome begrenser hvor mye data sider kan motta mens de er bufret."
   },
   "panels/application/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
-    "message": "Pages that have inflight fetch() or XHR are not currently eligible for back/forward cache."
+    "message": "Sider med pågående fetch()- eller XHR-forespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | networkRequestRedirected": {
-    "message": "The page was evicted from back/forward cache because an active network request involved a redirect."
+    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen fordi en aktiv nettverksforespørsel medførte en viderekobling."
   },
   "panels/application/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "The page was evicted from the cache because a network connection was open too long. Chrome limits the amount of time that a page may receive data while cached."
+    "message": "Siden ble fjernet fra bufferen fordi en nettverkstilkobling var åpen for lenge. Chrome begrenser hvor lenge sider kan motta data mens de er bufret."
   },
   "panels/application/BackForwardCacheStrings.ts | noResponseHead": {
-    "message": "Pages that do not have a valid response head cannot enter back/forward cache."
+    "message": "Sider som ikke har noe gyldig svarhode, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
-    "message": "Navigation happened in a frame other than the main frame."
-  },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "The page has unload handler without the back/forward cache opt-in header."
+    "message": "Navigeringen skjedde i en annen ramme enn hovedrammen."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "Page with ongoing indexed DB transactions are not currently eligible for back/forward cache."
+    "message": "Sider med pågående IndexedDB-transaksjoner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
-    "message": "Pages with an in-flight network request are not currently eligible for back/forward cache."
+    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestFetch": {
-    "message": "Pages with an in-flight fetch network request are not currently eligible for back/forward cache."
+    "message": "Sider med pågående fetch()-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestOthers": {
-    "message": "Pages with an in-flight network request are not currently eligible for back/forward cache."
+    "message": "Sider med pågående nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingNetworkRequestXHR": {
-    "message": "Pages with an in-flight XHR network request are not currently eligible for back/forward cache."
+    "message": "Sider med pågående XHR-nettverksforespørsler kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | paymentManager": {
-    "message": "Pages that use PaymentManager are not currently eligible for back/forward cache."
+    "message": "Sider som bruker PaymentManager, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | pictureInPicture": {
-    "message": "Pages that use Picture-in-Picture are not currently eligible for back/forward cache."
+    "message": "Sider som bruker bilde-i-bilde, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | portal": {
-    "message": "Pages that use portals are not currently eligible for back/forward cache."
+    "message": "Obligatoriske sider kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | printing": {
-    "message": "Pages that show Printing UI are not currently eligible for back/forward cache."
+    "message": "Sider som viser UI for utskrift, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "The page was opened using window.open() and another tab has a reference to it, or the page opened a window."
+    "message": "Siden ble åpnet med 'window.open()', og en annen fane har en henvisning til den, eller siden åpnet et vindu."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
-    "message": "The renderer process for the page in back/forward cache crashed."
+    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen krasjet."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessKilled": {
-    "message": "The renderer process for the page in back/forward cache was killed."
+    "message": "Gjengivelsesprosessen for siden i frem-og-tilbake-bufferen ble avsluttet."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedAudioCapturePermission": {
-    "message": "Pages that have requested audio capture permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om tillatelser til lydopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedBackForwardCacheBlockedSensors": {
-    "message": "Pages that have requested sensor permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om sensortillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedBackgroundWorkPermission": {
-    "message": "Pages that have requested background sync or fetch permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om bakgrunnssynkronisering eller fetch()-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedMIDIPermission": {
-    "message": "Pages that have requested MIDI permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om MIDI-tillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedNotificationsPermission": {
-    "message": "Pages that have requested notifications permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om varseltillatelser, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedStorageAccessGrant": {
-    "message": "Pages that have requested storage access are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om tilgang til lagring, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | requestedVideoCapturePermission": {
-    "message": "Pages that have requested video capture permissions are not currently eligible for back/forward cache."
+    "message": "Sider som har bedt om tillatelser til videoopptak, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | schemeNotHTTPOrHTTPS": {
-    "message": "Only pages whose URL scheme is HTTP / HTTPS can be cached."
+    "message": "Kun sider med HTTP eller HTTPS som nettadresseprotokoll kan bufres."
   },
   "panels/application/BackForwardCacheStrings.ts | serviceWorkerClaim": {
-    "message": "The page was claimed by a service worker while it is in back/forward cache."
+    "message": "Siden ble gjort krav på av en Service Worker mens den var i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "A service worker attempted to send the page in back/forward cache a MessageEvent."
+    "message": "En Service Worker prøvde å sende en MessageEvent til siden i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
-    "message": "ServiceWorker was unregistered while a page was in back/forward cache."
+    "message": "ServiceWorker ble avregistrert mens en side var i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | serviceWorkerVersionActivation": {
-    "message": "The page was evicted from back/forward cache due to a service worker activation."
+    "message": "Siden ble fjernet fra frem-og-tilbake-bufferen på grunn av en Service Worker-aktivering."
   },
   "panels/application/BackForwardCacheStrings.ts | sessionRestored": {
-    "message": "Chrome restarted and cleared the back/forward cache entries."
+    "message": "Chrome ble startet på nytt og slettet oppføringene i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | sharedWorker": {
-    "message": "Pages that use SharedWorker are not currently eligible for back/forward cache."
+    "message": "Sider som bruker SharedWorker, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | speechRecognizer": {
-    "message": "Pages that use SpeechRecognizer are not currently eligible for back/forward cache."
+    "message": "Sider som bruker SpeechRecognizer, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | speechSynthesis": {
-    "message": "Pages that use SpeechSynthesis are not currently eligible for back/forward cache."
+    "message": "Sider som bruker SpeechSynthesis, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | subframeIsNavigating": {
-    "message": "An iframe on the page started a navigation that did not complete."
+    "message": "Et iframe-element på siden startet en navigering som ikke ble fullført."
   },
   "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoCache": {
-    "message": "Pages whose subresource has cache-control:no-cache cannot enter back/forward cache."
+    "message": "Sider som har «cache-control:no-cache» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | subresourceHasCacheControlNoStore": {
-    "message": "Pages whose subresource has cache-control:no-store cannot enter back/forward cache."
+    "message": "Sider som har «cache-control:no-store» i underressursen sin, kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | timeout": {
-    "message": "The page exceeded the maximum time in back/forward cache and was expired."
+    "message": "Siden overskred den maksimale tiden i frem-og-tilbake-bufferen og har utløpt."
   },
   "panels/application/BackForwardCacheStrings.ts | timeoutPuttingInCache": {
-    "message": "The page timed out entering back/forward cache (likely due to long-running pagehide handlers)."
+    "message": "Siden fikk tidsavbrudd under lagring i frem-og-tilbake-bufferen (sannsynligvis på grunn av pagehide-behandlere med lang kjøretid)."
   },
   "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInMainFrame": {
-    "message": "The page has an unload handler in the main frame."
+    "message": "Siden har en utlastingsbehandler i hovedrammen."
   },
   "panels/application/BackForwardCacheStrings.ts | unloadHandlerExistsInSubFrame": {
-    "message": "The page has an unload handler in a sub frame."
+    "message": "Siden har en utlastingsbehandler i en underramme."
   },
   "panels/application/BackForwardCacheStrings.ts | userAgentOverrideDiffers": {
-    "message": "Browser has changed the user agent override header."
+    "message": "Nettleseren har endret hodet for overstyring av brukeragenten."
   },
   "panels/application/BackForwardCacheStrings.ts | wasGrantedMediaAccess": {
-    "message": "Pages that have granted access to record video or audio are not currently eligible for back/forward cache."
+    "message": "Sider som har gitt tilgang til opptak av video eller lyd, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webDatabase": {
-    "message": "Pages that use WebDatabase are not currently eligible for back/forward cache."
+    "message": "Sider som bruker WebDatabase, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webHID": {
-    "message": "Pages that use WebHID are not currently eligible for back/forward cache."
+    "message": "Sider som bruker WebHID, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webLocks": {
-    "message": "Pages that use WebLocks are not currently eligible for back/forward cache."
+    "message": "Sider som bruker WebLocks, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webNfc": {
-    "message": "Pages that use WebNfc are not currently eligible for back/forwad cache."
+    "message": "Sider som bruker WebNfc, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webOTPService": {
-    "message": "Pages that use WebOTPService are not currently eligible for bfcache."
+    "message": "Sider som bruker WebOTPService, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webRTC": {
-    "message": "Pages with WebRTC cannot enter back/forward cache."
+    "message": "Sider med WebRTC kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webShare": {
-    "message": "Pages that use WebShare are not currently eligible for back/forwad cache."
+    "message": "Sider som bruker WebShare, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webSocket": {
-    "message": "Pages with WebSocket cannot enter back/forward cache."
+    "message": "Sider med WebSocket kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webTransport": {
-    "message": "Pages with WebTransport cannot enter back/forward cache."
+    "message": "Sider med WebTransport kan ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheStrings.ts | webXR": {
-    "message": "Pages that use WebXR are not currently eligible for back/forward cache."
+    "message": "Sider som bruker WebXR, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Frem-og-tilbake-buffer"
-  },
-  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Status for frem-og-tilbake-bufferen"
+    "message": "frem-/tilbake-buffer"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Kan ikke utbedres"
   },
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
-    "message": "These reasons are not actionable i.e. caching was prevented by something outside of the direct control of the page."
+    "message": "Du kan ikke utføre handlinger for å løse disse problemene, ettersom bufringen ble forhindret av noe som siden ikke har direkte kontroll over."
+  },
+  "panels/application/BackForwardCacheView.ts | learnMore": {
+    "message": "Finn ut mer: kvalifisering for frem-og-tilbake-bufferen"
   },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Hovedramme"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigasjon (ikke gjenopprettet fra frem-og-tilbake-bufferen)"
+    "message": "Ikke hentet fra frem-og-tilbake-bufferen: For å utløse frem-og-tilbake-bufferen, bruk frem- og tilbake-knappene i Chrome, eller bruk testknappen under for å navigere bort og tilbake automatisk."
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Kan utbedres"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "These reasons are actionable i.e. they can be cleaned up to make the page eligible for back-forward cache."
+    "message": "Du kan utføre handlinger for å løse disse problemene og gjøre det mulig å lagre siden i frem-/tilbake-bufferen."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Gjenopprettet fra frem-og-tilbake-bufferen"
+    "message": "Henting fra frem-og-tilbake-bufferen var vellykket."
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Run Test"
+    "message": "Test frem-og-tilbake-bufferen"
+  },
+  "panels/application/BackForwardCacheView.ts | runningTest": {
+    "message": "Testen kjøres"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "I påvente av støtte"
   },
   "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Chrome support for these reasons is pending i.e. they will not prevent the page from being eligible for back-forward cache in a future version of Chrome."
+    "message": "Chrome støtter ikke disse blokkeringsårsakene ennå. Det betyr at i en fremtidig versjon av Chrome kommer de ikke til å forhindre siden fra å lagres i frem-/tilbake-bufferen."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "utilgjengelig"
   },
   "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "ukjent"
+    "message": "Ukjent status"
   },
   "panels/application/BackForwardCacheView.ts | url": {
-    "message": "Nettadresse"
+    "message": "Nettadresse:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Bakgrunnshenting"
@@ -3297,22 +3279,16 @@
     "message": "Klikk for å vise i Kilder-panelet"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Det var et annonseskript i (async)-stabelen da denne rammen ble opprettet. Å undersøke opprettingsstabelsproet for denne rammen kan gi mer innsikt."
+    "message": "Det var et annonseskript i (async) stack da denne rammen ble opprettet. Å undersøke stack trace for denne rammen kan gi mer innsikt."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Stabelspor for rammeoppretting"
+    "message": "Rammeopprettelse Stack Trace"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Denne rammen ble opprettet programmatisk. Stabelsporet viser hvor dette skjedde."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Regel for opphavsuavhengig innbygging"
+    "message": "Denne rammen ble opprettet programmatisk. stack trace viser hvor dette skjedde."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Opphavsuavhengig isolert"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Regel for opphavsuavhengig åpner"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Dokument"
@@ -3337,9 +3313,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Opphav"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Origin Trials"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Eierelement"
@@ -3366,19 +3339,19 @@
     "message": "Sikkerhet og isolering"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer-konstruktøren er tilgjengelig, og SAB-er kan overføres via postMessage"
+    "message": "SharedArrayBuffer konstruktøren er tilgjengelig og SABs kan overføres via postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "SharedArrayBuffer-konstruktøren er tilgjengelig, men SAB-er kan ikke overføres via postMessage"
+    "message": "SharedArrayBuffer konstruktør er tilgjengelig men SABs kan ikke overføres via postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Skjemaet for rammen er usikkert"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "API-et performance.measureUserAgentSpecificMemory() er tilgjengelig"
+    "message": "performance.measureUserAgentSpecificMemory() API-en er tilgjengelig"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "API-et performance.measureUserAgentSpecificMemory() er ikke tilgjengelig"
+    "message": "performance.measureUserAgentSpecificMemory() API-en er ikke tilgjengelig"
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "Denne tilleggsinformasjonen (om feilsøking) vises fordi «Protokollmonitor»-eksperimentet er slått på."
@@ -3426,7 +3399,7 @@
     "message": "{PH1} tokener"
   },
   "panels/application/components/OriginTrialTreeView.ts | trialName": {
-    "message": "Trial Name"
+    "message": "Navn på prøveprosjekt"
   },
   "panels/application/components/OriginTrialTreeView.ts | usageRestriction": {
     "message": "Bruksbegrensning"
@@ -4229,41 +4202,26 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width brukt som et innebygd element"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Our team is actively working on this feature and we are looking for your {PH1}!"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Opptaksoversikt"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
-    "message": "Capture an overview of your page’s CSS"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "feedback"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "Tilbakemelding"
+    "message": "Få oversikt over gjennomgripende stilark (CSS) på siden din"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
-    "message": "Identify potential CSS improvements"
+    "message": "Identifiser potensielle forbedringer av gjennomgripende stilark (CSS)"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
-    "message": "Identify potential CSS improvements (e.g. low contrast issues, unused declarations, color or font mismatches)"
+    "message": "Identifiser potensielle forbedringer for gjennomgripende stilark (f.eks. problemer med lav kontrast, ubrukte deklarasjoner eller uoverensstemmende farger eller skrifttyper)"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
-    "message": "Locate the affected elements in the Elements panel"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Finn de berørte elementene i Elementer-panelet"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
-    "message": "Quick start: get started with the new CSS Overview panel"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "Video and documentation"
+    "message": "Hurtigstart: Kom i gang med det nye oversiktspanelet for gjennomgripende stilark (CSS)"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
-    "message": "CSS Overview"
+    "message": "Oversikt over gjennomgripende stilark (CSS)"
   },
   "panels/css_overview/css_overview-meta.ts | showCssOverview": {
     "message": "Vis CSS-oversikt"
@@ -4592,6 +4550,21 @@
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Gjengitte skrifttyper"
   },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Filtrér"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Filtrér egenskaper"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "Ingen samsvarende egenskap"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Vis alle"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "Når denne ikke er merket av, vises kun egenskaper som verken har «null» eller «undefined» som verdi"
+  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle deklarasjoner som JS"
   },
@@ -4650,13 +4623,13 @@
     "message": "Kopiér selector"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
-    "message": "CSS property name"
+    "message": "CSS-egenskapsnavn"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyValue": {
-    "message": "CSS property value"
+    "message": "CSS-egenskapsverdi"
   },
   "panels/elements/StylesSidebarPane.ts | cssSelector": {
-    "message": "CSS selector"
+    "message": "CSS-velger"
   },
   "panels/elements/StylesSidebarPane.ts | filter": {
     "message": "Filtrér"
@@ -4731,7 +4704,7 @@
     "message": "Velg overleggsfarge for dette elementet"
   },
   "panels/elements/components/LayoutPane.ts | colorPickerOpened": {
-    "message": "Color picker opened."
+    "message": "Fargevelgeren er åpnet."
   },
   "panels/elements/components/LayoutPane.ts | flexbox": {
     "message": "Flexbox"
@@ -4980,7 +4953,7 @@
     "message": "Skjul mediaforespørsler"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Skjul linjaler"
+    "message": "Skjul linjaler i verktøylinjen for enhetsmodus"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Vis enhetsramme"
@@ -4989,7 +4962,7 @@
     "message": "Vis mediaforespørsler"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Vis linjaler"
+    "message": "Vis linjaler i verktøylinjen for enhetsmodus"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Skift verktøylinje for enhet"
@@ -5014,36 +4987,6 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Slå av/på hvorvidt hendelseslytteren er passiv eller blokkerende"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Lukk"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Finn ut mer"
-  },
-  "panels/help/help-meta.ts | bug": {
-    "message": "feil"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Ikke vis Hva er nytt? etter hver oppdatering"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Versjonsnotater"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Rapportér problemer med Utviklerverktøy"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Rapportér et oversettelsesproblem"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Vis Hva er nytt?"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Vis Hva er nytt? etter hver oppdatering"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "Hva er nytt?"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Fjern alt"
@@ -5261,8 +5204,20 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "Ugyldig attributionsourceeventid"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
+    "message": "Ugyldig attributionexpiry"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
+    "message": "Ugyldig attributionsourcepriority"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
     "message": "Ugyldig trigger-data"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
+    "message": "Ugyldig dedup-key"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
+    "message": "Ugyldig priority"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# overtredelse}other{# overtredelser}}"
@@ -5290,6 +5245,9 @@
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Ikke-tillatt forespørselsmetode"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Mislykket forespørsel"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Hode"
@@ -5366,8 +5324,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Opphev skjuling av alle"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Hide all current {PH1}"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Skjul alle gjeldende funksjonsbrytende endringer"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Skjul alle gjeldende økninger"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Skjul alle gjeldende sidefeil"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Berørte ressurser"
@@ -5484,7 +5448,7 @@
     "message": "Wasm-modul for nettadresse"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
-    "message": "Hide issues"
+    "message": "Skjul problemene"
   },
   "panels/issues/issues-meta.ts | cspViolations": {
     "message": "CSP-overtredelser"
@@ -6308,6 +6272,9 @@
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Bufrer"
   },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "Brukeragent er oppdatert."
+  },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Egendefinert…"
   },
@@ -6438,7 +6405,7 @@
     "message": "signed-exchange"
   },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
-    "message": "Latency (response received time - start time)"
+    "message": "Tidsforsinkelse (differansen mellom starttidspunktet for forespørselen og tidspunktet da svaret ble mottatt)"
   },
   "panels/network/NetworkDataGridNode.ts | unknown": {
     "message": "(ukjent)"
@@ -8901,16 +8868,16 @@
     "message": "ADVARSEL:"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
-    "message": "To turn this setting on, you must first enable settings sync in Chrome."
+    "message": "For å slå på denne innstillingen må du først slå på innstillingssynkronisering i Chrome."
   },
   "panels/settings/components/SyncSection.ts | settings": {
-    "message": "Go to Settings"
+    "message": "Gå til Innstillinger"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
-    "message": "Signed into Chrome as:"
+    "message": "Logget på Chrome som"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
-    "message": "To turn this setting on, you must enable Chrome sync."
+    "message": "For å slå på denne innstillingen må du slå på Chrome-synkronisering."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Legg til tilpasset enhet ..."
@@ -9120,7 +9087,7 @@
     "message": "Legg til skript på ignoreringsliste"
   },
   "panels/sources/CallStackSidebarPane.ts | callFrameWarnings": {
-    "message": "Some call frames have warnings"
+    "message": "Noen kallrammer har advarsler"
   },
   "panels/sources/CallStackSidebarPane.ts | callStack": {
     "message": "Anropsstabel"
@@ -9153,7 +9120,7 @@
     "message": "Dekning: n/a"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Dekning: {PH1} %"
+    "message": "Vises på: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Vis detaljer"
@@ -9412,6 +9379,15 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Åpne en JavaScript- eller CSS-fil for å se symboler"
+  },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "kB"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "MB"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "ms"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Lukning"
@@ -11346,13 +11322,13 @@
     "message": "( … hopper over {PH1} samsvarende linjer … )"
   },
   "ui/components/diff_view/DiffView.ts | additions": {
-    "message": "Addition:"
+    "message": "Tillegg:"
   },
   "ui/components/diff_view/DiffView.ts | changesDiffViewer": {
     "message": "Visning av endringsdifferanse"
   },
   "ui/components/diff_view/DiffView.ts | deletions": {
-    "message": "Deletion:"
+    "message": "Sletting:"
   },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# funksjonsbrytende endring}other{# funksjonsbrytende endringer}}"
@@ -11429,6 +11405,24 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Vis minneinspektør"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Tilbakemelding"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Forhåndsvisningsfunksjon"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Teamet vårt jobber aktivt med denne funksjonen, og vi ønsker din tilbakemelding."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Send oss en tilbakemelding."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Video og dokumentasjon"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
+    "message": "Send oss en tilbakemelding."
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klikk for å åpne nettverkspanelet og vis forespørsel for nettadressen: {url}"
   },
@@ -11500,6 +11494,12 @@
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Verktøyskuff"
+  },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Uttrekksmenyen er skjult"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Uttrekksmenyen vises"
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Hovedverktøyrad"
@@ -11625,7 +11625,7 @@
     "message": "Flere faner"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Preview feature"
+    "message": "Forhåndsvisningsfunksjon"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Utviklerverktøy ble koblet fra siden."
@@ -11773,6 +11773,9 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Navn"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(ugjennomsiktig)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Økt"
@@ -11942,15 +11945,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Vis som JavaScript-objekt"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Nøkler"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "søkeord"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Variabler i leksikalsk omfang"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Skjul underordnede elementer"
   },
@@ -12037,15 +12031,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} er valgt"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "kB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "ms"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Høy"
@@ -12223,9 +12208,6 @@
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Tab-tegn"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Koderedigerer"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Gjeldende kilde:"

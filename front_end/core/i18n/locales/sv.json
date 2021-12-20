@@ -401,6 +401,21 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-block"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Worklet till annonsauktion"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Start för fasen med budgivarnas budgivning"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "Start för fasen med budgivarrapportering"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Start för fasen med säljarrapportering"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Start för fasen med säljarbedömning"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) blockerade svaret {PH1} från olika källor med MIME-typen {PH2}. Läs mer på https://www.chromestatus.com/feature/5629709824032768."
   },
@@ -629,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Inaktivera cacheminne (medan verktyget för programmerare är öppet)"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Inaktivera automatiskt mörkt läge"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Inaktivera JavaScript"
   },
@@ -662,6 +680,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Emulera inte CSS-medietyp"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Emulera inte automatiskt mörkt läge"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Utöka inte rutnätsrader"
   },
@@ -679,6 +700,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Visa inte storlekar på rutnätets kontur"
+  },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Visa inte linjaler när muspekaren hålls över dem"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Emulera en sida med fokus"
@@ -728,6 +752,9 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aktivera anpassade formaterare"
   },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Aktivera automatiskt mörkt läge"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktivera JavaScript"
   },
@@ -754,9 +781,6 @@
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Dölj mätare av bildrutor per sekund (FPS)"
-  },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Dölj träfftest för kanter"
   },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Dölj lagerkanter"
@@ -812,9 +836,6 @@
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Visa storlekar på rutnätskontur"
   },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Visa träfftest för kanter"
-  },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Visa lagerkanter"
   },
@@ -833,8 +854,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Visa uppritningsmarkering för rektanglar"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Visa linjaler"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Visa linjaler när muspekaren hålls över dem"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Visa flaskhalsar för scrollprestanda"
@@ -884,6 +905,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Tvingar CSS-mediefunktionen för color-gamut"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssForcedColors": {
+    "message": "Tvingar CSS-mediefunktionen forced-colors"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Tvingar CSS-mediefunktionen för prefers-color-scheme"
   },
@@ -920,9 +944,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Markera bildrutor (röda) som identifierats som annonser."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Träfftesta kanterna"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Lagerkanter"
   },
@@ -943,9 +964,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Visar en överlagring med Viktiga webbvärden."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Visa kanter runt områden med träfftest."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Visa lagerkanter (orange/oliv) och rutor (cyan)."
@@ -1001,7 +1019,7 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "synnedsättning"
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Primär"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
@@ -1190,41 +1208,41 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Zooma ut"
   },
-  "entrypoints/node_app/node_app-meta.ts | node": {
-    "message": "Nod"
-  },
-  "entrypoints/node_app/node_app-meta.ts | showNode": {
-    "message": "Nod"
-  },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Lägg till anslutning"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Nätverksadress (t.ex. localhost:9229)"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Inga anslutningar har angetts"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Felsökningsguide för node.js"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Ange nätverkets slutpunkt så ansluter verktyget för programmerare till den automatiskt. Läs {PH1} om du vill veta mer."
   },
-  "entrypoints/node_main/NodeMain.ts | main": {
+  "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Primär"
   },
-  "entrypoints/node_main/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "entrypoints/node_main/node_main-meta.ts | connection": {
+  "entrypoints/node_app/node_app.ts | connection": {
     "message": "Anslutning"
   },
-  "entrypoints/node_main/node_main-meta.ts | node": {
+  "entrypoints/node_app/node_app.ts | networkTitle": {
+    "message": "Nod"
+  },
+  "entrypoints/node_app/node_app.ts | node": {
     "message": "nod"
   },
-  "entrypoints/node_main/node_main-meta.ts | showConnection": {
+  "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Visa anslutning"
+  },
+  "entrypoints/node_app/node_app.ts | showNode": {
+    "message": "Nod"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Primär"
@@ -1322,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Delning av resurser med korsursprung (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "CORS för privata nätverk (RFC1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "Åtkomst till privat nätverk"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP och COEP"
@@ -1559,8 +1577,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Tillgänglighetsträd"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "Tillgänglighetsträdet flyttas till DOM-trädets övre högra hörn."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Aktivera tillgänglighetsträd för hela sidan"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Ignoreras"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "DevTools måste läsas in på nytt innan ändringen träder i kraft."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Scrolla in i visningsområdet"
@@ -2396,51 +2423,6 @@
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "Dokumentet lästes inte in helt innan användaren navigerade bort från det."
   },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "EmbedderAppBannerManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "EmbedderDomDistillerViewerSource"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "EmbedderExtensionMessaging"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "EmbedderExtensionMessagingForOpenPort"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "EmbedderExtensionSentMessageToCachedFrame"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "EmbedderExtensions"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "EmbedderModalDialog"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "EmbedderOfflinePage"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "EmbedderOomInterventionTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "EmbedderPermissionRequestManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "EmbedderPopupBlockerTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "EmbedderSafeBrowsingThreatDetails"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
-  },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "En tjänstefunktion aktiverades medan sidan lagrades i vilocacheminnet."
   },
@@ -2503,9 +2485,6 @@
   },
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Navigeringen gjordes i en annan ram än den överordnade ramen."
-  },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "Sidan har en unload-hanterare utan det fält i huvudet som används för att välja vilocacheminnet."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "Sidor med pågående transaktioner i en indexerad databas kan för närvarande inte placeras i vilocacheminnet."
@@ -2651,32 +2630,35 @@
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Vilocacheminne"
   },
-  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Status för vilocacheminne"
-  },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Ingen åtgärd kan vidtas"
   },
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "I dessa fall går orsaken inte att åtgärda, det vill säga, skälet till att sidan inte gick att cachelagra är något som inte styrs av sidan."
   },
+  "panels/application/BackForwardCacheView.ts | learnMore": {
+    "message": "Läs mer: vilka sidor kan lagras i vilocacheminnet"
+  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Huvudram"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normal navigering (inte återställd från vilocacheminnet)"
+    "message": "Sidan hämtades inte från vilocacheminnet: Använd bakåt-och framåtknapparna i Chrome om du vill aktivera vilocacheminnet. Du kan också navigera härifrån och tillbaka igen automatiskt med hjälp av testknappen nedan."
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Åtgärder kan vidtas"
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeededExplanation": {
-    "message": "I dessa fall går orsaken att åtgärda, dvs den kan avlägsnas så att sidan kan lagras i vilocacheminnet."
+    "message": "I dessa fall går orsaken att åtgärda, dvs. den kan avlägsnas så att sidan kan lagras i vilocacheminnet."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Har återställts från vilocacheminnet"
+    "message": "Sidan hämtades från vilocacheminnet."
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Kör testet"
+    "message": "Testa vilocacheminnet"
+  },
+  "panels/application/BackForwardCacheView.ts | runningTest": {
+    "message": "Testet körs"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "Väntar på support"
@@ -2688,10 +2670,10 @@
     "message": "otillgänglig"
   },
   "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "okänt"
+    "message": "Okänd status"
   },
   "panels/application/BackForwardCacheView.ts | url": {
-    "message": "Webbadress"
+    "message": "Webbadress:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Hämtning i bakgrunden"
@@ -3297,22 +3279,16 @@
     "message": "Klicka för att visa i panelen Källor"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Den asynkrona anropsstacken innehöll ett annonsskript när den här ramen skapades. Du kan ta reda på mer genom att granska stackspårningen för processen där ramen skapades."
+    "message": "(async) stack innehöll ett annonsskript när den här ramen skapades. Du kan ta reda på mer genom att granska stack trace för processen där ramen skapades."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Stackspårning för att skapa ram"
+    "message": "Stack Trace för att skapa ram"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Den här ramen har skapats med programmering. Stackspårningen visar var det skedde."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Princip för inbäddning med korsursprung"
+    "message": "Den här ramen har skapats med programmering. stack trace visar var det skedde."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Korsursprung har isolerats"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Princip mot korsursprung med öppnare"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Dokument"
@@ -3337,9 +3313,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Ursprung"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Origin-provperioder"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Ägarelement"
@@ -3366,16 +3339,16 @@
     "message": "Säkerhet och isolering"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Konstruktören av SharedArrayBuffer är tillgänglig och SAB:er kan överföras via postMessage"
+    "message": "Konstruktören av SharedArrayBuffer är tillgänglig och SABs kan överföras via postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "Konstruktören för SharedArrayBuffer är tillgänglig, men det går inte att överföra SAB:er via postMessage"
+    "message": "Konstruktören för SharedArrayBuffer är tillgänglig, men det går inte att överföra SABs via postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Ramens schema är inte säkert"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "API:et performance.measureUserAgentSpecificMemory() API är tillgängligt"
+    "message": "API:et performance.measureUserAgentSpecificMemory() är tillgängligt"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
     "message": "API:et performance.measureUserAgentSpecificMemory() är inte tillgängligt"
@@ -4229,20 +4202,11 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width tillämpades på ett infogat element"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Vårt team arbetar aktivt med denna funktion och tar gärna emot {PH1}!"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Ta en skärmbild av översikten"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Få en översikt över sidans CSS"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "feedback"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "Feedback"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "Identifiera förbättringsmöjligheter i CSS"
@@ -4253,14 +4217,8 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
     "message": "Hitta de element som påverkas i panelen Element"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "Förhandsfunktion"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
     "message": "Snabbstart: Kom igång med den nya CSS-översiktspanelen"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "Video och dokumentation"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS-översikt"
@@ -4359,7 +4317,7 @@
     "message": "Navigera till format"
   },
   "panels/elements/ComputedStyleWidget.ts | noMatchingProperty": {
-    "message": "Ingen matchande egendom"
+    "message": "Ingen matchande egenskap"
   },
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Visa alla"
@@ -4591,6 +4549,21 @@
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Renderade teckensnitt"
+  },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Filteregenskaper"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "Ingen matchande egenskap"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Visa alla"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "När detta alternativ är avmarkerat visas bara egenskaper vars värde inte är null eller odefinierat"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiera alla deklarationer som JS"
@@ -4980,7 +4953,7 @@
     "message": "Dölj mediefrågor"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Dölj linjaler"
+    "message": "Dölj linjaler i verktygsfältet för Enhetsläge"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Visa enhetsram"
@@ -4989,7 +4962,7 @@
     "message": "Visa mediefrågor"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Visa linjaler"
+    "message": "Visa linjaler i verktygsfältet för Enhetsläge"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Aktivera/inaktivera verktygsfält för enhet"
@@ -5014,36 +4987,6 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Ange om händelselyssnaren är passiv eller blockerar"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Stäng"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Läs mer"
-  },
-  "panels/help/help-meta.ts | bug": {
-    "message": "fel"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Visa inte Nyheter efter varje uppdatering"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Viktig information"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Rapportera ett fel i verktyget för programmerare"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Rapportera ett översättningsproblem"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Visa Nyheter"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Visa Nyheter efter varje uppdatering"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "Nyheter"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Rensa alla"
@@ -5261,8 +5204,20 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "Ogiltig attributionsourceeventid"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
+    "message": "Ogiltig attributionexpiry"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
+    "message": "Ogiltig attributionsourcepriority"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
     "message": "Ogiltig trigger-data"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
+    "message": "Ogiltig dedup-key"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
+    "message": "Ogiltig priority"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# överträdelse}other{# överträdelser}}"
@@ -5290,6 +5245,9 @@
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Metod för begäran ej tillåten"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Begäran misslyckades"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Huvud"
@@ -5366,8 +5324,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Visa alla"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Dölj alla aktuella {PH1}"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Dölj alla aktuella icke-bakåtkompatibla ändringar"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Dölj alla aktuella förbättringar"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Dölj alla aktuella sidfel"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Berörda resurser"
@@ -6307,6 +6271,9 @@
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Cachelagrar"
+  },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "Användaragenten har uppdaterats."
   },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Anpassad …"
@@ -9153,7 +9120,7 @@
     "message": "Täckning: inte tillämpligt"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Täckning: {PH1} %"
+    "message": "Täckning: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Visa information"
@@ -9412,6 +9379,15 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Öppna en JavaScript- eller CSS-fil för att visa symbolerna"
+  },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "kB"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "MB"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "ms"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Stängning"
@@ -11429,6 +11405,24 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Visa minnesinspektör"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Feedback"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Förhandsfunktion"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Vårt team arbetar aktivt med denna funktion och vill gärna veta vad du tycker."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Skicka din feedback till oss."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Video och dokumentation"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
+    "message": "Skicka din feedback till oss."
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klicka här om du vill öppna nätverkspanelen med begäran för webbadressen: {url}"
   },
@@ -11500,6 +11494,12 @@
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Verktygslåda"
+  },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Utdragbar panel dold"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Utdragbar panel visas"
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Huvudverktygsfält"
@@ -11774,6 +11774,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Namn"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(ogenomskinlig)"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Session"
   },
@@ -11942,15 +11945,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Visa som JavaScript-objekt"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Nycklar"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "sökord"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Variabler för lexikal omfattning"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Komprimera underordnade"
   },
@@ -12037,15 +12031,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} har valts"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "kB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "ms"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Högt"
@@ -12223,9 +12208,6 @@
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Tabbtecken"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Kodredigerare"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Aktuell källa:"

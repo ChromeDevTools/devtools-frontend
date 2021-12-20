@@ -401,6 +401,21 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-Block"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Anzeigenauktion-Worklet"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Beginn der Gebotphase für Bieter"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "Beginn der Berichterstellungsphase für Bieter"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Beginn der Berichterstellungsphase für Verkäufer"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Beginn der Wertungsphase für Verkäufer"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) hat die ursprungsübergreifende Antwort {PH1} mit dem MIME-Typ {PH2} blockiert. Weitere Informationen finden Sie unter https://www.chromestatus.com/feature/5629709824032768."
   },
@@ -629,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Cache deaktivieren (während Entwicklertools geöffnet ist)"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Automatischen dunklen Modus deaktivieren"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "JavaScript deaktivieren"
   },
@@ -662,6 +680,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS-Medientyp nicht emulieren"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Automatischen dunklen Modus nicht emulieren"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Rasterlinien nicht erweitern"
   },
@@ -679,6 +700,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Größen der Raster-Tracks nicht anzeigen"
+  },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Lineale nicht anzeigen, wenn der Mauszeiger darauf bewegt wird"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Fokussierte Seite emulieren"
@@ -728,6 +752,9 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Benutzerdefinierte Formatierer aktivieren"
   },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Automatischen dunklen Modus aktivieren"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "JavaScript aktivieren"
   },
@@ -754,9 +781,6 @@
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Messtool für Bilder pro Sekunde (fps) ausblenden"
-  },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Grenzen der Treffertests ausblenden"
   },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Ebenengrenzen ausblenden"
@@ -812,9 +836,6 @@
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Größen der Raster-Tracks anzeigen"
   },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Grenzen der Treffertests einblenden"
-  },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Ebenengrenzen einblenden"
   },
@@ -833,8 +854,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Farblich blinkende Rechtecke anzeigen"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Führungslinien anzeigen"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Lineale anzeigen, wenn der Mauszeiger darauf bewegt wird"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Engpässe in der Scrollleistung anzeigen"
@@ -884,6 +905,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Erzwingt die CSS-color-gamut-Medienfunktion"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssForcedColors": {
+    "message": "Erzwingt die CSS-Medienfunktion „forced-colors“"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Erzwingt die CSS-prefers-color-scheme-Medienfunktion"
   },
@@ -920,9 +944,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Hebt Frames in Rot hervor, die als Werbung erkannt wurden."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Grenzen der Treffertests"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Ebenengrenzen"
   },
@@ -943,9 +964,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Zeigt ein Overlay mit Core Web Vitals an."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Zeigt Grenzen um Treffertest-Bereiche an."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Zeigt Ebenengrenzen (Orange/Oliv) und -Kacheln (Cyan) an."
@@ -1001,7 +1019,7 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "Sehschwäche"
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Hauptinhalt"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
@@ -1190,41 +1208,41 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Herauszoomen"
   },
-  "entrypoints/node_app/node_app-meta.ts | node": {
-    "message": "Knoten"
-  },
-  "entrypoints/node_app/node_app-meta.ts | showNode": {
-    "message": "Knoten"
-  },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Verbindung hinzufügen"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Netzwerkadresse (z. B. localhost:9229)"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Keine Verbindungen angegeben."
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Leitfaden zum Node.js-Debugging"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Geben Sie den Netzwerk-Endpunkt an und DevTools stellt automatisch eine Verbindung zu ihm her. Weitere Informationen finden Sie unter {PH1}."
   },
-  "entrypoints/node_main/NodeMain.ts | main": {
+  "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Hauptinhalt"
   },
-  "entrypoints/node_main/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "entrypoints/node_main/node_main-meta.ts | connection": {
+  "entrypoints/node_app/node_app.ts | connection": {
     "message": "Verbindung"
   },
-  "entrypoints/node_main/node_main-meta.ts | node": {
+  "entrypoints/node_app/node_app.ts | networkTitle": {
     "message": "Knoten"
   },
-  "entrypoints/node_main/node_main-meta.ts | showConnection": {
+  "entrypoints/node_app/node_app.ts | node": {
+    "message": "Knoten"
+  },
+  "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Verbindung anzeigen"
+  },
+  "entrypoints/node_app/node_app.ts | showNode": {
+    "message": "Knoten"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Hauptinhalt"
@@ -1322,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-Origin Resource Sharing (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "CORS für private Netzwerke (RFC1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "Private Network Access"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP und COEP"
@@ -1559,8 +1577,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Baumansicht für Barrierefreiheit"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "Die Baumansicht für Barrierefreiheit wurde nach rechts oben im DOM-Baum verschoben."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Vollbild-Baumansicht für Barrierefreiheit aktivieren"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Ignoriert"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "Aktualisierung erforderlich, damit die Änderung übernommen wird."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "In die Ansicht hineinscrollen"
@@ -2396,51 +2423,6 @@
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "Das Dokument wurde verlassen, bevor es vollständig geladen werden konnte."
   },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "EmbedderAppBannerManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "EmbedderDomDistillerViewerSource"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "EmbedderExtensionMessaging"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "EmbedderExtensionMessagingForOpenPort"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "EmbedderExtensionSentMessageToCachedFrame"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "EmbedderExtensions"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "EmbedderModalDialog"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "EmbedderOfflinePage"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "EmbedderOomInterventionTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "EmbedderPermissionRequestManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "EmbedderPopupBlockerTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "EmbedderSafeBrowsingThreatDetails"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
-  },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Ein Service Worker wurde aktiviert, während die Seite im Back-Forward-Cache gespeichert war."
   },
@@ -2503,9 +2485,6 @@
   },
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Außerhalb des Hauptframes ist eine Navigation aufgetreten."
-  },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "Die Seite hat einen Unload-Handler ohne Opt-in-Header für den Back-Forward-Cache."
   },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "Seiten mit laufenden indexierten DB-Transaktionen, können den Back-Forward-Cache aktuell nicht verwenden."
@@ -2651,20 +2630,20 @@
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
     "message": "Back-Forward-Cache"
   },
-  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Status des Back-Forward-Cache"
-  },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Nicht umsetzbar"
   },
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Sie können keine Maßnahmen ergreifen, um diese Probleme zu lösen, da das Caching durch etwas verhindert wurde, das außerhalb des direkten Einflussbereichs der Seite liegt."
   },
+  "panels/application/BackForwardCacheView.ts | learnMore": {
+    "message": "Weitere Informationen: Voraussetzungen für die Verwendung des Back-Forward-Cache"
+  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Hauptframe"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Normale Navigation (nicht aus dem Back-Forward-Cache wiederhergestellt)"
+    "message": "Nicht aus dem Back-Forward-Cache geladen: Um die Seite automatisch zu verlassen und zu ihr zurückzukehren, verwenden Sie die Schaltflächen „Zurück“ und „Weiter“ in Chrome oder die Testschaltfläche unten."
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Umsetzbar"
@@ -2673,25 +2652,28 @@
     "message": "Sie können Maßnahmen ergreifen, um diese Probleme zu lösen und dafür zu sorgen, dass die Seite den Back-Forward-Cache verwenden kann."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Aus dem Back-Forward-Cache wiederhergestellt"
+    "message": "Erfolgreich aus dem Back-Forward-Cache geladen."
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Testen"
+    "message": "Back-Forward-Cache testen"
+  },
+  "panels/application/BackForwardCacheView.ts | runningTest": {
+    "message": "Test wird ausgeführt"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "Noch kein Support"
   },
   "panels/application/BackForwardCacheView.ts | supportPendingExplanation": {
-    "message": "Die Chrome-Unterstützung ist aus den genannten Gründen ausstehend – dies bedeutet, dass die Seite nicht daran gehindert wird, den Back-Forward-Cache in einer zukünftigen Chrome-Version zu verwenden."
+    "message": "Für diese Problemursachen wird zukünftig eine entsprechende Chrome-Unterstützung eingeführt – das bedeutet, dass die Seite in einer zukünftigen Chrome-Version nicht mehr hierdurch daran gehindert wird, den Back-Forward-Cache zu verwenden."
   },
   "panels/application/BackForwardCacheView.ts | unavailable": {
     "message": "nicht verfügbar"
   },
   "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "unbekannt"
+    "message": "Unbekannter Status"
   },
   "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL"
+    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Hintergrundabruf"
@@ -3297,22 +3279,16 @@
     "message": "Zum Anzeigen im Quellenbereich klicken"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Im (asynchronen) Stack war ein Anzeigenskript vorhanden, als dieser Frame erstellt wurde. Eine Prüfung des Stacktrace für die Erstellung dieses Frames kann möglicherweise mehr Informationen liefern."
+    "message": "Im (async) stack war ein Anzeigenskript vorhanden, als dieser Frame erstellt wurde. Eine Prüfung des stack trace für die Erstellung dieses Frames kann möglicherweise mehr Informationen liefern."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Stacktrace für Frame-Erstellung"
+    "message": "Frame-Erstellung: Stack Trace"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Dieser Frame wurde programmatisch erstellt. Der Stacktrace zeigt an, wo dies passiert ist."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Cross-Origin-Embedder-Richtlinie"
+    "message": "Dieser Frame wurde programmatisch erstellt. stack trace zeigt, wo er im Code erstellt wurde."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Ursprungsübergreifend isoliert"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Cross-Origin-Opener-Richtlinie"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Dokument"
@@ -3337,9 +3313,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Ursprung"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Ursprungstests"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Inhaber-Element"
@@ -3366,7 +3339,7 @@
     "message": "Sicherheit und Isolation"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "SharedArrayBuffer-Konstruktor ist verfügbar und SABS können via postMessage übertragen werden"
+    "message": "SharedArrayBuffer-Konstruktor ist verfügbar und SABs können via postMessage übertragen werden"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
     "message": "SharedArrayBuffer-Konstruktor ist verfügbar, aber SABs können nicht via postMessage übertragen werden"
@@ -3375,10 +3348,10 @@
     "message": "Das Schema des Frames ist unsicher"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformanceAPI": {
-    "message": "„performance.measureUserAgentSpecificMemory()“ API ist nicht verfügbar"
+    "message": "Die performance.measureUserAgentSpecificMemory() API ist verfügbar"
   },
   "panels/application/components/FrameDetailsView.ts | thePerformancemeasureuseragentspecificmemory": {
-    "message": "Die „performance.measureUserAgentSpecificMemory()“ API ist nicht verfügbar"
+    "message": "Die performance.measureUserAgentSpecificMemory() API ist nicht verfügbar"
   },
   "panels/application/components/FrameDetailsView.ts | thisAdditionalDebugging": {
     "message": "Diese zusätzlichen (Debugging-)Informationen werden angezeigt, weil der Test „Protokollmonitor“ aktiviert ist."
@@ -4229,20 +4202,11 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width wurde auf ein Inline-Element angewendet"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Unser Team arbeitet fortlaufend an dieser Funktion und wir würden uns sehr über Ihr {PH1} freuen."
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Aufnahmenübersicht"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Eine Übersicht über das CSS Ihrer Seite aufnehmen"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "Feedback"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "Feedback"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "CSS-Verbesserungsmöglichkeiten entdecken"
@@ -4253,14 +4217,8 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
     "message": "Die betroffenen Elemente im Elementbereich finden"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "Vorschaufunktion"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
     "message": "Schnelleinstieg: Erste Schritte mit dem Menü „CSS-Übersicht“"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "Video und Dokumentation"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS-Übersicht"
@@ -4591,6 +4549,21 @@
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Gerenderte Schriftarten"
+  },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Properties filtern"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "Keine passende Property"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Alle anzeigen"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "Wenn dieses Häkchen entfernt ist, werden nur Properties angezeigt, deren Wert weder „null“ noch unbestimmt ist"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Alle Deklarationen als JS kopieren"
@@ -4926,7 +4899,7 @@
     "message": "Medienabfragen anzeigen"
   },
   "panels/emulation/DeviceModeToolbar.ts | showRulers": {
-    "message": "Führungslinien anzeigen"
+    "message": "Lineale anzeigen"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
     "message": "Dual-Screen-Modus umschalten"
@@ -4980,7 +4953,7 @@
     "message": "Medienabfragen ausblenden"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Lineale ausblenden"
+    "message": "Lineale in der Gerätemodus-Symbolleiste ausblenden"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Geräterahmen anzeigen"
@@ -4989,7 +4962,7 @@
     "message": "Medienabfragen anzeigen"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Führungslinien anzeigen"
+    "message": "Lineale in der Gerätemodus-Symbolleiste einblenden"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Gerätesymbolleiste ein- und ausblenden"
@@ -5014,36 +4987,6 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Schalter zum Einstellen, ob der Ereignis-Listener passiv oder blockierend sein soll"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Schließen"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Weitere Informationen"
-  },
-  "panels/help/help-meta.ts | bug": {
-    "message": "Fehler"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Neuigkeiten nicht nach jedem Update anzeigen"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Versionshinweise"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "DevTools-Problem melden"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Problem mit der Übersetzung melden"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Neuigkeiten anzeigen"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Neuigkeiten nach jedem Update anzeigen"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "Neue Funktionen"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Alle löschen"
@@ -5261,8 +5204,20 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "attributionsourceeventid ist ungültig"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
+    "message": "attributionexpiry ist ungültig"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
+    "message": "attributionsourcepriority ist ungültig"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
     "message": "trigger-data ist ungültig"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
+    "message": "dedup-key ist ungültig"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
+    "message": "priority ist ungültig"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# Verstoß}other{# Verstöße}}"
@@ -5290,6 +5245,9 @@
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Unzulässige Anfragemethode"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Fehlgeschlagene Anfrage"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Header"
@@ -5366,8 +5324,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Alle einblenden"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Alle aktuellen Probleme vom Typ „{PH1}“ ausblenden"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Alle aktuellen funktionsgefährdenden Änderungen ausblenden"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Alle aktuellen Verbesserungen ausblenden"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Alle aktuellen Seitenfehler ausblenden"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Betroffene Ressourcen"
@@ -6307,6 +6271,9 @@
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Speichern im Cache"
+  },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "User-Agent wurde aktualisiert."
   },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Benutzerdefiniert…"
@@ -9153,7 +9120,7 @@
     "message": "Abdeckung: –"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Abdeckung: {PH1} %"
+    "message": "Abdeckung: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Details anzeigen"
@@ -9412,6 +9379,15 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Eine JavaScript- oder CSS-Datei öffnen, um Symbole zu sehen"
+  },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "KB"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "MB"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "ms"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Abschluss"
@@ -11429,6 +11405,24 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Memory Inspector anzeigen"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Feedback"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Vorschaufunktion"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Unser Team arbeitet fortlaufend an dieser Funktion und wir würden uns sehr über Ihr Feedback freuen."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Senden Sie uns Ihr Feedback."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Video und Dokumentation"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
+    "message": "Senden Sie uns Ihr Feedback."
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klicken, um den Netzwerkbereich zu öffnen und die Anfrage für die folgende URL anzuzeigen: {url}"
   },
@@ -11448,7 +11442,7 @@
     "message": "Vielen Dank für Ihr Feedback"
   },
   "ui/components/text_editor/config.ts | codeEditor": {
-    "message": "Code-Editor"
+    "message": "Codeeditor"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Schließen"
@@ -11500,6 +11494,12 @@
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Toolleiste"
+  },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Leiste ausgeblendet"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Leiste eingeblendet"
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Hauptsymbolleiste"
@@ -11774,6 +11774,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Name"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(opak)"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sitzung"
   },
@@ -11942,15 +11945,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Als JavaScript-Objekt anzeigen"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Schlüssel"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "Keywords"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Variablen des lexikalischen Bereichs"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Untergeordnete Elemente minimieren"
   },
@@ -12037,15 +12031,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} ausgewählt"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "KB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "ms"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Hoch"
@@ -12223,9 +12208,6 @@
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Tabulatorzeichen"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Code-Editor"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Aktuelle Quelle:"

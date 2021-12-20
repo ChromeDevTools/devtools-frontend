@@ -401,6 +401,21 @@
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With Blokir"
   },
+  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
+    "message": "Worklet Lelang Iklan"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Awal Fase Bidding Bidder"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
+    "message": "Awal Fase Pelaporan Bidder"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
+    "message": "Awal Fase Pelaporan Penjual"
+  },
+  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
+    "message": "Awal Fase Penskoran Penjual"
+  },
   "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
     "message": "Cross-Origin Read Blocking (CORB) memblokir respons lintas asal {PH1} dengan jenis MIME {PH2}. Buka https://www.chromestatus.com/feature/5629709824032768 untuk mengetahui detail selengkapnya."
   },
@@ -629,6 +644,9 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Nonaktifkan cache (saat DevTools terbuka)"
   },
+  "core/sdk/sdk-meta.ts | disableEmulateAutoDarkMode": {
+    "message": "Nonaktifkan mode gelap otomatis"
+  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Nonaktifkan JavaScript"
   },
@@ -662,6 +680,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Jangan mengemulasi jenis media CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateDarkMode": {
+    "message": "Jangan mengemulasi mode gelap otomatis"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Jangan luaskan garis petak"
   },
@@ -679,6 +700,9 @@
   },
   "core/sdk/sdk-meta.ts | doNotShowGridTrackSizes": {
     "message": "Jangan tampilkan ukuran trek petak"
+  },
+  "core/sdk/sdk-meta.ts | doNotShowRulersOnHover": {
+    "message": "Jangan tampilkan penggaris saat mengarahkan kursor"
   },
   "core/sdk/sdk-meta.ts | emulateAFocusedPage": {
     "message": "Emulasikan halaman terfokus"
@@ -728,6 +752,9 @@
   "core/sdk/sdk-meta.ts | enableCustomFormatters": {
     "message": "Aktifkan pemformat kustom"
   },
+  "core/sdk/sdk-meta.ts | enableEmulateAutoDarkMode": {
+    "message": "Aktifkan mode gelap otomatis"
+  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Aktifkan JavaScript"
   },
@@ -754,9 +781,6 @@
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Sembunyikan pengukur frame per detik (FPS)"
-  },
-  "core/sdk/sdk-meta.ts | hideHittestBorders": {
-    "message": "Sembunyikan batas hit-test"
   },
   "core/sdk/sdk-meta.ts | hideLayerBorders": {
     "message": "Sembunyikan batas lapisan"
@@ -812,9 +836,6 @@
   "core/sdk/sdk-meta.ts | showGridTrackSizes": {
     "message": "Tampilkan ukuran jalur petak"
   },
-  "core/sdk/sdk-meta.ts | showHittestBorders": {
-    "message": "Tampilkan batas hit-test"
-  },
   "core/sdk/sdk-meta.ts | showLayerBorders": {
     "message": "Tampilkan batas lapisan"
   },
@@ -833,8 +854,8 @@
   "core/sdk/sdk-meta.ts | showPaintFlashingRectangles": {
     "message": "Tampilkan flash paint persegi panjang"
   },
-  "core/sdk/sdk-meta.ts | showRulers": {
-    "message": "Tampilkan penggaris"
+  "core/sdk/sdk-meta.ts | showRulersOnHover": {
+    "message": "Tampilkan penggaris saat mengarahkan kursor"
   },
   "core/sdk/sdk-meta.ts | showScrollPerformanceBottlenecks": {
     "message": "Tampilkan bottleneck performa scroll"
@@ -884,6 +905,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssColorgamutMediaFeature": {
     "message": "Memaksa fitur media color-gamut CSS"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssForcedColors": {
+    "message": "Memaksa fitur media CSS forced-colors"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPreferscolorschemeMedia": {
     "message": "Memaksa fitur media prefers-color-scheme CSS"
   },
@@ -920,9 +944,6 @@
   "entrypoints/inspector_main/RenderingOptions.ts | highlightsFramesRedDetectedToBe": {
     "message": "Menandai frame (merah) yang terdeteksi sebagai iklan."
   },
-  "entrypoints/inspector_main/RenderingOptions.ts | hittestBorders": {
-    "message": "Batas Hit-test"
-  },
   "entrypoints/inspector_main/RenderingOptions.ts | layerBorders": {
     "message": "Batas lapisan"
   },
@@ -943,9 +964,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
     "message": "Tampilkan overlay dengan Data Web Inti."
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsBordersAroundHittestRegions": {
-    "message": "Tampilkan batas di sekitar wilayah hit-test."
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Tampilkan batas lapisan (oranye/olive) dan tile (cyan)."
@@ -1001,7 +1019,7 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | visionDeficiency": {
     "message": "kekurangan daya penglihatan"
   },
-  "entrypoints/js_app/JsMain.ts | main": {
+  "entrypoints/js_app/js_app.ts | main": {
     "message": "Utama"
   },
   "entrypoints/main/MainImpl.ts | customizeAndControlDevtools": {
@@ -1190,41 +1208,41 @@
   "entrypoints/main/main-meta.ts | zoomOut": {
     "message": "Perkecil"
   },
-  "entrypoints/node_app/node_app-meta.ts | node": {
-    "message": "Node"
-  },
-  "entrypoints/node_app/node_app-meta.ts | showNode": {
-    "message": "Node"
-  },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | addConnection": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | addConnection": {
     "message": "Tambahkan koneksi"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | networkAddressEgLocalhost": {
     "message": "Alamat jaringan (misalnya, localhost:9229)"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | noConnectionsSpecified": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | noConnectionsSpecified": {
     "message": "Tidak ada koneksi yang ditetapkan"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | nodejsDebuggingGuide": {
     "message": "Panduan proses debug Node.js"
   },
-  "entrypoints/node_main/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
+  "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Tentukan endpoint jaringan, dan DevTools akan otomatis terhubung. Baca {PH1} untuk mempelajari lebih lanjut."
   },
-  "entrypoints/node_main/NodeMain.ts | main": {
+  "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Utama"
   },
-  "entrypoints/node_main/NodeMain.ts | nodejsS": {
+  "entrypoints/node_app/NodeMain.ts | nodejsS": {
     "message": "Node.js: {PH1}"
   },
-  "entrypoints/node_main/node_main-meta.ts | connection": {
+  "entrypoints/node_app/node_app.ts | connection": {
     "message": "Koneksi"
   },
-  "entrypoints/node_main/node_main-meta.ts | node": {
+  "entrypoints/node_app/node_app.ts | networkTitle": {
+    "message": "Node"
+  },
+  "entrypoints/node_app/node_app.ts | node": {
     "message": "node"
   },
-  "entrypoints/node_main/node_main-meta.ts | showConnection": {
+  "entrypoints/node_app/node_app.ts | showConnection": {
     "message": "Tampilkan Koneksi"
+  },
+  "entrypoints/node_app/node_app.ts | showNode": {
+    "message": "Node"
   },
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Utama"
@@ -1322,8 +1340,8 @@
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-Origin Resource Sharing (CORS)"
   },
-  "models/issues_manager/CorsIssue.ts | corsForPrivateNetworksRfc": {
-    "message": "CORS untuk jaringan pribadi (RFC1918)"
+  "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
+    "message": "Akses Jaringan Pribadi"
   },
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | coopAndCoep": {
     "message": "COOP dan COEP"
@@ -1559,8 +1577,17 @@
   "panels/accessibility/AXBreadcrumbsPane.ts | accessibilityTree": {
     "message": "Hierarki Aksesibilitas"
   },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentDescription": {
+    "message": "Hierarki aksesibilitas dipindahkan ke pojok kanan atas hierarki DOM."
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
+    "message": "Aktifkan hierarki aksesibilitas dalam layar penuh"
+  },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "Diabaikan"
+  },
+  "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
+    "message": "Perlu memuat ulang sebelum perubahan dapat diterapkan."
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Scroll ke tampilan"
@@ -2232,7 +2259,7 @@
     "message": "Warna tema"
   },
   "panels/application/ApplicationPanelCacheSection.ts | backForwardCache": {
-    "message": "Back-forward Cache"
+    "message": "Back-forward cache"
   },
   "panels/application/ApplicationPanelCacheSection.ts | cacheStorage": {
     "message": "Penyimpanan Cache"
@@ -2396,51 +2423,6 @@
   "panels/application/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "Dokumen belum selesai dimuat sebelum pengguna menutupnya."
   },
-  "panels/application/BackForwardCacheStrings.ts | embedderAppBannerManager": {
-    "message": "EmbedderAppBannerManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
-    "message": "EmbedderChromePasswordManagerClientBindCredentialManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
-    "message": "EmbedderDomDistillerSelfDeletingRequestDelegate"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
-    "message": "EmbedderDomDistillerViewerSource"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
-    "message": "EmbedderExtensionMessaging"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
-    "message": "EmbedderExtensionMessagingForOpenPort"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
-    "message": "EmbedderExtensionSentMessageToCachedFrame"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderExtensions": {
-    "message": "EmbedderExtensions"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderModalDialog": {
-    "message": "EmbedderModalDialog"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOfflinePage": {
-    "message": "EmbedderOfflinePage"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
-    "message": "EmbedderOomInterventionTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
-    "message": "EmbedderPermissionRequestManager"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
-    "message": "EmbedderPopupBlockerTabHelper"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
-    "message": "EmbedderSafeBrowsingThreatDetails"
-  },
-  "panels/application/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "EmbedderSafeBrowsingTriggeredPopupBlocker"
-  },
   "panels/application/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Pekerja layanan diaktifkan saat halaman berada dalam back-forward cache."
   },
@@ -2504,9 +2486,6 @@
   "panels/application/BackForwardCacheStrings.ts | notMainFrame": {
     "message": "Navigasi terjadi di frame selain frame utama."
   },
-  "panels/application/BackForwardCacheStrings.ts | optInUnloadHeaderNotPresent": {
-    "message": "Halaman memiliki pengendali penghapus muatan tanpa header pengaktifan back-forward cache."
-  },
   "panels/application/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
     "message": "Halaman dengan indexed DB transactions yang sedang berlangsung saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
@@ -2535,7 +2514,7 @@
     "message": "Halaman yang menampilkan UI Pencetakan saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
   "panels/application/BackForwardCacheStrings.ts | relatedActiveContentsExist": {
-    "message": "Halaman dibuka menggunakan window.open() dan tab lain memiliki referensi ke halaman tersebut, atau halaman membuka jendela."
+    "message": "Halaman dibuka menggunakan 'window.open()' dan tab lain memiliki referensi ke halaman tersebut, atau halaman membuka jendela."
   },
   "panels/application/BackForwardCacheStrings.ts | rendererProcessCrashed": {
     "message": "Proses rendering untuk halaman dalam back-forward cache mengalami error."
@@ -2649,10 +2628,7 @@
     "message": "Halaman yang menggunakan WebXR saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
   "panels/application/BackForwardCacheView.ts | backForwardCacheTitle": {
-    "message": "Back-forward Cache"
-  },
-  "panels/application/BackForwardCacheView.ts | bfcacheStatus": {
-    "message": "Status Back-forward Cache"
+    "message": "Back-forward cache"
   },
   "panels/application/BackForwardCacheView.ts | circumstantial": {
     "message": "Tidak Dapat Ditindaklanjuti"
@@ -2660,11 +2636,14 @@
   "panels/application/BackForwardCacheView.ts | circumstantialExplanation": {
     "message": "Anda tidak dapat mengambil tindakan ini karena proses cache dicegah oleh sesuatu di luar kontrol langsung halaman."
   },
+  "panels/application/BackForwardCacheView.ts | learnMore": {
+    "message": "Pelajari lebih lanjut: kelayakan back-forward cache"
+  },
   "panels/application/BackForwardCacheView.ts | mainFrame": {
     "message": "Frame Utama"
   },
   "panels/application/BackForwardCacheView.ts | normalNavigation": {
-    "message": "Navigasi normal (Tidak dipulihkan dari back-forward cache)"
+    "message": "Tidak disalurkan dari back-forward cache: untuk memicu back-forward cache, gunakan tombol back/forward Chrome, atau gunakan tombol uji di bawah untuk keluar dan kembali secara otomatis."
   },
   "panels/application/BackForwardCacheView.ts | pageSupportNeeded": {
     "message": "Dapat Ditindaklanjuti"
@@ -2673,10 +2652,13 @@
     "message": "Anda dapat mengambil tindakan ini untuk menyelesaikan masalah dan membuat halaman dapat disimpan dengan benar dalam back-forward cache."
   },
   "panels/application/BackForwardCacheView.ts | restoredFromBFCache": {
-    "message": "Dipulihkan dari back-forward cache"
+    "message": "Berhasil disalurkan dari back-forward cache."
   },
   "panels/application/BackForwardCacheView.ts | runTest": {
-    "message": "Jalankan Pengujian"
+    "message": "Uji back-forward cache"
+  },
+  "panels/application/BackForwardCacheView.ts | runningTest": {
+    "message": "Menjalankan pengujian"
   },
   "panels/application/BackForwardCacheView.ts | supportPending": {
     "message": "Dukungan Tertunda"
@@ -2688,10 +2670,10 @@
     "message": "tidak tersedia"
   },
   "panels/application/BackForwardCacheView.ts | unknown": {
-    "message": "tidak dikenal"
+    "message": "Status Tak Diketahui"
   },
   "panels/application/BackForwardCacheView.ts | url": {
-    "message": "URL"
+    "message": "URL:"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
     "message": "Pengambilan Latar Belakang"
@@ -3297,22 +3279,16 @@
     "message": "Klik untuk mengungkapkan di panel Sumber"
   },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
-    "message": "Terdapat skrip iklan dalam stack (asinkron) saat frame ini dibuat. Memeriksa pelacakan stack pembuatan frame ini dapat memberikan lebih banyak data."
+    "message": "Terdapat skrip iklan dalam (async) stack saat frame ini dibuat. Memeriksa stack trace pembuatan frame ini dapat memberikan lebih banyak data."
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTrace": {
-    "message": "Pelacakan Tumpukan Pembuatan Frame"
+    "message": "Stack Trace Pembuatan Frame"
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
-    "message": "Frame ini dibuat secara terprogram. Pelacakan tumpukan menampilkan tempat dibuatnya frame ini."
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Kebijakan Penyemat Lintas Asal"
+    "message": "Frame ini dibuat secara terprogram. stack trace menampilkan lokasi proses ini terjadi."
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Diisolasi Lintas Asal"
-  },
-  "panels/application/components/FrameDetailsView.ts | crossoriginOpenerPolicy": {
-    "message": "Kebijakan Pembuka Lintas Asal"
   },
   "panels/application/components/FrameDetailsView.ts | document": {
     "message": "Dokumen"
@@ -3324,7 +3300,7 @@
     "message": "Pelajari lebih lanjut"
   },
   "panels/application/components/FrameDetailsView.ts | localhostIsAlwaysASecureContext": {
-    "message": "Localhost selalu berupa konteks yang aman"
+    "message": "Localhost selalu berupa konteks aman"
   },
   "panels/application/components/FrameDetailsView.ts | matchedBlockingRuleExplanation": {
     "message": "Frame ini dianggap sebagai frame iklan karena dokumen utamanya saat ini (atau yang sebelumnya) adalah sumber iklan."
@@ -3337,9 +3313,6 @@
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Asal"
-  },
-  "panels/application/components/FrameDetailsView.ts | originTrials": {
-    "message": "Uji Coba Asal"
   },
   "panels/application/components/FrameDetailsView.ts | ownerElement": {
     "message": "Elemen Pemilik"
@@ -3366,10 +3339,10 @@
     "message": "Keamanan & Isolasi"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIs": {
-    "message": "Konstruktor SharedArrayBuffer tersedia dan SAB dapat ditransfer melalui portMessage"
+    "message": "Konstruktor SharedArrayBuffer tersedia dan SABs dapat ditransfer melalui postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | sharedarraybufferConstructorIsAvailable": {
-    "message": "Konstruktor SharedArrayBuffer tersedia, tetapi SAB tidak dapat ditransfer melalui portMessage"
+    "message": "Konstruktor SharedArrayBuffer tersedia, tetapi SABs tidak dapat ditransfer melalui postMessage"
   },
   "panels/application/components/FrameDetailsView.ts | theFramesSchemeIsInsecure": {
     "message": "Skema frame tidak aman"
@@ -4229,20 +4202,11 @@
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width diterapkan ke elemen inline"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | activelyWorkingAndLookingForS": {
-    "message": "Tim kami secara aktif berupaya meningkatkan kualitas fitur ini dan kami menantikan {PH1} Anda."
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
     "message": "Ambil screenshot ringkasan"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
     "message": "Merekam ringkasan CSS halaman Anda"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackInline": {
-    "message": "masukan"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | feedbackStandalone": {
-    "message": "Masukan"
   },
   "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
     "message": "Mengidentifikasi peningkatan CSS potensial"
@@ -4253,14 +4217,8 @@
   "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
     "message": "Menemukan elemen yang terpengaruh di panel Elements"
   },
-  "panels/css_overview/components/CSSOverviewStartView.ts | previewFeature": {
-    "message": "Fitur pratinjau"
-  },
   "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
     "message": "Mulai cepat: mulai menggunakan panel Ringkasan CSS yang baru"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | videoAndDocumentation": {
-    "message": "Video dan dokumentasi"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Ringkasan CSS"
@@ -4591,6 +4549,21 @@
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
     "message": "Font yang Dirender"
+  },
+  "panels/elements/PropertiesWidget.ts | filter": {
+    "message": "Filter"
+  },
+  "panels/elements/PropertiesWidget.ts | filterProperties": {
+    "message": "Filter Properti"
+  },
+  "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
+    "message": "Tidak ada properti yang cocok"
+  },
+  "panels/elements/PropertiesWidget.ts | showAll": {
+    "message": "Tampilkan semua"
+  },
+  "panels/elements/PropertiesWidget.ts | showAllTooltip": {
+    "message": "Jika centang dihapus, hanya properti yang nilainya null atau tidak ditentukan yang akan ditampilkan"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Salin semua deklarasi sebagai JS"
@@ -4980,7 +4953,7 @@
     "message": "Sembunyikan kueri media"
   },
   "panels/emulation/emulation-meta.ts | hideRulers": {
-    "message": "Sembunyikan penggaris"
+    "message": "Sembunyikan penggaris di toolbar Mode Perangkat"
   },
   "panels/emulation/emulation-meta.ts | showDeviceFrame": {
     "message": "Tampilkan frame perangkat"
@@ -4989,7 +4962,7 @@
     "message": "Tampilkan kueri media"
   },
   "panels/emulation/emulation-meta.ts | showRulers": {
-    "message": "Tampilkan penggaris"
+    "message": "Tampilkan penggaris di toolbar Mode Perangkat"
   },
   "panels/emulation/emulation-meta.ts | toggleDeviceToolbar": {
     "message": "Alihkan toolbar perangkat"
@@ -5014,36 +4987,6 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Tombol alih jika pemroses peristiwa pasif atau memblokir"
-  },
-  "panels/help/ReleaseNoteView.ts | close": {
-    "message": "Tutup"
-  },
-  "panels/help/ReleaseNoteView.ts | learnMore": {
-    "message": "Pelajari lebih lanjut"
-  },
-  "panels/help/help-meta.ts | bug": {
-    "message": "bug"
-  },
-  "panels/help/help-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Jangan tampilkan Yang Baru setelah setiap update"
-  },
-  "panels/help/help-meta.ts | releaseNotes": {
-    "message": "Catatan rilis"
-  },
-  "panels/help/help-meta.ts | reportADevtoolsIssue": {
-    "message": "Melaporkan masalah DevTools"
-  },
-  "panels/help/help-meta.ts | reportTranslationIssue": {
-    "message": "Laporkan masalah terjemahan"
-  },
-  "panels/help/help-meta.ts | showWhatsNew": {
-    "message": "Tampilkan Yang Baru"
-  },
-  "panels/help/help-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Tampikan Yang Baru setelah setiap update"
-  },
-  "panels/help/help-meta.ts | whatsNew": {
-    "message": "Yang Baru"
   },
   "panels/input/InputTimeline.ts | clearAll": {
     "message": "Hapus semua"
@@ -5261,8 +5204,20 @@
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceEventId": {
     "message": "attributionsourceeventid tidak valid"
   },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourceExpiry": {
+    "message": "attributionexpiry tidak valid"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidSourcePriority": {
+    "message": "attributionsourcepriority tidak valid"
+  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerData": {
     "message": "trigger-data tidak valid"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerDedupKey": {
+    "message": "dedup-key tidak valid"
+  },
+  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidTriggerPriority": {
+    "message": "priority tidak valid"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# pelanggaran}other{# pelanggaran}}"
@@ -5290,6 +5245,9 @@
   },
   "panels/issues/CorsIssueDetailsView.ts | disallowedRequestMethod": {
     "message": "Metode Permintaan yang Tidak Diizinkan"
+  },
+  "panels/issues/CorsIssueDetailsView.ts | failedRequest": {
+    "message": "Permintaan Gagal"
   },
   "panels/issues/CorsIssueDetailsView.ts | header": {
     "message": "Header"
@@ -5366,8 +5324,14 @@
   "panels/issues/HiddenIssuesRow.ts | unhideAll": {
     "message": "Perlihatkan semua"
   },
-  "panels/issues/IssueKindView.ts | hideAllCurrent": {
-    "message": "Sembunyikan semua {PH1} terbaru"
+  "panels/issues/IssueKindView.ts | hideAllCurrentBreakingChanges": {
+    "message": "Sembunyikan semua Perubahan yang Dapat Menyebabkan Gangguan saat ini"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentImprovements": {
+    "message": "Sembunyikan semua Peningkatan saat ini"
+  },
+  "panels/issues/IssueKindView.ts | hideAllCurrentPageErrors": {
+    "message": "Sembunyikan semua Error Halaman saat ini"
   },
   "panels/issues/IssueView.ts | affectedResources": {
     "message": "Resource yang Terpengaruh"
@@ -6307,6 +6271,9 @@
   },
   "panels/network/NetworkConfigView.ts | caching": {
     "message": "Menyimpan ke cache"
+  },
+  "panels/network/NetworkConfigView.ts | clientHintsStatusText": {
+    "message": "Agen pengguna diupdate."
   },
   "panels/network/NetworkConfigView.ts | custom": {
     "message": "Kustom..."
@@ -9153,7 +9120,7 @@
     "message": "Cakupan: t/a"
   },
   "panels/sources/CoveragePlugin.ts | coverageS": {
-    "message": "Cakupan: {PH1} %"
+    "message": "Cakupan: {PH1}"
   },
   "panels/sources/CoveragePlugin.ts | showDetails": {
     "message": "Tampilkan Detail"
@@ -9412,6 +9379,15 @@
   },
   "panels/sources/OutlineQuickOpen.ts | openAJavascriptOrCssFileToSee": {
     "message": "Buka file JavaScript atau CSS untuk melihat simbol"
+  },
+  "panels/sources/ProfilePlugin.ts | kb": {
+    "message": "kB"
+  },
+  "panels/sources/ProfilePlugin.ts | mb": {
+    "message": "MB"
+  },
+  "panels/sources/ProfilePlugin.ts | ms": {
+    "message": "md"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Penutup"
@@ -11429,6 +11405,24 @@
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Tampilkan Pemeriksa Memori"
   },
+  "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
+    "message": "Masukan"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
+    "message": "Fitur pratinjau"
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
+    "message": "Tim kami secara aktif berupaya meningkatkan kualitas fitur ini dan kami menantikan pendapat Anda."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | previewTextFeedbackLink": {
+    "message": "Kirim masukan Anda."
+  },
+  "ui/components/panel_feedback/PanelFeedback.ts | videoAndDocumentation": {
+    "message": "Video dan dokumentasi"
+  },
+  "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
+    "message": "Kirim masukan Anda."
+  },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
     "message": "Klik guna membuka panel jaringan dan menampilkan permintaan untuk URL: {url}"
   },
@@ -11500,6 +11494,12 @@
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Panel samping alat"
+  },
+  "ui/legacy/InspectorView.ts | drawerHidden": {
+    "message": "Panel samping disembunyikan"
+  },
+  "ui/legacy/InspectorView.ts | drawerShown": {
+    "message": "Panel samping ditampilkan"
   },
   "ui/legacy/InspectorView.ts | mainToolbar": {
     "message": "Toolbar utama"
@@ -11774,6 +11774,9 @@
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "Nama"
   },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
+    "message": "(buram)"
+  },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sesi"
   },
@@ -11942,15 +11945,6 @@
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Tampilkan sebagai objek JavaScript"
   },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keys": {
-    "message": "Kunci"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | keywords": {
-    "message": "kata kunci"
-  },
-  "ui/legacy/components/object_ui/JavaScriptAutocomplete.ts | lexicalScopeVariables": {
-    "message": "Variabel cakupan leksikal"
-  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | collapseChildren": {
     "message": "Ciutkan turunan"
   },
@@ -12037,15 +12031,6 @@
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | sSelected": {
     "message": "{PH1} dipilih"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | kb": {
-    "message": "kB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | mb": {
-    "message": "MB"
-  },
-  "ui/legacy/components/perf_ui/LineLevelProfile.ts | ms": {
-    "message": "md"
   },
   "ui/legacy/components/perf_ui/NetworkPriorities.ts | high": {
     "message": "Tinggi"
@@ -12223,9 +12208,6 @@
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | tabCharacter": {
     "message": "Karakter tab"
-  },
-  "ui/legacy/components/text_editor/CodeMirrorTextEditor.ts | codeEditor": {
-    "message": "Editor kode"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
     "message": "Sumber saat ini:"

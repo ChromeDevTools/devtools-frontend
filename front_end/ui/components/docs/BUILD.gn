@@ -1,6 +1,7 @@
 # Copyright 2020 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
+import("../../../../scripts/build/ninja/copy.gni")
 import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
@@ -8,6 +9,7 @@ group("docs") {
   testonly = true
   public_deps = [
     ":bundle",
+    ":component_doc_styles",
     "../../../Images",
     "./button",
     "./color_swatch",
@@ -44,6 +46,11 @@ group("docs") {
     "./user_agent_client_hints",
     "./webvitals",
   ]
+}
+
+copy_to_gen("component_doc_styles") {
+  testonly = true
+  sources = [ "component_docs_styles.css" ]
 }
 
 ts_library("bundle") {

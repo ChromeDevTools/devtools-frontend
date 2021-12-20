@@ -150,20 +150,12 @@ function createServerIndexFile(componentNames) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
-      <style>
-        a:link, a:visited {
-          color: blue;
-          text-transform: capitalize;
-          text-decoration: none;
-        }
-        a:hover {
-          text-decoration: underline;
-        }
-      </style>
+      <link rel="stylesheet" href="/front_end/ui/legacy/themeColors.css" />
+      <link rel="stylesheet" href="/front_end/ui/components/docs/component_docs_styles.css" />
     </head>
-    <body>
+    <body id="index-page">
       <h1>DevTools components</h1>
-      <ul>
+      <ul class="components-list">
         ${componentNames.map(name => {
           const niceName = name.replace(/_/g, ' ');
           return `<li><a href='/front_end/ui/components/docs/${name}'>${niceName}</a></li>`;

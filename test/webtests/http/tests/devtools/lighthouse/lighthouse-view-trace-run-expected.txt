@@ -41,6 +41,7 @@ network-requests
 network-rtt
 network-server-latency
 no-document-write
+no-unload-listeners
 non-composited-animations
 offscreen-images
 performance-budget

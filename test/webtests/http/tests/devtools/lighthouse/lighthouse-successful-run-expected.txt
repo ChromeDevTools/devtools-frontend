@@ -194,16 +194,13 @@ Auditing: Web app manifest and service worker meet the installability requiremen
 Computing artifact: ManifestValues$4
 Auditing: Provides a valid `apple-touch-icon`
 Auditing: Configured for a custom splash screen
-Computing artifact: ManifestValues$4
 Auditing: Sets a theme color for the address bar.
-Computing artifact: ManifestValues$4
 Auditing: Manifest has a maskable icon
 Auditing: Content is sized correctly for the viewport
 Auditing: Displays images with correct aspect ratio
 Auditing: Serves images with appropriate resolution
 Auditing: Fonts with `font-display: optional` are preloaded
 Auditing: Avoids deprecated APIs
-Computing artifact: JSBundles
 Auditing: Minimizes main-thread work
 Computing artifact: MainThreadTasks$7
 Auditing: JavaScript execution time
@@ -235,7 +232,6 @@ Auditing: Preload Largest Contentful Paint image
 Auditing: Ensure CSP is effective against XSS attacks
 Auditing: Full-page screenshot
 Auditing: Script Treemap Data
-Computing artifact: JSBundles
 Computing artifact: ModuleDuplication$2
 Auditing: Site works cross-browser
 Auditing: Page transitions don't feel like they block on the network
@@ -304,7 +300,6 @@ Auditing: Minify CSS
 Auditing: Minify JavaScript
 Auditing: Reduce unused CSS
 Auditing: Reduce unused JavaScript
-Computing artifact: JSBundles
 Auditing: Serve images in next-gen formats
 Auditing: Efficiently encode images
 Auditing: Enable text compression
@@ -312,8 +307,6 @@ Auditing: Properly size images
 Computing artifact: ImageRecords$1
 Auditing: Use video formats for animated content
 Auditing: Remove duplicate modules in JavaScript bundles
-Computing artifact: ModuleDuplication$2
-Computing artifact: JSBundles
 Auditing: Avoid serving legacy JavaScript to modern browsers
 Auditing: Page has the HTML doctype
 Auditing: Properly defines charset
@@ -376,7 +369,7 @@ Generating results...
 
 =============== Lighthouse Results ===============
 URL: http://127.0.0.1:8000/devtools/lighthouse/resources/lighthouse-basic.html
-Version: 9.1.0
+Version: 9.2.0
 ViewportDimensions: {
   "innerWidth": 980,
   "innerHeight": 1743,

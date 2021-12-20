@@ -37,6 +37,7 @@ module.exports = {
         'rulesdir/ban_a_tags_in_lit_html': 2,
         'rulesdir/check_component_naming': 2,
         'rulesdir/check_css_import': 2,
+        'rulesdir/check_enumerated_histograms': 2,
         'rulesdir/check_was_shown_methods': 2,
         'rulesdir/static_custom_event_names': 2,
         'rulesdir/lit_html_host_this': 2,

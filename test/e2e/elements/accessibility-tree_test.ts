@@ -41,8 +41,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await waitForAria('link\xa0"dogs"\xa0focusable:\xa0true[role="treeitem"]');
   });
 
-  // Skipped while investigating root cause.
-  it.skip('[crbug.com/1277397]: listen for changes to properties and redraws tree', async () => {
+  it('listens for changes to properties and redraws tree', async () => {
     await enableExperiment('fullAccessibilityTree');
     await goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityTree();

@@ -1047,6 +1047,7 @@ declare namespace Protocol {
        * https://www.chromestatus.com/feature/5684870116278272 for more details."
        */
       message?: string;
+      deprecationType: string;
     }
 
     export const enum ClientHintIssueReason {

@@ -502,4 +502,62 @@ describe('Parsed URL', () => {
     assert.strictEqual(
         ParsedURL.completeURL('http://example.com/path.css?query#fragment', ''), 'http://example.com/path.css?query');
   });
+
+  it('encodes partial path', () => {
+    const pathTest = 'path/with%20escape/and spaces' as Platform.DevToolsPath.RawPathString;
+    const encodedPath = 'path/with%2520escape/and%20spaces';
+    const convertedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    assert.strictEqual(convertedPath, encodedPath, 'path was not converted successfully');
+  });
+
+  it('decodes partial path', () => {
+    const pathTest = 'path/with%20escape/and spaces';
+    const encodedPath = 'path/with%2520escape/and%20spaces' as Platform.DevToolsPath.EncodedPathString;
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('encodes, decodes partial path with email address', () => {
+    const pathTest = 'username:password@example.com' as Platform.DevToolsPath.RawPathString;  // valid filename on unix
+    const encodedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    assert.strictEqual(pathTest, encodedPath as string, 'changed during escaping');
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('encodes, decodes partial path', () => {
+    const pathTest = 'C:/Program%20Files/Google' as Platform.DevToolsPath.RawPathString;
+    const encodedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('encodes, decodes partial path with whitespace', () => {
+    const pathTest = 'C:/Program Files/Google' as Platform.DevToolsPath.RawPathString;
+    const encodedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('encodes, decodes absolute path', () => {
+    const pathTest = '/C:/Program%20Files/Google' as Platform.DevToolsPath.RawPathString;
+    const encodedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('encodes, decodes absolute path with whitespace', () => {
+    const pathTest = '/C:/Program Files/Google' as Platform.DevToolsPath.RawPathString;
+    const encodedPath = ParsedURL.rawPathToEncodedPathString(pathTest);
+    const convertedPath = ParsedURL.encodedPathToRawPathString(encodedPath);
+    assert.strictEqual(convertedPath, pathTest, 'path was not converted successfully');
+  });
+
+  it('converts relative platform path and base URL to URL', () => {
+    const baseUrl = 'http://localhost:8080/my%20folder/old%20path' as Platform.DevToolsPath.UrlString;
+    const relativePath = 'new spaced%20name' as Platform.DevToolsPath.RawPathString;
+    const convertedUrl = ParsedURL.relativePathToUrlString(relativePath, baseUrl);
+    assert.strictEqual(convertedUrl, 'http://localhost:8080/my%20folder/new%20spaced%2520name');
+  });
+
 });

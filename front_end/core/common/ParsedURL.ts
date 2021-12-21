@@ -110,6 +110,30 @@ export class ParsedURL {
     return null;
   }
 
+  private static preEncodeSpecialCharactersInPath(path: string): string {
+    // Based on net::FilePathToFileURL. Ideally we would handle
+    // '\\' as well on non-Windows file systems.
+    for (const specialChar of ['%', ';', '#', '?']) {
+      (path as string) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
+    }
+    return path;
+  }
+
+  static rawPathToEncodedPathString(path: Platform.DevToolsPath.RawPathString):
+      Platform.DevToolsPath.EncodedPathString {
+    const partiallyEncoded = ParsedURL.preEncodeSpecialCharactersInPath(path);
+    if (path.startsWith('/')) {
+      return new URL(partiallyEncoded, 'file:///').pathname as Platform.DevToolsPath.EncodedPathString;
+    }
+    // URL prepends a '/'
+    return new URL('/' + partiallyEncoded, 'file:///').pathname.substr(1) as Platform.DevToolsPath.EncodedPathString;
+  }
+
+  static encodedPathToRawPathString(encPath: Platform.DevToolsPath.EncodedPathString):
+      Platform.DevToolsPath.RawPathString {
+    return decodeURIComponent(encPath) as Platform.DevToolsPath.RawPathString;
+  }
+
   static rawPathToUrlString(fileSystemPath: Platform.DevToolsPath.RawPathString): Platform.DevToolsPath.UrlString {
     let rawPath: string = fileSystemPath;
     rawPath = rawPath.replace(/\\/g, '/');
@@ -121,6 +145,13 @@ export class ParsedURL {
       }
     }
     return rawPath as Platform.DevToolsPath.UrlString;
+  }
+
+  static relativePathToUrlString(relativePath: string, baseURL: Platform.DevToolsPath.UrlString):
+      Platform.DevToolsPath.UrlString {
+    const preEncodedPath: string = ParsedURL.preEncodeSpecialCharactersInPath(
+        relativePath.replace(/\\/g, '/') as Platform.DevToolsPath.RawPathString);
+    return new URL(preEncodedPath, baseURL).toString() as Platform.DevToolsPath.UrlString;
   }
 
   static capFilePrefix(fileURL: Platform.DevToolsPath.UrlString, isWindows?: boolean):

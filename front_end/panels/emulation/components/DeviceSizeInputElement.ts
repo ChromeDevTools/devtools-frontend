@@ -73,6 +73,8 @@ export class SizeInputElement extends HTMLElement {
           max-height: 18px;
           margin: 0 2px;
           text-align: center;
+          font-size: inherit;
+          font-family: inherit;
         }
 
         input:disabled {

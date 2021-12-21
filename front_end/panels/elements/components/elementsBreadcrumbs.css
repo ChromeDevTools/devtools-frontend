@@ -22,6 +22,8 @@
   white-space: nowrap;
   position: relative;
   background: var(--color-background);
+  font-size: inherit;
+  font-family: inherit;
 }
 
 .crumbs-window {

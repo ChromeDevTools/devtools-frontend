@@ -103,6 +103,7 @@ devtools_svg_sources = [
   "ic_suggest_color.svg",
   "ic_undo_16x16_icon.svg",
   "ic_warning_black_18dp.svg",
+  "info-icon.svg",
   "issue-cross-icon.svg",
   "issue-exclamation-icon.svg",
   "issue-questionmark-icon.svg",

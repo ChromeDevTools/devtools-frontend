@@ -93,6 +93,7 @@ grd_files_release_sources = [
   "front_end/Images/ic_suggest_color.svg",
   "front_end/Images/ic_undo_16x16_icon.svg",
   "front_end/Images/ic_warning_black_18dp.svg",
+  "front_end/Images/info-icon.svg",
   "front_end/Images/issue-cross-icon.svg",
   "front_end/Images/issue-exclamation-icon.svg",
   "front_end/Images/issue-questionmark-icon.svg",

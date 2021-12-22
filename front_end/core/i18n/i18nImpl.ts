@@ -104,40 +104,18 @@ export function getFormatLocalizedString(
   const formatter =
       registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
 
-  const icuElements = formatter.getAst();
-  const args: Array<Object> = [];
-  let formattedString = '';
-  for (const element of icuElements) {
-    if (element.type === /* argumentElement */ 1) {
-      const placeholderValue = placeholders[element.value];
+  const element = document.createElement('span');
+  for (const icuElement of formatter.getAst()) {
+    if (icuElement.type === /* argumentElement */ 1) {
+      const placeholderValue = placeholders[icuElement.value];
       if (placeholderValue) {
-        args.push(placeholderValue);
-        element.value = '%s';  // convert the {PH} back to %s to use Platform.UIString
+        element.append(placeholderValue as Node | string);
       }
-    }
-    if ('value' in element) {
-      formattedString += element.value;
+    } else if ('value' in icuElement) {
+      element.append(String(icuElement.value));
     }
   }
-  return formatLocalized(formattedString, args);
-}
-
-export function formatLocalized(formattedString: string, args: Array<Object>): Element {
-  const substitution: Platform.StringUtilities.FormatterFunction<Object> = substitution => {
-    return substitution;
-  };
-
-  function append(a: Element, b: undefined|string|Node): Element {
-    if (b) {
-      a.appendChild(typeof b === 'string' ? document.createTextNode(b) : b);
-    }
-
-    return a;
-  }
-
-  const formatters = {s: substitution};
-  return Platform.StringUtilities.format(formattedString, args, formatters, document.createElement('span'), append)
-      .formattedResult;
+  return element;
 }
 
 export function serializeUIString(string: string, values: Record<string, Object> = {}): string {

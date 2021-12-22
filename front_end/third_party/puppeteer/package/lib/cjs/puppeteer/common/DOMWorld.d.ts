@@ -147,6 +147,7 @@ export declare class DOMWorld {
 export interface WaitTaskOptions {
     domWorld: DOMWorld;
     predicateBody: Function | string;
+    predicateAcceptsContextElement: boolean;
     title: string;
     polling: string | number;
     timeout: number;
@@ -162,6 +163,7 @@ export declare class WaitTask {
     _polling: string | number;
     _timeout: number;
     _predicateBody: string;
+    _predicateAcceptsContextElement: boolean;
     _args: SerializableOrJSHandle[];
     _binding: PageBinding;
     _runCount: number;

@@ -7110,6 +7110,7 @@ export declare class HTTPResponse {
              _polling: string | number;
              _timeout: number;
              _predicateBody: string;
+             _predicateAcceptsContextElement: boolean;
              _args: SerializableOrJSHandle[];
              _binding: PageBinding;
              _runCount: number;
@@ -7131,6 +7132,7 @@ export declare class HTTPResponse {
          export declare interface WaitTaskOptions {
              domWorld: DOMWorld;
              predicateBody: Function | string;
+             predicateAcceptsContextElement: boolean;
              title: string;
              polling: string | number;
              timeout: number;

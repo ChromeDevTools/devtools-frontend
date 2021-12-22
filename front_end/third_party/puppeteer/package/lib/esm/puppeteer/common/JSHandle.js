@@ -269,11 +269,21 @@ export class ElementHandle extends JSHandle {
      * (30 seconds). Pass `0` to disable timeout. The default value can be changed
      * by using the {@link Page.setDefaultTimeout} method.
      */
-    waitForSelector(selector, options = {}) {
-        return this._context._world.waitForSelector(selector, {
+    async waitForSelector(selector, options = {}) {
+        const frame = this._context.frame();
+        const secondaryContext = await frame._secondaryWorld.executionContext();
+        const adoptedRoot = await secondaryContext._adoptElementHandle(this);
+        const handle = await frame._secondaryWorld.waitForSelector(selector, {
             ...options,
-            root: this,
+            root: adoptedRoot,
         });
+        await adoptedRoot.dispose();
+        if (!handle)
+            return null;
+        const mainExecutionContext = await frame._mainWorld.executionContext();
+        const result = await mainExecutionContext._adoptElementHandle(handle);
+        await handle.dispose();
+        return result;
     }
     asElement() {
         return this;

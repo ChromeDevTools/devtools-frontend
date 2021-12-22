@@ -419,6 +419,7 @@ class DOMWorld {
         const waitTaskOptions = {
             domWorld: this,
             predicateBody: helper_js_1.helper.makePredicateString(predicate, queryOne),
+            predicateAcceptsContextElement: true,
             title,
             polling,
             timeout,
@@ -446,6 +447,7 @@ class DOMWorld {
         const waitTaskOptions = {
             domWorld: this,
             predicateBody: helper_js_1.helper.makePredicateString(predicate),
+            predicateAcceptsContextElement: true,
             title,
             polling,
             timeout,
@@ -466,6 +468,7 @@ class DOMWorld {
         const waitTaskOptions = {
             domWorld: this,
             predicateBody: pageFunction,
+            predicateAcceptsContextElement: false,
             title: 'function',
             polling,
             timeout,
@@ -487,6 +490,7 @@ class WaitTask {
     constructor(options) {
         this._runCount = 0;
         this._terminated = false;
+        this._root = null;
         if (helper_js_1.helper.isString(options.polling))
             (0, assert_js_1.assert)(options.polling === 'raf' || options.polling === 'mutation', 'Unknown polling option: ' + options.polling);
         else if (helper_js_1.helper.isNumber(options.polling))
@@ -503,6 +507,8 @@ class WaitTask {
         this._timeout = options.timeout;
         this._root = options.root;
         this._predicateBody = getPredicateBody(options.predicateBody);
+        this._predicateAcceptsContextElement =
+            options.predicateAcceptsContextElement;
         this._args = options.args;
         this._binding = options.binding;
         this._runCount = 0;
@@ -540,12 +546,7 @@ class WaitTask {
         if (this._terminated || runCount !== this._runCount)
             return;
         try {
-            if (this._root) {
-                success = await this._root.evaluateHandle(waitForPredicatePageFunction, this._predicateBody, this._polling, this._timeout, ...this._args);
-            }
-            else {
-                success = await context.evaluateHandle(waitForPredicatePageFunction, null, this._predicateBody, this._polling, this._timeout, ...this._args);
-            }
+            success = await context.evaluateHandle(waitForPredicatePageFunction, this._root || null, this._predicateBody, this._predicateAcceptsContextElement, this._polling, this._timeout, ...this._args);
         }
         catch (error_) {
             error = error_;
@@ -595,7 +596,7 @@ class WaitTask {
     }
 }
 exports.WaitTask = WaitTask;
-async function waitForPredicatePageFunction(root, predicateBody, polling, timeout, ...args) {
+async function waitForPredicatePageFunction(root, predicateBody, predicateAcceptsContextElement, polling, timeout, ...args) {
     root = root || document;
     const predicate = new Function('...args', predicateBody);
     let timedOut = false;
@@ -611,7 +612,9 @@ async function waitForPredicatePageFunction(root, predicateBody, polling, timeou
      * @returns {!Promise<*>}
      */
     async function pollMutation() {
-        const success = await predicate(root, ...args);
+        const success = predicateAcceptsContextElement
+            ? await predicate(root, ...args)
+            : await predicate(...args);
         if (success)
             return Promise.resolve(success);
         let fulfill;
@@ -621,7 +624,9 @@ async function waitForPredicatePageFunction(root, predicateBody, polling, timeou
                 observer.disconnect();
                 fulfill();
             }
-            const success = await predicate(root, ...args);
+            const success = predicateAcceptsContextElement
+                ? await predicate(root, ...args)
+                : await predicate(...args);
             if (success) {
                 observer.disconnect();
                 fulfill(success);
@@ -644,7 +649,9 @@ async function waitForPredicatePageFunction(root, predicateBody, polling, timeou
                 fulfill();
                 return;
             }
-            const success = await predicate(root, ...args);
+            const success = predicateAcceptsContextElement
+                ? await predicate(root, ...args)
+                : await predicate(...args);
             if (success)
                 fulfill(success);
             else
@@ -661,7 +668,9 @@ async function waitForPredicatePageFunction(root, predicateBody, polling, timeou
                 fulfill();
                 return;
             }
-            const success = await predicate(root, ...args);
+            const success = predicateAcceptsContextElement
+                ? await predicate(root, ...args)
+                : await predicate(...args);
             if (success)
                 fulfill(success);
             else

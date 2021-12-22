@@ -420,6 +420,10 @@ const UIStrings = {
       * @description Description text for not restored reason ContentMediaPlay.
       */
   contentMediaPlay: 'A media player was playing upon navigating away.',
+  /**
+      * @description Description text for not restored reason ContentScreenReader.
+      */
+  contentScreenReader: 'Back/forward cache is disabled due to screen reader.',
 
   /**
  *  @description Description text for not restored reason EmbedderPopupBlockerTabHelper.
@@ -615,7 +619,7 @@ export const NotRestoredReasonDescription = {
   'ContentMediaSession': {name: i18nLazyString(UIStrings.contentMediaSession)},
   'ContentMediaSessionService': {name: i18nLazyString(UIStrings.contentMediaSessionService)},
   'ContentMediaPlay': {name: i18nLazyString(UIStrings.contentMediaPlay)},
-  'ContentScreenReader': {name: i18n.i18n.lockedLazyString('ContentScreenReader')},
+  'ContentScreenReader': {name: i18nLazyString(UIStrings.contentScreenReader)},
   'EmbedderPopupBlockerTabHelper': {name: i18nLazyString(UIStrings.embedderPopupBlockerTabHelper)},
   'EmbedderSafeBrowsingTriggeredPopupBlocker':
       {name: i18nLazyString(UIStrings.embedderSafeBrowsingTriggeredPopupBlocker)},

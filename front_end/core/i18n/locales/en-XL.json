@@ -2477,6 +2477,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
     "message": "P̂áĝéŝ t́ĥát̂ úŝé M̂éd̂íâŚêśŝíôń ÂṔÎ án̂d́ ŝét̂ áĉt́îón̂ h́âńd̂ĺêŕŝ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô śĉŕêén̂ ŕêád̂ér̂."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "P̂áĝéŝ t́ĥát̂ úŝé Ŝéĉúr̂ít̂ýĤán̂d́l̂ér̂ ár̂é n̂ót̂ él̂íĝíb̂ĺê f́ôŕ b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
   },

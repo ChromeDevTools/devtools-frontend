@@ -2477,6 +2477,9 @@
   "panels/application/components/BackForwardCacheStrings.ts | contentMediaSessionService": {
     "message": "Pages that use MediaSession API and set action handlers are not eligible for back/forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
+    "message": "Back/forward cache is disabled due to screen reader."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "Pages that use SecurityHandler are not eligible for back/forward cache."
   },

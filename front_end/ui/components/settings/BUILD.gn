@@ -18,6 +18,7 @@ devtools_module("settings") {
     "../../../core/common:bundle",
     "../../lit-html:bundle",
     "../helpers:bundle",
+    "../input:bundle",
   ]
 }
 

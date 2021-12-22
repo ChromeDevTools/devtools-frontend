@@ -6,6 +6,7 @@ import type * as Common from '../../../core/common/common.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
+import * as Input from '../input/input.js';
 import settingCheckboxStyles from './settingCheckbox.css.js';
 
 export interface SettingCheckboxData {
@@ -29,7 +30,7 @@ export class SettingCheckbox extends HTMLElement {
   #changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [settingCheckboxStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, settingCheckboxStyles];
   }
 
   set data(data: SettingCheckboxData) {

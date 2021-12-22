@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import styles from './textInput.css.js'; // eslint-disable-line rulesdir/es_modules_import
-
-const textInputStyles = styles;
+import checkboxStyles from './checkbox.css.js';   // eslint-disable-line rulesdir/es_modules_import
+import textInputStyles from './textInput.css.js'; // eslint-disable-line rulesdir/es_modules_import
 
 export {
+  checkboxStyles,
   textInputStyles,
 };

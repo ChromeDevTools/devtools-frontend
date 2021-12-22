@@ -108,7 +108,7 @@ export class WebBundleInfoElement extends HTMLElement {
         } as DataGrid.DataGrid.DataGridData}>
         </${DataGrid.DataGrid.DataGrid.litTagName}>
       </div>`,
-        this.#shadow);
+        this.#shadow, {host: this});
   }
 }
 

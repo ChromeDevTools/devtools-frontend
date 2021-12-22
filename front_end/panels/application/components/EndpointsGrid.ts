@@ -86,7 +86,7 @@ export class EndpointsGrid extends HTMLElement {
           </div>
         `}
       </div>
-    `, this.#shadow);
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 

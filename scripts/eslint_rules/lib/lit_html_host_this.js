@@ -3,16 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-function isLitHtmlRenderCall(callExpressionNode) {
-  if (callExpressionNode.callee.type !== 'MemberExpression') {
-    return false;
-  }
-
-  // TODO: would miss cases where the render function is destructured. Should
-  // we support that case, or enforce that it's not done?
-  const {callee} = callExpressionNode;
-  return callee.object?.name === 'LitHtml' && callee.property?.name === 'render';
-}
+const {isLitHtmlRenderCall} = require('./utils.js');
 
 module.exports = {
   meta: {

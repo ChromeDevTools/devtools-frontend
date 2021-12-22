@@ -26,4 +26,23 @@ function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
   return isLitHtmlDotHtmlCall || isDestructuredHtmlCall;
 }
 
-module.exports = {isLitHtmlTemplateCall};
+/**
+ * @param callExpressionNode - a CallExpression node from the AST of the parsed code.
+ * @returns {boolean} - `true` if the code matches LitHtml.render() or render(), and false otherwise.
+*/
+function isLitHtmlRenderCall(callExpressionNode) {
+  if (callExpressionNode.type !== 'CallExpression') {
+    throw new Error('Node of type other than CallExpresson passed to isLitHtmlRenderCall.');
+  }
+
+  const {callee} = callExpressionNode;
+  const isDestructuredRenderCall = callee.type === 'Identifier' && callee.name === 'render';
+  const isLitHtmlDotRenderCall = callee.object?.name === 'LitHtml' && callee.property?.name === 'render';
+
+  return isDestructuredRenderCall || isLitHtmlDotRenderCall;
+}
+
+module.exports = {
+  isLitHtmlTemplateCall,
+  isLitHtmlRenderCall
+};

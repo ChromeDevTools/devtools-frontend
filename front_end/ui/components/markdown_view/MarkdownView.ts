@@ -46,7 +46,7 @@ export class MarkdownView extends HTMLElement {
       <div class='message'>
         ${this.#tokenData.map(renderToken)}
       </div>
-    `, this.#shadow);
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }

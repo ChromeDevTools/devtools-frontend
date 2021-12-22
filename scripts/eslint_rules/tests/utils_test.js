@@ -37,4 +37,34 @@ describe('eslint utils', () => {
       assert.strictEqual(result, false);
     });
   });
+
+  describe('isLitHtmlRenderCall', () => {
+    it('returns true if the code is LitHtml.render()', () => {
+      const code = 'LitHtml.render(LitHtml.html``, this.#shadow)';
+      const parsed = parser.parse(code);
+      const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
+      assert.strictEqual(result, true);
+    });
+
+    it('returns true if the code is render()', () => {
+      const code = 'render(html``, this.#shadow)';
+      const parsed = parser.parse(code);
+      const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
+      assert.strictEqual(result, true);
+    });
+
+    it('returns false if the code is not render()', () => {
+      const code = 'notRender(html``, this.#shadow)';
+      const parsed = parser.parse(code);
+      const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
+      assert.strictEqual(result, false);
+    });
+
+    it('returns false if the code is LitHtml.notRender()', () => {
+      const code = 'LitHtml.notRender(html``, this.#shadow)';
+      const parsed = parser.parse(code);
+      const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
+      assert.strictEqual(result, false);
+    });
+  });
 });

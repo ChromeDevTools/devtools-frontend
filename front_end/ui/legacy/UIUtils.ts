@@ -583,18 +583,6 @@ export function handleElementValueModifications(
   return false;
 }
 
-export function formatLocalized<U>(format: string, substitutions: ArrayLike<U>|null): Element {
-  const formatters = {
-    s: (substitution: unknown): unknown => substitution,
-  };
-  function append(a: Element, b: string|Element): Element {
-    a.appendChild(typeof b === 'string' ? document.createTextNode(b) : b as Element);
-    return a;
-  }
-  return Platform.StringUtilities.format(format, substitutions, formatters, document.createElement('span'), append)
-      .formattedResult;
-}
-
 export function openLinkExternallyLabel(): string {
   return i18nString(UIStrings.openInNewTab);
 }

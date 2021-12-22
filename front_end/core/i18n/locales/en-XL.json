@@ -12176,6 +12176,9 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Ŝáv̂é"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
+    "message": "D̂éb̂úĝǵîńĝ ćôńn̂éĉt́îón̂ ẃâś ĉĺôśêd́. R̂éâśôń: "
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "R̂éĉón̂ńêćt̂ DevTools"
   },

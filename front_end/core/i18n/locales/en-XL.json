@@ -2510,6 +2510,51 @@
   "panels/application/components/BackForwardCacheStrings.ts | documentLoaded": {
     "message": "T̂h́ê d́ôćûḿêńt̂ d́îd́ n̂ót̂ f́îńîśĥ ĺôád̂ín̂ǵ b̂éf̂ór̂é n̂áv̂íĝát̂ín̂ǵ âẃâý."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderAppBannerManager": {
+    "message": "Âṕp̂ B́âńn̂ér̂ ẃâś p̂ŕêśêńt̂ úp̂ón̂ ńâv́îǵât́îńĝ áŵáŷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderChromePasswordManagerClientBindCredentialManager": {
+    "message": "Ĉh́r̂óm̂é P̂áŝśŵór̂d́ M̂án̂áĝér̂ ẃâś p̂ŕêśêńt̂ úp̂ón̂ ńâv́îǵât́îńĝ áŵáŷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerSelfDeletingRequestDelegate": {
+    "message": "D̂ÓM̂ d́îśt̂íl̂ĺât́îón̂ ẃâś îń p̂ŕôǵr̂éŝś ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderDomDistillerViewerSource": {
+    "message": "D̂ÓM̂ D́îśt̂íl̂ĺêŕ V̂íêẃêŕ ŵáŝ ṕr̂éŝén̂t́ ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessaging": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô éx̂t́êńŝíôńŝ úŝín̂ǵ m̂éŝśâǵîńĝ ÁP̂Í."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionMessagingForOpenPort": {
+    "message": "Êx́t̂én̂śîón̂ś ŵít̂h́ l̂ón̂ǵ-l̂ív̂éd̂ ćôńn̂éĉt́îón̂ śĥóûĺd̂ ćl̂óŝé t̂h́ê ćôńn̂éĉt́îón̂ b́êf́ôŕê én̂t́êŕîńĝ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensions": {
+    "message": "B̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé îś d̂íŝáb̂ĺêd́ d̂úê t́ô éx̂t́êńŝíôńŝ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderExtensionSentMessageToCachedFrame": {
+    "message": "Êx́t̂én̂śîón̂ś ŵít̂h́ l̂ón̂ǵ-l̂ív̂éd̂ ćôńn̂éĉt́îón̂ át̂t́êḿp̂t́êd́ t̂ó ŝén̂d́ m̂éŝśâǵêś t̂ó f̂ŕâḿêś îń b̂áĉḱ/f̂ór̂ẃâŕd̂ ćâćĥé."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderModalDialog": {
+    "message": "M̂ód̂ál̂ d́îál̂óĝ śûćĥ áŝ f́ôŕm̂ ŕêśûb́m̂íŝśîón̂ ór̂ h́t̂t́p̂ ṕâśŝẃôŕd̂ d́îál̂óĝ ẃâś ŝh́ôẃn̂ f́ôŕ t̂h́ê ṕâǵê úp̂ón̂ ńâv́îǵât́îńĝ áŵáŷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOfflinePage": {
+    "message": "T̂h́ê óf̂f́l̂ín̂é p̂áĝé ŵáŝ śĥóŵń ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderOomInterventionTabHelper": {
+    "message": "Ôút̂-Óf̂-Ḿêḿôŕŷ Ín̂t́êŕv̂én̂t́îón̂ b́âŕ ŵáŝ ṕr̂éŝén̂t́ ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPermissionRequestManager": {
+    "message": "T̂h́êŕê ẃêŕê ṕêŕm̂íŝśîón̂ ŕêq́ûéŝt́ŝ úp̂ón̂ ńâv́îǵât́îńĝ áŵáŷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderPopupBlockerTabHelper": {
+    "message": "P̂óp̂úp̂ b́l̂óĉḱêŕ ŵáŝ ṕr̂éŝén̂t́ ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingThreatDetails": {
+    "message": "Ŝáf̂é B̂ŕôẃŝín̂ǵ d̂ét̂áîĺŝ ẃêŕê śĥóŵń ûṕôń n̂áv̂íĝát̂ín̂ǵ âẃâý."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
+    "message": "Ŝáf̂é B̂ŕôẃŝín̂ǵ ĉón̂śîd́êŕêd́ t̂h́îś p̂áĝé t̂ó b̂é âb́ûśîv́ê án̂d́ b̂ĺôćk̂éd̂ ṕôṕûṕ."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "Â śêŕv̂íĉé ŵór̂ḱêŕ ŵáŝ áĉt́îv́ât́êd́ ŵh́îĺê t́ĥé p̂áĝé ŵáŝ ín̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },

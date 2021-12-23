@@ -798,4 +798,73 @@ describe('StringUtilities', () => {
       assert.strictEqual(Platform.StringUtilities.findUnclosedCssQuote('"a\\\'b"c\\\'de\'f\\\'\''), '');
     });
   });
+
+  describe('sprintf', () => {
+    it('correctly deals with empty format string', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf(''), '');
+      assert.strictEqual(Platform.StringUtilities.sprintf('', 1), '');
+    });
+
+    it('replaces %% with %', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%%s %%d %%f'), '%s %d %f');
+    });
+
+    it('correctly substitutes %d', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%d', NaN), '0');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%d days', 1.5), '1 days');
+    });
+
+    it('correctly substitutes %d with precision', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.1d', 2), '2');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2d', 3), '03');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2d', 333), '333');
+    });
+
+    it('correctly substitutes %f', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%f', NaN), '0');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%f', 1), '1');
+    });
+
+    it('correctly substitutes %f with precision', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2f', NaN), '0.00');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2f', 1), '1.00');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2f', 1.23456), '1.23');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.3f', 1.23456), '1.235');
+    });
+
+    it('correctly substitutes %s', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('Hello %s!', 'World'), 'Hello World!');
+      assert.strictEqual(Platform.StringUtilities.sprintf('Hello %s!', '%d', 1), 'Hello %d!');
+    });
+
+    it('correctly substitutes %s with precision', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('Hello %.1s!', 'World'), 'Hello W!');
+      assert.strictEqual(Platform.StringUtilities.sprintf('Hello %.10s!', 'World'), 'Hello World!');
+    });
+
+    it('triggers correct type conversion', () => {
+      const obj = {
+        toString() {
+          return '5';
+        },
+        valueOf() {
+          return 6;
+        },
+      };
+      assert.strictEqual(Platform.StringUtilities.sprintf('%d', obj), '6');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%.2f', obj), '6.00');
+      assert.strictEqual(Platform.StringUtilities.sprintf('%s', obj), '5');
+    });
+
+    it('deals with parameter indices', () => {
+      assert.strictEqual(Platform.StringUtilities.sprintf('%2$s %1$s!', 'World', 'Hello'), 'Hello World!');
+      assert.throws(() => Platform.StringUtilities.sprintf('%0$s', 'World'));
+    });
+
+    it('signals error when too few parameters are given', () => {
+      assert.throws(() => Platform.StringUtilities.sprintf('%2$s', 'World'));
+      assert.throws(() => Platform.StringUtilities.sprintf('%2$s %s!', 'World', 'Hello'));
+      assert.throws(() => Platform.StringUtilities.sprintf('%s %d', 'World'));
+    });
+  });
 });

@@ -1145,12 +1145,11 @@ export class ExtensionStatus {
   E_FAILED: (...args: unknown[]) => Record;
 
   constructor() {
-    function makeStatus(code: string, description: string): Record {
-      const details = Array.prototype.slice.call(arguments, 2);
+    function makeStatus(code: string, description: string, ...details: unknown[]): Record {
       const status: Record = {code, description, details};
       if (code !== 'OK') {
         status.isError = true;
-        console.error('Extension server error: ' + Platform.StringUtilities.vsprintf(description, details));
+        console.error('Extension server error: ' + Platform.StringUtilities.sprintf(description, ...details));
       }
       return status;
     }

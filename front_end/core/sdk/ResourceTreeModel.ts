@@ -616,7 +616,12 @@ export class ResourceTreeFrame {
   backForwardCacheDetails: {
     restoredFromCache: boolean|undefined,
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
-  } = {restoredFromCache: undefined, explanations: []};
+    explanationsTree: Protocol.Page.BackForwardCacheNotRestoredExplanationTree|undefined,
+  } = {
+    restoredFromCache: undefined,
+    explanations: [],
+    explanationsTree: undefined,
+  };
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: Protocol.Page.FrameId,
@@ -688,7 +693,11 @@ export class ResourceTreeFrame {
     this.#secureContextType = framePayload.secureContextType;
     this.#crossOriginIsolatedContextType = framePayload.crossOriginIsolatedContextType;
     this.#gatedAPIFeatures = framePayload.gatedAPIFeatures;
-    this.backForwardCacheDetails = {restoredFromCache: undefined, explanations: []};
+    this.backForwardCacheDetails = {
+      restoredFromCache: undefined,
+      explanations: [],
+      explanationsTree: undefined,
+    };
 
     const mainResource = this.resourcesMap.get(this.#urlInternal);
     this.resourcesMap.clear();
@@ -963,6 +972,7 @@ export class ResourceTreeFrame {
   setBackForwardCacheDetails(event: Protocol.Page.BackForwardCacheNotUsedEvent): void {
     this.backForwardCacheDetails.restoredFromCache = false;
     this.backForwardCacheDetails.explanations = event.notRestoredExplanations;
+    this.backForwardCacheDetails.explanationsTree = event.notRestoredExplanationsTree;
   }
 
   getResourcesMap(): Map<string, Resource> {

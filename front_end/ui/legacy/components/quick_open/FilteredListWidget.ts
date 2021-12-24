@@ -510,6 +510,10 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
         this.onEnter(keyboardEvent);
         return;
       case Platform.KeyboardUtilities.TAB_KEY:
+        if (keyboardEvent.shiftKey) {
+          handled = this.list.selectPreviousItem(true, false);
+          break;
+        }
         handled = this.tabKeyPressed();
         break;
       case Platform.KeyboardUtilities.ArrowKey.UP:

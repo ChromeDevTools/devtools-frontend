@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
+import * as Input from '../input/input.js';
 
 import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 import valueInterpreterSettingsStyles from './valueInterpreterSettings.css.js';
@@ -65,7 +66,7 @@ export class ValueInterpreterSettings extends HTMLElement {
   #valueTypes: Set<ValueType> = new Set();
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [valueInterpreterSettingsStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, valueInterpreterSettingsStyles];
   }
 
   set data(data: ValueInterpreterSettingsData) {

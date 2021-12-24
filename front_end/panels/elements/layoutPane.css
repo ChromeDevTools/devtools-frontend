@@ -181,7 +181,3 @@ that uses the dimensions to draw an outline around the element. */
 .node-text-container:hover {
   background-color: var(--item-hover-color);
 }
-
-:host-context(.-theme-with-dark-background) input[type="checkbox"] {
-  filter: invert(80%);
-}

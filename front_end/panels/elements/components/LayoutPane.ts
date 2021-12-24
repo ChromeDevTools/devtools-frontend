@@ -13,6 +13,7 @@ import {LayoutElement} from './LayoutPaneUtils.js';
 import type {NodeTextData} from './NodeText.js';
 import {NodeText} from './NodeText.js';
 import layoutPaneStyles from '../layoutPane.css.js';
+import * as Input from '../../../ui/components/input/input.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 
@@ -103,6 +104,7 @@ export class LayoutPane extends HTMLElement {
   constructor() {
     super();
     this.#shadow.adoptedStyleSheets = [
+      Input.checkboxStyles,
       layoutPaneStyles,
       inspectorCommonStyles,
     ];

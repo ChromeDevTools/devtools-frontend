@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import adornerSettingsPaneStyles from './adornerSettingsPane.css.js';
 
@@ -48,7 +49,7 @@ export class AdornerSettingsPane extends HTMLElement {
   #settings: AdornerSettingsMap = new Map();
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [adornerSettingsPaneStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, adornerSettingsPaneStyles];
   }
 
   set data(data: AdornerSettingsPaneData) {

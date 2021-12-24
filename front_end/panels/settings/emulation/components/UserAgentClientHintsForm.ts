@@ -10,6 +10,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Input from '../../../../ui/components/input/input.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as EmulationUtils from '../utils/utils.js';
@@ -193,7 +194,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   #brandsModifiedAriaMessage: string = '';
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [userAgentClientHintsFormStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, userAgentClientHintsFormStyles];
   }
 
   set value(data: UserAgentClientHintsFormData) {

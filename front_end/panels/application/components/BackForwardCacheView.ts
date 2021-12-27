@@ -238,7 +238,9 @@ export class BackForwardCacheView extends HTMLElement {
       `;
       // clang-format on
     }
-    const isDisabled = this.#screenStatus === ScreenStatusType.Running;
+    const isTestRunning = (this.#screenStatus === ScreenStatusType.Running);
+    // Prevent running BFCache test on the DevTools window itself via DevTools on DevTools
+    const isTestingForbidden = this.#frame.url.startsWith('devtools://');
     // clang-format off
     return LitHtml.html`
       ${this.#renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
@@ -252,11 +254,11 @@ export class BackForwardCacheView extends HTMLElement {
       </div>
       <${ReportView.ReportView.ReportSection.litTagName}>
         <${Buttons.Button.Button.litTagName}
-          .disabled=${isDisabled}
-          .spinner=${isDisabled}
+          .disabled=${isTestRunning || isTestingForbidden}
+          .spinner=${isTestRunning}
           .variant=${Buttons.Button.Variant.PRIMARY}
           @click=${this.#navigateAwayAndBack}>
-          ${isDisabled ? LitHtml.html`
+          ${isTestRunning ? LitHtml.html`
             ${i18nString(UIStrings.runningTest)}`:`
             ${i18nString(UIStrings.runTest)}
           `}

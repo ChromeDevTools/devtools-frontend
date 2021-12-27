@@ -30,7 +30,7 @@
 }
 
 .quota-override-notification-editor {
-  border: solid 1px var(--color-background-highlight);
+  border: solid 1px var(--color-details-hairline);
   display: flex;
   flex: auto;
   margin-right: 4px;

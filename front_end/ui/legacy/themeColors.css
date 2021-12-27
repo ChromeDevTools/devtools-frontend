@@ -25,7 +25,7 @@
   --color-background-elevation-2: rgb(222 225 230);
   /** Used when the elevation is visible only on dark theme */
   --color-background-elevation-dark-only: var(--color-background);
-  --color-background-highlight: rgb(202 205 209);
+  --color-background-highlight: rgb(218 220 224);
   /** To draw grid lines behind elements */
   --divider-line: rgb(0 0 0 / 10%);
   /**
@@ -203,7 +203,7 @@
   --color-background-elevation-1: rgb(41 42 45);
   --color-background-elevation-2: rgb(53 54 58);
   --color-background-elevation-dark-only: var(--color-background-elevation-1);
-  --color-background-highlight: rgb(75 76 79);
+  --color-background-highlight: rgb(69 69 69);
   --divider-line: rgb(255 255 255 / 10%);
   --color-background-hover-overlay: rgb(56 121 217 / 10%);
   --color-selection-highlight: rgb(251 202 70 / 20%);

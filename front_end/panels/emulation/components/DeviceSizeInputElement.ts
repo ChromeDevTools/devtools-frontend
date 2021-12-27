@@ -104,13 +104,17 @@ export class SizeInputElement extends HTMLElement {
   }
 
   #handleModifierKeys(event: Event): void {
-    const modifiedValue = UILegacy.UIUtils.modifiedFloatNumber(getInputValue(event), event);
+    let modifiedValue = UILegacy.UIUtils.modifiedFloatNumber(getInputValue(event), event);
     if (modifiedValue === null) {
       return;
     }
 
+    modifiedValue = Math.min(modifiedValue, EmulationModel.DeviceModeModel.MaxDeviceSize);
+    modifiedValue = Math.max(modifiedValue, EmulationModel.DeviceModeModel.MinDeviceSize);
+
     event.preventDefault();
     (event.target as HTMLInputElement).value = String(modifiedValue);
+    this.dispatchEvent(new SizeChangedEvent(modifiedValue));
   }
 }
 

@@ -845,6 +845,7 @@ grd_files_debug_sources = [
   "front_end/panels/changes/changesView.css.js",
   "front_end/panels/console/ConsoleContextSelector.js",
   "front_end/panels/console/ConsoleFilter.js",
+  "front_end/panels/console/ConsoleFormat.js",
   "front_end/panels/console/ConsolePanel.js",
   "front_end/panels/console/ConsolePinPane.js",
   "front_end/panels/console/ConsolePrompt.js",

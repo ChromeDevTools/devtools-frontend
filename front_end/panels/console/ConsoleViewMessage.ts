@@ -53,6 +53,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js'; // eslint-disable-line rulesdir/es_modules_import
 
+import {format} from './ConsoleFormat.js';
 import type {ConsoleViewportElement} from './ConsoleViewport.js';
 import consoleViewStyles from './consoleView.css.js';
 
@@ -586,9 +587,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
-      const result = this.formatWithSubstitutionString(
+      parameters = this.formatWithSubstitutionString(
           (parameters[0].description as string), parameters.slice(1), formattedResult);
-      parameters = Array.from(result.unusedSubstitutions || []);
       if (parameters.length) {
         UI.UIUtils.createTextChild(formattedResult, ' ');
       }
@@ -866,165 +866,64 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private formatWithSubstitutionString(
-      format: string, parameters: SDK.RemoteObject.RemoteObject[], formattedResult: HTMLElement): {
-    formattedResult: Element,
-    unusedSubstitutions: ArrayLike<SDK.RemoteObject.RemoteObject>|null,
-  } {
-    function parameterFormatter(
-        this: ConsoleViewMessage, force: boolean, includePreview: boolean,
-        obj?: string|SDK.RemoteObject.RemoteObject): string|HTMLElement|undefined {
-      if (obj instanceof SDK.RemoteObject.RemoteObject) {
-        return this.formatParameter(obj, force, includePreview);
-      }
-      return stringFormatter(obj);
-    }
-
-    function stringFormatter(obj?: string|SDK.RemoteObject.RemoteObject): string|undefined {
-      if (obj === undefined) {
-        return undefined;
-      }
-      if (typeof obj === 'string') {
-        return obj;
-      }
-      return obj.description;
-    }
-
-    function floatFormatter(obj?: string|SDK.RemoteObject.RemoteObject): number|string|undefined {
-      if (obj instanceof SDK.RemoteObject.RemoteObject) {
-        if (typeof obj.value !== 'number') {
-          return 'NaN';
+      formatString: string, parameters: SDK.RemoteObject.RemoteObject[],
+      formattedResult: HTMLElement): SDK.RemoteObject.RemoteObject[] {
+    const currentStyle = new Map();
+    const {tokens, args} = format(formatString, parameters);
+    for (const token of tokens) {
+      switch (token.type) {
+        case 'generic': {
+          formattedResult.append(this.formatParameter(token.value, true /* force */, false /* includePreview */));
+          break;
         }
-        return obj.value;
-      }
-      return undefined;
-    }
-
-    function integerFormatter(obj?: string|SDK.RemoteObject.RemoteObject): string|number|undefined {
-      if (obj instanceof SDK.RemoteObject.RemoteObject) {
-        if (obj.type === 'bigint') {
-          return obj.description;
+        case 'optimal': {
+          formattedResult.append(this.formatParameter(token.value, false /* force */, true /* includePreview */));
+          break;
         }
-        if (typeof obj.value !== 'number') {
-          return 'NaN';
+        case 'string': {
+          if (currentStyle.size === 0) {
+            formattedResult.append(this.linkifyStringAsFragment(token.value));
+          } else {
+            const lines = token.value.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+              if (i > 0) {
+                formattedResult.append(document.createElement('br'));
+              }
+              const wrapper = document.createElement('span');
+              wrapper.style.setProperty('contain', 'paint');
+              wrapper.style.setProperty('display', 'inline-block');
+              wrapper.style.setProperty('max-width', '100%');
+              wrapper.appendChild(this.linkifyStringAsFragment(lines[i]));
+              for (const [property, {value, priority}] of currentStyle) {
+                wrapper.style.setProperty(property, value, priority);
+              }
+              formattedResult.append(wrapper);
+            }
+          }
+          break;
         }
-        return Math.floor(obj.value);
-      }
-      return undefined;
-    }
-
-    function bypassFormatter(obj?: string|SDK.RemoteObject.RemoteObject): Node|string {
-      return (obj instanceof Node) ? obj : '';
-    }
-
-    let currentStyle: Map<string, {value: string, priority: string}>|null = null;
-    function styleFormatter(obj?: string|SDK.RemoteObject.RemoteObject): void {
-      currentStyle = new Map();
-      const buffer = document.createElement('span');
-      if (obj === undefined) {
-        return;
-      }
-      if (typeof obj === 'string' || !obj.description) {
-        return;
-      }
-      buffer.setAttribute('style', obj.description);
-      for (const property of buffer.style) {
-        if (isAllowedProperty(property)) {
-          const info = {
-            value: buffer.style.getPropertyValue(property),
-            priority: buffer.style.getPropertyPriority(property),
-          };
-          currentStyle.set(property, info);
+        case 'style': {
+          // Make sure that allowed properties do not interfere with link visibility.
+          const ALLOWED_PROPERTY_PREFIXES =
+              ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
+          currentStyle.clear();
+          const buffer = document.createElement('span');
+          buffer.setAttribute('style', token.value);
+          for (const property of buffer.style) {
+            if (!ALLOWED_PROPERTY_PREFIXES.some(
+                    prefix => property.startsWith(prefix) || property.startsWith(`-webkit-${prefix}`))) {
+              continue;
+            }
+            currentStyle.set(property, {
+              value: buffer.style.getPropertyValue(property),
+              priority: buffer.style.getPropertyPriority(property),
+            });
+          }
+          break;
         }
       }
     }
-
-    function isAllowedProperty(property: string): boolean {
-      // Make sure that allowed properties do not interfere with link visibility.
-      const prefixes = [
-        'background',
-        'border',
-        'color',
-        'font',
-        'line',
-        'margin',
-        'padding',
-        'text',
-        '-webkit-background',
-        '-webkit-border',
-        '-webkit-font',
-        '-webkit-margin',
-        '-webkit-padding',
-        '-webkit-text',
-      ];
-      for (const prefix of prefixes) {
-        if (property.startsWith(prefix)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const formatters: Record<string, Platform.StringUtilities.FormatterFunction<any>> = {};
-    // Firebug uses %o for formatting objects.
-    formatters.o = parameterFormatter.bind(this, false /* force */, true /* includePreview */);
-    formatters.s = stringFormatter;
-    formatters.f = floatFormatter;
-    // Firebug allows both %i and %d for formatting integers.
-    formatters.i = integerFormatter;
-    formatters.d = integerFormatter;
-
-    // Firebug uses %c for styling the message.
-    formatters.c = styleFormatter;
-
-    // Support %O to force object formatting, instead of the type-based %o formatting.
-    formatters.O = parameterFormatter.bind(this, true /* force */, false /* includePreview */);
-
-    formatters._ = bypassFormatter;
-
-    function append(this: ConsoleViewMessage, a: HTMLElement, b?: string|Node): HTMLElement {
-      if (b instanceof Node) {
-        a.appendChild(b);
-        return a;
-      }
-      if (typeof b === 'undefined') {
-        return a;
-      }
-      if (!currentStyle) {
-        a.appendChild(this.linkifyStringAsFragment(String(b)));
-        return a;
-      }
-      const lines = String(b).split('\n');
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const lineFragment = this.linkifyStringAsFragment(line);
-        const wrapper = document.createElement('span');
-        wrapper.style.setProperty('contain', 'paint');
-        wrapper.style.setProperty('display', 'inline-block');
-        wrapper.style.setProperty('max-width', '100%');
-        wrapper.appendChild(lineFragment);
-        applyCurrentStyle(wrapper);
-
-        a.appendChild(wrapper);
-        if (i < lines.length - 1) {
-          a.appendChild(document.createElement('br'));
-        }
-      }
-      return a;
-    }
-
-    function applyCurrentStyle(element: HTMLElement): void {
-      if (!currentStyle) {
-        return;
-      }
-      for (const [property, {value, priority}] of currentStyle.entries()) {
-        element.style.setProperty((property as string), value, priority);
-      }
-    }
-
-    // Platform.StringUtilities.format does treat formattedResult like a Builder, result is an object.
-    return Platform.StringUtilities.format(format, parameters, formatters, formattedResult, append.bind(this));
+    return args;
   }
 
   matchesFilterRegex(regexObject: RegExp): boolean {

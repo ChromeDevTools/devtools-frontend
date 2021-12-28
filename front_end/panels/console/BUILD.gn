@@ -21,6 +21,7 @@ devtools_module("console") {
   sources = [
     "ConsoleContextSelector.ts",
     "ConsoleFilter.ts",
+    "ConsoleFormat.ts",
     "ConsolePanel.ts",
     "ConsolePinPane.ts",
     "ConsolePrompt.ts",
@@ -66,6 +67,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
+    "../../../test/unittests/front_end/panels/console/*",
     "../../entrypoints/*",
   ]
 

@@ -28,6 +28,7 @@ group("front_end") {
     "models/timeline_model",
     "panels/animation",
     "panels/application",
+    "panels/console",
     "panels/coverage",
     "panels/elements",
     "panels/issues",

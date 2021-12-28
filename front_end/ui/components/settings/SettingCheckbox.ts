@@ -56,8 +56,9 @@ export class SettingCheckbox extends HTMLElement {
         LitHtml.html`
       <p>
         <label>
-          <input type="checkbox" ?checked=${this.#setting.get()} ?disabled=${this.#disabled} @change=${
-            this.#checkboxChanged} aria-label=${this.#setting.title()} /> ${this.#setting.title()}
+          <input type="checkbox" ?checked=${this.#setting.get()} ?disabled=${
+            this.#disabled || this.#setting.disabled()} @change=${this.#checkboxChanged} aria-label=${
+            this.#setting.title()} /> ${this.#setting.title()}
         </label>
       </p>`,
         this.#shadow, {host: this});

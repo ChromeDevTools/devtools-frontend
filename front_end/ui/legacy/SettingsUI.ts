@@ -110,6 +110,7 @@ const createSettingSelect = function(
         select.selectedIndex = i;
       }
     }
+    select.disabled = setting.disabled();
   }
 
   function selectChanged(): void {

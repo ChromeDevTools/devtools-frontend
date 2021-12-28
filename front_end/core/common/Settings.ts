@@ -290,6 +290,7 @@ export class Setting<V> {
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
   #serializer: Serializer<unknown, V> = JSON;
   #hadUserAction?: boolean;
+  #disabled?: boolean;
 
   constructor(
       readonly name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
@@ -331,6 +332,15 @@ export class Setting<V> {
 
   setRequiresUserAction(requiresUserAction: boolean): void {
     this.#requiresUserAction = requiresUserAction;
+  }
+
+  disabled(): boolean {
+    return this.#disabled || false;
+  }
+
+  setDisabled(disabled: boolean): void {
+    this.#disabled = disabled;
+    this.eventSupport.dispatchEventToListeners(this.name);
   }
 
   get(): V {

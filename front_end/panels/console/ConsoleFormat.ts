@@ -4,47 +4,9 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 
-// TODO(crbug/1282837): This is too naive and doesn't support
-// most (anticipated) uses of the ANSI color sequences (i.e.
-// setting both foreground and background color).
-const ANSI_COLOR_CODES = new Map([
-  // Foreground codes
-  [30, 'color:black'],
-  [31, 'color:red'],
-  [32, 'color:green'],
-  [33, 'color:yellow'],
-  [34, 'color:blue'],
-  [35, 'color:magenta'],
-  [36, 'color:cyan'],
-  [37, 'color:lightGray'],
-  [39, 'color:default'],
-  [90, 'color:darkGray'],
-  [91, 'color:lightRed'],
-  [92, 'color:lightGreen'],
-  [93, 'color:lightYellow'],
-  [94, 'color:lightBlue'],
-  [95, 'color:lightMagenta'],
-  [96, 'color:lightCyan'],
-  [97, 'color:white'],
-  // Background codes
-  [40, 'background:black'],
-  [41, 'background:red'],
-  [42, 'background:green'],
-  [43, 'background:yellow'],
-  [44, 'background:blue'],
-  [45, 'background:magenta'],
-  [46, 'background:cyan'],
-  [47, 'background:lightGray'],
-  [49, 'background:default'],
-  [100, 'background:darkGray'],
-  [101, 'background:lightRed'],
-  [102, 'background:lightGreen'],
-  [103, 'background:lightYellow'],
-  [104, 'background:lightBlue'],
-  [105, 'background:lightMagenta'],
-  [106, 'background:lightCyan'],
-  [107, 'background:white'],
-]);
+// VGA color palette
+const ANSI_COLORS = ['#000000', '#AA0000', '#00AA00', '#AA5500', '#0000AA', '#AA00AA', '#00AAAA', '#AAAAAA'];
+const ANSI_BRIGHT_COLORS = ['#555555', '#FF5555', '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF', '#FFFFFF'];
 
 export type FormatToken = {
   type: 'generic'|'optimal',
@@ -71,6 +33,23 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
 } => {
   const tokens: FormatToken[] = [];
 
+  // Current maintained style for ANSI color codes.
+  const currentStyle = new Map<string, string>();
+  function addTextDecoration(value: string): void {
+    const textDecoration = currentStyle.get('text-decoration') ?? '';
+    if (!textDecoration.includes(value)) {
+      currentStyle.set('text-decoration', `${textDecoration} ${value}`);
+    }
+  }
+  function removeTextDecoration(value: string): void {
+    const textDecoration = currentStyle.get('text-decoration')?.replace(` ${value}`, '');
+    if (textDecoration) {
+      currentStyle.set('text-decoration', textDecoration);
+    } else {
+      currentStyle.delete('text-decoration');
+    }
+  }
+
   function addStringToken(value: string): void {
     if (!value) {
       return;
@@ -83,7 +62,7 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
   }
 
   let argIndex = 0;
-  const re = /%([%_Oocsdfi])|\x1B\[(\d+)m/;
+  const re = /%([%_Oocsdfi])|\x1B\[([\d;]*)m/;
   for (let match = re.exec(fmt); match !== null; match = re.exec(fmt)) {
     addStringToken(match.input.substring(0, match.index));
     let substitution: number|string|undefined = undefined;
@@ -134,12 +113,75 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
         }
         break;
       case undefined: {
-        const value = ANSI_COLOR_CODES.get(parseInt(match[2], 10));
-        if (value !== undefined) {
-          const type = 'style';
-          tokens.push({type, value});
-          substitution = '';
+        const codes = (match[2] || '0').split(';').map(code => code ? parseInt(code, 10) : 0);
+        while (codes.length) {
+          const code = codes.shift() as number;
+          switch (code) {
+            case 0:
+              currentStyle.clear();
+              break;
+            case 1:
+              currentStyle.set('font-weight', 'bold');
+              break;
+            case 2:
+              currentStyle.set('font-weight', 'lighter');
+              break;
+            case 3:
+              currentStyle.set('font-style', 'italic');
+              break;
+            case 4:
+              addTextDecoration('underline');
+              break;
+            case 9:
+              addTextDecoration('line-through');
+              break;
+            case 22:
+              currentStyle.delete('font-weight');
+              break;
+            case 23:
+              currentStyle.delete('font-style');
+              break;
+            case 24:
+              removeTextDecoration('underline');
+              break;
+            case 29:
+              removeTextDecoration('line-through');
+              break;
+            case 38:
+            case 48:
+              if (codes.shift() === 2) {
+                const r = codes.shift() ?? 0, g = codes.shift() ?? 0, b = codes.shift() ?? 0;
+                currentStyle.set(code === 38 ? 'color' : 'background', `rgb(${r},${g},${b})`);
+              }
+              break;
+            case 39:
+            case 49:
+              currentStyle.delete(code === 39 ? 'color' : 'background');
+              break;
+            case 53:
+              addTextDecoration('overline');
+              break;
+            case 55:
+              removeTextDecoration('overline');
+              break;
+            default: {
+              const color = ANSI_COLORS[code - 30] ?? ANSI_BRIGHT_COLORS[code - 90];
+              if (color !== undefined) {
+                currentStyle.set('color', color);
+              } else {
+                const background = ANSI_COLORS[code - 40] ?? ANSI_BRIGHT_COLORS[code - 100];
+                if (background !== undefined) {
+                  currentStyle.set('background', background);
+                }
+              }
+              break;
+            }
+          }
         }
+        const value = [...currentStyle.entries()].map(([key, val]) => `${key}:${val.trimStart()}`).join(';');
+        const type = 'style';
+        tokens.push({type, value});
+        substitution = '';
         break;
       }
     }

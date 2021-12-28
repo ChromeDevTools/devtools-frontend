@@ -75,15 +75,6 @@ describe('Rendering pane', () => {
 
   it('includes UI for emulating auto dark mode', async () => {
     await openPanelViaMoreTools('Rendering');
-
-    const option = await waitForAria('Emulate auto dark mode Enables automatic dark mode for the inspected page.');
-    const actual = await option.evaluate(node => node.textContent);
-    const expected = [
-      'No emulation',
-      'Enable',
-      'Disable',
-    ].join('');
-    assert.deepEqual(actual, expected);
+    await waitForAria('Enable automatic dark mode[role="checkbox"]');
   });
-
 });

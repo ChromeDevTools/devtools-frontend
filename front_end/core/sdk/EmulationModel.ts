@@ -126,9 +126,16 @@ export class EmulationModel extends SDKModel<void> {
     this.updateCssMedia();
 
     const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode');
-    autoDarkModeSetting.addChangeListener(() => this.emulateAutoDarkMode(autoDarkModeSetting.get()));
+    autoDarkModeSetting.addChangeListener(() => {
+      const enabled = autoDarkModeSetting.get();
+      mediaFeaturePrefersColorSchemeSetting.setDisabled(enabled);
+      mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');
+      this.emulateAutoDarkMode(enabled);
+    });
     if (autoDarkModeSetting.get()) {
-      this.emulateAutoDarkMode(autoDarkModeSetting.get());
+      mediaFeaturePrefersColorSchemeSetting.setDisabled(true);
+      mediaFeaturePrefersColorSchemeSetting.set('dark');
+      this.emulateAutoDarkMode(true);
     }
 
     const visionDeficiencySetting = Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency');
@@ -277,22 +284,14 @@ export class EmulationModel extends SDKModel<void> {
     }
   }
 
-  private static parseAutoDarkModeSetting(setting: string): boolean|undefined {
-    switch (setting) {
-      case 'default':
-        return undefined;
-      case 'enabled':
-        return true;
-      case 'disabled':
-        return false;
-      default:
-        throw Error('unrecognized auto dark mode setting');
+  private async emulateAutoDarkMode(enabled: boolean): Promise<void> {
+    if (enabled) {
+      this.#mediaConfiguration.set('prefers-color-scheme', 'dark');
+      await this.updateCssMedia();
     }
-  }
-
-  private async emulateAutoDarkMode(setting: string): Promise<void> {
-    const enabled = EmulationModel.parseAutoDarkModeSetting(setting);
-    await this.#emulationAgent.invoke_setAutoDarkModeOverride({enabled});
+    // We never send `enabled: false` since that would explicitly disable
+    // autodark mode. We either enable it or clear any existing override.
+    await this.#emulationAgent.invoke_setAutoDarkModeOverride({enabled: enabled || undefined});
   }
 
   private async emulateVisionDeficiency(type: Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType):
@@ -360,7 +359,7 @@ export class EmulationModel extends SDKModel<void> {
         {enabled: configuration.enabled, configuration: configuration.configuration});
   }
 
-  private updateCssMedia(): void {
+  private async updateCssMedia(): Promise<void> {
     // See the note above, where this.#mediaConfiguration is defined.
     const type = this.#mediaConfiguration.get('type') ?? '';
     const features = [
@@ -389,7 +388,7 @@ export class EmulationModel extends SDKModel<void> {
         value: this.#mediaConfiguration.get('prefers-reduced-motion') ?? '',
       },
     ];
-    this.emulateCSSMedia(type, features);
+    return this.emulateCSSMedia(type, features);
   }
 }
 

@@ -124,9 +124,13 @@ const UIStrings = {
   */
   emulatesAFocusedPage: 'Emulates a focused page.',
   /**
-  * @description Explanation text for the 'Emulate a focused page' setting in the Rendering tool.
+  * @description The name of a checkbox setting in the Rendering tool. This setting enables auto dark mode emulation.
   */
-  emulatesAutoDarkMode: 'Enables automatic dark mode for the inspected page.',
+  emulateAutoDarkMode: 'Enable automatic dark mode',
+  /**
+  * @description Explanation text for the 'Emulate automatic dark mode' setting in the Rendering tool.
+  */
+  emulatesAutoDarkMode: 'Enables automatic dark mode and sets `prefers-color-scheme` to `dark`.',
   /**
   * @description Explanation text for the 'Emulate CSS media type' setting in the Rendering tool.
   * This setting overrides the CSS media type on the page:
@@ -245,14 +249,18 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     this.#appendCheckbox(
         i18nString(UIStrings.emulateAFocusedPage), i18nString(UIStrings.emulatesAFocusedPage),
         Common.Settings.Settings.instance().moduleSetting('emulatePageFocus'));
+    this.#appendCheckbox(
+        i18nString(UIStrings.emulateAutoDarkMode), i18nString(UIStrings.emulatesAutoDarkMode),
+        Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode'));
+
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this.#appendSelect(
-        i18nString(UIStrings.forcesMediaTypeForTestingPrint),
-        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
-    this.#appendSelect(
         i18nString(UIStrings.forcesCssPreferscolorschemeMedia),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme'));
+    this.#appendSelect(
+        i18nString(UIStrings.forcesMediaTypeForTestingPrint),
+        Common.Settings.Settings.instance().moduleSetting('emulatedCSSMedia'));
     this.#appendSelect(
         i18nString(UIStrings.forcesCssForcedColors),
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeatureForcedColors'));
@@ -278,10 +286,6 @@ export class RenderingOptionsView extends UI.Widget.VBox {
         i18nString(UIStrings.forcesVisionDeficiencyEmulation),
         Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency'));
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
-    this.#appendSelect(
-        i18nString(UIStrings.emulatesAutoDarkMode),
-        Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this.#appendCheckbox(

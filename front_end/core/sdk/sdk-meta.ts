@@ -314,26 +314,6 @@ const UIStrings = {
   * emulates that the webpage is in auto dark mode.
   */
   emulateAutoDarkMode: 'Emulate auto dark mode',
-  /**
-  * @description Title of a setting for enabling auto dark mode.
-  */
-  enableEmulateAutoDarkMode: 'Enable auto dark mode',
-  /**
-  * @description Text to emulate enabled auto dark mode.
-  */
-  enabledDarkMode: 'Enable',
-  /**
-  * @description Title of a setting for disabling auto dark mode.
-  */
-  disableEmulateAutoDarkMode: 'Disable auto dark mode',
-  /**
-  * @description Text to emulate disabled auto dark mode.
-  */
-  disabledDarkMode: 'Disable',
-  /**
-  * @description Title of a setting for disabling dark mode emulation.
-  */
-  doNotEmulateDarkMode: 'Do not emulate auto dark mode',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1049,24 +1029,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   title: i18nLazyString(UIStrings.emulateAutoDarkMode),
   settingName: 'emulateAutoDarkMode',
-  settingType: Common.Settings.SettingType.ENUM,
+  settingType: Common.Settings.SettingType.BOOLEAN,
   storageType: Common.Settings.SettingStorageType.Session,
-  defaultValue: 'default',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.doNotEmulateDarkMode),
-      text: i18nLazyString(UIStrings.noEmulation),
-      value: 'default',
-    },
-    {
-      title: i18nLazyString(UIStrings.enableEmulateAutoDarkMode),
-      text: i18nLazyString(UIStrings.enabledDarkMode),
-      value: 'enabled',
-    },
-    {
-      title: i18nLazyString(UIStrings.disableEmulateAutoDarkMode),
-      text: i18nLazyString(UIStrings.disabledDarkMode),
-      value: 'disabled',
-    },
-  ],
+  defaultValue: false,
 });

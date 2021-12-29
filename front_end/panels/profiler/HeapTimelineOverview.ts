@@ -242,7 +242,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     const maxIndex =
         Platform.ArrayUtilities.upperBound(timestamps, timeRight, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     let size = 0;
-    for (let i = minIndex; i <= maxIndex; ++i) {
+    for (let i = minIndex; i < maxIndex; ++i) {
       size += sizes[i];
     }
     const minId = minIndex > 0 ? ids[minIndex - 1] : 0;

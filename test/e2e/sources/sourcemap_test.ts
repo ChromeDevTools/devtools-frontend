@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {click, getBrowserAndPages, goToResource, step, waitFor, waitForElementWithTextContent, waitForFunctionWithTries} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {clickNthChildOfSelectedElementNode, focusElementsTree, waitForContentOfSelectedElementsNode, waitForCSSPropertyValue, waitForElementsStyleSection} from '../helpers/elements-helpers.js';
-import {addBreakpointForLine, getBreakpointDecorators, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
+import {addBreakpointForLine, getBreakpointDecorators, openSourceCodeEditorForFile, removeBreakpointForLine, RESUME_BUTTON, retrieveTopCallFrameScriptLocation, retrieveTopCallFrameWithoutResuming, STEP_OUT_BUTTON, STEP_OVER_BUTTON} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', async () => {
   // Flaky test.
@@ -97,6 +97,39 @@ describe('The Sources Tab', async () => {
 
     await step('Step over the mapped line', async () => {
       await click(STEP_OVER_BUTTON);
+
+      const stepLocation = await waitForStackTopMatch(stepLocationRegExp);
+      assert.match(stepLocation, stepLocationRegExp);
+    });
+
+    await step('Resume', async () => {
+      await click(RESUME_BUTTON);
+      await scriptEvaluation;
+    });
+  });
+
+  it('steps out from a function, with source maps available (crbug/1283188)', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await openSourceCodeEditorForFile('sourcemap-stepping-source.js', 'sourcemap-stepping.html');
+
+    let scriptEvaluation: Promise<unknown>;
+
+    // DevTools is contracting long filenames with ellipses.
+    // Let us match the location with regexp to match even contracted locations.
+    const breakLocationRegExp = /.*source\.js:4$/;
+    const stepLocationRegExp = /sourcemap-stepping.html:6$/;
+
+    await step('Run to breakpoint', async () => {
+      await addBreakpointForLine(frontend, 4);
+
+      scriptEvaluation = target.evaluate('outer();');
+
+      const scriptLocation = await waitForStackTopMatch(breakLocationRegExp);
+      assert.match(scriptLocation, breakLocationRegExp);
+    });
+
+    await step('Step out from breakpoint', async () => {
+      await click(STEP_OUT_BUTTON);
 
       const stepLocation = await waitForStackTopMatch(stepLocationRegExp);
       assert.match(stepLocation, stepLocationRegExp);

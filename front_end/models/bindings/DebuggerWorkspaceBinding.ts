@@ -120,6 +120,12 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     if (!compilerMapping) {
       return [];
     }
+    if (mode === SDK.DebuggerModel.StepMode.StepOut) {
+      // We should actually return the source range for the entire function
+      // to skip over. Since we don't have that, we return an empty range
+      // instead, to signal that we should perform a regular step-out.
+      return [];
+    }
     ranges = compilerMapping.getLocationRangesForSameSourceLocation(rawLocation);
     ranges = ranges.filter(range => contained(rawLocation, range));
     return ranges;

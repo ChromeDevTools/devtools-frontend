@@ -375,6 +375,10 @@
   flex-shrink: 0;
 }
 
+.console-message-text .object-value-node {
+  display: inline-block;
+}
+
 .console-message-text .object-value-string,
 .console-message-text .object-value-regexp,
 .console-message-text .object-value-symbol {

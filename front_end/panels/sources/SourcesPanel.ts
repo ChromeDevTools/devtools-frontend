@@ -293,7 +293,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     Extensions.ExtensionServer.ExtensionServer.instance().addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this.extensionSidebarPaneAdded, this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
-    this.lastModificationTime = window.performance.now();
+    this.lastModificationTime = -Infinity;
   }
 
   static instance(opts: {

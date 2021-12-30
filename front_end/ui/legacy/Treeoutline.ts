@@ -845,6 +845,10 @@ export class TreeElement {
     }
   }
 
+  isCollapsible(): boolean {
+    return this.collapsible;
+  }
+
   setCollapsible(collapsible: boolean): void {
     if (this.collapsible === collapsible) {
       return;

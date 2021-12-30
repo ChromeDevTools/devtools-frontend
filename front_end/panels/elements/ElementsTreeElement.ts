@@ -1334,7 +1334,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     /** Keep it in sync with elementsTreeOutline.css **/
-    return 12 * (depth - 2) + (this.isExpandable() ? 1 : 12);
+    return 12 * (depth - 2) + (this.isExpandable() && this.isCollapsible() ? 1 : 12);
   }
 
   updateDecorations(): void {

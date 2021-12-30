@@ -1234,7 +1234,7 @@ export class DebuggerPlugin extends Plugin {
       const forBreakpoints = this.breakpoints;
       const decorations = await this.computeBreakpointDecoration(this.editor.state, forBreakpoints);
       if (this.breakpoints === forBreakpoints &&
-          (decorations.gutter.size || this.editor.state.field(breakpointMarkers).gutter.size)) {
+          (decorations.gutter.size || this.editor.state.field(breakpointMarkers, false)?.gutter.size)) {
         this.editor.dispatch({effects: setBreakpointDeco.of(decorations)});
       }
     }

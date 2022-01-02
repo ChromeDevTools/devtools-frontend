@@ -9,6 +9,8 @@ const ruleTester = new (require('eslint').RuleTester)({
   parser: require.resolve('@typescript-eslint/parser'),
 });
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 ruleTester.run('check_license_header', rule, {
   valid: [
     {
@@ -116,7 +118,7 @@ main()
       code: 'import * as Action from \'./Action.js\';',
       filename: 'front_end/ui/ui.js',
       errors: [{message: 'Missing license header'}],
-      output: `// Copyright 2021 The Chromium Authors. All rights reserved.
+      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -131,7 +133,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{message: 'Incorrect line license header'}],
       output: `
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -147,7 +149,7 @@ import * as Action from './Action.js';
 (async function() {})();`,
       filename: 'test/webtests/http/tests/devtools/a11y-axe-core/sources/call-stack-a11y-test.js',
       errors: [{message: 'Incorrect line license header'}],
-      output: `// Copyright 2021 The Chromium Authors. All rights reserved.
+      output: `// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -168,7 +170,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{message: 'Incorrect line license header'}],
       output: `
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -191,7 +193,7 @@ import * as Action from './Action.js';
       filename: 'front_end/ui/ui.js',
       errors: [{message: 'Incorrect block license header'}],
       output: `
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -225,7 +227,7 @@ interface String {
       filename: 'front_end/legacy/legacy-defs.d.ts',
       errors: [{message: 'Missing license header'}],
       output: `
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -258,7 +260,7 @@ main()
       errors: [{message: 'Missing license header'}],
       output: `#!/usr/bin/env node
 
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -279,7 +281,7 @@ main()
       errors: [{message: 'Incorrect line license header'}],
       output: `#!/usr/bin/env node
 
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 

@@ -540,7 +540,7 @@ export class ModelBreakpoint {
   readonly #liveLocations: LiveLocationPool;
   readonly #uiLocations: Map<LiveLocation, Workspace.UISourceCode.UILocation>;
   #hasPendingUpdate: boolean;
-  #isUpdating: boolean;
+  #updatePromise: Promise<void>|null;
   #cancelCallback: boolean;
   #currentState: Breakpoint.State|null;
   #breakpointIds: Protocol.Debugger.BreakpointId[];
@@ -560,7 +560,7 @@ export class ModelBreakpoint {
     this.#debuggerModel.addEventListener(
         SDK.DebuggerModel.Events.DebuggerWasEnabled, this.scheduleUpdateInDebugger, this);
     this.#hasPendingUpdate = false;
-    this.#isUpdating = false;
+    this.#updatePromise = null;
     this.#cancelCallback = false;
     this.#currentState = null;
     this.#breakpointIds = [];
@@ -578,20 +578,18 @@ export class ModelBreakpoint {
     this.#liveLocations.disposeAll();
   }
 
-  scheduleUpdateInDebugger(): void {
-    if (this.#isUpdating) {
-      this.#hasPendingUpdate = true;
-      return;
+  scheduleUpdateInDebugger(): Promise<void> {
+    this.#hasPendingUpdate = true;
+    if (!this.#updatePromise) {
+      this.#updatePromise = (async(): Promise<void> => {
+        while (this.#hasPendingUpdate) {
+          this.#hasPendingUpdate = false;
+          await this.updateInDebugger();
+        }
+        this.#updatePromise = null;
+      })();
     }
-
-    this.#isUpdating = true;
-    this.updateInDebugger().then(() => {
-      this.#isUpdating = false;
-      if (this.#hasPendingUpdate) {
-        this.#hasPendingUpdate = false;
-        this.scheduleUpdateInDebugger();
-      }
-    });
+    return this.#updatePromise;
   }
 
   private scriptDiverged(): boolean {
@@ -773,10 +771,10 @@ export class ModelBreakpoint {
   }
 
   cleanUpAfterDebuggerIsGone(): void {
-    if (this.#isUpdating) {
+    if (this.#updatePromise) {
       this.#cancelCallback = true;
     }
-
+    this.#hasPendingUpdate = false;
     this.resetLocations();
     this.#currentState = null;
     if (this.#breakpointIds.length) {

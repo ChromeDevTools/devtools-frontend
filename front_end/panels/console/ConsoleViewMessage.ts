@@ -206,7 +206,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private readonly linkifier: Components.Linkifier.Linkifier;
   private repeatCountInternal: number;
   private closeGroupDecorationCount: number;
-  private readonly nestingLevelInternal: number;
+  private consoleGroupInternal: ConsoleGroupViewMessage|null;
   private selectableChildren: {
     element: HTMLElement,
     forceSelect: () => void,
@@ -238,14 +238,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     this.message = consoleMessage;
     this.linkifier = linkifier;
     this.requestResolver = requestResolver;
     this.issueResolver = issueResolver;
     this.repeatCountInternal = 1;
     this.closeGroupDecorationCount = 0;
-    this.nestingLevelInternal = nestingLevel;
     this.selectableChildren = [];
     this.messageResized = onResize;
     this.elementInternal = null;
@@ -269,6 +268,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.lastInSimilarGroup = false;
     this.groupKeyInternal = '';
     this.repeatCountElement = null;
+    this.consoleGroupInternal = null;
   }
 
   element(): HTMLElement {
@@ -960,7 +960,24 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   nestingLevel(): number {
-    return this.nestingLevelInternal;
+    let nestingLevel = 0;
+    for (let group = this.consoleGroup(); group !== null; group = group.consoleGroup()) {
+      nestingLevel++;
+    }
+    return nestingLevel;
+  }
+
+  setConsoleGroup(group: ConsoleGroupViewMessage): void {
+    console.assert(this.consoleGroupInternal === null);
+    this.consoleGroupInternal = group;
+  }
+
+  clearConsoleGroup(): void {
+    this.consoleGroupInternal = null;
+  }
+
+  consoleGroup(): ConsoleGroupViewMessage|null {
+    return this.consoleGroupInternal;
   }
 
   setInSimilarGroup(inSimilarGroup: boolean, isLast?: boolean): void {
@@ -1171,7 +1188,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     this.nestingLevelMarkers = [];
-    for (let i = 0; i < this.nestingLevelInternal; ++i) {
+    for (let i = 0; i < this.nestingLevel(); ++i) {
       this.nestingLevelMarkers.push(this.elementInternal.createChild('div', 'nesting-level-marker'));
     }
     this.updateCloseGroupDecorations();
@@ -1700,17 +1717,18 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
   private collapsedInternal: boolean;
   private expandGroupIcon: UI.Icon.Icon|null;
   private readonly onToggle: () => void;
+  private groupEndMessageInternal: ConsoleViewMessage|null;
 
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onToggle: () => void,
-      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+      onToggle: () => void, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
+    super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     this.collapsedInternal = consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
     this.expandGroupIcon = null;
     this.onToggle = onToggle;
+    this.groupEndMessageInternal = null;
   }
 
   private setCollapsed(collapsed: boolean): void {
@@ -1761,6 +1779,28 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
       this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
     }
   }
+
+  messagesHidden(): boolean {
+    if (this.collapsed()) {
+      return true;
+    }
+    const parent = this.consoleGroup();
+    return Boolean(parent && parent.messagesHidden());
+  }
+
+  setGroupEnd(viewMessage: ConsoleViewMessage): void {
+    if (viewMessage.consoleMessage().type !== Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
+      throw new Error('Invalid console message as group end');
+    }
+    if (this.groupEndMessageInternal !== null) {
+      throw new Error('Console group already has an end');
+    }
+    this.groupEndMessageInternal = viewMessage;
+  }
+
+  groupEnd(): ConsoleViewMessage|null {
+    return this.groupEndMessageInternal;
+  }
 }
 
 export class ConsoleCommand extends ConsoleViewMessage {
@@ -1769,8 +1809,8 @@ export class ConsoleCommand extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
-    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+    super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     this.formattedCommand = null;
   }
 
@@ -1827,8 +1867,8 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   constructor(
       consoleMessage: SDK.ConsoleModel.ConsoleMessage, linkifier: Components.Linkifier.Linkifier,
       requestResolver: Logs.RequestResolver.RequestResolver, issueResolver: IssuesManager.IssueResolver.IssueResolver,
-      nestingLevel: number, onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
-    super(consoleMessage, linkifier, requestResolver, issueResolver, nestingLevel, onResize);
+      onResize: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void) {
+    super(consoleMessage, linkifier, requestResolver, issueResolver, onResize);
     console.assert(consoleMessage.type === Protocol.Runtime.ConsoleAPICalledEventType.Table);
     this.dataGrid = null;
   }

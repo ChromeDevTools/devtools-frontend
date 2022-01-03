@@ -274,12 +274,10 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   private viewportThrottler: Common.Throttler.Throttler;
   private pendingBatchResize: boolean;
   private readonly onMessageResizedBound: (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
-  private topGroup: ConsoleGroup;
-  private currentGroup: ConsoleGroup;
   private readonly promptElement: HTMLElement;
   private readonly linkifier: Components.Linkifier.Linkifier;
   private consoleMessages: ConsoleViewMessage[];
-  private readonly viewMessageSymbol: symbol;
+  private consoleGroupStarts: ConsoleGroupViewMessage[];
   private readonly consoleHistorySetting: Common.Settings.Setting<string[]>;
   private prompt: ConsolePrompt;
   private immediatelyFilterMessagesForTest?: boolean;
@@ -485,9 +483,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       this.onMessageResized(e);
     };
 
-    this.topGroup = ConsoleGroup.createTopGroup();
-    this.currentGroup = this.topGroup;
-
     this.promptElement = this.messagesElement.createChild('div', 'source-code');
     this.promptElement.id = 'console-prompt';
 
@@ -509,7 +504,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
         new Components.Linkifier.Linkifier(MaxLengthForLinks, /* useLinkDecorator */ undefined, refilterMessages);
 
     this.consoleMessages = [];
-    this.viewMessageSymbol = Symbol('viewMessage');
+    this.consoleGroupStarts = [];
 
     this.consoleHistorySetting = Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []);
 
@@ -801,6 +796,23 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     const insertedInMiddle = insertAt < this.consoleMessages.length;
     this.consoleMessages.splice(insertAt, 0, viewMessage);
 
+    if (message.type !== SDK.ConsoleModel.FrontendMessageType.Command &&
+        message.type !== SDK.ConsoleModel.FrontendMessageType.Result) {
+      // Maintain group tree.
+      // Find parent group.
+      const consoleGroupStartIndex =
+          Platform.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator) - 1;
+      if (consoleGroupStartIndex >= 0) {
+        const currentGroup = this.consoleGroupStarts[consoleGroupStartIndex];
+        addToGroup(viewMessage, currentGroup);
+      }
+      // Add new group.
+      if (message.isGroupStartMessage()) {
+        insertAt = Platform.ArrayUtilities.upperBound(this.consoleGroupStarts, viewMessage, timeComparator);
+        this.consoleGroupStarts.splice(insertAt, 0, viewMessage as ConsoleGroupViewMessage);
+      }
+    }
+
     this.filter.onMessageAdded(message);
     if (this.isSidebarOpen) {
       this.sidebar.onMessageAdded(viewMessage);
@@ -835,6 +847,29 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     this.scheduleViewportRefresh();
     this.consoleMessageAddedForTest(viewMessage);
+
+    // Figure out whether the message should belong into this group or the parent group based on group end timestamp.
+    function addToGroup(viewMessage: ConsoleViewMessage, currentGroup: ConsoleGroupViewMessage): void {
+      const currentEnd = currentGroup.groupEnd();
+      if (currentEnd !== null) {
+        // Exceeds this group's end. It should belong into parent group.
+        if (timeComparator(viewMessage, currentEnd) > 0) {
+          const parent = currentGroup.consoleGroup();
+          // No parent group. We reached ungrouped messages. Don't establish group links.
+          if (parent === null) {
+            return;
+          }  // Add to parent group.
+          addToGroup(viewMessage, parent);
+          return;
+        }
+      }
+      // Add message to this group, and set group of the message.
+      if (viewMessage.consoleMessage().type === Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
+        currentGroup.setGroupEnd(viewMessage);
+      } else {
+        viewMessage.setConsoleGroup(currentGroup);
+      }
+    }
 
     function timeComparator(viewMessage1: ConsoleViewMessage, viewMessage2: ConsoleViewMessage): number {
       return (messagesSortedBySymbol.get(viewMessage1) || 0) - (messagesSortedBySymbol.get(viewMessage2) || 0);
@@ -872,6 +907,18 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
         !this.showCorsErrorsSetting.get()) {
       return;
     }
+
+    const lastMessage = this.visibleViewMessages[this.visibleViewMessages.length - 1];
+    if (viewMessage.consoleMessage().type === Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
+      if (lastMessage) {
+        const group = lastMessage.consoleGroup();
+        if (group && !group.messagesHidden()) {
+          lastMessage.incrementCloseGroupDecorationCount();
+        }
+      }
+      return;
+    }
+
     if (!this.shouldMessageBeVisible(viewMessage)) {
       this.hiddenByFilterCount++;
       return;
@@ -882,29 +929,36 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       return;
     }
 
-    const lastMessage = this.visibleViewMessages[this.visibleViewMessages.length - 1];
-    if (viewMessage.consoleMessage().type === Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
-      if (lastMessage && !this.currentGroup.messagesHidden()) {
-        lastMessage.incrementCloseGroupDecorationCount();
-      }
-      this.currentGroup = this.currentGroup.parentGroup() || this.currentGroup;
-      return;
-    }
-    if (!this.currentGroup.messagesHidden()) {
+    const currentGroup = viewMessage.consoleGroup();
+
+    if (!currentGroup || !currentGroup.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
       if (lastMessage && originatingMessage && lastMessage.consoleMessage() === originatingMessage) {
         viewMessage.toMessageElement().classList.add('console-adjacent-user-command-result');
       }
-
+      showGroup(currentGroup, this.visibleViewMessages);
       this.visibleViewMessages.push(viewMessage);
       this.searchMessage(this.visibleViewMessages.length - 1);
     }
 
-    if (viewMessage.consoleMessage().isGroupStartMessage()) {
-      this.currentGroup = new ConsoleGroup(this.currentGroup, (viewMessage as ConsoleGroupViewMessage));
-    }
-
     this.messageAppendedForTests();
+
+    // Show the group the message belongs to, and also show parent groups.
+    function showGroup(currentGroup: ConsoleGroupViewMessage|null, visibleViewMessages: ConsoleViewMessage[]): void {
+      if (currentGroup === null) {
+        return;
+      }
+      // Group is already being shown, no need to traverse to
+      // parent groups since they are also already being shown.
+      if (visibleViewMessages.includes(currentGroup)) {
+        return;
+      }
+      const parentGroup = currentGroup.consoleGroup();
+      if (parentGroup) {
+        showGroup(parentGroup, visibleViewMessages);
+      }
+      visibleViewMessages.push(currentGroup);
+    }
   }
 
   private messageAppendedForTests(): void {
@@ -912,29 +966,24 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   private createViewMessage(message: SDK.ConsoleModel.ConsoleMessage): ConsoleViewMessage {
-    const nestingLevel = this.currentGroup.nestingLevel();
     switch (message.type) {
       case SDK.ConsoleModel.FrontendMessageType.Command:
         return new ConsoleCommand(
-            message, this.linkifier, this.requestResolver, this.issueResolver, nestingLevel,
-            this.onMessageResizedBound);
+            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
       case SDK.ConsoleModel.FrontendMessageType.Result:
         return new ConsoleCommandResult(
-            message, this.linkifier, this.requestResolver, this.issueResolver, nestingLevel,
-            this.onMessageResizedBound);
+            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroupCollapsed:
       case Protocol.Runtime.ConsoleAPICalledEventType.StartGroup:
         return new ConsoleGroupViewMessage(
-            message, this.linkifier, this.requestResolver, this.issueResolver, nestingLevel,
-            this.updateMessageList.bind(this), this.onMessageResizedBound);
+            message, this.linkifier, this.requestResolver, this.issueResolver, this.updateMessageList.bind(this),
+            this.onMessageResizedBound);
       case Protocol.Runtime.ConsoleAPICalledEventType.Table:
         return new ConsoleTableMessageView(
-            message, this.linkifier, this.requestResolver, this.issueResolver, nestingLevel,
-            this.onMessageResizedBound);
+            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
       default:
         return new ConsoleViewMessage(
-            message, this.linkifier, this.requestResolver, this.issueResolver, nestingLevel,
-            this.onMessageResizedBound);
+            message, this.linkifier, this.requestResolver, this.issueResolver, this.onMessageResizedBound);
     }
   }
 
@@ -970,6 +1019,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.linkifier.reset();
     this.filter.clear();
     this.requestResolver.clear();
+    this.consoleGroupStarts = [];
     if (hadFocus) {
       this.prompt.focus();
     }
@@ -1079,7 +1129,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       return;
     }
     this.buildHiddenCacheTimeout =
-        this.element.window().requestAnimationFrame(this.buildHiddenCache.bind(this, i, viewMessages));
+        this.element.window().requestAnimationFrame(this.buildHiddenCache.bind(this, i + 1, viewMessages));
   }
 
   private cancelBuildHiddenCache(): void {
@@ -1091,8 +1141,6 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
   }
 
   private updateMessageList(): void {
-    this.topGroup = ConsoleGroup.createTopGroup();
-    this.currentGroup = this.topGroup;
     this.regexMatchRanges = [];
     this.hiddenByFilterCount = 0;
     for (const visibleViewMessage of this.visibleViewMessages) {
@@ -1105,9 +1153,14 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     } else {
       for (const consoleMessage of this.consoleMessages) {
         consoleMessage.setInSimilarGroup(false);
+        if (consoleMessage.consoleMessage().isGroupable()) {
+          // Since grouping similar messages is disabled, we need clear the
+          // reference to the artificial console group start.
+          consoleMessage.clearConsoleGroup();
+        }
         this.appendMessageToEnd(
             consoleMessage,
-            true /* crbug.com/1082963: prevent collapse of same messages when "Group similar" is false */);
+            true /* crbug.com/1082963: prevent collaps`e of same messages when "Group similar" is false */);
       }
     }
     this.updateFilterStatus();
@@ -1169,6 +1222,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       for (const viewMessageInGroup of viewMessagesInGroup) {
         viewMessageInGroup.setInSimilarGroup(
             true, viewMessagesInGroup[viewMessagesInGroup.length - 1] === viewMessageInGroup);
+        viewMessageInGroup.setConsoleGroup(startGroupViewMessage as ConsoleGroupViewMessage);
         this.appendMessageToEnd(viewMessageInGroup, true);
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }
@@ -1653,35 +1707,6 @@ export class ConsoleViewFilter {
     this.hideNetworkMessagesSetting.set(false);
     this.textFilterUI.setValue('');
     this.onFilterChanged();
-  }
-}
-
-export class ConsoleGroup {
-  private readonly parentGroupInternal: ConsoleGroup|null;
-  private readonly nestingLevelInternal: number;
-  private readonly messagesHiddenInternal: boolean;
-
-  constructor(parentGroup: ConsoleGroup|null, groupMessage: ConsoleGroupViewMessage|null) {
-    this.parentGroupInternal = parentGroup;
-    this.nestingLevelInternal = parentGroup ? parentGroup.nestingLevel() + 1 : 0;
-    this.messagesHiddenInternal = groupMessage && groupMessage.collapsed() ||
-        this.parentGroupInternal && this.parentGroupInternal.messagesHidden() || false;
-  }
-
-  static createTopGroup(): ConsoleGroup {
-    return new ConsoleGroup(null, null);
-  }
-
-  messagesHidden(): boolean {
-    return this.messagesHiddenInternal;
-  }
-
-  nestingLevel(): number {
-    return this.nestingLevelInternal;
-  }
-
-  parentGroup(): ConsoleGroup|null {
-    return this.parentGroupInternal;
   }
 }
 

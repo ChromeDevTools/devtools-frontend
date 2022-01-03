@@ -14,16 +14,24 @@ log1("1topGroup: log1()"); // from console-filter.html
 log2("2topGroup: log2()"); // from log-source.js
 log1("3topGroup: log1()"); // from console-filter.html
 
-console.group("outerGroup");
+console.group("enter outerGroup");
 log1("1outerGroup: log1()"); // from console-filter.html
 log2("2outerGroup: log2()"); // from log-source.js
 
-console.group("innerGroup");
-log1("1innerGroup: log1()"); // from console-filter.html
-log2("2innerGroup: log2()"); // from log-source.js
+console.group("enter innerGroup1");
+log1("1innerGroup1: log1()"); // from console-filter.html
+log2("2innerGroup1: log2()"); // from log-source.js
+console.groupEnd();
+
+console.group("enter innerGroup2");
+log1("1innerGroup2: log1()"); // from console-filter.html
+log2("2innerGroup2: log2()"); // from log-source.js
+console.groupEnd();
 
 console.groupEnd();
-console.groupEnd();
+
+log1("4topGroup: log1()"); // from console-filter.html
+log2("5topGroup: log2()"); // from log-source.js
 
 var logger1 = console.context("context1");
 var logger2 = console.context("context2");
@@ -33,3 +41,4 @@ logger2.log("Hello 2");
 console.debug('verbose debug message');
 console.log("end");
 </script>
+1

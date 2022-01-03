@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+import type {ConsoleGroupViewMessage, ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 export type LevelsMask = {
   [x: string]: boolean,
@@ -68,13 +68,28 @@ export class ConsoleFilter {
     }
 
     if (message.type === SDK.ConsoleModel.FrontendMessageType.Command ||
-        message.type === SDK.ConsoleModel.FrontendMessageType.Result || message.isGroupMessage()) {
+        message.type === SDK.ConsoleModel.FrontendMessageType.Result ||
+        message.type === Protocol.Runtime.ConsoleAPICalledEventType.EndGroup) {
       return true;
     }
+
     if (message.level && !this.levelsMask[message.level as string]) {
       return false;
     }
 
+    return this.applyFilter(viewMessage) || this.parentGroupHasMatch(viewMessage.consoleGroup());
+  }
+
+  // A message is visible if there is a match in any of the parent groups' titles.
+  parentGroupHasMatch(viewMessage: ConsoleGroupViewMessage|null): boolean {
+    if (viewMessage === null) {
+      return false;
+    }
+    return this.applyFilter(viewMessage) || this.parentGroupHasMatch(viewMessage.consoleGroup());
+  }
+
+  applyFilter(viewMessage: ConsoleViewMessage): boolean {
+    const message = viewMessage.consoleMessage();
     for (const filter of this.parsedFilters) {
       if (!filter.key) {
         if (filter.regex && viewMessage.matchesFilterRegex(filter.regex) === filter.negative) {

@@ -93,6 +93,10 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
   color: inherit;
 }
 
+.tree-outline .tree-element-content {
+  display: flex;
+}
+
 .tree-outline li .icons-container {
   align-self: center;
   display: flex;

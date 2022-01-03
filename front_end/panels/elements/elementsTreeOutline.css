@@ -44,9 +44,13 @@
   min-width: 200px;
 }
 
+.elements-disclosure li.parent {
+  display: flex;
+}
+
 .elements-disclosure li.parent:not(.always-parent) {
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  margin-left: -13px;
+  margin-left: -12px;
 }
 
 .elements-disclosure li .selected-hint::before {
@@ -67,6 +71,7 @@
   user-select: none;
   -webkit-mask-image: var(--image-file-treeoutlineTriangles);
   -webkit-mask-size: 32px 24px;
+  height: 16px;
   content: "\A0\A0";
   color: transparent;
   text-shadow: none;

@@ -244,10 +244,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.nodeInternal = node;
     this.treeOutline = null;
 
-    this.gutterContainer = this.listItemElement.createChild('div', 'gutter-container');
+    this.gutterContainer = this.contentElement.createChild('div', 'gutter-container');
     this.gutterContainer.addEventListener('click', this.showContextMenu.bind(this));
     const gutterMenuIcon = UI.Icon.Icon.create('largeicon-menu', 'gutter-menu-icon');
-    this.gutterContainer.appendChild(gutterMenuIcon);
+    this.gutterContainer.append(gutterMenuIcon);
     this.decorationsElement = this.gutterContainer.createChild('div', 'hidden');
 
     this.isClosingTagInternal = isClosingTag;
@@ -267,7 +267,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.highlightResult = [];
 
     if (!isClosingTag) {
-      this.adornerContainer = this.listItemElement.createChild('div', 'adorner-container hidden');
+      this.adornerContainer = this.contentElement.createChild('div', 'adorner-container hidden');
       this.adorners = [];
       this.styleAdorners = [];
       this.adornersThrottler = new Common.Throttler.Throttler(100);
@@ -422,8 +422,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private createSelection(): void {
-    const listItemElement = this.listItemElement;
-    if (!listItemElement) {
+    const contentElement = this.contentElement;
+    if (!contentElement) {
       return;
     }
 
@@ -431,13 +431,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.selectionElement = document.createElement('div');
       this.selectionElement.className = 'selection fill';
       this.selectionElement.style.setProperty('margin-left', (-this.computeLeftIndent()) + 'px');
-      listItemElement.insertBefore(this.selectionElement, listItemElement.firstChild);
+      contentElement.prepend(this.selectionElement);
     }
   }
 
   private createHint(): void {
-    if (this.listItemElement && !this.hintElement) {
-      this.hintElement = this.listItemElement.createChild('span', 'selected-hint');
+    if (this.contentElement && !this.hintElement) {
+      this.hintElement = this.contentElement.createChild('span', 'selected-hint');
       const selectedElementCommand = '$0';
       UI.Tooltip.Tooltip.install(
           this.hintElement, i18nString(UIStrings.useSInTheConsoleToReferToThis, {PH1: selectedElementCommand}));
@@ -1017,7 +1017,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.childrenListElement.style.display = 'none';
     }
     // Append editor.
-    this.listItemElement.appendChild(this.htmlEditElement);
+    this.listItemElement.append(this.htmlEditElement);
     this.htmlEditElement.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
         event.consume(true);
@@ -1305,13 +1305,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
       const highlightElement = document.createElement('span');
       highlightElement.className = 'highlight';
-      highlightElement.appendChild(nodeInfo);
+      highlightElement.append(nodeInfo);
       // fixme: make it clear that `this.title = x` is a setter with significant side effects
       this.title = highlightElement;
       this.updateDecorations();
-      this.listItemElement.insertBefore(this.gutterContainer, this.listItemElement.firstChild);
+      this.contentElement.prepend(this.gutterContainer);
       if (!this.isClosingTagInternal && this.adornerContainer) {
-        this.listItemElement.appendChild(this.adornerContainer);
+        this.contentElement.append(this.adornerContainer);
       }
       this.highlightResult = [];
       delete this.selectionElement;

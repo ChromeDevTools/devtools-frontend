@@ -5,8 +5,9 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 
 // VGA color palette
-const ANSI_COLORS = ['#000000', '#AA0000', '#00AA00', '#AA5500', '#0000AA', '#AA00AA', '#00AAAA', '#AAAAAA'];
-const ANSI_BRIGHT_COLORS = ['#555555', '#FF5555', '#55FF55', '#FFFF55', '#5555FF', '#FF55FF', '#55FFFF', '#FFFFFF'];
+const ANSI_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'gray'];
+const ANSI_BRIGHT_COLORS =
+    ['darkgray', 'lightred', 'lightgreen', 'lightyellow', 'lightblue', 'lightmagenta', 'lightcyan', 'white'];
 
 export type FormatToken = {
   type: 'generic'|'optimal',
@@ -167,11 +168,11 @@ export const format = (fmt: string, args: SDK.RemoteObject.RemoteObject[]): {
             default: {
               const color = ANSI_COLORS[code - 30] ?? ANSI_BRIGHT_COLORS[code - 90];
               if (color !== undefined) {
-                currentStyle.set('color', color);
+                currentStyle.set('color', `var(--console-color-${color})`);
               } else {
                 const background = ANSI_COLORS[code - 40] ?? ANSI_BRIGHT_COLORS[code - 100];
                 if (background !== undefined) {
-                  currentStyle.set('background', background);
+                  currentStyle.set('background-color', `var(--console-color-${background})`);
                 }
               }
               break;

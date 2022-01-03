@@ -208,6 +208,42 @@
   display: flex;
   border-top: 1px solid var(--override-message-border-color);
   border-bottom: 1px solid transparent;
+
+  /* Console ANSI color */
+  --console-color-black: #000;
+  --console-color-red: #a00;
+  --console-color-green: #0a0;
+  --console-color-yellow: #a50;
+  --console-color-blue: #00a;
+  --console-color-magenta: #a0a;
+  --console-color-cyan: #0aa;
+  --console-color-gray: #aaa;
+  --console-color-darkgray: #555;
+  --console-color-lightred: #f55;
+  --console-color-lightgreen: #5f5;
+  --console-color-lightyellow: #ff5;
+  --console-color-lightblue: #55f;
+  --console-color-ightmagenta: #f5f;
+  --console-color-lightcyan: #5ff;
+  --console-color-white: #fff;
+}
+
+.-theme-with-dark-background .console-message-wrapper {
+  /* Dark theme console ANSI color */
+  --console-color-red: rgb(237 78 76);
+  --console-color-green: rgb(1 200 1);
+  --console-color-yellow: rgb(210 192 87);
+  --console-color-blue: rgb(39 116 240);
+  --console-color-magenta: rgb(161 66 244);
+  --console-color-cyan: rgb(18 181 203);
+  --console-color-gray: rgb(207 208 208);
+  --console-color-darkgray: rgb(137 137 137);
+  --console-color-lightred: rgb(242 139 130);
+  --console-color-lightgreen: rgb(161 247 181);
+  --console-color-lightyellow: rgb(221 251 85);
+  --console-color-lightblue: rgb(102 157 246);
+  --console-color-lightmagenta: rgb(214 112 214);
+  --console-color-lightcyan: rgb(132 240 255);
 }
 
 .console-message-wrapper:first-of-type {

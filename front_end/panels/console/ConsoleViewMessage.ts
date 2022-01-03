@@ -906,6 +906,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           // Make sure that allowed properties do not interfere with link visibility.
           const ALLOWED_PROPERTY_PREFIXES =
               ['background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text'];
+
           currentStyle.clear();
           const buffer = document.createElement('span');
           buffer.setAttribute('style', token.value);

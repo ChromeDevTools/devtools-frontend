@@ -627,7 +627,11 @@ export function registerCommands(inspectorBackend) {
     ScrollbarTrackPiece: 'scrollbar-track-piece',
     ScrollbarCorner: 'scrollbar-corner',
     Resizer: 'resizer',
-    InputListButton: 'input-list-button'
+    InputListButton: 'input-list-button',
+    Transition: 'transition',
+    TransitionContainer: 'transition-container',
+    TransitionOldContent: 'transition-old-content',
+    TransitionNewContent: 'transition-new-content'
   });
   inspectorBackend.registerEnum('DOM.ShadowRootType', {UserAgent: 'user-agent', Open: 'open', Closed: 'closed'});
   inspectorBackend.registerEnum(

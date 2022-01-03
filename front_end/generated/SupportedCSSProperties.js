@@ -1,4 +1,4 @@
-// Copyright 2021 The Chromium Authors. All rights reserved.
+// Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -65,14 +65,6 @@ export const generatedProperties = [
   {'name': '-webkit-tap-highlight-color', 'inherited': true},
   {'name': '-webkit-text-combine', 'inherited': true},
   {'name': '-webkit-text-decorations-in-effect', 'inherited': true},
-  {
-    'longhands': ['-webkit-text-emphasis-style', '-webkit-text-emphasis-color'],
-    'name': '-webkit-text-emphasis',
-    'inherited': true
-  },
-  {'name': '-webkit-text-emphasis-color', 'inherited': true},
-  {'name': '-webkit-text-emphasis-position', 'inherited': true},
-  {'name': '-webkit-text-emphasis-style', 'inherited': true},
   {'name': '-webkit-text-fill-color', 'inherited': true},
   {'name': '-webkit-text-orientation', 'inherited': true},
   {'name': '-webkit-text-security', 'inherited': true, 'keywords': ['none', 'disc', 'circle', 'square']},
@@ -771,6 +763,10 @@ export const generatedProperties = [
   {'name': 'text-decoration-skip-ink', 'inherited': true, 'keywords': ['none', 'auto']},
   {'name': 'text-decoration-style', 'keywords': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
   {'name': 'text-decoration-thickness', 'inherited': true, 'keywords': ['auto', 'from-font']},
+  {'longhands': ['text-emphasis-style', 'text-emphasis-color'], 'name': 'text-emphasis', 'inherited': true},
+  {'name': 'text-emphasis-color', 'inherited': true, 'keywords': ['currentcolor']},
+  {'name': 'text-emphasis-position', 'inherited': true},
+  {'name': 'text-emphasis-style', 'inherited': true},
   {'name': 'text-indent', 'inherited': true},
   {'name': 'text-justify', 'inherited': true, 'keywords': ['auto', 'none', 'inter-word', 'distribute']},
   {'name': 'text-orientation', 'inherited': true, 'keywords': ['sideways', 'mixed', 'upright']},
@@ -828,7 +824,7 @@ export const generatedProperties = [
   {
     'name': 'white-space',
     'inherited': true,
-    'keywords': ['none', 'normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']
+    'keywords': ['normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']
   },
   {'name': 'widows', 'inherited': true},
   {'name': 'width', 'keywords': ['auto', 'fit-content', 'min-content', 'max-content']},
@@ -1160,6 +1156,7 @@ export const generatedPropertyValues = {
   'text-decoration-skip-ink': {'values': ['none', 'auto']},
   'text-decoration-style': {'values': ['solid', 'double', 'dotted', 'dashed', 'wavy']},
   'text-decoration-thickness': {'values': ['auto', 'from-font']},
+  'text-emphasis-color': {'values': ['currentcolor']},
   'text-justify': {'values': ['auto', 'none', 'inter-word', 'distribute']},
   'text-orientation': {'values': ['sideways', 'mixed', 'upright']},
   'text-overflow': {'values': ['clip', 'ellipsis']},
@@ -1189,8 +1186,7 @@ export const generatedPropertyValues = {
   'vector-effect': {'values': ['none', 'non-scaling-stroke']},
   'vertical-align': {'values': ['baseline', 'sub', 'super', 'text-top', 'text-bottom', 'middle']},
   'visibility': {'values': ['visible', 'hidden', 'collapse']},
-  'white-space':
-      {'values': ['none', 'normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']},
+  'white-space': {'values': ['normal', 'pre', 'pre-wrap', 'pre-line', 'nowrap', '-webkit-nowrap', 'break-spaces']},
   'width': {'values': ['auto', 'fit-content', 'min-content', 'max-content']},
   'will-change': {'values': ['auto']},
   'word-break': {'values': ['normal', 'break-all', 'keep-all', 'break-word']},
@@ -1201,9 +1197,9 @@ export const generatedPropertyValues = {
 export const generatedAliasesFor = new Map([
   ['-epub-caption-side', 'caption-side'],
   ['-epub-text-combine', '-webkit-text-combine'],
-  ['-epub-text-emphasis', '-webkit-text-emphasis'],
-  ['-epub-text-emphasis-color', '-webkit-text-emphasis-color'],
-  ['-epub-text-emphasis-style', '-webkit-text-emphasis-style'],
+  ['-epub-text-emphasis', 'text-emphasis'],
+  ['-epub-text-emphasis-color', 'text-emphasis-color'],
+  ['-epub-text-emphasis-style', 'text-emphasis-style'],
   ['-epub-text-orientation', '-webkit-text-orientation'],
   ['-epub-text-transform', 'text-transform'],
   ['-epub-word-break', 'word-break'],
@@ -1290,6 +1286,10 @@ export const generatedAliasesFor = new Map([
   ['-webkit-shape-image-threshold', 'shape-image-threshold'],
   ['-webkit-shape-margin', 'shape-margin'],
   ['-webkit-shape-outside', 'shape-outside'],
+  ['-webkit-text-emphasis', 'text-emphasis'],
+  ['-webkit-text-emphasis-color', 'text-emphasis-color'],
+  ['-webkit-text-emphasis-position', 'text-emphasis-position'],
+  ['-webkit-text-emphasis-style', 'text-emphasis-style'],
   ['-webkit-text-size-adjust', 'text-size-adjust'],
   ['-webkit-transform', 'transform'],
   ['-webkit-transform-origin', 'transform-origin'],

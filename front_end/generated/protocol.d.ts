@@ -2884,6 +2884,10 @@ declare namespace Protocol {
       ScrollbarCorner = 'scrollbar-corner',
       Resizer = 'resizer',
       InputListButton = 'input-list-button',
+      Transition = 'transition',
+      TransitionContainer = 'transition-container',
+      TransitionOldContent = 'transition-old-content',
+      TransitionNewContent = 'transition-new-content',
     }
 
     /**
@@ -14069,6 +14073,12 @@ declare namespace Protocol {
        */
       hasCredBlob?: boolean;
       /**
+       * If set to true, the authenticator will support the minPinLength extension.
+       * https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
+       * Defaults to false.
+       */
+      hasMinPinLength?: boolean;
+      /**
        * If set to true, tests of user presence will succeed immediately.
        * Otherwise, they will not be resolved. Defaults to true.
        */
@@ -14356,6 +14366,8 @@ declare namespace Protocol {
       location: Location;
       /**
        * JavaScript script name or url.
+       * Deprecated in favor of using the `location.scriptId` to resolve the URL via a previously
+       * sent `Debugger.scriptParsed` event.
        */
       url: string;
       /**

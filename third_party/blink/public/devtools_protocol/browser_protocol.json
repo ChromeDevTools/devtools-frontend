@@ -4351,7 +4351,11 @@
                         "scrollbar-track-piece",
                         "scrollbar-corner",
                         "resizer",
-                        "input-list-button"
+                        "input-list-button",
+                        "transition",
+                        "transition-container",
+                        "transition-old-content",
+                        "transition-new-content"
                     ]
                 },
                 {
@@ -20877,6 +20881,12 @@
                             "type": "boolean"
                         },
                         {
+                            "name": "hasMinPinLength",
+                            "description": "If set to true, the authenticator will support the minPinLength extension.\nhttps://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension\nDefaults to false.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
                             "name": "automaticPresenceSimulation",
                             "description": "If set to true, tests of user presence will succeed immediately.\nOtherwise, they will not be resolved. Defaults to true.",
                             "optional": true,
@@ -21457,7 +21467,8 @@
                         },
                         {
                             "name": "url",
-                            "description": "JavaScript script name or url.",
+                            "description": "JavaScript script name or url.\nDeprecated in favor of using the `location.scriptId` to resolve the URL via a previously\nsent `Debugger.scriptParsed` event.",
+                            "deprecated": true,
                             "type": "string"
                         },
                         {

@@ -32,13 +32,8 @@
 }
 
 .text-prompt-input .suggestion {
-  color: transparent;
+  color: var(--color-background-highlight);
   position: absolute;
   left: 0;
   z-index: 1;
-}
-
-.text-prompt-input .suggestion::after {
-  content: attr(suggestion);
-  color: var(--color-background-highlight);
 }

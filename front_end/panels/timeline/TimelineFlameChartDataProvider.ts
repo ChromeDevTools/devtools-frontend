@@ -251,10 +251,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       padding: 4,
       height: 17,
       collapsible: true,
-      color:
-          ThemeSupport.ThemeSupport.instance().patchColorText('#222', ThemeSupport.ThemeSupport.ColorUsage.Foreground),
-      backgroundColor:
-          ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background),
+      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
+      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
       font: this.font,
       nestingLevel: 0,
       shareHeaderLine: true,

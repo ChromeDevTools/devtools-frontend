@@ -8,6 +8,7 @@ export interface LiveLocation {
   update(): Promise<void>;
   uiLocation(): Promise<Workspace.UISourceCode.UILocation|null>;
   dispose(): void;
+  isDisposed(): boolean;
   isIgnoreListed(): Promise<boolean>;
 }
 
@@ -49,6 +50,10 @@ export class LiveLocationWithPool implements LiveLocation {
     this.#updateDelegate = null;
   }
 
+  isDisposed(): boolean {
+    return !this.#locationPool.has(this);
+  }
+
   async isIgnoreListed(): Promise<boolean> {
     throw 'Not implemented';
   }
@@ -67,6 +72,10 @@ export class LiveLocationPool {
 
   delete(location: LiveLocation): void {
     this.#locations.delete(location);
+  }
+
+  has(location: LiveLocation): boolean {
+    return this.#locations.has(location);
   }
 
   disposeAll(): void {

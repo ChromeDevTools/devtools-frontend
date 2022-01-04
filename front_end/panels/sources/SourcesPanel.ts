@@ -529,6 +529,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private async executionLineChanged(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     const uiLocation = await liveLocation.uiLocation();
+    if (liveLocation.isDisposed()) {
+      return;
+    }
     if (!uiLocation) {
       return;
     }

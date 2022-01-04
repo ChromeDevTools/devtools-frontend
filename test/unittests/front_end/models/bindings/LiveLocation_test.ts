@@ -37,4 +37,13 @@ describe('LiveLocation', () => {
 
     assert.deepEqual(updateDelegateLog, ['enter', 'exit', 'enter', 'exit', 'enter', 'exit']);
   });
+
+  it('isDisposed returns true after locationPool.disposeAll', () => {
+    const pool = new LiveLocationPool();
+    const liveLocation = new LiveLocationWithPool(async () => {}, pool);
+
+    assert.isFalse(liveLocation.isDisposed());
+    pool.disposeAll();
+    assert.isTrue(liveLocation.isDisposed());
+  });
 });

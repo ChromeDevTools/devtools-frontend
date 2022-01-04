@@ -294,6 +294,7 @@ select.toolbar-item:disabled {
   opacity: 50%;
 }
 
+button.toolbar-item:focus-visible,
 select.toolbar-item:focus-visible {
   background: var(--color-background-elevation-2);
   border-radius: 2px;

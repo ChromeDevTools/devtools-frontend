@@ -478,7 +478,6 @@ function shouldShowLocaleInfobar(): boolean {
 function createLocaleInfobar(): Infobar {
   const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
-  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale =
       new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(locale.language || 'en');

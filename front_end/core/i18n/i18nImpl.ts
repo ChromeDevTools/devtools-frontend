@@ -158,13 +158,11 @@ export function lockedLazyString(str: string): () => Platform.UIString.Localized
 export function getLocalizedLanguageRegion(
     localeString: Intl.UnicodeBCP47LocaleIdentifier,
     devtoolsLocale: DevToolsLocale): Platform.UIString.LocalizedString {
-  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const locale = new Intl.Locale(localeString);
   Platform.DCHECK(() => locale.language !== undefined);
   Platform.DCHECK(() => locale.baseName !== undefined);
   const localLanguage = locale.language || 'en';
   const localBaseName = locale.baseName || 'en-US';
-  // @ts-ignore TODO(crbug.com/1163928) Wait for Intl support.
   const devtoolsLoc = new Intl.Locale(devtoolsLocale.locale);
   const targetLanguage = localLanguage === devtoolsLoc.language ? 'en' : localBaseName;
   const languageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], {type: 'language'}).of(localLanguage);

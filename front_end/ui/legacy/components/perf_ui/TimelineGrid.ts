@@ -132,12 +132,10 @@ export class TimelineGrid {
     const width = Math.ceil(context.canvas.width / window.devicePixelRatio);
 
     context.beginPath();
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText(
-        'rgba(255, 255, 255, 0.5)', ThemeSupport.ThemeSupport.ColorUsage.Background);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-50');
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle =
-        ThemeSupport.ThemeSupport.instance().patchColorText('#333', ThemeSupport.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
     context.textBaseline = 'hanging';
     context.font = '11px ' + Host.Platform.fontFamily();
 

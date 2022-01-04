@@ -267,14 +267,14 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     UI.ARIAUtils.markAsButton(displaySwitcher);
 
     UI.UIUtils.installDragHandle(
-        this.hueElement, this.dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'pointer',
-        'default');
+        this.hueElement, this.dragStart.bind(this, positionHue.bind(this)), positionHue.bind(this), null, 'ew-resize',
+        'crosshair');
     UI.UIUtils.installDragHandle(
         this.alphaElement, this.dragStart.bind(this, positionAlpha.bind(this)), positionAlpha.bind(this), null,
-        'pointer', 'default');
+        'ew-resize', 'crosshair');
     UI.UIUtils.installDragHandle(
-        this.colorElement, this.dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null,
-        'pointer', 'default');
+        this.colorElement, this.dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null, 'move',
+        'crosshair');
 
     // Color contrast business.
     if (contrastInfo) {

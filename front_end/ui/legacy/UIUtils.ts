@@ -141,9 +141,9 @@ export function installDragHandle(
   }
 
   let startTimer: number|null;
-  element.addEventListener('mousedown', onMouseDown, false);
+  element.addEventListener('pointerdown', onMouseDown, false);
   if (startDelay) {
-    element.addEventListener('mouseup', onMouseUp, false);
+    element.addEventListener('pointerup', onMouseUp, false);
   }
   if (hoverCursor !== null) {
     (element as HTMLElement).style.cursor = hoverCursor || cursor || '';
@@ -233,12 +233,12 @@ class DragHandler {
       this.dragEventsTargetDocumentTop = this.dragEventsTargetDocument;
     }
 
-    targetDocument.addEventListener('mousemove', this.elementDragMove, true);
-    targetDocument.addEventListener('mouseup', this.elementDragEnd, true);
+    targetDocument.addEventListener('pointermove', this.elementDragMove, true);
+    targetDocument.addEventListener('pointerup', this.elementDragEnd, true);
     DragHandler.rootForMouseOut &&
-        DragHandler.rootForMouseOut.addEventListener('mouseout', this.mouseOutWhileDragging, {capture: true});
+        DragHandler.rootForMouseOut.addEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
     if (this.dragEventsTargetDocumentTop && targetDocument !== this.dragEventsTargetDocumentTop) {
-      this.dragEventsTargetDocumentTop.addEventListener('mouseup', this.elementDragEnd, true);
+      this.dragEventsTargetDocumentTop.addEventListener('pointerup', this.elementDragEnd, true);
     }
 
     const targetHtmlElement = (targetElement as HTMLElement);
@@ -264,17 +264,17 @@ class DragHandler {
     if (!DragHandler.rootForMouseOut) {
       return;
     }
-    DragHandler.rootForMouseOut.removeEventListener('mouseout', this.mouseOutWhileDragging, {capture: true});
+    DragHandler.rootForMouseOut.removeEventListener('pointerout', this.mouseOutWhileDragging, {capture: true});
   }
 
   private unregisterDragEvents(): void {
     if (!this.dragEventsTargetDocument) {
       return;
     }
-    this.dragEventsTargetDocument.removeEventListener('mousemove', this.elementDragMove, true);
-    this.dragEventsTargetDocument.removeEventListener('mouseup', this.elementDragEnd, true);
+    this.dragEventsTargetDocument.removeEventListener('pointermove', this.elementDragMove, true);
+    this.dragEventsTargetDocument.removeEventListener('pointerup', this.elementDragEnd, true);
     if (this.dragEventsTargetDocumentTop && this.dragEventsTargetDocument !== this.dragEventsTargetDocumentTop) {
-      this.dragEventsTargetDocumentTop.removeEventListener('mouseup', this.elementDragEnd, true);
+      this.dragEventsTargetDocumentTop.removeEventListener('pointerup', this.elementDragEnd, true);
     }
     delete this.dragEventsTargetDocument;
     delete this.dragEventsTargetDocumentTop;
@@ -993,9 +993,9 @@ export class LongClickController {
 
     this.element.addEventListener('keydown', boundKeyDown, false);
     this.element.addEventListener('keyup', boundKeyUp, false);
-    this.element.addEventListener('mousedown', boundMouseDown, false);
-    this.element.addEventListener('mouseout', boundReset, false);
-    this.element.addEventListener('mouseup', boundMouseUp, false);
+    this.element.addEventListener('pointerdown', boundMouseDown, false);
+    this.element.addEventListener('pointerout', boundReset, false);
+    this.element.addEventListener('pointerup', boundMouseUp, false);
     this.element.addEventListener('click', boundReset, true);
 
     this.longClickData = {mouseUp: boundMouseUp, mouseDown: boundMouseDown, reset: boundReset};
@@ -1033,9 +1033,9 @@ export class LongClickController {
     if (!this.longClickData) {
       return;
     }
-    this.element.removeEventListener('mousedown', this.longClickData.mouseDown, false);
-    this.element.removeEventListener('mouseout', this.longClickData.reset, false);
-    this.element.removeEventListener('mouseup', this.longClickData.mouseUp, false);
+    this.element.removeEventListener('poinerdown', this.longClickData.mouseDown, false);
+    this.element.removeEventListener('pointerout', this.longClickData.reset, false);
+    this.element.removeEventListener('pointerup', this.longClickData.mouseUp, false);
     this.element.addEventListener('click', this.longClickData.reset, true);
     delete this.longClickData;
   }

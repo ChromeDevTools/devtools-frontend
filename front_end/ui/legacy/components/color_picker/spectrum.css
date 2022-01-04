@@ -25,6 +25,7 @@
   border-radius: 2px 2px 0 0;
   overflow: hidden;
   flex: none;
+  touch-action: none;
 }
 
 .spectrum-dragger,
@@ -37,7 +38,8 @@
   height: 12px;
   width: 12px;
   border: 1px solid var(--color-background);
-  cursor: pointer;
+  cursor: move;
+  z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
@@ -48,7 +50,7 @@
 .spectrum-slider {
   position: absolute;
   top: -1px;
-  cursor: pointer;
+  cursor: ew-resize;
   width: 13px;
   height: 13px;
   border-radius: 13px;
@@ -90,6 +92,7 @@
   width: 130px;
   height: 11px;
   border-radius: 2px;
+  touch-action: none;
 }
 
 .spectrum-hue:focus-visible .spectrum-slider,

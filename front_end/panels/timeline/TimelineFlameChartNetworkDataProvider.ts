@@ -63,11 +63,9 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       padding: 4,
       height: 17,
       collapsible: true,
-      color:
-          ThemeSupport.ThemeSupport.instance().patchColorText('#222', ThemeSupport.ThemeSupport.ColorUsage.Foreground),
+      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
       font: this.font,
-      backgroundColor:
-          ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background),
+      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
       nestingLevel: 0,
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
@@ -196,11 +194,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const end = Math.max(timeToPixel(endTime), finish);
 
     // Draw waiting time.
-    context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-80');
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
     // Clear portions of initial rect to prepare for the ticks.
-    context.fillStyle =
-        ThemeSupport.ThemeSupport.instance().patchColorText('white', ThemeSupport.ThemeSupport.ColorUsage.Background);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 

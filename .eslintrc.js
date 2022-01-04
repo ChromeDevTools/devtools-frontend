@@ -157,6 +157,7 @@ module.exports = {
           }
         }
       ],
+      '@typescript-eslint/no-floating-promises': [2, {ignoreVoid: true}],
       // func-call-spacing doesn't work well with .ts
       'func-call-spacing': 0,
       '@typescript-eslint/func-call-spacing': 2,

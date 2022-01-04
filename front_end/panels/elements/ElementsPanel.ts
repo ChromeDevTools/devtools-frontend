@@ -213,7 +213,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.contentElementInternal = document.createElement('div');
     const crumbsContainer = document.createElement('div');
     if (Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
-      this.initializeFullAccessibilityTreeView(stackElement);
+      this.initializeFullAccessibilityTreeView();
     }
     stackElement.appendChild(this.contentElementInternal);
     stackElement.appendChild(crumbsContainer);
@@ -274,14 +274,14 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.adornersByName = new Map();
   }
 
-  private initializeFullAccessibilityTreeView(stackElement: UI.Widget.WidgetElement): void {
+  private initializeFullAccessibilityTreeView(): void {
     this.accessibilityTreeButton = createAccessibilityTreeToggleButton(false);
     this.accessibilityTreeButton.addEventListener('click', this.showAccessibilityTree.bind(this));
 
     this.domTreeButton = createAccessibilityTreeToggleButton(true);
     this.domTreeButton.addEventListener('click', this.showDOMTree.bind(this));
 
-    stackElement.appendChild(this.accessibilityTreeButton);
+    this.contentElementInternal.appendChild(this.accessibilityTreeButton);
   }
 
   private showAccessibilityTree(): void {

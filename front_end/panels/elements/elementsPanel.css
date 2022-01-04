@@ -31,6 +31,7 @@
   flex: 1 1;
   overflow: auto;
   padding: 2px 0 0;
+  position: relative;
 }
 
 .style-panes-wrapper {

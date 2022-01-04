@@ -176,7 +176,7 @@ export class LayerViewHost {
     if (node) {
       contextMenu.appendApplicableItems(node);
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   showInternalLayersSetting(): Common.Settings.Setting<boolean> {

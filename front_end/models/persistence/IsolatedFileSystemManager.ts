@@ -147,7 +147,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       for (let i = 0; i < fileSystems.length; ++i) {
         promises.push(this.innerAddFileSystem(fileSystems[i], false));
       }
-      Promise.all(promises).then(onFileSystemsAdded);
+      void Promise.all(promises).then(onFileSystemsAdded);
     }
 
     function onFileSystemsAdded(fileSystems: (IsolatedFileSystem|null)[]): void {
@@ -209,7 +209,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       this.fileSystemRequestResolve.call(null, null);
       this.fileSystemRequestResolve = null;
     } else if (fileSystem) {
-      this.innerAddFileSystem(fileSystem, true).then(fileSystem => {
+      void this.innerAddFileSystem(fileSystem, true).then(fileSystem => {
         if (this.fileSystemRequestResolve) {
           this.fileSystemRequestResolve.call(null, fileSystem);
           this.fileSystemRequestResolve = null;

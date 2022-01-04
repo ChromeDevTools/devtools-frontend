@@ -73,7 +73,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       networkManager.addEventListener(NetworkManagerEvents.RequestUpdateDropped, this.onRequestUpdateDropped, this);
     }
     this.agent = target.pageAgent();
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.#pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
@@ -85,7 +85,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.isInterstitialShowing = false;
     this.mainFrame = null;
 
-    this.agent.invoke_getResourceTree().then(event => {
+    void this.agent.invoke_getResourceTree().then(event => {
       this.processCachedResources(event.getError() ? null : event.frameTree);
     });
   }
@@ -391,7 +391,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       networkManager.clearRequests();
     }
     this.dispatchEventToListeners(Events.WillReloadPage);
-    this.agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
+    void this.agent.invoke_reload({ignoreCache, scriptToEvaluateOnLoad});
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
@@ -412,7 +412,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   navigateToHistoryEntry(entry: Protocol.Page.NavigationEntry): void {
-    this.agent.invoke_navigateToHistoryEntry({entryId: entry.id});
+    void this.agent.invoke_navigateToHistoryEntry({entryId: entry.id});
   }
 
   setLifecycleEventsEnabled(enabled: boolean): Promise<Protocol.ProtocolResponseWithError> {
@@ -1042,7 +1042,7 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
 
   javascriptDialogOpening({hasBrowserHandler}: Protocol.Page.JavascriptDialogOpeningEvent): void {
     if (!hasBrowserHandler) {
-      this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({accept: false});
+      void this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({accept: false});
     }
   }
 

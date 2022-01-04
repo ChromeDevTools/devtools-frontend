@@ -109,7 +109,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
 
     this.addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addWatchExpression), 'largeicon-add');
     this.addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.addButtonClicked();
+      void this.addButtonClicked();
     });
     this.refreshButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshWatchExpressions), 'largeicon-refresh');
@@ -219,7 +219,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   private contextMenu(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     this.populateContextMenu(contextMenu, event);
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu, event: MouseEvent): void {
@@ -268,7 +268,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     }
     const {state} = frame.textEditor;
     const text = state.sliceDoc(state.selection.main.from, state.selection.main.to);
-    this.focusAndAddExpressionToWatch(text);
+    void this.focusAndAddExpressionToWatch(text);
     return true;
   }
 
@@ -334,7 +334,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   update(): void {
     const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (currentExecutionContext && this.expressionInternal) {
-      currentExecutionContext
+      void currentExecutionContext
           .evaluate(
               {
                 expression: this.expressionInternal,

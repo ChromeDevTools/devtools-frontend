@@ -69,7 +69,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshCaches), this.refreshCaches.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private refreshCaches(): void {
@@ -143,11 +143,11 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.delete), this.clearCache.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private clearCache(): void {
-    this.model.deleteCache(this.cache);
+    void this.model.deleteCache(this.cache);
   }
 
   update(cache: SDK.ServiceWorkerCacheModel.Cache): void {

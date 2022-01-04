@@ -57,7 +57,7 @@ export class ContrastOverlay {
     if (!this.contrastInfo.contrastRatio()) {
       return;
     }
-    this.contrastRatioLinesThrottler.schedule(this.drawContrastRatioLinesBound);
+    void this.contrastRatioLinesThrottler.schedule(this.drawContrastRatioLinesBound);
   }
 
   setDimensions(width: number, height: number): void {

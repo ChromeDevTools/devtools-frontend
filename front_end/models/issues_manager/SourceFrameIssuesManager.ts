@@ -43,7 +43,7 @@ export class SourceFrameIssuesManager {
       const rawLocation =
           debuggerModel.createRawLocationByURL(srcLocation.url, srcLocation.lineNumber, srcLocation.columnNumber);
       if (rawLocation) {
-        this.#addIssueMessageToScript(issue, rawLocation);
+        void this.#addIssueMessageToScript(issue, rawLocation);
       }
     }
   }
@@ -62,7 +62,7 @@ export class SourceFrameIssuesManager {
       const title = await getIssueTitleFromMarkdownDescription(description);
       if (title) {
         const clickHandler = (): void => {
-          Common.Revealer.reveal(issue);
+          void Common.Revealer.reveal(issue);
         };
         this.#issueMessages.push(
             new IssueMessage(title, issue.getKind(), rawLocation, this.#locationPool, clickHandler));
@@ -93,7 +93,7 @@ export class IssueMessage extends Workspace.UISourceCode.Message {
       locationPool: Bindings.LiveLocation.LiveLocationPool, clickHandler: () => void) {
     super(Workspace.UISourceCode.Message.Level.Issue, title, clickHandler);
     this.#kind = kind;
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
+    void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
         rawLocation, this.#updateLocation.bind(this), locationPool);
   }
 

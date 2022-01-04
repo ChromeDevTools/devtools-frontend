@@ -103,7 +103,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   preciseCoverageDeltaUpdate(timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]):
       void {
     this.coverageUpdateTimes.add(timestamp);
-    this.backlogOrProcessJSCoverage(coverageData, timestamp);
+    void this.backlogOrProcessJSCoverage(coverageData, timestamp);
   }
 
   async stop(): Promise<void> {
@@ -287,7 +287,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   async processJSBacklog(): Promise<void> {
-    this.backlogOrProcessJSCoverage([], 0);
+    void this.backlogOrProcessJSCoverage([], 0);
   }
 
   private processJSCoverage(scriptsCoverage: Protocol.Profiler.ScriptCoverage[], stamp: number): CoverageInfo[] {
@@ -475,7 +475,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       result.push(...await urlInfo.entriesForExport());
     }
     await fos.write(JSON.stringify(result, undefined, 2));
-    fos.close();
+    void fos.close();
   }
 }
 

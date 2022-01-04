@@ -97,7 +97,7 @@ export class IssueCounter extends HTMLElement {
 
   scheduleUpdate(): void {
     if (this.#throttler) {
-      this.#throttler.schedule(async () => this.#render());
+      void this.#throttler.schedule(async () => this.#render());
     } else {
       this.#render();
     }

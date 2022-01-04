@@ -80,7 +80,7 @@ export class ProtocolService {
       method?: string,
     };
     if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
-      this.sendWithoutResponse('dispatchProtocolMessage', {message: JSON.stringify(message)});
+      void this.sendWithoutResponse('dispatchProtocolMessage', {message: JSON.stringify(message)});
     }
   }
 

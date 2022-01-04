@@ -177,7 +177,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   }
 
   private addFileSystemClicked(): void {
-    IsolatedFileSystemManager.instance().addFileSystem();
+    void IsolatedFileSystemManager.instance().addFileSystem();
   }
 
   private fileSystemAdded(fileSystem: PlatformFileSystem): void {

@@ -105,7 +105,7 @@ export class Icon extends HTMLElement {
   }
 
   #render(): void {
-    coordinator.write(() => {
+    void coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
         <div class="icon-basic" style=${LitHtml.Directives.styleMap(this.#getStyles())}></div>

@@ -107,7 +107,7 @@ export class ObjectPopoverHelper {
       return new ObjectPopoverHelper(null, false);
     }
 
-    ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
+    void ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
     const response = await result.debuggerModel().functionDetailsPromise(result);
     if (!response) {
       return null;

@@ -48,7 +48,7 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     if (itemIndex === null) {
       return;
     }
-    evaluateScriptSnippet(this.snippets[itemIndex]);
+    void evaluateScriptSnippet(this.snippets[itemIndex]);
   }
 
   notFoundText(_query: string): string {

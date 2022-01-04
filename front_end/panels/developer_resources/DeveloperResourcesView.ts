@@ -93,7 +93,7 @@ export class DeveloperResourcesView extends UI.Widget.VBox {
   }
 
   private onUpdate(): void {
-    this.throttler.schedule(this.update.bind(this));
+    void this.throttler.schedule(this.update.bind(this));
   }
 
   private async update(): Promise<void> {

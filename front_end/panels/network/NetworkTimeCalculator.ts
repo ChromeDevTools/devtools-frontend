@@ -209,7 +209,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   boundaryChanged(): void {
-    this.boundryChangedEventThrottler.schedule(async () => {
+    void this.boundryChangedEventThrottler.schedule(async () => {
       this.dispatchEventToListeners(Events.BoundariesChanged);
     });
   }

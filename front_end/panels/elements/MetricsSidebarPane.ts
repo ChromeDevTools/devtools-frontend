@@ -398,10 +398,10 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         // An added property, remove the last property in the style.
         const pastLastSourcePropertyIndex = this.inlineStyle.pastLastSourcePropertyIndex();
         if (pastLastSourcePropertyIndex) {
-          this.inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
+          void this.inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
         }
       } else {
-        this.inlineStyle.allProperties()[this.originalPropertyData.index].setText(
+        void this.inlineStyle.allProperties()[this.originalPropertyData.index].setText(
             this.originalPropertyData.propertyText || '', false);
       }
     }

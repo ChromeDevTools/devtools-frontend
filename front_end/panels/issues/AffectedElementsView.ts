@@ -39,6 +39,6 @@ export class AffectedElementsView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    this.#appendAffectedElements(this.issue.elements());
+    void this.#appendAffectedElements(this.issue.elements());
   }
 }

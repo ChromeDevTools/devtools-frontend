@@ -168,7 +168,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
 
     if (this.#bufferIdToRemoteObject.has(id)) {
       this.#paneInstance.reveal(id, address);
-      UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+      void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
       return;
     }
 
@@ -177,7 +177,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const arrayBufferWrapper = new RemoteArrayBufferWrapper(buffer);
 
     this.#paneInstance.create(id, title, arrayBufferWrapper, address);
-    UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
+    void UI.ViewManager.ViewManager.instance().showView('linear-memory-inspector');
   }
 
   modelRemoved(model: SDK.RuntimeModel.RuntimeModel): void {

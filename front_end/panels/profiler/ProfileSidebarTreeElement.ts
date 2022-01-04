@@ -164,7 +164,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
       contextMenu.saveSection().appendItem(i18nString(UIStrings.saveWithEllipsis), profile.saveToFile.bind(profile));
     }
     contextMenu.footerSection().appendItem(i18nString(UIStrings.delete), this.ondelete.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   saveProfile(_event: Event): void {

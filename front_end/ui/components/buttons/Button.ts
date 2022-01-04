@@ -101,42 +101,42 @@ export class Button extends HTMLElement {
     this.#props.spinner = Boolean(data.spinner);
     this.#props.type = data.type || 'button';
     this.#setDisabledProperty(data.disabled || false);
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set iconUrl(iconUrl: string|undefined) {
     this.#props.iconUrl = iconUrl;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set variant(variant: Variant) {
     this.#props.variant = variant;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set size(size: Size) {
     this.#props.size = size;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set type(type: ButtonType) {
     this.#props.type = type;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set disabled(disabled: boolean) {
     this.#setDisabledProperty(disabled);
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set active(active: boolean) {
     this.#props.active = active;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set spinner(spinner: boolean) {
     this.#props.spinner = spinner;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #setDisabledProperty(disabled: boolean): void {
@@ -150,7 +150,7 @@ export class Button extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [buttonStyles];
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #onClick(event: Event): void {
@@ -175,7 +175,7 @@ export class Button extends HTMLElement {
     const slot = event.target as HTMLSlotElement | undefined;
     const nodes = slot?.assignedNodes();
     this.#isEmpty = !nodes || !Boolean(nodes.length);
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #render(): void {

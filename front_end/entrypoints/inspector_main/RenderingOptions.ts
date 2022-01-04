@@ -298,7 +298,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    supportsJpegXl().then(hasSupport => {
+    void supportsJpegXl().then(hasSupport => {
       if (!hasSupport) {
         return;
       }

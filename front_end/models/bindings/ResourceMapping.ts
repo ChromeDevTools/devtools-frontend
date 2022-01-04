@@ -183,7 +183,7 @@ class ModelInfo {
       this.#cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetChanged,
           event => {
-            this.styleSheetChanged(event);
+            void this.styleSheetChanged(event);
           },
           this),
     ];

@@ -21,7 +21,7 @@ export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyAp
 
   constructor(target: Target) {
     super(target);
-    this.ensureEnabled();
+    void this.ensureEnabled();
   }
 
   private async ensureEnabled(): Promise<void> {

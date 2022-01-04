@@ -533,7 +533,8 @@ export class SensorsView extends UI.Widget.VBox {
       this.deviceOrientationSetting.set(this.deviceOrientation.toSetting());
     }
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.emulateDeviceOrientation(this.deviceOrientationOverrideEnabled ? this.deviceOrientation : null);
+      void emulationModel.emulateDeviceOrientation(
+          this.deviceOrientationOverrideEnabled ? this.deviceOrientation : null);
     }
   }
 
@@ -792,7 +793,7 @@ let showActionDelegateInstance: ShowActionDelegate;
 
 export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    UI.ViewManager.ViewManager.instance().showView('sensors');
+    void UI.ViewManager.ViewManager.instance().showView('sensors');
     return true;
   }
   static instance(opts: {

@@ -85,7 +85,7 @@ export class DataGrid extends HTMLElement {
   // lookup constant.
   readonly #rowIndexMap = new WeakMap<Row, number>();
   readonly #resizeObserver = new ResizeObserver(() => {
-    this.#alignScrollHandlers();
+    void this.#alignScrollHandlers();
   });
 
   // These have to be bound as they are put onto the global document, not onto
@@ -173,7 +173,7 @@ export class DataGrid extends HTMLElement {
       }
     }
 
-    this.#render();
+    void this.#render();
   }
 
   #shouldAutoScrollToBottom(): boolean {
@@ -206,13 +206,13 @@ export class DataGrid extends HTMLElement {
       return;
     }
 
-    coordinator.read(() => {
+    void coordinator.read(() => {
       const wrapper = this.#shadow.querySelector('.wrapping-container');
       if (!wrapper) {
         return;
       }
       const scrollHeight = wrapper.scrollHeight;
-      coordinator.scroll(() => {
+      void coordinator.scroll(() => {
         wrapper.scrollTo(0, scrollHeight);
       });
     });
@@ -254,7 +254,7 @@ export class DataGrid extends HTMLElement {
     }
 
     this.#cellUserHasFocused = [newColumnIndex, newRowIndex];
-    this.#render();
+    void this.#render();
     const tableCell = this.#getTableElementForCellUserHasFocused();
     if (!tableCell) {
       // Return in case the cell is out of bounds and we do nothing
@@ -264,7 +264,7 @@ export class DataGrid extends HTMLElement {
      * add arrow key support, so in the case where we're programatically moving the
      * focus, ensure we actually focus the cell.
      */
-    this.#focusTableCellInDOM(tableCell);
+    void this.#focusTableCellInDOM(tableCell);
   }
 
   #onTableKeyDown(event: KeyboardEvent): void {
@@ -344,7 +344,7 @@ export class DataGrid extends HTMLElement {
     this.#currentResize.documentForCursorChange.body.style.cursor = this.#currentResize.cursorToRestore;
     this.#currentResize = null;
     // Realign the scroll handlers now the table columns have been resized.
-    this.#alignScrollHandlers();
+    void this.#alignScrollHandlers();
   }
 
   #onResizePointerDown(event: PointerEvent): void {
@@ -528,7 +528,7 @@ export class DataGrid extends HTMLElement {
       // Let the user append things to the menu
       this.#contextMenus.headerRow(menu, this.#columns);
     }
-    menu.show();
+    void menu.show();
   }
 
   #onBodyRowContextMenu(event: MouseEvent): void {
@@ -566,7 +566,7 @@ export class DataGrid extends HTMLElement {
     if (this.#contextMenus && this.#contextMenus.bodyRow) {
       this.#contextMenus.bodyRow(menu, this.#columns, rowThatWasClicked);
     }
-    menu.show();
+    void menu.show();
   }
 
   #onScroll(event: Event): void {
@@ -581,7 +581,7 @@ export class DataGrid extends HTMLElement {
     this.#userScrollState =
         userIsAtBottom ? UserScrollState.SCROLLED_TO_BOTTOM : UserScrollState.MANUAL_SCROLL_NOT_BOTTOM;
 
-    this.#render();
+    void this.#render();
   }
 
   #alignScrollHandlers(): Promise<void> {
@@ -598,7 +598,7 @@ export class DataGrid extends HTMLElement {
         const columnLeftOffset = header.offsetLeft;
         if (handlers[index]) {
           const handlerWidth = handlers[index].clientWidth;
-          coordinator.write(() => {
+          void coordinator.write(() => {
             /**
              * Render the resizer at the far right of the column; we subtract
              * its width so it sits on the inner edge of the column.
@@ -828,7 +828,7 @@ export class DataGrid extends HTMLElement {
     const currentlyFocusedRowIndex = tabbableCell[1];
     const tabbableCellElement = this.#getTableElementForCellUserHasFocused();
     if (this.#userHasFocusInDataGrid && currentlyFocusedRowIndex > 0 && tabbableCellElement) {
-      this.#focusTableCellInDOM(tabbableCellElement);
+      void this.#focusTableCellInDOM(tabbableCellElement);
     }
     this.#scrollToBottomIfRequired();
     this.#engageResizeObserver();
@@ -838,7 +838,7 @@ export class DataGrid extends HTMLElement {
       // re-positioned correctly if so.
 
       // We don't have to do this on first render as it will fire when the resize observer is engaged.
-      this.#alignScrollHandlers();
+      void this.#alignScrollHandlers();
     }
 
     this.#isRendering = false;
@@ -848,7 +848,7 @@ export class DataGrid extends HTMLElement {
     // the end with the most recent data.
     if (this.#scheduleRender) {
       this.#scheduleRender = false;
-      this.#render();
+      void this.#render();
     }
   }
 }

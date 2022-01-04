@@ -113,7 +113,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const enabled = this.eagerEvalSetting.get();
     this.eagerPreviewElement.classList.toggle('hidden', !enabled);
     if (enabled) {
-      this.requestPreview();
+      void this.requestPreview();
     }
   }
 
@@ -210,7 +210,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       {
         key: 'Enter',
         run: (): boolean => {
-          this.handleEnter();
+          void this.handleEnter();
           return true;
         },
         shift: CodeMirror.insertNewlineAndIndent,
@@ -269,7 +269,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private updatePromptIcon(): void {
-    this.iconThrottler.schedule(async () => {
+    void this.iconThrottler.schedule(async () => {
       this.promptIcon.classList.toggle('console-prompt-incomplete', !(await this.enterWillEvaluate()));
     });
   }
@@ -280,7 +280,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       const executionContext = currentExecutionContext;
       const message = SDK.ConsoleModel.ConsoleModel.instance().addCommandMessage(executionContext, text);
       const expression = ObjectUI.JavaScriptREPL.JavaScriptREPL.preprocessExpression(text);
-      SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
+      void SDK.ConsoleModel.ConsoleModel.instance().evaluateCommandInConsole(
           executionContext, message, expression, useCommandLineAPI);
       if (ConsolePanel.instance().isShowing()) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);

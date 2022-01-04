@@ -146,18 +146,18 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       subMenuItem.defaultSection().appendItem(
           title, this.revealSourceLocation.bind(this, (uiLocations.get(title) as Workspace.UISourceCode.UILocation)));
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private revealSourceLocation(location: Workspace.UISourceCode.UILocation): void {
-    Common.Revealer.reveal(location);
+    void Common.Revealer.reveal(location);
   }
 
   private scheduleMediaQueriesUpdate(): void {
     if (!this.isShowing()) {
       return;
     }
-    this.mediaThrottler.schedule(this.refetchMediaQueries.bind(this));
+    void this.mediaThrottler.schedule(this.refetchMediaQueries.bind(this));
   }
 
   private refetchMediaQueries(): Promise<void> {

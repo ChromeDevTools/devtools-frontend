@@ -63,7 +63,7 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
     }
 
     function revealInView(this: ProfilesPanel, viewName: string): void {
-      heapProfilerModel.snapshotObjectIdForObjectId(objectId).then(result => {
+      void heapProfilerModel.snapshotObjectIdForObjectId(objectId).then(result => {
         if (this.isShowing() && result) {
           this.showObject(result, viewName);
         }
@@ -103,7 +103,7 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
       if (profile.maxJSObjectId >= parseInt(snapshotObjectId, 10)) {
         this.showProfile(profile);
         const view = (this.viewForProfile(profile) as HeapSnapshotView);
-        view.selectLiveObject(perspectiveName, snapshotObjectId);
+        void view.selectLiveObject(perspectiveName, snapshotObjectId);
         break;
       }
     }

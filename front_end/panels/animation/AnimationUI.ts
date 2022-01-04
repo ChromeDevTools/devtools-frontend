@@ -385,7 +385,7 @@ export class AnimationUI {
     this.#downMouseX = mouseEvent.clientX;
     event.consume(true);
     if (this.#node) {
-      Common.Revealer.reveal(this.#node);
+      void Common.Revealer.reveal(this.#node);
     }
     return true;
   }
@@ -462,10 +462,10 @@ export class AnimationUI {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.appendApplicableItems(remoteObject);
-      contextMenu.show();
+      void contextMenu.show();
     }
 
-    this.#animationInternal.remoteObjectPromise().then(showContextMenu);
+    void this.#animationInternal.remoteObjectPromise().then(showContextMenu);
     event.consume(true);
   }
 }

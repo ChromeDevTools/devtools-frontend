@@ -20,7 +20,7 @@ export async function playMediaFile(media: string) {
       if (!videoElement.paused || videoElement.readyState > 2) {
         resolve();
       } else {
-        videoElement.play();
+        void videoElement.play();
       }
     });
   });

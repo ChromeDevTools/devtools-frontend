@@ -24,7 +24,7 @@ export class ThrottledWidget extends VBox {
     if (this.updateWhenVisible) {
       return;
     }
-    this.updateThrottler.schedule(() => {
+    void this.updateThrottler.schedule(() => {
       if (this.isShowing()) {
         return this.doUpdate();
       }

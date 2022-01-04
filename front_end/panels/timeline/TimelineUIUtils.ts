@@ -3145,7 +3145,7 @@ export class TimelineUIUtils {
     if (filmStripFrame) {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');
-      filmStripFrame.imageDataPromise()
+      void filmStripFrame.imageDataPromise()
           .then(data => UI.UIUtils.loadImageFromData(data))
           .then(image => image && filmStripPreview.appendChild(image));
       contentHelper.appendElementRow('', filmStripPreview);
@@ -3582,7 +3582,7 @@ export class InvalidationsGroupElement extends UI.TreeOutline.TreeElement {
     const node = (invalidation.nodeId && this.relatedNodesMap) ? this.relatedNodesMap.get(invalidation.nodeId) : null;
     if (node) {
       const nodeSpan = document.createElement('span');
-      Common.Linkifier.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
+      void Common.Linkifier.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
       return nodeSpan;
     }
     if (invalidation.nodeName) {

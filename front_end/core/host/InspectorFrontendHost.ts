@@ -130,7 +130,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     if (text === undefined || text === null) {
       return;
     }
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
   }
 
   openInNewTab(url: string): void {

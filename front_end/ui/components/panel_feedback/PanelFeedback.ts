@@ -56,7 +56,7 @@ export class PanelFeedback extends HTMLElement {
 
   set data(data: PanelFeedbackData) {
     this.#props = data;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #render(): void {

@@ -92,7 +92,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     this.#addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addXhrfetchBreakpoint), 'largeicon-add');
     this.#addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.addButtonClicked();
+      void this.addButtonClicked();
     });
 
     this.#emptyElement.addEventListener('contextmenu', this.emptyElementContextMenu.bind(this), true);
@@ -115,7 +115,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   private emptyElementContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private async addButtonClicked(): Promise<void> {
@@ -294,7 +294,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.addBreakpoint), this.addButtonClicked.bind(this));
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), removeBreakpoint.bind(this));
     contextMenu.defaultSection().appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private checkboxClicked(url: string, checked: boolean): void {
@@ -372,7 +372,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       return;
     }
     this.#list.refreshItem(url);
-    UI.ViewManager.ViewManager.instance().showView('sources.xhrBreakpoints');
+    void UI.ViewManager.ViewManager.instance().showView('sources.xhrBreakpoints');
   }
 
   private restoreBreakpoints(): void {

@@ -82,12 +82,12 @@ const _bindOutputStream = function(stream: Common.StringOutputStream.OutputStrea
 };
 
 const _discardOutputStream = function(id: number): void {
-  _boundStreams[id].close();
+  void _boundStreams[id].close();
   delete _boundStreams[id];
 };
 
 export const streamWrite = function(id: number, chunk: string): void {
-  _boundStreams[id].write(chunk);
+  void _boundStreams[id].write(chunk);
 };
 export interface LoadErrorDescription {
   statusCode: number;

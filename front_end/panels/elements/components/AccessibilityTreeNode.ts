@@ -65,7 +65,7 @@ export class AccessibilityTreeNode extends HTMLElement {
     this.#name = data.name;
     this.#role = data.role;
     this.#properties = data.properties;
-    this.#render();
+    void this.#render();
   }
 
   connectedCallback(): void {

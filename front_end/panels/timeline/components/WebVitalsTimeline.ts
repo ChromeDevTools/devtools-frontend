@@ -247,13 +247,13 @@ export class WebVitalsTimeline extends HTMLElement {
   }
 
   #updateOverlayPosition(clientX: number, clientY: number): void {
-    coordinator.read(() => {
+    void coordinator.read(() => {
       const bb1 = this.getBoundingClientRect();
       const bb2 = this.#overlay.getBoundingClientRect();
 
       const x = clientX + 10 + bb2.width > bb1.x + bb1.width ? clientX - bb2.width - 10 : clientX + 10;
 
-      coordinator.write(() => {
+      void coordinator.write(() => {
         this.#overlay.style.top = `${clientY + 10}px`;
         this.#overlay.style.left = `${x}px`;
       });

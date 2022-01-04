@@ -150,7 +150,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.formattedMap = null;
     this.prettyToggle = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.prettyPrint), 'largeicon-pretty-print');
     this.prettyToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.setPretty(!this.prettyToggle.toggled());
+      void this.setPretty(!this.prettyToggle.toggled());
     });
     this.shouldAutoPrettyPrint = false;
     this.prettyToggle.setVisible(false);
@@ -394,7 +394,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   wasShown(): void {
-    this.ensureContentLoaded();
+    void this.ensureContentLoaded();
     this.wasShownOrLoaded();
   }
 
@@ -760,7 +760,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
           this.doFindSearchMatches.bind(this, searchConfig, shouldJump, Boolean(jumpBackwards));
     }
 
-    this.ensureContentLoaded();
+    void this.ensureContentLoaded();
   }
 
   private resetCurrentSearchResultIndex(): void {
@@ -945,7 +945,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const pos = state.selection.main.from, line = state.doc.lineAt(pos);
     this.populateTextAreaContextMenu(contextMenu, line.number - 1, pos - line.from);
     contextMenu.appendApplicableItems(this);
-    contextMenu.show();
+    void contextMenu.show();
     return true;
   }
 
@@ -959,7 +959,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     const lineNumber = this.textEditor.state.doc.lineAt(position).number - 1;
     this.populateLineGutterContextMenu(contextMenu, lineNumber);
     contextMenu.appendApplicableItems(this);
-    contextMenu.show();
+    void contextMenu.show();
     return true;
   }
 

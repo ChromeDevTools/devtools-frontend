@@ -457,7 +457,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
           treeOutline.rootDOMNode = domModel.existingDocument();
           this.documentUpdated(domModel);
         } else {
-          domModel.requestDocument();
+          void domModel.requestDocument();
         }
       }
     }
@@ -512,7 +512,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       };
 
       if (this.accessibilityTreeView) {
-        this.accessibilityTreeView.selectedNodeChanged(selectedNode);
+        void this.accessibilityTreeView.selectedNodeChanged(selectedNode);
       }
     } else {
       this.breadcrumbs.data = {crumbs: [], selectedNode: null};
@@ -523,7 +523,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     if (!selectedNode) {
       return;
     }
-    selectedNode.setAsInspectedNode();
+    void selectedNode.setAsInspectedNode();
     if (focus) {
       this.selectedNodeOnReset = selectedNode;
       this.hasNonDefaultSelectedNode = true;
@@ -551,7 +551,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     if (!domModel.existingDocument()) {
       if (this.isShowing()) {
-        domModel.requestDocument();
+        void domModel.requestDocument();
       }
       return;
     }
@@ -563,7 +563,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     const savedSelectedNodeOnReset = this.selectedNodeOnReset;
-    restoreNode.call(this, domModel, this.selectedNodeOnReset || null);
+    void restoreNode.call(this, domModel, this.selectedNodeOnReset || null);
 
     async function restoreNode(
         this: ElementsPanel, domModel: SDK.DOMModel.DOMModel, staleNode: SDK.DOMModel.DOMNode|null): Promise<void> {
@@ -637,7 +637,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get();
     const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel);
     const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
-    Promise.all(promises).then(resultCounts => {
+    void Promise.all(promises).then(resultCounts => {
       this.searchResults = [];
       for (let i = 0; i < resultCounts.length; ++i) {
         const resultCount = resultCounts[i];
@@ -676,7 +676,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   switchToAndFocus(node: SDK.DOMModel.DOMNode): void {
     // Reset search restore.
     this.searchableViewInternal.cancelSearch();
-    UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
+    void UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
   }
 
   private jumpToSearchResult(index: number): void {
@@ -725,7 +725,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     if (typeof searchResult.node === 'undefined') {
       // No data for slot, request it.
-      searchResult.domModel.searchResult(searchResult.index).then(node => {
+      void searchResult.domModel.searchResult(searchResult.index).then(node => {
         searchResult.node = node;
 
         // If any of these properties are undefined or reset to an invalid value,
@@ -739,7 +739,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     const treeElement = this.treeElementForNode(searchResult.node);
-    searchResult.node.scrollIntoView();
+    void searchResult.node.scrollIntoView();
     if (treeElement) {
       this.searchConfig && treeElement.highlightSearchResults(this.searchConfig.query);
       treeElement.reveal();
@@ -866,7 +866,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     if (this.accessibilityTreeView) {
-      this.accessibilityTreeView.revealAndSelectNode(node);
+      void this.accessibilityTreeView.revealAndSelectNode(node);
     }
 
     await UI.ViewManager.ViewManager.instance().showView('elements', false, !focus);
@@ -1114,7 +1114,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       }
       const treeElement = this.treeElementForNode(domNode);
       if (treeElement) {
-        treeElement.updateStyleAdorners();
+        void treeElement.updateStyleAdorners();
       }
     }
   }
@@ -1265,7 +1265,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
       } else if (node instanceof SDK.RemoteObject.RemoteObject) {
         const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {
-          domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
+          void domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {
           reject(new Error('Could not resolve a node to reveal.'));
         }
@@ -1296,7 +1296,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
         }
 
         if (resolvedNode) {
-          panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
+          void panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
           return;
         }
         reject(new Error('Could not resolve node to reveal.'));
@@ -1360,7 +1360,7 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
 
     switch (actionId) {
       case 'elements.hide-element':
-        treeOutline.toggleHideElement(node);
+        void treeOutline.toggleHideElement(node);
         return true;
       case 'elements.edit-as-html':
         treeOutline.toggleEditAsHTML(node);
@@ -1372,11 +1372,11 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
         treeOutline.findTreeElement(node)?.copyStyles();
         return true;
       case 'elements.undo':
-        SDK.DOMModel.DOMModelUndoStack.instance().undo();
+        void SDK.DOMModel.DOMModelUndoStack.instance().undo();
         ElementsPanel.instance().stylesWidget.forceUpdate();
         return true;
       case 'elements.redo':
-        SDK.DOMModel.DOMModelUndoStack.instance().redo();
+        void SDK.DOMModel.DOMModelUndoStack.instance().redo();
         ElementsPanel.instance().stylesWidget.forceUpdate();
         return true;
     }

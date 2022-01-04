@@ -52,7 +52,7 @@ export class FileSystemWorkspaceBinding {
       this.isolatedFileSystemManager.addEventListener(Events.FileSystemFilesChanged, this.fileSystemFilesChanged, this),
     ];
     this.boundFileSystems = new Map();
-    this.isolatedFileSystemManager.waitForFileSystems().then(this.onFileSystemsLoaded.bind(this));
+    void this.isolatedFileSystemManager.waitForFileSystems().then(this.onFileSystemsLoaded.bind(this));
   }
 
   static projectId(fileSystemPath: string): string {
@@ -379,7 +379,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
 
   deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const relativePath = this.filePathForUISourceCode(uiSourceCode);
-    this.fileSystemInternal.deleteFile(relativePath).then(success => {
+    void this.fileSystemInternal.deleteFile(relativePath).then(success => {
       if (success) {
         this.removeUISourceCode(uiSourceCode.url());
       }
@@ -409,7 +409,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
       return;
     }
     sourceCodeToMetadataMap.delete(uiSourceCode);
-    uiSourceCode.checkContentUpdated();
+    void uiSourceCode.checkContentUpdated();
   }
 
   tooltipForURL(url: string): string {

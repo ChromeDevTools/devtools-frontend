@@ -55,7 +55,7 @@ export class HeapSnapshotLoader {
     this.#buffer = '';
     this.#dataCallback = null;
     this.#done = false;
-    this.#parseInput();
+    void this.#parseInput();
   }
 
   dispose(): void {

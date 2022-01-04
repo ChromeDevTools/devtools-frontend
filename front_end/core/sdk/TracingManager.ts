@@ -90,7 +90,7 @@ export class TracingManager extends SDKModel<void> {
       throw new Error('Tracing is already being stopped');
     }
     this.#finishing = true;
-    this.#tracingAgent.invoke_end();
+    void this.#tracingAgent.invoke_end();
   }
 }
 

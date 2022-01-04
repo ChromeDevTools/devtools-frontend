@@ -246,7 +246,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     }
 
     if (breakpoints.some(breakpoint => breakpoint.isSelected)) {
-      UI.ViewManager.ViewManager.instance().showView('sources.jsBreakpoints');
+      void UI.ViewManager.ViewManager.instance().showView('sources.jsBreakpoints');
     }
 
     this.list.element.classList.toggle(
@@ -415,7 +415,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
       }
     }
     if (uiLocation) {
-      Common.Revealer.reveal(uiLocation);
+      void Common.Revealer.reveal(uiLocation);
     }
   }
 
@@ -463,7 +463,7 @@ export class JavaScriptBreakpointsSidebarPane extends UI.ThrottledWidget.Throttl
     const removeOtherTitle = i18nString(UIStrings.removeOtherBreakpoints);
     contextMenu.defaultSection().appendItem(
         removeOtherTitle, this.removeOtherBreakpoints.bind(this, new Set(breakpoints)));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private toggleAllBreakpointsInFile(element: Element, toggleState: boolean): void {

@@ -49,7 +49,7 @@ export class SecurityModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.dispatcher = new SecurityDispatcher(this);
     this.securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this.dispatcher);
-    this.securityAgent.invoke_enable();
+    void this.securityAgent.invoke_enable();
   }
 
   resourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel {

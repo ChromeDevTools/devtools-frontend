@@ -99,7 +99,7 @@ describe('Custom devices', async () => {
     const {target} = getBrowserAndPages();
     await target.reload();
 
-    waitForDomNodeToBeVisible('#res-dump-done');
+    void waitForDomNodeToBeVisible('#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua'), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile'), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands'), '2');
@@ -141,7 +141,7 @@ describe('Custom devices', async () => {
     // Reload the test page, and verify things working.
     await target.reload();
 
-    waitForDomNodeToBeVisible('#res-dump-done');
+    void waitForDomNodeToBeVisible('#res-dump-done');
     assert.strictEqual(await targetTextContent('#res-ua'), 'Test device browser 1.0');
     assert.strictEqual(await targetTextContent('#res-mobile'), 'true');
     assert.strictEqual(await targetTextContent('#res-num-brands'), '2');

@@ -586,8 +586,8 @@ export class AXRelatedNodeElement {
     if (this.deferredNode) {
       const valueElement = document.createElement('span');
       element.appendChild(valueElement);
-      this.deferredNode.resolvePromise().then(node => {
-        Common.Linkifier.Linkifier.linkify(node, {tooltip: undefined, preventKeyboardFocus: true})
+      void this.deferredNode.resolvePromise().then(node => {
+        void Common.Linkifier.Linkifier.linkify(node, {tooltip: undefined, preventKeyboardFocus: true})
             .then(linkfied => valueElement.appendChild(linkfied));
       });
     } else if (this.idref) {
@@ -605,7 +605,7 @@ export class AXRelatedNodeElement {
    */
   revealNode(): void {
     if (this.deferredNode) {
-      this.deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
+      void this.deferredNode.resolvePromise().then(node => Common.Revealer.reveal(node));
     }
   }
 }

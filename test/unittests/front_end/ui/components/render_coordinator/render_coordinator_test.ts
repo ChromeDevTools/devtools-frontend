@@ -29,11 +29,11 @@ describe('Render Coordinator', () => {
       '[Queue empty]',
     ];
 
-    coordinator.write('Write 1', () => {});
-    coordinator.read('Read 1', () => {});
-    coordinator.read('Read 2', () => {});
-    coordinator.write('Write 2', () => {});
-    coordinator.read('Read 3', () => {});
+    void coordinator.write('Write 1', () => {});
+    void coordinator.read('Read 1', () => {});
+    void coordinator.read('Read 2', () => {});
+    void coordinator.write('Write 2', () => {});
+    void coordinator.read('Read 3', () => {});
 
     await validateRecords(expected);
   });
@@ -52,15 +52,15 @@ describe('Render Coordinator', () => {
       '[Queue empty]',
     ];
 
-    coordinator.read('Read 1', () => {
-      coordinator.write('Write 1', () => {});
+    void coordinator.read('Read 1', () => {
+      void coordinator.write('Write 1', () => {});
     });
 
-    coordinator.read('Read 2', () => {
-      coordinator.write('Write 2', () => {
-        coordinator.write('Write 3', () => {});
+    void coordinator.read('Read 2', () => {
+      void coordinator.write('Write 2', () => {
+        void coordinator.write('Write 3', () => {});
       });
-      coordinator.read('Read 3', () => {});
+      void coordinator.read('Read 3', () => {});
     });
 
     await validateRecords(expected);
@@ -74,10 +74,10 @@ describe('Render Coordinator', () => {
       '[Write]: Write at end',
       '[Queue empty]',
     ];
-    coordinator.read('Read', () => {
+    void coordinator.read('Read', () => {
       // This write is added when we are evaluating the last item in the queue,
       // and it should be enqueued correctly for the test to pass.
-      coordinator.write('Write at end', () => {});
+      void coordinator.write('Write at end', () => {});
     });
 
     await coordinator.done();
@@ -108,7 +108,7 @@ describe('Render Coordinator', () => {
                          }, timeout));
     };
 
-    coordinator.write(async () => delayedSet(expected, 100));
+    void coordinator.write(async () => delayedSet(expected, 100));
     await coordinator.done();
 
     assert.strictEqual(targetValue, expected);
@@ -164,8 +164,8 @@ describe('Render Coordinator', () => {
         '[Queue empty]',
       ];
 
-      coordinator.read('Named Read', () => {});
-      coordinator.write(() => {});
+      void coordinator.read('Named Read', () => {});
+      void coordinator.write(() => {});
 
       await validateRecords(expected);
     });
@@ -179,8 +179,8 @@ describe('Render Coordinator', () => {
       ];
 
       coordinator.observeOnlyNamed = false;
-      coordinator.read('Named Read', () => {});
-      coordinator.write(() => {});
+      void coordinator.read('Named Read', () => {});
+      void coordinator.write(() => {});
 
       await validateRecords(expected);
     });
@@ -190,7 +190,7 @@ describe('Render Coordinator', () => {
       expected.push('[Queue empty]');
 
       for (let i = 0; i < 150; i++) {
-        coordinator.read('Named read', () => {});
+        void coordinator.read('Named read', () => {});
       }
 
       await validateRecords(expected);
@@ -202,7 +202,7 @@ describe('Render Coordinator', () => {
       expected.push('[Queue empty]');
 
       for (let i = 0; i < 50; i++) {
-        coordinator.write('Named write', () => {});
+        void coordinator.write('Named write', () => {});
       }
 
       await validateRecords(expected);

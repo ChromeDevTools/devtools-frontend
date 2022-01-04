@@ -173,7 +173,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     const target = new Target(
         this, id, name, type, parentTarget, sessionId || '', this.#isSuspended, connection || null, targetInfo);
     if (waitForDebuggerInPage) {
-      target.pageAgent().invoke_waitForDebugger();
+      void target.pageAgent().invoke_waitForDebugger();
     }
     target.createModels(new Set(this.#modelObservers.keysArray()));
     this.#targetsInternal.add(target);
@@ -257,7 +257,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // Do not await for Target.autoAttachRelated to return, as it goes throguh the renderer and we don't want to block early
     // at front-end initialization if a renderer is stuck. The rest of #target discovery and auto-attach process should happen
     // asynchronously upon Target.attachedToTarget.
-    this.#browserTargetInternal.targetAgent().invoke_autoAttachRelated({
+    void this.#browserTargetInternal.targetAgent().invoke_autoAttachRelated({
       targetId,
       waitForDebuggerOnStart: true,
     });

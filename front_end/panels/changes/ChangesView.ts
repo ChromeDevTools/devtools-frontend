@@ -122,7 +122,7 @@ export class ChangesView extends UI.Widget.VBox {
     if (!uiSourceCode) {
       return;
     }
-    this.workspaceDiff.revertToOriginal(uiSourceCode);
+    void this.workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
   private click(event: MouseEvent): void {
@@ -136,7 +136,7 @@ export class ChangesView extends UI.Widget.VBox {
           // Unfortunately, caretRangeFromPoint is broken in shadow
           // roots, which makes determining the character offset more
           // work than justified here.
-          Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(Number(number) - 1, 0), false);
+          void Common.Revealer.reveal(this.selectedUISourceCode.uiLocation(Number(number) - 1, 0), false);
           event.consume(true);
         }
         break;
@@ -159,11 +159,11 @@ export class ChangesView extends UI.Widget.VBox {
     }
 
     this.selectedUISourceCode = uiSourceCode;
-    this.refreshDiff();
+    void this.refreshDiff();
   }
 
   wasShown(): void {
-    this.refreshDiff();
+    void this.refreshDiff();
     this.registerCSSFiles([changesViewStyles]);
   }
 

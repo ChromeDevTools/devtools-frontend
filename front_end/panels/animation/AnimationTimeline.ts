@@ -196,7 +196,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private addEventListeners(animationModel: AnimationModel): void {
-    animationModel.ensureEnabled();
+    void animationModel.ensureEnabled();
     animationModel.addEventListener(Events.AnimationGroupStarted, this.animationGroupStarted, this);
     animationModel.addEventListener(Events.ModelReset, this.reset, this);
   }
@@ -770,7 +770,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     if (!this.#selectedGroup) {
       return;
     }
-    this.#selectedGroup.currentTimePromise()
+    void this.#selectedGroup.currentTimePromise()
         .then(this.animateTime.bind(this))
         .then(this.updateControlButton.bind(this));
   }
@@ -897,7 +897,7 @@ export class NodeUI {
     }
     this.#node = node;
     this.nodeChanged();
-    Common.Linkifier.Linkifier.linkify(node).then(link => this.#description.appendChild(link));
+    void Common.Linkifier.Linkifier.linkify(node).then(link => this.#description.appendChild(link));
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }

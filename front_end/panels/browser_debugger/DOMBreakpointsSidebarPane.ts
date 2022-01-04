@@ -199,11 +199,12 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     const linkifiedNode = document.createElement('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);
-    Common.Linkifier.Linkifier.linkify(item.node, {preventKeyboardFocus: true, tooltip: undefined}).then(linkified => {
-      linkifiedNode.appendChild(linkified);
-      UI.ARIAUtils.setAccessibleName(
-          checkboxElement, i18nString(UIStrings.sS, {PH1: breakpointTypeText, PH2: linkified.deepTextContent()}));
-    });
+    void Common.Linkifier.Linkifier.linkify(item.node, {preventKeyboardFocus: true, tooltip: undefined})
+        .then(linkified => {
+          linkifiedNode.appendChild(linkified);
+          UI.ARIAUtils.setAccessibleName(
+              checkboxElement, i18nString(UIStrings.sS, {PH1: breakpointTypeText, PH2: linkified.deepTextContent()}));
+        });
 
     labelElement.appendChild(description);
 
@@ -314,7 +315,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeAllDomBreakpoints), () => {
       breakpoint.domDebuggerModel.removeAllDOMBreakpoints();
     });
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private checkboxClicked(breakpoint: SDK.DOMDebuggerModel.DOMBreakpoint, event: Event): void {
@@ -356,7 +357,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     if (this.#highlightedBreakpoint) {
       this.#list.refreshItem(this.#highlightedBreakpoint);
     }
-    UI.ViewManager.ViewManager.instance().showView('sources.domBreakpoints');
+    void UI.ViewManager.ViewManager.instance().showView('sources.domBreakpoints');
   }
   wasShown(): void {
     super.wasShown();

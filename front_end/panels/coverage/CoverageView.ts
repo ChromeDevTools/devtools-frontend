@@ -174,7 +174,7 @@ export class CoverageView extends UI.Widget.VBox {
     toolbar.appendSeparator();
     this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.export), 'largeicon-download');
     this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.exportReport();
+      void this.exportReport();
     });
     toolbar.appendToolbarItem(this.saveButton);
     this.saveButton.setEnabled(false);
@@ -283,9 +283,9 @@ export class CoverageView extends UI.Widget.VBox {
     const enable = !this.toggleRecordAction.toggled();
 
     if (enable) {
-      this.startRecording({reload: false, jsCoveragePerBlock: this.isBlockCoverageSelected()});
+      void this.startRecording({reload: false, jsCoveragePerBlock: this.isBlockCoverageSelected()});
     } else {
-      this.stopRecording();
+      void this.stopRecording();
     }
   }
 
@@ -381,7 +381,7 @@ export class CoverageView extends UI.Widget.VBox {
     if (reload && this.resourceTreeModel) {
       this.resourceTreeModel.reloadPage();
     } else {
-      this.model.startPolling();
+      void this.model.startPolling();
     }
   }
 
@@ -530,7 +530,7 @@ let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const coverageViewId = 'coverage';
-    UI.ViewManager.ViewManager.instance()
+    void UI.ViewManager.ViewManager.instance()
         .showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
         .then(() => {
           const view = UI.ViewManager.ViewManager.instance().view(coverageViewId);
@@ -554,7 +554,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         coverageView.toggleRecording();
         break;
       case 'coverage.start-with-reload':
-        coverageView.startRecording({reload: true, jsCoveragePerBlock: coverageView.isBlockCoverageSelected()});
+        void coverageView.startRecording({reload: true, jsCoveragePerBlock: coverageView.isBlockCoverageSelected()});
         break;
       default:
         console.assert(false, `Unknown action: ${actionId}`);

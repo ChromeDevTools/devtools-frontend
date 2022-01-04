@@ -149,7 +149,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     this.request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
 
     this.refreshQueryString();
-    this.refreshFormData();
+    void this.refreshFormData();
     // this._root.select(/* omitFocus */ true, /* selectedByUser */ false);
   }
 
@@ -167,7 +167,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(decodedValue);
       };
       contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyDecodedValueHandler);
-      contextMenu.show();
+      void contextMenu.show();
     });
   }
 
@@ -268,7 +268,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       const section = contextMenu.newSection();
       section.appendItem(i18nString(UIStrings.showMore), showMore);
-      contextMenu.show();
+      void contextMenu.show();
     }
     sourceTreeElement.listItemElement.addEventListener('contextmenu', onContextMenuShowMore);
     sourceTextElement.appendChild(showMoreButton);
@@ -318,7 +318,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
-      contextMenu.show();
+      void contextMenu.show();
     };
 
     const viewParsedButton = this.createViewSourceToggle(/* viewSource */ true, viewParsed.bind(this));
@@ -373,7 +373,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       const viewURLEncodedText =
           this.decodeRequestParameters ? i18nString(UIStrings.viewUrlEncoded) : i18nString(UIStrings.viewDecoded);
       section.appendItem(viewURLEncodedText, toggleURLDecoding.bind(this, event));
-      contextMenu.show();
+      void contextMenu.show();
     };
 
     const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
@@ -428,7 +428,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(i18nString(UIStrings.viewParsed), viewParsed.bind(this, event));
-      contextMenu.show();
+      void contextMenu.show();
     };
 
     rootListItemElement.addEventListener('contextmenu', viewParsedContextMenu);
@@ -465,7 +465,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       contextMenu.newSection().appendItem(i18nString(UIStrings.viewSource), viewSource.bind(this, event));
-      contextMenu.show();
+      void contextMenu.show();
     };
 
     const viewSourceButton = this.createViewSourceToggle(/* viewSource */ false, viewSource.bind(this));
@@ -484,7 +484,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private toggleURLDecoding(event: Event): void {
     this.decodeRequestParameters = !this.decodeRequestParameters;
     this.refreshQueryString();
-    this.refreshFormData();
+    void this.refreshFormData();
     event.consume();
   }
 

@@ -69,12 +69,12 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
   private uiSourceCodeChanged(
       event: Common.EventTarget.EventTargetEvent<{uiSourceCode: Workspace.UISourceCode.UISourceCode}>): void {
     const uiSourceCode = event.data.uiSourceCode;
-    this.updateModifiedState(uiSourceCode);
+    void this.updateModifiedState(uiSourceCode);
   }
 
   private uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
-    this.updateModifiedState(uiSourceCode);
+    void this.updateModifiedState(uiSourceCode);
   }
 
   private uiSourceCodeRemoved(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {

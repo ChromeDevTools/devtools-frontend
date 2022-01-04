@@ -18,7 +18,7 @@ describe('Throttler class', () => {
 
     const throttler = new Throttler(10);
     const promiseTest = throttler.schedule(assignVar1, true);
-    promiseTest.then(() => {
+    void promiseTest.then(() => {
       assert.strictEqual(result, 'new value', 'process was not scheduled correctly');
     });
 
@@ -38,8 +38,8 @@ describe('Throttler class', () => {
 
     const throttler = new Throttler(10);
     const promiseTest = throttler.schedule(assignVar1, true);
-    throttler.schedule(assignVar2, true);
-    promiseTest.then(() => {
+    void throttler.schedule(assignVar2, true);
+    void promiseTest.then(() => {
       assert.strictEqual(result, 'new value 2', 'process was not scheduled correctly');
     });
 

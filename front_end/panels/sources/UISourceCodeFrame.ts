@@ -172,7 +172,7 @@ export class UISourceCodeFrame extends
       this.unloadUISourceCode();
       this.uiSourceCodeInternal = uiSourceCode;
       if (uiSourceCode.workingCopy() !== this.textEditor.state.doc.toString()) {
-        this.setContent(uiSourceCode.workingCopy());
+        void this.setContent(uiSourceCode.workingCopy());
       } else {
         this.reloadPlugins();
       }
@@ -373,7 +373,7 @@ export class UISourceCodeFrame extends
 
   private maybeSetContent(content: string): void {
     if (this.textEditor.state.doc.toString() !== content) {
-      this.setContent(content);
+      void this.setContent(content);
     }
   }
 

@@ -97,15 +97,15 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   }
 
   private showNextChunk(): void {
-    this.callback(this.startPosition, this.startPosition + this.chunkSize);
+    void this.callback(this.startPosition, this.startPosition + this.chunkSize);
   }
 
   private showAllInternal(): void {
-    this.callback(this.startPosition, this.endPosition);
+    void this.callback(this.startPosition, this.endPosition);
   }
 
   private showLastChunk(): void {
-    this.callback(this.endPosition - this.chunkSize, this.endPosition);
+    void this.callback(this.endPosition - this.chunkSize, this.endPosition);
   }
 
   private updateLabels(): void {

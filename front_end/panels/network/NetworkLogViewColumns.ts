@@ -330,7 +330,7 @@ export class NetworkLogViewColumns {
       }
       const contextMenu = new UI.ContextMenu.ContextMenu(event);
       this.networkLogView.handleContextMenuForRequest(contextMenu, request);
-      contextMenu.show();
+      void contextMenu.show();
     }
   }
 

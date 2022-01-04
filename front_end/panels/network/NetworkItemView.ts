@@ -151,7 +151,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         i18nString(UIStrings.headers));
 
     this.payloadView = null;
-    this.maybeAppendPayloadPanel();
+    void this.maybeAppendPayloadPanel();
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -235,7 +235,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   private async requestHeadersChanged(): Promise<void> {
     this.maybeAppendCookiesPanel();
-    this.maybeAppendPayloadPanel();
+    void this.maybeAppendPayloadPanel();
   }
 
   private maybeAppendCookiesPanel(): void {

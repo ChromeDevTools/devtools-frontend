@@ -7,7 +7,7 @@ import type {ElementHandle} from 'puppeteer';
 
 export async function setCustomOrientation() {
   const dropDown = await waitFor('.orientation-fields select');
-  selectOption(dropDown, 'custom');
+  void selectOption(dropDown, 'custom');
 }
 
 export async function getInputFieldValue(field: ElementHandle<Element>): Promise<string> {

@@ -29,7 +29,7 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
       reportingApiEndpointsView.contentElement.appendChild(this.endpointsGrid);
       this.setMainWidget(reportingApiReportsView);
       this.setSidebarWidget(reportingApiEndpointsView);
-      networkManager.enableReportingApi();
+      void networkManager.enableReportingApi();
     }
   }
 

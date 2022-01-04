@@ -180,7 +180,7 @@ export class CPUProfileType extends ProfileType {
 
   buttonClicked(): boolean {
     if (this.recording) {
-      this.stopRecordingProfile();
+      void this.stopRecordingProfile();
       return false;
     }
     this.startRecordingProfile();
@@ -208,11 +208,11 @@ export class CPUProfileType extends ProfileType {
     }
     const profile = new CPUProfileHeader(cpuProfilerModel, this);
     this.setProfileBeingRecorded(profile as ProfileHeader);
-    SDK.TargetManager.TargetManager.instance().suspendAllTargets();
+    void SDK.TargetManager.TargetManager.instance().suspendAllTargets();
     this.addProfile(profile as ProfileHeader);
     profile.updateStatus(i18nString(UIStrings.recording));
     this.recording = true;
-    cpuProfilerModel.startRecording();
+    void cpuProfilerModel.startRecording();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
   }
 
@@ -243,7 +243,7 @@ export class CPUProfileType extends ProfileType {
   }
 
   profileBeingRecordedRemoved(): void {
-    this.stopRecordingProfile();
+    void this.stopRecordingProfile();
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention

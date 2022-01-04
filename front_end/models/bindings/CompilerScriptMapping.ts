@@ -99,7 +99,7 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     const uiSourceCode = event.data;
     if (uiSourceCode.contentType().isDocument()) {
       for (const script of this.#debuggerModel.scriptsForSourceURL(uiSourceCode.url())) {
-        this.#debuggerWorkspaceBinding.updateLocations(script);
+        void this.#debuggerWorkspaceBinding.updateLocations(script);
       }
     }
   }

@@ -118,7 +118,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.controlPane.instantiateMetricData();
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
-    this.model.enable();
+    void this.model.enable();
     this.suspendStateChanged();
   }
 
@@ -129,7 +129,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.TargetManager.instance().removeEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
     this.stopPolling();
-    this.model.disable();
+    void this.model.disable();
   }
 
   modelAdded(model: SDK.PerformanceMetricsModel.PerformanceMetricsModel): void {

@@ -101,7 +101,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
         this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID));
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID));
-    contextMenu.show();
+    void contextMenu.show();
     return true;
   }
 

@@ -63,7 +63,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.#selectedDOMNode = data.selectedNode;
     this.#crumbsData = data.crumbs;
     this.#userHasManuallyScrolled = false;
-    this.#update();
+    void this.#update();
   }
 
   disconnectedCallback(): void {
@@ -98,18 +98,18 @@ export class ElementsBreadcrumbs extends HTMLElement {
     if (totalCrumbsWidth >= totalContainingWidth && this.#overflowing === false) {
       this.#overflowing = true;
       this.#userScrollPosition = 'start';
-      this.#render();
+      void this.#render();
     } else if (totalCrumbsWidth < totalContainingWidth && this.#overflowing === true) {
       this.#overflowing = false;
       this.#userScrollPosition = 'start';
-      this.#render();
+      void this.#render();
     }
   }
 
   async #update(): Promise<void> {
     await this.#render();
     this.#engageResizeObserver();
-    this.#ensureSelectedNodeIsVisible();
+    void this.#ensureSelectedNodeIsVisible();
   }
 
   #onCrumbMouseMove(node: DOMNode): () => void {
@@ -175,7 +175,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
         // We were overflowing, but now we have enough room, so re-render with
         // overflowing set to false so the overflow buttons get removed.
         this.#overflowing = false;
-        this.#render();
+        void this.#render();
       }
       return;
     }
@@ -184,7 +184,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     // as overflowing and re-render to update the UI.
     if (!this.#overflowing) {
       this.#overflowing = true;
-      this.#render();
+      void this.#render();
     }
   }
 
@@ -227,7 +227,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
       this.#userScrollPosition = 'middle';
     }
 
-    this.#render();
+    void this.#render();
   }
 
   #onOverflowClick(direction: 'left'|'right'): () => void {
@@ -315,7 +315,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
       // clang-format on
     });
 
-    this.#checkForOverflow();
+    void this.#checkForOverflow();
   }
 
   async #ensureSelectedNodeIsVisible(): Promise<void> {

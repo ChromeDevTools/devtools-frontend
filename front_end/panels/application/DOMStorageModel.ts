@@ -69,15 +69,15 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
   }
 
   setItem(key: string, value: string): void {
-    this.model.agent.invoke_setDOMStorageItem({storageId: this.id, key, value});
+    void this.model.agent.invoke_setDOMStorageItem({storageId: this.id, key, value});
   }
 
   removeItem(key: string): void {
-    this.model.agent.invoke_removeDOMStorageItem({storageId: this.id, key});
+    void this.model.agent.invoke_removeDOMStorageItem({storageId: this.id, key});
   }
 
   clear(): void {
-    this.model.agent.invoke_clear({storageId: this.id});
+    void this.model.agent.invoke_clear({storageId: this.id});
   }
 }
 
@@ -146,7 +146,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         this.addOrigin(securityOrigin);
       }
     }
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
 
     this.enabled = true;
   }

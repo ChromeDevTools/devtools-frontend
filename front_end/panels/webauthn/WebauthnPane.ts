@@ -296,7 +296,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       }
 
       const authenticatorId = await this.#model.addAuthenticator(options);
-      this.#addAuthenticatorSection(authenticatorId, options);
+      void this.#addAuthenticatorSection(authenticatorId, options);
       // Update the authenticatorIds in the options.
       options.authenticatorId = authenticatorId;
       if (options.active) {
@@ -307,7 +307,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     // Update the settings to reflect the new authenticatorIds.
     this.#availableAuthenticatorSetting.set(availableAuthenticators);
     if (activeAuthenticatorId) {
-      this.#setActiveAuthenticator(activeAuthenticatorId);
+      void this.#setActiveAuthenticator(activeAuthenticatorId);
     }
   }
 
@@ -382,7 +382,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #handleRemoveCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
     data: credential,
   }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.Credential>): void {
-    this.#removeCredential(authenticatorId, credential.credentialId);
+    void this.#removeCredential(authenticatorId, credential.credentialId);
   }
 
   async #updateCredentials(authenticatorId: Protocol.WebAuthn.AuthenticatorId): Promise<void> {
@@ -450,7 +450,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   #handleCheckboxToggle(e: MouseEvent): void {
-    this.#setVirtualAuthEnvEnabled((e.target as HTMLInputElement).checked);
+    void this.#setVirtualAuthEnvEnabled((e.target as HTMLInputElement).checked);
   }
 
   #updateEnabledTransportOptions(enabledOptions: Protocol.WebAuthn.AuthenticatorTransport[]): void {
@@ -656,7 +656,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const dataGrid = this.#createCredentialsDataGrid(authenticatorId);
     dataGrid.asWidget().show(section);
 
-    this.#updateCredentials(authenticatorId);
+    void this.#updateCredentials(authenticatorId);
 
     return section;
   }
@@ -759,7 +759,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#dataGrids.delete(authenticatorId);
 
     if (this.#model) {
-      this.#model.removeAuthenticator(authenticatorId);
+      void this.#model.removeAuthenticator(authenticatorId);
     }
 
     // Update available authenticator setting.
@@ -770,7 +770,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     if (this.#activeAuthId === authenticatorId) {
       const availableAuthenticatorIds = Array.from(this.#dataGrids.keys());
       if (availableAuthenticatorIds.length) {
-        this.#setActiveAuthenticator(availableAuthenticatorIds[0]);
+        void this.#setActiveAuthenticator(availableAuthenticatorIds[0]);
       } else {
         this.#activeAuthId = null;
       }

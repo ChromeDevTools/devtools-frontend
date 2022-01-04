@@ -370,7 +370,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     };
     memoryIcon.onclick = (event: MouseEvent): void => {
       Host.userMetrics.linearMemoryInspectorRevealedFrom(Host.UserMetrics.LinearMemoryInspectorRevealedFrom.MemoryIcon);
-      LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance()
+      void LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.instance()
           .openInspectorView(obj);
       event.stopPropagation();
     };
@@ -476,7 +476,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       valueElement.classList.add('object-value-node');
       createSpansForNodeTitle(valueElement, (description as string));
       valueElement.addEventListener('click', event => {
-        Common.Revealer.reveal(value);
+        void Common.Revealer.reveal(value);
         event.consume(true);
       }, false);
       valueElement.addEventListener(
@@ -495,7 +495,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       if (linkify && response && response.location) {
         element.classList.add('linkified');
         element.addEventListener('click', () => {
-          Common.Revealer.reveal(response.location);
+          void Common.Revealer.reveal(response.location);
           return false;
         });
       }
@@ -553,7 +553,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
           i18nString(UIStrings.collapseChildren),
           this.objectTreeElementInternal.collapseChildren.bind(this.objectTreeElementInternal));
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   titleLessMode(): void {
@@ -655,7 +655,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     contextMenu.viewSection().appendItem(
         i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, Number.MAX_VALUE));
     contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   async onpopulate(): Promise<void> {
@@ -706,7 +706,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       targetValue?: SDK.RemoteObject.RemoteObject): Promise<void> {
     if (value.arrayLength() > ARRAY_LOAD_THRESHOLD) {
       treeElement.removeChildren();
-      ArrayGroupingTreeElement.populateArray(treeElement, value, 0, value.arrayLength() - 1, linkifier);
+      void ArrayGroupingTreeElement.populateArray(treeElement, value, 0, value.arrayLength() - 1, linkifier);
       return;
     }
 
@@ -838,7 +838,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         // The definition of callFunction expects an unknown, and setting to `any` causes Closure to fail.
         // However, leaving this as unknown also causes TypeScript to fail, so for now we leave this as unchecked.
         // @ts-ignore  TODO(crbug.com/1011811): Fix after Closure is removed.
-        object.callFunction(invokeGetter, [{value: JSON.stringify(propertyPath)}]).then(callback);
+        void object.callFunction(invokeGetter, [{value: JSON.stringify(propertyPath)}]).then(callback);
       }
     }
 
@@ -1105,7 +1105,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.propertyValue) {
       this.propertyValue.appendApplicableItems(event, contextMenu, {});
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private startEditing(): void {
@@ -1177,7 +1177,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     const keyboardEvent = (event as KeyboardEvent);
     if (keyboardEvent.key === 'Enter') {
       keyboardEvent.consume();
-      this.editingCommitted(originalContent);
+      void this.editingCommitted(originalContent);
       return;
     }
     if (keyboardEvent.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
@@ -1200,7 +1200,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         const parent = this.parent;
         if (parent) {
           parent.invalidateChildren();
-          parent.onpopulate();
+          void parent.onpopulate();
         }
       } else {
         this.update();
@@ -1225,7 +1225,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       const parent = this.parent;
       if (parent) {
         parent.invalidateChildren();
-        parent.onpopulate();
+        void parent.onpopulate();
       }
     }
   }

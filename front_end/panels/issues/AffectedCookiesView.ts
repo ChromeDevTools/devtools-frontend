@@ -69,7 +69,7 @@ export class AffectedCookiesView extends AffectedResourcesView {
     if (hasAssociatedRequest) {
       name.appendChild(UI.UIUtils.createTextButton(cookie.name, () => {
         Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Cookie);
-        Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+        void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
           {
             filterType: NetworkForward.UIFilter.FilterType.CookieDomain,
             filterValue: cookie.domain,
@@ -115,7 +115,7 @@ export class AffectedRawCookieLinesView extends AffectedResourcesView {
       if (cookie.hasRequest) {
         const cookieLine = document.createElement('td');
         const textButton = UI.UIUtils.createTextButton(cookie.rawCookieLine, () => {
-          Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+          void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
             {
               filterType: NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie,
               filterValue: cookie.rawCookieLine,

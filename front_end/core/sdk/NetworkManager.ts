@@ -132,11 +132,11 @@ export class NetworkManager extends SDKModel<EventTypes> {
     this.#networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this.dispatcher);
     if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
-      this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
+      void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
 
-    this.#networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
-    this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
+    void this.#networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
+    void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
 
     this.#bypassServiceWorkerSetting = Common.Settings.Settings.instance().createSetting('bypassServiceWorker', false);
     if (this.#bypassServiceWorkerSetting.get()) {
@@ -164,7 +164,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (!manager || !requestId || request.isRedirect()) {
       return;
     }
-    manager.#networkAgent.invoke_replayXHR({requestId});
+    void manager.#networkAgent.invoke_replayXHR({requestId});
   }
 
   static async searchInRequest(request: NetworkRequest, query: string, caseSensitive: boolean, isRegex: boolean):
@@ -251,7 +251,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   private cacheDisabledSettingChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
-    this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
+    void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
   }
 
   dispose(): void {
@@ -261,7 +261,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   private bypassServiceWorkerChanged(): void {
-    this.#networkAgent.invoke_setBypassServiceWorker({bypass: this.#bypassServiceWorkerSetting.get()});
+    void this.#networkAgent.invoke_setBypassServiceWorker({bypass: this.#bypassServiceWorkerSetting.get()});
   }
 
   async getSecurityIsolationStatus(frameId: Protocol.Page.FrameId|
@@ -796,7 +796,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     responseHeaders,
     requestId,
   }: Protocol.Network.RequestInterceptedEvent): void {
-    MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
+    void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(
         this.#manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
         isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
   }
@@ -1163,22 +1163,22 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   modelAdded(networkManager: NetworkManager): void {
     const networkAgent = networkManager.target().networkAgent();
     if (this.#extraHeaders) {
-      networkAgent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
+      void networkAgent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
     }
     if (this.currentUserAgent()) {
-      networkAgent.invoke_setUserAgentOverride(
+      void networkAgent.invoke_setUserAgentOverride(
           {userAgent: this.currentUserAgent(), userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
     if (this.#effectiveBlockedURLs.length) {
-      networkAgent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
+      void networkAgent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
     }
     if (this.isIntercepting()) {
-      networkAgent.invoke_setRequestInterception({patterns: this.#urlsForRequestInterceptor.valuesArray()});
+      void networkAgent.invoke_setRequestInterception({patterns: this.#urlsForRequestInterceptor.valuesArray()});
     }
     if (this.#customAcceptedEncodings === null) {
-      networkAgent.invoke_clearAcceptedEncodingsOverride();
+      void networkAgent.invoke_clearAcceptedEncodingsOverride();
     } else {
-      networkAgent.invoke_setAcceptedEncodings({encodings: this.#customAcceptedEncodings});
+      void networkAgent.invoke_setAcceptedEncodings({encodings: this.#customAcceptedEncodings});
     }
     this.#agents.add(networkAgent);
     if (this.isThrottling()) {
@@ -1221,10 +1221,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   private updateNetworkConditions(networkAgent: ProtocolProxyApi.NetworkApi): void {
     const conditions = this.#networkConditionsInternal;
     if (!this.isThrottling()) {
-      networkAgent.invoke_emulateNetworkConditions(
+      void networkAgent.invoke_emulateNetworkConditions(
           {offline: false, latency: 0, downloadThroughput: 0, uploadThroughput: 0});
     } else {
-      networkAgent.invoke_emulateNetworkConditions({
+      void networkAgent.invoke_emulateNetworkConditions({
         offline: this.isOffline(),
         latency: conditions.latency,
         downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
@@ -1237,7 +1237,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   setExtraHTTPHeaders(headers: Protocol.Network.Headers): void {
     this.#extraHeaders = headers;
     for (const agent of this.#agents) {
-      agent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
+      void agent.invoke_setExtraHTTPHeaders({headers: this.#extraHeaders});
     }
   }
 
@@ -1248,7 +1248,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   private updateUserAgentOverride(): void {
     const userAgent = this.currentUserAgent();
     for (const agent of this.#agents) {
-      agent.invoke_setUserAgentOverride(
+      void agent.invoke_setUserAgentOverride(
           {userAgent: userAgent, userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
   }
@@ -1299,9 +1299,9 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     const customAcceptedEncodings = this.#customAcceptedEncodings;
     for (const agent of this.#agents) {
       if (customAcceptedEncodings === null) {
-        agent.invoke_clearAcceptedEncodingsOverride();
+        void agent.invoke_clearAcceptedEncodingsOverride();
       } else {
-        agent.invoke_setAcceptedEncodings({encodings: customAcceptedEncodings});
+        void agent.invoke_setAcceptedEncodings({encodings: customAcceptedEncodings});
       }
     }
   }
@@ -1349,7 +1349,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
     this.#effectiveBlockedURLs = urls;
     for (const agent of this.#agents) {
-      agent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
+      void agent.invoke_setBlockedURLs({urls: this.#effectiveBlockedURLs});
     }
   }
 
@@ -1402,13 +1402,13 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   clearBrowserCache(): void {
     for (const agent of this.#agents) {
-      agent.invoke_clearBrowserCache();
+      void agent.invoke_clearBrowserCache();
     }
   }
 
   clearBrowserCookies(): void {
     for (const agent of this.#agents) {
-      agent.invoke_clearBrowserCookies();
+      void agent.invoke_clearBrowserCookies();
     }
   }
 
@@ -1522,7 +1522,7 @@ export class InterceptedRequest {
       'Content-Type: ' + contentBlob.type || 'text/x-unknown',
     ];
     const encodedResponse = await blobToBase64(new Blob([headers.join('\r\n'), '\r\n\r\n', contentBlob]));
-    this.#networkAgent.invoke_continueInterceptedRequest(
+    void this.#networkAgent.invoke_continueInterceptedRequest(
         {interceptionId: this.#interceptionId, rawResponse: encodedResponse});
 
     async function blobToBase64(blob: Blob): Promise<string> {
@@ -1548,13 +1548,13 @@ export class InterceptedRequest {
   continueRequestWithoutChange(): void {
     console.assert(!this.#hasRespondedInternal);
     this.#hasRespondedInternal = true;
-    this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId});
+    void this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId});
   }
 
   continueRequestWithError(errorReason: Protocol.Network.ErrorReason): void {
     console.assert(!this.#hasRespondedInternal);
     this.#hasRespondedInternal = true;
-    this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId, errorReason});
+    void this.#networkAgent.invoke_continueInterceptedRequest({interceptionId: this.#interceptionId, errorReason});
   }
 
   async responseBody(): Promise<ContentData> {

@@ -188,7 +188,7 @@ export class LighthouseReportUIFeatures extends LighthouseReport.ReportUIFeature
     const ext = blob.type.match('json') ? '.json' : '.html';
     const basename = `${sanitizedDomain}-${timestamp}${ext}`;
     const text = await blob.text();
-    Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
+    void Workspace.FileManager.FileManager.instance().save(basename, text, true /* forceSaveAs */);
   }
 
   // This implements the interface ReportUIFeatures from lighthouse

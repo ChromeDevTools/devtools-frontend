@@ -217,12 +217,12 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.quotaOverrideControlRow.classList.add('hidden');
     this.quotaOverrideEditor.addEventListener('keyup', event => {
       if (event.key === 'Enter') {
-        this.applyQuotaOverrideFromInputField();
+        void this.applyQuotaOverrideFromInputField();
         event.consume(true);
       }
     });
     this.quotaOverrideEditor.addEventListener('focusout', event => {
-      this.applyQuotaOverrideFromInputField();
+      void this.applyQuotaOverrideFromInputField();
       event.consume(true);
     });
 
@@ -310,7 +310,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.quotaOverrideCheckbox.checkboxElement.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
     }
-    this.doUpdate();
+    void this.doUpdate();
   }
 
   private async applyQuotaOverrideFromInputField(): Promise<void> {
@@ -391,7 +391,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   static clear(
       target: SDK.Target.Target, securityOrigin: string, selectedStorageTypes: string[],
       includeThirdPartyCookies: boolean): void {
-    target.storageAgent().invoke_clearDataForOrigin(
+    void target.storageAgent().invoke_clearDataForOrigin(
         {origin: securityOrigin, storageTypes: selectedStorageTypes.join(',')});
 
     const set = new Set(selectedStorageTypes);
@@ -399,7 +399,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
       const cookieModel = target.model(SDK.CookieModel.CookieModel);
       if (cookieModel) {
-        cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : securityOrigin);
+        void cookieModel.clear(undefined, includeThirdPartyCookies ? undefined : securityOrigin);
       }
     }
 

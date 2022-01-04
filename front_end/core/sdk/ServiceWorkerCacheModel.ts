@@ -77,7 +77,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
     this.#cachesInternal.clear();
     const securityOrigins = this.#securityOriginManager.securityOrigins();
     for (const securityOrigin of securityOrigins) {
-      this.loadCacheNames(securityOrigin);
+      void this.loadCacheNames(securityOrigin);
     }
   }
 
@@ -103,13 +103,13 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   loadCacheData(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
-    this.requestEntries(cache, skipCount, pageSize, pathFilter, callback);
+    void this.requestEntries(cache, skipCount, pageSize, pathFilter, callback);
   }
 
   loadAllCacheData(
       cache: Cache, pathFilter: string,
       callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
-    this.requestAllEntries(cache, pathFilter, callback);
+    void this.requestAllEntries(cache, pathFilter, callback);
   }
 
   caches(): Cache[] {
@@ -134,9 +134,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   private addOrigin(securityOrigin: string): void {
-    this.loadCacheNames(securityOrigin);
+    void this.loadCacheNames(securityOrigin);
     if (this.isValidSecurityOrigin(securityOrigin)) {
-      this.#storageAgent.invoke_trackCacheStorageForOrigin({origin: securityOrigin});
+      void this.#storageAgent.invoke_trackCacheStorageForOrigin({origin: securityOrigin});
     }
   }
 
@@ -148,7 +148,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
       }
     }
     if (this.isValidSecurityOrigin(securityOrigin)) {
-      this.#storageAgent.invoke_untrackCacheStorageForOrigin({origin: securityOrigin});
+      void this.#storageAgent.invoke_untrackCacheStorageForOrigin({origin: securityOrigin});
     }
   }
 
@@ -233,7 +233,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   cacheStorageListUpdated({origin}: Protocol.Storage.CacheStorageListUpdatedEvent): void {
     this.#originsUpdated.add(origin);
 
-    this.#throttler.schedule(() => {
+    void this.#throttler.schedule(() => {
       const promises = Array.from(this.#originsUpdated, origin => this.loadCacheNames(origin));
       this.#originsUpdated.clear();
       return Promise.all(promises);

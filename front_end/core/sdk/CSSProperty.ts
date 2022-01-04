@@ -274,7 +274,7 @@ export class CSSProperty {
 
   setValue(newValue: string, majorChange: boolean, overwrite: boolean, userCallback?: ((arg0: boolean) => void)): void {
     const text = this.name + ': ' + newValue + (this.important ? ' !important' : '') + ';';
-    this.setText(text, majorChange, overwrite).then(userCallback);
+    void this.setText(text, majorChange, overwrite).then(userCallback);
   }
 
   setDisabled(disabled: boolean): Promise<boolean> {

@@ -94,7 +94,7 @@ export class FontView extends UI.View.SimpleView {
 
     const uniqueFontName = 'WebInspectorFontPreview' + (++_fontId);
     this.fontStyleElement = document.createElement('style');
-    this.contentProvider.requestContent().then(deferredContent => {
+    void this.contentProvider.requestContent().then(deferredContent => {
       this.onFontContentLoaded(uniqueFontName, deferredContent);
     });
     this.element.appendChild(this.fontStyleElement);

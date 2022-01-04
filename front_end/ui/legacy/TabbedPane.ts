@@ -632,7 +632,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
         menu.defaultSection().appendItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab));
       }
     }
-    menu.show();
+    void menu.show();
   }
 
   private dropDownKeydown(event: Event): void {
@@ -1250,7 +1250,7 @@ export class TabbedPaneTab {
     if (this.delegate) {
       this.delegate.onContextMenu(this.id, contextMenu);
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private startTabDragging(ev: Event): boolean {

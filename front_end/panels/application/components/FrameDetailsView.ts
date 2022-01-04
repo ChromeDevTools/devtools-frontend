@@ -281,7 +281,7 @@ export class FrameDetailsReportView extends HTMLElement {
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
-    this.#render();
+    void this.#render();
   }
 
   async #render(): Promise<void> {
@@ -323,7 +323,7 @@ export class FrameDetailsReportView extends HTMLElement {
 
     const frame = this.#frame;
     const refreshOriginTrials: () => void = () => {
-      frame.getOriginTrials().then(trials => {
+      void frame.getOriginTrials().then(trials => {
         this.#originTrialTreeView.data = {trials} as OriginTrialTreeViewData;
       });
     };
@@ -442,7 +442,7 @@ export class FrameDetailsReportView extends HTMLElement {
             i18nString(UIStrings.clickToRevealInNetworkPanelMight),
             ():
                 void => {
-                  Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+                  void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
                     {
                       filterType: NetworkForward.UIFilter.FilterType.Domain,
                       filterValue: unreachableUrl.domain(),

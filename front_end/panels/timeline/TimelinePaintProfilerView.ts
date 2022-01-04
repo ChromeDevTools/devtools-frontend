@@ -90,7 +90,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
 
   private update(): void {
     this.logTreeView.setCommandLog([]);
-    this.paintProfilerView.setSnapshotAndLog(null, [], null);
+    void this.paintProfilerView.setSnapshotAndLog(null, [], null);
 
     let snapshotPromise: Promise<{
       rect: Protocol.DOM.Rect | null,
@@ -115,7 +115,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       console.assert(false, 'Unexpected event type or no snapshot');
       return;
     }
-    snapshotPromise.then(snapshotWithRect => {
+    void snapshotPromise.then(snapshotWithRect => {
       this.releaseSnapshot();
       if (!snapshotWithRect) {
         this.imageView.showImage();
@@ -124,14 +124,14 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       const snapshot = snapshotWithRect.snapshot;
       this.lastLoadedSnapshot = snapshot;
       this.imageView.setMask(snapshotWithRect.rect);
-      snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
+      void snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
     });
 
     function onCommandLogDone(
         this: TimelinePaintProfilerView, snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
         clipRect: Protocol.DOM.Rect|null, log?: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
       this.logTreeView.setCommandLog(log || []);
-      this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
+      void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
     }
   }
 

@@ -324,7 +324,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
 
     this.dispatchEventToListeners(Events.PageAuditabilityChanged, {helpText});
 
-    this.hasImportantResourcesNotCleared().then(warning => {
+    void this.hasImportantResourcesNotCleared().then(warning => {
       this.dispatchEventToListeners(Events.PageWarningsChanged, {warning});
     });
   }

@@ -234,7 +234,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     const newClasses = [...activeClasses.values()].sort();
 
     this.pendingNodeClasses.set(node, newClasses.join(' '));
-    this.updateNodeThrottler.schedule(this.flushPendingClasses.bind(this));
+    void this.updateNodeThrottler.schedule(this.flushPendingClasses.bind(this));
   }
 
   private async flushPendingClasses(): Promise<void> {

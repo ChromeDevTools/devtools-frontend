@@ -113,7 +113,7 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
     this.#agent = target.serviceWorkerAgent();
     this.#registrationsInternal = new Map();
     this.#enabled = false;
-    this.enable();
+    void this.enable();
     this.#forceUpdateSetting = Common.Settings.Settings.instance().createSetting('serviceWorkerUpdateOnReload', false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
@@ -180,9 +180,9 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
     }
     registration.deleting = true;
     for (const version of registration.versions.values()) {
-      this.stopWorker(version.id);
+      void this.stopWorker(version.id);
     }
-    this.unregister(registration.scopeURL);
+    void this.unregister(registration.scopeURL);
   }
 
   async updateRegistration(registrationId: string): Promise<void> {
@@ -296,7 +296,7 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
 
   private forceUpdateSettingChanged(): void {
     const forceUpdateOnPageLoad = this.#forceUpdateSetting.get();
-    this.#agent.invoke_setForceUpdateOnPageLoad({forceUpdateOnPageLoad});
+    void this.#agent.invoke_setForceUpdateOnPageLoad({forceUpdateOnPageLoad});
   }
 }
 

@@ -663,7 +663,7 @@ export class DeviceModeToolbar {
     });
     addOrientation(EmulationModel.EmulatedDevices.Vertical, i18nString(UIStrings.portrait));
     addOrientation(EmulationModel.EmulatedDevices.Horizontal, i18nString(UIStrings.landscape));
-    contextMenu.show();
+    void contextMenu.show();
 
     function addOrientation(orientation: string, title: string): void {
       if (!device) {

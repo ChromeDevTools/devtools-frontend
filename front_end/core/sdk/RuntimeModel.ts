@@ -56,13 +56,13 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 
     this.agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
     this.#executionContextById = new Map();
     this.#executionContextComparatorInternal = ExecutionContext.comparator;
     this.#hasSideEffectSupportInternal = null;
 
     if (Common.Settings.Settings.instance().moduleSetting('customFormatters').get()) {
-      this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
+      void this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});
     }
 
     Common.Settings.Settings.instance()
@@ -174,11 +174,11 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   discardConsoleEntries(): void {
-    this.agent.invoke_discardConsoleEntries();
+    void this.agent.invoke_discardConsoleEntries();
   }
 
   releaseObjectGroup(objectGroup: string): void {
-    this.agent.invoke_releaseObjectGroup({objectGroup});
+    void this.agent.invoke_releaseObjectGroup({objectGroup});
   }
 
   releaseEvaluationResult(result: EvaluationResult): void {
@@ -193,11 +193,11 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   runIfWaitingForDebugger(): void {
-    this.agent.invoke_runIfWaitingForDebugger();
+    void this.agent.invoke_runIfWaitingForDebugger();
   }
 
   private customFormattersStateChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
-    this.agent.invoke_setCustomObjectFormatterEnabled({enabled});
+    void this.agent.invoke_setCustomObjectFormatterEnabled({enabled});
   }
 
   async compileScript(
@@ -281,17 +281,17 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     }
 
     if (hints && 'queryObjects' in hints && hints.queryObjects) {
-      this.queryObjectsRequested(object, executionContextId);
+      void this.queryObjectsRequested(object, executionContextId);
       return;
     }
 
     if (object.isNode()) {
-      Common.Revealer.reveal(object).then(object.release.bind(object));
+      void Common.Revealer.reveal(object).then(object.release.bind(object));
       return;
     }
 
     if (object.type === 'function') {
-      RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
+      void RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
       return;
     }
 
@@ -300,7 +300,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       if (!response || !response.location) {
         return;
       }
-      Common.Revealer.reveal(response.location);
+      void Common.Revealer.reveal(response.location);
     }
     object.release();
   }
@@ -321,7 +321,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     }
 
     const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-    object
+    void object
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // @ts-expect-error
         .callFunctionJSON(toStringForClipboard, [{

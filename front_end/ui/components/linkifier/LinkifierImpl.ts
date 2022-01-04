@@ -45,7 +45,7 @@ export class Linkifier extends HTMLElement {
       throw new Error('Cannot construct a Linkifier without providing a valid string URL.');
     }
 
-    this.#render();
+    void this.#render();
   }
 
   connectedCallback(): void {

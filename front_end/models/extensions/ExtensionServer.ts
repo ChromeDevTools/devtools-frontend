@@ -371,7 +371,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (panelView && panelView instanceof ExtensionServerPanelView) {
       panelViewId = panelView.viewId();
     }
-    UI.InspectorView.InspectorView.instance().showPanel(panelViewId);
+    void UI.InspectorView.InspectorView.instance().showPanel(panelViewId);
     return undefined;
   }
 
@@ -388,7 +388,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         message.disabled);
     this.clientObjects.set(message.id, button);
 
-    panelView.widget().then(appendButton);
+    void panelView.widget().then(appendButton);
 
     function appendButton(panel: UI.Widget.Widget): void {
       (panel as ExtensionPanel).addToolbarItem(button.toolbarButton());
@@ -493,19 +493,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
-      Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
+      void Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, message.columnNumber));
       return this.status.OK();
     }
 
     const resource = Bindings.ResourceUtils.resourceForURL(message.url);
     if (resource) {
-      Common.Revealer.reveal(resource);
+      void Common.Revealer.reveal(resource);
       return this.status.OK();
     }
 
     const request = Logs.NetworkLog.NetworkLog.instance().requestForURL(message.url);
     if (request) {
-      Common.Revealer.reveal(request);
+      void Common.Revealer.reveal(request);
       return this.status.OK();
     }
 
@@ -638,7 +638,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!request) {
       return this.status.E_NOTFOUND(message.id);
     }
-    this.getResourceContent(request, message, port);
+    void this.getResourceContent(request, message, port);
     return undefined;
   }
 
@@ -652,7 +652,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!contentProvider) {
       return this.status.E_NOTFOUND(url);
     }
-    this.getResourceContent(contentProvider, message, port);
+    void this.getResourceContent(contentProvider, message, port);
     return undefined;
   }
 
@@ -1053,7 +1053,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_FAILED('Permission denied');
     }
 
-    context
+    void context
         .evaluate(
             {
               expression: expression,

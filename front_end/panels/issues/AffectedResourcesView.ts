@@ -187,7 +187,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
         if (frame) {
           const ownerNode = await frame.getOwnerDOMNodeOrDocument();
           if (ownerNode) {
-            Common.Revealer.reveal(ownerNode);
+            void Common.Revealer.reveal(ownerNode);
           }
         }
       };
@@ -198,7 +198,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
     frameCell.onmouseenter = (): void => {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
       if (frame) {
-        frame.highlight();
+        void frame.highlight();
       }
     };
     frameCell.onmouseleave = (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();

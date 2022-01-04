@@ -448,7 +448,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   }
 
   update(): void {
-    this.#throttle.schedule(async () => this.#doUpdate());
+    void this.#throttle.schedule(async () => this.#doUpdate());
   }
 
   getIssueKind(): IssuesManager.Issue.IssueKind {

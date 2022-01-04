@@ -180,7 +180,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
          UI.ActionRegistration.Action);
 
     this.toolbar = new UI.Toolbar.Toolbar('background-service-toolbar', this.contentElement);
-    this.setupToolbar();
+    void this.setupToolbar();
 
     /**
      * This will contain the DataGrid for displaying events, and a panel at the bottom for showing
@@ -218,7 +218,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveEvents), 'largeicon-download');
     this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.saveToFile();
+      void this.saveToFile();
     });
     this.saveButton.setEnabled(false);
     this.toolbar.appendToolbarItem(this.saveButton);
@@ -467,7 +467,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     const events = this.model.getEvents(this.serviceName).filter(event => this.acceptEvent(event));
     await stream.write(JSON.stringify(events, undefined, 2));
-    stream.close();
+    void stream.close();
   }
   wasShown(): void {
     super.wasShown();

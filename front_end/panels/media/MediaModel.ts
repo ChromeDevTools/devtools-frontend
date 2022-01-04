@@ -49,7 +49,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pro
   }
 
   ensureEnabled(): void {
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
     this.enabled = true;
   }
 

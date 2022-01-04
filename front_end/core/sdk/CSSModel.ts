@@ -89,7 +89,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
-      this.enable();
+      void this.enable();
     }
     this.#styleSheetIdToHeader = new Map();
     this.#styleSheetIdsForURL = new Map();
@@ -377,7 +377,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (node.id === undefined) {
       return false;
     }
-    this.agent.invoke_forcePseudoState({nodeId: node.id, forcedPseudoClasses});
+    void this.agent.invoke_forcePseudoState({nodeId: node.id, forcedPseudoClasses});
     this.dispatchEventToListeners(Events.PseudoStateForced, {node: node, pseudoClass: pseudoClass, enable: enable});
     return true;
   }
@@ -662,7 +662,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   setEffectivePropertyValueForNode(nodeId: Protocol.DOM.NodeId, propertyName: string, value: string): void {
-    this.agent.invoke_setEffectivePropertyValueForNode({nodeId, propertyName, value});
+    void this.agent.invoke_setEffectivePropertyValueForNode({nodeId, propertyName, value});
   }
 
   cachedMatchedCascadeForNode(node: DOMNode): Promise<CSSMatchedStyles|null> {
@@ -695,10 +695,10 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (propertiesToTrack.length === 0) {
       return;
     }
-    this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack});
+    void this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack});
     this.#isCSSPropertyTrackingEnabled = true;
     this.#cssPropertyTracker = cssPropertyTracker;
-    this.pollComputedStyleUpdates();
+    void this.pollComputedStyleUpdates();
   }
 
   // Since we only support one tracker at a time, this call effectively disables
@@ -707,7 +707,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#isCSSPropertyTrackingEnabled = false;
     this.#cssPropertyTracker = null;
     // Sending an empty list to the backend signals the close of style tracking
-    this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack: []});
+    void this.agent.invoke_trackComputedStyleUpdates({propertiesToTrack: []});
   }
 
   private async pollComputedStyleUpdates(): Promise<void> {
@@ -732,7 +732,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
 
     if (this.#isCSSPropertyTrackingEnabled) {
-      this.#stylePollingThrottler.schedule(this.pollComputedStyleUpdates.bind(this));
+      void this.#stylePollingThrottler.schedule(this.pollComputedStyleUpdates.bind(this));
     }
   }
 

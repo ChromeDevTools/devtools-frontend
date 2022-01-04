@@ -316,7 +316,7 @@ describe('The Console Tab', async () => {
     });
 
     await step('delete message filter', async () => {
-      deleteConsoleMessagesFilter(frontend);
+      void deleteConsoleMessagesFilter(frontend);
     });
 
     await step('check if messages are unfiltered', async () => {

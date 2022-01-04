@@ -409,7 +409,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.dataProvider = this.createFlameChartDataProvider();
     this.flameChart = new CPUProfileFlameChart(this.searchableViewInternal, this.dataProvider);
     this.flameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, event => {
-      this.onEntryInvoked(event);
+      void this.onEntryInvoked(event);
     });
   }
 
@@ -431,7 +431,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
         (debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber) as SDK.DebuggerModel.Location);
     const uiLocation =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
-    Common.Revealer.reveal(uiLocation);
+    void Common.Revealer.reveal(uiLocation);
   }
 
   changeView(): void {
@@ -610,7 +610,7 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     if (data) {
       await fileOutputStream.write(data);
     }
-    fileOutputStream.close();
+    void fileOutputStream.close();
   }
 
   async loadFromFile(file: File): Promise<Error|null> {

@@ -57,7 +57,7 @@ export function cursorTooltip(
       const {main} = view.state.selection;
       if (main.empty) {
         const {updateID} = this;
-        source(view.state, main.from).then(tooltip => {
+        void source(view.state, main.from).then(tooltip => {
           if (this.updateID !== updateID) {
             if (this.pending < 0) {
               this.scheduleUpdate(view);

@@ -218,7 +218,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     super(target);
     target.registerAccessibilityDispatcher(this);
     this.agent = target.accessibilityAgent();
-    this.resumeModel();
+    void this.resumeModel();
 
     this.#axIdToAXNode = new Map();
     this.#backendDOMNodeIdToAXNode = new Map();

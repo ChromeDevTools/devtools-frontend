@@ -56,7 +56,7 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
         this.setOptionEnabled(index, !enabled);
       }, enabled);
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 }
 

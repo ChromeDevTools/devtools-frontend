@@ -402,7 +402,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.issueCounter.data = {
       clickHandler: (): void => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
-        UI.ViewManager.ViewManager.instance().showView('issues-pane');
+        void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString(UIStrings.issueToolbarTooltipGeneral),
@@ -480,7 +480,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     this.viewportThrottler = new Common.Throttler.Throttler(50);
     this.pendingBatchResize = false;
     this.onMessageResizedBound = (e: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void => {
-      this.onMessageResized(e);
+      void this.onMessageResized(e);
     };
 
     this.promptElement = this.messagesElement.createChild('div', 'source-code');
@@ -1030,7 +1030,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const eventTarget = (event.target as Node);
     if (eventTarget.isSelfOrDescendant(this.promptElement)) {
-      contextMenu.show();
+      void contextMenu.show();
       return;
     }
 
@@ -1061,7 +1061,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       }
     }
 
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private async saveConsole(): Promise<void> {
@@ -1094,7 +1094,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
       progressIndicator.setWorked(messageIndex);
     }
 
-    stream.close();
+    void stream.close();
     progressIndicator.done();
   }
 
@@ -1675,7 +1675,7 @@ export class ConsoleViewFilter {
     for (const [level, levelText] of this.levelLabels.entries()) {
       contextMenu.defaultSection().appendCheckboxItem(levelText, toggleShowLevel.bind(null, level), levels[level]);
     }
-    contextMenu.show();
+    void contextMenu.show();
 
     function toggleShowLevel(level: string): void {
       levels[level] = !levels[level];

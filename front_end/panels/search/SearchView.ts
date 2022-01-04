@@ -315,7 +315,7 @@ export class SearchView extends UI.Widget.VBox {
     this.progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this.searchStarted(this.progressIndicator);
     if (this.searchScope) {
-      this.searchScope.performSearch(
+      void this.searchScope.performSearch(
           searchConfig, this.progressIndicator, this.onSearchResult.bind(this, this.searchId),
           this.onSearchFinished.bind(this, this.searchId));
     }
@@ -488,6 +488,6 @@ export class SearchView extends UI.Widget.VBox {
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;
     }
-    this.startSearch(searchConfig);
+    void this.startSearch(searchConfig);
   }
 }

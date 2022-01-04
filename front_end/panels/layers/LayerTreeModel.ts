@@ -70,7 +70,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
     this.enabled = true;
-    this.forceEnable();
+    void this.forceEnable();
   }
 
   private async forceEnable(): Promise<void> {
@@ -89,7 +89,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (!this.enabled) {
       return;
     }
-    this.throttler.schedule(this.innerSetLayers.bind(this, layers));
+    void this.throttler.schedule(this.innerSetLayers.bind(this, layers));
   }
 
   private async innerSetLayers(layers: Protocol.LayerTree.Layer[]|null): Promise<void> {
@@ -135,7 +135,7 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private onMainFrameNavigated(): void {
     this.layerTreeInternal = null;
     if (this.enabled) {
-      this.forceEnable();
+      void this.forceEnable();
     }
   }
 }
@@ -444,7 +444,7 @@ class LayerTreeDispatcher implements ProtocolProxyApi.LayerTreeDispatcher {
   }
 
   layerTreeDidChange({layers}: Protocol.LayerTree.LayerTreeDidChangeEvent): void {
-    this.layerTreeModel.layerTreeChanged(layers || null);
+    void this.layerTreeModel.layerTreeChanged(layers || null);
   }
 
   layerPainted({layerId, clip}: Protocol.LayerTree.LayerPaintedEvent): void {

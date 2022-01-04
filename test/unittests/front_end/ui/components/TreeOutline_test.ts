@@ -724,7 +724,7 @@ describe('TreeOutline', () => {
         const {component, shadowRoot} = await renderTreeOutline({
           tree: basicTreeData,
         });
-        component.expandRecursively();
+        void component.expandRecursively();
         await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_DEFAULT_EXPANDED);
         const officeNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
         dispatchClickEvent(officeNode);

@@ -50,7 +50,7 @@ describeWithMockConnection('Linkifier', async () => {
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
-    debuggerModel.suspendModel();
+    void debuggerModel.suspendModel();
 
     const lineNumber = 4;
     const url = '';
@@ -68,7 +68,7 @@ describeWithMockConnection('Linkifier', async () => {
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
-    debuggerModel.suspendModel();
+    void debuggerModel.suspendModel();
 
     const lineNumber = 4;
     // Explicitly set url to empty string and let it resolve through the live location.
@@ -77,7 +77,7 @@ describeWithMockConnection('Linkifier', async () => {
     assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, '\u200b');
 
-    debuggerModel.resumeModel();
+    void debuggerModel.resumeModel();
     const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
       scriptId: scriptId1,
       url: 'https://www.google.com/script.js',
@@ -181,7 +181,7 @@ describeWithMockConnection('Linkifier', async () => {
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
-    debuggerModel.suspendModel();
+    void debuggerModel.suspendModel();
 
     const lineNumber = 4;
     const options = {columnNumber: 8, showColumnNumber: true, inlineFrameIndex: 0};
@@ -191,7 +191,7 @@ describeWithMockConnection('Linkifier', async () => {
     assertNotNullOrUndefined(anchor);
     assert.strictEqual(anchor.textContent, '\u200b');
 
-    debuggerModel.resumeModel();
+    void debuggerModel.resumeModel();
     const scriptParsedEvent: Protocol.Debugger.ScriptParsedEvent = {
       scriptId: scriptId1,
       url: 'https://www.google.com/script.js',

@@ -63,7 +63,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
-    this.setIgnoreListPatterns(debuggerModel);
+    void this.setIgnoreListPatterns(debuggerModel);
     const sourceMapManager = debuggerModel.sourceMapManager();
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
     sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this.sourceMapDetached, this);
@@ -125,14 +125,14 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       void {
     const script = event.data.client;
     const sourceMap = event.data.sourceMap;
-    this.updateScriptRanges(script, sourceMap);
+    void this.updateScriptRanges(script, sourceMap);
   }
 
   private sourceMapDetached(
       event: Common.EventTarget.EventTargetEvent<{client: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap}>):
       void {
     const script = event.data.client;
-    this.updateScriptRanges(script, null);
+    void this.updateScriptRanges(script, null);
   }
 
   private async updateScriptRanges(script: SDK.Script.Script, sourceMap: SDK.SourceMap.SourceMap|null): Promise<void> {
@@ -172,7 +172,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges)) {
       scriptToRange.set(script, newRanges);
     }
-    this.#debuggerWorkspaceBinding.updateLocations(script);
+    void this.#debuggerWorkspaceBinding.updateLocations(script);
 
     function isEqual(rangesA: SourceRange[], rangesB: SourceRange[]): boolean {
       if (rangesA.length !== rangesB.length) {

@@ -30,8 +30,8 @@ describe('LiveLocation', () => {
       updateDelegateLog.push('exit');
     }, pool);
 
-    liveLocation.update();
-    liveLocation.update();
+    void liveLocation.update();
+    void liveLocation.update();
     fulfillBlockingPromise(undefined);
     await liveLocation.update();
 

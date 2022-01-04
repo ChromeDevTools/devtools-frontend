@@ -1138,7 +1138,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     if (type === entryTypes.Screenshot) {
-      this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
+      void this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
       return true;
     }
 

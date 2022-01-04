@@ -167,7 +167,10 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
   }
 
   refreshData(): void {
-    LinearMemoryInspectorController.getMemoryForAddress(this.#memoryWrapper, this.#address).then(({memory, offset}) => {
+    void LinearMemoryInspectorController.getMemoryForAddress(this.#memoryWrapper, this.#address).then(({
+                                                                                                        memory,
+                                                                                                        offset,
+                                                                                                      }) => {
       let valueTypes;
       let valueTypeModes;
       let endianness;
@@ -196,7 +199,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
       throw new Error('Requested address is out of bounds.');
     }
 
-    LinearMemoryInspectorController.getMemoryRange(this.#memoryWrapper, start, end).then(memory => {
+    void LinearMemoryInspectorController.getMemoryRange(this.#memoryWrapper, start, end).then(memory => {
       this.#inspector.data = {
         memory: memory,
         address: address,

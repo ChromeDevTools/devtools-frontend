@@ -35,7 +35,7 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
     }
     const keyboardEvent = event as KeyboardEvent;
     const text = event.type === 'keypress' ? String.fromCharCode(keyboardEvent.charCode) : undefined;
-    this.inputAgent.invoke_dispatchKeyEvent({
+    void this.inputAgent.invoke_dispatchKeyEvent({
       type: type,
       modifiers: this.modifiersForEvent(keyboardEvent),
       text: text,
@@ -99,7 +99,7 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
     if (event.type === 'mouseup') {
       this.activeTouchOffsetTop = null;
     }
-    this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
+    void this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
   }
 
   cancelTouch(): void {
@@ -107,7 +107,7 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
       const params = this.activeTouchParams;
       this.activeTouchParams = null;
       params.type = 'mouseReleased' as Protocol.Input.EmulateTouchFromMouseEventRequestType;
-      this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
+      void this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
     }
   }
 

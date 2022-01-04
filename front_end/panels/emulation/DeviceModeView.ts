@@ -580,11 +580,11 @@ export class Ruler extends UI.Widget.VBox {
 
   render(scale: number): void {
     this.scale = scale;
-    this.throttler.schedule(this.update.bind(this));
+    void this.throttler.schedule(this.update.bind(this));
   }
 
   onResize(): void {
-    this.throttler.schedule(this.update.bind(this));
+    void this.throttler.schedule(this.update.bind(this));
   }
 
   private update(): Promise<void> {

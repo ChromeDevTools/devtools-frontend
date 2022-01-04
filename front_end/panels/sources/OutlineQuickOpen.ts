@@ -107,7 +107,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     }
     const lineNumber = this.items[itemIndex].line;
     if (!isNaN(lineNumber) && lineNumber >= 0) {
-      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this.items[itemIndex].column));
+      void Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this.items[itemIndex].column));
     }
   }
 

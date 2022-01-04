@@ -199,7 +199,8 @@ export class PresentationConsoleMessage extends Workspace.UISourceCode.Message {
     const level = message.level === Protocol.Log.LogEntryLevel.Error ? Workspace.UISourceCode.Message.Level.Error :
                                                                        Workspace.UISourceCode.Message.Level.Warning;
     super(level, message.messageText);
-    DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, this.updateLocation.bind(this), locationPool);
+    void DebuggerWorkspaceBinding.instance().createLiveLocation(
+        rawLocation, this.updateLocation.bind(this), locationPool);
   }
 
   private async updateLocation(liveLocation: LiveLocation): Promise<void> {

@@ -79,7 +79,7 @@ export async function getDataGridRows(selector: string) {
 export async function setClassFilter(text: string) {
   const classFilter = await waitFor(CLASS_FILTER_INPUT);
   await classFilter.focus();
-  pasteText(text);
+  void pasteText(text);
 }
 
 export async function triggerLocalFindDialog(frontend: puppeteer.Page) {

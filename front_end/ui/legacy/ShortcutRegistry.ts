@@ -137,7 +137,7 @@ export class ShortcutRegistry {
   handleShortcut(event: KeyboardEvent, handlers?: {
     [x: string]: () => Promise<boolean>,
   }): void {
-    this.handleKey(KeyboardShortcut.makeKeyFromEvent(event), event.key, event, handlers);
+    void this.handleKey(KeyboardShortcut.makeKeyFromEvent(event), event.key, event, handlers);
   }
 
   actionHasDefaultShortcut(actionId: string): boolean {

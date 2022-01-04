@@ -148,7 +148,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
       return;
     }
 
-    this.indexedDBAgent.invoke_enable();
+    void this.indexedDBAgent.invoke_enable();
     if (this.securityOriginManager) {
       this.securityOriginManager.addEventListener(
           SDK.SecurityOriginManager.Events.SecurityOriginAdded, this.securityOriginAdded, this);
@@ -178,7 +178,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     }
     await this.indexedDBAgent.invoke_deleteDatabase(
         {securityOrigin: databaseId.securityOrigin, databaseName: databaseId.name});
-    this.loadDatabaseNames(databaseId.securityOrigin);
+    void this.loadDatabaseNames(databaseId.securityOrigin);
   }
 
   async refreshDatabaseNames(): Promise<void> {
@@ -189,7 +189,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   refreshDatabase(databaseId: DatabaseId): void {
-    this.loadDatabase(databaseId, true);
+    void this.loadDatabase(databaseId, true);
   }
 
   async clearObjectStore(databaseId: DatabaseId, objectStoreName: string): Promise<void> {
@@ -214,9 +214,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   private addOrigin(securityOrigin: string): void {
     console.assert(!this.databaseNamesBySecurityOrigin[securityOrigin]);
     this.databaseNamesBySecurityOrigin[securityOrigin] = [];
-    this.loadDatabaseNames(securityOrigin);
+    void this.loadDatabaseNames(securityOrigin);
     if (this.isValidSecurityOrigin(securityOrigin)) {
-      this.storageAgent.invoke_trackIndexedDBForOrigin({origin: securityOrigin});
+      void this.storageAgent.invoke_trackIndexedDBForOrigin({origin: securityOrigin});
     }
   }
 
@@ -227,7 +227,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     }
     delete this.databaseNamesBySecurityOrigin[securityOrigin];
     if (this.isValidSecurityOrigin(securityOrigin)) {
-      this.storageAgent.invoke_untrackIndexedDBForOrigin({origin: securityOrigin});
+      void this.storageAgent.invoke_untrackIndexedDBForOrigin({origin: securityOrigin});
     }
   }
 
@@ -319,13 +319,13 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   loadObjectStoreData(
       databaseId: DatabaseId, objectStoreName: string, idbKeyRange: IDBKeyRange|null, skipCount: number,
       pageSize: number, callback: (arg0: Array<Entry>, arg1: boolean) => void): void {
-    this.requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
+    void this.requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
   }
 
   loadIndexData(
       databaseId: DatabaseId, objectStoreName: string, indexName: string, idbKeyRange: IDBKeyRange|null,
       skipCount: number, pageSize: number, callback: (arg0: Array<Entry>, arg1: boolean) => void): void {
-    this.requestData(
+    void this.requestData(
         databaseId, databaseId.name, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback);
   }
 
@@ -382,16 +382,16 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   private async refreshDatabaseList(securityOrigin: string): Promise<void> {
     const databaseNames = await this.loadDatabaseNames(securityOrigin);
     for (const databaseName of databaseNames) {
-      this.loadDatabase(new DatabaseId(securityOrigin, databaseName), false);
+      void this.loadDatabase(new DatabaseId(securityOrigin, databaseName), false);
     }
   }
 
   indexedDBListUpdated({origin: securityOrigin}: Protocol.Storage.IndexedDBListUpdatedEvent): void {
     this.originsUpdated.add(securityOrigin);
 
-    this.throttler.schedule(() => {
+    void this.throttler.schedule(() => {
       const promises = Array.from(this.originsUpdated, securityOrigin => {
-        this.refreshDatabaseList(securityOrigin);
+        void this.refreshDatabaseList(securityOrigin);
       });
       this.originsUpdated.clear();
       return Promise.all(promises);

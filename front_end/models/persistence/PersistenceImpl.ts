@@ -172,7 +172,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
     if (target && target.type() === SDK.Target.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
-      other.requestContent().then(() => {
+      void other.requestContent().then(() => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, other.workingCopy(), newContent);
         setWorkingCopy.call(this, () => nodeJSContent);
       });
@@ -208,7 +208,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(binding.network);
     if (target && target.type() === SDK.Target.Type.Node) {
-      other.requestContent().then(currentContent => {
+      void other.requestContent().then(currentContent => {
         const nodeJSContent = PersistenceImpl.rewrapNodeJSContent(other, currentContent.content || '', newContent);
         setContent.call(this, nodeJSContent);
       });

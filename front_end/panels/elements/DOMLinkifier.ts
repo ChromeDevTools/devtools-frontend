@@ -88,7 +88,7 @@ export const linkifyNodeReference = function(
   decorateNodeLabel(node, link, options.tooltip);
 
   link.addEventListener('click', () => {
-    Common.Revealer.reveal(node, false);
+    void Common.Revealer.reveal(node, false);
     return false;
   }, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
@@ -123,7 +123,7 @@ export const linkifyDeferredNodeReference = function(
   }
 
   function onDeferredNodeResolved(node: SDK.DOMModel.DOMNode|null): void {
-    Common.Revealer.reveal(node);
+    void Common.Revealer.reveal(node);
   }
 
   return root;

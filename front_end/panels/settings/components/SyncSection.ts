@@ -58,7 +58,7 @@ export class SyncSection extends HTMLElement {
   set data(data: SyncSectionData) {
     this.#syncInfo = data.syncInfo;
     this.#syncSetting = data.syncSetting;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #render(): void {

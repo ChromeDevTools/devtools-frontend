@@ -139,7 +139,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   wasShown(): void {
-    this.updateContentIfNeeded();
+    void this.updateContentIfNeeded();
   }
 
   disposeView(): void {
@@ -150,7 +150,7 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   private workingCopyCommitted(): void {
-    this.updateContentIfNeeded();
+    void this.updateContentIfNeeded();
   }
 
   private async updateContentIfNeeded(): Promise<void> {
@@ -192,7 +192,7 @@ export class ImageView extends UI.View.SimpleView {
       await this.saveImage();
     });
 
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private copyImageAsDataURL(): void {

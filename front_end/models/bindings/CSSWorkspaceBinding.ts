@@ -79,7 +79,7 @@ export class CSSWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<S
   }
 
   private recordLiveLocationChange(promise: Promise<unknown>): void {
-    promise.then(() => {
+    void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
     this.#liveLocationPromises.add(promise);
@@ -169,13 +169,13 @@ export class ModelInfo {
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetAdded,
           event => {
-            this.styleSheetAdded(event);
+            void this.styleSheetAdded(event);
           },
           this),
       cssModel.addEventListener(
           SDK.CSSModel.Events.StyleSheetRemoved,
           event => {
-            this.styleSheetRemoved(event);
+            void this.styleSheetRemoved(event);
           },
           this),
     ];

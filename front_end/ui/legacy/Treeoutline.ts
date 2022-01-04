@@ -931,7 +931,7 @@ export class TreeElement {
       }
     } else {
       if (event.altKey) {
-        this.expandRecursively();
+        void this.expandRecursively();
       } else {
         this.expand();
       }
@@ -1027,7 +1027,7 @@ export class TreeElement {
 
     this.expanded = true;
 
-    this.populateIfNeeded();
+    void this.populateIfNeeded();
     this.listItemNode.classList.add('expanded');
     this.childrenListNode.classList.add('expanded');
     ARIAUtils.setExpanded(this.listItemNode, true);
@@ -1100,7 +1100,7 @@ export class TreeElement {
 
     if (!this.expanded) {
       if (altKey) {
-        this.expandRecursively();
+        void this.expandRecursively();
       } else {
         this.expand();
       }
@@ -1299,7 +1299,7 @@ export class TreeElement {
     depthChange: number,
   }): TreeElement|null {
     if (!dontPopulate) {
-      this.populateIfNeeded();
+      void this.populateIfNeeded();
     }
 
     if (info) {
@@ -1345,14 +1345,14 @@ export class TreeElement {
     let element: (TreeElement|null) =
         skipUnrevealed ? (this.revealed() ? this.previousSibling : null) : this.previousSibling;
     if (!dontPopulate && element) {
-      element.populateIfNeeded();
+      void element.populateIfNeeded();
     }
 
     while (element &&
            (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :
                              element.lastChild())) {
       if (!dontPopulate) {
-        element.populateIfNeeded();
+        void element.populateIfNeeded();
       }
       element =
           (skipUnrevealed ? (element.revealed() && element.expanded ? element.lastChild() : null) :

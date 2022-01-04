@@ -431,7 +431,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.currentPerspective.activate(this);
     this.dataGrid = this.currentPerspective.masterGrid(this);
 
-    this.populate();
+    void this.populate();
     this.searchThrottler = new Common.Throttler.Throttler(0);
 
     for (const existingProfile of this.profiles()) {
@@ -478,7 +478,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
 
   showObject(snapshotObjectId: string, perspectiveName: string): void {
     if (Number(snapshotObjectId) <= this.profile.maxJSObjectId) {
-      this.selectLiveObject(perspectiveName, snapshotObjectId);
+      void this.selectLiveObject(perspectiveName, snapshotObjectId);
     } else {
       this.parentDataDisplayDelegate.showObject(snapshotObjectId, perspectiveName);
     }
@@ -508,9 +508,9 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   async populate(): Promise<void> {
     const heapSnapshotProxy = await this.profile.loadPromise;
 
-    this.retrieveStatistics(heapSnapshotProxy);
+    void this.retrieveStatistics(heapSnapshotProxy);
     if (this.dataGrid) {
-      this.dataGrid.setDataSource(heapSnapshotProxy, 0);
+      void this.dataGrid.setDataSource(heapSnapshotProxy, 0);
     }
 
     if (this.profile.profileType().id === TrackingHeapSnapshotProfileType.TypeId && this.profile.fromFile()) {
@@ -599,7 +599,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
         searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.isRegex, shouldJump,
         jumpBackwards || false);
 
-    this.searchThrottler.schedule(this.performSearchInternal.bind(this, nextQuery));
+    void this.searchThrottler.schedule(this.performSearchInternal.bind(this, nextQuery));
   }
 
   async performSearchInternal(nextQuery: HeapSnapshotModel.HeapSnapshotModel.SearchConfig): Promise<void> {
@@ -649,7 +649,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return;
     }
     this.currentSearchResultIndex = (this.currentSearchResultIndex + 1) % this.searchResults.length;
-    this.searchThrottler.schedule(this.jumpToSearchResult.bind(this, this.currentSearchResultIndex));
+    void this.searchThrottler.schedule(this.jumpToSearchResult.bind(this, this.currentSearchResultIndex));
   }
 
   jumpToPreviousSearchResult(): void {
@@ -658,7 +658,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     this.currentSearchResultIndex =
         (this.currentSearchResultIndex + this.searchResults.length - 1) % this.searchResults.length;
-    this.searchThrottler.schedule(this.jumpToSearchResult.bind(this, this.currentSearchResultIndex));
+    void this.searchThrottler.schedule(this.jumpToSearchResult.bind(this, this.currentSearchResultIndex));
   }
 
   async jumpToSearchResult(searchResultIndex: number): Promise<void> {
@@ -692,7 +692,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     const dataGrid = (this.dataGrid as HeapSnapshotDiffDataGrid);
     // Change set base data source only if main data source is already set.
     if (dataGrid.snapshot) {
-      this.baseProfile.loadPromise.then(dataGrid.setBaseDataSource.bind(dataGrid));
+      void this.baseProfile.loadPromise.then(dataGrid.setBaseDataSource.bind(dataGrid));
     }
 
     if (!this.currentQuery || !this.searchResults) {
@@ -746,7 +746,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     const selectedNode = (event.data as HeapSnapshotGridNode);
     const heapProfilerModel = this.profile.heapProfilerModel();
     if (heapProfilerModel && selectedNode instanceof HeapSnapshotGenericObjectNode) {
-      heapProfilerModel.addInspectedHeapObject(
+      void heapProfilerModel.addInspectedHeapObject(
           String(selectedNode.snapshotNodeId) as Protocol.HeapProfiler.HeapSnapshotObjectId);
     }
   }
@@ -754,9 +754,9 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   setSelectedNodeForDetailsView(nodeItem: HeapSnapshotGridNode|null): void {
     const dataSource = nodeItem && nodeItem.retainersDataSource();
     if (dataSource) {
-      this.retainmentDataGrid.setDataSource(dataSource.snapshot, dataSource.snapshotNodeIndex);
+      void this.retainmentDataGrid.setDataSource(dataSource.snapshot, dataSource.snapshotNodeIndex);
       if (this.allocationStackView) {
-        this.allocationStackView.setAllocatedObject(dataSource.snapshot, dataSource.snapshotNodeIndex);
+        void this.allocationStackView.setAllocatedObject(dataSource.snapshot, dataSource.snapshotNodeIndex);
       }
     } else {
       if (this.allocationStackView) {
@@ -797,7 +797,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       return;
     }
     if (dataGrid.snapshot !== snapshotProxy) {
-      dataGrid.setDataSource(snapshotProxy, 0);
+      void dataGrid.setDataSource(snapshotProxy, 0);
     }
     if (dataGrid !== this.diffDataGrid) {
       return;
@@ -835,7 +835,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
       this.dataGrid.updateWidths();
     }
 
-    this.updateDataSourceAndView();
+    void this.updateDataSourceAndView();
 
     if (!this.currentQuery || !this.searchResults) {
       return;
@@ -1189,7 +1189,7 @@ export class HeapSnapshotProfileType extends
   }
 
   modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
-    heapProfilerModel.enable();
+    void heapProfilerModel.enable();
   }
 
   modelRemoved(_heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
@@ -1212,7 +1212,7 @@ export class HeapSnapshotProfileType extends
   }
 
   buttonClicked(): boolean {
-    this.takeHeapSnapshot();
+    void this.takeHeapSnapshot();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesHeapProfileTaken);
     return false;
   }
@@ -1429,7 +1429,7 @@ export class TrackingHeapSnapshotProfileType extends
     if (!heapProfilerModel) {
       return;
     }
-    heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
+    void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }
 
   customContent(): Element|null {
@@ -1486,7 +1486,7 @@ export class TrackingHeapSnapshotProfileType extends
 
   toggleRecording(): boolean {
     if (this.recording) {
-      this.stopRecordingProfile();
+      void this.stopRecordingProfile();
     } else {
       this.startRecordingProfile();
     }
@@ -1517,7 +1517,7 @@ export class TrackingHeapSnapshotProfileType extends
   }
 
   profileBeingRecordedRemoved(): void {
-    this.stopRecordingProfile();
+    void this.stopRecordingProfile();
     this.profileSamples = null;
   }
 
@@ -1602,7 +1602,7 @@ export class HeapProfileHeader extends ProfileHeader {
 
   finishLoad(): void {
     if (!this.wasDisposed && this.receiver) {
-      this.receiver.close();
+      void this.receiver.close();
     }
     if (!this.bufferedWriter) {
       return;
@@ -1678,7 +1678,7 @@ export class HeapProfileHeader extends ProfileHeader {
 
     ++this.totalNumberOfChunks;
     if (this.receiver) {
-      this.receiver.write(chunk);
+      void this.receiver.write(chunk);
     }
   }
 
@@ -1720,7 +1720,7 @@ export class HeapProfileHeader extends ProfileHeader {
       }
       if (this.failedToCreateTempFile) {
         Common.Console.Console.instance().error('Failed to open temp file with heap snapshot');
-        fileOutputStream.close();
+        void fileOutputStream.close();
         return;
       }
       if (this.tempFile) {
@@ -1734,12 +1734,12 @@ export class HeapProfileHeader extends ProfileHeader {
         return;
       }
       this.onTempFileReady = (): void => {
-        onOpen(accepted);
+        void onOpen(accepted);
       };
       this.updateSaveProgress(0, 1);
     };
 
-    fileOutputStream.open(this.fileName).then(onOpen.bind(this));
+    void fileOutputStream.open(this.fileName).then(onOpen.bind(this));
   }
 
   onChunkTransferred(reader: Bindings.FileUtils.ChunkedReader): void {
@@ -1815,7 +1815,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     if (!contextMenu.containsTarget(link)) {
       contextMenu.appendApplicableItems(link);
     }
-    contextMenu.show();
+    void contextMenu.show();
     event.consume(true);
   }
 

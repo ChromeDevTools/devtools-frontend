@@ -72,7 +72,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
           if (context) {
             this.updateDetailView(context);
           }
-          this.doUpdate();
+          void this.doUpdate();
         });
 
     SDK.TargetManager.TargetManager.instance().observeModels(WebAudioModel, this);

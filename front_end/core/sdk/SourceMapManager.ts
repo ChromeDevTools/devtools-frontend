@@ -158,7 +158,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       return;
     }
     if (!this.#sourceMapIdToLoadingClients.has(sourceMapId)) {
-      TextSourceMap.load(sourceMapURL, sourceURL, client.createPageResourceLoadInitiator())
+      void TextSourceMap.load(sourceMapURL, sourceURL, client.createPageResourceLoadInitiator())
           .catch(error => {
             Common.Console.Console.instance().warn(
                 i18nString(UIStrings.devtoolsFailedToLoadSourcemapS, {PH1: error.message}));

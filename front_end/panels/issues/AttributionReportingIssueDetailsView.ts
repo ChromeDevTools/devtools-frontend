@@ -156,7 +156,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     let count = 0;
     for (const issue of issues) {
       count++;
-      this.#appendDetail(issueCode, issue);
+      void this.#appendDetail(issueCode, issue);
     }
     this.updateAffectedResourceCount(count);
   }

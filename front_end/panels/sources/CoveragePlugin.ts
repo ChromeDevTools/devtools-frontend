@@ -51,7 +51,7 @@ export class CoveragePlugin extends Plugin {
     this.infoInToolbar = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clickToShowCoveragePanel));
     this.infoInToolbar.setSecondary();
     this.infoInToolbar.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      UI.ViewManager.ViewManager.instance().showView('coverage');
+      void UI.ViewManager.ViewManager.instance().showView('coverage');
     });
 
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
@@ -135,7 +135,7 @@ export class CoveragePlugin extends Plugin {
 
   private startDecoUpdate(editor: TextEditor.TextEditor.TextEditor): void {
     const manager = this.getCoverageManager();
-    (manager ? manager.usageByLine(this.uiSourceCode) : Promise.resolve([])).then(usageByLine => {
+    void (manager ? manager.usageByLine(this.uiSourceCode) : Promise.resolve([])).then(usageByLine => {
       const enabled = Boolean(editor.state.field(coverageState, false));
       if (!usageByLine.length) {
         if (enabled) {
@@ -196,7 +196,7 @@ function coverageGutter(url: string): CodeMirror.Extension {
 
     domEventHandlers: {
       click() {
-        UI.ViewManager.ViewManager.instance()
+        void UI.ViewManager.ViewManager.instance()
             .showView('coverage')
             .then(() => {
               const view = UI.ViewManager.ViewManager.instance().view('coverage');

@@ -171,7 +171,7 @@ export class Helper {
     }
     this.updateTimer = window.setTimeout(() => {
       this.updateTimer = null;
-      this.doUpdate();
+      void this.doUpdate();
     }, 0);
   }
 

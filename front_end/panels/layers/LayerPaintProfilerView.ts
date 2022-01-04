@@ -24,17 +24,17 @@ export class LayerPaintProfilerView extends UI.SplitWidget.SplitWidget {
   }
 
   reset(): void {
-    this.paintProfilerView.setSnapshotAndLog(null, [], null);
+    void this.paintProfilerView.setSnapshotAndLog(null, [], null);
   }
 
   profile(snapshot: SDK.PaintProfiler.PaintProfilerSnapshot): void {
-    snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
+    void snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
 
     function setSnapshotAndLog(
         this: LayerPaintProfilerView, snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null,
         log: SDK.PaintProfiler.PaintProfilerLogItem[]|null): void {
       this.logTreeView.setCommandLog(log || []);
-      this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
+      void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
       if (snapshot) {
         snapshot.release();
       }

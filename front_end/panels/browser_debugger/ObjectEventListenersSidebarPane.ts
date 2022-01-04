@@ -62,7 +62,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
       return;
     }
     this.#lastRequestedContext = executionContext;
-    Promise.all([this.windowObjectInContext(executionContext)])
+    void Promise.all([this.windowObjectInContext(executionContext)])
         .then(this.#eventListenersView.addObjects.bind(this.#eventListenersView));
   }
 

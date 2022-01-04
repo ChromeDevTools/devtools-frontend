@@ -563,7 +563,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   revealCustomSetting(): void {
-    Common.Revealer.reveal(this.#customSetting);
+    void Common.Revealer.reveal(this.#customSetting);
   }
 
   addCustomDevice(device: EmulatedDevice): void {

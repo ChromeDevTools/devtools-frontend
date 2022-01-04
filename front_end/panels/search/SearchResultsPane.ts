@@ -206,7 +206,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
       searchMatchElement.listItemElement.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           event.consume(true);
-          Common.Revealer.reveal(searchResult.matchRevealable(i));
+          void Common.Revealer.reveal(searchResult.matchRevealable(i));
         }
       });
       searchMatchElement.tooltip = lineContent;

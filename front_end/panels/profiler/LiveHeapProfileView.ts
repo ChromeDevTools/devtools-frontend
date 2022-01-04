@@ -173,7 +173,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
 
   wasShown(): void {
     super.wasShown();
-    this.poll();
+    void this.poll();
     this.registerCSSFiles([liveHeapProfileStyles]);
     this.setting.addChangeListener(this.settingChanged, this);
   }
@@ -294,7 +294,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     }
     const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(node.url);
     if (sourceCode) {
-      Common.Revealer.reveal(sourceCode);
+      void Common.Revealer.reveal(sourceCode);
     }
   }
 
@@ -325,7 +325,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (enable) {
       this.startRecording(false);
     } else {
-      this.stopRecording();
+      void this.stopRecording();
     }
   }
 
@@ -403,7 +403,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
-    (async(): Promise<void> => {
+    void (async(): Promise<void> => {
       const profileViewId = 'live_heap_profile';
       await UI.ViewManager.ViewManager.instance().showView(profileViewId);
       const view = UI.ViewManager.ViewManager.instance().view(profileViewId);

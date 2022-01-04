@@ -152,7 +152,7 @@ export class BackForwardCacheView extends HTMLElement {
 
   set data(data: BackForwardCacheViewData) {
     this.#frame = data.frame;
-    this.#render();
+    void this.#render();
   }
 
   async #render(): Promise<void> {
@@ -175,7 +175,7 @@ export class BackForwardCacheView extends HTMLElement {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#renderBackForwardCacheTestResult, this);
     this.#screenStatus = ScreenStatusType.Result;
-    this.#render();
+    void this.#render();
   }
 
   async #goBackOneHistoryEntry(): Promise<void> {
@@ -183,7 +183,7 @@ export class BackForwardCacheView extends HTMLElement {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#goBackOneHistoryEntry, this);
     this.#screenStatus = ScreenStatusType.Running;
-    this.#render();
+    void this.#render();
     const mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (!mainTarget) {
       return;
@@ -221,7 +221,7 @@ export class BackForwardCacheView extends HTMLElement {
       // as the browser navigates to another unrelated page and goes back to the current page.
       // We chose "chrome://terms" because it must be cross-site.
       // Ideally, We want to have our own testing page like "chrome: //bfcache-test".
-      resourceTreeModel.navigate('chrome://terms');
+      void resourceTreeModel.navigate('chrome://terms');
     }
   }
 

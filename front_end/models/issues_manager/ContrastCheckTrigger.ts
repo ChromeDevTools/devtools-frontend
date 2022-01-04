@@ -50,7 +50,7 @@ export class ContrastCheckTrigger {
     if (!Root.Runtime.experiments.isEnabled('contrastIssues')) {
       return;
     }
-    resourceTreeModel.target().auditsAgent().invoke_checkContrast({});
+    void resourceTreeModel.target().auditsAgent().invoke_checkContrast({});
   }
 
   #pageLoaded(event: Common.EventTarget

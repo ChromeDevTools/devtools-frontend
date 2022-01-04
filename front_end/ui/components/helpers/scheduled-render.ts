@@ -51,7 +51,7 @@ export async function scheduleRender(component: HTMLElement, callback: () => voi
       return;
     }
 
-    scheduleRender(component, newCallback);
+    void scheduleRender(component, newCallback);
   }
 }
 

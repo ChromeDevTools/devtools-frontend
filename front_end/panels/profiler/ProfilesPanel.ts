@@ -227,7 +227,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     const error = await profileType.loadFromFile(file);
     if (error && 'message' in error) {
-      UI.UIUtils.MessageDialog.show(i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}));
+      void UI.UIUtils.MessageDialog.show(i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}));
     }
   }
 
@@ -357,7 +357,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.load), this.fileSelectorElement.click.bind(this.fileSelectorElement));
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   showLoadFromFileDialog(): void {
@@ -419,7 +419,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.profileViewToolbar.removeToolbarItems();
 
-    (view as unknown as UI.View.View).toolbarItems().then(items => {
+    void (view as unknown as UI.View.View).toolbarItems().then(items => {
       items.map(item => this.profileViewToolbar.appendToolbarItem(item));
     });
 

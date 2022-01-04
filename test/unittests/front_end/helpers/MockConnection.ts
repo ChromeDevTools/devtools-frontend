@@ -66,7 +66,7 @@ function enable({reset = true} = {}) {
   // The DevTools frontend code expects certain things to be in place
   // before it can run. This function will ensure those things are
   // minimally there.
-  initializeGlobalVars({reset});
+  void initializeGlobalVars({reset});
 
   let messageCallback: MessageCallback;
   ProtocolClient.InspectorBackend.Connection.setFactory(() => {
@@ -109,7 +109,7 @@ function enable({reset = true} = {}) {
 }
 
 function disable() {
-  deinitializeGlobalVars();
+  void deinitializeGlobalVars();
   // @ts-ignore Setting back to undefined as a hard reset.
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);
 }

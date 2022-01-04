@@ -211,7 +211,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
       return;
     }
     objectPropertiesView.element.removeChildren();
-    UI.UIUtils.Renderer.render(object, {title, editable: false}).then(result => {
+    void UI.UIUtils.Renderer.render(object, {title, editable: false}).then(result => {
       if (!result) {
         callback();
         return;

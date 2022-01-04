@@ -52,7 +52,7 @@ export class HideIssuesMenu extends HTMLElement {
       },
     });
     contextMenu.headerSection().appendItem(this.#menuItemLabel, () => this.#menuItemAction());
-    contextMenu.show();
+    void contextMenu.show();
     this.classList.toggle('has-context-menu-opened', true);
   }
 

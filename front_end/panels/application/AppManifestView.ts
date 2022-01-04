@@ -477,18 +477,18 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       return;
     }
 
-    this.updateManifest(true);
+    void this.updateManifest(true);
 
     this.registeredListeners = [
       this.resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded,
           () => {
-            this.updateManifest(true);
+            void this.updateManifest(true);
           }),
       this.serviceWorkerManager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationUpdated,
           () => {
-            this.updateManifest(false);
+            void this.updateManifest(false);
           }),
     ];
   }
@@ -516,7 +516,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       this.resourceTreeModel.getAppId(),
     ]);
 
-    this.throttler.schedule(
+    void this.throttler.schedule(
         () => this.renderManifest(url, data, errors, installabilityErrors, manifestIcons, appId), immediately);
   }
 

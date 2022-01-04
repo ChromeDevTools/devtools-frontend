@@ -187,7 +187,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
         .addChangeListener(this.breakpointsActiveChanged, this);
 
     if (!target.suspended()) {
-      this.enableDebugger();
+      void this.enableDebugger();
     }
 
     this.#sourceMapManagerInternal.setEnabled(
@@ -232,14 +232,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this.agent.invoke_enable({maxScriptsCacheSize});
-    enablePromise.then(this.registerDebugger.bind(this));
+    void enablePromise.then(this.registerDebugger.bind(this));
     this.pauseOnExceptionStateChanged();
-    this.asyncStackTracesStateChanged();
+    void this.asyncStackTracesStateChanged();
     if (!Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()) {
       this.breakpointsActiveChanged();
     }
     if (_scheduledPauseOnAsyncCall) {
-      this.pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
+      void this.pauseOnAsyncCall(_scheduledPauseOnAsyncCall);
     }
     this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
     await enablePromise;
@@ -249,7 +249,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const isRemoteFrontend = Root.Runtime.Runtime.queryParam('remoteFrontend') || Root.Runtime.Runtime.queryParam('ws');
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this.agent.invoke_enable({maxScriptsCacheSize});
-    enablePromise.then(this.registerDebugger.bind(this));
+    void enablePromise.then(this.registerDebugger.bind(this));
     return enablePromise;
   }
 
@@ -314,14 +314,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       clearTimeout(this.#skipAllPausesTimeout);
       this.#skipAllPausesTimeout = 0;
     }
-    this.agent.invoke_setSkipAllPauses({skip});
+    void this.agent.invoke_setSkipAllPauses({skip});
   }
 
   skipAllPausesUntilReloadOrTimeout(timeout: number): void {
     if (this.#skipAllPausesTimeout) {
       clearTimeout(this.#skipAllPausesTimeout);
     }
-    this.agent.invoke_setSkipAllPauses({skip: true});
+    void this.agent.invoke_setSkipAllPauses({skip: true});
     // If reload happens before the timeout, the flag will be already unset and the timeout callback won't change anything.
     this.#skipAllPausesTimeout = window.setTimeout(this.skipAllPauses.bind(this, false), timeout);
   }
@@ -336,7 +336,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
     }
 
-    this.agent.invoke_setPauseOnExceptions({state});
+    void this.agent.invoke_setPauseOnExceptions({state});
   }
 
   private asyncStackTracesStateChanged(): Promise<Protocol.ProtocolResponseWithError> {
@@ -348,7 +348,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private breakpointsActiveChanged(): void {
-    this.agent.invoke_setBreakpointsActive(
+    void this.agent.invoke_setBreakpointsActive(
         {active: Common.Settings.Settings.instance().moduleSetting('breakpointsActive').get()});
   }
 
@@ -377,7 +377,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   async stepInto(): Promise<void> {
     const skipList = await this.computeAutoStepSkipList(StepMode.StepInto);
-    this.agent.invoke_stepInto({breakOnAsyncCall: false, skipList});
+    void this.agent.invoke_stepInto({breakOnAsyncCall: false, skipList});
   }
 
   async stepOver(): Promise<void> {
@@ -385,33 +385,33 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     // step-over instead of step-in.
     this.#autoStepOver = true;
     const skipList = await this.computeAutoStepSkipList(StepMode.StepOver);
-    this.agent.invoke_stepOver({skipList});
+    void this.agent.invoke_stepOver({skipList});
   }
 
   async stepOut(): Promise<void> {
     const skipList = await this.computeAutoStepSkipList(StepMode.StepOut);
     if (skipList.length !== 0) {
-      this.agent.invoke_stepOver({skipList});
+      void this.agent.invoke_stepOver({skipList});
     } else {
-      this.agent.invoke_stepOut();
+      void this.agent.invoke_stepOut();
     }
   }
 
   scheduleStepIntoAsync(): void {
-    this.computeAutoStepSkipList(StepMode.StepInto).then(skipList => {
-      this.agent.invoke_stepInto({breakOnAsyncCall: true, skipList});
+    void this.computeAutoStepSkipList(StepMode.StepInto).then(skipList => {
+      void this.agent.invoke_stepInto({breakOnAsyncCall: true, skipList});
     });
   }
 
   resume(): void {
-    this.agent.invoke_resume({terminateOnResume: false});
+    void this.agent.invoke_resume({terminateOnResume: false});
     this.#isPausingInternal = false;
   }
 
   pause(): void {
     this.#isPausingInternal = true;
     this.skipAllPauses(false);
-    this.agent.invoke_pause();
+    void this.agent.invoke_pause();
   }
 
   private pauseOnAsyncCall(parentStackTraceId: Protocol.Runtime.StackTraceId): Promise<Object> {
@@ -570,7 +570,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       callback: (error: string|null, arg1?: Protocol.Runtime.ExceptionDetails|undefined) => void): void {
     const script = this.#scriptsInternal.get(scriptId);
     if (script) {
-      script.editSource(newSource, this.didEditScriptSource.bind(this, scriptId, newSource, callback));
+      void script.editSource(newSource, this.didEditScriptSource.bind(this, scriptId, newSource, callback));
     }
   }
 
@@ -582,12 +582,12 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       needsStepIn?: boolean): void {
     callback(error, exceptionDetails);
     if (needsStepIn) {
-      this.stepInto();
+      void this.stepInto();
       return;
     }
 
     if (!error && callFrames && callFrames.length && this.#debuggerPausedDetailsInternal) {
-      this.pausedScript(
+      void this.pausedScript(
           callFrames, this.#debuggerPausedDetailsInternal.reason, this.#debuggerPausedDetailsInternal.auxData,
           this.#debuggerPausedDetailsInternal.breakpointIds, asyncStackTrace, asyncStackTraceId);
     }
@@ -671,9 +671,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
     if (!this.setDebuggerPausedDetails(pausedDetails)) {
       if (this.#autoStepOver) {
-        this.stepOver();
+        void this.stepOver();
       } else {
-        this.stepInto();
+        void this.stepInto();
       }
     } else {
       Common.EventTarget.fireEvent('DevTools.DebuggerPaused');
@@ -1011,7 +1011,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
-    this.#debuggerModel.pausedScript(
+    void this.#debuggerModel.pausedScript(
         callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId, asyncCallStackTraceId);
   }
 
@@ -1122,7 +1122,7 @@ export class Location {
     if (pausedCallback) {
       this.debuggerModel.continueToLocationCallback = this.paused.bind(this, pausedCallback);
     }
-    this.debuggerModel.agent.invoke_continueToLocation({
+    void this.debuggerModel.agent.invoke_continueToLocation({
       location: this.payload(),
       targetCallFrames: Protocol.Debugger.ContinueToLocationRequestTargetCallFrames.Current,
     });

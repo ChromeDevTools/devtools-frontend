@@ -64,8 +64,8 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
                                                                       Protocol.Overlay.ContrastAlgorithm.Aa,
     };
 
-    this.#overlayAgent.invoke_hideHighlight();
-    this.#overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
+    void this.#overlayAgent.invoke_hideHighlight();
+    void this.#overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
   }
 
   async getNodeStyleStats(): Promise<NodeStyleStats> {

@@ -249,7 +249,7 @@ export class CoverageListView extends UI.Widget.VBox {
   }
 
   private onOpenedNode(): void {
-    this.revealSourceForSelectedNode();
+    void this.revealSourceForSelectedNode();
   }
 
   private onKeyDown(event: KeyboardEvent): void {
@@ -257,7 +257,7 @@ export class CoverageListView extends UI.Widget.VBox {
       return;
     }
     event.consume(true);
-    this.revealSourceForSelectedNode();
+    void this.revealSourceForSelectedNode();
   }
 
   private async revealSourceForSelectedNode(): Promise<void> {
@@ -277,7 +277,7 @@ export class CoverageListView extends UI.Widget.VBox {
     if (this.dataGrid.selectedNode !== node) {
       return;
     }
-    Common.Revealer.reveal(sourceCode);
+    void Common.Revealer.reveal(sourceCode);
   }
 
   private sortingChanged(): void {

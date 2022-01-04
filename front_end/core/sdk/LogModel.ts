@@ -16,9 +16,9 @@ export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.L
     super(target);
     target.registerLogDispatcher(this);
     this.#logAgent = target.logAgent();
-    this.#logAgent.invoke_enable();
+    void this.#logAgent.invoke_enable();
     if (!Host.InspectorFrontendHost.isUnderTest()) {
-      this.#logAgent.invoke_startViolationsReport({
+      void this.#logAgent.invoke_startViolationsReport({
         config: [
           {name: Protocol.Log.ViolationSettingName.LongTask, threshold: 200},
           {name: Protocol.Log.ViolationSettingName.LongLayout, threshold: 30},
@@ -37,7 +37,7 @@ export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.L
   }
 
   requestClear(): void {
-    this.#logAgent.invoke_clear();
+    void this.#logAgent.invoke_clear();
   }
 }
 

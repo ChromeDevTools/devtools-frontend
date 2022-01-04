@@ -73,7 +73,7 @@ export class PaintProfilerSnapshot {
   release(): void {
     console.assert(this.#refCount > 0, 'release is already called on the object');
     if (!--this.#refCount) {
-      this.#paintProfilerModel.layerTreeAgent.invoke_releaseSnapshot({snapshotId: this.#id});
+      void this.#paintProfilerModel.layerTreeAgent.invoke_releaseSnapshot({snapshotId: this.#id});
     }
   }
 

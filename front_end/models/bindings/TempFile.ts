@@ -83,7 +83,7 @@ export class TempFile {
       outputStream: Common.StringOutputStream.OutputStream,
       progress?: ((arg0: ChunkedReader) => void)): Promise<DOMError|null> {
     if (!this.#lastBlob) {
-      outputStream.close();
+      void outputStream.close();
       return null;
     }
     const reader = new ChunkedFileReader((this.#lastBlob as File), 10 * 1000 * 1000, progress);

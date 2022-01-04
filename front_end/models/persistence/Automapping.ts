@@ -92,7 +92,7 @@ export class Automapping {
   }
 
   private scheduleSweep(): void {
-    this.sweepThrottler.schedule(sweepUnmapped.bind(this));
+    void this.sweepThrottler.schedule(sweepUnmapped.bind(this));
 
     function sweepUnmapped(this: Automapping): Promise<void> {
       const networkProjects = this.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
@@ -287,7 +287,7 @@ export class Automapping {
           this.scheduleSweep();
         }
       }
-      this.onStatusAdded.call(null, status);
+      void this.onStatusAdded.call(null, status);
     }
   }
 
@@ -316,7 +316,7 @@ export class Automapping {
         this.activeFoldersIndex.removeFolder(projectFolder);
       }
     }
-    this.onStatusRemoved.call(null, status);
+    void this.onStatusRemoved.call(null, status);
   }
 
   private createBinding(networkSourceCode: Workspace.UISourceCode.UISourceCode): Promise<AutomappingStatus|null> {

@@ -79,7 +79,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
     if (to && to.frameId) {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(to.frameId);
       if (frame && !frame.isTopFrame()) {
-        frame.highlight();
+        void frame.highlight();
       }
     }
     if (fromElement) {

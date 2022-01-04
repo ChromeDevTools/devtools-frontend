@@ -250,7 +250,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
           const frameId = this.item.initiator.frameId;
           const frame = frameId ? SDK.FrameManager.FrameManager.instance().getFrame(frameId) : null;
           if (frame) {
-            frame.highlight();
+            void frame.highlight();
           }
         };
         cell.onmouseleave = (): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();

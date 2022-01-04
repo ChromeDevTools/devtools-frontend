@@ -219,7 +219,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this.screencastFrame.bind(this),
         this.screencastVisibilityChanged.bind(this));
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.overrideEmulateTouch(true);
+      void emulationModel.overrideEmulateTouch(true);
     }
     if (this.overlayModel) {
       this.overlayModel.setHighlighter(this);
@@ -233,7 +233,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.isCasting = false;
     this.screenCaptureModel.stopScreencast();
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.overrideEmulateTouch(false);
+      void emulationModel.overrideEmulateTouch(false);
     }
     if (this.overlayModel) {
       this.overlayModel.setHighlighter(null);
@@ -263,7 +263,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       this.viewportElement.style.height = metadata.deviceHeight * this.screenZoom + bordersSize + 'px';
 
       const data = this.highlightNode ? {node: this.highlightNode, selectorList: undefined} : {clear: true};
-      this.updateHighlightInOverlayAndRepaint(data, this.highlightConfig);
+      void this.updateHighlightInOverlayAndRepaint(data, this.highlightConfig);
     };
     this.imageElement.src = 'data:image/jpg;base64,' + base64Data;
   }
@@ -331,7 +331,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
 
     if (event.type === 'mousemove') {
-      this.updateHighlightInOverlayAndRepaint({node, selectorList: undefined}, this.inspectModeConfig);
+      void this.updateHighlightInOverlayAndRepaint({node, selectorList: undefined}, this.inspectModeConfig);
       this.domModel.overlayModel().nodeHighlightRequested({nodeId: node.id});
     } else if (event.type === 'click') {
       this.domModel.overlayModel().inspectNodeRequested({backendNodeId: node.backendNodeId()});
@@ -386,7 +386,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   highlightInOverlay(data: SDK.OverlayModel.HighlightData, config: Protocol.Overlay.HighlightConfig|null): void {
-    this.updateHighlightInOverlayAndRepaint(data, config);
+    void this.updateHighlightInOverlayAndRepaint(data, config);
   }
 
   private async updateHighlightInOverlayAndRepaint(
@@ -417,7 +417,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
 
     this.node = node;
-    node.boxModel().then(model => {
+    void node.boxModel().then(model => {
       if (!model || !this.pageScaleFactor) {
         this.repaint();
         return;
@@ -673,7 +673,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       this.navigationForward.addEventListener('click', this.navigateToHistoryEntry.bind(this, 1), false);
       this.navigationReload.addEventListener('click', this.navigateReload.bind(this), false);
       this.navigationUrl.addEventListener('keyup', this.navigationUrlKeyUp.bind(this), true);
-      this.requestNavigationHistory();
+      void this.requestNavigationHistory();
       this.resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this.requestNavigationHistoryEvent, this);
       this.resourceTreeModel.addEventListener(
@@ -690,7 +690,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       return;
     }
     this.resourceTreeModel.navigateToHistoryEntry(this.historyEntries[newIndex]);
-    this.requestNavigationHistory();
+    void this.requestNavigationHistory();
   }
 
   private navigateReload(): void {
@@ -717,13 +717,13 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     // encodeURI ensures an encoded URL is always passed to the backend
     // This allows the input field to support both encoded and decoded URLs
     if (this.resourceTreeModel) {
-      this.resourceTreeModel.navigate(encodeURI(decodeURI(url)));
+      void this.resourceTreeModel.navigate(encodeURI(decodeURI(url)));
     }
     this.canvasElement.focus();
   }
 
   private requestNavigationHistoryEvent(): void {
-    this.requestNavigationHistory();
+    void this.requestNavigationHistory();
   }
 
   private async requestNavigationHistory(): Promise<void> {

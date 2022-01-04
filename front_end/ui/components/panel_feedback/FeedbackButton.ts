@@ -34,7 +34,7 @@ export class FeedbackButton extends HTMLElement {
 
   set data(data: FeedbackButtonData) {
     this.#props = data;
-    ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #onFeedbackClick(): void {

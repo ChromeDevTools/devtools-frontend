@@ -83,7 +83,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
       this.debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.ParsedScriptSource,
           event => {
-            this.parsedScriptSource(event);
+            void this.parsedScriptSource(event);
           },
           this),
       this.debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
@@ -219,21 +219,21 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const executionContext = event.data;
     const scripts = this.debuggerModel.scriptsForExecutionContext(executionContext);
     for (const script of scripts) {
-      this.removeScript(script);
+      void this.removeScript(script);
     }
   }
 
   private globalObjectCleared(): void {
     const scripts = Array.from(this.#acceptedScripts);
     for (const script of scripts) {
-      this.removeScript(script);
+      void this.removeScript(script);
     }
   }
 
   resetForTest(): void {
     const scripts = Array.from(this.#acceptedScripts);
     for (const script of scripts) {
-      this.removeScript(script);
+      void this.removeScript(script);
     }
   }
 
@@ -241,7 +241,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     Common.EventTarget.removeEventListeners(this.#eventListeners);
     const scripts = Array.from(this.#acceptedScripts);
     for (const script of scripts) {
-      this.removeScript(script);
+      void this.removeScript(script);
     }
     for (const project of this.#projects.values()) {
       project.removeProject();
@@ -305,7 +305,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
   }
 
   private workingCopyChanged(): void {
-    this.update();
+    void this.update();
   }
 
   private workingCopyCommitted(): void {
@@ -321,7 +321,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
                             .map(breakpointLocation => breakpointLocation.breakpoint);
     const source = this.#uiSourceCodeInternal.workingCopy();
     debuggerModel.setScriptSource(this.scriptInternal.scriptId, source, (error, exceptionDetails) => {
-      this.scriptSourceWasSet(source, breakpoints, error, exceptionDetails);
+      void this.scriptSourceWasSet(source, breakpoints, error, exceptionDetails);
     });
   }
 
@@ -395,9 +395,9 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
       this.mappingCheckedForTest();
       return;
     }
-    this.scriptInternal.requestContent().then(deferredContent => {
+    void this.scriptInternal.requestContent().then(deferredContent => {
       this.#scriptSource = deferredContent.content;
-      this.update().then(() => this.mappingCheckedForTest());
+      void this.update().then(() => this.mappingCheckedForTest());
     });
   }
 

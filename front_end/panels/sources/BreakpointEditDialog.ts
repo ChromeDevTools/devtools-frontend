@@ -106,7 +106,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     const content = oldCondition || '';
     const finishIfComplete = (view: CodeMirror.EditorView): boolean => {
-      TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete): void => {
+      void TextEditor.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete): void => {
         if (complete) {
           this.finishEditing(true, this.editor.state.doc.toString());
         } else {
@@ -215,7 +215,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     if (this.isLogpoint) {
       condition = BreakpointEditDialog.conditionForLogpoint(condition);
     }
-    this.onFinish({committed, condition});
+    void this.onFinish({committed, condition});
   }
 
   wasShown(): void {

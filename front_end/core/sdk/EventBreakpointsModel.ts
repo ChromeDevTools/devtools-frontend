@@ -100,9 +100,9 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 
   updateOnModel(model: EventBreakpointsModel): void {
     if (this.enabled()) {
-      model.agent.invoke_setInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.instrumentationName});
     } else {
-      model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.instrumentationName});
     }
   }
 

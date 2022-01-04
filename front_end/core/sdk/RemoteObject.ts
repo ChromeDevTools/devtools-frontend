@@ -525,7 +525,7 @@ export class RemoteObjectImpl extends RemoteObject {
     const resultPromise = this.doSetObjectPropertyValue(response.result, name);
 
     if (response.result.objectId) {
-      this.#runtimeAgent.invoke_releaseObject({objectId: response.result.objectId});
+      void this.#runtimeAgent.invoke_releaseObject({objectId: response.result.objectId});
     }
 
     return resultPromise;
@@ -611,7 +611,7 @@ export class RemoteObjectImpl extends RemoteObject {
     if (!this.#objectIdInternal) {
       return;
     }
-    this.#runtimeAgent.invoke_releaseObject({objectId: this.#objectIdInternal});
+    void this.#runtimeAgent.invoke_releaseObject({objectId: this.#objectIdInternal});
   }
 
   arrayLength(): number {

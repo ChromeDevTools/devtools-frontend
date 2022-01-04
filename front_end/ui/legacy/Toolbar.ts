@@ -225,13 +225,13 @@ export class Toolbar {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: any,
     }): void => {
-      action.execute();
+      void action.execute();
     };
     if (options.userActionCode) {
       const actionCode = options.userActionCode;
       handler = (): void => {
         Host.userMetrics.actionTaken(actionCode);
-        action.execute();
+        void action.execute();
       };
     }
     button.addEventListener(ToolbarButton.Events.Click, handler, action);
@@ -814,7 +814,7 @@ export class ToolbarMenuButton extends ToolbarButton {
       y: this.element.totalOffsetTop() + this.element.offsetHeight,
     });
     this.contextMenuHandler(contextMenu);
-    contextMenu.show();
+    void contextMenu.show();
     this.lastTriggerTime = Date.now();
   }
 

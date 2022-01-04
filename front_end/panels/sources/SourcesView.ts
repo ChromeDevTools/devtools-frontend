@@ -124,9 +124,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       }
 
       event.returnValue = true;
-      UI.ViewManager.ViewManager.instance().showView('sources');
+      void UI.ViewManager.ViewManager.instance().showView('sources');
       for (const sourceCode of unsavedSourceCodes) {
-        Common.Revealer.reveal(sourceCode);
+        void Common.Revealer.reveal(sourceCode);
       }
     }
 
@@ -172,7 +172,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         this.placeholderOptionArray.push({
           element: row,
           handler(): void {
-            action.execute();
+            void action.execute();
           },
         });
       }
@@ -342,7 +342,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private updateScriptViewToolbarItems(): void {
     const view = this.visibleView();
     if (view instanceof UI.View.SimpleView) {
-      view.toolbarItems().then(items => {
+      void view.toolbarItems().then(items => {
         this.scriptViewToolbar.removeToolbarItems();
         items.map(item => this.scriptViewToolbar.appendToolbarItem(item));
       });

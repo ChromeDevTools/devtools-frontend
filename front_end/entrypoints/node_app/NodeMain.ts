@@ -37,7 +37,7 @@ export class NodeMainImpl implements Common.Runnable.Runnable {
   }
   async run(): Promise<void> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
-    SDK.Connections.initMainConnection(async () => {
+    void SDK.Connections.initMainConnection(async () => {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.Browser, null);
       target.setInspectedURL('Node.js');
@@ -60,7 +60,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     this.#childConnections = new Map();
 
     parentTarget.registerTargetDispatcher(this);
-    this.#targetAgent.invoke_setDiscoverTargets({discover: true});
+    void this.#targetAgent.invoke_setDiscoverTargets({discover: true});
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.#devicesDiscoveryConfigChanged, this);
@@ -77,7 +77,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
         locations.push({host: parts[0], port: port});
       }
     }
-    this.#targetAgent.invoke_setRemoteLocations({locations});
+    void this.#targetAgent.invoke_setRemoteLocations({locations});
   }
 
   dispose(): void {
@@ -91,7 +91,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
 
   targetCreated({targetInfo}: Protocol.Target.TargetCreatedEvent): void {
     if (targetInfo.type === 'node' && !targetInfo.attached) {
-      this.#targetAgent.invoke_attachToTarget({targetId: targetInfo.targetId, flatten: false});
+      void this.#targetAgent.invoke_attachToTarget({targetId: targetInfo.targetId, flatten: false});
     }
   }
 
@@ -108,7 +108,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     const target = this.#targetManager.createTarget(
         targetInfo.targetId, name, SDK.Target.Type.Node, this.#parentTarget, undefined, undefined, connection);
     this.#childTargets.set(sessionId, target);
-    target.runtimeAgent().invoke_runIfWaitingForDebugger();
+    void target.runtimeAgent().invoke_runIfWaitingForDebugger();
   }
 
   detachedFromTarget({sessionId}: Protocol.Target.DetachedFromTargetEvent): void {
@@ -153,7 +153,7 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
   }
 
   sendRawMessage(message: string): void {
-    this.#targetAgent.invoke_sendMessageToTarget({message, sessionId: this.#sessionId});
+    void this.#targetAgent.invoke_sendMessageToTarget({message, sessionId: this.#sessionId});
   }
 
   async disconnect(): Promise<void> {

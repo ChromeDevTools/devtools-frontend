@@ -272,7 +272,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.styleAdorners = [];
       this.adornersThrottler = new Common.Throttler.Throttler(100);
 
-      this.updateStyleAdorners();
+      void this.updateStyleAdorners();
 
       if (node.isAdFrameNode()) {
         const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
@@ -756,7 +756,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
         if (frameOwnerFrameId) {
           const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
-          Common.Revealer.reveal(frame);
+          void Common.Revealer.reveal(frame);
         }
       });
     }
@@ -1348,7 +1348,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    this.decorationsThrottler.schedule(this.updateDecorationsInternal.bind(this));
+    void this.decorationsThrottler.schedule(this.updateDecorationsInternal.bind(this));
   }
 
   private updateDecorationsInternal(): Promise<void> {
@@ -1730,12 +1730,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           const newNode = titleDOM.createChild('span', 'webkit-html-text-node webkit-html-js-node');
           const text = node.nodeValue();
           newNode.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
-          CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/javascript').then(updateSearchHighlight);
+          void CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/javascript').then(updateSearchHighlight);
         } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'style') {
           const newNode = titleDOM.createChild('span', 'webkit-html-text-node webkit-html-css-node');
           const text = node.nodeValue();
           newNode.textContent = text.replace(/^[\n\r]+|\s+$/g, '');
-          CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/css').then(updateSearchHighlight);
+          void CodeHighlighter.CodeHighlighter.highlightNode(newNode, 'text/css').then(updateSearchHighlight);
         } else {
           UI.UIUtils.createTextChild(titleDOM, '"');
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
@@ -1808,7 +1808,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeType() === Node.DOCUMENT_NODE) {
       return;
     }
-    this.nodeInternal.removeNode();
+    void this.nodeInternal.removeNode();
   }
 
   toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void {
@@ -1840,7 +1840,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const node = this.nodeInternal;
-    node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
+    void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
   }
 
   private copyCSSPath(): void {
@@ -1917,7 +1917,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   private editAsHTML(): void {
     const promise = Common.Revealer.reveal(this.node());
-    promise.then(() => {
+    void promise.then(() => {
       const action = UI.ActionRegistry.ActionRegistry.instance().action('elements.edit-as-html');
       if (!action) {
         return;
@@ -1965,7 +1965,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private updateAdorners(): void {
-    this.adornersThrottler.schedule(this.updateAdornersInternal.bind(this));
+    void this.adornersThrottler.schedule(this.updateAdornersInternal.bind(this));
   }
 
   private updateAdornersInternal(): Promise<void> {

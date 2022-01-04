@@ -141,7 +141,7 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (this.enabled) {
       return;
     }
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
     this.enabled = true;
   }
 
@@ -151,7 +151,7 @@ export class DatabaseModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     this.enabled = false;
     this.databasesInternal = [];
-    this.agent.invoke_disable();
+    void this.agent.invoke_disable();
     this.dispatchEventToListeners(Events.DatabasesRemoved);
   }
 

@@ -351,7 +351,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       return promise;
     };
 
-    this.serializedFileOperation(path, innerSetFileContent);
+    void this.serializedFileOperation(path, innerSetFileContent);
 
     function fileEntryLoaded(this: IsolatedFileSystem, entry: FileEntry): void {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));

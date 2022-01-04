@@ -133,7 +133,7 @@ export class CustomPreviewSection {
     if (this.cachedContent) {
       this.toggleExpand();
     } else {
-      this.loadBody();
+      void this.loadBody();
     }
   }
 
@@ -199,7 +199,7 @@ export class CustomPreviewComponent {
   expandIfPossible(): void {
     const customPreview = this.object.customPreview();
     if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
-      this.customPreviewSection.loadBody();
+      void this.customPreviewSection.loadBody();
     }
   }
 
@@ -209,7 +209,7 @@ export class CustomPreviewComponent {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this));
     }
     contextMenu.appendApplicableItems(this.object);
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private disassemble(): void {

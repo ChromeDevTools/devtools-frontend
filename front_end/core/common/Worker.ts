@@ -48,7 +48,7 @@ export class WorkerWrapper {
   }
 
   postMessage(message: unknown): void {
-    this.#workerPromise.then(worker => {
+    void this.#workerPromise.then(worker => {
       if (!this.#disposed) {
         worker.postMessage(message);
       }
@@ -57,7 +57,7 @@ export class WorkerWrapper {
 
   dispose(): void {
     this.#disposed = true;
-    this.#workerPromise.then(worker => worker.terminate());
+    void this.#workerPromise.then(worker => worker.terminate());
   }
 
   terminate(): void {
@@ -65,13 +65,13 @@ export class WorkerWrapper {
   }
 
   set onmessage(listener: (event: MessageEvent) => void) {
-    this.#workerPromise.then(worker => {
+    void this.#workerPromise.then(worker => {
       worker.onmessage = listener;
     });
   }
 
   set onerror(listener: (event: Event) => void) {
-    this.#workerPromise.then(worker => {
+    void this.#workerPromise.then(worker => {
       worker.onerror = listener;
     });
   }

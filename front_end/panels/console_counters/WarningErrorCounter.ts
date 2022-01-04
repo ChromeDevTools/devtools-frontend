@@ -63,7 +63,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     this.issueCounter.data = {
       clickHandler: (): void => {
         Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.StatusBarIssuesCounter);
-        UI.ViewManager.ViewManager.instance().showView('issues-pane');
+        void UI.ViewManager.ViewManager.instance().showView('issues-pane');
       },
       issuesManager,
       displayMode: IssueCounter.IssueCounter.DisplayMode.OnlyMostImportant,
@@ -106,7 +106,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
 
   private update(): void {
     this.updatingForTest = true;
-    this.throttler.schedule(this.updateThrottled.bind(this));
+    void this.throttler.schedule(this.updateThrottled.bind(this));
   }
 
   get titlesForTesting(): string|null {

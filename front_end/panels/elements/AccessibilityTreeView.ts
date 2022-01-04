@@ -40,7 +40,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
         deferredNode.resolve(domNode => {
           if (domNode) {
             this.inspectedDOMNode = domNode;
-            ElementsPanel.instance().revealAndSelectNode(domNode, true, false);
+            void ElementsPanel.instance().revealAndSelectNode(domNode, true, false);
           }
         });
       }
@@ -134,18 +134,18 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
                   .EventTargetEvent<SDK.AccessibilityModel.EventTypes[SDK.AccessibilityModel.Events.TreeUpdated]>):
       void {
     if (!data.root) {
-      this.renderTree();
+      void this.renderTree();
       return;
     }
     const topFrameId = SDK.FrameManager.FrameManager.instance().getTopFrame()?.id;
     if (data.root?.getFrameId() !== topFrameId) {
-      this.renderTree();
+      void this.renderTree();
       return;
     }
     this.root = data.root;
-    this.accessibilityTreeComponent.collapseAllNodes();
+    void this.accessibilityTreeComponent.collapseAllNodes();
 
-    this.refreshAccessibilityTree();
+    void this.refreshAccessibilityTree();
   }
 
   modelAdded(model: SDK.AccessibilityModel.AccessibilityModel): void {

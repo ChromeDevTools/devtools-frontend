@@ -44,7 +44,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
     await target.evaluate(async () => {
       const registrations = await navigator.serviceWorker.getRegistrations();
       for (const registration of registrations) {
-        registration.unregister();
+        void registration.unregister();
       }
     });
   });
@@ -126,7 +126,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
 
     await doubleClickSourceTreeItem(OPENED_WINDOWS_SELECTOR);
     await waitFor(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);
-    pressKey('ArrowDown');
+    void pressKey('ArrowDown');
 
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('.report-field-value');
@@ -157,7 +157,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
     await target.reload();
     await doubleClickSourceTreeItem(WEB_WORKERS_SELECTOR);
     await waitFor(`${WEB_WORKERS_SELECTOR} + ol li:first-child`);
-    pressKey('ArrowDown');
+    void pressKey('ArrowDown');
 
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('.report-field-value');
@@ -182,7 +182,7 @@ describe('[crbug.com/12]: The Application Tab', async () => {
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
     await doubleClickSourceTreeItem(SERVICE_WORKERS_SELECTOR);
     await waitFor(`${SERVICE_WORKERS_SELECTOR} + ol li:first-child`);
-    pressKey('ArrowDown');
+    void pressKey('ArrowDown');
 
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('.report-field-value');

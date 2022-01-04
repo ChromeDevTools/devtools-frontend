@@ -293,7 +293,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
   private commitContent(content: string): void {
     if (this.projectInternal.canSetFileContent()) {
-      this.projectInternal.setFileContent(this, content, false);
+      void this.projectInternal.setFileContent(this, content, false);
     }
     this.contentCommitted(content, true);
   }
@@ -353,7 +353,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   setContent(content: string, isBase64: boolean): void {
     this.contentEncodedInternal = isBase64;
     if (this.projectInternal.canSetFileContent()) {
-      this.projectInternal.setFileContent(this, content, isBase64);
+      void this.projectInternal.setFileContent(this, content, isBase64);
     }
     this.contentCommitted(content, true);
   }

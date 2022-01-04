@@ -388,7 +388,7 @@ export class ContextMenu extends SubMenu {
 
     function handler(event: Event): void {
       const contextMenu = new ContextMenu(event);
-      contextMenu.show();
+      void contextMenu.show();
     }
   }
 

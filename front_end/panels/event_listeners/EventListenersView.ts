@@ -349,17 +349,17 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       menu.defaultSection().appendCheckboxItem(
           i18nString(UIStrings.passive), this.togglePassiveListener.bind(this), this.eventListenerInternal.passive(),
           !this.eventListenerInternal.canTogglePassive());
-      menu.show();
+      void menu.show();
     });
   }
 
   private removeListener(): void {
     this.removeListenerBar();
-    this.eventListenerInternal.remove();
+    void this.eventListenerInternal.remove();
   }
 
   private togglePassiveListener(): void {
-    this.eventListenerInternal.togglePassive().then(() => this.changeCallback());
+    void this.eventListenerInternal.togglePassive().then(() => this.changeCallback());
   }
 
   private removeListenerBar(): void {

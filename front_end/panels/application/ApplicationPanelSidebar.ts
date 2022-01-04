@@ -469,7 +469,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private resetWebSQL(): void {
     for (const queryView of this.databaseQueryViews.values()) {
       queryView.removeEventListener(DatabaseQueryViewEvents.SchemaUpdated, event => {
-        this.updateDatabaseTables(event);
+        void this.updateDatabaseTables(event);
       }, this);
     }
     this.databaseTableViews.clear();
@@ -630,7 +630,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         view = new DatabaseQueryView(database);
         this.databaseQueryViews.set(database, view);
         view.addEventListener(DatabaseQueryViewEvents.SchemaUpdated, event => {
-          this.updateDatabaseTables(event);
+          void this.updateDatabaseTables(event);
         }, this);
       }
     }
@@ -818,7 +818,7 @@ export class DatabaseTreeElement extends ApplicationPanelTreeElement {
   }
 
   onexpand(): void {
-    this.updateChildren();
+    void this.updateChildren();
   }
 
   async updateChildren(): Promise<void> {
@@ -968,12 +968,12 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   refreshIndexedDB(): void {
     for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel)) {
-      indexedDBModel.refreshDatabaseNames();
+      void indexedDBModel.refreshDatabaseNames();
     }
   }
 
@@ -1067,7 +1067,7 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.refreshIndexeddb), this.refreshIndexedDB.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private refreshIndexedDB(): void {
@@ -1189,7 +1189,7 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), this.clearObjectStore.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private refreshObjectStore(): void {
@@ -1389,7 +1389,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.clear), () => this.domStorage.clear());
-    contextMenu.show();
+    void contextMenu.show();
   }
 }
 
@@ -1423,7 +1423,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clear), () => this.resourcesPanel.clearCookies(this.target, this.cookieDomainInternal));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   onselect(selectedByUser?: boolean): boolean {
@@ -1514,7 +1514,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
 
   targetAdded(target: SDK.Target.Target): void {
     if (target.type() === SDK.Target.Type.Worker || target.type() === SDK.Target.Type.ServiceWorker) {
-      this.workerAdded(target);
+      void this.workerAdded(target);
     }
   }
 
@@ -1619,7 +1619,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   private frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
     const frameTreeElement = this.treeElementForFrameId.get(frame.id);
     if (frameTreeElement) {
-      frameTreeElement.frameNavigated(frame);
+      void frameTreeElement.frameNavigated(frame);
     }
   }
 
@@ -1694,7 +1694,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.treeElementForResource = new Map();
     this.treeElementForWindow = new Map();
     this.treeElementForWorker = new Map();
-    this.frameNavigated(frame);
+    void this.frameNavigated(frame);
     this.view = null;
   }
 
@@ -1780,7 +1780,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   set hovered(hovered: boolean) {
     if (hovered) {
       this.listItemElement.classList.add('hovered');
-      this.frame.highlight();
+      void this.frame.highlight();
     } else {
       this.listItemElement.classList.remove('hovered');
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -1936,7 +1936,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     if (this.resource.isGenerated) {
       this.panel.showCategoryView(i18nString(UIStrings.theContentOfThisDocumentHasBeen), null);
     } else {
-      this.panel.scheduleShowView(this.preparePreview());
+      void this.panel.scheduleShowView(this.preparePreview());
     }
     return false;
   }
@@ -1965,7 +1965,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
   private handleContextMenuEvent(event: MouseEvent): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(this.resource);
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   async revealResource(lineNumber?: number, columnNumber?: number): Promise<void> {

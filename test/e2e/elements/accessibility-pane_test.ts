@@ -10,7 +10,7 @@ describe('Accessibility Pane in the Elements Tab', async function() {
   it('displays the partial accessibility tree', async () => {
     await goToResource('elements/accessibility-simple-page.html');
     await toggleAccessibilityPane();
-    waitForAria('Accessibility Tree');
+    void waitForAria('Accessibility Tree');
   });
 
   it('shows computed name from contents for title element', async () => {

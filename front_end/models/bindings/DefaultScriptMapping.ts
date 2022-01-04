@@ -103,7 +103,7 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     }
     scriptToUISourceCodeMap.set(script, uiSourceCode);
     this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
-    this.#debuggerWorkspaceBinding.updateLocations(script);
+    void this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 
   private discardedScriptSource(event: Common.EventTarget.EventTargetEvent<SDK.Script.Script>): void {

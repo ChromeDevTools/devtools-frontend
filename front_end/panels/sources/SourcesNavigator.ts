@@ -171,7 +171,7 @@ export class FilesNavigatorView extends NavigatorView {
   `);
 
     const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
-    toolbar.appendItemsAtLocation('files-navigator-toolbar').then(() => {
+    void toolbar.appendItemsAtLocation('files-navigator-toolbar').then(() => {
       if (!toolbar.empty()) {
         this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
       }
@@ -194,7 +194,7 @@ export class FilesNavigatorView extends NavigatorView {
   handleContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
-    contextMenu.show();
+    void contextMenu.show();
   }
 }
 
@@ -272,7 +272,7 @@ export class OverridesNavigatorView extends NavigatorView {
     const title = i18nString(UIStrings.selectFolderForOverrides);
     const setupButton = new UI.Toolbar.ToolbarButton(title, 'largeicon-add', title);
     setupButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.setupNewWorkspace();
+      void this.setupNewWorkspace();
     }, this);
     this.toolbar.appendToolbarItem(setupButton);
   }
@@ -338,7 +338,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     const newButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.newSnippet), 'largeicon-add', i18nString(UIStrings.newSnippet));
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '');
+      void this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '');
     });
     toolbar.appendToolbarItem(newButton);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
@@ -360,7 +360,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.createNewSnippet),
         () => this.create(Snippets.ScriptSnippetFileSystem.findSnippetsProject(), ''));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
@@ -372,13 +372,13 @@ export class SnippetsNavigatorView extends NavigatorView {
     contextMenu.editSection().appendItem(
         i18nString(UIStrings.remove), () => uiSourceCode.project().deleteFile(uiSourceCode));
     contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAs), this.handleSaveAs.bind(this, uiSourceCode));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private async handleSaveAs(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     uiSourceCode.commitWorkingCopy();
     const {content} = await uiSourceCode.requestContent();
-    Workspace.FileManager.FileManager.instance().save(uiSourceCode.url(), content || '', true);
+    void Workspace.FileManager.FileManager.instance().save(uiSourceCode.url(), content || '', true);
     Workspace.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
 }
@@ -399,12 +399,12 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'sources.create-snippet':
-        Snippets.ScriptSnippetFileSystem.findSnippetsProject()
+        void Snippets.ScriptSnippetFileSystem.findSnippetsProject()
             .createFile('', null, '')
             .then(uiSourceCode => Common.Revealer.reveal(uiSourceCode));
         return true;
       case 'sources.add-folder-to-workspace':
-        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+        void Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
         return true;
     }
     return false;

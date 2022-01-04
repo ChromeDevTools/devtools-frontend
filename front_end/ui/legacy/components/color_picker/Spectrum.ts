@@ -894,7 +894,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clearPalette), this.deletePaletteColors.bind(this, -1, true));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private deletePaletteColors(colorIndex: number, toRight: boolean): void {
@@ -1231,7 +1231,7 @@ export class PaletteGenerator {
         stylesheetPromises.push(this.processStylesheet(stylesheet));
       }
     }
-    Promise.all(stylesheetPromises)
+    void Promise.all(stylesheetPromises)
         .catch(error => {
           console.error(error);
         })

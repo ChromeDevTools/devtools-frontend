@@ -422,7 +422,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this.onFrameChange, this);
       }
     } else {
-      emulationModel.emulateTouch(this.#touchEnabled, this.#touchMobile);
+      void emulationModel.emulateTouch(this.#touchEnabled, this.#touchMobile);
     }
   }
 
@@ -663,7 +663,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     if (resetPageScaleFactor) {
-      this.#emulationModel.resetPageScaleFactor();
+      void this.#emulationModel.resetPageScaleFactor();
     }
     if (pageWidth || pageHeight || mobile || deviceScaleFactor || scale !== 1 || screenOrientation ||
         forceMetricsOverride) {
@@ -688,9 +688,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       if (screenOrientation) {
         metrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};
       }
-      this.#emulationModel.emulateDevice(metrics);
+      void this.#emulationModel.emulateDevice(metrics);
     } else {
-      this.#emulationModel.emulateDevice(null);
+      void this.#emulationModel.emulateDevice(null);
     }
   }
 
@@ -767,7 +767,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#touchEnabled = touchEnabled;
     this.#touchMobile = mobile;
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      emulationModel.emulateTouch(touchEnabled, mobile);
+      void emulationModel.emulateTouch(touchEnabled, mobile);
     }
   }
 

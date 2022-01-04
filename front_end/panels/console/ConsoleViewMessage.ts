@@ -702,7 +702,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
     } else if (obj.type === 'function') {
       const functionElement = titleElement.createChild('span');
-      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
+      void ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add('object-value-function');
     } else if (obj.subtype === 'trustedtype') {
       titleElement.appendChild(this.formatParameterAsTrustedType(obj));
@@ -734,7 +734,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
   private formatParameterAsFunction(func: SDK.RemoteObject.RemoteObject, includePreview?: boolean): HTMLElement {
     const result = document.createElement('span');
-    SDK.RemoteObject.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
+    void SDK.RemoteObject.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
     return result;
 
     function formatTargetFunction(this: ConsoleViewMessage, targetFunction: SDK.RemoteObject.RemoteObject): void {
@@ -747,7 +747,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         UI.Tooltip.Tooltip.install(note, i18nString(UIStrings.functionWasResolvedFromBound));
       }
       result.addEventListener('contextmenu', this.contextMenuEventFired.bind(this, targetFunction), false);
-      promise.then(() => this.formattedParameterAsFunctionForTest());
+      void promise.then(() => this.formattedParameterAsFunctionForTest());
     }
   }
 
@@ -757,7 +757,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private contextMenuEventFired(obj: SDK.RemoteObject.RemoteObject, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(obj);
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   protected renderPropertyPreviewOrAccessor(
@@ -778,7 +778,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     if (!domModel) {
       return result;
     }
-    domModel.pushObjectAsNodeToFrontend(remoteObject).then(async (node: SDK.DOMModel.DOMNode|null) => {
+    void domModel.pushObjectAsNodeToFrontend(remoteObject).then(async (node: SDK.DOMModel.DOMNode|null) => {
       if (!node) {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
@@ -1552,7 +1552,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       // If we were able to parse the function name from the stack trace line, try to replace it with an expansion of
       // any inline frames.
       const selectableChildIndex = this.selectableChildren.length - 1;
-      this.expandInlineStackFrames(
+      void this
+          .expandInlineStackFrames(
               debuggerModel, prefixWithoutFunction, suffix, link.url, link.lineNumber, link.columnNumber,
               formattedResult, formattedLine)
           .then(modified => {
@@ -1832,7 +1833,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
     newContentElement.appendChild(this.formattedCommand);
 
     if (this.formattedCommand.textContent.length < MaxLengthToIgnoreHighlighter) {
-      CodeHighlighter.CodeHighlighter.highlightNode(this.formattedCommand, 'text/javascript')
+      void CodeHighlighter.CodeHighlighter.highlightNode(this.formattedCommand, 'text/javascript')
           .then(this.updateSearch.bind(this));
     } else {
       this.updateSearch();

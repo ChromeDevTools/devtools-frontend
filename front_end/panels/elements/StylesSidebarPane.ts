@@ -531,7 +531,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
     contextMenu.footerSection().appendItem(
         'inspector-stylesheet', this.createNewRuleInViaInspectorStyleSheet.bind(this));
-    contextMenu.show();
+    void contextMenu.show();
 
     function compareDescriptors(
         descriptor1: {
@@ -609,7 +609,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   onResize(): void {
-    this.resizeThrottler.schedule(this.innerResize.bind(this));
+    void this.resizeThrottler.schedule(this.innerResize.bind(this));
   }
 
   private innerResize(): Promise<void> {
@@ -1001,7 +1001,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     filterContainerElement.appendChild(filterInput);
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.makeToggledGray();
-    toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
+    void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     this.toolbar = toolbar;
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
     const toolbarPaneContent = (toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane') as HTMLElement);
@@ -1616,7 +1616,7 @@ export class StylePropertiesSection {
 
   private onFontEditorButtonClicked(): void {
     if (this.fontEditorSectionManager && this.fontEditorButton) {
-      this.fontEditorSectionManager.showPopover(this.fontEditorButton.element, this.parentPane);
+      void this.fontEditorSectionManager.showPopover(this.fontEditorButton.element, this.parentPane);
     }
   }
 
@@ -1837,7 +1837,7 @@ export class StylePropertiesSection {
       };
       this.queryListElement.append(containerQueryElement);
 
-      this.addContainerForContainerQuery(containerQuery);
+      void this.addContainerForContainerQuery(containerQuery);
     }
   }
 
@@ -1853,8 +1853,8 @@ export class StylePropertiesSection {
       queryName: containerQuery.name,
       onContainerLinkClick: (event): void => {
         event.preventDefault();
-        ElementsPanel.instance().revealAndSelectNode(container.containerNode, true, true);
-        container.containerNode.scrollIntoView();
+        void ElementsPanel.instance().revealAndSelectNode(container.containerNode, true, true);
+        void container.containerNode.scrollIntoView();
       },
     };
 
@@ -2159,7 +2159,7 @@ export class StylePropertiesSection {
       }
       const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
       if (uiLocation) {
-        Common.Revealer.reveal(uiLocation);
+        void Common.Revealer.reveal(uiLocation);
       }
       event.consume(true);
       return;
@@ -2231,7 +2231,7 @@ export class StylePropertiesSection {
     if (cssModel && query.styleSheetId) {
       const setQueryText =
           query instanceof SDK.CSSMedia.CSSMedia ? cssModel.setMediaText : cssModel.setContainerQueryText;
-      setQueryText.call(cssModel, query.styleSheetId, (query.range as TextUtils.TextRange.TextRange), newContent)
+      void setQueryText.call(cssModel, query.styleSheetId, (query.range as TextUtils.TextRange.TextRange), newContent)
           .then(userCallback.bind(this));
     }
   }
@@ -2282,7 +2282,7 @@ export class StylePropertiesSection {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     });
 
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private navigateToSelectorSource(index: number, focus: boolean): void {
@@ -2306,7 +2306,7 @@ export class StylePropertiesSection {
   private static revealSelectorSource(rawLocation: SDK.CSSModel.CSSLocation, focus: boolean): void {
     const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
     if (uiLocation) {
-      Common.Revealer.reveal(uiLocation, !focus);
+      void Common.Revealer.reveal(uiLocation, !focus);
     }
   }
 
@@ -2405,7 +2405,7 @@ export class StylePropertiesSection {
 
     // This gets deleted in finishOperationAndMoveEditor(), which is called both on success and failure.
     this.parentPane.setUserOperation(true);
-    this.setHeaderText(rule, newContent).then(headerTextCommitted.bind(this));
+    void this.setHeaderText(rule, newContent).then(headerTextCommitted.bind(this));
   }
 
   setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void> {
@@ -2563,7 +2563,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     const cssModel = this.parentPane.cssModel();
     const ruleText = this.rulePrefix() + newContent + ' {}';
     if (cssModel) {
-      cssModel.addRule(this.styleSheetId, ruleText, this.ruleLocation).then(onRuleAdded.bind(this));
+      void cssModel.addRule(this.styleSheetId, ruleText, this.ruleLocation).then(onRuleAdded.bind(this));
     }
   }
 
@@ -2753,7 +2753,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     function finishHandler(this: CSSPropertyPrompt, _originalValue: string, _replacementString: string): void {
       // Synthesize property text disregarding any comments, custom whitespace etc.
       if (this.treeElement.nameElement && this.treeElement.valueElement) {
-        this.treeElement.applyStyleText(
+        void this.treeElement.applyStyleText(
             this.treeElement.nameElement.textContent + ': ' + this.treeElement.valueElement.textContent, false);
       }
     }
@@ -3171,7 +3171,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   }
 
   private clicked(): void {
-    StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
+    void StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
   }
 
   private longClicked(event: Event): void {

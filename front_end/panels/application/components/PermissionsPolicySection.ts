@@ -89,7 +89,7 @@ export class PermissionsPolicySection extends HTMLElement {
 
   set data(data: PermissionsPolicySectionData) {
     this.#permissionsPolicySectionData = data;
-    this.#render();
+    void this.#render();
   }
 
   connectedCallback(): void {
@@ -98,7 +98,7 @@ export class PermissionsPolicySection extends HTMLElement {
 
   #toggleShowPermissionsDisallowedDetails(): void {
     this.#permissionsPolicySectionData.showDetails = !this.#permissionsPolicySectionData.showDetails;
-    this.#render();
+    void this.#render();
   }
 
   #renderAllowed(): LitHtml.TemplateResult|{} {

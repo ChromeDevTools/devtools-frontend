@@ -40,7 +40,7 @@ export class ElementsTreeElementHighlighter {
 
     const domNode = event.data;
 
-    this.throttler.schedule(async () => {
+    void this.throttler.schedule(async () => {
       this.highlightNodeInternal(this.pendingHighlightNode);
       this.pendingHighlightNode = null;
     });

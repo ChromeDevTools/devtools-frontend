@@ -35,7 +35,7 @@ export class EmulationModel extends SDKModel<void> {
     this.#overlayModelInternal = target.model(OverlayModel);
     if (this.#overlayModelInternal) {
       this.#overlayModelInternal.addEventListener(Events.InspectModeWillBeToggled, () => {
-        this.updateTouch();
+        void this.updateTouch();
       }, this);
     }
 
@@ -44,14 +44,14 @@ export class EmulationModel extends SDKModel<void> {
         async () =>
             await this.#emulationAgent.invoke_setScriptExecutionDisabled({value: disableJavascriptSetting.get()}));
     if (disableJavascriptSetting.get()) {
-      this.#emulationAgent.invoke_setScriptExecutionDisabled({value: true});
+      void this.#emulationAgent.invoke_setScriptExecutionDisabled({value: true});
     }
 
     const touchSetting = Common.Settings.Settings.instance().moduleSetting('emulation.touch');
     touchSetting.addChangeListener(() => {
       const settingValue = touchSetting.get();
 
-      this.overrideEmulateTouch(settingValue === 'force');
+      void this.overrideEmulateTouch(settingValue === 'force');
     });
 
     const idleDetectionSetting = Common.Settings.Settings.instance().moduleSetting('emulation.idleDetection');
@@ -97,51 +97,51 @@ export class EmulationModel extends SDKModel<void> {
     ]);
     mediaTypeSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('type', mediaTypeSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeatureColorGamutSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('color-gamut', mediaFeatureColorGamutSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeaturePrefersColorSchemeSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('prefers-color-scheme', mediaFeaturePrefersColorSchemeSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeatureForcedColorsSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('forced-colors', mediaFeatureForcedColorsSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeaturePrefersContrastSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('prefers-contrast', mediaFeaturePrefersContrastSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeaturePrefersReducedDataSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
     mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
-      this.updateCssMedia();
+      void this.updateCssMedia();
     });
-    this.updateCssMedia();
+    void this.updateCssMedia();
 
     const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode');
     autoDarkModeSetting.addChangeListener(() => {
       const enabled = autoDarkModeSetting.get();
       mediaFeaturePrefersColorSchemeSetting.setDisabled(enabled);
       mediaFeaturePrefersColorSchemeSetting.set(enabled ? 'dark' : '');
-      this.emulateAutoDarkMode(enabled);
+      void this.emulateAutoDarkMode(enabled);
     });
     if (autoDarkModeSetting.get()) {
       mediaFeaturePrefersColorSchemeSetting.setDisabled(true);
       mediaFeaturePrefersColorSchemeSetting.set('dark');
-      this.emulateAutoDarkMode(true);
+      void this.emulateAutoDarkMode(true);
     }
 
     const visionDeficiencySetting = Common.Settings.Settings.instance().moduleSetting('emulatedVisionDeficiency');
     visionDeficiencySetting.addChangeListener(() => this.emulateVisionDeficiency(visionDeficiencySetting.get()));
     if (visionDeficiencySetting.get()) {
-      this.emulateVisionDeficiency(visionDeficiencySetting.get());
+      void this.emulateVisionDeficiency(visionDeficiencySetting.get());
     }
 
     const localFontsDisabledSetting = Common.Settings.Settings.instance().moduleSetting('localFontsDisabled');
@@ -303,11 +303,11 @@ export class EmulationModel extends SDKModel<void> {
     if (!this.#cssModel) {
       return;
     }
-    this.#cssModel.setLocalFontsEnabled(!disabled);
+    void this.#cssModel.setLocalFontsEnabled(!disabled);
   }
 
   private setDisabledImageTypes(imageTypes: Protocol.Emulation.DisabledImageType[]): void {
-    this.#emulationAgent.invoke_setDisabledImageTypes({imageTypes});
+    void this.#emulationAgent.invoke_setDisabledImageTypes({imageTypes});
   }
 
   async setCPUThrottlingRate(rate: number): Promise<void> {

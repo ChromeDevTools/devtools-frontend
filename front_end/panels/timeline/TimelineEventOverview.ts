@@ -384,7 +384,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
     const drawGeneration = Symbol('drawGeneration');
     this.drawGeneration = drawGeneration;
-    this.imageByFrame(frames[0]).then(image => {
+    void this.imageByFrame(frames[0]).then(image => {
       if (this.drawGeneration !== drawGeneration) {
         return;
       }
@@ -433,7 +433,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
         continue;
       }
       context.rect(x - 0.5, 0.5, imageWidth + 1, imageHeight + 1);
-      this.imageByFrame(frame).then(drawFrameImage.bind(this, x));
+      void this.imageByFrame(frame).then(drawFrameImage.bind(this, x));
     }
     context.strokeStyle = '#ddd';
     context.stroke();

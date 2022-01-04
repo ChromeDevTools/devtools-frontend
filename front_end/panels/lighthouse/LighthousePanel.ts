@@ -100,10 +100,10 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller.addEventListener(Events.PageWarningsChanged, this.refreshWarningsUI.bind(this));
     this.controller.addEventListener(Events.AuditProgressChanged, this.refreshStatusUI.bind(this));
     this.controller.addEventListener(Events.RequestLighthouseStart, _event => {
-      this.startLighthouse();
+      void this.startLighthouse();
     });
     this.controller.addEventListener(Events.RequestLighthouseCancel, _event => {
-      this.cancelLighthouse();
+      void this.cancelLighthouse();
     });
 
     this.renderToolbar();
@@ -268,9 +268,9 @@ export class LighthousePanel extends UI.Panel.Panel {
     // Linkifying requires the target be loaded. Do not block the report
     // from rendering, as this is just an embellishment and the main target
     // could take awhile to load.
-    this.waitForMainTargetLoad().then(() => {
-      LighthouseReportRenderer.linkifyNodeDetails(el);
-      LighthouseReportRenderer.linkifySourceLocationDetails(el);
+    void this.waitForMainTargetLoad().then(() => {
+      void LighthouseReportRenderer.linkifyNodeDetails(el);
+      void LighthouseReportRenderer.linkifySourceLocationDetails(el);
     });
     LighthouseReportRenderer.handleDarkMode(el);
 

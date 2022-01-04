@@ -154,7 +154,7 @@ const processColor = (autoDetectFormat: boolean, text: string): Node => {
 };
 
 const navigateToSource = (cssProperty: SDK.CSSProperty.CSSProperty, event: Event): void => {
-  Common.Revealer.reveal(cssProperty);
+  void Common.Revealer.reveal(cssProperty);
   event.consume(true);
 };
 
@@ -537,7 +537,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.navigateToStyle), () => Common.Revealer.reveal(property));
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private computePropertyTraces(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles):

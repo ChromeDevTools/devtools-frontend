@@ -154,7 +154,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   private recordLiveLocationChange(promise: Promise<void|Location|StackTraceTopFrameLocation|null>): void {
-    promise.then(() => {
+    void promise.then(() => {
       this.#liveLocationPromises.delete(promise);
     });
     this.#liveLocationPromises.add(promise);
@@ -541,7 +541,7 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     }
     this.#updateScheduled = true;
     queueMicrotask(() => {
-      this.updateLocation();
+      void this.updateLocation();
     });
   }
 
@@ -558,7 +558,7 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
         break;
       }
     }
-    this.update();
+    void this.update();
   }
 }
 

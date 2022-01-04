@@ -1110,13 +1110,13 @@ export class DebuggerLanguagePluginManager implements
       // update the #project. It's important to check
       // for the DebuggerModel again, which may disappear
       // in the meantime...
-      rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
+      void rawModuleHandle.addRawModulePromise.then(sourceFileURLs => {
         // The script might have disappeared meanwhile...
         if (script.debuggerModel.scriptForId(script.scriptId) === script) {
           const modelData = this.#debuggerModelToData.get(script.debuggerModel);
           if (modelData) {  // The DebuggerModel could have disappeared meanwhile...
             modelData.addSourceFiles(script, sourceFileURLs);
-            this.#debuggerWorkspaceBinding.updateLocations(script);
+            void this.#debuggerWorkspaceBinding.updateLocations(script);
           }
         }
       });

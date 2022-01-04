@@ -153,7 +153,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
 
   modelAdded(cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel): void {
     if (this.profiling) {
-      cpuProfilerModel.startRecording();
+      void cpuProfilerModel.startRecording();
     }
   }
 

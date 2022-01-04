@@ -98,7 +98,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
         if (target) {
           Host.userMetrics.issuesPanelResourceOpened(this.issue.getCategory(), AffectedItem.Element);
           const deferredDOMNode = new SDK.DOMModel.DeferredDOMNode(target, violatingNodeId);
-          Common.Revealer.reveal(deferredDOMNode);
+          void Common.Revealer.reveal(deferredDOMNode);
         }
       };
 

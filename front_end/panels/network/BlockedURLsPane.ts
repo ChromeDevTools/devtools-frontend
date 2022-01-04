@@ -72,7 +72,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
-      this.update();
+      void this.update();
     }, this);
 
     this.toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
@@ -101,7 +101,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.updateThrottler = new Common.Throttler.Throttler(200);
 
-    this.update();
+    void this.update();
   }
 
   static instance(opts: {
@@ -161,7 +161,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   private toggleEnabled(): void {
     this.manager.setBlockingEnabled(!this.manager.blockingEnabled());
-    this.update();
+    void this.update();
   }
 
   removeItemRequested(pattern: SDK.NetworkManager.BlockedPattern, index: number): void {
@@ -270,7 +270,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
   reset(): void {
     this.blockedCountForUrl.clear();
-    this.updateThrottler.schedule(this.update.bind(this));
+    void this.updateThrottler.schedule(this.update.bind(this));
   }
 
   private onRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
@@ -278,7 +278,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     if (request.wasBlocked()) {
       const count = this.blockedCountForUrl.get(request.url()) || 0;
       this.blockedCountForUrl.set(request.url(), count + 1);
-      this.updateThrottler.schedule(this.update.bind(this));
+      void this.updateThrottler.schedule(this.update.bind(this));
     }
   }
   wasShown(): void {

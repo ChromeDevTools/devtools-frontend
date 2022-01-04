@@ -55,25 +55,25 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.enabled = false;
 
     this.workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {
-      this.onProjectAdded(event.data);
+      void this.onProjectAdded(event.data);
     });
     this.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, event => {
-      this.onProjectRemoved(event.data);
+      void this.onProjectRemoved(event.data);
     });
 
     PersistenceImpl.instance().addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
 
     this.eventDescriptors = [];
-    this.enabledChanged();
+    void this.enabledChanged();
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
   targetAdded(): void {
-    this.updateActiveProject();
+    void this.updateActiveProject();
   }
   targetRemoved(): void {
-    this.updateActiveProject();
+    void this.updateActiveProject();
   }
 
   static instance(opts: {
@@ -118,17 +118,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
             event => {
-              this.uiSourceCodeRenamedListener(event);
+              void this.uiSourceCodeRenamedListener(event);
             }),
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded,
             event => {
-              this.uiSourceCodeAdded(event);
+              void this.uiSourceCodeAdded(event);
             }),
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeRemoved,
             event => {
-              this.uiSourceCodeRemovedListener(event);
+              void this.uiSourceCodeRemovedListener(event);
             }),
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.WorkingCopyCommitted,
@@ -285,7 +285,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private onUISourceCodeWorkingCopyCommitted(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    this.saveUISourceCodeForOverrides(uiSourceCode);
+    void this.saveUISourceCodeForOverrides(uiSourceCode);
   }
 
   canSaveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
@@ -364,7 +364,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private updateInterceptionPatterns(): void {
-    this.updateInterceptionThrottler.schedule(innerUpdateInterceptionPatterns.bind(this));
+    void this.updateInterceptionThrottler.schedule(innerUpdateInterceptionPatterns.bind(this));
 
     function innerUpdateInterceptionPatterns(this: NetworkPersistenceManager): Promise<void> {
       if (!this.activeInternal || !this.projectInternal) {
@@ -499,7 +499,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     const blob = await project.requestFileBlob(fileSystemUISourceCode);
     if (blob) {
-      interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
+      void interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
     }
   }
 }

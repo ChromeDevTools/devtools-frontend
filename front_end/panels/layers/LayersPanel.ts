@@ -119,7 +119,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
 
   willHide(): void {
     if (this.model) {
-      this.model.disable();
+      void this.model.disable();
     }
     super.willHide();
   }
@@ -145,12 +145,12 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     }
     this.model.removeEventListener(Events.LayerTreeChanged, this.onLayerTreeUpdated, this);
     this.model.removeEventListener(Events.LayerPainted, this.onLayerPainted, this);
-    this.model.disable();
+    void this.model.disable();
     this.model = null;
   }
 
   private onLayerTreeUpdated(): void {
-    this.updateThrottler.schedule(this.update.bind(this));
+    void this.updateThrottler.schedule(this.update.bind(this));
   }
 
   private update(): Promise<void> {
@@ -182,7 +182,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
 
   private onPaintProfileRequested({data: selection}:
                                       Common.EventTarget.EventTargetEvent<LayerViewer.LayerViewHost.Selection>): void {
-    this.layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
+    void this.layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (!snapshotWithRect) {
         return;
       }

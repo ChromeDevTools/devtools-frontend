@@ -315,7 +315,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       };
     } finally {
       if (resource.stream) {
-        ioModel.close(resource.stream);
+        void ioModel.close(resource.stream);
       }
     }
   }

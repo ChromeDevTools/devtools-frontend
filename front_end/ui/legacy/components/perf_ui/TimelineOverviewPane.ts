@@ -94,7 +94,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.cursorPosition = mouseEvent.offsetX + target.offsetLeft;
     this.cursorElement.style.left = this.cursorPosition + 'px';
     this.cursorElement.style.visibility = 'visible';
-    this.overviewInfo.setContent(this.buildOverviewInfo());
+    void this.overviewInfo.setContent(this.buildOverviewInfo());
   }
 
   private async buildOverviewInfo(): Promise<DocumentFragment> {
@@ -153,7 +153,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   scheduleUpdate(): void {
-    this.updateThrottler.schedule(async () => {
+    void this.updateThrottler.schedule(async () => {
       this.update();
     });
   }

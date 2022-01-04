@@ -1307,7 +1307,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.headerContextMenuCallback(contextMenu);
       }
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetColumns), this.resetColumnWeights.bind(this));
-      contextMenu.show();
+      void contextMenu.show();
       return;
     }
 
@@ -1368,7 +1368,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
     }
 
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private clickInDataTable(event: Event): void {

@@ -23,7 +23,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
     this.setting = Common.Settings.Settings.instance().moduleSetting('memoryLiveHeapProfile');
     this.setting.addChangeListener(event => event.data ? this.startProfiling() : this.stopProfiling());
     if (this.setting.get()) {
-      this.startProfiling();
+      void this.startProfiling();
     }
   }
 
@@ -41,7 +41,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
   }
 
   modelAdded(model: SDK.HeapProfilerModel.HeapProfilerModel): void {
-    model.startSampling(1e4);
+    void model.startSampling(1e4);
   }
 
   modelRemoved(_model: SDK.HeapProfilerModel.HeapProfilerModel): void {
@@ -85,7 +85,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
     for (const model of SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel)) {
-      model.stopSampling();
+      void model.stopSampling();
     }
     Memory.instance().reset();
   }

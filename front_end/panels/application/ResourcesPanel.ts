@@ -122,7 +122,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.storageViewToolbar.removeToolbarItems();
     this.storageViewToolbar.element.classList.toggle('hidden', true);
     if (view instanceof UI.View.SimpleView) {
-      view.toolbarItems().then(items => {
+      void view.toolbarItems().then(items => {
         items.map(item => this.storageViewToolbar.appendToolbarItem(item));
         this.storageViewToolbar.element.classList.toggle('hidden', !items.length);
       });
@@ -179,7 +179,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     if (!model) {
       return;
     }
-    model.clear(cookieDomain).then(() => {
+    void model.clear(cookieDomain).then(() => {
       if (this.cookieView) {
         this.cookieView.refreshItems();
       }

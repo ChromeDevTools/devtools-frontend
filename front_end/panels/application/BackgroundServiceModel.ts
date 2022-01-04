@@ -22,16 +22,16 @@ export class BackgroundServiceModel extends SDK.SDKModel.SDKModel<EventTypes> im
 
   enable(service: Protocol.BackgroundService.ServiceName): void {
     this.events.set(service, []);
-    this.backgroundServiceAgent.invoke_startObserving({service});
+    void this.backgroundServiceAgent.invoke_startObserving({service});
   }
 
   setRecording(shouldRecord: boolean, service: Protocol.BackgroundService.ServiceName): void {
-    this.backgroundServiceAgent.invoke_setRecording({shouldRecord, service});
+    void this.backgroundServiceAgent.invoke_setRecording({shouldRecord, service});
   }
 
   clearEvents(service: Protocol.BackgroundService.ServiceName): void {
     this.events.set(service, []);
-    this.backgroundServiceAgent.invoke_clearEvents({service});
+    void this.backgroundServiceAgent.invoke_clearEvents({service});
   }
 
   getEvents(service: Protocol.BackgroundService.ServiceName): Protocol.BackgroundService.BackgroundServiceEvent[] {

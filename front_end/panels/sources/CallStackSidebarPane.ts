@@ -169,7 +169,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   }
 
   private update(): void {
-    this.updateThrottler.schedule(() => this.doUpdate());
+    void this.updateThrottler.schedule(() => this.doUpdate());
   }
 
   private async doUpdate(): Promise<void> {
@@ -253,7 +253,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   private refreshItem(item: Item): void {
     this.scheduledForUpdateItems.add(item);
-    this.updateItemThrottler.schedule(async () => {
+    void this.updateItemThrottler.schedule(async () => {
       const items = Array.from(this.scheduledForUpdateItems);
       this.scheduledForUpdateItems.clear();
 
@@ -388,7 +388,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
-    contextMenu.show();
+    void contextMenu.show();
   }
 
   private onClick(event: Event): void {
@@ -414,7 +414,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       }
       this.refreshItem(item);
     } else {
-      Common.Revealer.reveal(uiLocation);
+      void Common.Revealer.reveal(uiLocation);
     }
   }
 

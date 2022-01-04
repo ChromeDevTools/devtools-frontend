@@ -146,7 +146,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       return;
     }
 
-    UI.ViewManager.ViewManager.instance().showView(this.#viewId);
+    void UI.ViewManager.ViewManager.instance().showView(this.#viewId);
     const category = this.#categories.get(breakpoint.category());
     if (category) {
       category.element.expand();

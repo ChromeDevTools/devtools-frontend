@@ -256,7 +256,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     splitWidget.enableShowModeSaving();
     splitWidget.show(this.element);
     this.sidebarLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(async () => {
-      UI.ViewManager.ViewManager.instance().showView('network');
+      void UI.ViewManager.ViewManager.instance().showView('network');
       splitWidget.showBoth();
     }, 'network-sidebar', true);
     const tabbedPane = this.sidebarLocation.tabbedPane();
@@ -404,7 +404,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     updateSidebarToggle();
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, updateSidebarToggle);
     searchToggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.searchToggleClick();
+      void this.searchToggleClick();
     });
     this.panelToolbar.appendToolbarItem(searchToggle);
     this.panelToolbar.appendSeparator();
@@ -430,7 +430,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const networkConditionsButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon);
     networkConditionsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      UI.ViewManager.ViewManager.instance().showView('network.config');
+      void UI.ViewManager.ViewManager.instance().showView('network.config');
     }, this);
     this.panelToolbar.appendToolbarItem(networkConditionsButton);
 
@@ -464,7 +464,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHar), 'largeicon-download');
     exportHarButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.networkLogView.exportAll();
+      void this.networkLogView.exportAll();
     }, this);
     this.panelToolbar.appendToolbarItem(exportHarButton);
   }
@@ -720,7 +720,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   appendApplicableItems(this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object):
       void {
     function reveal(this: NetworkPanel, request: SDK.NetworkRequest.NetworkRequest): void {
-      UI.ViewManager.ViewManager.instance()
+      void UI.ViewManager.ViewManager.instance()
           .showView('network')
           .then(this.networkLogView.resetFilter.bind(this.networkLogView))
           .then(this.revealAndHighlightRequest.bind(this, request));
@@ -942,7 +942,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
       this.tracingModel.dispose();
     }
     this.tracingModel = new SDK.TracingModel.TracingModel(new Bindings.TempFile.TempFileBackingStorage());
-    this.tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
+    void this.tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FilmStripStartedRecording);
   }
@@ -1004,7 +1004,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
           if (selection.rangeCount) {
             queryCandidate = selection.toString().replace(/\r?\n.*/, '');
           }
-          SearchNetworkView.openSearch(queryCandidate);
+          void SearchNetworkView.openSearch(queryCandidate);
           return true;
         }
       }
@@ -1063,7 +1063,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
   static async openSearch(query: string, searchImmediately?: boolean): Promise<Search.SearchView.SearchView> {
     await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
     const searchView = SearchNetworkView.instance();
-    searchView.toggle(query, Boolean(searchImmediately));
+    void searchView.toggle(query, Boolean(searchImmediately));
     return searchView;
   }
 

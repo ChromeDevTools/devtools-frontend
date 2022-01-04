@@ -148,7 +148,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'largeicon-download');
     saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.saveAsFile();
+      void this.saveAsFile();
     });
     topToolbar.appendToolbarItem(saveButton);
 
@@ -474,8 +474,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
       return;
     }
 
-    stream.write(JSON.stringify(this.messages, null, '  '));
-    stream.close();
+    void stream.write(JSON.stringify(this.messages, null, '  '));
+    void stream.close();
   }
 }
 

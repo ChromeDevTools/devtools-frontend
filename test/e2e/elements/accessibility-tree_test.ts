@@ -19,7 +19,7 @@ describe('Accessibility Tree in the Elements Tab', async function() {
     await enableExperiment('fullAccessibilityTree');
     await goToResource('elements/accessibility-iframe-page.html');
     await toggleAccessibilityTree();
-    waitForAria('RootWebArea\xa0"Page with nested iframe" [role="treeitem"]');
+    void waitForAria('RootWebArea\xa0"Page with nested iframe" [role="treeitem"]');
     const iframeDoc = await waitForAria(
         'RootWebArea\xa0"Simple page with aria labeled element"\xa0focusable:\xa0true [role="treeitem"]');
     assertNotNullOrUndefined(iframeDoc);

@@ -55,7 +55,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
 
     this.#controller.addEventListener(Events.RequestOverviewStart, _event => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
-      this.#startOverview();
+      void this.#startOverview();
     }, this);
     this.#controller.addEventListener(Events.OverviewCompleted, this.#overviewCompleted, this);
     this.#controller.addEventListener(Events.Reset, this.#reset, this);

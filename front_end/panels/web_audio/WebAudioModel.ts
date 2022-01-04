@@ -49,7 +49,7 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements 
     if (this.enabled) {
       return;
     }
-    this.agent.invoke_enable();
+    void this.agent.invoke_enable();
     this.enabled = true;
   }
 

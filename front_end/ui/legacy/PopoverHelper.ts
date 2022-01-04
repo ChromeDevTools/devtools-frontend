@@ -197,7 +197,7 @@ export class PopoverHelper {
     if (!request) {
       return;
     }
-    request.show.call(null, popover).then(success => {
+    void request.show.call(null, popover).then(success => {
       if (!success) {
         return;
       }

@@ -34,9 +34,9 @@ describeWithEnvironment('ViewLocation', () => {
   });
 
   it('Adds a tab for a selected view', () => {
-    viewManager.showView('first');
-    viewManager.showView('second');
-    viewManager.showView('third');
+    void viewManager.showView('first');
+    void viewManager.showView('second');
+    void viewManager.showView('third');
 
     assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['first', 'second', 'third']);
   });
@@ -51,7 +51,7 @@ describeWithEnvironment('ViewLocation', () => {
   });
 
   it('Appends a tab correctly', () => {
-    viewManager.showView('fourth');
+    void viewManager.showView('fourth');
     assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), ['third', 'first', 'second', 'fourth']);
   });
 

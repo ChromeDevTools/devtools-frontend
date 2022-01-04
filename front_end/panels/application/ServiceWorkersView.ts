@@ -258,7 +258,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
         if (isOpen) {
           const networkLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('network');
           UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkLocation, false);
-          Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([]));
+          void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([]));
 
           const currentTime = Date.now();
           const timeDifference = currentTime - openedAt;
@@ -564,10 +564,10 @@ export class Section {
 
   scheduleUpdate(): void {
     if (throttleDisabledForDebugging) {
-      this.update();
+      void this.update();
       return;
     }
-    this.throttler.schedule(this.update.bind(this));
+    void this.throttler.schedule(this.update.bind(this));
   }
 
   private targetForVersionId(versionId: string): SDK.Target.Target|null {
@@ -596,7 +596,7 @@ export class Section {
       if (info) {
         this.updateClientInfo(clientLabelText, info);
       }
-      this.manager.target()
+      void this.manager.target()
           .targetAgent()
           .invoke_getTargetInfo({targetId: client})
           .then(this.onClientInfo.bind(this, clientLabelText));
@@ -730,7 +730,7 @@ export class Section {
   }
 
   private updateButtonClicked(): void {
-    this.manager.updateRegistration(this.registration.id);
+    void this.manager.updateRegistration(this.registration.id);
   }
 
   private networkRequestsClicked(): void {
@@ -738,7 +738,7 @@ export class Section {
     const networkTabLocation = applicationTabLocation === 'drawer-view' ? 'panel' : 'drawer-view';
     UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkTabLocation);
 
-    Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+    void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
       {
         filterType: NetworkForward.UIFilter.FilterType.Is,
         filterValue: NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted,
@@ -761,7 +761,7 @@ export class Section {
     if (lastRequest) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           lastRequest, NetworkForward.UIRequestLocation.UIRequestTabs.Timing, {clearFilter: false});
-      Common.Revealer.reveal(requestLocation);
+      void Common.Revealer.reveal(requestLocation);
     }
 
     this.manager.serviceWorkerNetworkRequestsPanelStatus = {
@@ -773,17 +773,17 @@ export class Section {
 
   private push(data: string): void {
     this.pushNotificationDataSetting.set(data);
-    this.manager.deliverPushMessage(this.registration.id, data);
+    void this.manager.deliverPushMessage(this.registration.id, data);
   }
 
   private sync(tag: string): void {
     this.syncTagNameSetting.set(tag);
-    this.manager.dispatchSyncEvent(this.registration.id, tag, true);
+    void this.manager.dispatchSyncEvent(this.registration.id, tag, true);
   }
 
   private periodicSync(tag: string): void {
     this.periodicSyncTagNameSetting.set(tag);
-    this.manager.dispatchPeriodicSyncEvent(this.registration.id, tag);
+    void this.manager.dispatchPeriodicSyncEvent(this.registration.id, tag);
   }
 
   private onClientInfo(element: Element, targetInfoResponse: Protocol.Target.GetTargetInfoResponse): void {
@@ -810,23 +810,23 @@ export class Section {
   }
 
   private activateTarget(targetId: Protocol.Target.TargetID): void {
-    this.manager.target().targetAgent().invoke_activateTarget({targetId});
+    void this.manager.target().targetAgent().invoke_activateTarget({targetId});
   }
 
   private startButtonClicked(): void {
-    this.manager.startWorker(this.registration.scopeURL);
+    void this.manager.startWorker(this.registration.scopeURL);
   }
 
   private skipButtonClicked(): void {
-    this.manager.skipWaiting(this.registration.scopeURL);
+    void this.manager.skipWaiting(this.registration.scopeURL);
   }
 
   private stopButtonClicked(versionId: string): void {
-    this.manager.stopWorker(versionId);
+    void this.manager.stopWorker(versionId);
   }
 
   private inspectButtonClicked(versionId: string): void {
-    this.manager.inspectWorker(versionId);
+    void this.manager.inspectWorker(versionId);
   }
 
   private wrapWidget(container: Element): Element {

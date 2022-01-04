@@ -21,7 +21,7 @@ export class StylePropertyHighlighter {
     for (const section of this.styleSidebarPane.allSections()) {
       for (let treeElement = section.propertiesTreeOutline.firstChild(); treeElement;
            treeElement = treeElement.nextSibling) {
-        treeElement.onpopulate();
+        void treeElement.onpopulate();
       }
     }
 

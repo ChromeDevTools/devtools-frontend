@@ -58,7 +58,7 @@ export class SourceFormatter {
     this.styleMapping = new StyleMapping();
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, event => {
-          this.onUISourceCodeRemoved(event);
+          void this.onUISourceCodeRemoved(event);
         }, this);
   }
 
@@ -93,7 +93,7 @@ export class SourceFormatter {
   private async discardFormatData(formatData: SourceFormatData): Promise<void> {
     objectToFormattingResult.delete(formatData.formattedSourceCode);
     await this.scriptMapping.setSourceMappingEnabled(formatData, false);
-    this.styleMapping.setSourceMappingEnabled(formatData, false);
+    void this.styleMapping.setSourceMappingEnabled(formatData, false);
     this.project.removeFile(formatData.formattedSourceCode.url());
   }
 

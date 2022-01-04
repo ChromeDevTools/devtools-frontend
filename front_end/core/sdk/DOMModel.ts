@@ -409,7 +409,7 @@ export class DOMNode {
   }
 
   setNodeName(name: string, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)): void {
-    this.#agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
+    void this.#agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
       }
@@ -432,7 +432,7 @@ export class DOMNode {
   }
 
   setNodeValue(value: string, callback?: ((arg0: string|null) => void)): void {
-    this.#agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
+    void this.#agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
       }
@@ -448,7 +448,7 @@ export class DOMNode {
   }
 
   setAttribute(name: string, text: string, callback?: ((arg0: string|null) => void)): void {
-    this.#agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
+    void this.#agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
       }
@@ -459,7 +459,7 @@ export class DOMNode {
   }
 
   setAttributeValue(name: string, value: string, callback?: ((arg0: string|null) => void)): void {
-    this.#agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
+    void this.#agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
       }
@@ -491,7 +491,7 @@ export class DOMNode {
       callback(this.children());
       return;
     }
-    this.#agent.invoke_requestChildNodes({nodeId: this.id}).then(response => {
+    void this.#agent.invoke_requestChildNodes({nodeId: this.id}).then(response => {
       callback(response.getError() ? null : this.children());
     });
   }
@@ -507,7 +507,7 @@ export class DOMNode {
   }
 
   setOuterHTML(html: string, callback?: ((arg0: string|null) => void)): void {
-    this.#agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
+    void this.#agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
       if (!response.getError()) {
         this.#domModelInternal.markUndoableState();
       }
@@ -721,7 +721,7 @@ export class DOMNode {
 
   copyTo(targetNode: DOMNode, anchorNode: DOMNode|null, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)):
       void {
-    this.#agent
+    void this.#agent
         .invoke_copyTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
         .then(response => {
@@ -736,7 +736,7 @@ export class DOMNode {
 
   moveTo(targetNode: DOMNode, anchorNode: DOMNode|null, callback?: ((arg0: string|null, arg1: DOMNode|null) => void)):
       void {
-    this.#agent
+    void this.#agent
         .invoke_moveTo(
             {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
         .then(response => {
@@ -885,7 +885,7 @@ export class DOMNode {
     }
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // @ts-expect-error
-    object.callFunction(scrollIntoView);
+    void object.callFunction(scrollIntoView);
     object.release();
     node.highlightForTwoSeconds();
 
@@ -966,7 +966,7 @@ export class DeferredDOMNode {
   }
 
   resolve(callback: (arg0: DOMNode|null) => void): void {
-    this.resolvePromise().then(callback);
+    void this.resolvePromise().then(callback);
   }
 
   async resolvePromise(): Promise<DOMNode|null> {
@@ -1038,11 +1038,11 @@ export class DOMModel extends SDKModel<EventTypes> {
     this.#pendingDocumentRequestPromise = null;
 
     if (!target.suspended()) {
-      this.agent.invoke_enable();
+      void this.agent.invoke_enable();
     }
 
     if (Root.Runtime.experiments.isEnabled('captureNodeCreationStacks')) {
-      this.agent.invoke_setNodeStackTracesEnabled({enable: true});
+      void this.agent.invoke_setNodeStackTracesEnabled({enable: true});
     }
   }
 
@@ -1070,7 +1070,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
 
     this.#lastMutationId = (this.#lastMutationId || 0) + 1;
-    Promise.resolve().then(callObserve.bind(this, node, this.#lastMutationId));
+    void Promise.resolve().then(callObserve.bind(this, node, this.#lastMutationId));
 
     function callObserve(this: DOMModel, node: DOMNode, mutationId: number): void {
       if (!this.hasEventListeners(Events.DOMMutated) || this.#lastMutationId !== mutationId) {
@@ -1208,7 +1208,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   private loadNodeAttributes(): void {
     this.#loadNodeAttributesTimeout = undefined;
     for (const nodeId of this.#attributeLoadNodeIds) {
-      this.agent.invoke_getAttributes({nodeId}).then(({attributes}) => {
+      void this.agent.invoke_getAttributes({nodeId}).then(({attributes}) => {
         if (!attributes) {
           // We are calling loadNodeAttributes asynchronously, it is ok if node is not found.
           return;
@@ -1247,7 +1247,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     const documentWasRequested = this.#document || this.#pendingDocumentRequestPromise;
     this.setDocument(null);
     if (this.parentModel() && documentWasRequested) {
-      this.requestDocument();
+      void this.requestDocument();
     }
   }
 
@@ -1452,7 +1452,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     if (!this.#searchId) {
       return;
     }
-    this.agent.invoke_discardSearchResults({searchId: this.#searchId});
+    void this.agent.invoke_discardSearchResults({searchId: this.#searchId});
     this.#searchId = undefined;
   }
 
@@ -1469,7 +1469,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   markUndoableState(minorChange?: boolean): void {
-    DOMModelUndoStack.instance().markUndoableState(this, minorChange || false);
+    void DOMModelUndoStack.instance().markUndoableState(this, minorChange || false);
   }
 
   async nodeForLocation(x: number, y: number, includeUserAgentShadowDOM: boolean): Promise<DOMNode|null> {

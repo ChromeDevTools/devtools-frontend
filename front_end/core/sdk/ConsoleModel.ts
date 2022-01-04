@@ -423,7 +423,7 @@ export class ConsoleModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     } else {
       const text = (callFunctionResult.object.value as string);
       const message = this.addCommandMessage(executionContext, text);
-      this.evaluateCommandInConsole(executionContext, message, text, /* useCommandLineAPI */ false);
+      void this.evaluateCommandInConsole(executionContext, message, text, /* useCommandLineAPI */ false);
     }
     if (callFunctionResult.object) {
       callFunctionResult.object.release();

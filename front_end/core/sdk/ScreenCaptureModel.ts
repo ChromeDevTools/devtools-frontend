@@ -29,13 +29,13 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
       onVisibilityChanged: (arg0: boolean) => void): void {
     this.#onScreencastFrame = onFrame;
     this.#onScreencastVisibilityChanged = onVisibilityChanged;
-    this.#agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
+    void this.#agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
   }
 
   stopScreencast(): void {
     this.#onScreencastFrame = null;
     this.#onScreencastVisibilityChanged = null;
-    this.#agent.invoke_stopScreencast();
+    void this.#agent.invoke_stopScreencast();
   }
 
   async captureScreenshot(
@@ -69,7 +69,7 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
   }
 
   screencastFrame({data, metadata, sessionId}: Protocol.Page.ScreencastFrameEvent): void {
-    this.#agent.invoke_screencastFrameAck({sessionId});
+    void this.#agent.invoke_screencastFrameAck({sessionId});
     if (this.#onScreencastFrame) {
       this.#onScreencastFrame.call(null, data, metadata);
     }

@@ -80,7 +80,7 @@ export class IssueLinkIcon extends HTMLElement {
     } else {
       this.#issueTitlePromise = this.#fetchIssueTitle();
     }
-    this.#render();
+    void this.#render();
   }
 
   async #fetchIssueTitle(): Promise<void> {
@@ -133,7 +133,7 @@ export class IssueLinkIcon extends HTMLElement {
       return;  // Only handle left-click for now.
     }
     if (this.#issue) {
-      this.#reveal(this.#issue);
+      void this.#reveal(this.#issue);
     }
     this.#additionalOnClickAction?.();
   }

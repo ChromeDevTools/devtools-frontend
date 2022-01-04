@@ -33,7 +33,7 @@ export class WorkerMainImpl implements Common.Runnable.Runnable {
   }
 
   async run(): Promise<void> {
-    SDK.Connections.initMainConnection(async () => {
+    void SDK.Connections.initMainConnection(async () => {
       if (await SDK.TargetManager.TargetManager.instance().maybeAttachInitialTarget()) {
         return;
       }

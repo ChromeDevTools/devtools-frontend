@@ -82,7 +82,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     if (!position) {
       return;
     }
-    Common.Revealer.reveal(uiSourceCode.uiLocation(position.line - 1, position.column - 1));
+    void Common.Revealer.reveal(uiSourceCode.uiLocation(position.line - 1, position.column - 1));
   }
 
   updateGoToLineStrings(query: string): void {

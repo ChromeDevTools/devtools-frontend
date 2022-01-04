@@ -99,12 +99,12 @@ function linkifyIcon(iconType: string, title: string, eventHandler: () => (void|
   span.appendChild(icon);
   span.addEventListener('click', event => {
     event.consume(true);
-    eventHandler();
+    void eventHandler();
   });
   span.addEventListener('keydown', event => {
     if (event.key === 'Enter') {
       event.consume(true);
-      eventHandler();
+      void eventHandler();
     }
   });
   return span;
@@ -133,7 +133,7 @@ async function maybeCreateLinkToElementsPanel(opener: Protocol.Page.FrameId|SDK.
   linkElement.insertBefore(label, linkElement.firstChild);
   linkElement.addEventListener('mouseenter', () => {
     if (openerFrame) {
-      openerFrame.highlight();
+      void openerFrame.highlight();
     }
   });
   linkElement.addEventListener('mouseleave', () => {
@@ -181,7 +181,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this.reportView.setTitle(this.buildTitle());
     this.URLFieldValue.textContent = this.targetInfo.url;
     this.hasDOMAccessValue.textContent = booleanToYesNo(this.targetInfo.canAccessOpener);
-    this.maybeDisplayOpenerFrame();
+    void this.maybeDisplayOpenerFrame();
   }
 
   async maybeDisplayOpenerFrame(): Promise<void> {

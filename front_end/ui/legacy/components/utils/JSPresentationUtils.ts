@@ -83,7 +83,7 @@ function populateContextMenu(link: Element, event: Event): void {
     }
   }
   contextMenu.appendApplicableItems(event);
-  contextMenu.show();
+  void contextMenu.show();
 }
 
 export function buildStackTraceRows(

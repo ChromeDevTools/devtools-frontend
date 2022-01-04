@@ -52,7 +52,7 @@ export class Context {
   private dispatchFlavorChange<T>(flavorType: ConstructorFn<T>, flavorValue: T|null): void {
     for (const extension of getRegisteredListeners()) {
       if (extension.contextTypes().includes(flavorType)) {
-        extension.loadListener().then(instance => instance.flavorChanged(flavorValue));
+        void extension.loadListener().then(instance => instance.flavorChanged(flavorValue));
       }
     }
     const dispatcher = this.eventDispatchers.get(flavorType);

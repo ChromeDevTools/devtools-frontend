@@ -640,7 +640,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
         throw new Error('Unable to initialize CSS Overview, missing models');
       }
       view = new ElementDetailsView(this.#controller, this.#domModel, this.#cssModel, this.#linkifier);
-      view.populateNodes(payload.nodes);
+      void view.populateNodes(payload.nodes);
       this.#viewMap.set(id, view);
     }
 
@@ -815,7 +815,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   }
 
   setOverviewData(data: OverviewData): void {
-    this.#render(data);
+    void this.#render(data);
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1063,7 +1063,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         throw new Error('Node entry is missing a related frontend node.');
       }
 
-      Common.Linkifier.Linkifier.linkify(frontendNode).then(link => {
+      void Common.Linkifier.Linkifier.linkify(frontendNode).then(link => {
         cell.textContent = '';
         (link as HTMLElement).dataset.backendNodeId = frontendNode.backendNodeId().toString();
         cell.appendChild(link);

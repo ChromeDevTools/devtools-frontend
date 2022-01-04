@@ -198,7 +198,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         Host.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     function showPanel(this: InspectorView, {data: panelName}: Common.EventTarget.EventTargetEvent<string>): void {
-      this.showPanel(panelName);
+      void this.showPanel(panelName);
     }
 
     if (shouldShowLocaleInfobar()) {
@@ -375,7 +375,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         const panelName = this.tabbedPane.tabIds()[panelIndex];
         if (panelName) {
           if (!Dialog.hasInstance() && !this.currentPanelLocked) {
-            this.showPanel(panelName);
+            void this.showPanel(panelName);
           }
           event.consume(true);
         }

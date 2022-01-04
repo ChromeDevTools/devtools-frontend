@@ -132,11 +132,11 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   setPlaybackRate(playbackRate: number): void {
     this.playbackRate = playbackRate;
-    this.agent.invoke_setPlaybackRate({playbackRate});
+    void this.agent.invoke_setPlaybackRate({playbackRate});
   }
 
   releaseAnimations(animations: string[]): void {
-    this.agent.invoke_releaseAnimations({animations});
+    void this.agent.invoke_releaseAnimations({animations});
   }
 
   async suspendModel(): Promise<void> {
@@ -257,7 +257,7 @@ export class AnimationImpl {
   }
 
   setTiming(duration: number, delay: number): void {
-    this.#sourceInternal.node().then(node => {
+    void this.#sourceInternal.node().then(node => {
       if (!node) {
         throw new Error('Unable to find node');
       }
@@ -265,7 +265,7 @@ export class AnimationImpl {
     });
     this.#sourceInternal.durationInternal = duration;
     this.#sourceInternal.delayInternal = delay;
-    this.#animationModel.agent.invoke_setTiming({animationId: this.id(), duration, delay});
+    void this.#animationModel.agent.invoke_setTiming({animationId: this.id(), duration, delay});
   }
 
   private updateNodeStyle(duration: number, delay: number, node: SDK.DOMModel.DOMNode): void {
@@ -476,7 +476,7 @@ export class AnimationGroup {
   }
 
   seekTo(currentTime: number): void {
-    this.#animationModel.agent.invoke_seekAnimations({animations: this.animationIds(), currentTime});
+    void this.#animationModel.agent.invoke_seekAnimations({animations: this.animationIds(), currentTime});
   }
 
   paused(): boolean {
@@ -488,7 +488,7 @@ export class AnimationGroup {
       return;
     }
     this.#pausedInternal = paused;
-    this.#animationModel.agent.invoke_setPaused({animations: this.animationIds(), paused});
+    void this.#animationModel.agent.invoke_setPaused({animations: this.animationIds(), paused});
   }
 
   currentTimePromise(): Promise<number> {

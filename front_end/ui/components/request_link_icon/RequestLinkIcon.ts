@@ -86,7 +86,7 @@ export class RequestLinkIcon extends HTMLElement {
     if (!this.#request && data.affectedRequest) {
       this.#requestResolvedPromise = this.#resolveRequest(data.affectedRequest.requestId);
     }
-    this.#render();
+    void this.#render();
   }
 
   connectedCallback(): void {
@@ -147,11 +147,11 @@ export class RequestLinkIcon extends HTMLElement {
     if (this.#highlightHeader) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(
           linkedRequest, this.#highlightHeader.section, this.#highlightHeader.name);
-      this.#reveal(requestLocation);
+      void this.#reveal(requestLocation);
     } else {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           linkedRequest, this.#networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.Headers);
-      this.#reveal(requestLocation);
+      void this.#reveal(requestLocation);
     }
     this.#additionalOnClickAction?.();
   }

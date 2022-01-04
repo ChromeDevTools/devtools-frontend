@@ -76,7 +76,7 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
         }
       }
 
-      target.runtimeAgent().invoke_runIfWaitingForDebugger();
+      void target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
 
     new SourcesPanelIndicator();
@@ -137,7 +137,7 @@ export class FocusDebuggeeActionDelegate implements UI.ActionRegistration.Action
     if (!mainTarget) {
       return false;
     }
-    mainTarget.pageAgent().invoke_bringToFront();
+    void mainTarget.pageAgent().invoke_bringToFront();
     return true;
   }
 }
@@ -227,8 +227,8 @@ export class BackendSettingsSync implements SDK.TargetManager.Observer {
     if (target.type() !== SDK.Target.Type.Frame || target.parentTarget()) {
       return;
     }
-    target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.#adBlockEnabledSetting.get()});
-    target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this.#emulatePageFocusSetting.get()});
+    void target.pageAgent().invoke_setAdBlockingEnabled({enabled: this.#adBlockEnabledSetting.get()});
+    void target.emulationAgent().invoke_setFocusEmulationEnabled({enabled: this.#emulatePageFocusSetting.get()});
   }
 
   #updateAutoAttach(): void {

@@ -111,7 +111,7 @@ export class DatabaseTableView extends UI.View.SimpleView {
   }
 
   update(): void {
-    this.database.executeSql(
+    void this.database.executeSql(
         'SELECT rowid, * FROM "' + this.escapeTableName(this.tableName) + '"', this.queryFinished.bind(this),
         this.queryError.bind(this));
   }

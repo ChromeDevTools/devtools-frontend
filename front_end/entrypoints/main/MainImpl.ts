@@ -118,7 +118,7 @@ export class MainImpl {
 
   constructor() {
     MainImpl.instanceForTest = this;
-    this.#loaded();
+    void this.#loaded();
   }
 
   static time(label: string): void {
@@ -152,7 +152,7 @@ export class MainImpl {
           Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
     }
 
-    this.#createAppUI();
+    void this.#createAppUI();
   }
 
   #initializeGlobalsForLayoutTests(): void {
@@ -545,7 +545,7 @@ export class MainImpl {
     if (toggleSearchNodeAction) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode, () => {
-            toggleSearchNodeAction.execute();
+            void toggleSearchNodeAction.execute();
           }, this);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -601,7 +601,7 @@ export class MainImpl {
             return;
           }
           Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(changeListener);
-          PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run();
+          void PerfUI.LiveHeapProfile.LiveHeapProfile.instance().run();
         };
         Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(changeListener);
       }
@@ -629,14 +629,14 @@ export class MainImpl {
     const {url, lineNumber, columnNumber} = event.data;
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (uiSourceCode) {
-      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      void Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
       return;
     }
 
     function listener(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
       const uiSourceCode = event.data;
       if (uiSourceCode.url() === url) {
-        Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+        void Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
         Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
             Workspace.Workspace.Events.UISourceCodeAdded, listener);
       }
@@ -856,7 +856,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     const button = (this.#itemInternal.element as HTMLButtonElement);
 
     function setDockSide(side: UI.DockController.DockState): void {
-      UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
+      void UI.DockController.DockController.instance().once(UI.DockController.Events.AfterDockSideChanged).then(() => {
         button.focus();
       });
       UI.DockController.DockController.instance().setDockSide(side);
@@ -892,7 +892,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       if (id === 'issues-pane') {
         moreTools.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
-          UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
+          void UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
         });
         continue;
       }
@@ -908,13 +908,13 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         const previewIcon = new IconButton.Icon.Icon();
         previewIcon.data = {iconName: 'ic_preview_feature', color: 'var(--icon-color)', width: '14px', height: '14px'};
         moreTools.defaultSection().appendItem(title, () => {
-          UI.ViewManager.ViewManager.instance().showView(id, true, false);
+          void UI.ViewManager.ViewManager.instance().showView(id, true, false);
         }, /* disabled=*/ false, previewIcon);
         continue;
       }
 
       moreTools.defaultSection().appendItem(title, () => {
-        UI.ViewManager.ViewManager.instance().showView(id, true, false);
+        void UI.ViewManager.ViewManager.instance().showView(id, true, false);
       });
     }
 
@@ -961,7 +961,7 @@ export class PauseListener {
     const debuggerModel = event.data;
     const debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());
-    Common.Revealer.reveal(debuggerPausedDetails);
+    void Common.Revealer.reveal(debuggerPausedDetails);
   }
 }
 

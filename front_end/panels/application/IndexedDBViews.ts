@@ -215,7 +215,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
     const ok = await UI.UIUtils.ConfirmDialog.show(
         i18nString(UIStrings.pleaseConfirmDeleteOfSDatabase, {PH1: this.database.databaseId.name}), this.element);
     if (ok) {
-      this.model.deleteDatabase(this.database.databaseId);
+      void this.model.deleteDatabase(this.database.databaseId);
     }
   }
   wasShown(): void {
@@ -268,12 +268,12 @@ export class IDBDataView extends UI.View.SimpleView {
 
     this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
     this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.deleteButtonClicked(null);
+      void this.deleteButtonClicked(null);
     });
 
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'largeicon-clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.clearButtonClicked();
+      void this.clearButtonClicked();
     }, this);
 
     this.needsRefresh = new UI.Toolbar.ToolbarItem(
@@ -426,7 +426,7 @@ export class IDBDataView extends UI.View.SimpleView {
         if (!node.valueObjectPresentation) {
           return;
         }
-        node.valueObjectPresentation.objectTreeElement().expandRecursively();
+        void node.valueObjectPresentation.objectTreeElement().expandRecursively();
       });
       contextMenu.revealSection().appendItem(i18nString(UIStrings.collapse), () => {
         if (!node.valueObjectPresentation) {
@@ -527,7 +527,7 @@ export class IDBDataView extends UI.View.SimpleView {
       this.model.loadObjectStoreData(
           this.databaseId, this.objectStore.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
     }
-    this.model.getMetadata(this.databaseId, this.objectStore).then(this.updateSummaryBar.bind(this));
+    void this.model.getMetadata(this.databaseId, this.objectStore).then(this.updateSummaryBar.bind(this));
   }
 
   private updateSummaryBar(metadata: ObjectStoreMetadata|null): void {

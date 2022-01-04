@@ -167,7 +167,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.dialog.contentElement.style.setProperty('border-radius', '4px');
     this.show(this.dialog.contentElement);
     UI.ARIAUtils.setExpanded(this.contentElement, true);
-    this.dialog.once(UI.Dialog.Events.Hidden).then(() => {
+    void this.dialog.once(UI.Dialog.Events.Hidden).then(() => {
       this.dispatchEventToListeners(Events.Hidden);
     });
     // @ts-ignore
@@ -321,7 +321,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.query = query;
     this.inputBoxElement.focus();
     this.inputBoxElement.setText(query);
-    this.queryChanged();
+    void this.queryChanged();
     this.scheduleFilter();
   }
 
@@ -486,7 +486,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 
   private onInput(event: TextPrompt.TextPrompt.PromptInputEvent): void {
     this.query = event.data;
-    this.queryChanged();
+    void this.queryChanged();
     this.scheduleFilter();
   }
 

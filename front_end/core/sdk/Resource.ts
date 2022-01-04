@@ -176,7 +176,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return new Promise(resolve => {
       this.#pendingContentCallbacks.push((resolve as (arg0: Object|null) => void));
       if (!this.#requestInternal || this.#requestInternal.finished) {
-        this.innerRequestContent();
+        void this.innerRequestContent();
       }
     });
   }
@@ -210,7 +210,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
       this.#requestInternal.removeEventListener(Events.FinishedLoading, this.requestFinished, this);
     }
     if (this.#pendingContentCallbacks.length) {
-      this.innerRequestContent();
+      void this.innerRequestContent();
     }
   }
 

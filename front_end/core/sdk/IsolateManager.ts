@@ -43,7 +43,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       throw new Error('Observer can only be registered once');
     }
     if (!this.#observers.size) {
-      this.poll();
+      void this.poll();
     }
     this.#observers.add(observer);
     for (const isolate of this.#isolatesInternal.values()) {
@@ -59,7 +59,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   modelAdded(model: RuntimeModel): void {
-    this.modelAddedInternal(model);
+    void this.modelAddedInternal(model);
   }
 
   private async modelAddedInternal(model: RuntimeModel): Promise<void> {

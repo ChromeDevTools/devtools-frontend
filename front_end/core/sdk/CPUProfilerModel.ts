@@ -66,7 +66,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
     this.#profilerAgent = target.profilerAgent();
     this.#preciseCoverageDeltaUpdateCallback = null;
     target.registerProfilerDispatcher(this);
-    this.#profilerAgent.invoke_enable();
+    void this.#profilerAgent.invoke_enable();
     this.#debuggerModelInternal = (target.model(DebuggerModel) as DebuggerModel);
   }
 
@@ -118,7 +118,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   startRecording(): Promise<unknown> {
     this.#isRecording = true;
     const intervalUs = 100;
-    this.#profilerAgent.invoke_setSamplingInterval({interval: intervalUs});
+    void this.#profilerAgent.invoke_setSamplingInterval({interval: intervalUs});
     return this.#profilerAgent.invoke_start();
   }
 

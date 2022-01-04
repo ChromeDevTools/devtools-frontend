@@ -86,7 +86,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     if (this.mode === Protocol.Overlay.InspectMode.None) {
       return;
     }
-    overlayModel.setInspectMode(this.mode, this.showDetailedInspectTooltipSetting.get());
+    void overlayModel.setInspectMode(this.mode, this.showDetailedInspectTooltipSetting.get());
   }
 
   modelRemoved(_overlayModel: SDK.OverlayModel.OverlayModel): void {
@@ -118,7 +118,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     }
     this.mode = mode;
     for (const overlayModel of SDK.TargetManager.TargetManager.instance().models(SDK.OverlayModel.OverlayModel)) {
-      overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
+      void overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
     }
     if (this.toggleSearchAction) {
       this.toggleSearchAction.setToggled(this.isInInspectElementMode());
@@ -137,7 +137,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
   }
 
   private inspectNode(node: SDK.DOMModel.DOMNode): void {
-    ElementsPanel.instance().revealAndSelectNode(node, true, true);
+    void ElementsPanel.instance().revealAndSelectNode(node, true, true);
   }
 
   private showDetailedInspectTooltipChanged(): void {

@@ -153,7 +153,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     if (!this.#hasRenderedAtLeastOnce) {
       this.#selectedTreeNode = this.#treeData[0];
     }
-    this.#render();
+    void this.#render();
   }
 
   /**
@@ -298,7 +298,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       event.stopPropagation();
       if (isExpandableNode(node)) {
         this.#setNodeExpandedState(node, !this.#nodeIsExpanded(node));
-        this.#render();
+        void this.#render();
       }
     };
   }
@@ -312,7 +312,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     if (nodeClickExpandsOrContracts && node && isExpandableNode(node)) {
       this.#setNodeExpandedState(node, !this.#nodeIsExpanded(node));
     }
-    this.#focusTreeNode(domNode);
+    void this.#focusTreeNode(domNode);
   }
 
   async #focusTreeNode(domNode: HTMLLIElement): Promise<void> {
@@ -323,7 +323,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     this.#selectedTreeNode = treeNode;
     await this.#render();
     this.dispatchEvent(new ItemSelectedEvent(treeNode));
-    coordinator.write('DOMNode focus', () => {
+    void coordinator.write('DOMNode focus', () => {
       domNode.focus();
     });
   }
@@ -332,7 +332,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     if (key === 'Home') {
       const firstRootNode = this.#shadow.querySelector<HTMLLIElement>('ul[role="tree"] > li[role="treeitem"]');
       if (firstRootNode) {
-        this.#focusTreeNode(firstRootNode);
+        void this.#focusTreeNode(firstRootNode);
       }
     } else if (key === 'End') {
       /**
@@ -347,7 +347,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       const allTreeItems = this.#shadow.querySelectorAll<HTMLLIElement>('li[role="treeitem"]');
       const lastTreeItem = allTreeItems[allTreeItems.length - 1];
       if (lastTreeItem) {
-        this.#focusTreeNode(lastTreeItem);
+        void this.#focusTreeNode(lastTreeItem);
       }
     }
   }
@@ -376,7 +376,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     if (isExpandableNode(currentTreeNode)) {
       const currentExpandedState = this.#nodeIsExpanded(currentTreeNode);
       this.#setNodeExpandedState(currentTreeNode, !currentExpandedState);
-      this.#render();
+      void this.#render();
     }
   }
 
@@ -399,7 +399,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
   #focusPendingNode(domNode: HTMLLIElement): void {
     this.#nodeIdPendingFocus = null;
-    this.#focusTreeNode(domNode);
+    void this.#focusTreeNode(domNode);
   }
 
   #isSelectedNode(node: TreeNode<TreeNodeDataType>): boolean {

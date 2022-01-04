@@ -103,7 +103,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
     const copyButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyToClipboard), 'largeicon-copy');
     copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
-      this.copySelectedViewToClipboard();
+      void this.copySelectedViewToClipboard();
     }, this);
     this.toolbar.appendToolbarItem(copyButton);
 

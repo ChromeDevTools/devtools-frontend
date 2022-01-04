@@ -354,7 +354,7 @@ export class HeapSnapshotSortableDataGrid extends
       const child = (children[i] as HeapSnapshotGridNode);
       this.appendChildAfterSorting(child);
       if (child.expanded) {
-        child.sort();
+        void child.sort();
       }
     }
     this.recursiveSortingLeave();
@@ -675,7 +675,7 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     const node =
         new HeapSnapshotModel.HeapSnapshotModel.Node(-1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
     this.setRootNode(this.createRootNode(snapshot, node));
-    (this.rootNode() as HeapSnapshotGridNode).sort();
+    void (this.rootNode() as HeapSnapshotGridNode).sort();
   }
 
   createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node): HeapSnapshotObjectNode {
@@ -686,7 +686,7 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
   sortingChanged(): void {
     const rootNode = this.rootNode();
     if (rootNode.hasChildren()) {
-      (rootNode as HeapSnapshotGridNode).sort();
+      void (rootNode as HeapSnapshotGridNode).sort();
     }
   }
 }
@@ -829,24 +829,24 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
   async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     if (this.profileIndex === -1) {
-      this.populateChildren();
+      void this.populateChildren();
     }
 
     if (this.objectIdToSelect) {
-      this.revealObjectByHeapSnapshotId(this.objectIdToSelect);
+      void this.revealObjectByHeapSnapshotId(this.objectIdToSelect);
       this.objectIdToSelect = null;
     }
   }
 
   setSelectionRange(minNodeId: number, maxNodeId: number): void {
     this.nodeFilterInternal = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter(minNodeId, maxNodeId);
-    this.populateChildren(this.nodeFilterInternal);
+    void this.populateChildren(this.nodeFilterInternal);
   }
 
   setAllocationNodeId(allocationNodeId: number): void {
     this.nodeFilterInternal = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
     this.nodeFilterInternal.allocationNodeId = allocationNodeId;
-    this.populateChildren(this.nodeFilterInternal);
+    void this.populateChildren(this.nodeFilterInternal);
   }
 
   aggregatesReceived(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter, aggregates: {
@@ -854,7 +854,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
   }): void {
     this.filterInProgress = null;
     if (this.nextRequestedFilter && this.snapshot) {
-      this.snapshot.aggregatesWithFilter(this.nextRequestedFilter)
+      void this.snapshot.aggregatesWithFilter(this.nextRequestedFilter)
           .then(this.aggregatesReceived.bind(this, this.nextRequestedFilter));
       this.filterInProgress = this.nextRequestedFilter;
       this.nextRequestedFilter = null;
@@ -897,7 +897,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
       this.nodeFilterInternal = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter(minNodeId, maxNodeId);
     }
 
-    this.populateChildren(this.nodeFilterInternal);
+    void this.populateChildren(this.nodeFilterInternal);
   }
 }
 
@@ -964,7 +964,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
       this.dispatchEventToListeners(HeapSnapshotSortableDataGridEvents.SortingComplete);
       return;
     }
-    this.populateChildren();
+    void this.populateChildren();
   }
 
   async populateChildren(): Promise<void> {

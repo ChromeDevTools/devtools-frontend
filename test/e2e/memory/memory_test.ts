@@ -260,8 +260,8 @@ describe('The Memory Panel', async function() {
     const {frontend} = getBrowserAndPages();
     await goToResource('memory/allocations.html');
     await navigateToMemoryTab();
-    takeAllocationProfile(frontend);
-    changeAllocationSampleViewViaDropdown('Chart');
+    void takeAllocationProfile(frontend);
+    void changeAllocationSampleViewViaDropdown('Chart');
     await waitFor('canvas.flame-chart-canvas');
   });
 
@@ -269,7 +269,7 @@ describe('The Memory Panel', async function() {
     const {frontend} = getBrowserAndPages();
     await goToResource('memory/allocations.html');
     await navigateToMemoryTab();
-    takeAllocationTimelineProfile(frontend, {recordStacks: true});
+    void takeAllocationTimelineProfile(frontend, {recordStacks: true});
     await changeViewViaDropdown('Allocation');
 
     const header = await waitForElementWithTextContent('Live Count');
@@ -283,7 +283,7 @@ describe('The Memory Panel', async function() {
     const {frontend} = getBrowserAndPages();
     await goToResource('memory/allocations.html');
     await navigateToMemoryTab();
-    takeAllocationTimelineProfile(frontend, {recordStacks: false});
+    void takeAllocationTimelineProfile(frontend, {recordStacks: false});
     const dropdown = await waitFor('select[aria-label="Perspective"]');
     await waitForNoElementsWithTextContent('Allocation', dropdown);
   });

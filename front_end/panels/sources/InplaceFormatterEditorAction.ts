@@ -101,10 +101,10 @@ export class InplaceFormatterEditorAction implements EditorAction {
     }
 
     if (uiSourceCode.isDirty()) {
-      this.contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
+      void this.contentLoaded(uiSourceCode, uiSourceCode.workingCopy());
     } else {
-      uiSourceCode.requestContent().then(deferredContent => {
-        this.contentLoaded((uiSourceCode as Workspace.UISourceCode.UISourceCode), deferredContent.content || '');
+      void uiSourceCode.requestContent().then(deferredContent => {
+        void this.contentLoaded((uiSourceCode as Workspace.UISourceCode.UISourceCode), deferredContent.content || '');
       });
     }
   }

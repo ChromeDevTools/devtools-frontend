@@ -353,7 +353,7 @@ export class CSSStyleDeclaration {
   }
 
   insertPropertyAt(index: number, name: string, value: string, userCallback?: ((arg0: boolean) => void)): void {
-    this.newBlankProperty(index).setText(name + ': ' + value + ';', false, true).then(userCallback);
+    void this.newBlankProperty(index).setText(name + ': ' + value + ';', false, true).then(userCallback);
   }
 
   appendProperty(name: string, value: string, userCallback?: ((arg0: boolean) => void)): void {

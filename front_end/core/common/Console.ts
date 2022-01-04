@@ -50,7 +50,7 @@ export class Console extends ObjectWrapper<EventTypes> {
   }
 
   show(): void {
-    this.showPromise();
+    void this.showPromise();
   }
 
   showPromise(): Promise<void> {

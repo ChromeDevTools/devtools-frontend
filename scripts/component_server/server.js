@@ -150,8 +150,8 @@ function createServerIndexFile(componentNames) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
-      <link rel="stylesheet" href="/front_end/ui/legacy/themeColors.css" />
-      <link rel="stylesheet" href="/front_end/ui/components/docs/component_docs_styles.css" />
+      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/themeColors.css" />
+      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/components/docs/component_docs_styles.css" />
     </head>
     <body id="index-page">
       <h1>DevTools components</h1>

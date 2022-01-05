@@ -312,7 +312,7 @@ export class ThemeSupport {
    *
    * @deprecated
    */
-  patchColorText(text: string, colorUsage: number): string {
+  private patchColorText(text: string, colorUsage: number): string {
     const color = Common.Color.Color.parse(text);
     if (!color) {
       return text;
@@ -331,7 +331,7 @@ export class ThemeSupport {
    *
    * @deprecated
    */
-  patchColor(color: Common.Color.Color, colorUsage: number): Common.Color.Color {
+  private patchColor(color: Common.Color.Color, colorUsage: number): Common.Color.Color {
     const hsla = color.hsla();
     this.patchHSLA(hsla, colorUsage);
 

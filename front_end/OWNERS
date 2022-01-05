@@ -1,6 +1,4 @@
 file://config/owner/INFRA_OWNERS
-per-file *_test_runner=file://config/owner/COMMON_OWNERS
-per-file audits*=file://config/owner/LIGHTHOUSE_OWNERS
 
 bmeurer@chromium.org
 dsv@chromium.org

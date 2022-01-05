@@ -10,7 +10,6 @@ devtools_module("theme_support") {
 
   deps = [
     "../../../core/common:bundle",
-    "../../../core/platform:bundle",
     "../../../core/root:bundle",
   ]
 }

@@ -34,7 +34,6 @@
  */
 
 import * as Common from '../../../core/common/common.js';
-import * as Platform from '../../../core/platform/platform.js';
 
 import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.legacy.js';
 import inspectorSyntaxHighlightDarkStyles from '../inspectorSyntaxHighlightDark.css.legacy.js';
@@ -45,33 +44,13 @@ const themeValuesCache = new Map<CSSStyleDeclaration, Map<string, string>>();
 
 export class ThemeSupport {
   private readonly themeNameInternal: string;
-  private themableProperties: Set<string>;
-  private readonly cachedThemePatches: Map<string, string>;
-  private readonly setting: Common.Settings.Setting<string>;
   private readonly customSheets: Set<string>;
   private readonly computedRoot: () => symbol | CSSStyleDeclaration;
-  private injectingStyleSheet?: boolean;
 
   private constructor(setting: Common.Settings.Setting<string>) {
     const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
     this.themeNameInternal = setting.get() === 'systemPreferred' ? systemPreferredTheme : setting.get();
-    this.themableProperties = new Set([
-      'color',
-      'box-shadow',
-      'text-shadow',
-      'outline-color',
-      'background-image',
-      'background-color',
-      'border-left-color',
-      'border-right-color',
-      'border-top-color',
-      'border-bottom-color',
-      '-webkit-border-image',
-      'fill',
-      'stroke',
-    ]);
-    this.cachedThemePatches = new Map();
-    this.setting = setting;
+
     this.customSheets = new Set();
     this.computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
   }
@@ -139,12 +118,10 @@ export class ThemeSupport {
   }
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
-    this.injectingStyleSheet = true;
     this.appendStyle(element, inspectorSyntaxHighlightStyles);
     if (this.themeNameInternal === 'dark') {
       this.appendStyle(element, inspectorSyntaxHighlightDarkStyles);
     }
-    this.injectingStyleSheet = false;
   }
 
   /**
@@ -174,195 +151,11 @@ export class ThemeSupport {
   }
 
   applyTheme(document: Document): void {
-    if (!this.hasTheme() || this.isForcedColorsMode()) {
+    if (!this.hasTheme() || this.isForcedColorsMode() || this.themeNameInternal !== 'dark') {
       return;
     }
 
-    if (this.themeNameInternal === 'dark') {
-      document.documentElement.classList.add('-theme-with-dark-background');
-    }
-
-    const styleSheets = document.styleSheets;
-    const result = [];
-    for (let i = 0; i < styleSheets.length; ++i) {
-      const href = styleSheets[i].href;
-      if (!href) {
-        continue;
-      }
-      result.push(this.patchForTheme(href, (styleSheets[i] as CSSStyleSheet)));
-    }
-    result.push('/*# sourceURL=inspector.css.theme */');
-
-    const styleElement = document.createElement('style');
-    styleElement.textContent = result.join('\n');
-    document.head.appendChild(styleElement);
-  }
-
-  themeStyleSheet(id: string, text: string): string {
-    if (!this.hasTheme() || this.injectingStyleSheet || this.isForcedColorsMode()) {
-      return '';
-    }
-
-    let patch = this.cachedThemePatches.get(id);
-    if (!patch) {
-      const styleElement = document.createElement('style');
-      styleElement.textContent = text;
-      document.body.appendChild(styleElement);
-
-      const {sheet} = styleElement;
-      if (!sheet) {
-        throw new Error('No sheet in stylesheet object');
-      }
-      patch = this.patchForTheme(id, sheet);
-      document.body.removeChild(styleElement);
-    }
-    return patch;
-  }
-
-  private patchForTheme(id: string, styleSheet: CSSStyleSheet): string {
-    const cached = this.cachedThemePatches.get(id);
-    if (cached) {
-      return cached;
-    }
-
-    try {
-      const rules = styleSheet.cssRules;
-      const result = [];
-      for (let j = 0; j < rules.length; ++j) {
-        const rule = rules[j];
-        if (rule instanceof CSSImportRule) {
-          result.push(this.patchForTheme(rule.styleSheet.href || '', rule.styleSheet));
-          continue;
-        }
-
-        if (!(rule instanceof CSSStyleRule)) {
-          continue;
-        }
-
-        const output: string[] = [];
-        const style = rule.style;
-        const selectorText = rule.selectorText;
-        for (let i = 0; style && i < style.length; ++i) {
-          this.patchProperty(selectorText, style, style[i], output);
-        }
-        if (output.length) {
-          result.push(rule.selectorText + '{' + output.join('') + '}');
-        }
-      }
-
-      const fullText = result.join('\n');
-      this.cachedThemePatches.set(id, fullText);
-      return fullText;
-    } catch (e) {
-      this.setting.set('default');
-      return '';
-    }
-  }
-
-  /**
-   * Theming API is primarily targeted at making dark theme look good.
-   * - If rule has ".-theme-preserve" in selector, it won't be affected.
-   * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
-   */
-  private patchProperty(selectorText: string, style: CSSStyleDeclaration, name: string, output: string[]): void {
-    if (!this.themableProperties.has(name)) {
-      return;
-    }
-
-    const value = style.getPropertyValue(name);
-    if (!value || value === 'none' || value === 'inherit' || value === 'initial' || value === 'transparent') {
-      return;
-    }
-    if (name === 'background-image' && value.indexOf('gradient') === -1) {
-      return;
-    }
-
-    if (selectorText.indexOf('-theme-') !== -1) {
-      return;
-    }
-
-    let colorUsage = ThemeSupport.ColorUsage.Unknown;
-    if (name.indexOf('background') === 0 || name.indexOf('border') === 0) {
-      colorUsage |= ThemeSupport.ColorUsage.Background;
-    }
-    if (name.indexOf('background') === -1) {
-      colorUsage |= ThemeSupport.ColorUsage.Foreground;
-    }
-
-    output.push(name);
-    output.push(':');
-    if (/^var\(.*\)$/.test(value)) {
-      // Don't translate CSS variables.
-      output.push(value);
-    } else {
-      const items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
-      for (const item of items) {
-        output.push(this.patchColorText(item, (colorUsage as number)));
-      }
-    }
-    if (style.getPropertyPriority(name)) {
-      output.push(' !important');
-    }
-    output.push(';');
-  }
-
-  /**
-   * This legacy function has been supeseded by CSS custom properties. Wherever possible, please use
-   * the values declared in global stylesheets.
-   *
-   * @deprecated
-   */
-  private patchColorText(text: string, colorUsage: number): string {
-    const color = Common.Color.Color.parse(text);
-    if (!color) {
-      return text;
-    }
-    const outColor = this.patchColor(color, colorUsage);
-    let outText = outColor.asString(null);
-    if (!outText) {
-      outText = outColor.asString(outColor.hasAlpha() ? Common.Color.Format.RGBA : Common.Color.Format.RGB);
-    }
-    return outText || text;
-  }
-
-  /**
-   * This legacy function has been supeseded by CSS custom properties. Wherever possible, please use
-   * the values declared in global stylesheets.
-   *
-   * @deprecated
-   */
-  private patchColor(color: Common.Color.Color, colorUsage: number): Common.Color.Color {
-    const hsla = color.hsla();
-    this.patchHSLA(hsla, colorUsage);
-
-    const rgba: number[] = [];
-    Common.Color.Color.hsl2rgb(hsla, rgba);
-    return new Common.Color.Color(rgba, color.format());
-  }
-
-  private patchHSLA(hsla: number[], colorUsage: number): void {
-    const hue = hsla[0];
-    const sat = hsla[1];
-    let lit: number = hsla[2];
-    const alpha = hsla[3];
-
-    switch (this.themeNameInternal) {
-      case 'dark': {
-        const minCap = colorUsage & ThemeSupport.ColorUsage.Background ? 0.14 : 0;
-        const maxCap = colorUsage & ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;
-        lit = 1 - lit;
-        if (lit < minCap * 2) {
-          lit = minCap + lit / 2;
-        } else if (lit > 2 * maxCap - 1) {
-          lit = maxCap - 1 / 2 + lit / 2;
-        }
-        break;
-      }
-    }
-    hsla[0] = Platform.NumberUtilities.clamp(hue, 0, 1);
-    hsla[1] = Platform.NumberUtilities.clamp(sat, 0, 1);
-    hsla[2] = Platform.NumberUtilities.clamp(lit, 0, 1);
-    hsla[3] = Platform.NumberUtilities.clamp(alpha, 0, 1);
+    document.documentElement.classList.add('-theme-with-dark-background');
   }
 }
 export namespace ThemeSupport {

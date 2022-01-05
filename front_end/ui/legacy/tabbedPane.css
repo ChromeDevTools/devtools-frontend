@@ -236,6 +236,7 @@
   flex: 0 0 auto;
   flex-direction: column;
   padding-top: 10px;
+  padding-right: 8px;
   overflow: hidden;
 }
 

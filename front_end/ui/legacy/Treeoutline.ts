@@ -432,7 +432,6 @@ export class TreeElement {
   private readonly boundOnFocus: () => void;
   private readonly boundOnBlur: () => void;
   readonly listItemNode: HTMLLIElement;
-  readonly contentNode: HTMLElement;
   titleElement: Node;
   titleInternal: string|Node;
   private childrenInternal: TreeElement[]|null;
@@ -459,10 +458,8 @@ export class TreeElement {
     this.boundOnFocus = this.onFocus.bind(this);
     this.boundOnBlur = this.onBlur.bind(this);
     this.listItemNode = document.createElement('li');
-    this.contentNode = this.listItemElement.createChild('div');
-    this.contentNode.classList.add('tree-element-content');
 
-    this.titleElement = this.contentNode.createChild('span', 'tree-element-title');
+    this.titleElement = this.listItemNode.createChild('span', 'tree-element-title');
     treeElementBylistItemNode.set(this.listItemNode, this);
     this.titleInternal = '';
     if (title) {
@@ -732,10 +729,6 @@ export class TreeElement {
     return this.listItemNode;
   }
 
-  get contentElement(): HTMLElement {
-    return this.contentNode;
-  }
-
   get childrenListElement(): HTMLOListElement {
     return this.childrenListNode;
   }
@@ -758,13 +751,13 @@ export class TreeElement {
       this.tooltip = '';
     }
 
-    this.contentNode.removeChildren();
+    this.listItemNode.removeChildren();
     if (this.leadingIconsElement) {
-      this.contentNode.appendChild(this.leadingIconsElement);
+      this.listItemNode.appendChild(this.leadingIconsElement);
     }
-    this.contentNode.appendChild(this.titleElement);
+    this.listItemNode.appendChild(this.titleElement);
     if (this.trailingIconsElement) {
-      this.contentNode.appendChild(this.trailingIconsElement);
+      this.listItemNode.appendChild(this.trailingIconsElement);
     }
     this.ensureSelection();
   }
@@ -794,7 +787,7 @@ export class TreeElement {
       this.leadingIconsElement = document.createElement('div');
       this.leadingIconsElement.classList.add('leading-icons');
       this.leadingIconsElement.classList.add('icons-container');
-      this.contentNode.insertBefore(this.leadingIconsElement, this.titleElement);
+      this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
     this.leadingIconsElement.removeChildren();
@@ -811,7 +804,7 @@ export class TreeElement {
       this.trailingIconsElement = document.createElement('div');
       this.trailingIconsElement.classList.add('trailing-icons');
       this.trailingIconsElement.classList.add('icons-container');
-      this.contentNode.appendChild(this.trailingIconsElement);
+      this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
     this.trailingIconsElement.removeChildren();

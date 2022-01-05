@@ -237,13 +237,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private searchHighlightsVisible?: boolean;
   selectionElement?: HTMLDivElement;
   private hintElement?: HTMLElement;
+  private contentElement: HTMLElement;
 
   constructor(node: SDK.DOMModel.DOMNode, isClosingTag?: boolean) {
     // The title will be updated in onattach.
     super();
     this.nodeInternal = node;
     this.treeOutline = null;
-
+    this.contentElement = this.listItemElement.createChild('div');
     this.gutterContainer = this.contentElement.createChild('div', 'gutter-container');
     this.gutterContainer.addEventListener('click', this.showContextMenu.bind(this));
     const gutterMenuIcon = UI.Icon.Icon.create('largeicon-menu', 'gutter-menu-icon');
@@ -1303,11 +1304,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           this.childrenListElement.classList.add('shadow-root-depth-' + depth);
         }
       }
-      const highlightElement = document.createElement('span');
-      highlightElement.className = 'highlight';
+      this.contentElement.removeChildren();
+      const highlightElement = this.contentElement.createChild('span', 'highlight');
       highlightElement.append(nodeInfo);
       // fixme: make it clear that `this.title = x` is a setter with significant side effects
-      this.title = highlightElement;
+      this.title = this.contentElement;
       this.updateDecorations();
       this.contentElement.prepend(this.gutterContainer);
       if (!this.isClosingTagInternal && this.adornerContainer) {

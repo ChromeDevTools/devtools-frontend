@@ -84,7 +84,6 @@ export class SearchableContainer extends UI.Widget.VBox {
 
   constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, autoPrettyPrint?: boolean) {
     super(true);
-    // eslint-disable-next-line no-restricted-syntax -- Should import styles https://crbug.com/1106746
     this.registerRequiredCSS(resourceSourceFrameStyles);
     const sourceFrame = new ResourceSourceFrame(resource, contentType);
     this.sourceFrame = sourceFrame;

@@ -116,17 +116,7 @@ module.exports = {
             'format': ['camelCase'],
             'leadingUnderscore': 'allow',
           }
-        ],
-        'no-restricted-syntax': [
-          'warn', {
-            // Matches the common pattern of `.registerRequiredCSS('path\to\module-styles.css');`.
-            'selector':
-                'CallExpression[callee.property.name="registerRequiredCSS"][arguments.length=1]:has(Literal[value=/css$/])',
-            'message': 'Styles should be imported using `import styles from \'[file name].css(.legacy).js\';` and' +
-                // Intentional double periods.. since trailing period is stripped from output.
-                ' registered using `.registerCSSFiles([styles]);` or `.registerRequiredCSS(legacyStyles);` syntax..',
-          }
-        ],
+        ]
       }
     },
     {

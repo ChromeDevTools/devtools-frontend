@@ -566,7 +566,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
     const button = (this.pauseOnExceptionButton as UI.Toolbar.ToolbarToggle);
     button.setToggled(enabled);
-    button.setTitle(enabled ? i18nString(UIStrings.pauseOnExceptions) : i18nString(UIStrings.dontPauseOnExceptions));
+    button.setTitle(enabled ? i18nString(UIStrings.dontPauseOnExceptions) : i18nString(UIStrings.pauseOnExceptions));
     this.debugToolbarDrawer.classList.toggle('expanded', enabled);
   }
 

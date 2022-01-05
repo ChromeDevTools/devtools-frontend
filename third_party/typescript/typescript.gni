@@ -58,8 +58,6 @@ template("ts_library") {
       devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
       devtools_location_prepend +
           "front_end/global_typings/request_idle_callback.d.ts",
-      devtools_location_prepend +
-          "front_end/global_typings/intl_display_names.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
     ]
 

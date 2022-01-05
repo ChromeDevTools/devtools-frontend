@@ -126,8 +126,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private lastMouseOffsetX: number;
   private selectedGroup: number;
   private keyboardFocusedGroup: number;
-  private selectedGroupBackroundColor: string;
-  private selectedGroupBorderColor: string;
   private offsetWidth!: number;
   private offsetHeight!: number;
   private dragStartX!: number;
@@ -229,11 +227,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this.keyboardFocusedGroup = -1;
-
-    this.selectedGroupBackroundColor = ThemeSupport.ThemeSupport.instance().patchColorText(
-        Colors.SelectedGroupBackground, ThemeSupport.ThemeSupport.ColorUsage.Background);
-    this.selectedGroupBorderColor = ThemeSupport.ThemeSupport.instance().patchColorText(
-        Colors.SelectedGroupBorder, ThemeSupport.ThemeSupport.ColorUsage.Background);
   }
 
   willHide(): void {
@@ -1140,7 +1133,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       context.save();
       this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
         if (this.isGroupFocused(index)) {
-          context.fillStyle = this.selectedGroupBackroundColor;
+          context.fillStyle =
+              ThemeSupport.ThemeSupport.instance().getComputedValue('--custom-val-test', this.contentElement);
           context.fillRect(0, offset, width, groupHeight - group.style.padding);
         }
       });
@@ -1563,7 +1557,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
     const lastGroupOffset = groupOffsets[groupOffsets.length - 1];
-    const colorUsage = ThemeSupport.ThemeSupport.ColorUsage;
 
     context.save();
     context.scale(ratio, ratio);
@@ -1571,7 +1564,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const defaultFont = '11px ' + Host.Platform.fontFamily();
     context.font = defaultFont;
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#fff', colorUsage.Background);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
     this.forEachGroupInViewport((offset, index, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
@@ -1583,7 +1576,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
     }
 
-    context.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#eee', colorUsage.Background);
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-elevation-1');
     context.beginPath();
     this.forEachGroupInViewport((offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
@@ -1622,7 +1615,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         const width = this.labelWidthForGroup(context, group) + 2;
         if (this.isGroupFocused(index)) {
-          context.fillStyle = this.selectedGroupBackroundColor;
+          context.fillStyle =
+              ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
         } else {
           const parsedColor = Common.Color.Color.parse(group.style.backgroundColor);
           if (parsedColor) {
@@ -1641,7 +1635,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     context.restore();
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#6e6e6e', colorUsage.Foreground);
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-secondary');
     context.beginPath();
     this.forEachGroupInViewport((offset, index, group) => {
       if (this.isGroupCollapsible(index)) {
@@ -1652,7 +1646,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     context.fill();
 
-    context.strokeStyle = ThemeSupport.ThemeSupport.instance().patchColorText('#ddd', colorUsage.Background);
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-details-hairline-light');
     context.beginPath();
     context.stroke();
 
@@ -1660,7 +1654,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       if (this.isGroupFocused(index)) {
         const lineWidth = 2;
         const bracketLength = 10;
-        context.fillStyle = this.selectedGroupBorderColor;
+        context.fillStyle =
+            ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-border', this.contentElement);
         context.fillRect(0, offset - lineWidth, lineWidth, groupHeight - group.style.padding + 2 * lineWidth);
         context.fillRect(0, offset - lineWidth, bracketLength, lineWidth);
         context.fillRect(0, offset + groupHeight - group.style.padding, bracketLength, lineWidth);
@@ -2326,10 +2321,6 @@ export type EventTypes = {
   [Events.EntryHighlighted]: number,
 };
 
-export const Colors = {
-  SelectedGroupBackground: 'hsl(215, 85%, 98%)',
-  SelectedGroupBorder: 'hsl(216, 68%, 54%)',
-};
 export interface Group {
   name: Common.UIString.LocalizedString;
   startLevel: number;

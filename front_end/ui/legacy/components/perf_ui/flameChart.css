@@ -6,6 +6,14 @@
 
 .flame-chart-main-pane {
   overflow: hidden;
+
+  --selected-group-background: hsl(215deg 85% 98%);
+  --selected-group-border: hsl(216deg 68% 54%);
+}
+
+:host-context(.-theme-with-dark-background) .flame-chart-main-pane {
+  --selected-group-background: hsl(215deg 85% 15%);
+  --selected-group-border: hsl(216deg 68% 46%);
 }
 
 .flame-chart-marker-highlight-element {

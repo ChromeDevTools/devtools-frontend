@@ -120,7 +120,7 @@ module.exports = {
             description: 'Require using arrow functions for callbacks',
             category: 'ECMAScript 6',
             recommended: false,
-            url: 'https://eslint.org/docs/rules/prefer-arrow-callback'
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/prefer-arrow-callback.md'
         },
 
         schema: [

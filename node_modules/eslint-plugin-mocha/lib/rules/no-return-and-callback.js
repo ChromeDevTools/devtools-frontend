@@ -23,8 +23,10 @@ module.exports = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow returning in a test or hook function that uses a callback'
-        }
+            description: 'Disallow returning in a test or hook function that uses a callback',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-return-and-callback.md'
+        },
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

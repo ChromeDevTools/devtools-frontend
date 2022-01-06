@@ -10,7 +10,7 @@ const LEADING_SEPARATORS = new RegExp('^' + SEPARATORS.source);
 const SEPARATORS_AND_IDENTIFIER = new RegExp(SEPARATORS.source + IDENTIFIER.source, 'gu');
 const NUMBERS_AND_IDENTIFIER = new RegExp('\\d+' + IDENTIFIER.source, 'gu');
 
-const preserveCamelCase = (string, locale) => {
+const preserveCamelCase = (string, toLowerCase, toUpperCase) => {
 	let isLastCharLower = false;
 	let isLastCharUpper = false;
 	let isLastLastCharUpper = false;
@@ -30,27 +30,27 @@ const preserveCamelCase = (string, locale) => {
 			isLastCharUpper = false;
 			isLastCharLower = true;
 		} else {
-			isLastCharLower = character.toLocaleLowerCase(locale) === character && character.toLocaleUpperCase(locale) !== character;
+			isLastCharLower = toLowerCase(character) === character && toUpperCase(character) !== character;
 			isLastLastCharUpper = isLastCharUpper;
-			isLastCharUpper = character.toLocaleUpperCase(locale) === character && character.toLocaleLowerCase(locale) !== character;
+			isLastCharUpper = toUpperCase(character) === character && toLowerCase(character) !== character;
 		}
 	}
 
 	return string;
 };
 
-const preserveConsecutiveUppercase = input => {
+const preserveConsecutiveUppercase = (input, toLowerCase) => {
 	LEADING_CAPITAL.lastIndex = 0;
 
-	return input.replace(LEADING_CAPITAL, m1 => m1.toLowerCase());
+	return input.replace(LEADING_CAPITAL, m1 => toLowerCase(m1));
 };
 
-const postProcess = (input, options) => {
+const postProcess = (input, toUpperCase) => {
 	SEPARATORS_AND_IDENTIFIER.lastIndex = 0;
 	NUMBERS_AND_IDENTIFIER.lastIndex = 0;
 
-	return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => identifier.toLocaleUpperCase(options.locale))
-		.replace(NUMBERS_AND_IDENTIFIER, m => m.toLocaleUpperCase(options.locale));
+	return input.replace(SEPARATORS_AND_IDENTIFIER, (_, identifier) => toUpperCase(identifier))
+		.replace(NUMBERS_AND_IDENTIFIER, m => toUpperCase(m));
 };
 
 const camelCase = (input, options) => {
@@ -76,29 +76,36 @@ const camelCase = (input, options) => {
 		return '';
 	}
 
+	const toLowerCase = options.locale === false ?
+		string => string.toLowerCase() :
+		string => string.toLocaleLowerCase(options.locale);
+	const toUpperCase = options.locale === false ?
+		string => string.toUpperCase() :
+		string => string.toLocaleUpperCase(options.locale);
+
 	if (input.length === 1) {
-		return options.pascalCase ? input.toLocaleUpperCase(options.locale) : input.toLocaleLowerCase(options.locale);
+		return options.pascalCase ? toUpperCase(input) : toLowerCase(input);
 	}
 
-	const hasUpperCase = input !== input.toLocaleLowerCase(options.locale);
+	const hasUpperCase = input !== toLowerCase(input);
 
 	if (hasUpperCase) {
-		input = preserveCamelCase(input, options.locale);
+		input = preserveCamelCase(input, toLowerCase, toUpperCase);
 	}
 
 	input = input.replace(LEADING_SEPARATORS, '');
 
 	if (options.preserveConsecutiveUppercase) {
-		input = preserveConsecutiveUppercase(input);
+		input = preserveConsecutiveUppercase(input, toLowerCase);
 	} else {
-		input = input.toLocaleLowerCase();
+		input = toLowerCase(input);
 	}
 
 	if (options.pascalCase) {
-		input = input.charAt(0).toLocaleUpperCase(options.locale) + input.slice(1);
+		input = toUpperCase(input.charAt(0)) + input.slice(1);
 	}
 
-	return postProcess(input, options);
+	return postProcess(input, toUpperCase);
 };
 
 module.exports = camelCase;

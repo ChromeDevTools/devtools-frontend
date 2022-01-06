@@ -44,7 +44,8 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Disallow synchronous tests'
+            description: 'Disallow synchronous tests',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-synchronous-tests.md'
         },
         schema: [
             {
@@ -92,7 +93,7 @@ module.exports = {
                 const isAsyncTest = testAsyncMethods.includes(true);
 
                 if (!isAsyncTest) {
-                    context.report(node, 'Unexpected synchronous test.');
+                    context.report({ node, message: 'Unexpected synchronous test.' });
                 }
             }
         }

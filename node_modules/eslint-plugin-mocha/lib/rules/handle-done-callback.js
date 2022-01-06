@@ -7,7 +7,8 @@ module.exports = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Enforces handling of callbacks for async tests'
+            description: 'Enforces handling of callbacks for async tests',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/handle-done-callback.md'
         },
         schema: [
             {
@@ -38,7 +39,7 @@ module.exports = {
         }
 
         function isReferenceHandled(reference) {
-            const parent = context.getNodeByRangeIndex(reference.identifier.range[0]).parent;
+            const parent = context.getSourceCode().getNodeByRangeIndex(reference.identifier.range[0]).parent;
 
             return parent.type === 'CallExpression';
         }
@@ -54,7 +55,10 @@ module.exports = {
             const callbackVariable = findParamInScope(callbackName, scope);
 
             if (callbackVariable && !hasHandledReferences(callbackVariable.references)) {
-                context.report(callback, 'Expected "{{name}}" callback to be handled.', { name: callbackName });
+                context.report({
+                    node: callback,
+                    message: 'Expected "{{name}}" callback to be handled.', data: { name: callbackName }
+                });
             }
         }
 

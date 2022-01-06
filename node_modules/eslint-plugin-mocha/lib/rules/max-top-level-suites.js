@@ -18,7 +18,8 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Limit the number of top-level suites in a single file'
+            description: 'Limit the number of top-level suites in a single file',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/max-top-level-suites.md'
         },
         schema: [
             {

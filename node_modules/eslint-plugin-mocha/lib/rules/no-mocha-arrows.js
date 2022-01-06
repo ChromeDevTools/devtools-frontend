@@ -75,9 +75,11 @@ module.exports = {
         type: 'suggestion',
         docs: {
             description:
-                'Disallow arrow functions as arguments to mocha functions'
+                'Disallow arrow functions as arguments to mocha functions',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-mocha-arrows.md'
         },
-        fixable: 'code'
+        fixable: 'code',
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

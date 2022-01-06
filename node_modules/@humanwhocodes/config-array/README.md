@@ -106,14 +106,17 @@ const configs = new ConfigArray(rawConfigs, {
     // the path to match filenames from
     basePath: process.cwd(),
 
-    // additional items in each config
-    schema: mySchema
+    // additional item schemas in each config
+    schema: mySchema,
+
+    // additional config types supported (default: [])
+    extraConfigTypes: ["array", "function"];
 });
 ```
 
 ### Config Arrays
 
-Config arrays can be multidimensional, so it's possible for a config array to contain another config array, such as:
+Config arrays can be multidimensional, so it's possible for a config array to contain another config array when `extraConfigTypes` contains `"array"`, such as:
 
 ```js
 export default [
@@ -175,7 +178,7 @@ If a pattern in the files array begins with `!` then it excludes that pattern. I
 
 ### Config Functions
 
-Config arrays can also include config functions. A config function accepts a single parameter, `context` (defined by you), and must return either a config object or a config array (it cannot return another function). Config functions allow end users to execute code in the creation of appropriate config objects. Here's an example:
+Config arrays can also include config functions when `extraConfigTypes` contains `"function"`. A config function accepts a single parameter, `context` (defined by you), and must return either a config object or a config array (it cannot return another function). Config functions allow end users to execute code in the creation of appropriate config objects. Here's an example:
 
 ```js
 export default [

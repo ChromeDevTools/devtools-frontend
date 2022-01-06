@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.12.0] - 2021-08-24
+
+- Add support for baseUrl override using TS_NODE_BASEURL env var #185 and #114. Thanks to @ejhayes and @information-security for these PRs!
+
 ## [3.11.0] - 2021-08-24
 
 - Reverted upgrade of json5 due to being a breaking change. See PR #173.

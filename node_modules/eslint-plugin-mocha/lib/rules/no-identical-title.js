@@ -21,8 +21,10 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Disallow identical titles'
-        }
+            description: 'Disallow identical titles',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-identical-title.md'
+        },
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

@@ -7,17 +7,11 @@ interface TestResult {
 
 export interface Ignore {
   /**
-   * Adds a rule rules to the current manager.
-   * @param  {string | Ignore} pattern
-   * @returns IgnoreBase
-   */
-  add(pattern: string | Ignore): this
-  /**
-   * Adds several rules to the current manager.
+   * Adds one or several rules to the current manager.
    * @param  {string[]} patterns
    * @returns IgnoreBase
    */
-  add(patterns: (string | Ignore)[]): this
+  add(patterns: string | Ignore | readonly (string | Ignore)[]): this
 
   /**
    * Filters the given array of pathnames, and returns the filtered array.
@@ -25,7 +19,8 @@ export interface Ignore {
    * @param paths the array of paths to be filtered.
    * @returns The filtered array of paths
    */
-  filter(pathnames: Pathname[]): Pathname[]
+  filter(pathnames: readonly Pathname[]): Pathname[]
+
   /**
    * Creates a filter function which could filter
    * an array of paths with Array.prototype.filter.
@@ -49,6 +44,9 @@ export interface Ignore {
 
 interface Options {
   ignorecase?: boolean
+  // For compatibility
+  ignoreCase?: boolean
+  allowRelativePaths?: boolean
 }
 
 /**

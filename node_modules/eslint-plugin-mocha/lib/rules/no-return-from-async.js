@@ -17,8 +17,10 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Disallow returning from an async test or hook'
-        }
+            description: 'Disallow returning from an async test or hook',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-return-from-async.md'
+        },
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

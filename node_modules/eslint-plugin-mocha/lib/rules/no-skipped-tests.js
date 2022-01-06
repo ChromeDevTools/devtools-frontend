@@ -5,9 +5,11 @@ const createAstUtils = require('../util/ast');
 module.exports = {
     meta: {
         docs: {
-            description: 'Disallow skipped tests'
+            description: 'Disallow skipped tests',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-skipped-tests.md'
         },
-        type: 'problem'
+        type: 'problem',
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

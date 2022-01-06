@@ -14,7 +14,8 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Disallow hooks for a single test or test suite'
+            description: 'Disallow hooks for a single test or test suite',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-hooks-for-single-case.md'
         },
         schema: [
             {

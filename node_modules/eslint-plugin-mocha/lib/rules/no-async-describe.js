@@ -12,9 +12,11 @@ module.exports = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow async functions passed to describe'
+            description: 'Disallow async functions passed to describe',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-async-describe.md'
         },
-        fixable: 'code'
+        fixable: 'code',
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

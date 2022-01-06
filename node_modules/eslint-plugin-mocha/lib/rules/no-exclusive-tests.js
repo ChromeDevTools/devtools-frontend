@@ -6,8 +6,10 @@ module.exports = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow exclusive tests'
-        }
+            description: 'Disallow exclusive tests',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-exclusive-tests.md'
+        },
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

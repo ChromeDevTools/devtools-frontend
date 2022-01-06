@@ -16,8 +16,10 @@ module.exports = {
     meta: {
         type: 'suggestion',
         docs: {
-            description: 'Disallow duplicate uses of a hook at the same level inside a describe'
-        }
+            description: 'Disallow duplicate uses of a hook at the same level inside a describe',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-sibling-hooks.md'
+        },
+        schema: []
     },
     create(context) {
         const isUsed = [];

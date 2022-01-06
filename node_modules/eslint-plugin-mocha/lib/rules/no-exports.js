@@ -5,12 +5,14 @@ const createAstUtils = require('../util/ast');
 module.exports = {
     meta: {
         docs: {
-            description: 'Disallow exports from test files'
+            description: 'Disallow exports from test files',
+            url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-exports.md'
         },
         messages: {
             unexpectedExport: 'Unexpected export from a test file'
         },
-        type: 'suggestion'
+        type: 'suggestion',
+        schema: []
     },
     create(context) {
         const astUtils = createAstUtils(context.settings);

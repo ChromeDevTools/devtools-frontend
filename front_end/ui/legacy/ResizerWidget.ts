@@ -38,7 +38,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   addElement(element: HTMLElement): void {
     if (!this.elementsInternal.has(element)) {
       this.elementsInternal.add(element);
-      element.addEventListener('mousedown', this.installDragOnMouseDownBound, false);
+      element.addEventListener('pointerdown', this.installDragOnMouseDownBound, false);
       this.updateElementCursor(element);
     }
   }
@@ -46,7 +46,7 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   removeElement(element: HTMLElement): void {
     if (this.elementsInternal.has(element)) {
       this.elementsInternal.delete(element);
-      element.removeEventListener('mousedown', this.installDragOnMouseDownBound, false);
+      element.removeEventListener('pointerdown', this.installDragOnMouseDownBound, false);
       element.style.removeProperty('cursor');
     }
   }
@@ -58,8 +58,10 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   private updateElementCursor(element: HTMLElement): void {
     if (this.isEnabledInternal) {
       element.style.setProperty('cursor', this.cursor());
+      element.style.setProperty('touch-action', 'none');
     } else {
       element.style.removeProperty('cursor');
+      element.style.removeProperty('touch-action');
     }
   }
 

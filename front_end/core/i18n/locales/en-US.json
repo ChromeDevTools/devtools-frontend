@@ -1190,9 +1190,6 @@
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Show console drawer"
   },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "The system-preferred color scheme has changed. To apply this change to DevTools, reload."
-  },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
   },

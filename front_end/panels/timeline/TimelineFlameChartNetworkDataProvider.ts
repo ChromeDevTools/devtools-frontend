@@ -79,6 +79,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.timeSpan = 0;
     this.requests = [];
     this.maxLevel = 0;
+
+    // In the event of a theme change, these colors must be recalculated.
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      this.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+      this.style.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+    });
   }
 
   setModel(performanceModel: PerformanceModel|null): void {
@@ -194,7 +200,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const end = Math.max(timeToPixel(endTime), finish);
 
     // Draw waiting time.
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-80');
+    context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
     // Clear portions of initial rect to prepare for the ticks.
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');

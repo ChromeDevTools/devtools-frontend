@@ -51,15 +51,11 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
 const UIStrings = {
-  /**
-  *@description A message to display prompting the user to reload DevTools if the OS color scheme changes.
-  */
-  theSystempreferredColorSchemeHas:
-      'The system-preferred color scheme has changed. To apply this change to DevTools, reload.',
   /**
   *@description Title of item in main
   */
@@ -408,14 +404,26 @@ export class MainImpl {
 
     const defaultThemeSetting = 'systemPreferred';
     const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
-    UI.UIUtils.initializeUIUtils(document, themeSetting);
-    if (themeSetting.get() === defaultThemeSetting) {
-      const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      darkThemeMediaQuery.addEventListener('change', () => {
-        UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-            i18nString(UIStrings.theSystempreferredColorSchemeHas));
-      });
+    UI.UIUtils.initializeUIUtils(document);
+
+    // Initialize theme support and apply it.
+    if (!ThemeSupport.ThemeSupport.hasInstance()) {
+      ThemeSupport.ThemeSupport.instance({forceNew: true, setting: themeSetting});
     }
+
+    ThemeSupport.ThemeSupport.instance().applyTheme(document);
+
+    const onThemeChange = (): void => {
+      ThemeSupport.ThemeSupport.instance().applyTheme(document);
+    };
+
+    // When the theme changes we instantiate a new theme support and reapply.
+    // Equally if the user has set to match the system and the OS preference changes
+    // we perform the same change.
+    const darkThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    darkThemeMediaQuery.addEventListener('change', onThemeChange);
+    themeSetting.addChangeListener(onThemeChange);
+
     UI.UIUtils.installComponentRootStyles((document.body as Element));
 
     this.#addMainEventListeners(document);

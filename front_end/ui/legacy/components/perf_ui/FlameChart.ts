@@ -227,6 +227,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this.keyboardFocusedGroup = -1;
+
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      this.scheduleUpdate();
+    });
   }
 
   willHide(): void {
@@ -1134,7 +1138,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
         if (this.isGroupFocused(index)) {
           context.fillStyle =
-              ThemeSupport.ThemeSupport.instance().getComputedValue('--custom-val-test', this.contentElement);
+              ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
           context.fillRect(0, offset, width, groupHeight - group.style.padding);
         }
       });

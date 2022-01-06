@@ -42,17 +42,13 @@ let themeSupportInstance: ThemeSupport;
 
 const themeValuesCache = new Map<CSSStyleDeclaration, Map<string, string>>();
 
-export class ThemeSupport {
-  private readonly themeNameInternal: string;
-  private readonly customSheets: Set<string>;
-  private readonly computedRoot: () => symbol | CSSStyleDeclaration;
+export class ThemeSupport extends EventTarget {
+  private themeNameInternal = 'systemPreferred';
+  private customSheets: Set<string> = new Set();
+  private computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
-  private constructor(setting: Common.Settings.Setting<string>) {
-    const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
-    this.themeNameInternal = setting.get() === 'systemPreferred' ? systemPreferredTheme : setting.get();
-
-    this.customSheets = new Set();
-    this.computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
+  private constructor(private setting: Common.Settings.Setting<string>) {
+    super();
   }
 
   static hasInstance(): boolean {
@@ -119,9 +115,7 @@ export class ThemeSupport {
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
     this.appendStyle(element, inspectorSyntaxHighlightStyles);
-    if (this.themeNameInternal === 'dark') {
-      this.appendStyle(element, inspectorSyntaxHighlightDarkStyles);
-    }
+    this.appendStyle(element, inspectorSyntaxHighlightDarkStyles);
   }
 
   /**
@@ -142,28 +136,37 @@ export class ThemeSupport {
     }
   }
 
-  isForcedColorsMode(): boolean {
-    return window.matchMedia('(forced-colors: active)').matches;
-  }
-
   addCustomStylesheet(sheetText: string): void {
     this.customSheets.add(sheetText);
   }
 
   applyTheme(document: Document): void {
-    if (!this.hasTheme() || this.isForcedColorsMode() || this.themeNameInternal !== 'dark') {
+    const isForcedColorsMode = window.matchMedia('(forced-colors: active)').matches;
+    if (isForcedColorsMode) {
       return;
     }
 
-    document.documentElement.classList.add('-theme-with-dark-background');
+    const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+    this.themeNameInternal = this.setting.get() === 'systemPreferred' ? systemPreferredTheme : this.setting.get();
+
+    const wasDarkThemed = document.documentElement.classList.contains('-theme-with-dark-background');
+    document.documentElement.classList.toggle('-theme-with-dark-background', this.themeNameInternal === 'dark');
+
+    const isDarkThemed = document.documentElement.classList.contains('-theme-with-dark-background');
+
+    // In the event the theme changes we need to clear caches and notify subscribers.
+    if (wasDarkThemed !== isDarkThemed) {
+      themeValuesCache.clear();
+      this.customSheets.clear();
+      this.dispatchEvent(new ThemeChangeEvent());
+    }
   }
 }
-export namespace ThemeSupport {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum ColorUsage {
-    Unknown = 0,
-    Foreground = 1,
-    Background = 2,
+
+export class ThemeChangeEvent extends Event {
+  static readonly eventName = 'themechange';
+
+  constructor() {
+    super(ThemeChangeEvent.eventName, {bubbles: true, composed: true});
   }
 }

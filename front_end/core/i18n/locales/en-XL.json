@@ -1190,9 +1190,6 @@
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
     "message": "Ŝh́ôẃ ĉón̂śôĺê d́r̂áŵér̂"
   },
-  "entrypoints/main/MainImpl.ts | theSystempreferredColorSchemeHas": {
-    "message": "T̂h́ê śŷśt̂ém̂-ṕr̂éf̂ér̂ŕêd́ ĉól̂ór̂ śĉh́êḿê h́âś ĉh́âńĝéd̂. T́ô áp̂ṕl̂ý t̂h́îś ĉh́âńĝé t̂ó D̂év̂T́ôól̂ś, r̂él̂óâd́."
-  },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ûńd̂óĉḱ îńt̂ó ŝép̂ár̂át̂é ŵín̂d́ôẃ"
   },

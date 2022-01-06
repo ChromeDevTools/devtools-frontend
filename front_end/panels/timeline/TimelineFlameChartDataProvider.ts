@@ -243,6 +243,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.interactionsHeaderLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1});
     this.experienceHeader = this.buildGroupStyle({collapsible: false});
 
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      const headers = [
+        this.headerLevel1,
+        this.headerLevel2,
+        this.staticHeader,
+        this.framesHeader,
+        this.collapsibleTimingsHeader,
+        this.timingsHeader,
+        this.screenshotsHeader,
+        this.interactionsHeaderLevel1,
+        this.interactionsHeaderLevel2,
+        this.experienceHeader,
+      ];
+      for (const header of headers) {
+        header.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+        header.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+      }
+    });
+
     this.flowEventIndexById = new Map();
   }
 

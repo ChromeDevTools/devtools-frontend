@@ -170,9 +170,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
       {forceNew: true, win: window, frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance});
 
   // Initialize theme support and context menus.
-  const defaultThemeSetting = 'systemPreferred';
-  const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
-  UI.UIUtils.initializeUIUtils(document, themeSetting);
+  Common.Settings.Settings.instance().createSetting('uiTheme', 'systemPreferred');
+  UI.UIUtils.initializeUIUtils(document);
 
   initializeTargetManagerIfNecessary();
 }

@@ -588,7 +588,7 @@ Common.Settings.registerSettingExtension({
   settingName: 'uiTheme',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'systemPreferred',
-  reloadRequired: true,
+  reloadRequired: false,
   options: [
     {
       title: i18nLazyString(UIStrings.switchToSystemPreferredColor),

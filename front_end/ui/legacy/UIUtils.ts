@@ -33,7 +33,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../../core/common/common.js';
 import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -46,7 +45,6 @@ import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import * as Utils from './utils/utils.js';
 
 import type {ToolbarButton} from './Toolbar.js';
@@ -1043,18 +1041,13 @@ export class LongClickController {
   static readonly TIME_MS = 200;
 }
 
-export function initializeUIUtils(document: Document, themeSetting: Common.Settings.Setting<string>): void {
+export function initializeUIUtils(document: Document): void {
   document.body.classList.toggle('inactive', !document.hasFocus());
   if (document.defaultView) {
     document.defaultView.addEventListener('focus', windowFocused.bind(undefined, document), false);
     document.defaultView.addEventListener('blur', windowBlurred.bind(undefined, document), false);
   }
   document.addEventListener('focus', Utils.focusChanged.bind(undefined), true);
-
-  if (!ThemeSupport.ThemeSupport.hasInstance()) {
-    ThemeSupport.ThemeSupport.instance({forceNew: true, setting: themeSetting});
-  }
-  ThemeSupport.ThemeSupport.instance().applyTheme(document);
 
   const body = (document.body as Element);
   GlassPane.setContainer(body);

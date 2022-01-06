@@ -77,8 +77,8 @@ export class AdvancedApp implements Common.App.App {
   }
 
   deviceModeEmulationFrameLoaded(toolboxDocument: Document): void {
-    UI.UIUtils.initializeUIUtils(
-        toolboxDocument, Common.Settings.Settings.instance().createSetting('uiTheme', 'default'));
+    Common.Settings.Settings.instance().createSetting('uiTheme', 'default');
+    UI.UIUtils.initializeUIUtils(toolboxDocument);
     UI.UIUtils.installComponentRootStyles((toolboxDocument.body as Element));
     UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);
 

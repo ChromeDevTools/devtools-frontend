@@ -87,20 +87,17 @@ async function fetchLocaleData(locales: string[]): Promise<string|void> {
 
   // Try to load the locale data.
   try {
-    let localeDataTextPromise;
     const remoteBase = Root.Runtime.getRemoteBase();
+    let localeUrl: string;
     if (remoteBase && remoteBase.base) {
-      const localeUrl = `${remoteBase.base}third_party/lighthouse/locales/${locale}.json`;
-      localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl);
+      localeUrl = `${remoteBase.base}third_party/lighthouse/locales/${locale}.json`;
     } else {
-      const localeUrl = new URL(`../../third_party/lighthouse/locales/${locale}.json`, import.meta.url);
-      localeDataTextPromise = Root.Runtime.loadResourcePromise(localeUrl.toString());
+      localeUrl = new URL(`../../third_party/lighthouse/locales/${locale}.json`, import.meta.url).toString();
     }
 
     const timeoutPromise = new Promise<string>(
         (resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
-    const localeDataText = await Promise.race([timeoutPromise, localeDataTextPromise]);
-    const localeData = JSON.parse(localeDataText);
+    const localeData = await Promise.race([timeoutPromise, fetch(localeUrl).then(result => result.json())]);
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
     self.registerLocaleData(locale, localeData);
     return locale;

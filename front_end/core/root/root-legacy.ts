@@ -20,8 +20,6 @@ Root.Runtime.queryParam = RootModule.Runtime.Runtime.queryParam;
 /** @type {!RootModule.Runtime.Runtime} */
 Root.runtime;
 
-Root.Runtime.loadResourcePromise = RootModule.Runtime.loadResourcePromise;
-
 /** @constructor */
 Root.Runtime.Extension = RootModule.Runtime.Extension;
 

@@ -56,11 +56,10 @@ function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier): string {
  * fetched locally or remotely.
  */
 export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier): Promise<void> {
-  const localeDataTextPromise = Root.Runtime.loadResourcePromise(getLocaleFetchUrl(locale));
+  const localeDataTextPromise = fetch(getLocaleFetchUrl(locale)).then(result => result.json());
   const timeoutPromise =
       new Promise((resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
-  const localeDataText = await Promise.race([timeoutPromise, localeDataTextPromise]);
-  const localeData = JSON.parse(localeDataText as string);
+  const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
   i18nInstance.registerLocaleData(locale, localeData);
 }
 

@@ -254,35 +254,6 @@ export class Experiment {
   }
 }
 
-export function loadResourcePromise(url: string): Promise<string> {
-  return new Promise<string>(load);
-
-  function load(fulfill: (arg0: string) => void, reject: (arg0: Error) => void): void {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onreadystatechange = onreadystatechange;
-
-    function onreadystatechange(this: XMLHttpRequest, _e: Event): void {
-      if (xhr.readyState !== XMLHttpRequest.DONE) {
-        return;
-      }
-
-      const response: string = this.response;
-
-      // DevTools Proxy server can mask 404s as 200s, check the body to be sure
-      const status = /^HTTP\/1.1 404/.test(response) ? 404 : xhr.status;
-
-      if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
-      {
-        reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));
-      } else {
-        fulfill(response);
-      }
-    }
-    xhr.send(null);
-  }
-}
-
 // This must be constructed after the query parameters have been parsed.
 export const experiments = new ExperimentsSupport();
 

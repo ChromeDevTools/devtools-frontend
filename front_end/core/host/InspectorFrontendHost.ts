@@ -220,7 +220,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   loadNetworkResource(
       url: string, headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
-    Root.Runtime.loadResourcePromise(url)
+    fetch(url)
+        .then(result => result.text())
         .then(function(text) {
           resourceLoaderStreamWrite(streamId, text);
           callback({

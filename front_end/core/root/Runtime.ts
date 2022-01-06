@@ -47,40 +47,6 @@ export class Runtime {
     runtimeInstance = undefined;
   }
 
-  /**
-   * http://tools.ietf.org/html/rfc3986#section-5.2.4
-   */
-  static normalizePath(path: string): string {
-    if (path.indexOf('..') === -1 && path.indexOf('.') === -1) {
-      return path;
-    }
-
-    const normalizedSegments = [];
-    const segments = path.split('/');
-    for (const segment of segments) {
-      if (segment === '.') {
-        continue;
-      } else if (segment === '..') {
-        normalizedSegments.pop();
-      } else if (segment) {
-        normalizedSegments.push(segment);
-      }
-    }
-    let normalizedPath = normalizedSegments.join('/');
-    if (normalizedPath[normalizedPath.length - 1] === '/') {
-      return normalizedPath;
-    }
-    if (path[0] === '/' && normalizedPath) {
-      normalizedPath = '/' + normalizedPath;
-    }
-    if ((path[path.length - 1] === '/') || (segments[segments.length - 1] === '.') ||
-        (segments[segments.length - 1] === '..')) {
-      normalizedPath = normalizedPath + '/';
-    }
-
-    return normalizedPath;
-  }
-
   static queryParam(name: string): string|null {
     return queryParamsObject.get(name);
   }
@@ -130,15 +96,6 @@ export class Runtime {
       return false;
     }
     return true;
-  }
-
-  static resolveSourceURL(path: string): string {
-    let sourceURL: string = self.location.href;
-    if (self.location.search) {
-      sourceURL = sourceURL.replace(self.location.search, '');
-    }
-    sourceURL = sourceURL.substring(0, sourceURL.lastIndexOf('/') + 1) + path;
-    return '\n/*# sourceURL=' + sourceURL + ' */';
   }
 
   loadLegacyModule(modulePath: string): Promise<void> {

@@ -952,28 +952,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private expandResourcePath(extensionPath: string, resourcePath: string): string {
-    return extensionPath + this.normalizePath(resourcePath);
-  }
-
-  private normalizePath(path: string): string {
-    const source = path.split('/');
-    const result = [];
-
-    for (let i = 0; i < source.length; ++i) {
-      if (source[i] === '.') {
-        continue;
-      }
-      // Ignore empty path components resulting from //, as well as a leading and traling slashes.
-      if (source[i] === '') {
-        continue;
-      }
-      if (source[i] === '..') {
-        result.pop();
-      } else {
-        result.push(source[i]);
-      }
-    }
-    return '/' + result.join('/');
+    return extensionPath + '/' + Common.ParsedURL.normalizePath(resourcePath);
   }
 
   evaluate(

@@ -10,6 +10,38 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 const ParsedURL = Common.ParsedURL.ParsedURL;
 
 describe('Parsed URL', () => {
+  describe('with path normalization', () => {
+    const cases = [
+      {path: '', expected: ''},
+      {path: '.', expected: '/'},
+      {path: './', expected: '/'},
+      {path: '..', expected: '/'},
+      {path: '../', expected: '/'},
+      {path: 'a/../g', expected: 'g'},
+      {path: '../..', expected: '/'},
+      {path: '../../', expected: '/'},
+      {path: 'a/b/c/../../g', expected: 'a/g'},
+      {path: 'a/b/c/d/../../../g', expected: 'a/g'},
+      {path: 'a/b/c/d/e/../../../../g', expected: 'a/g'},
+      {path: '/./g', expected: '/g'},
+      {path: '/../g', expected: '/g'},
+      {path: 'g.', expected: 'g.'},
+      {path: '.g', expected: '.g'},
+      {path: 'g..', expected: 'g..'},
+      {path: '..g', expected: '..g'},
+      {path: 'a/b/./../g', expected: 'a/g'},
+      {path: './g/.', expected: 'g/'},
+      {path: 'g/./h', expected: 'g/h'},
+      {path: 'g/../h', expected: 'h'},
+    ];
+
+    for (const {path, expected} of cases) {
+      it(`can normalize "${path}"`, () => {
+        assert.strictEqual(Common.ParsedURL.normalizePath(path), expected);
+      });
+    }
+  });
+
   it('recognizes valid URLs', () => {
     const parsedUrl = new ParsedURL('http://www.example.com/');
     assert.isTrue(parsedUrl.isValid, 'the URL should be valid');
@@ -469,27 +501,6 @@ describe('Parsed URL', () => {
     assert.strictEqual(ParsedURL.completeURL(baseURL, ';x'), 'http://a/b/c/;x');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x'), 'http://a/b/c/g;x');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x?y#s'), 'http://a/b/c/g;x?y#s');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, ''), 'http://a/b/c/d;p?q');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '.'), 'http://a/b/c/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, './'), 'http://a/b/c/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '..'), 'http://a/b/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../'), 'http://a/b/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../g'), 'http://a/b/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../..'), 'http://a/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../'), 'http://a/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../../g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '../../../../g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '/./g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '/../g'), 'http://a/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g.'), 'http://a/b/c/g.');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '.g'), 'http://a/b/c/.g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g..'), 'http://a/b/c/g..');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, '..g'), 'http://a/b/c/..g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, './../g'), 'http://a/b/g');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, './g/.'), 'http://a/b/c/g/');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/./h'), 'http://a/b/c/g/h');
-    assert.strictEqual(ParsedURL.completeURL(baseURL, 'g/../h'), 'http://a/b/c/h');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/./y'), 'http://a/b/c/g;x=1/y');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g;x=1/../y'), 'http://a/b/c/y');
     assert.strictEqual(ParsedURL.completeURL(baseURL, 'g?y/./x'), 'http://a/b/c/g?y/./x');
@@ -559,5 +570,4 @@ describe('Parsed URL', () => {
     const convertedUrl = ParsedURL.relativePathToUrlString(relativePath, baseUrl);
     assert.strictEqual(convertedUrl, 'http://localhost:8080/my%20folder/new%20spaced%2520name');
   });
-
 });

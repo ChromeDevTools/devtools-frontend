@@ -12,6 +12,7 @@ group("unittests") {
   deps = [
     ":copy_debug_check",
     ":copy_to_gen",
+    "../../front_end/ui/legacy:copy_stylesheets_for_server",
     "front_end",
     "inspector_overlay",
   ]

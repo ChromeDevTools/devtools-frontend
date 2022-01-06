@@ -30,7 +30,6 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import type * as Formatter from '../../models/formatter/formatter.js';
 import * as Acorn from '../../third_party/acorn/acorn.js';
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
@@ -38,6 +37,7 @@ import {AcornTokenizer, ECMA_VERSION} from './AcornTokenizer.js';
 import {CSSFormatter} from './CSSFormatter.js';
 import {ESTreeWalker} from './ESTreeWalker.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';
+import type {FormatResult} from './FormatterActions.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
@@ -179,12 +179,11 @@ export function javaScriptIdentifiers(content: string): {
   return identifiers.map(id => ({name: 'name' in id && id.name || undefined, offset: id.start}));
 }
 
-export function format(
-    mimeType: string, text: string, indentString?: string): Formatter.FormatterWorkerPool.FormatResult {
+export function format(mimeType: string, text: string, indentString?: string): FormatResult {
   // Default to a 4-space indent.
   indentString = indentString || '    ';
 
-  let result: Formatter.FormatterWorkerPool.FormatResult;
+  let result: FormatResult;
   const builder = new FormattedContentBuilder(indentString);
   const lineEndings = Platform.StringUtilities.findLineEndingIndexes(text);
   try {

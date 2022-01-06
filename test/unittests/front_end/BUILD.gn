@@ -4,7 +4,7 @@
 
 group("front_end") {
   deps = [
-    "../../../front_end/Images",
+    "../../../front_end/Images:optimize_images",
     "client_variations",
     "core/common",
     "core/dom_extension",

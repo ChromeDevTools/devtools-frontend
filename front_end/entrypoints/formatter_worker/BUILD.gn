@@ -23,9 +23,9 @@ devtools_module("formatter_worker") {
   ]
 
   deps = [
+    ":formatter_actions",
     "../../core/platform:bundle",
     "../../core/root:bundle",
-    "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
     "../../third_party/acorn:bundle",
     "../../third_party/acorn-loose:bundle",
@@ -70,7 +70,10 @@ devtools_entrypoint("worker_entrypoint") {
     "../../core/platform:bundle",
   ]
 
-  visibility = [ "../../../front_end" ]
+  visibility = [
+    "../../../front_end",
+    "../../models/formatter/*",
+  ]
 
   visibility += devtools_entrypoints_visibility
 }

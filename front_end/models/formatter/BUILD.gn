@@ -27,7 +27,10 @@ devtools_module("formatter") {
 devtools_entrypoint("bundle") {
   entrypoint = "formatter.ts"
 
-  deps = [ ":formatter" ]
+  deps = [
+    ":formatter",
+    "../../entrypoints/formatter_worker:worker_entrypoint",
+  ]
 
   visibility = [
     ":*",

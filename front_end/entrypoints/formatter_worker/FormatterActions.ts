@@ -11,3 +11,13 @@ export const enum FormatterActions {
   EVALUATE_JAVASCRIPT_SUBSTRING = 'evaluatableJavaScriptSubstring',
   ARGUMENTS_LIST = 'argumentsList',
 }
+
+export interface FormatMapping {
+  original: number[];
+  formatted: number[];
+}
+
+export interface FormatResult {
+  content: string;
+  mapping: FormatMapping;
+}

@@ -36,7 +36,6 @@
 import * as Common from '../../../core/common/common.js';
 
 import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.legacy.js';
-import inspectorSyntaxHighlightDarkStyles from '../inspectorSyntaxHighlightDark.css.legacy.js';
 
 let themeSupportInstance: ThemeSupport;
 
@@ -115,7 +114,6 @@ export class ThemeSupport extends EventTarget {
 
   injectHighlightStyleSheets(element: Element|ShadowRoot): void {
     this.appendStyle(element, inspectorSyntaxHighlightStyles);
-    this.appendStyle(element, inspectorSyntaxHighlightDarkStyles);
   }
 
   /**

@@ -27,18 +27,16 @@
  */
 
 .webkit-css-property {
-  color: var(--webkit-css-property-color, rgb(200 0 0)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--webkit-css-property-color, var(--color-syntax-1)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
 }
 
 .webkit-html-comment {
   /* Keep this in sync with view-source.css (.webkit-html-comment) */
-  color: rgb(35 110 37); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-token-comment);
 }
 
 .webkit-html-tag {
-  color: rgb(168 148 166); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-token-tag);
 }
 
 .webkit-html-tag-name,
@@ -49,16 +47,17 @@
 
 .webkit-html-pseudo-element {
   /* This one is non-standard. */
-  color: rgb(17 85 204); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-token-pseudo-element);
 }
 
 .webkit-html-js-node,
 .webkit-html-css-node {
+  color: var(--color-text-primary);
   white-space: pre-wrap;
 }
 
 .webkit-html-text-node {
+  color: var(--color-text-primary);
   unicode-bidi: -webkit-isolate;
 }
 
@@ -77,15 +76,13 @@
 
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
-  color: var(--color-token-attribute); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-token-attribute);
   unicode-bidi: -webkit-isolate;
 }
 
 .webkit-html-attribute-value {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-value) */
-  color: rgb(26 26 166); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--color-token-attribute-value);
   unicode-bidi: -webkit-isolate;
   word-break: break-all;
 }

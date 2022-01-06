@@ -1553,7 +1553,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/inspectorCommon.css.js",
   "front_end/ui/legacy/inspectorCommon.css.legacy.js",
   "front_end/ui/legacy/inspectorSyntaxHighlight.css.legacy.js",
-  "front_end/ui/legacy/inspectorSyntaxHighlightDark.css.legacy.js",
   "front_end/ui/legacy/inspectorViewTabbedPane.css.legacy.js",
   "front_end/ui/legacy/listWidget.css.legacy.js",
   "front_end/ui/legacy/popover.css.legacy.js",

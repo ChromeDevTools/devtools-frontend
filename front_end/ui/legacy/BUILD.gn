@@ -28,7 +28,6 @@ generate_css("legacy_css_files") {
     "inlineButton.css",
     "inspectorCommon.css",
     "inspectorSyntaxHighlight.css",
-    "inspectorSyntaxHighlightDark.css",
     "inspectorViewTabbedPane.css",
     "listWidget.css",
     "popover.css",

@@ -230,6 +230,13 @@ hooks = [
     ],
   },
   {
+    # Update LASTCHANGE for build script timestamps
+    'name': 'lastchange',
+    'pattern': '.',
+    'action': ['python3', 'build/util/lastchange.py',
+               '-o', 'build/util/LASTCHANGE'],
+  },
+  {
     'name': 'sysroot_x64',
     'pattern': '.',
     'condition': 'checkout_linux and checkout_x64',

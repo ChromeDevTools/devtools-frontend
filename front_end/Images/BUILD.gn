@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/timestamp.gni")
 import("../../config/gni/devtools_image_files.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/ninja/node.gni")
@@ -14,6 +15,7 @@ node_action("generate_css_vars") {
   script = "front_end/Images/generate-css-vars.js"
 
   args = [
+           build_timestamp,
            rebase_path(target_gen_dir, root_build_dir),
            "optimize_images",
          ] + devtools_image_files + devtools_src_svg_files

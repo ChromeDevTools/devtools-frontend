@@ -2,8 +2,10 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/timestamp.gni")
 import("./node.gni")
 import("./vars.gni")
+
 template("generate_css") {
   node_action(target_name) {
     forward_variables_from(invoker, [ "sources" ])
@@ -17,6 +19,7 @@ template("generate_css") {
         [ devtools_location_prepend + "node_modules/clean-css/package.json" ]
 
     args = [
+      build_timestamp,
       "$is_debug",
       "${invoker.legacy}",
       target_name,

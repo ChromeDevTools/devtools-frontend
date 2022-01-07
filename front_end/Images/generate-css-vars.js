@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
-const [, , targetGenDir, targetName, ...imageSources] = process.argv;
+const [, , buildTimestamp, targetGenDir, targetName, ...imageSources] = process.argv;
 
 /**
  * @param {string} fileName
@@ -18,7 +18,7 @@ function generateCSSVariableDefinition(fileName) {
       fileName}', import.meta.url).toString() + '\\")');`;
 }
 
-const CURRENT_YEAR = new Date().getFullYear();
+const CURRENT_YEAR = new Date(Number(buildTimestamp) * 1000).getFullYear();
 const fileContent = `
 // Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be

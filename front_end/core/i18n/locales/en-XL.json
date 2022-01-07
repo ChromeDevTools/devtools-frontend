@@ -2171,6 +2171,12 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Ĉóûĺd̂ ńôt́ d̂óŵńl̂óâd́ â ŕêq́ûír̂éd̂ íĉón̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́"
   },
+  "panels/application/AppManifestView.ts | darkBackgroundColor": {
+    "message": "D̂ár̂ḱ b̂áĉḱĝŕôún̂d́ ĉól̂ór̂"
+  },
+  "panels/application/AppManifestView.ts | darkThemeColor": {
+    "message": "D̂ár̂ḱ t̂h́êḿê ćôĺôŕ"
+  },
   "panels/application/AppManifestView.ts | description": {
     "message": "D̂éŝćr̂íp̂t́îón̂"
   },

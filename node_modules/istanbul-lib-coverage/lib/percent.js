@@ -7,7 +7,7 @@
 module.exports = function percent(covered, total) {
     let tmp;
     if (total > 0) {
-        tmp = (1000 * 100 * covered) / total + 5;
+        tmp = (1000 * 100 * covered) / total;
         return Math.floor(tmp / 10) / 100;
     } else {
         return 100.0;

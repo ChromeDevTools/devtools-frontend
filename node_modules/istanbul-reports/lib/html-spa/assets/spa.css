@@ -252,8 +252,8 @@ a:hover {
     color: #666;
 }
 
-.coverage-summary .headercell:nth-child(4n - 2),
-.coverage-summary td:nth-child(4n - 2) {
+.coverage-summary .headercell:nth-child(5n - 2),
+.coverage-summary td:nth-child(5n - 2) {
     border-left: 2px solid #fcfcfc;
     padding-left: 2em;
 }

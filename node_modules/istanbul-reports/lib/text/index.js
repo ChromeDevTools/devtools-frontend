@@ -225,7 +225,7 @@ function tableRow(
 
 class TextReport extends ReportBase {
     constructor(opts) {
-        super();
+        super(opts);
 
         opts = opts || {};
         const { maxCols } = opts;

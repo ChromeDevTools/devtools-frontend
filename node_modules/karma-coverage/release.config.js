@@ -17,5 +17,8 @@ module.exports = {
   ],
   success: [
     '@semantic-release/github'
+  ],
+  fail: [
+    '@semantic-release/github'
   ]
 }

@@ -1,5 +1,9 @@
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^net|tls$" }] */
+
 'use strict';
 
+const net = require('net');
+const tls = require('tls');
 const { randomFillSync } = require('crypto');
 
 const PerMessageDeflate = require('./permessage-deflate');
@@ -16,7 +20,7 @@ class Sender {
   /**
    * Creates a Sender instance.
    *
-   * @param {net.Socket} socket The connection socket
+   * @param {(net.Socket|tls.Socket)} socket The connection socket
    * @param {Object} [extensions] An object containing the negotiated extensions
    */
   constructor(socket, extensions) {
@@ -36,13 +40,13 @@ class Sender {
    *
    * @param {Buffer} data The data to frame
    * @param {Object} options Options object
-   * @param {Number} options.opcode The opcode
-   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
-   *     modified
    * @param {Boolean} [options.fin=false] Specifies whether or not to set the
    *     FIN bit
    * @param {Boolean} [options.mask=false] Specifies whether or not to mask
    *     `data`
+   * @param {Number} options.opcode The opcode
+   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
+   *     modified
    * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
    *     RSV1 bit
    * @return {Buffer[]} The framed data as a list of `Buffer` instances
@@ -98,7 +102,7 @@ class Sender {
    * Sends a close message to the other peer.
    *
    * @param {Number} [code] The status code component of the body
-   * @param {String} [data] The message component of the body
+   * @param {(String|Buffer)} [data] The message component of the body
    * @param {Boolean} [mask=false] Specifies whether or not to mask the message
    * @param {Function} [cb] Callback
    * @public
@@ -110,7 +114,7 @@ class Sender {
       buf = EMPTY_BUFFER;
     } else if (typeof code !== 'number' || !isValidStatusCode(code)) {
       throw new TypeError('First argument must be a valid error code number');
-    } else if (data === undefined || data === '') {
+    } else if (data === undefined || !data.length) {
       buf = Buffer.allocUnsafe(2);
       buf.writeUInt16BE(code, 0);
     } else {
@@ -122,7 +126,12 @@ class Sender {
 
       buf = Buffer.allocUnsafe(2 + length);
       buf.writeUInt16BE(code, 0);
-      buf.write(data, 2);
+
+      if (typeof data === 'string') {
+        buf.write(data, 2);
+      } else {
+        buf.set(data, 2);
+      }
     }
 
     if (this._deflating) {
@@ -246,10 +255,10 @@ class Sender {
    *
    * @param {*} data The message to send
    * @param {Object} options Options object
-   * @param {Boolean} [options.compress=false] Specifies whether or not to
-   *     compress `data`
    * @param {Boolean} [options.binary=false] Specifies whether `data` is binary
    *     or text
+   * @param {Boolean} [options.compress=false] Specifies whether or not to
+   *     compress `data`
    * @param {Boolean} [options.fin=false] Specifies whether the fragment is the
    *     last one
    * @param {Boolean} [options.mask=false] Specifies whether or not to mask
@@ -265,7 +274,15 @@ class Sender {
 
     if (this._firstFragment) {
       this._firstFragment = false;
-      if (rsv1 && perMessageDeflate) {
+      if (
+        rsv1 &&
+        perMessageDeflate &&
+        perMessageDeflate.params[
+          perMessageDeflate._isServer
+            ? 'server_no_context_takeover'
+            : 'client_no_context_takeover'
+        ]
+      ) {
         rsv1 = buf.length >= perMessageDeflate._threshold;
       }
       this._compress = rsv1;
@@ -312,12 +329,12 @@ class Sender {
    *     `data`
    * @param {Object} options Options object
    * @param {Number} options.opcode The opcode
-   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
-   *     modified
    * @param {Boolean} [options.fin=false] Specifies whether or not to set the
    *     FIN bit
    * @param {Boolean} [options.mask=false] Specifies whether or not to mask
    *     `data`
+   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
+   *     modified
    * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
    *     RSV1 bit
    * @param {Function} [cb] Callback

@@ -65,6 +65,12 @@ function SubHeadings({ sortKeyPrefix, onSort, activeSort }) {
                 activeSort={activeSort}
             />
             <SummaryTableHeaderCell
+                name="Missed"
+                onSort={onSort}
+                sortKey={sortKeyPrefix + '.missed'}
+                activeSort={activeSort}
+            />
+            <SummaryTableHeaderCell
                 name="Total"
                 onSort={onSort}
                 sortKey={sortKeyPrefix + '.total'}

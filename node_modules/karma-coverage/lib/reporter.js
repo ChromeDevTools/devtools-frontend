@@ -126,6 +126,7 @@ var CoverageReporter = function (rootConfig, helper, logger, emitter) {
     })
 
     var coverageFailed = false
+    const { emitWarning = false } = thresholds
 
     function check (name, thresholds, actuals) {
       var keys = [
@@ -146,11 +147,13 @@ var CoverageReporter = function (rootConfig, helper, logger, emitter) {
             log.error(browser.name + ': Uncovered count for ' + key + ' (' + actualUncovered +
               ') exceeds ' + name + ' threshold (' + -1 * threshold + ')')
           }
-        } else {
-          if (actual < threshold) {
+        } else if (actual < threshold) {
+          const message = `${browser.name}: Coverage for ${key} (${actual}%) does not meet ${name} threshold (${threshold}%)`
+          if (emitWarning) {
+            log.warn(message)
+          } else {
             coverageFailed = true
-            log.error(browser.name + ': Coverage for ' + key + ' (' + actual +
-              '%) does not meet ' + name + ' threshold (' + threshold + '%)')
+            log.error(message)
           }
         }
       })

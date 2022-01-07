@@ -97,6 +97,13 @@ provided directly on the `MapStore` instance.
 
 
 
+### [4.0.1](https://www.github.com/istanbuljs/istanbuljs/compare/istanbul-lib-source-maps-v4.0.0...istanbul-lib-source-maps-v4.0.1) (2021-10-12)
+
+
+### Bug Fixes
+
+* source mapping for branch statements ([#518](https://www.github.com/istanbuljs/istanbuljs/issues/518)) ([3833708](https://www.github.com/istanbuljs/istanbuljs/commit/38337081d97baa6295707d569dee9c4abc3f7da7))
+
 ## [3.0.6](https://github.com/istanbuljs/istanbuljs/compare/istanbul-lib-source-maps@3.0.5...istanbul-lib-source-maps@3.0.6) (2019-04-24)
 
 

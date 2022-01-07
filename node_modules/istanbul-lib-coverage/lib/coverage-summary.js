@@ -19,7 +19,8 @@ function blankSummary() {
         lines: empty(),
         statements: empty(),
         functions: empty(),
-        branches: empty()
+        branches: empty(),
+        branchesTrue: empty()
     };
 }
 
@@ -63,12 +64,20 @@ class CoverageSummary {
      * @param {CoverageSummary} obj - another coverage summary object
      */
     merge(obj) {
-        const keys = ['lines', 'statements', 'branches', 'functions'];
+        const keys = [
+            'lines',
+            'statements',
+            'branches',
+            'functions',
+            'branchesTrue'
+        ];
         keys.forEach(key => {
-            this[key].total += obj[key].total;
-            this[key].covered += obj[key].covered;
-            this[key].skipped += obj[key].skipped;
-            this[key].pct = percent(this[key].covered, this[key].total);
+            if (obj[key]) {
+                this[key].total += obj[key].total;
+                this[key].covered += obj[key].covered;
+                this[key].skipped += obj[key].skipped;
+                this[key].pct = percent(this[key].covered, this[key].total);
+            }
         });
 
         return this;
@@ -94,7 +103,8 @@ dataProperties(CoverageSummary, [
     'lines',
     'statements',
     'functions',
-    'branches'
+    'branches',
+    'branchesTrue'
 ]);
 
 module.exports = {

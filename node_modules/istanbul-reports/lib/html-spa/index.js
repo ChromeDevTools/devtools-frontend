@@ -99,6 +99,7 @@ class HtmlSpaReport extends ReportBase {
             total: metric.total,
             covered: metric.covered,
             skipped: metric.skipped,
+            missed: metric.total - metric.covered,
             pct: isEmpty ? 0 : metric.pct,
             classForPercent: isEmpty
                 ? 'empty'

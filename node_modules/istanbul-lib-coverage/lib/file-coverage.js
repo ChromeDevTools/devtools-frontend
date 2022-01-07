@@ -9,8 +9,8 @@ const dataProperties = require('./data-properties');
 const { CoverageSummary } = require('./coverage-summary');
 
 // returns a data object that represents empty coverage
-function emptyCoverage(filePath) {
-    return {
+function emptyCoverage(filePath, reportLogic) {
+    const cov = {
         path: filePath,
         statementMap: {},
         fnMap: {},
@@ -19,6 +19,8 @@ function emptyCoverage(filePath) {
         f: {},
         b: {}
     };
+    if (reportLogic) cov.bT = {};
+    return cov;
 }
 
 // asserts that a data object "looks like" a coverage object
@@ -40,6 +42,45 @@ function assertValidObject(obj) {
     }
 }
 
+const keyFromLoc = ({ start, end }) =>
+    `${start.line}|${start.column}|${end.line}|${end.column}`;
+
+const mergeProp = (aHits, aMap, bHits, bMap, itemKey = keyFromLoc) => {
+    const aItems = {};
+    for (const [key, itemHits] of Object.entries(aHits)) {
+        const item = aMap[key];
+        aItems[itemKey(item)] = [itemHits, item];
+    }
+    for (const [key, bItemHits] of Object.entries(bHits)) {
+        const bItem = bMap[key];
+        const k = itemKey(bItem);
+
+        if (aItems[k]) {
+            const aPair = aItems[k];
+            if (bItemHits.forEach) {
+                // should this throw an exception if aPair[0] is not an array?
+                bItemHits.forEach((hits, h) => {
+                    if (aPair[0][h] !== undefined) aPair[0][h] += hits;
+                    else aPair[0][h] = hits;
+                });
+            } else {
+                aPair[0] += bItemHits;
+            }
+        } else {
+            aItems[k] = [bItemHits, bItem];
+        }
+    }
+    const hits = {};
+    const map = {};
+
+    Object.values(aItems).forEach(([itemHits, item], i) => {
+        hits[i] = itemHits;
+        map[i] = item;
+    });
+
+    return [hits, map];
+};
+
 /**
  * provides a read-only view of coverage for a single file.
  * The deep structure of this object is documented elsewhere. It has the following
@@ -60,14 +101,14 @@ class FileCoverage {
      * and empty coverage object with the specified file path or a data object that
      * has all the required properties for a file coverage object.
      */
-    constructor(pathOrObj) {
+    constructor(pathOrObj, reportLogic = false) {
         if (!pathOrObj) {
             throw new Error(
                 'Coverage must be initialized with a path or an object'
             );
         }
         if (typeof pathOrObj === 'string') {
-            this.data = emptyCoverage(pathOrObj);
+            this.data = emptyCoverage(pathOrObj, reportLogic);
         } else if (pathOrObj instanceof FileCoverage) {
             this.data = pathOrObj.data;
         } else if (typeof pathOrObj === 'object') {
@@ -166,24 +207,50 @@ class FileCoverage {
             return;
         }
 
-        Object.entries(other.s).forEach(([k, v]) => {
-            this.data.s[k] += v;
-        });
-        Object.entries(other.f).forEach(([k, v]) => {
-            this.data.f[k] += v;
-        });
-        Object.entries(other.b).forEach(([k, v]) => {
-            let i;
-            const retArray = this.data.b[k];
-            /* istanbul ignore if: is this even possible? */
-            if (!retArray) {
-                this.data.b[k] = v;
-                return;
-            }
-            for (i = 0; i < retArray.length; i += 1) {
-                retArray[i] += v[i];
-            }
-        });
+        let [hits, map] = mergeProp(
+            this.s,
+            this.statementMap,
+            other.s,
+            other.statementMap
+        );
+        this.data.s = hits;
+        this.data.statementMap = map;
+
+        const keyFromLocProp = x => keyFromLoc(x.loc);
+        const keyFromLocationsProp = x => keyFromLoc(x.locations[0]);
+
+        [hits, map] = mergeProp(
+            this.f,
+            this.fnMap,
+            other.f,
+            other.fnMap,
+            keyFromLocProp
+        );
+        this.data.f = hits;
+        this.data.fnMap = map;
+
+        [hits, map] = mergeProp(
+            this.b,
+            this.branchMap,
+            other.b,
+            other.branchMap,
+            keyFromLocationsProp
+        );
+        this.data.b = hits;
+        this.data.branchMap = map;
+
+        // Tracking additional information about branch truthiness
+        // can be optionally enabled:
+        if (this.bT && other.bT) {
+            [hits, map] = mergeProp(
+                this.bT,
+                this.branchMap,
+                other.bT,
+                other.branchMap,
+                keyFromLocationsProp
+            );
+            this.data.bT = hits;
+        }
     }
 
     computeSimpleTotals(property) {
@@ -202,8 +269,8 @@ class FileCoverage {
         return ret;
     }
 
-    computeBranchTotals() {
-        const stats = this.b;
+    computeBranchTotals(property) {
+        const stats = this[property];
         const ret = { total: 0, covered: 0, skipped: 0 };
 
         Object.values(stats).forEach(branches => {
@@ -222,6 +289,7 @@ class FileCoverage {
         const statements = this.s;
         const functions = this.f;
         const branches = this.b;
+        const branchesTrue = this.bT;
         Object.keys(statements).forEach(s => {
             statements[s] = 0;
         });
@@ -231,6 +299,13 @@ class FileCoverage {
         Object.keys(branches).forEach(b => {
             branches[b].fill(0);
         });
+        // Tracking additional information about branch truthiness
+        // can be optionally enabled:
+        if (branchesTrue) {
+            Object.keys(branchesTrue).forEach(bT => {
+                branchesTrue[bT].fill(0);
+            });
+        }
     }
 
     /**
@@ -242,7 +317,12 @@ class FileCoverage {
         ret.lines = this.computeSimpleTotals('getLineCoverage');
         ret.functions = this.computeSimpleTotals('f', 'fnMap');
         ret.statements = this.computeSimpleTotals('s', 'statementMap');
-        ret.branches = this.computeBranchTotals();
+        ret.branches = this.computeBranchTotals('b');
+        // Tracking additional information about branch truthiness
+        // can be optionally enabled:
+        if (this['bt']) {
+            ret.branchesTrue = this.computeBranchTotals('bT');
+        }
         return new CoverageSummary(ret);
     }
 }
@@ -256,6 +336,7 @@ dataProperties(FileCoverage, [
     's',
     'f',
     'b',
+    'bT',
     'all'
 ]);
 

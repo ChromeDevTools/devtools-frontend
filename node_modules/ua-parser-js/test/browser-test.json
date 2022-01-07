@@ -160,6 +160,16 @@
         }
     },
     {
+        "desc"    : "Camino on Mac",
+        "ua"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.5; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Camino/2.2.1",
+        "expect"  :
+        {
+            "name"    : "Camino",
+            "version" : "2.2.1",
+            "major"   : "2"
+        }
+    },
+    {
         "desc"    : "Chimera",
         "ua"      : "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; pl-PL; rv:1.0.1) Gecko/20021111 Chimera/0.6",
         "expect"  :
@@ -427,6 +437,16 @@
             "name"    : "Fennec",
             "version" : "1.0a1",
             "major"   : "1"
+        }
+    },
+    {
+        "desc"    : "Firefox for Maemo (Nokia N900)",
+        "ua"      : "Mozilla/5.0 (Maemo; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
+        "expect"  :
+        {
+            "name"    : "Fennec",
+            "version" : "10.0.1",
+            "major"   : "10"
         }
     },
     {
@@ -729,6 +749,16 @@
         }
     },
     {
+        "desc"    : "Netscape 6",
+        "ua"      : "Mozilla/5.0 (Windows; U; Win95; de-DE; rv:0.9.2) Gecko/20010726 Netscape6/6.1",
+        "expect"  :
+        {
+            "name"    : "Netscape",
+            "version" : "6.1",
+            "major"   : "6"
+        }
+    },
+    {
         "desc"    : "Nokia Browser",
         "ua"      : "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaN8-00/025.007; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.1.37 Mobile Safari/533.4 3gpp-gba",
         "expect"  :
@@ -739,6 +769,26 @@
         }
     },
     {
+        "desc"    : "Obigo",
+        "ua"      : "LG-GS290/V100 Obigo/WAP2.0 Profile/MIDP-2.1 Configuration/CLDC-1.1",
+        "expect"  :
+        {
+            "name"    : "Obigo",
+            "version" : "WAP2.0",
+            "major"   : "2"
+        }
+    },
+    {
+        "desc"    : "Obigo",
+        "ua"      : "LG/KU990i/v10a Browser/Obigo-Q05A/3.6 MMS/LG-MMS-V1.0/1.2 Java/ASVM/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+        "expect"  :
+        {
+            "name"    : "Obigo",
+            "version" : "Q05A",
+            "major"   : "05"
+        }
+    },
+    {
         "desc"    : "Oculus Browser",
         "ua"      : "Mozilla/5.0 (Linux; Android 7.0; SM-G920I Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/3.4.9 SamsungBrowser/4.0 Chrome/57.0.2987.146 Mobile VR Safari/537.36",
         "expect"  :
@@ -746,6 +796,16 @@
             "name"    : "Oculus Browser",
             "version" : "3.4.9",
             "major"   : "3"
+        }
+    },
+    {
+        "desc"    : "Oculus Browser",
+        "ua"      : "Mozilla/5.0 (Linux; Android 10; Quest 2) AppleWebKit/537.36 (KHTML, like Gecko) OculusBrowser/15.0.0.0.22.280317669 SamsungBrowser/4.0 Chrome/89.0.4389.90 VR Safari/537.36",
+        "expect"  :
+        {
+            "name"    : "Oculus Browser",
+            "version" : "15.0.0.0.22.280317669",
+            "major"   : "15"
         }
     },
     {
@@ -959,6 +1019,16 @@
         }
     },
     {
+        "desc"    : "SeaMonkey on Mac",
+        "ua"      : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.5; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
+        "expect"  :
+        {
+            "name"    : "SeaMonkey",
+            "version" : "2.7.1",
+            "major"   : "2"
+        }
+    },
+    {
         "desc"    : "Silk Browser",
         "ua"      : "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-us; Silk/1.1.0-84)",
         "expect"  :
@@ -1086,6 +1156,16 @@
             "name"    : "UCBrowser",
             "version" : "7.9.0.94",
             "major"   : "7"
+        }
+    },
+    {
+        "desc"    : "UPBrowser",
+        "ua"      : "BenQ-CF61/1.00/WAP2.0/MIDP2.0/CLDC1.0 UP.Browser/6.3.0.4.c.1.102 (GUI) MMP/2.0",
+        "expect"  :
+        {
+            "name"    : "UP.Browser",
+            "version" : "6.3.0.4.c.1.102",
+            "major"   : "6"
         }
     },
     {
@@ -1225,6 +1305,16 @@
         {
             "name"    : "Firefox",
             "version" : "1.1",
+            "major"   : "1"
+        }
+    },
+    {
+        "desc"    : "Firefox iOS using iPad",
+        "ua"      : "Mozilla/5.0 (iPad; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) FxiOS/1.0 Mobile/12F69 Safari/600.1.4",
+        "expect"  :
+        {
+            "name"    : "Firefox",
+            "version" : "1.0",
             "major"   : "1"
         }
     },

@@ -88,9 +88,12 @@ For example, `statements: 90` implies minimum statement coverage is 90%. `statem
 
 `global` applies to all files together and `each` on a per-file basis. A list of files or patterns can be excluded from enforcement via the `excludes` property. On a per-file or pattern basis, per-file thresholds can be overridden via the `overrides` property.
 
+`emitWarning` allows to log exceeding coverage threshold into console as warning and not fail tests.
+
 ```javascript
 coverageReporter: {
   check: {
+    emitWarning: false,
     global: {
       statements: 50,
       branches: 50,

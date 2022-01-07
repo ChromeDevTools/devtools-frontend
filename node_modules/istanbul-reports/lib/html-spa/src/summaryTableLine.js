@@ -1,7 +1,7 @@
 const React = require('react');
 
 function MetricCells({ metrics }) {
-    const { classForPercent, pct, covered, total } = metrics;
+    const { classForPercent, pct, covered, missed, total } = metrics;
 
     return (
         <>
@@ -15,6 +15,7 @@ function MetricCells({ metrics }) {
                 </div>
             </td>
             <td className={'abs ' + classForPercent}>{covered}</td>
+            <td className={'abs ' + classForPercent}>{missed}</td>
             <td className={'abs ' + classForPercent}>{total}</td>
         </>
     );

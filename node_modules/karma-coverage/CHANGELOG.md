@@ -1,3 +1,15 @@
+# [2.1.0](https://github.com/karma-runner/karma-coverage/compare/v2.0.3...v2.1.0) (2021-12-01)
+
+
+### Bug Fixes
+
+* **deps:** update main and dev dependencies ([c20d982](https://github.com/karma-runner/karma-coverage/commit/c20d982607168ccc302f1cca576dbbbdac0a1af6))
+
+
+### Features
+
+* **reporter:** log coverage threshold as a warning fixed [#432](https://github.com/karma-runner/karma-coverage/issues/432) ([a6c95d8](https://github.com/karma-runner/karma-coverage/commit/a6c95d8fb932a4191474e6504174df7bc9a6fe60))
+
 ## [2.0.3](https://github.com/karma-runner/karma-coverage/compare/v2.0.2...v2.0.3) (2020-07-24)
 
 

@@ -6,6 +6,7 @@ import("//build/timestamp.gni")
 import("../../config/gni/devtools_image_files.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/ninja/node.gni")
+import("../../scripts/build/ninja/vars.gni")
 
 devtools_pre_built("Images") {
   sources = devtools_image_files + devtools_src_svg_files
@@ -35,6 +36,7 @@ node_action("optimize_images") {
   inputs = [
     _bundled_entrypoint,
     "rollup.config.js",
+    devtools_location_prepend + "node_modules/svgo/package.json",
   ]
   foreach(svg_image, devtools_src_svg_files) {
     inputs += [ "$target_gen_dir/$svg_image" ]

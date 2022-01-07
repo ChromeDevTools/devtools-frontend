@@ -28,20 +28,25 @@ class Receiver extends Writable {
   /**
    * Creates a Receiver instance.
    *
-   * @param {String} [binaryType=nodebuffer] The type for binary data
-   * @param {Object} [extensions] An object containing the negotiated extensions
-   * @param {Boolean} [isServer=false] Specifies whether to operate in client or
-   *     server mode
-   * @param {Number} [maxPayload=0] The maximum allowed message length
+   * @param {Object} [options] Options object
+   * @param {String} [options.binaryType=nodebuffer] The type for binary data
+   * @param {Object} [options.extensions] An object containing the negotiated
+   *     extensions
+   * @param {Boolean} [options.isServer=false] Specifies whether to operate in
+   *     client or server mode
+   * @param {Number} [options.maxPayload=0] The maximum allowed message length
+   * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+   *     not to skip UTF-8 validation for text and close messages
    */
-  constructor(binaryType, extensions, isServer, maxPayload) {
+  constructor(options = {}) {
     super();
 
-    this._binaryType = binaryType || BINARY_TYPES[0];
+    this._binaryType = options.binaryType || BINARY_TYPES[0];
+    this._extensions = options.extensions || {};
+    this._isServer = !!options.isServer;
+    this._maxPayload = options.maxPayload | 0;
+    this._skipUTF8Validation = !!options.skipUTF8Validation;
     this[kWebSocket] = undefined;
-    this._extensions = extensions || {};
-    this._isServer = !!isServer;
-    this._maxPayload = maxPayload | 0;
 
     this._bufferedBytes = 0;
     this._buffers = [];
@@ -412,7 +417,13 @@ class Receiver extends Writable {
       }
 
       data = this.consume(this._payloadLength);
-      if (this._masked) unmask(data, this._mask);
+
+      if (
+        this._masked &&
+        (this._mask[0] | this._mask[1] | this._mask[2] | this._mask[3]) !== 0
+      ) {
+        unmask(data, this._mask);
+      }
     }
 
     if (this._opcode > 0x07) return this.controlMessage(data);
@@ -425,7 +436,7 @@ class Receiver extends Writable {
 
     if (data.length) {
       //
-      // This message is not compressed so its lenght is the sum of the payload
+      // This message is not compressed so its length is the sum of the payload
       // length of all fragments.
       //
       this._messageLength = this._totalPayloadLength;
@@ -499,11 +510,11 @@ class Receiver extends Writable {
           data = fragments;
         }
 
-        this.emit('message', data);
+        this.emit('message', data, true);
       } else {
         const buf = concat(fragments, messageLength);
 
-        if (!isValidUTF8(buf)) {
+        if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
           this._loop = false;
           return error(
             Error,
@@ -514,7 +525,7 @@ class Receiver extends Writable {
           );
         }
 
-        this.emit('message', buf.toString());
+        this.emit('message', buf, false);
       }
     }
 
@@ -533,7 +544,7 @@ class Receiver extends Writable {
       this._loop = false;
 
       if (data.length === 0) {
-        this.emit('conclude', 1005, '');
+        this.emit('conclude', 1005, EMPTY_BUFFER);
         this.end();
       } else if (data.length === 1) {
         return error(
@@ -558,7 +569,7 @@ class Receiver extends Writable {
 
         const buf = data.slice(2);
 
-        if (!isValidUTF8(buf)) {
+        if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
           return error(
             Error,
             'invalid UTF-8 sequence',
@@ -568,7 +579,7 @@ class Receiver extends Writable {
           );
         }
 
-        this.emit('conclude', code, buf.toString());
+        this.emit('conclude', code, buf);
         this.end();
       }
     } else if (this._opcode === 0x09) {

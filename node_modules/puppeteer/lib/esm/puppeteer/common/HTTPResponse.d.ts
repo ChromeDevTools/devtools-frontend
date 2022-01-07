@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CDPSession } from './Connection.js';
+import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+import { EventEmitter } from './EventEmitter.js';
 import { Frame } from './FrameManager.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { SecurityDetails } from './SecurityDetails.js';
@@ -25,6 +26,9 @@ import { Protocol } from 'devtools-protocol';
 export interface RemoteAddress {
     ip: string;
     port: number;
+}
+interface CDPSession extends EventEmitter {
+    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
 }
 /**
  * The HTTPResponse class represents responses which are received by the
@@ -49,7 +53,11 @@ export declare class HTTPResponse {
     /**
      * @internal
      */
-    constructor(client: CDPSession, request: HTTPRequest, responsePayload: Protocol.Network.Response);
+    constructor(client: CDPSession, request: HTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null);
+    /**
+     * @internal
+     */
+    _parseStatusTextFromExtrInfo(extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null): string | undefined;
     /**
      * @internal
      */
@@ -123,4 +131,5 @@ export declare class HTTPResponse {
      */
     frame(): Frame | null;
 }
+export {};
 //# sourceMappingURL=HTTPResponse.d.ts.map

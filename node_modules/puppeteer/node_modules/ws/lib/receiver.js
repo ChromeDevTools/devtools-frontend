@@ -22,26 +22,31 @@ const INFLATING = 5;
 /**
  * HyBi Receiver implementation.
  *
- * @extends stream.Writable
+ * @extends Writable
  */
 class Receiver extends Writable {
   /**
    * Creates a Receiver instance.
    *
-   * @param {String} [binaryType=nodebuffer] The type for binary data
-   * @param {Object} [extensions] An object containing the negotiated extensions
-   * @param {Boolean} [isServer=false] Specifies whether to operate in client or
-   *     server mode
-   * @param {Number} [maxPayload=0] The maximum allowed message length
+   * @param {Object} [options] Options object
+   * @param {String} [options.binaryType=nodebuffer] The type for binary data
+   * @param {Object} [options.extensions] An object containing the negotiated
+   *     extensions
+   * @param {Boolean} [options.isServer=false] Specifies whether to operate in
+   *     client or server mode
+   * @param {Number} [options.maxPayload=0] The maximum allowed message length
+   * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+   *     not to skip UTF-8 validation for text and close messages
    */
-  constructor(binaryType, extensions, isServer, maxPayload) {
+  constructor(options = {}) {
     super();
 
-    this._binaryType = binaryType || BINARY_TYPES[0];
+    this._binaryType = options.binaryType || BINARY_TYPES[0];
+    this._extensions = options.extensions || {};
+    this._isServer = !!options.isServer;
+    this._maxPayload = options.maxPayload | 0;
+    this._skipUTF8Validation = !!options.skipUTF8Validation;
     this[kWebSocket] = undefined;
-    this._extensions = extensions || {};
-    this._isServer = !!isServer;
-    this._maxPayload = maxPayload | 0;
 
     this._bufferedBytes = 0;
     this._buffers = [];
@@ -168,14 +173,26 @@ class Receiver extends Writable {
 
     if ((buf[0] & 0x30) !== 0x00) {
       this._loop = false;
-      return error(RangeError, 'RSV2 and RSV3 must be clear', true, 1002);
+      return error(
+        RangeError,
+        'RSV2 and RSV3 must be clear',
+        true,
+        1002,
+        'WS_ERR_UNEXPECTED_RSV_2_3'
+      );
     }
 
     const compressed = (buf[0] & 0x40) === 0x40;
 
     if (compressed && !this._extensions[PerMessageDeflate.extensionName]) {
       this._loop = false;
-      return error(RangeError, 'RSV1 must be clear', true, 1002);
+      return error(
+        RangeError,
+        'RSV1 must be clear',
+        true,
+        1002,
+        'WS_ERR_UNEXPECTED_RSV_1'
+      );
     }
 
     this._fin = (buf[0] & 0x80) === 0x80;
@@ -185,31 +202,61 @@ class Receiver extends Writable {
     if (this._opcode === 0x00) {
       if (compressed) {
         this._loop = false;
-        return error(RangeError, 'RSV1 must be clear', true, 1002);
+        return error(
+          RangeError,
+          'RSV1 must be clear',
+          true,
+          1002,
+          'WS_ERR_UNEXPECTED_RSV_1'
+        );
       }
 
       if (!this._fragmented) {
         this._loop = false;
-        return error(RangeError, 'invalid opcode 0', true, 1002);
+        return error(
+          RangeError,
+          'invalid opcode 0',
+          true,
+          1002,
+          'WS_ERR_INVALID_OPCODE'
+        );
       }
 
       this._opcode = this._fragmented;
     } else if (this._opcode === 0x01 || this._opcode === 0x02) {
       if (this._fragmented) {
         this._loop = false;
-        return error(RangeError, `invalid opcode ${this._opcode}`, true, 1002);
+        return error(
+          RangeError,
+          `invalid opcode ${this._opcode}`,
+          true,
+          1002,
+          'WS_ERR_INVALID_OPCODE'
+        );
       }
 
       this._compressed = compressed;
     } else if (this._opcode > 0x07 && this._opcode < 0x0b) {
       if (!this._fin) {
         this._loop = false;
-        return error(RangeError, 'FIN must be set', true, 1002);
+        return error(
+          RangeError,
+          'FIN must be set',
+          true,
+          1002,
+          'WS_ERR_EXPECTED_FIN'
+        );
       }
 
       if (compressed) {
         this._loop = false;
-        return error(RangeError, 'RSV1 must be clear', true, 1002);
+        return error(
+          RangeError,
+          'RSV1 must be clear',
+          true,
+          1002,
+          'WS_ERR_UNEXPECTED_RSV_1'
+        );
       }
 
       if (this._payloadLength > 0x7d) {
@@ -218,12 +265,19 @@ class Receiver extends Writable {
           RangeError,
           `invalid payload length ${this._payloadLength}`,
           true,
-          1002
+          1002,
+          'WS_ERR_INVALID_CONTROL_PAYLOAD_LENGTH'
         );
       }
     } else {
       this._loop = false;
-      return error(RangeError, `invalid opcode ${this._opcode}`, true, 1002);
+      return error(
+        RangeError,
+        `invalid opcode ${this._opcode}`,
+        true,
+        1002,
+        'WS_ERR_INVALID_OPCODE'
+      );
     }
 
     if (!this._fin && !this._fragmented) this._fragmented = this._opcode;
@@ -232,11 +286,23 @@ class Receiver extends Writable {
     if (this._isServer) {
       if (!this._masked) {
         this._loop = false;
-        return error(RangeError, 'MASK must be set', true, 1002);
+        return error(
+          RangeError,
+          'MASK must be set',
+          true,
+          1002,
+          'WS_ERR_EXPECTED_MASK'
+        );
       }
     } else if (this._masked) {
       this._loop = false;
-      return error(RangeError, 'MASK must be clear', true, 1002);
+      return error(
+        RangeError,
+        'MASK must be clear',
+        true,
+        1002,
+        'WS_ERR_UNEXPECTED_MASK'
+      );
     }
 
     if (this._payloadLength === 126) this._state = GET_PAYLOAD_LENGTH_16;
@@ -285,7 +351,8 @@ class Receiver extends Writable {
         RangeError,
         'Unsupported WebSocket frame: payload length > 2^53 - 1',
         false,
-        1009
+        1009,
+        'WS_ERR_UNSUPPORTED_DATA_PAYLOAD_LENGTH'
       );
     }
 
@@ -304,7 +371,13 @@ class Receiver extends Writable {
       this._totalPayloadLength += this._payloadLength;
       if (this._totalPayloadLength > this._maxPayload && this._maxPayload > 0) {
         this._loop = false;
-        return error(RangeError, 'Max payload size exceeded', false, 1009);
+        return error(
+          RangeError,
+          'Max payload size exceeded',
+          false,
+          1009,
+          'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH'
+        );
       }
     }
 
@@ -357,7 +430,7 @@ class Receiver extends Writable {
 
     if (data.length) {
       //
-      // This message is not compressed so its lenght is the sum of the payload
+      // This message is not compressed so its length is the sum of the payload
       // length of all fragments.
       //
       this._messageLength = this._totalPayloadLength;
@@ -384,7 +457,13 @@ class Receiver extends Writable {
         this._messageLength += buf.length;
         if (this._messageLength > this._maxPayload && this._maxPayload > 0) {
           return cb(
-            error(RangeError, 'Max payload size exceeded', false, 1009)
+            error(
+              RangeError,
+              'Max payload size exceeded',
+              false,
+              1009,
+              'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH'
+            )
           );
         }
 
@@ -425,16 +504,22 @@ class Receiver extends Writable {
           data = fragments;
         }
 
-        this.emit('message', data);
+        this.emit('message', data, true);
       } else {
         const buf = concat(fragments, messageLength);
 
-        if (!isValidUTF8(buf)) {
+        if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
           this._loop = false;
-          return error(Error, 'invalid UTF-8 sequence', true, 1007);
+          return error(
+            Error,
+            'invalid UTF-8 sequence',
+            true,
+            1007,
+            'WS_ERR_INVALID_UTF8'
+          );
         }
 
-        this.emit('message', buf.toString());
+        this.emit('message', buf, false);
       }
     }
 
@@ -453,24 +538,42 @@ class Receiver extends Writable {
       this._loop = false;
 
       if (data.length === 0) {
-        this.emit('conclude', 1005, '');
+        this.emit('conclude', 1005, EMPTY_BUFFER);
         this.end();
       } else if (data.length === 1) {
-        return error(RangeError, 'invalid payload length 1', true, 1002);
+        return error(
+          RangeError,
+          'invalid payload length 1',
+          true,
+          1002,
+          'WS_ERR_INVALID_CONTROL_PAYLOAD_LENGTH'
+        );
       } else {
         const code = data.readUInt16BE(0);
 
         if (!isValidStatusCode(code)) {
-          return error(RangeError, `invalid status code ${code}`, true, 1002);
+          return error(
+            RangeError,
+            `invalid status code ${code}`,
+            true,
+            1002,
+            'WS_ERR_INVALID_CLOSE_CODE'
+          );
         }
 
         const buf = data.slice(2);
 
-        if (!isValidUTF8(buf)) {
-          return error(Error, 'invalid UTF-8 sequence', true, 1007);
+        if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
+          return error(
+            Error,
+            'invalid UTF-8 sequence',
+            true,
+            1007,
+            'WS_ERR_INVALID_UTF8'
+          );
         }
 
-        this.emit('conclude', code, buf.toString());
+        this.emit('conclude', code, buf);
         this.end();
       }
     } else if (this._opcode === 0x09) {
@@ -488,20 +591,22 @@ module.exports = Receiver;
 /**
  * Builds an error object.
  *
- * @param {(Error|RangeError)} ErrorCtor The error constructor
+ * @param {function(new:Error|RangeError)} ErrorCtor The error constructor
  * @param {String} message The error message
  * @param {Boolean} prefix Specifies whether or not to add a default prefix to
  *     `message`
  * @param {Number} statusCode The status code
+ * @param {String} errorCode The exposed error code
  * @return {(Error|RangeError)} The error
  * @private
  */
-function error(ErrorCtor, message, prefix, statusCode) {
+function error(ErrorCtor, message, prefix, statusCode, errorCode) {
   const err = new ErrorCtor(
     prefix ? `Invalid WebSocket frame: ${message}` : message
   );
 
   Error.captureStackTrace(err, error);
+  err.code = errorCode;
   err[kStatusCode] = statusCode;
   return err;
 }

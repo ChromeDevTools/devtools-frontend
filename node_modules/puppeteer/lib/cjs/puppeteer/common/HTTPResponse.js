@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTPResponse = void 0;
 const SecurityDetails_js_1 = require("./SecurityDetails.js");
+const Errors_js_1 = require("./Errors.js");
 /**
  * The HTTPResponse class represents responses which are received by the
  * {@link Page} class.
@@ -12,7 +13,7 @@ class HTTPResponse {
     /**
      * @internal
      */
-    constructor(client, request, responsePayload) {
+    constructor(client, request, responsePayload, extraInfo) {
         this._contentPromise = null;
         this._headers = {};
         this._client = client;
@@ -24,16 +25,36 @@ class HTTPResponse {
             ip: responsePayload.remoteIPAddress,
             port: responsePayload.remotePort,
         };
-        this._status = responsePayload.status;
-        this._statusText = responsePayload.statusText;
+        this._statusText =
+            this._parseStatusTextFromExtrInfo(extraInfo) ||
+                responsePayload.statusText;
         this._url = request.url();
         this._fromDiskCache = !!responsePayload.fromDiskCache;
         this._fromServiceWorker = !!responsePayload.fromServiceWorker;
-        for (const key of Object.keys(responsePayload.headers))
-            this._headers[key.toLowerCase()] = responsePayload.headers[key];
+        this._status = extraInfo ? extraInfo.statusCode : responsePayload.status;
+        const headers = extraInfo ? extraInfo.headers : responsePayload.headers;
+        for (const key of Object.keys(headers))
+            this._headers[key.toLowerCase()] = headers[key];
         this._securityDetails = responsePayload.securityDetails
             ? new SecurityDetails_js_1.SecurityDetails(responsePayload.securityDetails)
             : null;
+    }
+    /**
+     * @internal
+     */
+    _parseStatusTextFromExtrInfo(extraInfo) {
+        if (!extraInfo || !extraInfo.headersText)
+            return;
+        const firstLine = extraInfo.headersText.split('\r', 1)[0];
+        if (!firstLine)
+            return;
+        const match = firstLine.match(/[^ ]* [^ ]* (.*)/);
+        if (!match)
+            return;
+        const statusText = match[1];
+        if (!statusText)
+            return;
+        return statusText;
     }
     /**
      * @internal
@@ -96,10 +117,19 @@ class HTTPResponse {
             this._contentPromise = this._bodyLoadedPromise.then(async (error) => {
                 if (error)
                     throw error;
-                const response = await this._client.send('Network.getResponseBody', {
-                    requestId: this._request._requestId,
-                });
-                return Buffer.from(response.body, response.base64Encoded ? 'base64' : 'utf8');
+                try {
+                    const response = await this._client.send('Network.getResponseBody', {
+                        requestId: this._request._requestId,
+                    });
+                    return Buffer.from(response.body, response.base64Encoded ? 'base64' : 'utf8');
+                }
+                catch (error) {
+                    if (error instanceof Errors_js_1.ProtocolError &&
+                        error.originalMessage === 'No resource with given identifier found') {
+                        throw new Errors_js_1.ProtocolError('Could not load body for this request. This might happen if the request is a preflight request.');
+                    }
+                    throw error;
+                }
             });
         }
         return this._contentPromise;

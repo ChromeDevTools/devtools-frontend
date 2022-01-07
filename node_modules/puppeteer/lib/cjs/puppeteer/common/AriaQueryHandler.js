@@ -25,20 +25,20 @@ async function queryAXTree(client, element, accessibleName, role) {
     const filteredNodes = nodes.filter((node) => node.role.value !== 'StaticText');
     return filteredNodes;
 }
+const normalizeValue = (value) => value.replace(/ +/g, ' ').trim();
+const knownAttributes = new Set(['name', 'role']);
+const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*(?<quote>"|')(?<value>\\.|.*?(?=\k<quote>))\k<quote>\s*\]/g;
 function parseAriaSelector(selector) {
-    const normalize = (value) => value.replace(/ +/g, ' ').trim();
-    const knownAttributes = new Set(['name', 'role']);
     const queryOptions = {};
-    const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*"(?<value>\\.|[^"\\]*)"\s*\]/g;
-    const defaultName = selector.replace(attributeRegexp, (_, attribute, value) => {
+    const defaultName = selector.replace(attributeRegexp, (_, attribute, quote, value) => {
         attribute = attribute.trim();
         if (!knownAttributes.has(attribute))
             throw new Error(`Unknown aria attribute "${attribute}" in selector`);
-        queryOptions[attribute] = normalize(value);
+        queryOptions[attribute] = normalizeValue(value);
         return '';
     });
     if (defaultName && !queryOptions.name)
-        queryOptions.name = normalize(defaultName);
+        queryOptions.name = normalizeValue(defaultName);
     return queryOptions;
 }
 const queryOne = async (element, selector) => {
@@ -54,8 +54,8 @@ const waitFor = async (domWorld, selector, options) => {
     const binding = {
         name: 'ariaQuerySelector',
         pptrFunction: async (selector) => {
-            const document = await domWorld._document();
-            const element = await queryOne(document, selector);
+            const root = options.root || (await domWorld._document());
+            const element = await queryOne(root, selector);
             return element;
         },
     };

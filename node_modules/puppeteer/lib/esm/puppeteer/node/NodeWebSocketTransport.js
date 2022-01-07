@@ -16,10 +16,16 @@ export class NodeWebSocketTransport {
         this.onclose = null;
     }
     static create(url) {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const pkg = require('../../../../package.json');
         return new Promise((resolve, reject) => {
             const ws = new NodeWebSocket(url, [], {
+                followRedirects: true,
                 perMessageDeflate: false,
-                maxPayload: 256 * 1024 * 1024, // 256Mb
+                maxPayload: 256 * 1024 * 1024,
+                headers: {
+                    'User-Agent': `Puppeteer ${pkg.version}`,
+                },
             });
             ws.addEventListener('open', () => resolve(new NodeWebSocketTransport(ws)));
             ws.addEventListener('error', reject);

@@ -17,6 +17,7 @@ function getAst(code) {
         babelrc: false,
         configFile: false,
         parserOpts: {
+            allowAwaitOutsideFunction: true,
             allowImportExportEverywhere: true,
             allowReturnOutsideFunction: true,
             allowSuperOutsideMethod: true,

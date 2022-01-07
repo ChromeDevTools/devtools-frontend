@@ -166,7 +166,7 @@ export class Buffer extends Uint8Array {
      * @param size count of octets to allocate.
      * @param fill if specified, buffer will be initialized by calling buf.fill(fill).
      *    If parameter is omitted, buffer will be filled with zeros.
-     * @param encoding encoding used for call to buf.fill while initalizing
+     * @param encoding encoding used for call to buf.fill while initializing
      */
     static alloc(size: number, fill?: string | Buffer | number, encoding?: string): Buffer;
     /**

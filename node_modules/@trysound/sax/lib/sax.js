@@ -535,16 +535,18 @@
     return text
   }
 
-  function error (parser, er) {
+  function error (parser, reason) {
     closeText(parser)
-    if (parser.trackPosition) {
-      er += '\nLine: ' + parser.line +
-        '\nColumn: ' + parser.column +
-        '\nChar: ' + parser.c
-    }
-    er = new Error(er)
-    parser.error = er
-    emit(parser, 'onerror', er)
+    const message = reason +
+      '\nLine: ' + parser.line +
+      '\nColumn: ' + parser.column +
+      '\nChar: ' + parser.c
+    const error = new Error(message)
+    error.reason = reason
+    error.line = parser.line
+    error.column = parser.column
+    parser.error = error
+    emit(parser, 'onerror', error)
     return parser
   }
 

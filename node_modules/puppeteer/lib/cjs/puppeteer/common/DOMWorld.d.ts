@@ -21,6 +21,7 @@ import { TimeoutSettings } from './TimeoutSettings.js';
 import { MouseButton } from './Input.js';
 import { FrameManager, Frame } from './FrameManager.js';
 import { SerializableOrJSHandle, EvaluateHandleFn, WrapElementHandle, EvaluateFn, EvaluateFnReturnType, UnwrapPromiseLike } from './EvalTypes.js';
+import { CDPSession } from './Connection.js';
 /**
  * @public
  */
@@ -28,6 +29,7 @@ export interface WaitForSelectorOptions {
     visible?: boolean;
     hidden?: boolean;
     timeout?: number;
+    root?: ElementHandle;
 }
 /**
  * @internal
@@ -41,6 +43,7 @@ export interface PageBinding {
  */
 export declare class DOMWorld {
     private _frameManager;
+    private _client;
     private _frame;
     private _timeoutSettings;
     private _documentPromise?;
@@ -58,7 +61,7 @@ export declare class DOMWorld {
     _boundFunctions: Map<string, Function>;
     private _ctxBindings;
     private static bindingIdentifier;
-    constructor(frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
+    constructor(client: CDPSession, frameManager: FrameManager, frame: Frame, timeoutSettings: TimeoutSettings);
     frame(): Frame;
     _setContext(context?: ExecutionContext): Promise<void>;
     _hasContext(): boolean;
@@ -90,6 +93,7 @@ export declare class DOMWorld {
         url?: string;
         path?: string;
         content?: string;
+        id?: string;
         type?: string;
     }): Promise<ElementHandle>;
     /**
@@ -143,11 +147,13 @@ export declare class DOMWorld {
 export interface WaitTaskOptions {
     domWorld: DOMWorld;
     predicateBody: Function | string;
+    predicateAcceptsContextElement: boolean;
     title: string;
     polling: string | number;
     timeout: number;
     binding?: PageBinding;
     args: SerializableOrJSHandle[];
+    root?: ElementHandle;
 }
 /**
  * @internal
@@ -157,6 +163,7 @@ export declare class WaitTask {
     _polling: string | number;
     _timeout: number;
     _predicateBody: string;
+    _predicateAcceptsContextElement: boolean;
     _args: SerializableOrJSHandle[];
     _binding: PageBinding;
     _runCount: number;
@@ -165,6 +172,7 @@ export declare class WaitTask {
     _reject: (x: Error) => void;
     _timeoutTimer?: NodeJS.Timeout;
     _terminated: boolean;
+    _root: ElementHandle;
     constructor(options: WaitTaskOptions);
     terminate(error: Error): void;
     rerun(): Promise<void>;

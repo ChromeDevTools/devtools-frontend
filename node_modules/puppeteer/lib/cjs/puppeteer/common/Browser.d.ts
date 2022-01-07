@@ -22,6 +22,22 @@ import { Page } from './Page.js';
 import { ChildProcess } from 'child_process';
 import { Viewport } from './PuppeteerViewport.js';
 /**
+ * BrowserContext options.
+ *
+ * @public
+ */
+export interface BrowserContextOptions {
+    /**
+     * Proxy server with optional port to use for all requests.
+     * Username and password can be set in `Page.authenticate`.
+     */
+    proxyServer?: string;
+    /**
+     * Bypass the proxy for the given semi-colon-separated list of hosts.
+     */
+    proxyBypassList?: string[];
+}
+/**
  * @internal
  */
 export declare type BrowserCloseCallback = () => Promise<void> | void;
@@ -32,7 +48,7 @@ export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) 
 /**
  * @public
  */
-export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'idle-detection' | 'midi-sysex';
+export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
 /**
  * @public
  */
@@ -146,6 +162,8 @@ export declare class Browser extends EventEmitter {
     private _targetFilterCallback;
     private _defaultContext;
     private _contexts;
+    private _screenshotTaskQueue;
+    private _ignoredTargets;
     /**
      * @internal
      * Used in Target.ts directly so cannot be marked private.
@@ -177,7 +195,7 @@ export declare class Browser extends EventEmitter {
      * })();
      * ```
      */
-    createIncognitoBrowserContext(): Promise<BrowserContext>;
+    createIncognitoBrowserContext(options?: BrowserContextOptions): Promise<BrowserContext>;
     /**
      * Returns an array of all open browser contexts. In a newly created browser, this will
      * return a single instance of {@link BrowserContext}.

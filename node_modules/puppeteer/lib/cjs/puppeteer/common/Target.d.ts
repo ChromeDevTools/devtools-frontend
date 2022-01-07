@@ -19,6 +19,7 @@ import { CDPSession } from './Connection.js';
 import { Browser, BrowserContext } from './Browser.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Protocol } from 'devtools-protocol';
+import { TaskQueue } from './TaskQueue.js';
 /**
  * @public
  */
@@ -30,6 +31,7 @@ export declare class Target {
     private _defaultViewport?;
     private _pagePromise?;
     private _workerPromise?;
+    private _screenshotTaskQueue;
     /**
      * @internal
      */
@@ -57,7 +59,7 @@ export declare class Target {
     /**
      * @internal
      */
-    constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null);
+    constructor(targetInfo: Protocol.Target.TargetInfo, browserContext: BrowserContext, sessionFactory: () => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */

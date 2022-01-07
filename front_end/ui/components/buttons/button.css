@@ -169,7 +169,7 @@ button.toolbar devtools-icon {
   width: 24px;
   height: 24px;
 
-  --icon-color: var(--color-text-primary);
+  --icon-color: var(--color-text-secondary);
 }
 
 button.primary devtools-icon {
@@ -188,6 +188,15 @@ button.small devtools-icon {
 button.toolbar.small devtools-icon {
   width: 18px;
   height: 18px;
+}
+
+button.toolbar.active devtools-icon,
+button.toolbar:active devtools-icon {
+  --icon-color: var(--color-primary);
+}
+
+button.toolbar:hover devtools-icon {
+  --icon-color: var(--color-text-primary);
 }
 
 button.toolbar:disabled devtools-icon {

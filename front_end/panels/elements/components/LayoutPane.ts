@@ -8,7 +8,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import type {BooleanSetting, EnumSetting, Setting} from './LayoutPaneUtils.js';
-import {LayoutElement} from './LayoutPaneUtils.js';
+import type {LayoutElement} from './LayoutPaneUtils.js';
 
 import type {NodeTextData} from './NodeText.js';
 import {NodeText} from './NodeText.js';

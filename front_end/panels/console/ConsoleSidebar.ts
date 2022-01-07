@@ -178,6 +178,15 @@ export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
   }
 }
 
+const enum GroupName {
+  ConsoleAPI = 'user message',
+  All = 'message',
+  Error = 'error',
+  Warning = 'warning',
+  Info = 'info',
+  Verbose = 'verbose',
+}
+
 /**
  * Maps the GroupName for a filter to the UIString used to render messages.
  * Stored here so we only construct it once at runtime, rather than everytime we
@@ -273,13 +282,4 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     this.appendChild(child);
     return child;
   }
-}
-
-const enum GroupName {
-  ConsoleAPI = 'user message',
-  All = 'message',
-  Error = 'error',
-  Warning = 'warning',
-  Info = 'info',
-  Verbose = 'verbose',
 }

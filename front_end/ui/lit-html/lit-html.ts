@@ -4,7 +4,7 @@
 
 import * as LitHtml from '../../third_party/lit-html/lit-html.js';
 import * as Static from './static.js';
-export {Directive, TemplateResult} from '../../third_party/lit-html/lit-html.js';
+export {Directive, type TemplateResult} from '../../third_party/lit-html/lit-html.js';
 
 const {render, svg, Directives, nothing, noChange} = LitHtml;
 const {html, literal, flattenTemplate} = Static;

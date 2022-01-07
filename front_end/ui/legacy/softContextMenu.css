@@ -35,12 +35,15 @@
   box-shadow: var(--override-mac-specific-box-shadow);
 }
 
+.dockside-title {
+  padding-right: 13px;
+}
+
 .soft-context-menu-item {
   display: flex;
   width: 100%;
   font-size: 12px;
   padding: 3px 7px 3px 8px;
-  margin: 0 13px 0 0;
   white-space: nowrap;
   align-items: center;
 }

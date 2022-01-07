@@ -806,7 +806,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       dockItemElement.classList.add('flex-auto');
       dockItemElement.tabIndex = -1;
       UI.ARIAUtils.setAccessibleName(dockItemElement, UIStrings.dockSide);
-      const titleElement = dockItemElement.createChild('span', 'flex-auto');
+      const titleElement = dockItemElement.createChild('span', 'dockside-title');
       titleElement.textContent = i18nString(UIStrings.dockSide);
       const toggleDockSideShorcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');

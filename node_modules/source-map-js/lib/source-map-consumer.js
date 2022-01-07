@@ -143,18 +143,24 @@ SourceMapConsumer.prototype.eachMapping =
     }
 
     var sourceRoot = this.sourceRoot;
-    mappings.map(function (mapping) {
-      var source = mapping.source === null ? null : this._sources.at(mapping.source);
-      source = util.computeSourceURL(sourceRoot, source, this._sourceMapURL);
-      return {
+    var boundCallback = aCallback.bind(context);
+    var names = this._names;
+    var sources = this._sources;
+    var sourceMapURL = this._sourceMapURL;
+
+    for (var i = 0, n = mappings.length; i < n; i++) {
+      var mapping = mappings[i];
+      var source = mapping.source === null ? null : sources.at(mapping.source);
+      source = util.computeSourceURL(sourceRoot, source, sourceMapURL);
+      boundCallback({
         source: source,
         generatedLine: mapping.generatedLine,
         generatedColumn: mapping.generatedColumn,
         originalLine: mapping.originalLine,
         originalColumn: mapping.originalColumn,
-        name: mapping.name === null ? null : this._names.at(mapping.name)
-      };
-    }, this).forEach(aCallback, context);
+        name: mapping.name === null ? null : names.at(mapping.name)
+      });
+    }
   };
 
 /**

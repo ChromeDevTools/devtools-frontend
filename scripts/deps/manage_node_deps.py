@@ -81,9 +81,7 @@ DEPS = {
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
     "mocha": "9.1.3",
-    # Purposefully not the latest; we keep this in sync with what stylelint
-    # depends on
-    "postcss": "8.3.11",
+    "postcss": "8.4.5",
     "puppeteer": "10.0.0",
     "recast": "0.20.4",
     "rimraf": "3.0.2",
@@ -92,8 +90,8 @@ DEPS = {
     "rollup-plugin-terser": "7.0.2",
     "sinon": "12.0.1",
     "source-map-support": "0.5.19",
-    "stylelint": "14.0.1",
-    "stylelint-config-standard": "23.0.0",
+    "stylelint": "14.2.0",
+    "stylelint-config-standard": "24.0.0",
     "svgo": "2.3.1",
     "terser": "5.10.0",
     "typescript": "4.5.4",

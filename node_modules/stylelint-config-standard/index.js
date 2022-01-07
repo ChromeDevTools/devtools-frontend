@@ -3,7 +3,12 @@
 module.exports = {
 	extends: 'stylelint-config-recommended',
 	rules: {
-		'alpha-value-notation': 'percentage',
+		'alpha-value-notation': [
+			'percentage',
+			{
+				exceptProperties: ['opacity'],
+			},
+		],
 		'at-rule-empty-line-before': [
 			'always',
 			{

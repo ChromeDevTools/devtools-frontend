@@ -36,6 +36,7 @@ interface ButtonState {
   spinner?: boolean;
   type: ButtonType;
   value?: string;
+  title?: string;
 }
 
 export type ButtonData = {
@@ -47,6 +48,7 @@ export type ButtonData = {
   spinner?: boolean,
   type?: ButtonType,
   value?: string,
+  title?: string,
 }|{
   variant: Variant.PRIMARY | Variant.SECONDARY,
   iconUrl?: string,
@@ -56,6 +58,7 @@ export type ButtonData = {
   spinner?: boolean,
   type?: ButtonType,
   value?: string,
+  title?: string,
 };
 
 interface ButtonElementInternals extends ElementInternals {
@@ -101,6 +104,7 @@ export class Button extends HTMLElement {
     this.#props.spinner = Boolean(data.spinner);
     this.#props.type = data.type || 'button';
     this.#setDisabledProperty(data.disabled || false);
+    this.#props.title = data.title;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -208,7 +212,7 @@ export class Button extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <button .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)}>
+        <button .title=${this.#props.title} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)}>
           ${this.#props.iconUrl ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
             .data=${{
               iconPath: this.#props.iconUrl,

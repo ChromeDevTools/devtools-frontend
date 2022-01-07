@@ -12,11 +12,11 @@ import {ElementsPanel} from './ElementsPanel.js';
 export class AccessibilityTreeView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {
   private accessibilityTreeComponent = new TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>();
-  private readonly toggleButton: HTMLButtonElement;
+  private readonly toggleButton: HTMLElement;
   private inspectedDOMNode: SDK.DOMModel.DOMNode|null = null;
   private root: SDK.AccessibilityModel.AccessibilityNode|null = null;
 
-  constructor(toggleButton: HTMLButtonElement) {
+  constructor(toggleButton: HTMLElement) {
     super();
     // toggleButton is bound to a click handler on ElementsPanel to switch between the DOM tree
     // and accessibility tree views.

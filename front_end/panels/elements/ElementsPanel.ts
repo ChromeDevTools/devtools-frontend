@@ -42,7 +42,7 @@ import * as Extensions from '../../models/extensions/extensions.js';
 import elementsPanelStyles from './elementsPanel.css.js';
 
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -142,20 +142,21 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLButtonElement => {
-  const button = document.createElement('button');
-  if (isActive) {
-    button.classList.add('axtree-button', 'axtree-button-active');
-  } else {
-    button.classList.add('axtree-button');
-  }
-  button.tabIndex = 0;
-  button.title =
+const createAccessibilityTreeToggleButton = (isActive: boolean): HTMLElement => {
+  const button = new Buttons.Button.Button();
+  const title =
       isActive ? i18nString(UIStrings.switchToDomTreeView) : i18nString(UIStrings.switchToAccessibilityTreeView);
-  const icon = new IconButton.Icon.Icon();
-  const bgColor = isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)';
-  icon.data = {iconName: 'accessibility-icon', color: bgColor, width: '16px', height: '16px'};
-  button.appendChild(icon);
+  button.data = {
+    active: isActive,
+    variant: Buttons.Button.Variant.TOOLBAR,
+    iconUrl: new URL('../../Images/accessibility-icon.svg', import.meta.url).toString(),
+    title,
+  };
+  button.tabIndex = 0;
+  button.classList.add('axtree-button');
+  if (isActive) {
+    button.classList.add('active');
+  }
   return button;
 };
 
@@ -185,8 +186,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private readonly adornerManager: ElementsComponents.AdornerManager.AdornerManager;
   private adornerSettingsPane: ElementsComponents.AdornerSettingsPane.AdornerSettingsPane|null;
   private readonly adornersByName: Map<string, Set<Adorners.Adorner.Adorner>>;
-  accessibilityTreeButton?: HTMLButtonElement;
-  domTreeButton?: HTMLButtonElement;
+  accessibilityTreeButton?: HTMLElement;
+  domTreeButton?: HTMLElement;
   private selectedNodeOnReset?: SDK.DOMModel.DOMNode;
   private hasNonDefaultSelectedNode?: boolean;
   private searchConfig?: UI.SearchableView.SearchConfig;

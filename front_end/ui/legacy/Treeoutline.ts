@@ -37,6 +37,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import * as Utils from './utils/utils.js';
 
 import type {Icon} from './Icon.js';
@@ -400,7 +401,7 @@ export class TreeOutlineInShadow extends TreeOutline {
   }
 
   registerRequiredCSS(cssFile: {cssContent: string}): void {
-    Utils.appendStyle(this.shadowRoot, cssFile);
+    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
   }
 
   registerCSSFiles(cssFiles: CSSStyleSheet[]): void {

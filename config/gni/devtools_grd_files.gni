@@ -1577,7 +1577,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/theme_support/theme_support_impl.js",
   "front_end/ui/legacy/toolbar.css.legacy.js",
   "front_end/ui/legacy/treeoutline.css.legacy.js",
-  "front_end/ui/legacy/utils/append-style.js",
   "front_end/ui/legacy/utils/create-shadow-root-with-core-styles.js",
   "front_end/ui/legacy/utils/focus-changed.js",
   "front_end/ui/legacy/utils/inject-core-styles.js",

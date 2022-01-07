@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {appendStyle} from './append-style.js';
+import * as ThemeSupport from '../theme_support/theme_support.js';
+
 import {focusChanged} from './focus-changed.js';
 import {injectCoreStyles} from './inject-core-styles.js';
 
@@ -24,7 +25,7 @@ export function createShadowRootWithCoreStyles(element: Element, options: Option
   injectCoreStyles(shadowRoot);
   if (cssFile) {
     if ('cssContent' in cssFile) {
-      appendStyle(shadowRoot, cssFile);
+      ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
     } else {
       shadowRoot.adoptedStyleSheets = cssFile;
     }

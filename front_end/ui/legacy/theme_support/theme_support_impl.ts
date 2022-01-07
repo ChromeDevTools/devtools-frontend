@@ -116,11 +116,7 @@ export class ThemeSupport extends EventTarget {
     this.appendStyle(element, inspectorSyntaxHighlightStyles);
   }
 
-  /**
-   * Note: this is a duplicate of the function in ui/utils. It exists here
-   * so there is no circular dependency between ui/utils and theme_support.
-   */
-  private appendStyle(node: Node, {cssContent}: {cssContent: string}): void {
+  appendStyle(node: Node, {cssContent}: {cssContent: string}): void {
     const styleElement = document.createElement('style');
     styleElement.textContent = cssContent;
     node.appendChild(styleElement);

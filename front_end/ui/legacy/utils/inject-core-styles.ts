@@ -7,12 +7,10 @@ import textButtonStyles from '../textButton.css.legacy.js';
 import * as ThemeSupport from '../theme_support/theme_support.js';
 import themeColorsStyles from '../themeColors.css.legacy.js';
 
-import {appendStyle} from './append-style.js';
-
 export function injectCoreStyles(root: Element|ShadowRoot): void {
-  appendStyle(root, inspectorCommonStyles);
-  appendStyle(root, textButtonStyles);
-  appendStyle(root, themeColorsStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(root, inspectorCommonStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(root, textButtonStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(root, themeColorsStyles);
 
   ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(root);
   ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(root);

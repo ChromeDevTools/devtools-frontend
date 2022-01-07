@@ -32,6 +32,7 @@ import * as DOMExtension from '../../core/dom_extension/dom_extension.js';
 import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import * as Utils from './utils/utils.js';
 import {XWidget} from './XWidget.js';
 
@@ -460,9 +461,9 @@ export class Widget {
 
   registerRequiredCSS(cssFile: {cssContent: string}): void {
     if (this.isWebComponent) {
-      Utils.appendStyle((this.shadowRoot as DocumentFragment), cssFile);
+      ThemeSupport.ThemeSupport.instance().appendStyle((this.shadowRoot as DocumentFragment), cssFile);
     } else {
-      Utils.appendStyle(this.element, cssFile);
+      ThemeSupport.ThemeSupport.instance().appendStyle(this.element, cssFile);
     }
   }
 

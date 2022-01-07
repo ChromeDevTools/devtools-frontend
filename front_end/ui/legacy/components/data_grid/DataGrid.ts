@@ -1465,6 +1465,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     this.positionResizers();
+    this.updateWidths();
     event.preventDefault();
   }
 

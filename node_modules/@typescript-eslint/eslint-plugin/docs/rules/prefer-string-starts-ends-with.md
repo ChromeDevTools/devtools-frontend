@@ -8,7 +8,11 @@ Since ES2015 has added `String#startsWith` and `String#endsWith`, this rule repo
 
 This rule is aimed at enforcing a consistent way to check whether a string starts or ends with a specific string.
 
-Examples of **incorrect** code for this rule:
+Examples of code for this rule:
+
+<!--tabs-->
+
+### ❌ Incorrect
 
 ```ts
 let foo: string;
@@ -32,7 +36,7 @@ foo.match(/bar$/) != null;
 /bar$/.test(foo);
 ```
 
-Examples of **correct** code for this rule:
+### ✅ Correct
 
 ```ts
 foo.startsWith('bar');
@@ -43,9 +47,9 @@ foo.endsWith('bar');
 
 There are no options.
 
-```JSON
+```json
 {
-    "@typescript-eslint/prefer-string-starts-ends-with": "error"
+  "@typescript-eslint/prefer-string-starts-ends-with": "error"
 }
 ```
 

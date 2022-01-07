@@ -76,7 +76,11 @@ The default options provide a set of "best practices", intended to provide safet
   - This is a point of confusion for many developers, who think it means "any object type".
   - See [this comment for more information](https://github.com/typescript-eslint/typescript-eslint/issues/2063#issuecomment-675156492).
 
-**_Important note:_** the default options suggest using `Record<string, unknown>`; this was a stylistic decision, as the built-in `Record` type is considered to look cleaner.
+:::important
+
+The default options suggest using `Record<string, unknown>`; this was a stylistic decision, as the built-in `Record` type is considered to look cleaner.
+
+:::
 
 <details>
 <summary>Default Options</summary>
@@ -131,7 +135,11 @@ const defaultTypes = {
 
 ### Examples
 
-Examples of **incorrect** code with the default options:
+Examples of code with the default options:
+
+<!--tabs-->
+
+#### ❌ Incorrect
 
 ```ts
 // use lower-case primitives for consistency
@@ -151,7 +159,7 @@ const curly1: {} = 1;
 const curly2: {} = { a: 'string' };
 ```
 
-Examples of **correct** code with the default options:
+#### ✅ Correct
 
 ```ts
 // use lower-case primitives for consistency
@@ -173,7 +181,7 @@ const curly1: number = 1;
 const curly2: Record<'a', string> = { a: 'string' };
 ```
 
-## Compatibility
+## Related To
 
 - TSLint: [ban-types](https://palantir.github.io/tslint/rules/ban-types)
 

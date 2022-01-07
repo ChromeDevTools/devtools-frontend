@@ -15,7 +15,7 @@ async function returnsPromise1() {
 const returnsPromise2 = () => returnsPromise1();
 ```
 
-## How to use
+## How to Use
 
 ```jsonc
 {
@@ -29,7 +29,11 @@ const returnsPromise2 = () => returnsPromise1();
 
 See [`eslint/require-await` options](https://eslint.org/docs/rules/require-await#options).
 
-<sup>Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/master/docs/rules/require-await.md)</sup>
+<sup>
+
+Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/main/docs/rules/require-await.md)
+
+</sup>
 
 ## Attributes
 

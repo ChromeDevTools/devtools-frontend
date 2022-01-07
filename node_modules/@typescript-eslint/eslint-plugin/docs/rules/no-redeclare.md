@@ -5,7 +5,7 @@
 This rule extends the base [`eslint/no-redeclare`](https://eslint.org/docs/rules/no-redeclare) rule.
 It adds support for TypeScript function overloads, and declaration merging.
 
-## How to use
+## How to Use
 
 ```jsonc
 {
@@ -77,7 +77,11 @@ type something = string;
 const something = 2;
 ```
 
-<sup>Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/master/docs/rules/no-redeclare.md)</sup>
+<sup>
+
+Taken with ❤️ [from ESLint core](https://github.com/eslint/eslint/blob/main/docs/rules/no-redeclare.md)
+
+</sup>
 
 ## Attributes
 

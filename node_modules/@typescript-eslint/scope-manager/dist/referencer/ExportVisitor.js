@@ -29,6 +29,7 @@ class ExportVisitor extends Visitor_1.Visitor {
     }
     Identifier(node) {
         if (__classPrivateFieldGet(this, _ExportVisitor_exportNode, "f").exportKind === 'type') {
+            // export type { T };
             // type exports can only reference types
             __classPrivateFieldGet(this, _ExportVisitor_referencer, "f").currentScope().referenceType(node);
         }
@@ -65,7 +66,17 @@ class ExportVisitor extends Visitor_1.Visitor {
         }
     }
     ExportSpecifier(node) {
-        this.visit(node.local);
+        if (node.exportKind === 'type') {
+            // export { type T };
+            // type exports can only reference types
+            //
+            // we can't let this fall through to the Identifier selector because the exportKind is on this node
+            // and we don't have access to the `.parent` during scope analysis
+            __classPrivateFieldGet(this, _ExportVisitor_referencer, "f").currentScope().referenceType(node.local);
+        }
+        else {
+            this.visit(node.local);
+        }
     }
 }
 exports.ExportVisitor = ExportVisitor;

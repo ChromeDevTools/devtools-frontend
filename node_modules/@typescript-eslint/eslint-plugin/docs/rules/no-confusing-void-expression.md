@@ -9,7 +9,9 @@ This rule provides automatic fixes for most common cases.
 
 ## Examples
 
-Examples of **incorrect** code for this rule:
+<!--tabs-->
+
+### ❌ Incorrect
 
 ```ts
 // somebody forgot that `alert` doesn't return anything
@@ -29,7 +31,7 @@ function doSomething() {
 }
 ```
 
-Examples of **correct** code for this rule:
+### ✅ Correct
 
 ```ts
 // just a regular void function in a statement position
@@ -144,7 +146,7 @@ The return type of a function can be inspected by going to its definition or hov
 If you don't care about being explicit about the void type in actual code then don't use this rule.
 Also, if you prefer concise coding style then also don't use it.
 
-## Related to
+## Related To
 
 - TSLint: ['no-void-expression'](https://palantir.github.io/tslint/rules/no-void-expression/)
 

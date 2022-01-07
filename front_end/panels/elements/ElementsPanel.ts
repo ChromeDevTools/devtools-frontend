@@ -1369,7 +1369,7 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
         treeOutline.duplicateNode(node);
         return true;
       case 'elements.copy-styles':
-        treeOutline.findTreeElement(node)?.copyStyles();
+        void treeOutline.findTreeElement(node)?.copyStyles();
         return true;
       case 'elements.undo':
         void SDK.DOMModel.DOMModelUndoStack.instance().undo();

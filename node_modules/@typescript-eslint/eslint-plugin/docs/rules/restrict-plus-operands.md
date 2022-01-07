@@ -1,29 +1,50 @@
 # When adding two variables, operands must both be of type number or of type string (`restrict-plus-operands`)
 
-Examples of **correct** code:
+## Rule Details
 
-```ts
-var foo = parseInt('5.5', 10) + 10;
-var foo = 1n + 1n;
-```
+Examples of code for this rule:
 
-Examples of **incorrect** code:
+<!--tabs-->
+
+### ❌ Incorrect
 
 ```ts
 var foo = '5.5' + 5;
 var foo = 1n + 1;
 ```
 
+### ✅ Correct
+
+```ts
+var foo = parseInt('5.5', 10) + 10;
+var foo = 1n + 1n;
+```
+
 ## Options
 
-This rule has an object option:
+The rule accepts an options object with the following properties:
 
-- `"checkCompoundAssignments": false`: (default) does not check compound assignments (`+=`)
-- `"checkCompoundAssignments": true`
+```ts
+type Options = {
+  // if true, check compound assignments (`+=`)
+  checkCompoundAssignments?: boolean;
+  // if true, 'any' itself and `string`,`bigint`, `number` is allowed.
+  allowAny?: boolean;
+};
+
+const defaults = {
+  checkCompoundAssignments: false,
+  allowAny: false,
+};
+```
 
 ### `checkCompoundAssignments`
 
-Examples of **incorrect** code for the `{ "checkCompoundAssignments": true }` option:
+Examples of code for this rule with `{ checkCompoundAssignments: true }`:
+
+<!--tabs-->
+
+#### ❌ Incorrect
 
 ```ts
 /*eslint @typescript-eslint/restrict-plus-operands: ["error", { "checkCompoundAssignments": true }]*/
@@ -35,7 +56,7 @@ let bar: string = '';
 bar += 0;
 ```
 
-Examples of **correct** code for the `{ "checkCompoundAssignments": true }` option:
+#### ✅ Correct
 
 ```ts
 /*eslint @typescript-eslint/restrict-plus-operands: ["error", { "checkCompoundAssignments": true }]*/
@@ -47,13 +68,38 @@ let bar = '';
 bar += 'test';
 ```
 
+### `allowAny`
+
+Examples of code for this rule with `{ allowAny: true }`:
+
+<!--tabs-->
+
+#### ❌ Incorrect
+
+```ts
+var fn = (a: any, b: boolean) => a + b;
+var fn = (a: any, b: []) => a + b;
+var fn = (a: any, b: {}) => a + b;
+```
+
+#### ✅ Correct
+
+```ts
+var fn = (a: any, b: any) => a + b;
+var fn = (a: any, b: string) => a + b;
+var fn = (a: any, b: bigint) => a + b;
+var fn = (a: any, b: number) => a + b;
+```
+
+## How to Use
+
 ```json
 {
   "@typescript-eslint/restrict-plus-operands": "error"
 }
 ```
 
-## Compatibility
+## Related To
 
 - TSLint: [restrict-plus-operands](https://palantir.github.io/tslint/rules/restrict-plus-operands/)
 

@@ -42,7 +42,7 @@ let themeSupportInstance: ThemeSupport;
 const themeValuesCache = new Map<CSSStyleDeclaration, Map<string, string>>();
 
 export class ThemeSupport extends EventTarget {
-  private themeNameInternal = 'systemPreferred';
+  private themeNameInternal = 'default';
   private customSheets: Set<string> = new Set();
   private computedRoot = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 

@@ -127,6 +127,7 @@ export const editorTheme = CM.EditorView.theme({
 
   '.cm-tooltip.cm-tooltip-autocomplete > ul': {
     backgroundColor: 'var(--color-background)',
+    maxHeight: '25em',
     minWidth: '16em',
     '& > li.cm-secondaryCompletion': {
       display: 'flex',

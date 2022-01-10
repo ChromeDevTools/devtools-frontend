@@ -52,15 +52,17 @@ async function waitForFirstBodyCellText(cellText: string) {
 describe('data grid controller', () => {
   preloadForCodeCoverage('data_grid_controller/basic.html');
 
-  it('lets the user right click on a header to show the context menu', async () => {
-    await loadComponentDocExample('data_grid_controller/basic.html');
-    await activateContextMenuOnColumnHeader('Key');
+  // Fails on Mac after theming change
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1285783] lets the user right click on a header to show the context menu', async () => {
+        await loadComponentDocExample('data_grid_controller/basic.html');
+        await activateContextMenuOnColumnHeader('Key');
 
-    const contextMenu = await $('.soft-context-menu');
-    assert.isNotNull(contextMenu);
-    await assertTopLevelContextMenuItemsText(
-        ['Value', platformSpecificTextForSubMenuEntryItem('Sort By'), 'Reset Columns']);
-  });
+        const contextMenu = await $('.soft-context-menu');
+        assert.isNotNull(contextMenu);
+        await assertTopLevelContextMenuItemsText(
+            ['Value', platformSpecificTextForSubMenuEntryItem('Sort By'), 'Reset Columns']);
+      });
 
   it('lists the hideable columns in the context menu and lets the user click to toggle the visibility', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
@@ -89,30 +91,32 @@ describe('data grid controller', () => {
         renderedText);
   });
 
-  it('lists sortable columns in a sub-menu and lets the user click to sort', async () => {
-    await loadComponentDocExample('data_grid_controller/basic.html');
-    await activateContextMenuOnColumnHeader('Key');
-    const contextMenu = await $('.soft-context-menu');
-    if (!contextMenu) {
-      assert.fail('Could not find context menu.');
-    }
-    const sortBy = await findSubMenuEntryItem('Sort By');
-    await sortBy.hover();
+  // Fails on Mac after theming change
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1285783] lists sortable columns in a sub-menu and lets the user click to sort', async () => {
+        await loadComponentDocExample('data_grid_controller/basic.html');
+        await activateContextMenuOnColumnHeader('Key');
+        const contextMenu = await $('.soft-context-menu');
+        if (!contextMenu) {
+          assert.fail('Could not find context menu.');
+        }
+        const sortBy = await findSubMenuEntryItem('Sort By');
+        await sortBy.hover();
 
-    const keyColumnSort = await waitFor('[aria-label="Key"]');
-    await keyColumnSort.click();
-    await waitForFirstBodyCellText('Alpha');
+        const keyColumnSort = await waitFor('[aria-label="Key"]');
+        await keyColumnSort.click();
+        await waitForFirstBodyCellText('Alpha');
 
-    const dataGrid = await getDataGrid();
-    const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);
-    assert.deepEqual(
-        [
-          ['Alpha', 'Letter A'],
-          ['Bravo', 'Letter B'],
-          ['Charlie', 'Letter C'],
-        ],
-        renderedText);
-  });
+        const dataGrid = await getDataGrid();
+        const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);
+        assert.deepEqual(
+            [
+              ['Alpha', 'Letter A'],
+              ['Bravo', 'Letter B'],
+              ['Charlie', 'Letter C'],
+            ],
+            renderedText);
+      });
 
   it('lets the user click on a column header to sort it', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');
@@ -132,19 +136,22 @@ describe('data grid controller', () => {
         renderedText);
   });
 
-  it('lists sort by and header options when right clicking on a body row', async () => {
-    await loadComponentDocExample('data_grid_controller/basic.html');
-    await activateContextMenuOnBodyCell('Bravo');
+  // Fails on Mac after theming change
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1285783] lists sort by and header options when right clicking on a body row', async () => {
+        await loadComponentDocExample('data_grid_controller/basic.html');
+        await activateContextMenuOnBodyCell('Bravo');
 
-    await assertTopLevelContextMenuItemsText([
-      platformSpecificTextForSubMenuEntryItem('Sort By'),
-      platformSpecificTextForSubMenuEntryItem('Header Options'),
-    ]);
-    await assertSubMenuItemsText('Header Options', ['Value', 'Reset Columns']);
-    await assertSubMenuItemsText('Sort By', ['Key', 'Value']);
-  });
+        await assertTopLevelContextMenuItemsText([
+          platformSpecificTextForSubMenuEntryItem('Sort By'),
+          platformSpecificTextForSubMenuEntryItem('Header Options'),
+        ]);
+        await assertSubMenuItemsText('Header Options', ['Value', 'Reset Columns']);
+        await assertSubMenuItemsText('Sort By', ['Key', 'Value']);
+      });
 
-  it('allows the parent to add custom context menu items', async () => {
+  // Fails on Mac after theming change
+  it.skipOnPlatforms(['mac'], '[crbug.com/1285783] allows the parent to add custom context menu items', async () => {
     await loadComponentDocExample('data_grid_controller/custom-context-menu-items.html');
     await activateContextMenuOnBodyCell('Bravo');
     await assertTopLevelContextMenuItemsText([

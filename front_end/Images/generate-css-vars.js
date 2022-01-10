@@ -18,31 +18,43 @@ function generateCSSVariableDefinition(fileName) {
       fileName}', import.meta.url).toString() + '\\")');`;
 }
 
-const CURRENT_YEAR = new Date(Number(buildTimestamp) * 1000).getFullYear();
-const fileContent = `
-// Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-const sheet = new CSSStyleSheet();
-sheet.replaceSync(':root {}');
-const style = sheet.cssRules[0].style;
+function main() {
+  const CURRENT_YEAR = new Date(Number(buildTimestamp) * 1000).getUTCFullYear();
+  const newContents = `
+    // Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.
+    // Use of this source code is governed by a BSD-style license that can be
+    // found in the LICENSE file.
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(':root {}');
+    const style = sheet.cssRules[0].style;
 
-${imageSources.map(generateCSSVariableDefinition).join('\n')}
+    ${imageSources.map(generateCSSVariableDefinition).join('\n')}
 
-document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
-`;
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+    `;
 
-fs.writeFileSync(path.join(targetGenDir, 'Images.prebundle.js'), fileContent, {encoding: 'utf-8'});
+  const generatedFileLocation = path.join(targetGenDir, 'Images.prebundle.js');
 
-const tsconfigContent = `
-{
-    "compilerOptions": {
-        "composite": true
-    },
-    "files": [
-        "Images.js"
-    ]
+  if (fs.existsSync(generatedFileLocation)) {
+    if (fs.readFileSync(generatedFileLocation, {encoding: 'utf8', flag: 'r'}) === newContents) {
+      return;
+    }
+  }
+
+  fs.writeFileSync(generatedFileLocation, newContents, {encoding: 'utf-8'});
+
+  const tsconfigContent = `
+    {
+        "compilerOptions": {
+            "composite": true
+        },
+        "files": [
+            "Images.js"
+        ]
+    }
+    `;
+
+  fs.writeFileSync(path.join(targetGenDir, `${targetName}-tsconfig.json`), tsconfigContent, {encoding: 'utf-8'});
 }
-`;
 
-fs.writeFileSync(path.join(targetGenDir, `${targetName}-tsconfig.json`), tsconfigContent, {encoding: 'utf-8'});
+main();

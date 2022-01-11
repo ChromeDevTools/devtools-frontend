@@ -796,7 +796,7 @@ export class ProgressTracker {
   private onLoad(): void {
     this.requestIds = null;
     this.updateProgress(1);  // Display 100% progress on load, hide it in 0.5s.
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (!this.navigationProgressVisible()) {
         this.displayProgress(0);
       }
@@ -831,7 +831,7 @@ export class ProgressTracker {
       return;
     }
     ++this.finishedRequests;
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.updateProgress(
           this.finishedRequests / this.startedRequests * 0.9);  // Finished requests drive the progress up to 90%.
     }, 500);  // Delay to give the new requests time to start. This makes the progress smoother.

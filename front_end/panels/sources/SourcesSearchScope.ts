@@ -240,7 +240,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
       ++callbacksLeft;
       const uiSourceCode = files[fileIndex++];
-      setTimeout(searchInNextFile.bind(this, uiSourceCode), 0);
+      window.setTimeout(searchInNextFile.bind(this, uiSourceCode), 0);
     }
 
     function contentLoaded(

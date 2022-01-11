@@ -163,7 +163,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
   static async withTimeout<T>(promise: Promise<T>, timeout: number): Promise<T> {
     const timeoutPromise = new Promise<T>(
-        (_, reject) => setTimeout(reject, timeout, new Error(i18nString(UIStrings.loadCanceledDueToLoadTimeout))));
+        (_, reject) =>
+            window.setTimeout(reject, timeout, new Error(i18nString(UIStrings.loadCanceledDueToLoadTimeout))));
     return Promise.race([promise, timeoutPromise]);
   }
 

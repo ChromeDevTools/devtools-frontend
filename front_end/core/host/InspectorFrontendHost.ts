@@ -94,15 +94,15 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   setIsDocked(isDocked: boolean, callback: () => void): void {
-    setTimeout(callback, 0);
+    window.setTimeout(callback, 0);
   }
 
   showSurvey(trigger: string, callback: (arg0: ShowSurveyResult) => void): void {
-    setTimeout(() => callback({surveyShown: false}), 0);
+    window.setTimeout(() => callback({surveyShown: false}), 0);
   }
 
   canShowSurvey(trigger: string, callback: (arg0: CanShowSurveyResult) => void): void {
-    setTimeout(() => callback({canShowSurvey: false}), 0);
+    window.setTimeout(() => callback({canShowSurvey: false}), 0);
   }
 
   /**

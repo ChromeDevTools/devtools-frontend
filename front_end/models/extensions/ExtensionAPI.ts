@@ -1112,7 +1112,7 @@ self.injectedExtensionAPI = function(
     };
     keyboardEventRequestQueue.push(requestPayload);
     if (!forwardTimer) {
-      forwardTimer = setTimeout(forwardEventQueue, 0);
+      forwardTimer = window.setTimeout(forwardEventQueue, 0);
     }
   }
 

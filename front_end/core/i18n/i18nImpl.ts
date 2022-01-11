@@ -58,7 +58,7 @@ function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier): string {
 export async function fetchAndRegisterLocaleData(locale: Intl.UnicodeBCP47LocaleIdentifier): Promise<void> {
   const localeDataTextPromise = fetch(getLocaleFetchUrl(locale)).then(result => result.json());
   const timeoutPromise =
-      new Promise((resolve, reject) => setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
+      new Promise((resolve, reject) => window.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
   const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
   i18nInstance.registerLocaleData(locale, localeData);
 }

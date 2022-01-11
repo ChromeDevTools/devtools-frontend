@@ -67,7 +67,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       if (SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
         return;
       }
-      setTimeout(() => {
+      window.setTimeout(() => {
         if (!SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
           SDK.ConsoleModel.ConsoleModel.instance().addMessage(consoleMessage);
         }

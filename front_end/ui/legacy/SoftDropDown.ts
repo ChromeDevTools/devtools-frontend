@@ -111,7 +111,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       this.list.selectItem(this.selectedItem);
     }
     event.consume(true);
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.listWasShowing200msAgo = true;
     }, 200);
   }
@@ -123,7 +123,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
   }
 
   private hide(event: Event): void {
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.listWasShowing200msAgo = false;
     }, 200);
     this.glassPane.hide();

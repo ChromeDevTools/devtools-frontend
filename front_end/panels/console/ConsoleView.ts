@@ -1390,7 +1390,7 @@ export class ConsoleView extends UI.Widget.VBox implements UI.SearchableView.Sea
 
     if (index === this.visibleViewMessages.length) {
       this.cleanupAfterSearch();
-      setTimeout(this.searchFinishedForTests.bind(this), 0);
+      window.setTimeout(this.searchFinishedForTests.bind(this), 0);
       return;
     }
 

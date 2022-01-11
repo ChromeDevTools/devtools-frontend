@@ -576,7 +576,7 @@ export class MainImpl {
     UI.ARIAUtils.alertElementInstance();
 
     // Allow UI cycles to repaint prior to creating connection.
-    setTimeout(this.#initializeTarget.bind(this), 0);
+    window.setTimeout(this.#initializeTarget.bind(this), 0);
     MainImpl.timeEnd('Main._showAppUI');
   }
 
@@ -592,7 +592,7 @@ export class MainImpl {
     // Used for browser tests.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.readyForTest();
     // Asynchronously run the extensions.
-    setTimeout(this.#lateInitialization.bind(this), 100);
+    window.setTimeout(this.#lateInitialization.bind(this), 100);
     MainImpl.timeEnd('Main._initializeTarget');
   }
 

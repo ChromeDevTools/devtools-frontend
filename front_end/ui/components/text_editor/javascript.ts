@@ -255,7 +255,7 @@ class PropertyCache {
 
   set(expression: string, value: Promise<CompletionSet>): void {
     this.#cache.set(expression, value);
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (this.#cache.get(expression) === value) {
         this.#cache.delete(expression);
       }

@@ -78,10 +78,10 @@ export class UserMetrics {
     }
 
     this.#firedLaunchHistogram = true;
-    // Use rAF and setTimeout to ensure the marker is fired after layout and rendering.
+    // Use rAF and window.setTimeout to ensure the marker is fired after layout and rendering.
     // This will give the most accurate representation of the tool being ready for a user.
     requestAnimationFrame(() => {
-      setTimeout(() => {
+      window.setTimeout(() => {
         // Mark the load time so that we can pinpoint it more easily in a trace.
         performance.mark(histogramName);
         // If the user has switched panel before we finished loading, ignore the histogram,

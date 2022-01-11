@@ -74,7 +74,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
         Memory.instance().appendHeapProfile(profile, models[i].target());
       }
       await Promise.race([
-        new Promise(r => setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
+        new Promise(r => window.setTimeout(r, Host.InspectorFrontendHost.isUnderTest() ? 10 : 5000)),
         new Promise(r => {
           this.loadEventCallback = r;
         }),

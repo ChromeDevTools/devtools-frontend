@@ -565,7 +565,7 @@ export class SearchableView extends VBox {
       clearTimeout(this.valueChangedTimeoutId);
     }
     const timeout = this.searchInputElement.value.length < 3 ? 200 : 0;
-    this.valueChangedTimeoutId = setTimeout(this.onValueChanged.bind(this), timeout);
+    this.valueChangedTimeoutId = window.setTimeout(this.onValueChanged.bind(this), timeout);
   }
 
   private onValueChanged(): void {

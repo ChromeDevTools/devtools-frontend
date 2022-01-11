@@ -83,7 +83,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
       clearTimeout(this.frameResizedTimer);
     }
 
-    this.frameResizedTimer = setTimeout(refreshContents.bind(this), 100);
+    this.frameResizedTimer = window.setTimeout(refreshContents.bind(this), 100);
   }
 
   private elementNode(): SDK.DOMModel.DOMNode|null {

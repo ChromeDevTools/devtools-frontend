@@ -590,7 +590,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   async doUpdate(): Promise<void> {
     if (!this.initialUpdateCompleted) {
-      setTimeout(() => {
+      window.setTimeout(() => {
         if (!this.initialUpdateCompleted) {
           // the spinner will get automatically removed when innerRebuildUpdate is called
           this.sectionsContainer.createChild('span', 'spinner');
@@ -1650,7 +1650,7 @@ export class StylePropertiesSection {
     if (this.hoverTimer) {
       clearTimeout(this.hoverTimer);
     }
-    this.hoverTimer = setTimeout(this.highlight.bind(this), 300);
+    this.hoverTimer = window.setTimeout(this.highlight.bind(this), 300);
   }
 
   highlight(mode: string|undefined = 'all'): void {

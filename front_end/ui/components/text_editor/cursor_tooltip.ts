@@ -49,7 +49,7 @@ export function cursorTooltip(
       if (this.pending > -1) {
         clearTimeout(this.pending);
       }
-      this.pending = setTimeout(() => this.startUpdate(view), 50) as unknown as number;
+      this.pending = window.setTimeout(() => this.startUpdate(view), 50) as unknown as number;
     }
 
     startUpdate(view: CodeMirror.EditorView): void {

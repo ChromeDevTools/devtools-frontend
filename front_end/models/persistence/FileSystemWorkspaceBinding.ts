@@ -331,7 +331,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore implements Work
         this.addFile(filePaths[i]);
       }
       if (to < filePaths.length) {
-        setTimeout(reportFileChunk.bind(this, to), 100);
+        window.setTimeout(reportFileChunk.bind(this, to), 100);
       }
     }
   }

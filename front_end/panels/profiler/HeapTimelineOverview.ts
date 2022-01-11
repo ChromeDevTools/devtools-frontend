@@ -196,7 +196,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
 
   onWindowChanged(): void {
     if (!this.updateGridTimerId) {
-      this.updateGridTimerId = setTimeout(this.updateGrid.bind(this), 10);
+      this.updateGridTimerId = window.setTimeout(this.updateGrid.bind(this), 10);
     }
   }
 
@@ -204,7 +204,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     if (this.updateTimerId) {
       return;
     }
-    this.updateTimerId = setTimeout(this.update.bind(this), 10);
+    this.updateTimerId = window.setTimeout(this.update.bind(this), 10);
   }
 
   updateBoundaries(): void {

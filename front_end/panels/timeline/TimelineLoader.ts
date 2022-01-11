@@ -80,14 +80,14 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   static loadFromEvents(events: SDK.TracingManager.EventPayload[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
 
-    setTimeout(async () => {
+    window.setTimeout(async () => {
       const eventsPerChunk = 5000;
       client.loadingStarted();
       for (let i = 0; i < events.length; i += eventsPerChunk) {
         const chunk = events.slice(i, i + eventsPerChunk);
         (loader.tracingModel as SDK.TracingModel.TracingModel).addEvents(chunk);
         client.loadingProgress((i + chunk.length) / events.length);
-        await new Promise(r => setTimeout(r));  // Yield event loop to paint.
+        await new Promise(r => window.setTimeout(r));  // Yield event loop to paint.
       }
       void loader.close();
     });
@@ -228,7 +228,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       return;
     }
     this.client.processingStarted();
-    setTimeout(() => this.finalizeTrace(), 0);
+    window.setTimeout(() => this.finalizeTrace(), 0);
   }
 
   private finalizeTrace(): void {

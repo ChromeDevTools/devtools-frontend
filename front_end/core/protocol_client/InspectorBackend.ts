@@ -442,7 +442,7 @@ export class SessionRouter {
     }
 
     // Execute all promises.
-    setTimeout(() => {
+    window.setTimeout(() => {
       if (!this.hasOutstandingNonLongPollingRequests()) {
         this.executeAfterPendingDispatches();
       } else {
@@ -467,7 +467,7 @@ export class SessionRouter {
       code: ConnectionClosedErrorCode,
       data: null,
     };
-    setTimeout(() => callback(error, null), 0);
+    window.setTimeout(() => callback(error, null), 0);
   }
 
   static dispatchUnregisterSessionError({callback, method}: CallbackWithDebugInfo): void {
@@ -476,7 +476,7 @@ export class SessionRouter {
       code: ConnectionClosedErrorCode,
       data: null,
     };
-    setTimeout(() => callback(error, null), 0);
+    window.setTimeout(() => callback(error, null), 0);
   }
 }
 

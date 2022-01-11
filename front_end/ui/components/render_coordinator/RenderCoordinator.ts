@@ -256,7 +256,7 @@ export class RenderCoordinator extends EventTarget {
         await Promise.race([
           Promise.all(readers),
           new Promise((_, reject) => {
-            setTimeout(
+            window.setTimeout(
                 () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
                 DEADLOCK_TIMEOUT);
           }),
@@ -277,7 +277,7 @@ export class RenderCoordinator extends EventTarget {
         await Promise.race([
           Promise.all(writers),
           new Promise((_, reject) => {
-            setTimeout(
+            window.setTimeout(
                 () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
                 DEADLOCK_TIMEOUT);
           }),

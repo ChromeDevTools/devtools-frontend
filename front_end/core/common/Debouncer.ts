@@ -9,7 +9,7 @@ export const debounce = function(func: Function, delay: number): Function {
   let timer = 0;
   const debounced = (): void => {
     clearTimeout(timer);
-    timer = setTimeout(() => func(), delay);
+    timer = window.setTimeout(() => func(), delay);
   };
   return debounced;
 };

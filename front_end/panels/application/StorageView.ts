@@ -381,7 +381,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.clearButton.disabled = true;
     const label = this.clearButton.textContent;
     this.clearButton.textContent = i18nString(UIStrings.clearing);
-    setTimeout(() => {
+    window.setTimeout(() => {
       this.clearButton.disabled = false;
       this.clearButton.textContent = label;
       this.clearButton.focus();

@@ -203,7 +203,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         return;
       }
       this.update(isolates, profiles);
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => window.setTimeout(r, 3000));
     } while (this.currentPollId === pollId);
   }
 

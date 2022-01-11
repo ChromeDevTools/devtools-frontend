@@ -404,7 +404,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     }
 
     // TODO(crbug.com/1112528): Add back-end events for credential creation and removal to avoid polling.
-    setTimeout(this.#updateCredentials.bind(this, authenticatorId), TIMEOUT);
+    window.setTimeout(this.#updateCredentials.bind(this, authenticatorId), TIMEOUT);
   }
 
   #maybeAddEmptyNode(dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>): void {

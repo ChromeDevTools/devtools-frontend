@@ -487,7 +487,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   autoCompleteSoon(force?: boolean): void {
     const immediately = this.isSuggestBoxVisible() || force;
     if (!this.completeTimeout) {
-      this.completeTimeout = setTimeout(this.complete.bind(this, force), immediately ? 0 : this.autocompletionTimeout);
+      this.completeTimeout =
+          window.setTimeout(this.complete.bind(this, force), immediately ? 0 : this.autocompletionTimeout);
     }
   }
 

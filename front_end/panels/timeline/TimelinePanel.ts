@@ -1148,7 +1148,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
     const controller = this.controller;
-    await new Promise(r => setTimeout(r, this.millisecondsToRecordAfterLoadEvent));
+    await new Promise(r => window.setTimeout(r, this.millisecondsToRecordAfterLoadEvent));
 
     // Check if we're still in the same recording session.
     if (controller !== this.controller || this.state !== State.Recording) {

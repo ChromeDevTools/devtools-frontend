@@ -1572,6 +1572,20 @@
         `console.log(1) //# sourceMappingURL=chrome-extension://${extensionId}/source.map`, () => {});
   };
 
+  TestSuite.prototype.testSourceMapsFromDevtools = function() {
+    this.takeControl();
+    const debuggerModel = self.SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
+    debuggerModel.sourceMapManager().addEventListener(
+        SDK.SourceMapManager.Events.SourceMapWillAttach, this.releaseControl.bind(this));
+
+    this.evaluateInConsole_(
+        'console.log(1) //# sourceMappingURL=devtools://devtools/bundled/devtools_compatibility.js', () => {});
+  };
+
+  TestSuite.prototype.testDoesNotCrashOnSourceMapsFromUnknownScheme = function() {
+    this.evaluateInConsole_('console.log(1) //# sourceMappingURL=invalid-scheme://source.map', () => {});
+  };
+
   /**
    * Returns all loaded non anonymous uiSourceCodes.
    * @return {!Array.<!Workspace.UISourceCode>}

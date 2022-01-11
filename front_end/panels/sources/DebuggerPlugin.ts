@@ -603,7 +603,7 @@ export class DebuggerPlugin extends Plugin {
     } else if (/^text\/(javascript|typescript|jsx)/.test(this.uiSourceCode.mimeType())) {
       let node: CodeMirror.SyntaxNode|null = CodeMirror.syntaxTree(editor.state).resolveInner(textPosition, 1);
       // Only do something if the cursor is over a leaf node.
-      if (node.firstChild) {
+      if (node?.firstChild) {
         return null;
       }
       while (

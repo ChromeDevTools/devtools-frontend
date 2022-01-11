@@ -113,8 +113,8 @@ declare class Tree {
     cursor(pos?: number, side?: -1 | 0 | 1): TreeCursor;
     fullCursor(): TreeCursor;
     get topNode(): SyntaxNode;
-    resolve(pos: number, side?: -1 | 0 | 1): SyntaxNode;
-    resolveInner(pos: number, side?: -1 | 0 | 1): SyntaxNode;
+    resolve(pos: number, side?: -1 | 0 | 1): any;
+    resolveInner(pos: number, side?: -1 | 0 | 1): any;
     iterate(spec: {
         enter(type: NodeType, from: number, to: number, get: () => SyntaxNode): false | void;
         leave?(type: NodeType, from: number, to: number, get: () => SyntaxNode): void;
@@ -1672,6 +1672,11 @@ interface SpanIterator<T extends RangeValue> {
     `active.length + 1` to signal this.
     */
     point(from: number, to: number, value: T, active: readonly T[], openStart: number): void;
+    /**
+    When provided, this will be called for each point processed,
+    causing the ones for which it returns false to be ignored.
+    */
+    filterPoint?(from: number, to: number, value: T, index: number): boolean;
 }
 /**
 A range cursor is an object that moves to the next range every
@@ -2122,6 +2127,7 @@ interface Rect {
     readonly top: number;
     readonly bottom: number;
 }
+declare type ScrollStrategy = "nearest" | "start" | "end" | "center";
 
 /**
 Command functions are used in key bindings and other types of user
@@ -2184,11 +2190,13 @@ declare class PluginField<T> {
     **Note**: For reasons of data flow (plugins are only updated
     after the viewport is computed), decorations produced by plugins
     are _not_ taken into account when predicting the vertical layout
-    structure of the editor. Thus, things like large widgets or big
-    replacements (i.e. code folding) should be provided through the
-    state-level [`decorations` facet](https://codemirror.net/6/docs/ref/#view.EditorView^decorations),
-    not this plugin field. Specifically, replacing decorations that
-    cross line boundaries will break if provided through a plugin.
+    structure of the editor. They **must not** introduce block
+    widgets (that will raise an error) or replacing decorations that
+    cover line breaks (these will be ignored if they occur). Such
+    decorations, or others that cause a large amount of vertical
+    size shift compared to the undecorated content, should be
+    provided through the state-level [`decorations`
+    facet](https://codemirror.net/6/docs/ref/#view.EditorView^decorations) instead.
     */
     static decorations: PluginField<DecorationSet>;
     /**
@@ -2314,12 +2322,13 @@ declare class ViewUpdate {
     */
     get viewportChanged(): boolean;
     /**
-    Indicates whether the line height in the editor changed in this update.
+    Indicates whether the height of an element in the editor changed
+    in this update.
     */
     get heightChanged(): boolean;
     /**
-    Returns true when the document changed or the size of the editor
-    or the lines or characters within it has changed.
+    Returns true when the document was modified or the size of the
+    editor, or elements within the editor, changed.
     */
     get geometryChanged(): boolean;
     /**
@@ -2781,8 +2790,11 @@ declare class EditorView {
     */
     posAtDOM(node: Node, offset?: number): number;
     /**
-    Get the document position at the given screen coordinates.
-    Returns null if no valid position could be found.
+    Get the document position at the given screen coordinates. For
+    positions not covered by the visible viewport's DOM structure,
+    this will return null, unless `false` is passed as second
+    argument, in which case it'll return an estimated position that
+    would be near the coordinates if it were rendered.
     */
     posAtCoords(coords: {
         x: number;
@@ -2851,13 +2863,48 @@ declare class EditorView {
     /**
     Effect that can be [added](https://codemirror.net/6/docs/ref/#state.TransactionSpec.effects) to a
     transaction to make it scroll the given range into view.
+
+    *Deprecated*. Use [`scrollIntoView`](https://codemirror.net/6/docs/ref/#view.EditorView^scrollIntoView) instead.
     */
     static scrollTo: StateEffectType<SelectionRange>;
     /**
     Effect that makes the editor scroll the given range to the
     center of the visible view.
+
+    *Deprecated*. Use [`scrollIntoView`](https://codemirror.net/6/docs/ref/#view.EditorView^scrollIntoView) instead.
     */
     static centerOn: StateEffectType<SelectionRange>;
+    /**
+    Returns an effect that can be
+    [added](https://codemirror.net/6/docs/ref/#state.TransactionSpec.effects) to a transaction to
+    cause it to scroll the given position or range into view.
+    */
+    static scrollIntoView(pos: number | SelectionRange, options?: {
+        /**
+        By default (`"nearest"`) the position will be vertically
+        scrolled only the minimal amount required to move the given
+        position into view. You can set this to `"start"` to move it
+        to the top of the view, `"end"` to move it to the bottom, or
+        `"center"` to move it to the center.
+        */
+        y?: ScrollStrategy;
+        /**
+        Effect similar to
+        [`y`](https://codemirror.net/6/docs/ref/#view.EditorView^scrollIntoView^options.y), but for the
+        horizontal scroll position.
+        */
+        x?: ScrollStrategy;
+        /**
+        Extra vertical distance to add when moving something into
+        view. Not used with the `"center"` strategy. Defaults to 5.
+        */
+        yMargin?: number;
+        /**
+        Extra horizontal distance to add. Not used with the `"center"`
+        strategy. Defaults to 5.
+        */
+        xMargin?: number;
+    }): StateEffect<unknown>;
     /**
     Facet to add a [style
     module](https://github.com/marijnh/style-mod#documentation) to
@@ -2958,6 +3005,13 @@ declare class EditorView {
     }, options?: {
         dark?: boolean;
     }): Extension;
+    /**
+    This facet records whether a dark theme is active. The extension
+    returned by [`theme`](https://codemirror.net/6/docs/ref/#view.EditorView^theme) automatically
+    includes an instance of this when the `dark` option is set to
+    true.
+    */
+    static darkTheme: Facet<boolean, boolean>;
     /**
     Create an extension that adds styles to the base theme. Like
     with [`theme`](https://codemirror.net/6/docs/ref/#view.EditorView^theme), use `&` to indicate the
@@ -5080,6 +5134,11 @@ declare const tags: {
     */
     definitionKeyword: Tag;
     /**
+    A [keyword](https://codemirror.net/6/docs/ref/#highlight.tags.keyword) related to defining or
+    interfacing with modules.
+    */
+    moduleKeyword: Tag;
+    /**
     An operator.
     */
     operator: Tag;
@@ -5536,6 +5595,11 @@ interface Panel {
     Update the DOM for a given view update.
     */
     update?(update: ViewUpdate): void;
+    /**
+    Called when the panel is removed from the editor or the editor
+    is destroyed.
+    */
+    destroy?(): void;
     /**
     Whether the panel should be at the top or bottom of the editor.
     Defaults to false.

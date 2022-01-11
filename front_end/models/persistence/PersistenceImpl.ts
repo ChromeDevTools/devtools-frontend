@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -18,7 +19,7 @@ let persistenceInstance: PersistenceImpl;
 export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
   private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
-  private readonly filePathPrefixesToBindingCount: Map<string, number>;
+  private readonly filePathPrefixesToBindingCount: FilePathPrefixesBindingCounts;
   private subscribedBindingEventListeners:
       Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, () => void>;
   private readonly mapping: Automapping;
@@ -28,7 +29,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     super();
     this.workspace = workspace;
     this.breakpointManager = breakpointManager;
-    this.filePathPrefixesToBindingCount = new Map();
+    this.filePathPrefixesToBindingCount = new FilePathPrefixesBindingCounts();
 
     this.subscribedBindingEventListeners = new Platform.MapUtilities.Multimap();
 
@@ -92,7 +93,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     binding.fileSystem.addEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
 
-    this.addFilePathBindingPrefixes(binding.fileSystem.url());
+    this.filePathPrefixesToBindingCount.add(binding.fileSystem.url());
 
     await this.moveBreakpoints(binding.fileSystem, binding.network);
 
@@ -131,7 +132,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     binding.fileSystem.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this);
 
-    this.removeFilePathBindingPrefixes(binding.fileSystem.url());
+    this.filePathPrefixesToBindingCount.remove(binding.fileSystem.url());
     await this.breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
 
     this.notifyBindingEvent(binding.network);
@@ -307,33 +308,52 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return binding ? binding.network : null;
   }
 
-  private addFilePathBindingPrefixes(filePath: string): void {
+  filePathHasBindings(filePath: string): boolean {
+    return this.filePathPrefixesToBindingCount.hasBindingPrefix(filePath);
+  }
+}
+
+class FilePathPrefixesBindingCounts {
+  private prefixCounts: Map<string, number>;
+
+  constructor() {
+    this.prefixCounts = new Map();
+  }
+
+  private getPlatformCanonicalFilePath(path: string): string {
+    return Host.Platform.isWin() ? path.toLowerCase() : path;
+  }
+
+  add(filePath: string): void {
+    filePath = this.getPlatformCanonicalFilePath(filePath);
     let relative = '';
     for (const token of filePath.split('/')) {
       relative += token + '/';
-      const count = this.filePathPrefixesToBindingCount.get(relative) || 0;
-      this.filePathPrefixesToBindingCount.set(relative, count + 1);
+      const count = this.prefixCounts.get(relative) || 0;
+      this.prefixCounts.set(relative, count + 1);
     }
   }
 
-  private removeFilePathBindingPrefixes(filePath: string): void {
+  remove(filePath: string): void {
+    filePath = this.getPlatformCanonicalFilePath(filePath);
     let relative = '';
     for (const token of filePath.split('/')) {
       relative += token + '/';
-      const count = this.filePathPrefixesToBindingCount.get(relative);
+      const count = this.prefixCounts.get(relative);
       if (count === 1) {
-        this.filePathPrefixesToBindingCount.delete(relative);
+        this.prefixCounts.delete(relative);
       } else if (count !== undefined) {
-        this.filePathPrefixesToBindingCount.set(relative, count - 1);
+        this.prefixCounts.set(relative, count - 1);
       }
     }
   }
 
-  filePathHasBindings(filePath: string): boolean {
+  hasBindingPrefix(filePath: string): boolean {
+    filePath = this.getPlatformCanonicalFilePath(filePath);
     if (!filePath.endsWith('/')) {
       filePath += '/';
     }
-    return this.filePathPrefixesToBindingCount.has(filePath);
+    return this.prefixCounts.has(filePath);
   }
 }
 

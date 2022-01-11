@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -28,7 +29,7 @@ export class Automapping {
   private readonly onStatusAdded: (arg0: AutomappingStatus) => Promise<void>;
   private readonly onStatusRemoved: (arg0: AutomappingStatus) => Promise<void>;
   private readonly statuses: Set<AutomappingStatus>;
-  private readonly fileSystemUISourceCodes: Map<string, Workspace.UISourceCode.UISourceCode>;
+  private readonly fileSystemUISourceCodes: FileSystemUISourceCodes;
   private readonly sweepThrottler: Common.Throttler.Throttler;
   private readonly sourceCodeToProcessingPromiseMap: WeakMap<Workspace.UISourceCode.UISourceCode, Promise<void>>;
   private readonly sourceCodeToAutoMappingStatusMap: WeakMap<Workspace.UISourceCode.UISourceCode, AutomappingStatus>;
@@ -47,7 +48,7 @@ export class Automapping {
     this.onStatusRemoved = onStatusRemoved;
     this.statuses = new Set();
 
-    this.fileSystemUISourceCodes = new Map();
+    this.fileSystemUISourceCodes = new FileSystemUISourceCodes();
     this.sweepThrottler = new Common.Throttler.Throttler(100);
 
     this.sourceCodeToProcessingPromiseMap = new WeakMap();
@@ -144,7 +145,7 @@ export class Automapping {
         return;
       }
       this.filesIndex.addPath(uiSourceCode.url());
-      this.fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
+      this.fileSystemUISourceCodes.add(uiSourceCode);
       this.scheduleSweep();
     } else if (project.type() === Workspace.Workspace.projectTypes.Network) {
       this.computeNetworkStatus(uiSourceCode);
@@ -179,7 +180,7 @@ export class Automapping {
     }
 
     this.filesIndex.addPath(uiSourceCode.url());
-    this.fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
+    this.fileSystemUISourceCodes.add(uiSourceCode);
     this.scheduleSweep();
   }
 
@@ -486,6 +487,33 @@ class FolderIndex {
     const encodedPath = this.encoder.encode(path);
     const commonPrefix = this.index.longestPrefix(encodedPath, true);
     return this.encoder.decode(commonPrefix);
+  }
+}
+
+class FileSystemUISourceCodes {
+  private readonly sourceCodes: Map<string, Workspace.UISourceCode.UISourceCode>;
+
+  constructor() {
+    this.sourceCodes = new Map();
+  }
+
+  private getPlatformCanonicalFileUrl(path: string): string {
+    return Host.Platform.isWin() ? path.toLowerCase() : path;
+  }
+
+  add(sourceCode: Workspace.UISourceCode.UISourceCode): void {
+    const fileUrl = this.getPlatformCanonicalFileUrl(sourceCode.url());
+    this.sourceCodes.set(fileUrl, sourceCode);
+  }
+
+  get(fileUrl: string): Workspace.UISourceCode.UISourceCode|undefined {
+    fileUrl = this.getPlatformCanonicalFileUrl(fileUrl);
+    return this.sourceCodes.get(fileUrl);
+  }
+
+  delete(fileUrl: string): void {
+    fileUrl = this.getPlatformCanonicalFileUrl(fileUrl);
+    this.sourceCodes.delete(fileUrl);
   }
 }
 

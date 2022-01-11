@@ -89,6 +89,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private extensionsEnabled: boolean;
   private inspectedTabId?: string;
   private readonly extensionAPITestHook?: (server: unknown, api: unknown) => unknown;
+  private themeChangeHandlers: Map<string, MessagePort> = new Map();
 
   private constructor() {
     super();
@@ -124,6 +125,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.GetResourceContent, this.onGetResourceContent.bind(this));
     this.registerHandler(PrivateAPI.Commands.Reload, this.onReload.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetOpenResourceHandler, this.onSetOpenResourceHandler.bind(this));
+    this.registerHandler(PrivateAPI.Commands.SetThemeChangeHandler, this.onSetThemeChangeHandler.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetResourceContent, this.onSetResourceContent.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarHeight, this.onSetSidebarHeight.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarContent, this.onSetSidebarContent.bind(this));
@@ -147,6 +149,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Host.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
 
     this.initExtensions();
+
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      const themeName = ThemeSupport.ThemeSupport.instance().themeName();
+      for (const port of this.themeChangeHandlers.values()) {
+        port.postMessage({command: PrivateAPI.Events.ThemeChange, themeName});
+      }
+    });
   }
 
   static instance(opts: {
@@ -526,6 +535,25 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       Components.Linkifier.Linkifier.registerLinkHandler(name, this.handleOpenURL.bind(this, port));
     } else {
       Components.Linkifier.Linkifier.unregisterLinkHandler(name);
+    }
+    return undefined;
+  }
+
+  private onSetThemeChangeHandler(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
+      |undefined {
+    if (message.command !== PrivateAPI.Commands.SetThemeChangeHandler) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetThemeChangeHandler}`);
+    }
+    const extensionOrigin = this.getExtensionOrigin(port);
+    const extension = this.registeredExtensions.get(extensionOrigin);
+    if (!extension) {
+      throw new Error('Received a message from an unregistered extension');
+    }
+
+    if (message.handlerPresent) {
+      this.themeChangeHandlers.set(extensionOrigin, port);
+    } else {
+      this.themeChangeHandlers.delete(extensionOrigin);
     }
     return undefined;
   }

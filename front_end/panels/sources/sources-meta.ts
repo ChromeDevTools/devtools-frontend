@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -1097,17 +1098,19 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.createNewSnippet),
 });
 
-UI.ActionRegistration.registerActionExtension({
-  category: UI.ActionRegistration.ActionCategory.SOURCES,
-  actionId: 'sources.add-folder-to-workspace',
-  async loadActionDelegate() {
-    const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.ActionDelegate.instance();
-  },
-  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_ADD,
-  title: i18nLazyString(UIStrings.addFolderToWorkspace),
-  condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
-});
+if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+  UI.ActionRegistration.registerActionExtension({
+    category: UI.ActionRegistration.ActionCategory.SOURCES,
+    actionId: 'sources.add-folder-to-workspace',
+    async loadActionDelegate() {
+      const Sources = await loadSourcesModule();
+      return Sources.SourcesNavigator.ActionDelegate.instance();
+    },
+    iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_ADD,
+    title: i18nLazyString(UIStrings.addFolderToWorkspace),
+    condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
+  });
+}
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DEBUGGER,

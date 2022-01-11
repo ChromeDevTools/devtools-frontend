@@ -545,6 +545,15 @@
     /**
      * @override
      * @param {string} name
+     * @param {function(string)} callback
+     */
+    getPreference(name, callback) {
+      DevToolsAPI.sendMessageToEmbedder('getPreference', [name], /** @type {function(string)} */ (callback));
+    }
+
+    /**
+     * @override
+     * @param {string} name
      * @param {string} value
      */
     setPreference(name, value) {

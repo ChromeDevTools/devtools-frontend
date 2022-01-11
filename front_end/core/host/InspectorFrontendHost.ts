@@ -260,6 +260,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     callback(prefs);
   }
 
+  getPreference(name: string, callback: (arg0: string) => void): void {
+    callback(window.localStorage[name]);
+  }
+
   setPreference(name: string, value: string): void {
     window.localStorage[name] = value;
   }

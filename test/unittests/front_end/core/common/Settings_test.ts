@@ -8,6 +8,24 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 
 const SettingsStorage = Common.Settings.SettingsStorage;
 
+class MockStore implements Common.Settings.SettingsBackingStore {
+  #store = new Map();
+  register() {
+  }
+  set(key: string, value: string) {
+    this.#store.set(key, value);
+  }
+  get(key: string) {
+    return this.#store.get(key);
+  }
+  remove(key: string) {
+    this.#store.delete(key);
+  }
+  clear() {
+    this.#store.clear();
+  }
+}
+
 describe('SettingsStorage class', () => {
   it('is able to set a name', () => {
     const settingsStorage = new SettingsStorage({});
@@ -40,6 +58,42 @@ describe('SettingsStorage class', () => {
     settingsStorage.removeAll();
     assert.isFalse(settingsStorage.has('Test Name 1'), 'the class should not have any names');
     assert.isFalse(settingsStorage.has('Test Name 2'), 'the class should not have any names');
+  });
+
+  describe('forceGet', () => {
+    it('returns the value of the backing store, not the cached one', async () => {
+      const mockStore = new MockStore();
+      const settingsStorage = new SettingsStorage({}, mockStore);
+      settingsStorage.set('test', 'value');
+
+      mockStore.set('test', 'changed');
+
+      assert.strictEqual(await settingsStorage.forceGet('test'), 'changed');
+      assert.strictEqual(await settingsStorage.forceGet('test'), 'changed');
+    });
+    it('updates the cached value of a SettingsStorage', async () => {
+      const mockStore = new MockStore();
+      const settingsStorage = new SettingsStorage({}, mockStore);
+      settingsStorage.set('test', 'value');
+      mockStore.set('test', 'changed');
+      assert.strictEqual(settingsStorage.get('test'), 'value');
+
+      await settingsStorage.forceGet('test');
+
+      assert.strictEqual(settingsStorage.get('test'), 'changed');
+    });
+    it('leaves the cached value alone if the backing store has the same value', async () => {
+      const mockStore = new MockStore();
+      const settingsStorage = new SettingsStorage({}, mockStore);
+
+      mockStore.set('test', 'value');
+      settingsStorage.set('test', 'value');
+
+      assert.strictEqual(mockStore.get('test'), 'value');
+      assert.strictEqual(await settingsStorage.forceGet('test'), 'value');
+      assert.strictEqual(mockStore.get('test'), 'value');
+      assert.strictEqual(await settingsStorage.forceGet('test'), 'value');
+    });
   });
 });
 
@@ -111,5 +165,32 @@ describe('Settings instance', () => {
     assert.isTrue(registeredSettings.has('__prefix__.staticGlobalSetting'));
     assert.isTrue(registeredSettings.has('__prefix__.dynamicLocalSetting'));
     assert.isTrue(registeredSettings.has('__prefix__.dynamicSyncedSetting'));
+  });
+
+  describe('forceGet', () => {
+    it('triggers a setting changed event in case the value in the backing store got updated and we update the cached value',
+       async () => {
+         const mockStore = new MockStore();
+         const settingsStorage = new SettingsStorage({}, mockStore);
+         mockStore.set('test', '"old"');
+         const settings = Common.Settings.Settings.instance({
+           forceNew: true,
+           syncedStorage: settingsStorage,
+           globalStorage: settingsStorage,
+           localStorage: settingsStorage,
+         });
+         const testSetting: Common.Settings.Setting<string> =
+             settings.createSetting('test', 'default val', Common.Settings.SettingStorageType.Global);
+         const changes: string[] = [];
+         testSetting.addChangeListener((event: Common.EventTarget.EventTargetEvent<string>) => {
+           changes.push(event.data);
+         });
+         mockStore.set('test', '"new"');
+         assert.strictEqual(await testSetting.forceGet(), 'new');
+         assert.deepEqual(changes, ['new']);
+         assert.strictEqual(mockStore.get('test'), '"new"');
+         assert.strictEqual(await settingsStorage.forceGet('test'), '"new"');
+         assert.strictEqual(await testSetting.forceGet(), 'new');
+       });
   });
 });

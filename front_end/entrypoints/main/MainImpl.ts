@@ -233,6 +233,11 @@ export class MainImpl {
       register: (name: string) =>
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.registerPreference(name, {synced: false}),
       set: Host.InspectorFrontendHost.InspectorFrontendHostInstance.setPreference,
+      get: (name: string) => {
+        return new Promise(resolve => {
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreference(name, resolve);
+        });
+      },
       remove: Host.InspectorFrontendHost.InspectorFrontendHostInstance.removePreference,
       clear: Host.InspectorFrontendHost.InspectorFrontendHostInstance.clearPreferences,
     };

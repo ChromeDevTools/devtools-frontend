@@ -234,6 +234,8 @@ export interface InspectorFrontendHostAPI {
                    [x: string]: string,
                  }) => void): void;
 
+  getPreference(name: string, callback: (arg0: string) => void): void;
+
   setPreference(name: string, value: string): void;
 
   removePreference(name: string): void;

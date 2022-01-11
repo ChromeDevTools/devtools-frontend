@@ -74,9 +74,14 @@ fieldset {
   border: none;
 }
 
-.settings-tab label {
-  padding-right: 4px;
-  display: inline-flex;
+.experiments-filter {
+  padding-top: 1px;
+  display: flex;
+  align-items: center;
+}
+
+.experiments-filter label {
+  padding-right: 8px;
   flex-shrink: 0;
 }
 

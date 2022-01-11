@@ -392,7 +392,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.experiments), 'experiments-tab-content');
     const filterSection = this.appendSection();
-    filterSection.style.paddingTop = '1px';
+    filterSection.classList.add('experiments-filter');
 
     const labelElement = filterSection.createChild('label');
     labelElement.textContent = i18nString(UIStrings.filterExperimentsLabel);

@@ -8,6 +8,8 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+
 const ResourceType = Common.ResourceType.ResourceType;
 const ResourceCategory = Common.ResourceType.ResourceCategory;
 const resourceTypes = Common.ResourceType.resourceTypes;
@@ -25,7 +27,7 @@ describe('ResourceCategory class', () => {
   });
 });
 
-describe('ResourceType class', () => {
+describeWithEnvironment('ResourceType class', () => {
   it('is able to be instantiated successfully', () => {
     const testResourceCategory = new ResourceCategory(categoryTestTitle, categoryTestShortTitle);
     const resourceType = new ResourceType('Type Test Name', typeTestTitle, testResourceCategory, true);

@@ -58,7 +58,7 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
   target.dispatch({method: event, params: payload[0]});
 }
 
-function enable({reset = true} = {}) {
+async function enable({reset = true} = {}) {
   if (reset) {
     responseMap.clear();
   }
@@ -66,7 +66,7 @@ function enable({reset = true} = {}) {
   // The DevTools frontend code expects certain things to be in place
   // before it can run. This function will ensure those things are
   // minimally there.
-  void initializeGlobalVars({reset});
+  await initializeGlobalVars({reset});
 
   let messageCallback: MessageCallback;
   ProtocolClient.InspectorBackend.Connection.setFactory(() => {
@@ -108,8 +108,8 @@ function enable({reset = true} = {}) {
   });
 }
 
-function disable() {
-  void deinitializeGlobalVars();
+async function disable() {
+  await deinitializeGlobalVars();
   // @ts-ignore Setting back to undefined as a hard reset.
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);
 }
@@ -118,7 +118,7 @@ export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite
   reset: true,
 }) {
   return describe(`mock-${title}`, () => {
-    beforeEach(() => enable(opts));
+    beforeEach(async () => await enable(opts));
     afterEach(disable);
     describe(title, fn);
   });

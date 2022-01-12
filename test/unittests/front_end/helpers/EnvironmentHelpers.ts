@@ -18,26 +18,6 @@ import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 // initialization phase.
 let UI: typeof UIModule;
 
-// Expose the locale.
-i18n.DevToolsLocale.DevToolsLocale.instance({
-  create: true,
-  data: {
-    navigatorLanguage: 'en-US',
-    settingLanguage: 'en-US',
-    lookupClosestDevToolsLocale: () => 'en-US',
-  },
-});
-
-// Load the strings from the resource file.
-const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
-// proxied call.
-try {
-  await i18n.i18n.fetchAndRegisterLocaleData(locale);
-} catch (error) {
-  // eslint-disable-next-line no-console
-  console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
-}
-
 let targetManager: SDK.TargetManager.TargetManager;
 
 function initializeTargetManagerIfNecessary() {
@@ -68,6 +48,25 @@ const REGISTERED_EXPERIMENTS = [
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
+  // Expose the locale.
+  i18n.DevToolsLocale.DevToolsLocale.instance({
+    create: true,
+    data: {
+      navigatorLanguage: 'en-US',
+      settingLanguage: 'en-US',
+      lookupClosestDevToolsLocale: () => 'en-US',
+    },
+  });
+
+  // Load the strings from the resource file.
+  const locale = i18n.DevToolsLocale.DevToolsLocale.instance().locale;
+  // proxied call.
+  try {
+    await i18n.i18n.fetchAndRegisterLocaleData(locale);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
+  }
 
   // Create the appropriate settings needed to boot.
   const settings = [

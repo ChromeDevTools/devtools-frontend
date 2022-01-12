@@ -192,8 +192,8 @@ export class DebuggerPlugin extends Plugin {
   private initializedMuted: boolean;
   private ignoreListInfobar: UI.Infobar.Infobar|null;
   private prettyPrintInfobar!: UI.Infobar.Infobar|null;
-  private scheduledBreakpointDecorationUpdates?: Set<BreakpointDecoration>|null;
   private refreshBreakpointsTimeout: undefined|number = undefined;
+  private activeBreakpointDialog: BreakpointEditDialog|null = null;
 
   constructor(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
@@ -799,6 +799,7 @@ export class DebuggerPlugin extends Plugin {
     const decorationElement = document.createElement('div');
     const compartment = new CodeMirror.Compartment();
     const dialog = new BreakpointEditDialog(line.number - 1, oldCondition, Boolean(preferLogpoint), async result => {
+      this.activeBreakpointDialog = null;
       dialog.detach();
       editor.dispatch({effects: compartment.reconfigure([])});
       if (!result.committed) {
@@ -828,6 +829,7 @@ export class DebuggerPlugin extends Plugin {
     dialog.markAsExternallyManaged();
     dialog.show(decorationElement);
     dialog.focusEditor();
+    this.activeBreakpointDialog = dialog;
   }
 
   // Create decorations to indicate the current debugging position
@@ -1423,6 +1425,10 @@ export class DebuggerPlugin extends Plugin {
     if (this.muted) {
       return;
     }
+    if (this.activeBreakpointDialog) {
+      this.activeBreakpointDialog.finishEditing(false, '');
+    }
+
     const breakpoints = this.lineBreakpoints(line);
     if (!breakpoints.length) {
       await this.createNewBreakpoint(line, '', true);

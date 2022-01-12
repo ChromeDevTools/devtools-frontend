@@ -206,7 +206,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     }
   }
 
-  private finishEditing(committed: boolean, condition: string): void {
+  finishEditing(committed: boolean, condition: string): void {
     if (this.finished) {
       return;
     }

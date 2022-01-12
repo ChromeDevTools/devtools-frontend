@@ -5,7 +5,6 @@
 // clang-format check also ignores that file
 front_end/.eslintrc.js
 front_end/diff/diff_match_patch.js
-front_end/protocol_externs.js
 front_end/javascript_metadata/NativeFunctions.js
 front_end/third_party/
 test/e2e/**/*.js

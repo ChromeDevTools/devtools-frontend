@@ -354,6 +354,7 @@ select.toolbar-item:focus-visible > * {
   overflow: hidden;
   white-space: nowrap;
   cursor: auto;
+  color: var(--color-text-primary);
 }
 /* Separator */
 
@@ -394,6 +395,7 @@ input[is="history-input"] {
   border: 1px solid transparent;
   line-height: 16px;
   padding: 1px;
+  color: var(--color-text-primary);
 }
 
 input[is="history-input"]:hover {

@@ -167,7 +167,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
                                                              UI.View.ViewLocationResolver {
   private splitWidget: UI.SplitWidget.SplitWidget;
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
-  private contentElementInternal: HTMLDivElement;
+  private mainContainer: HTMLDivElement;
+  private domTreeContainer: HTMLDivElement;
   private splitMode: _splitMode|null;
   private readonly accessibilityTreeView: AccessibilityTreeView|undefined;
   private breadcrumbs: ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs;
@@ -211,24 +212,27 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findByStringSelectorOrXpath));
     const stackElement = this.searchableViewInternal.element;
 
-    this.contentElementInternal = document.createElement('div');
+    this.mainContainer = document.createElement('div');
+    this.domTreeContainer = document.createElement('div');
     const crumbsContainer = document.createElement('div');
     if (Root.Runtime.experiments.isEnabled('fullAccessibilityTree')) {
       this.initializeFullAccessibilityTreeView();
     }
-    stackElement.appendChild(this.contentElementInternal);
+    this.mainContainer.appendChild(this.domTreeContainer);
+    stackElement.appendChild(this.mainContainer);
     stackElement.appendChild(crumbsContainer);
 
-    UI.ARIAUtils.markAsMain(this.contentElementInternal);
-    UI.ARIAUtils.setAccessibleName(this.contentElementInternal, i18nString(UIStrings.domTreeExplorer));
+    UI.ARIAUtils.markAsMain(this.domTreeContainer);
+    UI.ARIAUtils.setAccessibleName(this.domTreeContainer, i18nString(UIStrings.domTreeExplorer));
 
     this.splitWidget.setMainWidget(this.searchableViewInternal);
     this.splitMode = null;
 
-    this.contentElementInternal.id = 'elements-content';
+    this.mainContainer.id = 'main-content';
+    this.domTreeContainer.id = 'elements-content';
     // FIXME: crbug.com/425984
     if (Common.Settings.Settings.instance().moduleSetting('domWordWrap').get()) {
-      this.contentElementInternal.classList.add('elements-wrap');
+      this.domTreeContainer.classList.add('elements-wrap');
     }
     Common.Settings.Settings.instance()
         .moduleSetting('domWordWrap')
@@ -282,7 +286,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.domTreeButton = createAccessibilityTreeToggleButton(true);
     this.domTreeButton.addEventListener('click', this.showDOMTree.bind(this));
 
-    this.contentElementInternal.appendChild(this.accessibilityTreeButton);
+    this.mainContainer.appendChild(this.accessibilityTreeButton);
   }
 
   private showAccessibilityTree(): void {
@@ -433,12 +437,12 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     for (const treeOutline of this.treeOutlines) {
       // Attach heavy component lazily
-      if (treeOutline.element.parentElement !== this.contentElementInternal) {
+      if (treeOutline.element.parentElement !== this.domTreeContainer) {
         const header = this.treeOutlineHeaders.get(treeOutline);
         if (header) {
-          this.contentElementInternal.appendChild(header);
+          this.domTreeContainer.appendChild(header);
         }
-        this.contentElementInternal.appendChild(treeOutline.element);
+        this.domTreeContainer.appendChild(treeOutline.element);
       }
     }
 
@@ -469,10 +473,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     for (const treeOutline of this.treeOutlines) {
       treeOutline.setVisible(false);
       // Detach heavy component on hide
-      this.contentElementInternal.removeChild(treeOutline.element);
+      this.domTreeContainer.removeChild(treeOutline.element);
       const header = this.treeOutlineHeaders.get(treeOutline);
       if (header) {
-        this.contentElementInternal.removeChild(header);
+        this.domTreeContainer.removeChild(header);
       }
     }
     super.willHide();
@@ -668,7 +672,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private domWordWrapSettingChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
-    this.contentElementInternal.classList.toggle('elements-wrap', event.data);
+    this.domTreeContainer.classList.toggle('elements-wrap', event.data);
     for (const treeOutline of this.treeOutlines) {
       treeOutline.setWordWrap(event.data);
     }

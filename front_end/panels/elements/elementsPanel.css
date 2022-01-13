@@ -27,11 +27,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#elements-content {
+#main-content {
+  position: relative;
   flex: 1 1;
+}
+
+#elements-content {
   overflow: auto;
   padding: 2px 0 0;
-  position: relative;
+  height: 100%;
 }
 
 .style-panes-wrapper {

@@ -32,7 +32,7 @@ export class ProfileNode {
   }
 
   get scriptId(): Protocol.Runtime.ScriptId {
-    return this.callFrame.scriptId;
+    return String(this.callFrame.scriptId) as Protocol.Runtime.ScriptId;
   }
 
   get url(): string {

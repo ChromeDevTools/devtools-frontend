@@ -582,7 +582,7 @@ export const generatedProperties = [
     'name': 'mix-blend-mode',
     'keywords': [
       'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
-      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'plus-lighter'
     ]
   },
   {'name': 'negative'},
@@ -1086,7 +1086,7 @@ export const generatedPropertyValues = {
   'mix-blend-mode': {
     'values': [
       'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'color-dodge', 'color-burn', 'hard-light',
-      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+      'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'plus-lighter'
     ]
   },
   'object-fit': {'values': ['fill', 'contain', 'cover', 'none', 'scale-down']},

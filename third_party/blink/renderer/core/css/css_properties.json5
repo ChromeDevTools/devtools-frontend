@@ -2978,7 +2978,7 @@
       keywords: [
         "normal", "multiply", "screen", "overlay", "darken", "lighten",
         "color-dodge", "color-burn", "hard-light", "soft-light", "difference",
-        "exclusion", "hue", "saturation", "color", "luminosity"
+        "exclusion", "hue", "saturation", "color", "luminosity", "plus-lighter"
       ],
       typedom_types: ["Keyword"],
       default_value: "normal",
@@ -5005,7 +5005,7 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
       field_group: "*",
-      field_size: 3,
+      field_size: 2,
       field_template: "primitive",
       default_value: "TextEmphasisPosition::kOverRight",
       type_name: "TextEmphasisPosition",
@@ -6401,7 +6401,7 @@
     {
       name: "text-emphasis",
       longhands: ["text-emphasis-style", "text-emphasis-color"],
-      property_methods: ["ParseShorthand"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
       name: "-webkit-text-stroke",

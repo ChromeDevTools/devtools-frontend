@@ -672,6 +672,30 @@ Common.Settings.registerSettingExtension({
   ],
 });
 
+// Not all locales that are supported should also be made available in the
+// settings. Filter out pseudo locales e.g.
+function filterLocalesForSettings(): string[] {
+  return i18n.i18n.getAllSupportedDevToolsLocales().filter(locale => locale !== 'en-XL');
+}
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  settingName: 'language',
+  settingType: Common.Settings.SettingType.ENUM,
+  title: i18nLazyString(UIStrings.language),
+  defaultValue: 'en-US',
+  options: [
+    {
+      value: 'browserLanguage',
+      title: i18nLazyString(UIStrings.browserLanguage),
+      text: i18nLazyString(UIStrings.browserLanguage),
+    },
+    ...filterLocalesForSettings().map(locale => createOptionForLocale(locale)),
+  ],
+  reloadRequired: true,
+});
+
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.Synced,
@@ -742,30 +766,6 @@ function createOptionForLocale(localeString: string): Common.Settings.SettingExt
     text: createLazyLocalizedLocaleSettingText(localeString),
   };
 }
-
-// Not all locales that are supported should also be made available in the
-// settings. Filter out pseudo locales e.g.
-function filterLocalesForSettings(): string[] {
-  return i18n.i18n.getAllSupportedDevToolsLocales().filter(locale => locale !== 'en-XL');
-}
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.Synced,
-  settingName: 'language',
-  settingType: Common.Settings.SettingType.ENUM,
-  title: i18nLazyString(UIStrings.language),
-  defaultValue: 'en-US',
-  options: [
-    {
-      value: 'browserLanguage',
-      title: i18nLazyString(UIStrings.browserLanguage),
-      text: i18nLazyString(UIStrings.browserLanguage),
-    },
-    ...filterLocalesForSettings().map(locale => createOptionForLocale(locale)),
-  ],
-  reloadRequired: true,
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.SYNC,

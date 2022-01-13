@@ -32,11 +32,6 @@
   column-width: 308px;
 }
 
-.workspace-settings-tab .settings-tab label {
-  padding-right: 4px;
-  display: inline-flex;
-}
-
 .workspace-settings-tab .settings-container-wrapper {
   position: absolute;
   top: 31px;
@@ -57,12 +52,13 @@
 }
 
 .workspace-settings-tab p.folder-exclude-pattern {
-  display: flex;
+  display: grid;
   align-items: center;
 }
 
 .workspace-settings-tab p.folder-exclude-pattern > input {
-  flex: auto;
+  width: 80%;
+  margin-left: 10px;
 }
 
 .workspace-settings-tab .settings-tab .file-system-container {

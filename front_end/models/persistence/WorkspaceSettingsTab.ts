@@ -106,7 +106,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     const inputElement = UI.UIUtils.createInput('', 'text');
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
     p.appendChild(inputElement);
-    inputElement.style.width = '270px';
     const folderExcludeSetting = IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting();
     const setValue =
         UI.UIUtils.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);

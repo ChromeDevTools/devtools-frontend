@@ -51,13 +51,15 @@ default_timeout = 45 * time.minute
 def recipe(
         name,
         cipd_package = defaults.cipd_package,
-        cipd_version = defaults.cipd_version):
+        cipd_version = defaults.cipd_version,
+        use_python3 = False):
     """Create recipe declaration with dtf defaults"""
     return luci.recipe(
         name = name,
         cipd_package = cipd_package,
         cipd_version = cipd_version,
         use_bbagent = True,
+        use_python3 = use_python3,
     )
 
 def builder(
@@ -75,7 +77,10 @@ def builder(
     }
     kwargs["properties"] = properties
 
-    kwargs["executable"] = recipe(recipe_name)
+    recipe_kwargs = {}
+    if recipe_name in ["chromium_trybot"]:
+        recipe_kwargs.setdefault("use_python3", True)
+    kwargs["executable"] = recipe(recipe_name, **recipe_kwargs)
     kwargs["resultdb_settings"] = resultdb.settings(enable = True)
     experiments = None
     if recipe_name in ["chromium_integration", "chromium_trybot"]:
